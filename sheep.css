@@ -1,5 +1,4 @@
 #sheepmenu {
-  height: 100px;
   width: 100px;
   position: fixed;
   bottom: -20;
@@ -19,7 +18,25 @@
   box-shadow: 0 0 2px rgba(0,0,0.5);
   transition: box-shadow .2s;
 }
+.sheepmovingtime {
+  animation: wow 1s cubic-bezier(0.215, 0.61, 0.355, 1);
+  right: 0;
+  bottom: calc(50vh - 50vw);
+  border-bottom-right-radius: 0;
+  box-shadow: none;
+  width: 100px;
+}
 @keyframes wow {
-  0% {bottom: calc(50vh - 50px);right: calc(50vw - 50px);}
-  100% {bottom: calc(50vh - 50px);right: calc(50vw - 50px);}
+  0% {
+    bottom: -10;
+    border-bottom-right-radius: 100px;
+    box-shadow: 0 0 2px rgba(0,0,0.5);
+    width: 100px;
+  }
+  100% {
+    bottom: calc(50vh - 50vw);
+    border-bottom-right-radius: 0;
+    box-shadow: none;
+    width: 100px;
+  }
 }
