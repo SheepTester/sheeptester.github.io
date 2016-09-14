@@ -6,5 +6,5 @@ document.querySelector("#sheepmenu").onclick=function(){
   document.querySelector("#sheepmenu").id="";
   window.setTimeout(function(){
     window.location="https://sheeptester.github.io/";
-  },300);
+  },400);
 }
