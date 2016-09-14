@@ -25,3 +25,6 @@ a:active {
   color: #FFFFFF;
   border-bottom-color: #FFFFFF;
 }
+p {
+  margin: 0;
+}
