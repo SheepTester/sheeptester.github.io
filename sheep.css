@@ -18,7 +18,9 @@
   box-shadow: 0 0 2px rgba(0,0,0,0.5);
   transition: box-shadow .2s;
 }
-.sheepmovingtime {
+.sheepmenu {
+  position: fixed;
+  z-index: 1000;
   animation: wow 0.5s cubic-bezier(0.215, 0.61, 0.355, 1);
   right: 0;
   bottom: calc(50vh - 50vw);
