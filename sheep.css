@@ -1,0 +1,21 @@
+#sheepmenu {
+	height: 100px;
+	width: 100px;
+	position: fixed;
+	top: -20;
+	left: -20;
+	border-bottom-right-radius: 80px;
+	box-shadow: 0 0 10px rgba(0,0,0.5);
+	z-index: 1000;
+	transition: top .5s, left .5s, box-shadow .5s, border-radius .5s;
+}
+#sheepmenu:hover {
+	top: -10;
+	left: 0;
+	border-bottom-right-radius: 100px;
+	box-shadow: 0 0 15px rgba(0,0,0.5);
+}
+#sheepmenu:active {
+	box-shadow: 0 0 2px rgba(0,0,0.5);
+	transition: box-shadow .2s;
+}
