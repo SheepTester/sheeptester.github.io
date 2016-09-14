@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Wrong Way</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
+    <style>
+      body {
+        background: #212224;
+        color: white;
+        font-family: 'Roboto',sans-serif;
+      }
+      h1 {
+        position: fixed;
+        font-size: 100px;
+        margin: auto;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>404</h1>
+    
+    <script>
+      setInterval(function(){
+        document.querySelector("h1").style.top=(Math.floor(Math.random()*10)-5)+"px";
+        document.querySelector("h1").style.left=(Math.floor(Math.random()*10)-5)+"px";
+      }, 3000);
+    </script>
+  </body>
+</html>
