@@ -42,3 +42,26 @@
     width: 100vw;
   }
 }
+::selection {
+	background: rgba(0, 188, 212, 0.4);
+}
+::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.5);
+}
+::-webkit-scrollbar-thumb {
+    background: white;
+}
+::-webkit-scrollbar:vertical {
+	width: 5px;
+}
+::-webkit-scrollbar:horizontal {
+	height: 5px;
+}
+input, textarea, select, button {
+	font-size: inherit;
+	font-family: inherit;
+	border: none;
+}
+:focus {
+	outline: none;
+}
