@@ -1,8 +1,12 @@
 body {
   margin: 0;
   font-size: 30px;
-  background: #212224;
-  color: #FFFFFF;
+  background-image: url("rain.jpg");
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  color: rgba(255,255,255,0.8);
   font-family: 'Roboto',sans-serif;
 }
 ul {
@@ -16,15 +20,15 @@ li {
 a {
   text-decoration: none;
   padding-bottom: 1px;
-  color: #999999;
+  color: rgba(255,255,255,0.5);
 }
 a:hover {
   padding-bottom: 0;
-  border-bottom: solid 1px #999999;
+  border-bottom: solid 1px rgba(255,255,255,0.5);
 }
 a:active {
-  color: #FFFFFF;
-  border-bottom-color: #FFFFFF;
+  color: rgba(255,255,255,0.8);
+  border-bottom-color: rgba(255,255,255,0.8);
 }
 p {
   margin: 0;
