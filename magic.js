@@ -3,7 +3,7 @@ setTimeout(function(){
 }, 60000);
 var ids=0,idn=0,rain=setInterval(function(){
   var s=document.createElement("LI");
-  s.ids="b"+id;
+  s.id="b"+ids;
   s.style.left=Math.floor(Math.random()*window.innerWidth)+"px;";
   document.querySelector(".rain").appendChild(s);
   ids++;
