@@ -56,7 +56,7 @@ p {
   width: 3px;
   top: 100vh;
   background: rgba(255,255,255,0.2);
-  animation: rain .2s linear;
+  animation: rain .5s linear;
 }
 @keyframes rain {
   from {top:-30px;}
