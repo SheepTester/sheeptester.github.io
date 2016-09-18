@@ -8,5 +8,5 @@ setInterval(function(){
   setTimeout(function(){
     document.querySelector(".rain").removeChild(document.querySelector("#b"+idn));
     idn++;
-  }, 200);
+  }, 500);
 },50);
