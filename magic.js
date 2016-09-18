@@ -1,12 +1,15 @@
 setTimeout(function(){
   document.title="WHY ARE YOU STILL HERE?!";
 }, 60000);
-var id=0,idn=0,rain=setInterval(function(){
-  document.querySelector(".rain").innerHTML+="<li id='b"+id+"' style='left:"+Math.floor(Math.random()*window.innerWidth)+"px;'></li>";
-  id++;
+var ids=0,idn=0,rain=setInterval(function(){
+  var s=document.createElement("LI");
+  s.ids="b"+id;
+  s.style.left=Math.floor(Math.random()*window.innerWidth)+"px;";
+  document.querySelector(".rain").appendChild(s);
+  ids++;
   setTimeout(function(){
     document.querySelector(".rain").removeChild(document.querySelector("#b"+idn));
     idn++;
-  }, 500);
+  }, 300);
 },50);
 /* clearInterval(rain); */
