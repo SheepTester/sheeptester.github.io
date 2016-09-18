@@ -3,10 +3,10 @@ setTimeout(function(){
 }, 60000);
 var id=0,idn=0;
 setInterval(function(){
-  document.querySelector(".rain").innerHTML+="<li id='"+id+"' style='left:"+Math.floor(Math.random()*4)+"px;'></li>";
+  document.querySelector(".rain").innerHTML+="<li id='"+id+"' style='left:"+Math.floor(Math.random()*window.innerWidth)+"px;'></li>";
   id++;
   setTimeout(function(){
     document.querySelector(".rain").removeChild(document.querySelector("#"+idn));
     idn++;
-  }, 500);
-},100);
+  }, 200);
+},10);
