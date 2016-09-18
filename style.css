@@ -52,13 +52,13 @@ p {
 }
 .rain li {
   position: fixed;
-  height: 30px;
+  height: 100px;
   width: 3px;
   top: 100vh;
   background: rgba(255,255,255,0.2);
   animation: rain .3s linear;
 }
 @keyframes rain {
-  from {top:-30px;}
+  from {top:-100px;}
   to {top: 100vh;}
 }
