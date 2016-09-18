@@ -9,4 +9,4 @@ setInterval(function(){
     document.querySelector(".rain").removeChild(document.querySelector("#b"+idn));
     idn++;
   }, 200);
-},10);
+},50);
