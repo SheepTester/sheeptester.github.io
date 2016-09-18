@@ -4,7 +4,7 @@ setTimeout(function(){
 var ids=0,idn=0,rain=setInterval(function(){
   var s=document.createElement("LI");
   s.id="b"+ids;
-  s.style.left=Math.floor(Math.random()*window.innerWidth)+"px;";
+  s.style.left=Math.floor(Math.random()*window.innerWidth)+"px";
   document.querySelector(".rain").appendChild(s);
   ids++;
   setTimeout(function(){
