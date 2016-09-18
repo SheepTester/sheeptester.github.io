@@ -33,3 +33,27 @@ a:active {
 p {
   margin: 0;
 }
+#sheepmenu {
+  animation: woww 0.3s cubic-bezier(0.215, 0.61, 0.355, 1);
+}
+@keyframes woww {
+  0% {
+    bottom: calc(50vh - 50vw);
+    border-top-left-radius: 0;
+    box-shadow: none;
+    width: 100vw;
+  }
+  100% {
+    bottom: -10px;
+    border-top-left-radius: 100px;
+    box-shadow: 0 0 2px rgba(0,0,0,0.5);
+    width: 100px;
+  }
+}
+.rain li {
+  position: fixed;
+  height: 30px;
+  width: 3px;
+  top: 100vh;
+  background: rgba(255,255,255,0.2);
+}
