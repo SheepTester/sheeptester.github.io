@@ -1,9 +1,12 @@
 setTimeout(function(){
   document.title="WHY ARE YOU STILL HERE?!";
 }, 60000);
-/*setInterval(function(){
-  document.querySelector(".rain").innerHTML+="<li></li>";
+var id=0,idn=0;
+setInterval(function(){
+  document.querySelector(".rain").innerHTML+="<li id='"+id+"' style='left:"+Math.floor(Math.random()*4)+"px;'></li>";
+  id++;
   setTimeout(function(){
-    document.querySelector(".rain").removeChild()
+    document.querySelector(".rain").removeChild(document.querySelector("#"+idn));
+    idn++;
   }, 500);
-},100);*/
+},100);
