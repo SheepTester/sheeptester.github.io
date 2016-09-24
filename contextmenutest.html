@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Context menu</title>
+    <meta charset="UTF-8">
+    <style>
+#context {
+  position: fixed;
+  z-index: 10000;
+  background: rgba(255,255,255,0.3);
+  top: 0;
+  left: 0;
+  margin: 0;
+  padding: 10px 0;
+  animation: open .5s cubic-bezier(0, 0, 0, 1);
+  overflow-y: hidden;
+  height:80px; /* #ofListItems*20 */
+}
+@keyframes open {
+  from {padding-top:0;padding-bottom:0;height:0;}
+  to {padding-top:10px;padding-bottom:10px;height:80px;} /* #ofListItems*20 */
+}
+#context li::selection {
+  background: none;
+}
+#context li {
+  display: block;
+  padding: 2.5px 10px;
+  cursor: pointer;
+  font-size: 15px;
+  height: 15px;
+  white-space: nowrap;
+  color: rgba(0,0,0,0.6);
+}
+#context li:hover {
+  background: rgba(255,255,255,0.3);
+  color: rgba(0,0,0,0.9);
+}
+#context li:active {
+  background: rgba(255,255,255,0.4);
+}
+body {
+  margin: 0;
+  background-image: url(https://images4.alphacoders.com/235/235564.jpg);
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+    </style>
+  </head>
+  <body>
+    <p><b>Right click.</b></p>
+    
+    <script src="sheep.js"></script>
+    <script>
+if (document.addEventListener) { // http://stackoverflow.com/questions/4909167/how-to-add-a-custom-right-click-menu-to-a-webpage
+  document.addEventListener('contextmenu', function(e) {
+    contextMenu();
+    e.preventDefault();
+  }, false);
+  } else {
+  document.attachEvent('oncontextmenu', function() {
+    contextMenu();
+    window.event.returnValue = false;
+  });
+}
+var mX=0,mY=0;
+document.onmousemove=function(e){
+  mX=e.clientX;
+  mY=e.clientY;
+}
+function contextMenu() {
+  if (!document.querySelector('#context')) {
+    document.body.innerHTML+="<ul id=context><li>Option 1</li><li>Option 2</li><li>Option 3</li><li>Option 4</li></ul>";
+  }
+  document.querySelector('#context').style.left=(mX-5)+"px";
+  document.querySelector('#context').style.top=(mY-5)+"px";
+  document.querySelector('#context').onmouseleave=function(){
+    document.body.removeChild(document.querySelector('#context'));
+  }
+}
+    </script>
+  </body>
+</html>
