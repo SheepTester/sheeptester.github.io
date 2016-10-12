@@ -8,7 +8,7 @@ body {
   background-attachment: fixed;
   color: rgba(255,255,255,0.8);
   font-family: 'Roboto',sans-serif;
-  text-shadow: 0 0 3px rgba(0,0,0,0.5);
+  text-shadow: 0 0 3px rgba(255, 255, 255, 0.3);
 }
 ul {
   margin: 0;
@@ -26,6 +26,7 @@ a {
 a:hover {
   padding-bottom: 0;
   border-bottom: solid 1px rgba(255,255,255,0.5);
+  text-shadow: 0 0 3px rgba(255, 255, 255, 0.8);
 }
 a:active {
   color: rgba(255,255,255,0.8);
@@ -62,4 +63,10 @@ p {
 @keyframes rain {
   from {top:-100px;}
   to {top: 100vh;}
+}
+.aline {
+  height: 2px;
+  width: 500px;
+  background: rgba(255,255,255,0.3);
+  margin: 20px 5px;
 }
