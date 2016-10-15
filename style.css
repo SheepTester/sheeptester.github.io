@@ -70,3 +70,8 @@ p {
   background: rgba(255,255,255,0.3);
   margin: 20px 5px;
 }
+#featured {
+  padding: 10px;
+  background: rgba(255,255,255,0.3);
+  box-shadow: 0 0 5px rgba(255,255,255,0.3);
+}
