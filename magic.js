@@ -12,4 +12,23 @@ var ids=0,idn=0,rain=setInterval(function(){
     idn++;
   }, 300);
 },50);
-/* clearInterval(rain); */
+//clearInterval(rain);
+document.querySelector("#menu").onclick=function(e){
+  if (e.target.tagName=="LI") {
+    document.querySelector(".active").className="";
+    document.querySelector(".pgactive").className="";
+    e.target.className="active";
+    document.querySelector("#pg"+e.target.id.slice(3)).className="pgactive";
+  }
+}
+document.querySelector("#pgContact ul").onclick=function(e){
+  if (e.target.tagName=="LI") {
+    window.location={
+      scr:"https://scratch.mit.edu/users/Sheep_maker/",
+      git:"https://github.com/SheepTester",
+      gpl:"https://plus.google.com/u/0/+SeanYentheHumansperson",
+      ins:"https://www.instagram.com/sheeptester/",
+      ytb:"https://www.youtube.com/channel/UCI8DtrWZvGNsXxUNkW53FAg",
+    }[e.target.id];
+  }
+}

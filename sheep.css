@@ -6,13 +6,15 @@
   border-top-left-radius: 80px;
   box-shadow: 0 0 10px rgba(0,0,0,0.5);
   z-index: 1000;
-  transition: bottom .5s, right .5s, box-shadow .5s, border-radius .5s;
+  opacity: 0.3;
+  transition: bottom .5s, right .5s, box-shadow .5s, border-radius .5s, opacity .5s;
 }
 #sheepmenu:hover {
   bottom: -10px;
   right: 0;
   border-top-left-radius: 100px;
   box-shadow: 0 0 15px rgba(0,0,0,0.5);
+  opacity: 1;
 }
 #sheepmenu:active {
   box-shadow: 0 0 2px rgba(0,0,0,0.5);

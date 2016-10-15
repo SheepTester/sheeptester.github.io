@@ -10,11 +10,11 @@ body {
   font-family: 'Roboto',sans-serif;
   text-shadow: 0 0 3px rgba(255, 255, 255, 0.3);
 }
-ul {
+#pgDirect ul {
   margin: 0;
   padding: 5px;
 }
-li {
+#pgDirect li {
   display: block;
   margin-left: 5px;
 }
@@ -53,6 +53,7 @@ p {
   }
 }
 .rain li {
+  display: block;
   position: fixed;
   height: 100px;
   width: 3px;
@@ -64,14 +65,74 @@ p {
   from {top:-100px;}
   to {top: 100vh;}
 }
-.aline {
+#pgDirect .aline {
   height: 2px;
   width: 500px;
   background: rgba(255,255,255,0.3);
-  margin: 20px 5px;
+  margin: 10px 5px;
 }
-#featured {
+#pgDirect #featured {
   padding: 10px;
   background: rgba(255,255,255,0.3);
   box-shadow: 0 0 5px rgba(255,255,255,0.3);
+}
+.big {
+  font-size: 2em;
+}
+#menu {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  padding: 0;
+  font-size: 0;
+}
+#menu li {
+  display: inline-block;
+  margin: 0;
+  padding: 5px;
+  border-bottom: 3px solid transparent;
+  font-size: 15px;
+  cursor: pointer;
+}
+#menu li:not(.active):hover {
+  border-color: rgba(255,255,255,0.5);
+}
+#menu .active {
+  border-color: white;
+}
+body > div {
+  display: none;
+}
+body > .pgactive {
+  display: block;
+}
+#pgContact ul {
+  font-size: 0;
+  margin: 0;
+  padding: 0;
+}
+#pgContact li {
+  display: inline-block;
+  font-size: 30px;
+  padding: 10px;
+  cursor: pointer;
+}
+#scr:hover {
+  background: #F8A839;
+}
+#git:hover {
+  background: #333333;
+}
+#gpl:hover {
+  background: #DE5145;
+}
+#ins:hover {
+  background: #D12F7A;
+}
+#ytb:hover {
+  background: #E62117;
+}
+#header {
+  background: rgba(255,255,255,0.2);
+  box-shadow: 0 0 3px rgba(255,255,255,0.3);
 }
