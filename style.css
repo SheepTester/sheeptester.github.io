@@ -93,6 +93,7 @@ p {
   border-bottom: 3px solid transparent;
   font-size: 15px;
   cursor: pointer;
+  text-transform: uppercase;
 }
 #menu li:not(.active):hover {
   border-color: rgba(255,255,255,0.5);

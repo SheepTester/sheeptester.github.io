@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Opinions</title>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300" rel="stylesheet">
+    <style>
+      body {
+        font-family: 'Open Sans', sans-serif;
+        margin: 0;
+        background: #eee;
+      }
+      h1 {
+        position: fixed;
+        margin: 0;
+        width: 100%;
+        top: 0;
+        background: #f44336;
+        box-shadow: 0 0 3px rgba(0,0,0,0.3);
+        color: white;
+        padding: 5px;
+        font-size: 40px;
+        z-index: 1000;
+      }
+      .bigger {
+        font-size: 1.5em;
+      }
+      .space {
+        height: 100px;
+      }
+      #posts {
+        position: absolute;
+        width: 1000px;
+        margin: auto;
+        left: 0;
+        right: 0;
+      }
+      .paper {
+        width: 1000px;
+        box-shadow: 0 0 3px rgba(0,0,0,0.3);
+        background: white;
+        padding: 10px;
+        border-radius: 5px;
+        margin-bottom: 20px;
+      }
+      .paper h2 {
+        font-size: 30px;
+        margin: 0;
+      }
+      .paper p {
+        margin: 5px 0;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>My opinions, my thoughts, <span class="bigger">my blog</span>.</h1>
+    <div class="space"></div>
+    <div id="posts">
+      <div class="paper">
+        <h2>This is a test post</h2>
+        <p>I don't plan on using this.</p>
+      </div>
+    </div>
+
+    <script src="../sheep.js"></script>
+    <script>console.log("hai");</script>
+  </body>
+</html>
