@@ -10,6 +10,9 @@ body {
   font-family: 'Roboto',sans-serif;
   text-shadow: 0 0 3px rgba(255, 255, 255, 0.3);
 }
+::-webkit-scrollbar {
+  display: none;
+}
 #pgDirect ul {
   margin: 0;
   padding: 5px;

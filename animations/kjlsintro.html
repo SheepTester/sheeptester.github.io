@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>KJLS Intro</title>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css?family=Bungee" rel="stylesheet">
+    <style>
+.mode {
+  font-family: 'Bungee', cursive;
+  margin: 0;
+  background: #3F51B5;
+  color: white;
+}
+.mode .center {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
+}
+.mode #palm {
+  background: white;
+  height: 200px;
+  width: 200px;
+  border-radius: 50%;
+}
+.one #palm {
+  display: block;
+  animation: grow 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+@keyframes grow {
+  from {height:0;width:0;}
+  to {height:200px;width:200px;}
+}
+.mode .digit {
+  height: 300px;
+}
+.two .digit, .two #palm {
+  display: block;
+  top: -100%;
+  bottom: 100%;
+  animation: slide1 1.5s cubic-bezier(1, 0, 0, 1);
+}
+.three .digit, .three #palm {
+  display: none;
+}
+@keyframes slide1 {
+  from {top: 0;bottom: 0;}
+  to {top: -100%;bottom: 100%;}
+}
+@keyframes p1{from{transform:scale(0)rotate(0deg);}to{transform:scale(1.5)rotate(-102.8deg);}}
+@keyframes p2{from{transform:scale(0)rotate(0deg);}to{transform:scale(1.5)rotate(-154.2deg);}}
+@keyframes p3{from{transform:scale(0)rotate(0deg);}to{transform:scale(1.5)rotate(-205.6deg);}}
+@keyframes p4{from{transform:scale(0)rotate(0deg);}to{transform:scale(1.5)rotate(-257deg);}}
+.one #p1{animation:p1 0.5s cubic-bezier(0.175,0.885,0.32,1.275);display:block;}.mode #p1{transform:scale(1.5)rotate(-102.8deg);}
+.one #p2{animation:p2 0.5s cubic-bezier(0.175,0.885,0.32,1.275);display:block;}.mode #p2{transform:scale(1.5)rotate(-154.2deg);}
+.one #p3{animation:p3 0.5s cubic-bezier(0.175,0.885,0.32,1.275);display:block;}.mode #p3{transform:scale(1.5)rotate(-205.6deg);}
+.one #p4{animation:p4 0.5s cubic-bezier(0.175,0.885,0.32,1.275);display:block;}.mode #p4{transform:scale(1.5)rotate(-257deg);}
+.mode button, #palm, .digit, .center {
+  display: none;
+}
+.mode #sheepmenu, .one p {
+  display: none;
+}
+.two p {
+  animation: slide2 1.5s cubic-bezier(1, 0, 0, 1);
+}
+.two p, .three p {
+  display: block;
+  font-size: 200px;
+  height: 200px;
+  width: 100%;
+  text-align: center;
+  margin: 0;
+  line-height: 1;
+}
+@keyframes slide2 {
+  from {top: 70%;bottom: -70%;font-size: 100px;height: 100px;}
+  to {top: 0;bottom: 0;font-size: 200px;height: 200px;}
+}
+.black {
+  display: none;
+  position: fixed;
+  height: 0;
+  width: 34%;
+  background: black;
+}
+#left, #mid {left: 0;}
+#left, #right {top: 0;}
+#right, #mid {right: 0;}
+#mid {
+  bottom: 0;
+  margin: 0 auto;
+}
+.three .black {
+  display: block;
+  height: 100%;
+  animation: close 1s cubic-bezier(0.95, 0.05, 0.795, 0.035);
+}
+@keyframes close {
+  from {height: 0;}
+  to {height:100%;}
+}
+    </style>
+  </head>
+  <body>
+    <button>start animation</button>
+    <div id="palm" class="center"></div>
+    <img class="digit center" id="po1" src="pawdigit.svg"/>
+    <img class="digit center" id="po2" src="pawdigit.svg"/>
+    <img class="digit center" id="po3" src="pawdigit.svg"/>
+    <img class="digit center" id="po4" src="pawdigit.svg"/>
+    <p class="center">KJLS</p>
+    <div class="black" id="left"></div>
+    <div class="black" id="mid"></div>
+    <div class="black" id="right"></div>
+
+    <script src="../sheep.js"></script>
+    <script>
+document.querySelector("button").onclick=function(){
+  document.body.className="mode";
+  setTimeout(function(){document.body.className="mode one";},300);
+  setTimeout(function(){document.querySelector("#po1").id="p1";},350);
+  setTimeout(function(){document.querySelector("#po2").id="p2";},450);
+  setTimeout(function(){document.querySelector("#po3").id="p3";},550);
+  setTimeout(function(){document.querySelector("#po4").id="p4";},650);
+  setTimeout(function(){document.body.className="mode two";},1200);
+  setTimeout(function(){document.body.className="mode three";},2700);
+  setTimeout(function(){
+    document.body.className="";
+    document.querySelector("#p1").id="po1";
+    document.querySelector("#p2").id="po2";
+    document.querySelector("#p3").id="po3";
+    document.querySelector("#p4").id="po4";
+  },4000);
+};
+    </script>
+  </body>
+</html>
