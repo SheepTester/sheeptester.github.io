@@ -1,7 +1,7 @@
 body {
   margin: 0;
   font-size: 30px;
-  background-image: url("rain.jpg");
+  background-image: url("img/darkforest.jpg");
   background-size: cover;
   background-position: center center;
   background-repeat: no-repeat;
@@ -39,7 +39,8 @@ p {
   margin: 0;
 }
 #sheepmenu {
-  animation: woww 0.3s cubic-bezier(0.215, 0.61, 0.355, 1);
+  animation: woww 0.5s cubic-bezier(1,0,0,1);
+  z-index: 1000;
 }
 @keyframes woww {
   0% {
@@ -47,12 +48,16 @@ p {
     border-top-left-radius: 0;
     box-shadow: none;
     width: 100vw;
+    right: 0;
+    opacity: 1;
   }
   100% {
-    bottom: -10px;
-    border-top-left-radius: 100px;
+    bottom: -20px;
+    border-top-left-radius: 80px;
     box-shadow: 0 0 2px rgba(0,0,0,0.5);
     width: 100px;
+    right: -20px;
+    opacity: 0.3;
   }
 }
 .rain li {
@@ -71,13 +76,48 @@ p {
 #pgDirect .aline {
   height: 2px;
   width: 500px;
-  background: rgba(255,255,255,0.3);
+  background: rgba(255,255,255,0.8);
   margin: 10px 5px;
 }
-#pgDirect #featured {
-  padding: 10px;
-  background: rgba(255,255,255,0.3);
-  box-shadow: 0 0 5px rgba(255,255,255,0.3);
+#pgDirect #featured, #pgDirect .new {
+  margin-left: 20px;
+  transition: margin-left 0.2s;
+}
+#pgDirect #featured:hover {
+  margin-left: 135px;
+}
+#pgDirect #featured:before, #pgDirect .new:before {
+  content: '';
+  display: inline-block;
+  position: absolute;
+  background: #009688;
+  width: 5px;
+  height: 35px;
+  left: 10px;
+  transition: width 0.2s;
+  /*animation: flashh 0.3s linear alternate infinite;*/
+}
+@keyframes flashh {
+  from {background: #80CBC4;}
+  to {background: #009688;}
+}
+#pgDirect #featured:hover:before {
+  content: 'featured';
+  width: 110px;
+  padding: 0 5px;
+  animation: none;
+}
+#pgDirect .new:hover {
+  margin-left: 80px;
+}
+#pgDirect .new:before {
+  background: #FF9800;
+  animation: none;
+}
+#pgDirect .new:hover:before {
+  content: 'new';
+  width: 55px;
+  padding: 0 5px;
 }
 .big {
   font-size: 2em;
@@ -88,6 +128,11 @@ p {
   left: 0;
   padding: 0;
   font-size: 0;
+  background: rgba(0,0,0,0.3);
+  border-top-right-radius: 5px;
+}
+#menu:hover {
+  background: rgba(0,0,0,0.8);
 }
 #menu li {
   display: inline-block;
@@ -136,7 +181,23 @@ body > .pgactive {
 #ytb:hover {
   background: #E62117;
 }
+#pgContact .strike {
+  text-decoration: line-through;
+}
 #header {
-  background: rgba(255,255,255,0.2);
-  box-shadow: 0 0 3px rgba(255,255,255,0.3);
+  background: rgba(0,0,0,0.3);
+  box-shadow: 0 0 3px rgba(0,0,0,0.3);
+}
+#pgAbout p {
+  margin: 5px 0;
+}
+#pgAbout ul {
+  padding-left: 10px;
+  margin: 5px 0;
+}
+#pgAbout li {
+  list-style-type: none;
+}
+#pgAbout li:before {
+  content: '- ';
 }
