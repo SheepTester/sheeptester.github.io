@@ -41,6 +41,7 @@ p {
 #sheepmenu {
   animation: woww 0.5s cubic-bezier(1,0,0,1);
   z-index: 1000;
+  background: white;
 }
 @keyframes woww {
   0% {

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>KJLS Intro 2</title>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css?family=Bungee" rel="stylesheet">
+    <style>
+p {
+  display: none;
+  transform: perspective(500px) rotateX(90deg);
+  transition: transform .3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.mode {
+  font-family: 'Bungee', cursive;
+  margin: 0;
+  background: #3F51B5;
+  color: white;
+}
+.mode .center {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
+}
+.mode p {
+  display: inline-block;
+  line-height: 0;
+  font-size: 150px;
+  height: 0;
+  width: 100%;
+  text-align: center;
+}
+.mode #sheepmenu, .mode button {
+  display: none;
+}
+.one p {
+  transform: perspective(500px) rotateX(0deg);
+}
+.two p {
+  transform: rotate(10deg) scale(1.2);
+}
+.three p {
+  transform: rotate(-10deg) scale(1.4);
+}
+.four p {
+  transform: rotate(10deg) scale(1.6);
+}
+.five p {
+  transform: perspective(500px) rotateX(-90deg);
+  transition: transform .3s cubic-bezier(0.23, 1, 0.32, 1);
+}
+    </style>
+  </head>
+  <body>
+    <button>start animation</button>
+    <p class="center">KJLS</p>
+
+    <script src="../sheep.js"></script>
+    <script>
+document.querySelector("button").onclick=function(){
+  document.body.className="mode";
+  setTimeout(function(){document.body.className="mode one";},300);
+  setTimeout(function(){document.body.className="mode two";},1000);
+  setTimeout(function(){document.body.className="mode three";},1400);
+  setTimeout(function(){document.body.className="mode four";},1800);
+  setTimeout(function(){document.body.className="mode five";},2200);
+  setTimeout(function(){document.body.className="";},2600);
+};
+    </script>
+  </body>
+</html>
