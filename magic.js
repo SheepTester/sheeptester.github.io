@@ -41,3 +41,9 @@ document.querySelector("#pgContact ul").onclick=function(e){
     }[e.target.id];
   }
 }
+var redirects=["platformre"],urls=["https://sheeptester.github.io/platformre/randomlevelgen.html"];
+if (window.location.search) {
+  var lol=window.location.search.slice(1);
+  if (redirects.includes(lol)) window.location.href=urls[redirects.indexOf(lol)];
+  else window.location.href=lol;
+}
