@@ -1,0 +1,6 @@
+<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+  <path d="M10 30V50A40 40 0 0 0 50 90V30z" fill="#fff"/>
+  <path d="M50 30V90A40 40 0 0 0 90 50V30z" fill="#eee"/>
+  <path d="M13 50V20a5 5 0 0 1 20 0V50z" stroke="#fff" fill="none" stroke-width="6px"/>
+  <path d="M87 50V20a5 5 0 0 0 -20 0V50z" stroke="#eee" fill="none" stroke-width="6px"/>
+</svg>

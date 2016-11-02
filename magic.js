@@ -1,3 +1,4 @@
+var redirects=["platformre","gamepro5"],urls=["https://sheeptester.github.io/platformre/randomlevelgen.html","https://www.youtube.com/channel/UCFXJec3TUakUam-Xgll2-Ow"];
 setTimeout(function(){
   document.title="WHY ARE YOU STILL HERE?!";
 }, 60000);
@@ -41,9 +42,8 @@ document.querySelector("#pgContact ul").onclick=function(e){
     }[e.target.id];
   }
 }
-var redirects=["platformre"],urls=["https://sheeptester.github.io/platformre/randomlevelgen.html"];
 if (window.location.search) {
   var lol=window.location.search.slice(1);
-  if (redirects.includes(lol)) window.location.href=urls[redirects.indexOf(lol)];
-  else window.location.href=lol;
+  if (redirects.includes(lol)) window.location.replace(urls[redirects.indexOf(lol)]);
+  else window.location.replace(lol);
 }
