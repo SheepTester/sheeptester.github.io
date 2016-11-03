@@ -1,4 +1,9 @@
-var redirects=["platformre","gamepro5"],urls=["https://sheeptester.github.io/platformre/randomlevelgen.html","https://www.youtube.com/channel/UCFXJec3TUakUam-Xgll2-Ow"];
+var redirects=["platformre","gamepro5","panthre"],
+urls=[
+  "https://sheeptester.github.io/platformre/randomlevelgen.html",
+  "https://www.youtube.com/channel/UCFXJec3TUakUam-Xgll2-Ow",
+  "https://www.youtube.com/channel/UCS5jP47FySoyh7tXYHDwQoA",
+];
 setTimeout(function(){
   document.title="WHY ARE YOU STILL HERE?!";
 }, 60000);

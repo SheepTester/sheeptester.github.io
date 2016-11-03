@@ -3,7 +3,7 @@
   <head>
     <title>Wrong Way</title>
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:100" rel="stylesheet">
     <style>
       body {
         background: #212224;
@@ -12,9 +12,13 @@
       }
       h1 {
         position: fixed;
+        line-height: 1;
+        height: 300px;
         font-size: 300px;
         margin: auto;
-        transition: top .1s, left .1s;
+        top: 0;
+        bottom: 0;
+        /*transition: top .1s, left .1s;*/
         text-align: center;
         width: 100%;
       }
@@ -31,12 +35,21 @@
   <body>
     <h1>404</h1>
     <a href="https://www.google.com/">Click here for assistance.</a>
-    
+
     <script src="sheep.js"></script>
     <script>
+      // clearInterval(1);
+      var count=0;
       setInterval(function(){
-        document.querySelector("h1").style.top=(Math.floor(Math.random()*50)-25)+"px";
-        document.querySelector("h1").style.left=(Math.floor(Math.random()*50)-25)+"px";
+        document.querySelector("h1").style.top=(Math.floor(Math.random()*200)-100)+"px";
+        document.querySelector("h1").style.left=(Math.floor(Math.random()*200)-100)+"px";
+        document.querySelector("h1").style.transform="rotate("+(Math.floor(Math.random()*360))+"deg)";
+        var height=Math.floor(Math.random()*400)+100;
+        document.querySelector("h1").style.height=height+"px";
+        document.querySelector("h1").style.fontSize=height+"px";
+        count++;
+        var titles=["Wrong Way","u faled","Having trouble?","stop making up urls","that was your fault"];
+        if (count%20===0) document.querySelector("title").innerHTML=titles[Math.floor(Math.random()*titles.length)];
       }, 100);
     </script>
   </body>
