@@ -50,5 +50,6 @@ document.querySelector("#pgContact ul").onclick=function(e){
 if (window.location.search) {
   var lol=window.location.search.slice(1);
   if (redirects.includes(lol)) window.location.replace(urls[redirects.indexOf(lol)]);
+  else if (lol[0]+lol[1]=="rr") window.location.replace("https://www.youtube.com/watch?v=dQw4w9WgXcQ");
   else window.location.replace(lol);
 }
