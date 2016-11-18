@@ -1,9 +1,9 @@
-var redirects=["platformre","gamepro5","panthre"],
-urls=[
-  "https://sheeptester.github.io/platformre/randomlevelgen.html",
-  "https://www.youtube.com/channel/UCFXJec3TUakUam-Xgll2-Ow",
-  "https://www.youtube.com/channel/UCS5jP47FySoyh7tXYHDwQoA",
-];
+var redirects={
+  "platformre":"https://sheeptester.github.io/platformre/randomlevelgen.html",
+  "gamepro5":"https://www.youtube.com/channel/UCFXJec3TUakUam-Xgll2-Ow",
+  "panthre":"https://www.youtube.com/channel/UCS5jP47FySoyh7tXYHDwQoA",
+  "penland":"https://sheeptester.github.io/platformre/penland/inv.html",
+};
 setTimeout(function(){
   document.title="WHY ARE YOU STILL HERE?!";
 }, 60000);
@@ -49,7 +49,7 @@ document.querySelector("#pgContact ul").onclick=function(e){
 }
 if (window.location.search) {
   var lol=window.location.search.slice(1);
-  if (redirects.includes(lol)) window.location.replace(urls[redirects.indexOf(lol)]);
+  if (redirects.hasOwnProperty(lol)) window.location.replace(redirects[lol]);
   else if (lol[0]+lol[1]=="rr") window.location.replace("https://www.youtube.com/watch?v=dQw4w9WgXcQ");
   else window.location.replace(lol);
 }
