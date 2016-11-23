@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Draw</title>
+    <meta charset="UTF-8">
+    <style>
+svg {
+  height: 100%;
+  width: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+}
+    </style>
+  </head>
+  <body>
+    <svg fill="none" stroke="#333" stroke-width="5px" xmlns="http://www.w3.org/2000/svg"></svg>
+
+    <script src="sheep.js"></script>
+    <script>
+var lastX=0,lastY=0,mDown=false;
+// document.body.onmouseout=function(e){
+//   console.log(e.target);
+// }
+document.body.onmousedown=function(e){
+  if (!mDown) {
+    document.querySelector('svg').innerHTML+='<polyline points="'+e.clientX+','+e.clientY+'"/>';
+    lastX=e.clientX;
+    lastY=e.clientY;
+    mDown=true;
+  }
+  console.log('down');
+};
+document.body.onmousemove=function(e){
+  if (mDown&&Math.sqrt((lastX-e.clientX)*(lastX-e.clientX)+(lastY-e.clientY)*(lastY-e.clientY))>10) {
+    document.querySelector('polyline:last-child').setAttribute('points',document.querySelector('polyline:last-child').getAttribute('points')+" "+e.clientX+','+e.clientY);
+    lastX=e.clientX;
+    lastY=e.clientY;
+  }
+};
+document.body.onmousedown=function(e){
+  if (mDown) {
+    if (Math.sqrt((lastX-e.clientX)*(lastX-e.clientX)+(lastY-e.clientY)*(lastY-e.clientY))>10) {
+      document.querySelector('polyline:last-child').points+=" "+e.clientX+','+e.clientY;
+    } else {
+      document.querySelector('svg').removeChild(document.querySelector('polyline:last-child'));
+      document.querySelector('svg').innerHTML+='<circle fill="#333" r="2.5" cx="'+e.clientX+'" cy="'+e.clientY+'"/>';
+    }
+    mDown=false;
+  }
+};
+    </script>
+  </body>
+</html>

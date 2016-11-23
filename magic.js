@@ -1,8 +1,10 @@
 var redirects={
-  "platformre":"https://sheeptester.github.io/platformre/randomlevelgen.html",
+  "platformre":"https://sheeptester.github.io/platformre/",
+  "makelevel":"https://sheeptester.github.io/platformre/maker/",
   "gamepro5":"https://www.youtube.com/channel/UCFXJec3TUakUam-Xgll2-Ow",
   "panthre":"https://www.youtube.com/channel/UCS5jP47FySoyh7tXYHDwQoA",
   "penland":"https://sheeptester.github.io/platformre/penland/inv.html",
+  "hotel":"http://176.32.230.44/thingkingland.com/thehotel/",
 };
 setTimeout(function(){
   document.title="WHY ARE YOU STILL HERE?!";
@@ -51,5 +53,6 @@ if (window.location.search) {
   var lol=window.location.search.slice(1);
   if (redirects.hasOwnProperty(lol)) window.location.replace(redirects[lol]);
   else if (lol[0]+lol[1]=="rr") window.location.replace("https://www.youtube.com/watch?v=dQw4w9WgXcQ");
+  else if (lol.slice(0,11)=="javascript:") window.location.replace("https://sheeptester.github.io/");
   else window.location.replace(lol);
 }
