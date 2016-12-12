@@ -54,7 +54,8 @@ document.querySelector("#pgContact ul").onclick=function(e){
 if (window.location.search) {
   var lol=window.location.search.slice(1);
   if (redirects.hasOwnProperty(lol)) window.location.replace(redirects[lol]);
-  else if (lol[0]+lol[1]=="rr") window.location.replace("https://www.youtube.com/watch?v=dQw4w9WgXcQ");
+  else if (lol[0]+lol[1]=="rr") window.location.replace("https://i.cloudup.com/LE0xyc4dgp.mp4");
+  else if (lol[0]+lol[1]=="js") window.location.replace("https://akk.li/pics/anne.jpg");
   else if (lol.slice(0,11)=="javascript:") window.location.replace("https://sheeptester.github.io/");
   else window.location.replace(lol);
 }
