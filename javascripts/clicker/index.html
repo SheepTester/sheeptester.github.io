@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Submit a level - Platformre</title>
+    <meta charset="UTF-8">
+    <meta name="description" content="A boring game where you're supposed to click and stuff."/>
+    <style>
+body {
+  font-size: 16px;
+}
+button, input, textarea {
+  font-size: inherit;
+  font-family: inherit;
+}
+.box {
+  border: 2px solid black;
+  padding: 5px;
+  display: inline-block;
+}
+#saved {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  animation: byebye 2s;
+  opacity:0;
+}
+@keyframes byebye {
+  from {opacity:1;}
+  to {opacity:0;}
+}
+a {
+  color: inherit;
+  text-decoration: none;
+}
+.btn {
+  cursor: pointer;
+}
+.btn:hover, a:hover {
+  text-decoration: underline;
+}
+.btn, a {
+  padding-right: 10px;
+  display: inline-block;
+}
+#stats span {
+  font-weight: bold;
+}
+#stats .btn {
+  display: inline;
+  padding: 0;
+  font-weight: normal;
+}
+    </style>
+  </head>
+  <body>
+    Click anywhere (on this page at least) and we might count it as a click.<br>
+    <div id="stats" class="box">
+      <strong>Stats</strong><br>
+      Clicks: <span id="clickcount">0</span><br>
+      Clickers strapped together: <span id="clicklevelcount">1</span> Destroys <span id="clicklevelcost">50</span> clicks in the process. <span id="clicklevelbuy" class="btn">Buy!</span><br>
+      Autoclickers: <span id="autocount">1</span> Destroys <span id="autocost">200</span> clicks in the process. <span id="autobuy" class="btn">Buy!</span><br>
+    </div><br><br>
+    <a href="https://button-clicker-lesha39.c9users.io/button_clicker.html">More professional clicker game here</a> <span onclick="save()" class="btn" title="autosaves every 60 seconds">Save</span>
+    <span id="saved">saved</span>
+
+    <script src="../sheep.js"></script>
+    <script>
+var clicks=0,clicklevel=1,clicklevelcost=50,auto=0,autocost=200;
+if (localStorage.getItem('clickersave')) {
+  var stats;
+  try {
+    stats=JSON.parse(localStorage.getItem('clickersave'));
+  }
+  catch (e) {
+    localStorage.removeItem('clickersave');
+    alert('Stop messing with the save cookie you silly fool.');
+  }
+  finally {
+    if (stats) {
+      function load(key) {
+        if (stats[key]) window[key]=stats[key];
+      }
+      load('clicks');
+      load('clicklevel');
+      clicklevelcost=(clicklevel-1)*3+50;
+      load('auto');
+      autocost=auto*10+200;
+      render();
+    }
+  }
+}
+function save() {
+  var stats={};
+  function save(key) {
+    stats[key]=window[key];
+  }
+  save('clicks');
+  save('clicklevel');
+  localStorage.setItem('clickersave',JSON.stringify(stats));
+  var lenewone=saved.cloneNode(true);
+  saved.parentNode.replaceChild(lenewone,saved);
+}
+document.onclick=function(){
+  clicks+=clicklevel;
+  render();
+}
+clicklevelbuy.onclick=function(){
+  if (clicks>=clicklevelcost) {
+    clicks-=clicklevelcost;
+    clicklevel++;
+    clicklevelcost=(clicklevel-1)*3+50;
+    render();
+  }
+}
+function render() {
+  clickcount.innerHTML=clicks;
+  clicklevelcount.innerHTML=clicklevel;
+  document.querySelector('#clicklevelcost').innerHTML=clicklevelcost;
+}
+setInterval(save,60000);
+    </script>
+<!-- MADE BY SEAN -->
+  </body>
+</html>
