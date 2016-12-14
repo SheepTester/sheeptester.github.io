@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Submit a level - Platformre</title>
+    <title>The Generic Clicker Game</title>
     <meta charset="UTF-8">
-    <meta name="description" content="A boring game where you're supposed to click and stuff."/>
+    <meta name="description" content="A generic clicker game."/>
     <style>
 body {
   font-size: 16px;
@@ -42,7 +42,7 @@ a {
   padding-right: 10px;
   display: inline-block;
 }
-#stats span {
+#stats span:not(.maxexists) {
   font-weight: bold;
 }
 #stats .btn {
@@ -57,15 +57,24 @@ a {
     <div id="stats" class="box">
       <strong>Stats</strong><br>
       Clicks: <span id="clickcount">0</span><br>
-      Clickers strapped together: <span id="clicklevelcount">1</span> Destroys <span id="clicklevelcost">50</span> clicks in the process. <span id="clicklevelbuy" class="btn">Buy!</span><br>
-      Autoclickers: <span id="autocount">1</span> Destroys <span id="autocost">200</span> clicks in the process. <span id="autobuy" class="btn">Buy!</span><br>
+      Clickers strapped together: <span id="clicklevelcount">1</span> Destroys <span id="clicklevelcost">50</span> clicks in the process. <span id="clicklevelbuy" class="btn" title="Hold shift while buying to use sacrifice all your clicks on this.">Buy!</span><br>
+      Autoclickers: <span id="autocount">1</span> every <span id="autospeedcount">2000</span> milliseconds. Destroys <span id="autocost">200</span> clicks in the process. <span id="autobuy" class="btn" title="Hold shift while buying to use sacrifice all your clicks on this.">Buy!</span><br>
+      <span class="maxexists" id="autospeed">Speed up autoclicker to <span id="nextautospeed">1500</span> milliseconds. Destroys <span id="autospeedcost">500</span> clicks in the process. <span id="autospeedbuy" class="btn">Buy!</span><br></span>
     </div><br><br>
-    <a href="https://button-clicker-lesha39.c9users.io/button_clicker.html">More professional clicker game here</a> <span onclick="save()" class="btn" title="autosaves every 60 seconds">Save</span>
+    <a href="https://button-clicker-lesha39.c9users.io/button_clicker.html">better game here</a> <span onclick="save()" class="btn" title="autosaves every 60 seconds">save</span> <a href="dungeon.html">dungeon</a>
     <span id="saved">saved</span>
 
     <script src="../sheep.js"></script>
     <script>
-var clicks=0,clicklevel=1,clicklevelcost=50,auto=0,autocost=200;
+var clicks=0,
+clicklevel=1,
+clicklevelcost=50,
+auto=0,
+autocost=200,
+autointerval,
+autospeed=2000,
+autospeedcost=500,
+autospeedlevels=[2000,1500,1000,500,100,50];
 if (localStorage.getItem('clickersave')) {
   var stats;
   try {
@@ -86,6 +95,9 @@ if (localStorage.getItem('clickersave')) {
       load('auto');
       autocost=auto*10+200;
       render();
+      document.querySelector('#autospeedcount').innerHTML=autospeed;
+      document.querySelector('#nextautospeed').innerHTML=autospeedlevels[autospeedlevels.indexOf(autospeed)+1];
+      document.querySelector('#autospeedcost').innerHTML=autospeedcost;
     }
   }
 }
@@ -96,28 +108,88 @@ function save() {
   }
   save('clicks');
   save('clicklevel');
+  save('auto');
   localStorage.setItem('clickersave',JSON.stringify(stats));
-  var lenewone=saved.cloneNode(true);
-  saved.parentNode.replaceChild(lenewone,saved);
+  var lenewone=document.querySelector('#saved').cloneNode(true);
+  document.querySelector('#saved').parentNode.replaceChild(lenewone,document.querySelector('#saved'));
 }
 document.onclick=function(){
   clicks+=clicklevel;
   render();
+  if (document.selection&&document.selection.empty) {
+    document.selection.empty();
+  } else if (window.getSelection) {
+    var sel=window.getSelection();
+    sel.removeAllRanges();
+  }
 }
-clicklevelbuy.onclick=function(){
+document.ondblclick=function(){ // http://stackoverflow.com/questions/880512/prevent-text-selection-after-double-click
+  if (document.selection&&document.selection.empty) {
+    document.selection.empty();
+  } else if (window.getSelection) {
+    var sel=window.getSelection();
+    sel.removeAllRanges();
+  }
+}
+document.querySelector('#clicklevelbuy').onclick=function(e){
   if (clicks>=clicklevelcost) {
     clicks-=clicklevelcost;
     clicklevel++;
     clicklevelcost=(clicklevel-1)*3+50;
+    if (e.shiftKey) {
+      while (clicks>=clicklevelcost) {
+        clicks-=clicklevelcost;
+        clicklevel++;
+        clicklevelcost=(clicklevel-1)*3+50;
+      }
+    }
     render();
   }
 }
+document.querySelector('#autobuy').onclick=function(e){
+  if (clicks>=autocost) {
+    clicks-=autocost;
+    auto++;
+    autocost=auto*10+200;
+    if (e.shiftKey) {
+      while (clicks>=autocost) {
+        clicks-=autocost;
+        auto++;
+        autocost=auto*10+200;
+      }
+    }
+    render();
+  }
+}
+document.querySelector('#autospeedbuy').onclick=function(){
+  if (clicks>=autospeedcost) {
+    clicks-=autospeedcost;
+    autospeed=autospeedlevels[autospeedlevels.indexOf(autospeed)+1];
+    autospeedcost=autospeedlevels.indexOf(autospeed)*100+500;
+    clearInterval(autointerval);
+    autointerval=setInterval(addAuto,autospeed);
+    render();
+    document.querySelector('#autospeedcount').innerHTML=autospeed;
+    document.querySelector('#nextautospeed').innerHTML=autospeedlevels[autospeedlevels.indexOf(autospeed)+1];
+    document.querySelector('#autospeedcost').innerHTML=autospeedcost;
+    if (autospeedlevels.indexOf(autospeed)==autospeedlevels.length-1) {
+      document.querySelector('#stats').removeChild(document.querySelector('#autospeed'));
+    }
+  }
+}
 function render() {
-  clickcount.innerHTML=clicks;
-  clicklevelcount.innerHTML=clicklevel;
+  document.querySelector('#clickcount').innerHTML=clicks;
+  document.querySelector('#clicklevelcount').innerHTML=clicklevel;
   document.querySelector('#clicklevelcost').innerHTML=clicklevelcost;
+  document.querySelector('#autocount').innerHTML=auto;
+  document.querySelector('#autocost').innerHTML=autocost;
 }
 setInterval(save,60000);
+function addAuto() {
+  clicks+=auto;
+  render();
+}
+autointerval=setInterval(addAuto,autospeed);
     </script>
 <!-- MADE BY SEAN -->
   </body>

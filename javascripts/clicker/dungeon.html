@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Le Dungeon - The Generic Clicker Game</title>
+    <meta charset="UTF-8">
+    <meta name="description" content="A generic clicker game."/>
+    <style>
+body {
+  font-size: 16px;
+}
+button, input, textarea {
+  font-size: inherit;
+  font-family: inherit;
+}
+#map {
+  border-spacing: 0;
+  border-collapse: collapse;
+}
+#map td {
+  border: 2px solid black;
+  height: 5px;
+  width: 5px;
+}
+#map .player {
+  background: black;
+}
+#map .view {
+  background: pink;
+}
+#map .visited {
+  background: darkgrey;
+}
+#map .legendary {
+  background: orange;
+}
+#map .rare {
+  background: yellow;
+}
+#map .good {
+  background: skyblue;
+}
+#map .danger {
+  background: red;
+}
+    </style>
+  </head>
+  <body>
+    Use arrow keys to explore le Dungeon.
+    <table id='map'></table>
+
+    <script src="../sheep.js"></script>
+    <script>
+var mapInner='',map=[];
+for (var i=0;i<20;i++) {
+  mapInner+='<tr>';
+  map.push([]);
+  for (var j=0;j<20;j++) {
+    mapInner+='<td></td>';
+    if (!Math.floor(Math.random()*100)) map[map.length-1].push('legendary');
+    else if (!Math.floor(Math.random()*50)) map[map.length-1].push('rare');
+    else if (!Math.floor(Math.random()*10)) map[map.length-1].push('good');
+    else if (!Math.floor(Math.random()*3)) map[map.length-1].push('danger');
+    else map[map.length-1].push('');
+  }
+  mapInner+='</tr>';
+}
+document.querySelector('#map').innerHTML=mapInner;
+var x=Math.floor(Math.random()*20),y=Math.floor(Math.random()*20),
+/*
+  1
+0   2
+  3
+*/
+direction=Math.floor(Math.random()*4);
+function tdAt(x,y) {
+  return document.querySelector('#map tr:nth-child('+(20-y)+') td:nth-child('+(x+1)+')');
+}
+function drawMap() {
+  mapInner='';
+  for (var i=0;i<20;i++) {
+    mapInner+='<tr>';
+    for (var j=0;j<20;j++) {
+      mapInner+='<td class="'+map[19-i][j]+'"></td>';
+    }
+    mapInner+='</tr>';
+  }
+  document.querySelector('#map').innerHTML=mapInner;
+  tdAt(x,y).className="player";
+  map[y][x]='visited';
+  switch (direction) {
+    case 0:
+      if (x>0) tdAt(x-1,y).className="view";
+      break;
+    case 1:
+      if (y<19) tdAt(x,y+1).className="view";
+      break;
+    case 2:
+      if (x<19) tdAt(x+1,y).className="view";
+      break;
+    case 3:
+      if (y>0) tdAt(x,y-1).className="view";
+      break;
+  }
+}
+drawMap();
+document.onkeydown=function(e){
+  switch (e.keyCode) {
+    case 38:
+      switch (direction) {
+        case 0: x--;break;
+        case 1: y++;break;
+        case 2: x++;break;
+        case 3: y--;break;
+      }
+      break;
+    case 37:
+      direction=(direction+3)%4;
+      break;
+    case 39:
+      direction=(direction+5)%4;
+      break;
+    case 40:
+      switch (direction) {
+        case 0: x++;break;
+        case 1: y--;break;
+        case 2: x--;break;
+        case 3: y++;break;
+      }
+      break;
+  }
+  if (x>19) x=19;
+  if (y>19) y=19;
+  if (x<0) x=0;
+  if (y<0) y=0;
+  drawMap();
+};
+    </script>
+<!-- MADE BY SEAN -->
+  </body>
+</html>
