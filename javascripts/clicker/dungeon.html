@@ -202,6 +202,7 @@ function drawMap() {
       break;
     case 'home':
       clicks+=tempclicks;
+      tempclicks=0;
       save();
       document.querySelector('#happenings').innerHTML+='You leave your earnings in a safer place.<br>';
       break;
