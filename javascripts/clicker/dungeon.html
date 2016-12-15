@@ -20,12 +20,14 @@ button, input, textarea {
   border: 2px solid black;
   height: 5px;
   width: 5px;
+  background: white;
 }
 #map .player {
   background: black;
 }
 #map .view {
-  background: pink;
+  transform: scale(1.3);
+  box-shadow: 0 0 1px rgba(0,0,0,0.8);
 }
 #map .visited {
   background: darkgrey;
@@ -42,15 +44,113 @@ button, input, textarea {
 #map .danger {
   background: red;
 }
+#map .home {
+  background: green;
+}
+#map .superdanger {
+  background: darkred;
+}
+.box {
+  border: 2px solid black;
+  padding: 5px;
+  display: inline-block;
+  margin-top: 10px;
+  position: relative;
+}
+.box strong:first-child {
+  position: absolute;
+  background: white;
+  top: -10px;
+  padding: 0 5px;
+}
+#saved {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  animation: byebye 2s;
+  opacity:0;
+}
+@keyframes byebye {
+  from {opacity:1;}
+  to {opacity:0;}
+}
+.btn, a {
+  padding-right: 10px;
+  display: inline-block;
+  color: #666;
+  text-decoration: none;
+  cursor: pointer;
+}
+.btn:hover, a:hover {
+  text-decoration: underline;
+}
+#happenings {
+  /*max-height: 300px;
+  overflow-y: auto;*/
+  min-width: 140px;
+}
+.box .btn {
+  display: inline;
+  padding: 0;
+  font-weight: bold;
+  color: inherit;
+}
     </style>
   </head>
   <body>
-    Use arrow keys to explore le Dungeon.
+    Use arrow keys to explore le Dungeon.<br>
     <table id='map'></table>
+    <div id="happenings" class="box">
+      <strong>What's happening</strong>
+      <span id="clear" class="btn">Clear</span><br>
+      You enter le Dungeon.<br>
+    </div><br>
+    <div id="stats" class="box">
+      <strong>Stats</strong>
+      Clicks on journey: <span id="tclickcount">0</span>
+      <span id="menos" class="btn">-</span> <span id="mas" class="btn">+</span><br>
+      Clicks: <span id="clickcount">0</span><br>
+    </div><br>
+    <a href="../clicker/">back</a>
+    <span id="saved">saved</span>
 
-    <script src="../sheep.js"></script>
+    <script src="../../sheep.js"></script>
     <script>
-var mapInner='',map=[];
+var mapInner='',
+map=[],
+clicks=0,
+tempclicks=0,
+lastCookie=localStorage.getItem('clickersave'),
+stats;
+if (localStorage.getItem('clickersave')) {
+  stats={};
+  try {
+    stats=JSON.parse(localStorage.getItem('clickersave'));
+  }
+  catch (e) {
+    localStorage.removeItem('clickersave');
+    stats={clicks:0};
+    alert('Stop messing with the save cookie you silly fool.');
+  }
+  finally {
+    if (stats) {
+      if (stats.clicks) clicks=stats.clicks;
+    }
+  }
+}
+function save() {
+  if (localStorage.getItem('clickersave')!=lastCookie) {
+    alert('Your cookie was changed somewhere else. That could have happened because:\nYou have multiple tabs opened to this page.\nYou messed with the cookie.\n\nEither way, you won\'t be able to save in this session anymore.');
+    lastCookie=666;
+  } else {
+    stats.clicks=clicks;
+    localStorage.setItem('clickersave',JSON.stringify(stats));
+    var lenewone=document.querySelector('#saved').cloneNode(true);
+    document.querySelector('#saved').parentNode.replaceChild(lenewone,document.querySelector('#saved'));
+    lastCookie=localStorage.getItem('clickersave');
+  }
+}
+save();
 for (var i=0;i<20;i++) {
   mapInner+='<tr>';
   map.push([]);
@@ -60,47 +160,97 @@ for (var i=0;i<20;i++) {
     else if (!Math.floor(Math.random()*50)) map[map.length-1].push('rare');
     else if (!Math.floor(Math.random()*10)) map[map.length-1].push('good');
     else if (!Math.floor(Math.random()*3)) map[map.length-1].push('danger');
+    else if (!Math.floor(Math.random()*50)) map[map.length-1].push('superdanger');
     else map[map.length-1].push('');
   }
   mapInner+='</tr>';
 }
 document.querySelector('#map').innerHTML=mapInner;
-var x=Math.floor(Math.random()*20),y=Math.floor(Math.random()*20),
+var x=10,y=10,
 /*
   1
 0   2
   3
 */
-direction=Math.floor(Math.random()*4);
+direction=0;
+map[10][10]="home";
+map[10][9]='';
 function tdAt(x,y) {
   return document.querySelector('#map tr:nth-child('+(20-y)+') td:nth-child('+(x+1)+')');
 }
 function drawMap() {
+  var earn;
+  switch (map[y][x]) {
+    case '':
+      earn=Math.floor(Math.random()*10+5);
+      break;
+    case 'good':
+      earn=Math.floor(Math.random()*200+50);
+      break;
+    case 'rare':
+      earn=Math.floor(Math.random()*600+200);
+      break;
+    case 'legendary':
+      earn=Math.floor(Math.random()*50000+5000);
+      break;
+    case 'danger':
+      earn=-Math.floor(Math.random()*200+50);
+      break;
+    case 'superdanger':
+      earn=-Math.floor(clicks/3);
+      document.querySelector('#happenings').innerHTML+='A bandit jumps out and robs your clicks.<br>';
+      break;
+    case 'home':
+      clicks+=tempclicks;
+      save();
+      document.querySelector('#happenings').innerHTML+='You leave your earnings in a safer place.<br>';
+      break;
+  }
+  if (earn) {
+    tempclicks+=earn;
+    if (earn>0) document.querySelector('#happenings').innerHTML+='You earn '+earn+' clicks.<br>';
+    else if (earn<0) document.querySelector('#happenings').innerHTML+='You lose '+-earn+' clicks.<br>';
+  }
+  if (tempclicks<0) {
+    document.querySelector('#happenings').innerHTML+='You run out of clicks. :(<br>';
+    tempclicks=0;
+    map[y][x]='legendary';
+    x=10;y=10;
+    for (var i=0;i<20;i++) {
+      for (var j=0;j<20;j++) {
+        if (map[i][j]=='visited') map[i][j]='';
+      }
+    }
+  }
   mapInner='';
   for (var i=0;i<20;i++) {
     mapInner+='<tr>';
     for (var j=0;j<20;j++) {
-      mapInner+='<td class="'+map[19-i][j]+'"></td>';
+      if (map[19-i][j]=='visited') mapInner+='<td class="visited"></td>';
+      else if (map[19-i][j]=='home') mapInner+='<td class="home"></td>';
+      else mapInner+='<td></td>';
     }
     mapInner+='</tr>';
   }
   document.querySelector('#map').innerHTML=mapInner;
   tdAt(x,y).className="player";
-  map[y][x]='visited';
+  if (!['home','visited'].includes(map[y][x])) map[y][x]='visited';
   switch (direction) {
     case 0:
-      if (x>0) tdAt(x-1,y).className="view";
+      if (x>0) tdAt(x-1,y).className+=" view";
       break;
     case 1:
-      if (y<19) tdAt(x,y+1).className="view";
+      if (y<19) tdAt(x,y+1).className+=" view";
       break;
     case 2:
-      if (x<19) tdAt(x+1,y).className="view";
+      if (x<19) tdAt(x+1,y).className+=" view";
       break;
     case 3:
-      if (y>0) tdAt(x,y-1).className="view";
+      if (y>0) tdAt(x,y-1).className+=" view";
       break;
   }
+  document.querySelector('#tclickcount').innerHTML=tempclicks;
+  document.querySelector('#clickcount').innerHTML=clicks;
 }
 drawMap();
 document.onkeydown=function(e){
@@ -112,12 +262,16 @@ document.onkeydown=function(e){
         case 2: x++;break;
         case 3: y--;break;
       }
+      clicks-=2;
+      document.querySelector('#happenings').innerHTML+='You go forwards.<br>';
       break;
     case 37:
       direction=(direction+3)%4;
+      document.querySelector('#happenings').innerHTML+='You turn '+['west','north','east','south'][direction]+'.<br>';
       break;
     case 39:
       direction=(direction+5)%4;
+      document.querySelector('#happenings').innerHTML+='You turn '+['west','north','east','south'][direction]+'.<br>';
       break;
     case 40:
       switch (direction) {
@@ -126,13 +280,72 @@ document.onkeydown=function(e){
         case 2: x--;break;
         case 3: y++;break;
       }
+      clicks-=2;
+      document.querySelector('#happenings').innerHTML+='You go backwards.<br>';
       break;
   }
   if (x>19) x=19;
   if (y>19) y=19;
   if (x<0) x=0;
   if (y<0) y=0;
-  drawMap();
+  if (e.keyCode>=37&&e.keyCode<=40) drawMap();
+};
+document.querySelector('#menos').onclick=function(e){
+  if (map[y][x]=='home') {
+    if (e.shiftKey) {
+      if (e.ctrlKey) {
+        clicks=clicks+tempclicks;
+        tempclicks=0;
+      } else {
+        tempclicks-=100;
+        clicks+=100;
+      }
+    } else {
+      if (e.ctrlKey) {
+        tempclicks-=10000;
+        clicks+=10000;
+      } else {
+        tempclicks--;
+        clicks++;
+      }
+    }
+    if (tempclicks<0) {
+      clicks=clicks+tempclicks;
+      tempclicks=0;
+    }
+    document.querySelector('#tclickcount').innerHTML=tempclicks;
+    document.querySelector('#clickcount').innerHTML=clicks;
+  }
+};
+document.querySelector('#mas').onclick=function(e){
+  if (map[y][x]=='home') {
+    if (e.shiftKey) {
+      if (e.ctrlKey) {
+        tempclicks=clicks+tempclicks;
+        clicks=0;
+      } else {
+        tempclicks+=100;
+        clicks-=100;
+      }
+    } else {
+      if (e.ctrlKey) {
+        tempclicks+=10000;
+        clicks-=10000;
+      } else {
+        tempclicks++;
+        clicks--;
+      }
+    }
+    if (tempclicks>clicks+tempclicks) {
+      tempclicks=clicks+tempclicks;
+      clicks=0;
+    }
+    document.querySelector('#tclickcount').innerHTML=tempclicks;
+    document.querySelector('#clickcount').innerHTML=clicks;
+  }
+};
+document.querySelector('#happenings').onclick=function(e){
+  if (e.target.id=='clear') document.querySelector('#happenings').innerHTML='<strong>What\'s happening</strong><span id="clear" class="btn">Clear</span><br>';
 };
     </script>
 <!-- MADE BY SEAN -->

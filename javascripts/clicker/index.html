@@ -16,6 +16,14 @@ button, input, textarea {
   border: 2px solid black;
   padding: 5px;
   display: inline-block;
+  margin-top: 10px;
+  position: relative;
+}
+.box strong:first-child {
+  position: absolute;
+  background: white;
+  top: -10px;
+  padding: 0 5px;
 }
 #saved {
   position: fixed;
@@ -28,19 +36,15 @@ button, input, textarea {
   from {opacity:1;}
   to {opacity:0;}
 }
-a {
-  color: inherit;
+.btn, a {
+  padding-right: 10px;
+  display: inline-block;
+  color: #666;
   text-decoration: none;
-}
-.btn {
   cursor: pointer;
 }
 .btn:hover, a:hover {
   text-decoration: underline;
-}
-.btn, a {
-  padding-right: 10px;
-  display: inline-block;
 }
 #stats span:not(.maxexists) {
   font-weight: bold;
@@ -55,7 +59,7 @@ a {
   <body>
     Click anywhere (on this page at least) and we might count it as a click.<br>
     <div id="stats" class="box">
-      <strong>Stats</strong><br>
+      <strong>Stats</strong>
       Clicks: <span id="clickcount">0</span><br>
       Clickers strapped together: <span id="clicklevelcount">1</span> Destroys <span id="clicklevelcost">50</span> clicks in the process. <span id="clicklevelbuy" class="btn" title="Hold shift while buying to use sacrifice all your clicks on this.">Buy!</span><br>
       Autoclickers: <span id="autocount">1</span> every <span id="autospeedcount">2000</span> milliseconds. Destroys <span id="autocost">200</span> clicks in the process. <span id="autobuy" class="btn" title="Hold shift while buying to use sacrifice all your clicks on this.">Buy!</span><br>
@@ -64,17 +68,18 @@ a {
     <a href="https://button-clicker-lesha39.c9users.io/button_clicker.html">better game here</a> <span onclick="save()" class="btn" title="autosaves every 60 seconds">save</span> <a href="dungeon.html">dungeon</a>
     <span id="saved">saved</span>
 
-    <script src="../sheep.js"></script>
+    <script src="../../sheep.js"></script>
     <script>
-var clicks=0,
-clicklevel=1,
-clicklevelcost=50,
-auto=0,
-autocost=200,
-autointerval,
-autospeed=2000,
-autospeedcost=500,
-autospeedlevels=[2000,1500,1000,500,100,50];
+var clicks=0, // number of clicks
+clicklevel=1, // clicks gained per click
+clicklevelcost=50, // cost of the click level
+auto=0, // clicks gained every period of time
+autocost=200, // cost of auto
+autointerval, // the id for the setInterval (for clearInterval)
+autospeed=2000, // the time period between the auto clicks
+autospeedcost=500, // the cost for autospeed
+autospeedlevels=[2000,1750,1500,1250,1000,750,500,250,100,75,50], // the possible delays
+lastCookie=localStorage.getItem('clickersave');
 if (localStorage.getItem('clickersave')) {
   var stats;
   try {
@@ -94,25 +99,32 @@ if (localStorage.getItem('clickersave')) {
       clicklevelcost=(clicklevel-1)*3+50;
       load('auto');
       autocost=auto*10+200;
+      load('autospeed');
+      autospeedcost=autospeedlevels.indexOf(autospeed)*100+500;
       render();
-      document.querySelector('#autospeedcount').innerHTML=autospeed;
-      document.querySelector('#nextautospeed').innerHTML=autospeedlevels[autospeedlevels.indexOf(autospeed)+1];
-      document.querySelector('#autospeedcost').innerHTML=autospeedcost;
     }
   }
 }
 function save() {
-  var stats={};
-  function save(key) {
-    stats[key]=window[key];
+  if (localStorage.getItem('clickersave')!=lastCookie) {
+    alert('Your cookie was changed somewhere else. That could have happened because:\nYou have multiple tabs opened to this page.\nYou messed with the cookie.\n\nEither way, you won\'t be able to save in this session anymore.');
+    lastCookie=666;
+  } else {
+    var stats={};
+    function save(key) {
+      stats[key]=window[key];
+    }
+    save('clicks');
+    save('clicklevel');
+    save('auto');
+    save('autospeed');
+    localStorage.setItem('clickersave',JSON.stringify(stats));
+    var lenewone=document.querySelector('#saved').cloneNode(true);
+    document.querySelector('#saved').parentNode.replaceChild(lenewone,document.querySelector('#saved'));
+    lastCookie=localStorage.getItem('clickersave');
   }
-  save('clicks');
-  save('clicklevel');
-  save('auto');
-  localStorage.setItem('clickersave',JSON.stringify(stats));
-  var lenewone=document.querySelector('#saved').cloneNode(true);
-  document.querySelector('#saved').parentNode.replaceChild(lenewone,document.querySelector('#saved'));
 }
+save();
 document.onclick=function(){
   clicks+=clicklevel;
   render();
@@ -183,8 +195,11 @@ function render() {
   document.querySelector('#clicklevelcost').innerHTML=clicklevelcost;
   document.querySelector('#autocount').innerHTML=auto;
   document.querySelector('#autocost').innerHTML=autocost;
+  document.querySelector('#autospeedcount').innerHTML=autospeed;
+  document.querySelector('#nextautospeed').innerHTML=autospeedlevels[autospeedlevels.indexOf(autospeed)+1];
+  document.querySelector('#autospeedcost').innerHTML=autospeedcost;
 }
-setInterval(save,60000);
+setInterval(save,15000);
 function addAuto() {
   clicks+=auto;
   render();
