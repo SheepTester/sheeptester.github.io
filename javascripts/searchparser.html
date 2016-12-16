@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Search Parser</title>
+    <meta charset="UTF-8">
+    <meta name="description" content="Turns the stuff in the URL after ? into an object."/>
+    <style>
+      body {
+        font-family: monospace;
+      }
+    </style>
+  </head>
+  <body>
+    <p>Search: <span id='search'></span></p>
+    <p id='result'>Please add a ? to the url followed by something</p>
+
+    <script src="../sheep.js"></script>
+    <script>
+document.querySelector('#search').textContent=window.location.search;
+function searchToObject(search) {
+  var result={};
+  for (var i=1;i<search.length;i++) {
+    var nextAmpersand=search.indexOf('&',i);
+    var name;
+    if (nextAmpersand>-1) {
+      name=search.slice(i,nextAmpersand);
+      i=nextAmpersand;
+    } else {
+      name=search.slice(i);
+      i=search.length;
+    }
+    if (name.indexOf('=')>-1) {
+      var value=name.slice(name.indexOf('=')+1);
+      name=name.slice(0,name.indexOf('='));
+      result[name]=value;
+    } else {
+      result[name]=true;
+    }
+  }
+  return result;
+}
+if (window.location.search) {
+  document.querySelector('#result').innerHTML=JSON.stringify(searchToObject(window.location.search));
+}
+    </script>
+  </body>
+</html>
