@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Sean Outro</title>
+    <meta charset="UTF-8">
+    <meta name="description" content="An outro animation"/>
+    <link href="https://fonts.googleapis.com/css?family=Roboto+Condensed" rel="stylesheet">
+    <style>
+      #container {
+        font-family: 'Roboto Condensed', sans-serif;
+        font-size: 100px;
+        height: 100px;
+        width: 100%;
+        text-align: center;
+        margin: auto;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        color: #607d8b;
+      }
+      #container p {
+        margin: 0;
+        line-height: 1;
+        position: relative;
+      }
+      .wow {
+        background: black;
+      }
+      .wow #container {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="container">
+      <p>Sean</p>
+    </div>
+    <audio autoplay>
+      <source src="meow.wav" type="audio/wav">
+      Your browser does not support the audio tag.
+    </audio>
+
+    <script>
+setInterval(function(){
+  var r=20;
+  document.querySelector("#container p").style.left=Math.floor(Math.random()*r*2-r)+'px';
+  document.querySelector("#container p").style.top=Math.floor(Math.random()*r*2-r)+'px';
+},30);
+setTimeout(function(){
+  clearInterval(1);
+  document.body.className='wow';
+},230);
+    </script>
+  </body>
+  <!-- MADE BY SEAN -->
+</html>

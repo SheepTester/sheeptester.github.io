@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Sean Intro</title>
+    <meta charset="UTF-8">
+    <meta name="description" content="An intro animation"/>
+    <link href="https://fonts.googleapis.com/css?family=Roboto+Condensed" rel="stylesheet">
+    <style>
+      html, body {
+        height: 100%;
+        margin: 0;
+      }
+      svg {
+        height: 500px;
+        margin: auto;
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+      }
+      p {
+        margin: 0;
+        position: absolute;
+        bottom: 50px;
+        width: 100%;
+        text-align: center;
+        font-family: 'Roboto Condensed', sans-serif;
+        font-size: 50px;
+        display: none;
+      }
+      @keyframes appear {
+        from {bottom:0;opacity:0;}
+        to {bottom:50px;opacity:1;}
+      }
+      @keyframes grow {
+        from {height:0;}
+        to {height:500px;}
+      }
+      .mode1, .mode2, .mode3 {
+        fill: rgba(0,0,0,0.2);
+        color: rgba(0,0,0,0.2);
+      }
+      .mode1 p, .mode2 p, .mode3 p {
+        display: block;
+      }
+      .mode1 svg {
+        animation: grow 1.21s cubic-bezier(0.19, 1, 0.22, 1);
+      }
+      .mode1 p {
+        animation: appear 1.21s cubic-bezier(0.19, 1, 0.22, 1);
+      }
+      .mode2 svg {
+        height: 375px;
+      }
+      .mode3 svg {
+        height: 250px;
+      }
+      .mode2 p {
+        font-size: 37.5px;
+        bottom: 20px;
+      }
+      .mode3 p {
+        font-size: 25px;
+        bottom: -10px;
+        position: fixed;
+      }
+      div {
+        display: none;
+        height: 100%;
+        width: 100%;
+      }
+      .mode4 div {
+        display: block;
+        background: rgba(0,0,0,0.2);
+      }
+      .mode5 svg, .mode6 svg {
+        display: none;
+      }
+      .mode5 div, .mode6 div {
+        display: block;
+        background: black;
+      }
+      span {
+        display: none;
+        margin: auto;
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+      }
+      .mode5 span {
+        color: white;
+        font-family: 'Roboto Condensed', sans-serif;
+        width: 100%;
+        height: 50px;
+        font-size: 50px;
+        display: block;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body class="mode1">
+    <svg viewBox="0 0 480 480" xmlns="http://www.w3.org/2000/svg">
+      <path d="M90 90 a50 50 0 0 0 0 100 l300 0 a50 50 0 0 0 0 -100 a50 50 0 1 1 -100 0 a50 50 0 1 1 -100 0 a50 50 0 1 1 -100 0 M98.579 190 A150 150 0 1 0 381.421 190 z"/>
+    </svg>
+    <p>Sean</p>
+    <div></div>
+    <span>Comment!</span>
+    <audio autoplay>
+      <source src="22.wav" type="audio/wav">
+      Your browser does not support the audio tag.
+    </audio>
+
+    <script>
+setTimeout(function () {
+  document.body.className='mode2';
+}, 1210);
+setTimeout(function () {
+  document.body.className='mode3';
+}, 1680);
+var t,c=['f44336','FF9800','FFC107','CDDC39','4CAF50','009688','00BCD4','2196F3','3F51B5','9C27B0','E91E63','607D8B'];
+setTimeout(function () {
+  document.body.className='mode4';
+  var s=Math.floor(Math.random()*c.length);
+  document.querySelector("svg").style.fill='#'+c[s];
+  document.body.style.background='#'+c[s];
+  document.querySelector("svg").style.height=Math.floor(Math.random()*375+125)+'px';
+  t=setInterval(function () {
+    var s=Math.floor(Math.random()*c.length);
+    document.querySelector("svg").style.fill='#'+c[s];
+    document.body.style.background='#'+c[s];
+    document.querySelector("svg").style.height=Math.floor(Math.random()*375+125)+'px';
+  }, 242.5);
+}, 1940);
+setTimeout(function () {
+  clearInterval(t);
+  document.body.className='mode5';
+}, 2910);
+setTimeout(function () {
+  document.body.className='mode6';
+}, 3410);
+    </script>
+  </body>
+  <!-- MADE BY SEAN -->
+</html>
