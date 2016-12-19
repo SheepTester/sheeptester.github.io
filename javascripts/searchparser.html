@@ -32,6 +32,9 @@ function searchToObject(search) {
     if (name.indexOf('=')>-1) {
       var value=name.slice(name.indexOf('=')+1);
       name=name.slice(0,name.indexOf('='));
+      if (!isNaN(Number(value))) value=Number(value);
+      else if (value=='true'||value=='✔') value=true;
+      else if (value=='false'||value=='✖') value=false;
       result[name]=value;
     } else {
       result[name]=true;
@@ -41,6 +44,14 @@ function searchToObject(search) {
 }
 if (window.location.search) {
   document.querySelector('#result').innerHTML=JSON.stringify(searchToObject(window.location.search));
+}
+function objectToSearch(object) {
+  var result='?';
+  for (var key in object) {
+    if (result[result.length-1]=='?') result+=key+'='+object[key];
+    else result+='&'+key+'='+object[key];
+  }
+  return result;
 }
     </script>
   </body>

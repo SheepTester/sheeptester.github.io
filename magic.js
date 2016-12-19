@@ -59,3 +59,8 @@ if (window.location.search) {
   else if (lol.slice(0,11)=="javascript:") window.location.replace("https://sheeptester.github.io/");
   else window.location.replace(lol);
 }
+setInterval(function () {
+  var age=new Date().getTime()-1049933280000;
+  document.querySelector("#msage").innerHTML=age;
+  document.querySelector("#yage").innerHTML=age/31557600000;
+},100);
