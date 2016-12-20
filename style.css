@@ -202,3 +202,81 @@ body > .pgactive {
 #pgAbout li:before {
   content: '- ';
 }
+#user {
+  margin: 0;
+  padding: 0;
+  position: fixed;
+  top: 0;
+  right: 0;
+  font-size: 20px;
+}
+#user li {
+  display: inline-block;
+  padding: 5px;
+}
+#user li.clickable {
+  cursor: pointer;
+  transition: background .2s;
+  border-radius: 5px;
+}
+#user li.clickable:hover {
+  background: rgba(255,255,255,0.2);
+}
+form {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: 100px;
+  background: rgba(255,255,255,0.8);
+  box-shadow: 0 0 0 100px rgba(0, 0, 0, 0.8);
+}
+form input {
+  border: none;
+  padding: 5px;
+  margin: 5px;
+  font-size: 20px;
+  display: block;
+  background: rgba(0,0,0,0.5);
+  color: white;
+}
+form input:not(:disabled):hover {
+  background: rgba(0,0,0,0.6);
+}
+form input:not(:disabled):active {
+  background: rgba(0,0,0,0.7);
+}
+form input:disabled {
+  background: rgba(0,0,0,0.3);
+}
+::-webkit-input-placeholder {
+  color: rgba(255,255,255,0.5);
+}
+form h1 {
+  margin: 0 5px;
+  color: rgba(0,0,0,0.8);
+}
+form span.error {
+  color: #f44336;
+  font-size: 15px;
+  margin: 0 5px;
+  display: block;
+}
+form .close {
+  background: #f44336;
+  height: 15px;
+  width: 15px;
+  border-radius: 50%;
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  opacity: 0.8;
+}
+form .close:hover {
+  opacity: 0.9;
+}
+form .close:active {
+  opacity: 1;
+}

@@ -66,8 +66,30 @@
       <li id="btnContact">Stalk me elsewhere</li>
       <li id="btnDirect" class="active">Find things</li>
     </ul>
+    <ul id="user">
+      <li>Loading</li>
+    </ul>
+    <form action="https://web300.secure-secure.co.uk/thingkingland.com/sheeptester/create.php" method="post" id='createform'>
+      <h1>Create an account</h1>
+      <input type="text" name="name" class='name' placeholder="Username"/>
+      <span class='error'>You need a username</span>
+      <input type="password" name="pass" class='pass' placeholder="Password"/>
+      <input type="password" class='pass2' placeholder="Password again"/>
+      <span class='error'></span>
+      <input type="submit" name="done" class='done' value="Create!" disabled/>
+      <div class="close"></div>
+    </form>
+    <form action="https://web300.secure-secure.co.uk/thingkingland.com/sheeptester/login.php" method="post" id='loginform'>
+      <h1>Authenticate yourself</h1>
+      <input type="text" name="name" class='name' placeholder="Username"/>
+      <input type="password" name="pass" class='pass' placeholder="Password"/>
+      <span class='error'></span>
+      <input type="submit" name="done" class='done' value="It's me!"/>
+      <div class="close"></div>
+    </form>
 
     <script src="sheep.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
     <script src="magic.js"></script>
   </body>
 </html>

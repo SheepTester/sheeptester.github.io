@@ -57,6 +57,16 @@ if (window.location.search) {
   else if (lol[0]+lol[1]=="rr") window.location.replace("https://i.cloudup.com/LE0xyc4dgp.mp4");
   else if (lol[0]+lol[1]=="js") window.location.replace("https://akk.li/pics/anne.jpg");
   else if (lol.slice(0,11)=="javascript:") window.location.replace("https://sheeptester.github.io/");
+  else if (lol.slice(0,9)=="existing=") {
+    document.querySelector("#createform").style.display='block';
+    document.querySelector("#createform .name").value=lol.slice(9);
+    document.querySelector("#createform .error:first-of-type").innerHTML='User already exists.';
+  }
+  else if (lol.slice(0,8)=="badpass=") {
+    document.querySelector("#loginform").style.display='block';
+    document.querySelector("#loginform .name").value=lol.slice(8);
+    document.querySelector("#loginform .error").innerHTML='Wrong password.';
+  }
   else window.location.replace(lol);
 }
 setInterval(function () {
@@ -64,3 +74,98 @@ setInterval(function () {
   document.querySelector("#msage").innerHTML=age;
   document.querySelector("#yage").innerHTML=age/31557600000;
 },100);
+function httpGetAsync(theUrl, callback) {
+  var xmlHttp = new XMLHttpRequest();
+  xmlHttp.onreadystatechange = function() {
+    if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
+      callback(xmlHttp.responseText);
+  }
+  xmlHttp.open("GET", theUrl, true); // true for asynchronous
+  xmlHttp.send(null);
+}
+function sendAjax(theUrl,callback) { // http://stackoverflow.com/questions/11463637/prevent-chrome-from-caching-ajax-requests
+  var xmlhttp,tmp,
+    params="preventCache="+new Date(),
+    xmlHttp=new XMLHttpRequest();
+  xmlHttp.onreadystatechange=function(){
+    if (xmlHttp.readyState==4&&xmlHttp.status==200)
+      callback(xmlHttp.responseText);
+  };
+  xmlHttp.open("GET",theUrl,true);
+  xmlHttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+  xmlHttp.send(params);
+}
+var data={};
+$.ajax({
+  url: 'https://web300.secure-secure.co.uk/thingkingland.com/sheeptester/getstuff.php',
+  type: 'GET',
+  cache: false,
+  success: function(e) {
+    data=JSON.parse(e);
+    if (data.signedout) {
+      document.querySelector("#user").innerHTML="<li id='create' class='clickable'>Create account</li><li id='login' class='clickable'>Log in</li>";
+    } else {
+      document.querySelector("#user").innerHTML="<li id='signout' class='clickable'>Sign out</li><li style='font-weight:bold;'>"+data.username+"</li>";
+    }
+  }
+});
+/*sendAjax('https://web300.secure-secure.co.uk/thingkingland.com/sheeptester/getstuff.php',function(e){
+  data=JSON.parse(e);
+  if (data.signedout) {
+    document.querySelector("#user").innerHTML="<li id='create' class='clickable'>Create account</li><li id='login' class='clickable'>Log in</li>";
+  } else {
+    document.querySelector("#user").innerHTML="<li id='signout' class='clickable'>Sign out</li><li style='font-weight:bold;'>"+data.username+"</li>";
+  }
+});*/
+document.querySelector("#user").onclick=function(e){
+  switch (e.target.id) {
+    case 'create':
+      document.querySelector("#createform").style.display='block';
+      break;
+    case 'login':
+      document.querySelector("#loginform").style.display='block';
+      break;
+    case 'signout':
+      window.location.replace('https://web300.secure-secure.co.uk/thingkingland.com/sheeptester/signout.php');
+      break;
+  }
+};
+document.querySelector("#createform .name").onchange=function(){
+  var val=document.querySelector("#createform .name").value;
+  if (!val) {
+    document.querySelector("#createform .error:first-of-type").innerHTML='You need a username.';
+    document.querySelector("#createform .done").disabled=true;
+  } else {
+    document.querySelector("#createform .error:first-of-type").innerHTML='';
+    if (!document.querySelector("#createform .error:nth-of-type(2)").innerHTML) document.querySelector("#createform .done").disabled=false;
+  }
+};
+document.querySelector("#createform .pass").onchange=function(){
+  var val=document.querySelector("#createform .pass").value;
+  if (val.length>4) {
+    document.querySelector("#createform .error:nth-of-type(2)").innerHTML='Your password is too secure. It has to be at most 4 characters long.';
+    document.querySelector("#createform .done").disabled=true;
+  } else if (val!=document.querySelector("#createform .pass2").value) {
+    document.querySelector("#createform .error:nth-of-type(2)").innerHTML='Your passwords don\'t match.';
+    document.querySelector("#createform .done").disabled=true;
+  } else {
+    document.querySelector("#createform .error:nth-of-type(2)").innerHTML='';
+    if (!document.querySelector("#createform .error:first-of-type").innerHTML) document.querySelector("#createform .done").disabled=false;
+  }
+};
+document.querySelector("#createform .pass2").onchange=function(){
+  var val=document.querySelector("#createform .pass2").value;
+  if (val!=document.querySelector("#createform .pass").value) {
+    document.querySelector("#createform .error:nth-of-type(2)").innerHTML='Your passwords don\'t match.';
+    document.querySelector("#createform .done").disabled=true;
+  } else {
+    document.querySelector("#createform .error:nth-of-type(2)").innerHTML='';
+    if (!document.querySelector("#createform .error:first-of-type").innerHTML) document.querySelector("#createform .done").disabled=false;
+  }
+};
+document.querySelector("#createform .close").onclick=function(){
+  document.querySelector("#createform").style.display='none';
+};
+document.querySelector("#loginform .close").onclick=function(){
+  document.querySelector("#loginform").style.display='none';
+};
