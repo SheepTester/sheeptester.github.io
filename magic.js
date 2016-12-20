@@ -67,6 +67,10 @@ if (window.location.search) {
     document.querySelector("#loginform .name").value=lol.slice(8);
     document.querySelector("#loginform .error").innerHTML='Wrong password.';
   }
+  else if (lol.slice(0,7)=="userid=") {
+    window.localStorage.setItem('userid',Number(lol.slice(7)));
+    window.location.search='';
+  }
   else window.location.replace(lol);
 }
 setInterval(function () {
@@ -74,49 +78,23 @@ setInterval(function () {
   document.querySelector("#msage").innerHTML=age;
   document.querySelector("#yage").innerHTML=age/31557600000;
 },100);
-function httpGetAsync(theUrl, callback) {
-  var xmlHttp = new XMLHttpRequest();
-  xmlHttp.onreadystatechange = function() {
-    if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
-      callback(xmlHttp.responseText);
+function httpGetAsync(theUrl,callback) {
+  var xmlHttp=new XMLHttpRequest();
+  xmlHttp.onreadystatechange=function(){
+    if (xmlHttp.readyState==4&&xmlHttp.status==200) callback(xmlHttp.responseText);
   }
-  xmlHttp.open("GET", theUrl, true); // true for asynchronous
+  xmlHttp.open("GET",theUrl,true); // true for asynchronous
   xmlHttp.send(null);
 }
-function sendAjax(theUrl,callback) { // http://stackoverflow.com/questions/11463637/prevent-chrome-from-caching-ajax-requests
-  var xmlhttp,tmp,
-    params="preventCache="+new Date(),
-    xmlHttp=new XMLHttpRequest();
-  xmlHttp.onreadystatechange=function(){
-    if (xmlHttp.readyState==4&&xmlHttp.status==200)
-      callback(xmlHttp.responseText);
-  };
-  xmlHttp.open("GET",theUrl,true);
-  xmlHttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
-  xmlHttp.send(params);
-}
 var data={};
-$.ajax({
-  url: 'https://web300.secure-secure.co.uk/thingkingland.com/sheeptester/getstuff.php',
-  type: 'GET',
-  cache: false,
-  success: function(e) {
+if (window.localStorage.getItem('userid')) {
+  httpGetAsync('https://web300.secure-secure.co.uk/thingkingland.com/sheeptester/getstuff.php?userid='+window.localStorage.getItem('userid'),function(e){
     data=JSON.parse(e);
-    if (data.signedout) {
-      document.querySelector("#user").innerHTML="<li id='create' class='clickable'>Create account</li><li id='login' class='clickable'>Log in</li>";
-    } else {
-      document.querySelector("#user").innerHTML="<li id='signout' class='clickable'>Sign out</li><li style='font-weight:bold;'>"+data.username+"</li>";
-    }
-  }
-});
-/*sendAjax('https://web300.secure-secure.co.uk/thingkingland.com/sheeptester/getstuff.php',function(e){
-  data=JSON.parse(e);
-  if (data.signedout) {
-    document.querySelector("#user").innerHTML="<li id='create' class='clickable'>Create account</li><li id='login' class='clickable'>Log in</li>";
-  } else {
     document.querySelector("#user").innerHTML="<li id='signout' class='clickable'>Sign out</li><li style='font-weight:bold;'>"+data.username+"</li>";
-  }
-});*/
+  });
+} else {
+  document.querySelector("#user").innerHTML="<li id='create' class='clickable'>Create account</li><li id='login' class='clickable'>Log in</li>";
+}
 document.querySelector("#user").onclick=function(e){
   switch (e.target.id) {
     case 'create':
@@ -126,6 +104,7 @@ document.querySelector("#user").onclick=function(e){
       document.querySelector("#loginform").style.display='block';
       break;
     case 'signout':
+      window.localStorage.removeItem('userid');
       window.location.replace('https://web300.secure-secure.co.uk/thingkingland.com/sheeptester/signout.php');
       break;
   }
