@@ -25,7 +25,7 @@ SHEEP={
       setTimeout(function(){
         s.className='SHEEPDISAPPEAR';
         setTimeout(function(){
-          document.body.removeChild(e.target);
+          document.body.removeChild(s);
         },200);
       },3000);
       s.onclick=function(e){
