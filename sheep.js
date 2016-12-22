@@ -65,7 +65,7 @@ if (!SHEEP.dismissed.accounts) {
 /_/    \_\__,_|___/
 
  */
-if (!Math.floor(Math.random()*5)||true) {
+if (!Math.floor(Math.random()*5)) {
   switch (true) {
     case !SHEEP.dismissed.leafism:
       SHEEP.dismiss('leafism');
