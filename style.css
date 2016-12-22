@@ -280,3 +280,8 @@ form .close:hover {
 form .close:active {
   opacity: 1;
 }
+form p {
+  color: #666;
+  font-size: 10px;
+  margin: 5px;
+}

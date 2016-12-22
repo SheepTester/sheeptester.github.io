@@ -71,9 +71,12 @@ if (window.location.search) {
     window.localStorage.setItem('userid',Number(lol.slice(7)));
     window.location.search='';
   }
+  else if (lol.slice(0,6)=="signin") {
+    document.querySelector("#createform").style.display='block';
+  }
   else window.location.replace(lol);
 }
-setInterval(function () {
+setInterval(function(){
   var age=new Date().getTime()-1049933280000;
   document.querySelector("#msage").innerHTML=age;
   document.querySelector("#yage").innerHTML=age/31557600000;
@@ -90,6 +93,8 @@ var data={};
 if (window.localStorage.getItem('userid')) {
   httpGetAsync('https://web300.secure-secure.co.uk/thingkingland.com/sheeptester/getstuff.php?userid='+window.localStorage.getItem('userid'),function(e){
     data=JSON.parse(e);
+    document.querySelector("#createform").style.display='none';
+    document.querySelector("#loginform").style.display='none';
     document.querySelector("#user").innerHTML="<li id='signout' class='clickable'>Sign out</li><li style='font-weight:bold;'>"+data.username+"</li>";
   });
 } else {
