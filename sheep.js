@@ -23,7 +23,7 @@ SHEEP={
       s.className='SHEEPLINKY';
       s.href=link;
       setTimeout(function(){
-        e.target.className='SHEEPDISAPPEAR';
+        s.className='SHEEPDISAPPEAR';
         setTimeout(function(){
           document.body.removeChild(e.target);
         },200);
@@ -49,4 +49,7 @@ SHEEP={
     SHEEP.dismissed=JSON.parse(window.localStorage.dismissed);
   }
 };
-SHEEP.notify('A very insecure system of accounts has been introduced.','/?signin');
+if (!SHEEP.dismissed.accounts) {
+  SHEEP.dismiss('accounts');
+  SHEEP.notify('A very insecure system of accounts has been introduced.','/?signin');
+}
