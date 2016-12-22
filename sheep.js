@@ -43,13 +43,41 @@ SHEEP={
   },
   dismissed:JSON.parse(window.localStorage.dismissed),
   dismiss:function(name){
-    var dismissed=JSON.parse(window.localStorage.dismissed);
-    dismissed[name]=1;
-    window.localStorage.dismissed=JSON.stringify(dismissed);
-    SHEEP.dismissed=JSON.parse(window.localStorage.dismissed);
+    SHEEP.dismissed[name]=1;
+    window.localStorage.dismissed=JSON.stringify(SHEEP.dismissed);
+  },
+  undismiss:function(name){
+    SHEEP.dismissed[name]=0;
+    window.localStorage.dismissed=JSON.stringify(SHEEP.dismissed);
   }
 };
 if (!SHEEP.dismissed.accounts) {
   SHEEP.dismiss('accounts');
   SHEEP.notify('A very insecure system of accounts has been introduced.','/?signin');
+}
+
+/*
+             _
+    /\      | |
+   /  \   __| |___
+  / /\ \ / _` / __|
+ / ____ \ (_| \__ \
+/_/    \_\__,_|___/
+
+ */
+if (!Math.floor(Math.random()*5)||true) {
+  switch (true) {
+    case !SHEEP.dismissed.leafism:
+      SHEEP.dismiss('leafism');
+      SHEEP.notify('Join the leaf cult!','https://sites.google.com/site/realaxolotls/members/michaela/triangle-bird-sign-ups/leafism');
+      break;
+    case !SHEEP.dismissed.gamepro5:
+      SHEEP.dismiss('gamepro5');
+      SHEEP.notify('Subscribe to Gamepro5!','/?gamepro5');
+      break;
+    case !SHEEP.dismissed.uselessbutwhatever:
+      SHEEP.dismiss('uselessbutwhatever');
+      SHEEP.notify('Visit the page you\'re already on!');
+      break;
+  }
 }
