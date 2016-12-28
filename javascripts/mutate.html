@@ -31,18 +31,120 @@
         border-bottom: 10px solid transparent;
         border-left: 15px solid black;
       }
+      table, th, td {
+        border: 1px solid black;
+        border-collapse: collapse;
+      }
+      table {
+        margin-bottom: 15px;
+      }
     </style>
   </head>
   <body>
     <canvas width="100" height="100"></canvas>
     <label>Play?</label><input type="checkbox" checked/>
     <button id='next'>Next frame</button>
+    <p></p>
+    <table>
+      <tr>
+        <th>Example Sequence</th>
+        <th>1</th>
+        <th>100</th>
+        <th>011</th>
+        <th>101</th>
+        <th>01</th>
+      </tr>
+      <tr>
+        <td>Plant (0)</td>
+        <td rowspan="2">Determines if a plant or animal</td>
+        <td>"Chemical" in plant</td>
+        <td>Color of plant</td>
+        <td>Direction of reproduction</td>
+        <td>Reproduction rate (affects life span)</td>
+      </tr>
+      <tr>
+        <td>Animal (1)</td>
+        <td>Animal's "allergies"</td>
+        <td>Color animal is blind to</td>
+        <td>Direction of movement</td>
+        <td>Reproduction rate</td>
+      </tr>
+    </table>
+    <table>
+      <tr>
+        <th colspan="2">What words mean in this context</th>
+      </tr>
+      <tr>
+        <th>Plant</th>
+        <td>A model of a unicelluar life form that reproduces quickly but doesn't move.</td>
+      </tr>
+      <tr>
+        <th>Animal</th>
+        <td>A model of a unicelluar life form that reproduces slowly, moves, and eats plants.</td>
+      </tr>
+      <tr>
+        <th>Life</th>
+        <td>Short for "unicelluar life form." Or it could still mean "life."</td>
+      </tr>
+      <tr>
+        <th>DNA</th>
+        <td>A string of 0's and 1's that determine how a cell behaves, interacts with other cells, or reproduces.</td>
+      </tr>
+    </table>
+    <ul>
+      <li>animals have a 50% chance of a mutation (they just reproduce slower so)</li>
+      <li>plants have a 10% chance of a mutation</li>
+      <li>the different shades of green represent the plant's color</li>
+      <li>hover over a cell to see its DNA and age</li>
+      <li>animals get a longer life span by eating plants</li>
+    </ul>
+    <table>
+      <tr>
+        <th colspan="3">Directions</th>
+      </tr>
+      <tr>
+        <td>101</td>
+        <td>110</td>
+        <td>111</td>
+      </tr>
+      <tr>
+        <td>011</td>
+        <th>---</th>
+        <td>100</td>
+      </tr>
+      <tr>
+        <td>000</td>
+        <td>001</td>
+        <td>010</td>
+      </tr>
+    </table>
+    <table>
+      <tr>
+        <th colspan="4">Reproduction rates</th>
+      </tr>
+      <tr>
+        <th>Rate</th><th>Chance</th><th>For plant</th><th>For animals</th>
+      </tr>
+      <tr>
+        <td>00</td><td>100%</td><td rowspan="4">Plants attempt to reproduce every frame in their direction, and has half the chance to do it the other direction.</td><td rowspan="4">Animals attempt to reproduce once they consume a plant in their direction.</td>
+      </tr>
+      <tr>
+        <td>01</td><td>50%</td>
+      </tr>
+      <tr>
+        <td>10</td><td>33.<u style="text-decoration:overline">3</u>%</td>
+      </tr>
+      <tr>
+        <td>11</td><td>25%</td>
+      </tr>
+    </table>
 
     <script src="../sheep.js"></script>
     <script>
 var c=document.querySelector('canvas').getContext('2d'),
 map=[],
-nmap;
+nmap,
+whatUC;
 // BINARY TO HEX parseInt(DNA,2).toString(16)
 // HEX TO BINARY parseInt(DNA,16).toString(2)
 for (var i=0;i<100;i++) {
@@ -51,8 +153,32 @@ for (var i=0;i<100;i++) {
     map[i].push('');
   }
 }
-map[50][49]='fe45';
-map[50][51]='0005';
+// spawn in lifes
+for (var i=40;i<60;i++) {
+  map[i][0]='fe45'; // animal going down
+  map[i][3]='0045'; // plant going down
+
+  map[i][99]='ff85'; // animal going up
+  map[i][96]='0185'; // what comes next? ;)
+
+  map[99][i]='fec5'; // it feels kind of unnatural to spawn in them like this, but meh.
+  map[96][i]='00c5';
+
+  map[0][i]='ff05';
+  map[3][i]='0105';
+}
+var debug={
+  hex2bin:function (hex) {
+    hex=parseInt(hex,16).toString(2);
+    if (hex.length<12) hex='0'.repeat(12-hex.length)+hex;
+    return hex;
+  },
+  bin2hex:function (bin) {
+    bin=parseInt(bin,2).toString(16);
+    if (bin.length<3) bin='0'.repeat(3-bin.length)+bin;
+    return bin;
+  }
+};
 function render() {
   function pixel(color,x,y) {
     var pixelId=c.createImageData(1,1);
@@ -77,6 +203,7 @@ function render() {
     c.fillRect(x,y,w,h);
   }
   rect(0,0,100,100,'#B9E4B9');
+  whatUC=JSON.parse(JSON.stringify(map)); // whatUC is what the mouse thing will be reading off of; it's a frame behind
   nmap=JSON.parse(JSON.stringify(map)); // nmap will be edited while map is read-only
   // JSON.parse(JSON.stringify(test)) is fast http://stackoverflow.com/questions/122102/what-is-the-most-efficient-way-to-deep-clone-an-object-in-javascript/5344074#5344074
   for (var i=0;i<100;i++) {
@@ -93,29 +220,29 @@ function render() {
   map=JSON.parse(JSON.stringify(nmap)); // map is updated for next frame to read edits
   trimMap(map);
 }
-function trimMap(merp) {
+function trimMap(merp) { // just an extra layer of security to make sure life doesn't escape its system
   merp.splice(100);
   for (var i=0;i<100;i++) {
     merp[i].splice(100);
   }
   return merp;
 }
-function encodeDNA(dna,age) {
+function encodeDNA(dna,age) { // turns the DNA and age back to the 4-char code
   dna=parseInt(dna,2).toString(16);
   if (dna.length<3) dna='0'.repeat(3-dna.length)+dna;
   return dna+age;
 }
-function mutate(dna) {
-  if (Math.floor(Math.random()*2)) {
+function mutate(dna,chances) {
+  if (Math.floor(Math.random()*chances)) {
     return dna;
   } else {
     var gene=Math.floor(Math.random()*(dna.length-1))+1;
     return dna.slice(0,gene)+(dna[gene]==='1'?'0':'1')+dna.slice(gene+1);
   }
 }
-function life(dna,x,y,age) {
-  var diffX,diffY;
-  switch (dna.slice(7,10)) {
+function life(dna,x,y,age) { // determines how the life acts
+  var diffX,diffY; // this is the offset of where the life will move/reproduce
+  switch (dna.slice(7,10)) { // determines the offset direction based on digits 7-9
     case '000':diffX=-1;diffY=1;break;
     case '001':diffX=0;diffY=1;break;
     case '010':diffX=1;diffY=1;break;
@@ -125,45 +252,66 @@ function life(dna,x,y,age) {
     case '110':diffX=0;diffY=-1;break;
     case '111':diffX=1;diffY=-1;break;
   }
-  if (diffX===-1&&x===0) diffX=99;
-  else if (diffX===1&&x==99) diffX=-99;
-  if (diffY===-1&&x===0) diffY=99;
-  else if (diffY===1&&x==99) diffY=-99;
-  var newplace=map[x+diffX][y+diffY];
+  if (diffX===-1&&x===0) diffX=0; // makes sure the life can't escape the system
+  else if (diffX===1&&x==99) diffX=0;
+  if (diffY===-1&&x===0) diffY=0;
+  else if (diffY===1&&x==99) diffY=0;
+  var newplace=map[x+diffX][y+diffY]; // gets the DNA for the offset; only used by ANIMAL
   if (newplace) {
     newplace=parseInt(newplace.slice(0,3),16).toString(2);
     if (newplace.length<12) newplace='0'.repeat(12-newplace.length)+newplace;
   }
-  if (Math.abs(diffX)==9||Math.abs(diffY)==9) console.log(newplace);
-  if (dna[0]=='0') {
+  if (dna[0]=='0') { // first digit determines what kingdom it is in
     // PLANT
-    var reproduceProbability=parseInt(dna.slice(10),2)+1;
-    if (!Math.floor(Math.random()*reproduceProbability)) nmap[x+diffX][y+diffY]=encodeDNA(mutate(dna),6-reproduceProbability);
+    var reproduceProbability=parseInt(dna.slice(10),2)+1; // the chance of reproducing
+    if (!Math.floor(Math.random()*reproduceProbability)&&nmap[x+diffX][y+diffY]==='') nmap[x+diffX][y+diffY]=encodeDNA(mutate(dna,10),reproduceProbability+2);
+    if (!Math.floor(Math.random()*reproduceProbability)&&Math.floor(Math.random()*2)) { // 0.5x chance of growing backwards
+      if (nmap[x-diffX]&&nmap[x-diffX][y-diffY]==='') nmap[x-diffX][y-diffY]=encodeDNA(mutate(dna,10),reproduceProbability+1); // to prevent growing backwards out of the system
+    }
     if (nmap[x][y]==map[x][y]) {
       age--;
-      if (age>0) nmap[x][y]=encodeDNA(dna,age);
-      else nmap[x][y]='';
+      if (age>0) nmap[x][y]=encodeDNA(dna,age); // this updates the age only
+      else nmap[x][y]=''; // the plant dies
     }
   } else {
     // ANIMAL
-    if (newplace&&newplace[0]==='0') {
-      if (dna.slice(4,7)==newplace.slice(4,7)) {
-        age-=2;
-        if (diffX==99) diffX=98;
-        else if (diffX==-99) diffX=-98;
-        else diffX*=2;
-        if (diffY==99) diffY=98;
-        else if (diffY==-99) diffY=-98;
-        else diffY*=2;
+    var reproducedYet=false;
+    if (newplace&&newplace[0]==='0') { // sees if the pixel where the animal is going is edible
+      if (dna.slice(4,7)==newplace.slice(4,7)) { // digits 4-6 are the color of the plant and the color-blindness of the animal
+        age-=2; // the animal moves two pixels past the plant without harming it (it can't see it)
+        diffX*=2;
+        if (x+diffX<0) diffX=0;
+        else if (x+diffX>99) diffX=0;
+        diffY*=2
+        if (y+diffY<0) diffY=0;
+        else if (y+diffY>99) diffY=0;
       }
-      else if (dna.slice(1,4)==newplace.slice(1,4)) age=-1;
-      else age++;
+      else if (dna.slice(1,4)==newplace.slice(1,4)) age=-1; // digits 1-3 determines what the animal is allergic to; so if they match, the animal dies
+      else {
+        age++;
+        var reproduceProbability=parseInt(dna.slice(10),2)+1; // once food is detected, it might be a good time to also give children oppurtunity to live there
+        if (Math.floor(Math.random()*reproduceProbability)) nmap[x][y]='';
+        else {
+          nmap[x][y]=encodeDNA(mutate(dna,2),5);
+          reproducedYet=true;
+        }
+      }
     }
     else age--;
-    if (age>0) nmap[x+diffX][y+diffY]=encodeDNA(dna,age);
-    var reproduceProbability=parseInt(dna.slice(10),2)+1;
-    if (Math.floor(Math.random()*reproduceProbability)) nmap[x][y]='';
-    else nmap[x+diffX][y+diffY]=encodeDNA(mutate(dna),6-reproduceProbability);
+    try {
+      if (newplace&&newplace[0]==='0'||nmap[x+diffX][y+diffY]==='') { // is there room?
+        if (age>0) {
+          nmap[x+diffX][y+diffY]=encodeDNA(dna,age); // the animal moves
+          if (!reproducedYet) nmap[x][y]=''; // leave behind nothing
+        }
+        else if (!reproducedYet) nmap[x][y]='';
+      } else {
+        if (age>0) nmap[x][y]=encodeDNA(dna,age); // the animal does not move (no room)
+        else if (!reproducedYet) nmap[x][y]=''; // the animal dies
+      }
+    } catch (e) {
+      console.log(e+'\n'+'attempted map['+(x+diffX)+']['+(y+diffY)+']'+'\n'+'offset x'+diffX+', y'+diffY+'\n'+'map x'+x+', y'+y);
+    }
   }
 }
 document.querySelector('#next').onclick=render;
@@ -172,7 +320,20 @@ console.log(setInterval(function(){
   if (!document.querySelector('input[type=checkbox]').checked) {
     render();
   }
-},500));
+},100));
+document.onmousemove=function(e){
+  var x=Math.floor((e.clientX-document.querySelector('canvas').offsetLeft+scrollX)/5),
+  y=Math.floor((e.clientY-document.querySelector('canvas').offsetTop+scrollY)/5);
+  if (x>=0&&x<100&&y>=0&&y<100) {
+    if (whatUC[x][y]) {
+      var dna=parseInt(whatUC[x][y].slice(0,3),16).toString(2);
+      if (dna.length<12) dna='0'.repeat(12-dna.length)+dna;
+      document.querySelector('p').innerHTML='DNA: '+dna+', age '+Number(whatUC[x][y].slice(3));
+    }
+    else document.querySelector('p').innerHTML='No life there.';
+    document.querySelector('p').innerHTML+=' (map['+x+']['+y+'])';
+  }
+};
 /*
        +i
    000 001 010
