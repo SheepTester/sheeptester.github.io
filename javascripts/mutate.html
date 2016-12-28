@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Mutations and stuff</title>
+    <meta charset="UTF-8">
+    <meta name="description" content="An evolution simulator attempt."/>
+    <style>
+      canvas {
+        width: 500px;
+        height: 500px;
+        image-rendering: -moz-crisp-edges;
+        image-rendering: -webkit-crisp-edges;
+        image-rendering: pixelated;
+        image-rendering: crisp-edges;
+
+        border: 1px solid black;
+      }
+      input[type=checkbox] {
+        height: 20px;
+        width: 15px;
+        background: white;
+        border-left: 5px solid black;
+        border-right: 5px solid black;
+        -webkit-appearance: none;
+      }
+      input[type=checkbox]:checked {
+        width: 0;
+        height: 0;
+        border-right: none;
+        border-top: 10px solid transparent;
+        border-bottom: 10px solid transparent;
+        border-left: 15px solid black;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas width="100" height="100"></canvas>
+    <label>Play?</label><input type="checkbox" checked/>
+    <button id='next'>Next frame</button>
+
+    <script src="../sheep.js"></script>
+    <script>
+var c=document.querySelector('canvas').getContext('2d'),
+map=[],
+nmap;
+// BINARY TO HEX parseInt(DNA,2).toString(16)
+// HEX TO BINARY parseInt(DNA,16).toString(2)
+for (var i=0;i<100;i++) {
+  map.push([]);
+  for (var j=0;j<100;j++) {
+    map[i].push('');
+  }
+}
+map[50][49]='fe45';
+map[50][51]='0005';
+function render() {
+  function pixel(color,x,y) {
+    var pixelId=c.createImageData(1,1);
+    var pixelData=pixelId.data;
+    function hexToRgb(hex) {
+      var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+      return result ? {
+        r: parseInt(result[1], 16),
+        g: parseInt(result[2], 16),
+        b: parseInt(result[3], 16)
+      } : null;
+    }
+    var rgb=hexToRgb(color);
+    pixelData[0]=rgb.r;
+    pixelData[1]=rgb.g;
+    pixelData[2]=rgb.b;
+    pixelData[3]=255;
+    c.putImageData(pixelId,x,y);
+  }
+  function rect(x,y,w,h,color) {
+    c.fillStyle=color;
+    c.fillRect(x,y,w,h);
+  }
+  rect(0,0,100,100,'#B9E4B9');
+  nmap=JSON.parse(JSON.stringify(map)); // nmap will be edited while map is read-only
+  // JSON.parse(JSON.stringify(test)) is fast http://stackoverflow.com/questions/122102/what-is-the-most-efficient-way-to-deep-clone-an-object-in-javascript/5344074#5344074
+  for (var i=0;i<100;i++) {
+    for (var j=0;j<100;j++) {
+      if (map[i][j]) {
+        var dna=parseInt(map[i][j].slice(0,3),16).toString(2);
+        if (dna.length<12) dna='0'.repeat(12-dna.length)+dna;
+        var plantColors=['697550','697A46','819556','92A075','A1B96D','6D7758','6F863E','84A048'];
+        pixel('#'+(dna[0]=='1'?'755050':plantColors[parseInt(dna.slice(4,7),2)]),i,j);
+        life(dna,i,j,Number(map[i][j].slice(3)));
+      }
+    }
+  }
+  map=JSON.parse(JSON.stringify(nmap)); // map is updated for next frame to read edits
+  trimMap(map);
+}
+function trimMap(merp) {
+  merp.splice(100);
+  for (var i=0;i<100;i++) {
+    merp[i].splice(100);
+  }
+  return merp;
+}
+function encodeDNA(dna,age) {
+  dna=parseInt(dna,2).toString(16);
+  if (dna.length<3) dna='0'.repeat(3-dna.length)+dna;
+  return dna+age;
+}
+function mutate(dna) {
+  if (Math.floor(Math.random()*2)) {
+    return dna;
+  } else {
+    var gene=Math.floor(Math.random()*(dna.length-1))+1;
+    return dna.slice(0,gene)+(dna[gene]==='1'?'0':'1')+dna.slice(gene+1);
+  }
+}
+function life(dna,x,y,age) {
+  var diffX,diffY;
+  switch (dna.slice(7,10)) {
+    case '000':diffX=-1;diffY=1;break;
+    case '001':diffX=0;diffY=1;break;
+    case '010':diffX=1;diffY=1;break;
+    case '011':diffX=-1;diffY=0;break;
+    case '100':diffX=1;diffY=0;break;
+    case '101':diffX=-1;diffY=-1;break;
+    case '110':diffX=0;diffY=-1;break;
+    case '111':diffX=1;diffY=-1;break;
+  }
+  if (diffX===-1&&x===0) diffX=99;
+  else if (diffX===1&&x==99) diffX=-99;
+  if (diffY===-1&&x===0) diffY=99;
+  else if (diffY===1&&x==99) diffY=-99;
+  var newplace=map[x+diffX][y+diffY];
+  if (newplace) {
+    newplace=parseInt(newplace.slice(0,3),16).toString(2);
+    if (newplace.length<12) newplace='0'.repeat(12-newplace.length)+newplace;
+  }
+  if (Math.abs(diffX)==9||Math.abs(diffY)==9) console.log(newplace);
+  if (dna[0]=='0') {
+    // PLANT
+    var reproduceProbability=parseInt(dna.slice(10),2)+1;
+    if (!Math.floor(Math.random()*reproduceProbability)) nmap[x+diffX][y+diffY]=encodeDNA(mutate(dna),6-reproduceProbability);
+    if (nmap[x][y]==map[x][y]) {
+      age--;
+      if (age>0) nmap[x][y]=encodeDNA(dna,age);
+      else nmap[x][y]='';
+    }
+  } else {
+    // ANIMAL
+    if (newplace&&newplace[0]==='0') {
+      if (dna.slice(4,7)==newplace.slice(4,7)) {
+        age-=2;
+        if (diffX==99) diffX=98;
+        else if (diffX==-99) diffX=-98;
+        else diffX*=2;
+        if (diffY==99) diffY=98;
+        else if (diffY==-99) diffY=-98;
+        else diffY*=2;
+      }
+      else if (dna.slice(1,4)==newplace.slice(1,4)) age=-1;
+      else age++;
+    }
+    else age--;
+    if (age>0) nmap[x+diffX][y+diffY]=encodeDNA(dna,age);
+    var reproduceProbability=parseInt(dna.slice(10),2)+1;
+    if (Math.floor(Math.random()*reproduceProbability)) nmap[x][y]='';
+    else nmap[x+diffX][y+diffY]=encodeDNA(mutate(dna),6-reproduceProbability);
+  }
+}
+document.querySelector('#next').onclick=render;
+render();
+console.log(setInterval(function(){
+  if (!document.querySelector('input[type=checkbox]').checked) {
+    render();
+  }
+},500));
+/*
+       +i
+   000 001 010
+-j 011 --- 100 +j
+   101 110 111
+       -i
+*/
+    </script>
+  </body>
+  <!-- MADE BY SEAN -->
+</html>
