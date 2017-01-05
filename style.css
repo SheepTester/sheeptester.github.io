@@ -1,287 +1,303 @@
+html, body, .page, #background {
+  height: 100%;
+  width: 100%;
+}
 body {
   margin: 0;
-  font-size: 30px;
-  background-image: url("img/darkforest.jpg");
-  background-size: cover;
-  background-position: center center;
-  background-repeat: no-repeat;
-  background-attachment: fixed;
-  color: rgba(255,255,255,0.8);
-  font-family: 'Roboto',sans-serif;
-  text-shadow: 0 0 3px rgba(255, 255, 255, 0.3);
-}
-::-webkit-scrollbar {
-  display: none;
-}
-#pgDirect ul {
-  margin: 0;
-  padding: 5px;
-}
-#pgDirect li {
-  display: block;
-  margin-left: 5px;
-}
-a {
-  text-decoration: none;
-  padding-bottom: 1px;
-  color: rgba(255,255,255,0.5);
-}
-a:hover {
-  padding-bottom: 0;
-  border-bottom: solid 1px rgba(255,255,255,0.5);
-  text-shadow: 0 0 3px rgba(255, 255, 255, 0.8);
-}
-a:active {
-  color: rgba(255,255,255,0.8);
-  border-bottom-color: rgba(255,255,255,0.8);
-}
-p {
-  margin: 0;
-}
-#sheepmenu {
-  animation: woww 0.5s cubic-bezier(1,0,0,1);
-  z-index: 1000;
-  background: white;
-}
-@keyframes woww {
-  0% {
-    bottom: calc(50vh - 50vw);
-    border-top-left-radius: 0;
-    box-shadow: none;
-    width: 100vw;
-    right: 0;
-    opacity: 1;
-  }
-  100% {
-    bottom: -20px;
-    border-top-left-radius: 80px;
-    box-shadow: 0 0 2px rgba(0,0,0,0.5);
-    width: 100px;
-    right: -20px;
-    opacity: 0.3;
-  }
-}
-.rain li {
-  display: block;
-  position: fixed;
-  height: 100px;
-  width: 3px;
-  top: 100vh;
-  background: rgba(255,255,255,0.2);
-  animation: rain .3s linear;
-}
-@keyframes rain {
-  from {top:-100px;}
-  to {top: 100vh;}
-}
-#pgDirect .aline {
-  height: 2px;
-  width: 500px;
-  background: rgba(255,255,255,0.8);
-  margin: 10px 5px;
-}
-#pgDirect #featured, #pgDirect .new {
-  margin-left: 20px;
-  transition: margin-left 0.2s;
-}
-#pgDirect #featured:hover {
-  margin-left: 135px;
-}
-#pgDirect #featured:before, #pgDirect .new:before {
-  content: '';
-  display: inline-block;
-  position: absolute;
-  background: #009688;
-  width: 5px;
-  height: 35px;
-  left: 10px;
-  transition: width 0.2s;
-  /*animation: flashh 0.3s linear alternate infinite;*/
-}
-@keyframes flashh {
-  from {background: #80CBC4;}
-  to {background: #009688;}
-}
-#pgDirect #featured:hover:before {
-  content: 'featured';
-  width: 110px;
-  padding: 0 5px;
-  animation: none;
-}
-#pgDirect .new:hover {
-  margin-left: 80px;
-}
-#pgDirect .new:before {
-  background: #FF9800;
-  animation: none;
-}
-#pgDirect .new:hover:before {
-  content: 'new';
-  width: 55px;
-  padding: 0 5px;
-}
-.big {
-  font-size: 2em;
-}
-#menu {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  padding: 0;
-  font-size: 0;
-  background: rgba(0,0,0,0.3);
-  border-top-right-radius: 5px;
-}
-#menu:hover {
-  background: rgba(0,0,0,0.8);
-}
-#menu li {
-  display: inline-block;
-  margin: 0;
-  padding: 5px;
-  border-bottom: 3px solid transparent;
   font-size: 15px;
-  cursor: pointer;
-  text-transform: uppercase;
+  color: rgba(255,255,255,0.8);
+  font-family: 'Roboto', sans-serif;
+  background-color: #222;
+  line-height: 1;
 }
-#menu li:not(.active):hover {
-  border-color: rgba(255,255,255,0.5);
+#background {
+  background-image: url('img/blorrest.jpg');
+  background-size: cover;
+  background-position: center;
+  position: fixed;
+  z-index: -1;
+  /*filter: blur(5px) brightness(0.8);*/
 }
-#menu .active {
-  border-color: white;
-}
-body > div {
+.page {
+  padding-bottom: 40px;
+  box-sizing: border-box;
   display: none;
 }
-body > .pgactive {
+.page.active {
   display: block;
 }
-#pgContact ul {
-  font-size: 0;
-  margin: 0;
-  padding: 0;
-}
-#pgContact li {
-  display: inline-block;
-  font-size: 30px;
-  padding: 10px;
-  cursor: pointer;
-}
-#scr:hover {
-  background: #F8A839;
-}
-#git:hover {
-  background: #333333;
-}
-#gpl:hover {
-  background: #DE5145;
-}
-#ins:hover {
-  background: #D12F7A;
-}
-#ytb:hover {
-  background: #E62117;
-}
-#pgContact .strike {
-  text-decoration: line-through;
-}
-#header {
-  background: rgba(0,0,0,0.3);
-  box-shadow: 0 0 3px rgba(0,0,0,0.3);
-}
-#pgAbout p {
-  margin: 5px 0;
-}
-#pgAbout ul {
-  padding-left: 10px;
-  margin: 5px 0;
-}
-#pgAbout li {
-  list-style-type: none;
-}
-#pgAbout li:before {
-  content: '- ';
-}
-#user {
-  margin: 0;
-  padding: 0;
+nav {
   position: fixed;
-  top: 0;
-  right: 0;
-  font-size: 20px;
-}
-#user li {
-  display: inline-block;
-  padding: 5px;
-}
-#user li.clickable {
-  cursor: pointer;
-  transition: background .2s;
-  border-radius: 5px;
-}
-#user li.clickable:hover {
-  background: rgba(255,255,255,0.2);
-}
-form {
-  display: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
   bottom: 0;
-  margin: 100px;
-  background: rgba(255,255,255,0.8);
-  box-shadow: 0 0 0 100px rgba(0, 0, 0, 0.8);
+  left: 0;
+  width: 100%;
+  height: 40px;
+  background: rgba(79,161,167,0.8);
+  padding: 0 5px;
+  font-size: 0;
+  z-index: 15;
 }
-form input {
-  border: none;
-  padding: 5px;
-  margin: 5px;
+nav span {
+  padding: 10px;
+  display: inline-block;
   font-size: 20px;
-  display: block;
-  background: rgba(0,0,0,0.5);
   color: white;
 }
-form input:not(:disabled):hover {
-  background: rgba(0,0,0,0.6);
+nav .clickable, nav .btn {
+  cursor: pointer;
+  transition: background .2s;
+  color: rgba(255,255,255,0.8);
 }
-form input:not(:disabled):active {
-  background: rgba(0,0,0,0.7);
+nav .clickable:not(.active):hover, nav .btn:hover {
+  background: rgba(0,0,0,0.2);
+  color: white;
 }
-form input:disabled {
-  background: rgba(0,0,0,0.3);
+nav .clickable.active {
+  cursor: default;
+  color: white;
 }
-::-webkit-input-placeholder {
-  color: rgba(255,255,255,0.5);
+#places {
+  font-size: 0;
+  overflow-x: hidden;
 }
-form h1 {
-  margin: 0 5px;
-  color: rgba(0,0,0,0.8);
+place {
+  width: 25%;
+  display: inline-block;
+  position: relative;
+  cursor: pointer;
+  z-index: 0;
+  background: #4FA1A7;
+  transition: transform .2s, z-index .2s;
 }
-form span.error {
-  color: #f44336;
-  font-size: 15px;
-  margin: 0 5px;
+place:hover {
+  transform: scale(1.05);
+  z-index: 10;
+}
+place img {
+  width: 100%;
+  opacity: 0.5;
+  -webkit-filter: grayscale(100%);
+  filter: grayscale(100%);
+  transition: all .2s;
+}
+place:hover img {
+  opacity: 1;
+  filter: grayscale(0%);
+}
+place p {
+  font-size: 30px;
+  margin: auto 0;
+  width: 100%;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  text-align: center;
+  text-shadow: 0 0 20px black;
+  height: 30px;
+}
+placelist {
+  width: 100%;
   display: block;
+  font-size: 60px;
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: background .2s;
 }
-form .close {
-  background: #f44336;
-  height: 15px;
-  width: 15px;
+placelist:nth-child(even) {
+  background: rgba(255,255,255,0.1);
+}
+placelist:hover {
+  background: rgba(79,161,167,0.8);
+}
+#stalking p, #stalking h1 {
+  margin: 0;
+  padding: 5px 0;
+}
+#stalking p strong {
+  font-size: 1.5em;
+  font-weight: normal;
+}
+#milliage, #yage {
+  font-weight: bold;
+}
+#stalking ul {
+  padding: 5px;
+  margin: 0;
+  list-style: none;
+}
+#stalking ul li:before {
+  content: '- ';
+}
+list {
+  background: rgba(255,255,255,0.1);
+  display: block;
+  padding: 0 5px;
+}
+list social {
+  display: inline-block;
+  height: 100px;
+  width: 100px;
+  border-radius: 5px;
+  margin: 15px 10px;
+  position: relative;
+  cursor: pointer;
+  transition: transform .2s;
+}
+list social:hover {
+  transform: scale(1.1);
+}
+list social ball {
+  display: block;
+  height: 50px;
+  width: 50px;
+  background: white;
   border-radius: 50%;
   position: absolute;
-  top: 5px;
-  right: 5px;
-  opacity: 0.8;
+  margin: auto;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
 }
-form .close:hover {
-  opacity: 0.9;
+#scratch {background: #25AFF4;}
+#scratch ball {border: 5px solid white; background: #F8A839;}
+#instagram {background-image: url('img/instagram_gradient.png'); background-size: 100px 100px;}
+#github {background: #333333;}
+#google {background: #DB4437;}
+#youtube {background: #E62117;}
+#tumblr {background: #36465D;}
+#users h1 {
+  margin: 0;
+  font-weight: normal;
+  padding: 10px;
+  padding-bottom: 0;
 }
-form .close:active {
-  opacity: 1;
+#signedout input {
+  display: table;
+  background: none;
+  color: white;
+  border: none;
+  border-bottom: 1px solid rgba(255,255,255,0.5);
+  padding: 5px 10px;
+  margin: 10px;
 }
-form p {
-  color: #666;
+#signedout input:focus {
+  border-bottom-color: rgba(79,161,167,0.8);
+}
+#signedout ::-webkit-input-placeholder {
+  color: rgba(255,255,255,0.5);
+}
+#signedout .error {
+  color: #f44336;
+  margin: 0 10px;
+  display: table;
+}
+#signedout input[type=submit] {
+  border-bottom: none;
+  background: rgba(255,255,255,0.3);
+  cursor: pointer;
+  margin-top: 0;
+}
+#signedout input[type=submit]:disabled {
+  cursor: default;
+}
+#signedout input[type=submit]:not(:disabled):hover {
+  background: rgba(255,255,255,0.4);
+}
+#signedout p {
+  margin: 0;
+  padding: 10px;
   font-size: 10px;
+  max-width: 300px;
+}
+.getTextLength {
+  position: fixed;
+  bottom: -100px;
+  white-space: pre;
+  padding: 0;
+  margin: 0;
+}
+#users > div {
+  display: none;
+}
+#signedin button {
+  background: rgba(255,255,255,0.3);
+  border: none;
+  color: white;
+  cursor: pointer;
+  display: table;
+  padding: 10px;
+  margin: auto;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 50px;
+  width: 100px;
+}
+#signedin button:hover {
+  background: rgba(255,255,255,0.4);
+}
+placelist badge {
+  display: inline-block;
+  font-size: 30px;
+  padding: 0 5px;
+  border-radius: 5px;
+  max-width: 20px;
+  height: 30px;
+  overflow: hidden;
+  transition: max-width .5s;
+  white-space: nowrap;
+}
+placelist badge:hover {
+  max-width: 25%;
+}
+placelist badge:before {
+  content: '';
+  display: inline-block;
+  height: 20px;
+  width: 20px;
+  margin-right: 5px;
+}
+.featured {
+  background: #7DAB55;
+}
+.featured:before {
+  background-image: url('img/star.svg');
+}
+.new {
+  background: #B18C5B;
+}
+.new:before {
+  background-image: url('img/material_new_releases.svg');
+}
+place badge {
+  display: block;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  font-size: 20px;
   margin: 5px;
+  padding: 5px;
+  border-radius: 5px;
+  max-width: 20px;
+  height: 20px;
+  overflow: hidden;
+  transition: max-width .5s;
+  white-space: nowrap;
+}
+place badge:hover {
+  max-width: 100%;
+}
+place badge:before {
+  content: '';
+  display: inline-block;
+  height: 20px;
+  width: 20px;
+  margin-right: 5px;
+}
+
+sarcasm {
+  display: none; /* sarcasm is not needed here */
 }

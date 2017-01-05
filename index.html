@@ -1,99 +1,76 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>SheepTester Directory</title>
-    <meta charset="UTF-8"/>
-    <meta name="description" content="This is a page that you can look at."/>
+    <title>SheepTester</title>
+    <meta charset="UTF-8">
+    <meta name="description" content="This is a page for humans to look at. But bots are welcome too."/>
     <meta name="google-site-verification" content="hVAKq2ipG9tPimbCmGiDbT-Qq1-UEv35XweisVQ5VEE"/>
-    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="shortcut icon" href="favicon.ico">
     <link rel="stylesheet" type="text/css" href="style.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
   </head>
   <body>
-    <p id="header"><span class="big">Hellos</span> I am Sean aka SheepTester</p>
-    <div id="pgAbout">
-      <p>How does one describe oneself? I do not know. Avoiding the overlap between modesty and bragging seems impossible.</p>
-      <p>Ah well, let's get on with it.</p>
-      <p>Likes</p>
+    <nav>
+      <span class='btn' id='view'>list/grid view</span>
+      <span class='clickable active' data-place='places'>places</span>
+      <span class='clickable' data-place='stalking'>stalking</span>
+      <span class='clickable' data-place='users' id='user'>loading</span>
+    </nav>
+    <div id="background"></div>
+    <div id="places" class='page active'></div>
+    <div id="stalking" class='page'>
+      <p><strong>Hellos</strong>, I am Sean! (aka SheepTester).</p>
+      <h1>who are you</h1>
+      <p>How do people even describe themselves? I have no idea. It seems like someone either bragging or putting themselves down whenever they try.</p>
+      <p>Ah well, you're here to be productive (I hope) so:</p>
+      <p>I like</p>
       <ul>
-        <li>the existence of sheep</li>
-        <li>coding in Scratch and HTML5</li>
-        <li>staying alive</li>
-        <li>the existence rainy, windy, and/or foggy weather</li>
+        <li>the existence of sheep!</li>
+        <li>coding Scratch and HTML5!</li>
+        <li>staying alive!</li>
+        <li>staying alive indoors in rainy, windy, and/or foggy weather!</li>
       </ul>
-      <p>Dislikes</p>
+      <p>I <del>don't exactly like</del> hate</p>
       <ul>
-        <li>the existence of wasting food, global warming, and death</li>
-        <li>how our minds are more malleable than we think</li>
-        <li>the concept of time travel</li>
+        <li>the existence of global warming, death, and the economy</li>
+        <li>the malleability of our minds</li>
+        <li>the idea/concept of time travel</li>
+        <li>the fact that I'll be dead in the future unable to see how the human race will end</li>
       </ul>
-      <p>I was born on the 9th of April, 2003 at 17:08, which makes me <span id="msage"></span> milliseconds or <span id="yage"></span> years old.</p>
+      <p>I was born on 9apr'3@17:08, which makes me <span id='milliage'>a few</span> milliseconds or <span id='yage'>a lot of</span> years old.</p>
+      <h1>im a stalker and i want to stalk you so how</h1>
+      <p>You might find me on the Internet in these places:</p>
+      <list></list>
     </div>
-    <div id="pgContact">
-      <p>I'm not that everywhere on the Internet but here's a few places you can <span class="strike">stalk</span> find me:</p>
-      <ul>
-        <li id="scr">s</li>
-        <li id="ins">i</li>
-        <li id="git">g</li>
-        <li id="gpl">g</li>
-        <li id="ytb">y</li>
-      </ul>
-      <p><img src="img/SeanICUP.png" height="30"/> M SeanICUP</p>
+    <div id="users" class='page'>
+      <div id="signedout">
+        <form action="https://web300.secure-secure.co.uk/thingkingland.com/sheeptester/login.php" method="post" id='loginform'>
+          <h1>Login</h1>
+          <input type="text" name="name" class='name' placeholder="Username"/>
+          <input type="password" name="pass" class='pass' placeholder="Password"/>
+          <span class='error'></span>
+          <input type="submit" name="done" class='done' value="It's me!"/>
+        </form>
+        <form action="https://web300.secure-secure.co.uk/thingkingland.com/sheeptester/create.php" method="post" id='createform'>
+          <h1>Create</h1>
+          <input type="text" name="name" class='name' placeholder="Username"/>
+          <span class='error'>You need a username</span>
+          <input type="password" name="pass" class='pass' placeholder="Password"/>
+          <input type="password" class='pass2' placeholder="Password again"/>
+          <span class='error'></span>
+          <input type="submit" name="done" class='done' value="Create!" disabled/>
+          <p>Remember that I have a lot of control over your account, so I'm able to see your password. Also this system is very insecure and anyone can easily change up your creations or something (or even log into your account without your password), so don't get mad if that happens.</p>
+        </form>
+      </div>
+      <div id="signedin">
+        <button>Sign out</button>
+      </div>
     </div>
-    <div id="pgDirect" class="pgactive">
-      <p>You should</p>
-      <ul>
-        <li><a href="platformre">play in a world of random</a></li>
-        <li><a href="platformre/maker">configure what you are jumping on</a></li>
-        <li id="featured"><a href="javascripts/clicker">click things</a></li>
-        <li><a href="platformre/penland/inv.html">see the development of Penland5</a></li>
-        <li><a href="javascripts">play with some Javascripts that isn't yours (and don't dare you call it yours)</a></li>
-        <li><a href="animations">watch some animations</a></li>
-        <li class="new"><a href="platformre/explore">explore levels made by other people</a></li>
-        <li><a href="sentence">generate a random sentence</a></li>
-        <li><a href="happynumbers">calculate happy/MEMS numbers</a></li>
-        <li class="new"><a href="javascripts/mutate.html">see simulated cells die</a></li>
-        <li><a href="eyo-dictionary/validator.html">create a new word for Eyo</a></li>
-        <li><a href="eyo-dictionary">translate English words to words in my conlang Eyo</a></li>
-        <li><a href="calculator">solve for x</a></li>
-        <li><a href="contextmenutest.html">see a custom right-click menu</a></li>
-        <li class="new"><a href="blog">be annoyed by my opinions</a></li>
-        <li><a href="opinions">hear my thoughts</a></li>
-        <li class="aline"></li>
-        <li><a href="http://htwins.net/goime500/">fight boredom since you're bored</a></li>
-        <li><a href="https://www.google.com/">find your way because you're lost</a></li>
-      </ul>
-    </div>
-    <ul class="rain"></ul>
-    <ul id="menu">
-      <li id="btnAbout">Who am I stalking</li>
-      <li id="btnContact">Stalk me elsewhere</li>
-      <li id="btnDirect" class="active">Find things</li>
-    </ul>
-    <ul id="user">
-      <li>Loading</li>
-    </ul>
-    <form action="https://web300.secure-secure.co.uk/thingkingland.com/sheeptester/create.php" method="post" id='createform'>
-      <h1>Create an account</h1>
-      <input type="text" name="name" class='name' placeholder="Username"/>
-      <span class='error'>You need a username</span>
-      <input type="password" name="pass" class='pass' placeholder="Password"/>
-      <input type="password" class='pass2' placeholder="Password again"/>
-      <span class='error'></span>
-      <input type="submit" name="done" class='done' value="Create!" disabled/>
-      <p>Remember that I have a lot of control over your account, so I'm able to see your password. Also this system is very insecure and anyone can easily change up your creations or something (or even log into your account without your password), so don't get mad if that happens.</p>
-      <div class="close"></div>
-    </form>
-    <form action="https://web300.secure-secure.co.uk/thingkingland.com/sheeptester/login.php" method="post" id='loginform'>
-      <h1>Authenticate yourself</h1>
-      <input type="text" name="name" class='name' placeholder="Username"/>
-      <input type="password" name="pass" class='pass' placeholder="Password"/>
-      <span class='error'></span>
-      <input type="submit" name="done" class='done' value="It's me!"/>
-      <div class="close"></div>
-    </form>
+    <sarcasm>Wow you look ugly today.</sarcasm>
 
     <script src="sheep.js"></script>
-    <script src="magic.js"></script>
+    <script src="main.js"></script>
+    <!-- <script>if (false) console.log('Wow!')</script>; -->
   </body>
+  <!-- MADE BY SEAN -->
 </html>

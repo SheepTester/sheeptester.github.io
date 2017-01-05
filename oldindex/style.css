@@ -1,0 +1,287 @@
+body {
+  margin: 0;
+  font-size: 30px;
+  background-image: url("img/darkforest.jpg");
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  color: rgba(255,255,255,0.8);
+  font-family: 'Roboto',sans-serif;
+  text-shadow: 0 0 3px rgba(255, 255, 255, 0.3);
+}
+::-webkit-scrollbar {
+  display: none;
+}
+#pgDirect ul {
+  margin: 0;
+  padding: 5px;
+}
+#pgDirect li {
+  display: block;
+  margin-left: 5px;
+}
+a {
+  text-decoration: none;
+  padding-bottom: 1px;
+  color: rgba(255,255,255,0.5);
+}
+a:hover {
+  padding-bottom: 0;
+  border-bottom: solid 1px rgba(255,255,255,0.5);
+  text-shadow: 0 0 3px rgba(255, 255, 255, 0.8);
+}
+a:active {
+  color: rgba(255,255,255,0.8);
+  border-bottom-color: rgba(255,255,255,0.8);
+}
+p {
+  margin: 0;
+}
+#sheepmenu {
+  animation: woww 0.5s cubic-bezier(1,0,0,1);
+  z-index: 1000;
+  background: white;
+}
+@keyframes woww {
+  0% {
+    bottom: calc(50vh - 50vw);
+    border-top-left-radius: 0;
+    box-shadow: none;
+    width: 100vw;
+    right: 0;
+    opacity: 1;
+  }
+  100% {
+    bottom: -20px;
+    border-top-left-radius: 80px;
+    box-shadow: 0 0 2px rgba(0,0,0,0.5);
+    width: 100px;
+    right: -20px;
+    opacity: 0.3;
+  }
+}
+.rain li {
+  display: block;
+  position: fixed;
+  height: 100px;
+  width: 3px;
+  top: 100vh;
+  background: rgba(255,255,255,0.2);
+  animation: rain .3s linear;
+}
+@keyframes rain {
+  from {top:-100px;}
+  to {top: 100vh;}
+}
+#pgDirect .aline {
+  height: 2px;
+  width: 500px;
+  background: rgba(255,255,255,0.8);
+  margin: 10px 5px;
+}
+#pgDirect #featured, #pgDirect .new {
+  margin-left: 20px;
+  transition: margin-left 0.2s;
+}
+#pgDirect #featured:hover {
+  margin-left: 135px;
+}
+#pgDirect #featured:before, #pgDirect .new:before {
+  content: '';
+  display: inline-block;
+  position: absolute;
+  background: #009688;
+  width: 5px;
+  height: 35px;
+  left: 10px;
+  transition: width 0.2s;
+  /*animation: flashh 0.3s linear alternate infinite;*/
+}
+@keyframes flashh {
+  from {background: #80CBC4;}
+  to {background: #009688;}
+}
+#pgDirect #featured:hover:before {
+  content: 'featured';
+  width: 110px;
+  padding: 0 5px;
+  animation: none;
+}
+#pgDirect .new:hover {
+  margin-left: 80px;
+}
+#pgDirect .new:before {
+  background: #FF9800;
+  animation: none;
+}
+#pgDirect .new:hover:before {
+  content: 'new';
+  width: 55px;
+  padding: 0 5px;
+}
+.big {
+  font-size: 2em;
+}
+#menu {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  padding: 0;
+  font-size: 0;
+  background: rgba(0,0,0,0.3);
+  border-top-right-radius: 5px;
+}
+#menu:hover {
+  background: rgba(0,0,0,0.8);
+}
+#menu li {
+  display: inline-block;
+  margin: 0;
+  padding: 5px;
+  border-bottom: 3px solid transparent;
+  font-size: 15px;
+  cursor: pointer;
+  text-transform: uppercase;
+}
+#menu li:not(.active):hover {
+  border-color: rgba(255,255,255,0.5);
+}
+#menu .active {
+  border-color: white;
+}
+body > div {
+  display: none;
+}
+body > .pgactive {
+  display: block;
+}
+#pgContact ul {
+  font-size: 0;
+  margin: 0;
+  padding: 0;
+}
+#pgContact li {
+  display: inline-block;
+  font-size: 30px;
+  padding: 10px;
+  cursor: pointer;
+}
+#scr:hover {
+  background: #F8A839;
+}
+#git:hover {
+  background: #333333;
+}
+#gpl:hover {
+  background: #DE5145;
+}
+#ins:hover {
+  background: #D12F7A;
+}
+#ytb:hover {
+  background: #E62117;
+}
+#pgContact .strike {
+  text-decoration: line-through;
+}
+#header {
+  background: rgba(0,0,0,0.3);
+  box-shadow: 0 0 3px rgba(0,0,0,0.3);
+}
+#pgAbout p {
+  margin: 5px 0;
+}
+#pgAbout ul {
+  padding-left: 10px;
+  margin: 5px 0;
+}
+#pgAbout li {
+  list-style-type: none;
+}
+#pgAbout li:before {
+  content: '- ';
+}
+#user {
+  margin: 0;
+  padding: 0;
+  position: fixed;
+  top: 0;
+  right: 0;
+  font-size: 20px;
+}
+#user li {
+  display: inline-block;
+  padding: 5px;
+}
+#user li.clickable {
+  cursor: pointer;
+  transition: background .2s;
+  border-radius: 5px;
+}
+#user li.clickable:hover {
+  background: rgba(255,255,255,0.2);
+}
+form {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: 100px;
+  background: rgba(255,255,255,0.8);
+  box-shadow: 0 0 0 100px rgba(0, 0, 0, 0.8);
+}
+form input {
+  border: none;
+  padding: 5px;
+  margin: 5px;
+  font-size: 20px;
+  display: block;
+  background: rgba(0,0,0,0.5);
+  color: white;
+}
+form input:not(:disabled):hover {
+  background: rgba(0,0,0,0.6);
+}
+form input:not(:disabled):active {
+  background: rgba(0,0,0,0.7);
+}
+form input:disabled {
+  background: rgba(0,0,0,0.3);
+}
+::-webkit-input-placeholder {
+  color: rgba(255,255,255,0.5);
+}
+form h1 {
+  margin: 0 5px;
+  color: rgba(0,0,0,0.8);
+}
+form span.error {
+  color: #f44336;
+  font-size: 15px;
+  margin: 0 5px;
+  display: block;
+}
+form .close {
+  background: #f44336;
+  height: 15px;
+  width: 15px;
+  border-radius: 50%;
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  opacity: 0.8;
+}
+form .close:hover {
+  opacity: 0.9;
+}
+form .close:active {
+  opacity: 1;
+}
+form p {
+  color: #666;
+  font-size: 10px;
+  margin: 5px;
+}

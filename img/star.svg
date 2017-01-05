@@ -1,0 +1,10 @@
+<svg fill="white" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+  <path d='
+    M2 0
+    L2 20
+    H4
+    V12
+    H18
+    V0
+  '/>
+</svg>

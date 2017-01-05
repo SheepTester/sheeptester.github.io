@@ -12,13 +12,13 @@
   left: 0;
   margin: 0;
   padding: 10px 0;
-  animation: open .5s cubic-bezier(0, 0, 0, 1);
   overflow-y: hidden;
-  height:80px; /* #ofListItems*20 */
+  max-height:100vh;
+  animation: open 1s cubic-bezier(0, 0, 0, 1);
 }
 @keyframes open {
-  from {padding-top:0;padding-bottom:0;height:0;}
-  to {padding-top:10px;padding-bottom:10px;height:80px;} /* #ofListItems*20 */
+  from {padding-top:0;padding-bottom:0;max-height:0px;}
+  to {padding-top:10px;padding-bottom:10px;max-height:100vh;}
 }
 #context li::selection {
   background: none;
@@ -51,7 +51,7 @@ body {
   </head>
   <body>
     <p><b>Right click.</b></p>
-    
+
     <script src="sheep.js"></script>
     <script>
 if (document.addEventListener) { // http://stackoverflow.com/questions/4909167/how-to-add-a-custom-right-click-menu-to-a-webpage
