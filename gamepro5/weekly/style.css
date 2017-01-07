@@ -1,0 +1,97 @@
+body {
+  margin: 0;
+  background: #635BBC;
+  font-family: 'Roboto', sans-serif;
+  font-size: 15px;
+  color: white;
+}
+h1, h2, h3, h4, h5, h6 {
+  margin: 5px 0;
+  font-weight: normal;
+}
+h1 {font-size:35px;}
+h2 {font-size:30px;}
+h3 {font-size:25px;}
+h4 {font-size:20px;}
+h5 {font-size:15px;font-weight:bold;}
+h6 {font-size:15px;text-decoration:underline;}
+dd {
+  margin: 0;
+}
+.container dd {
+  font-size: 10px;
+}
+header {
+  position: fixed;
+  top: 0;
+  padding: 5px;
+  width: 100%;
+  box-sizing: border-box;
+  background: rgba(0,0,0,0.5);
+  height: 100px;
+  box-shadow: 0 0 3px rgba(0,0,0,0.3);
+}
+header h1 {
+  font-size: 60px;
+  margin: 0;
+}
+footer {
+  position: fixed;
+  bottom: 0;
+  padding: 5px;
+  width: 100%;
+  box-sizing: border-box;
+  height: 30px;
+  background: rgba(0,0,0,0.5);
+  box-shadow: 0 0 3px rgba(0,0,0,0.3);
+}
+.container {
+  margin-bottom: 30px;
+  margin-top: 100px;
+  padding: 10px;
+}
+.container ul, .container ol {
+  list-style-type: none;
+  padding-left: 5px;
+  margin: 5px 0;
+}
+.container ul ul, .container ol ul {
+  list-style-type: inherit;
+}
+.container ul>li:before {
+  content: '- ';
+  color: rgba(255,255,255,0.5);
+}
+.container ol>li {
+  counter-increment: merp;
+}
+.container ol>li:before {
+  content: counter(merp) ' ';
+  color: rgba(255,255,255,0.5);
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+.container ol>li:first-child {
+  counter-reset: merp;
+}
+.container a {
+  color: white;
+  background: rgba(255,255,255,0.1);
+  text-decoration: none;
+}
+.container a:hover {
+  background: rgba(255,255,255,0.2);
+}
+.container a:active {
+  background: rgba(255,255,255,0.4);
+}
+.container p {
+  margin: 5px 0;
+}
+.container blockquote {
+  margin: 5px;
+  border-left: 2px solid rgba(255,255,255,0.5);
+  padding-left: 10px;
+}

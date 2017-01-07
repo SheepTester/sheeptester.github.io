@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>The Weekly News</title>
+    <meta charset="UTF-8">
+    <meta name="description" content="An unsophisticated friend writes unsophisticated text."/>
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+    <header>
+      <h1>The Weekly News</h1>
+      <dd>Top news, cartoons, upcoming dates, and more right here weekly</dd>
+    </header>
+    <div class="container">
+      <!-- .container for having reader mode detect this nonsense -->
+      <a href="?n=2">#2</a>
+    </div>
+    <footer>JLS Stanford Middle School. All Rights Reserved To PAUSD.</footer>
+
+    <script src="../../sheep.js"></script>
+    <script>
+function searchToObject(search) {
+  var result={};
+  for (var i=1;i<search.length;i++) {
+    var nextAmpersand=search.indexOf('&',i);
+    var name;
+    if (nextAmpersand>-1) {
+      name=search.slice(i,nextAmpersand);
+      i=nextAmpersand;
+    } else {
+      name=search.slice(i);
+      i=search.length;
+    }
+    if (name.indexOf('=')>-1) {
+      var value=name.slice(name.indexOf('=')+1);
+      name=name.slice(0,name.indexOf('='));
+      if (!isNaN(Number(value))) value=Number(value);
+      else if (value=='true'||value=='✔') value=true;
+      else if (value=='false'||value=='✖') value=false;
+      result[name]=value;
+    } else {
+      result[name]=true;
+    }
+  }
+  return result;
+}
+function httpGetAsync(theUrl,callback) {
+  var xmlHttp=new XMLHttpRequest();
+  xmlHttp.onreadystatechange=function(){
+    if (xmlHttp.readyState==4&&xmlHttp.status==200) callback(xmlHttp.responseText);
+  };
+  xmlHttp.open("GET",theUrl,true); // true for asynchronous
+  xmlHttp.send(null);
+}
+if (window.location.search) {
+  var details=searchToObject(window.location.search);
+  if (details.n) {
+    document.querySelector('title').innerHTML='#'+details.n+' - The Weekly News'
+    httpGetAsync(details.n+'.html',function(e){
+      document.querySelector('.container').innerHTML=e;
+    });
+  }
+}
+    </script>
+  </body>
+  <!-- MADE BY SEAN -->
+</html>

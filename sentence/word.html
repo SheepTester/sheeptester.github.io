@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Random word generator</title>
+    <meta charset="UTF-8">
+    <meta name="description" content="An attempt to make very strange and foreign-looking words using different methods."/>
+    <style>
+      body {
+        font-family: monospace;
+      }
+      .result {
+        font-weight: bold;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>Method 1:</h2>
+    <button data-method='consvowel'>Generate</button>
+    <p>This alternates between a "vowel" and a "consonant" and tries to add extra letters to them as well and shtuff.</p>
+    <span class='result' data-method='consvowel'></span>
+
+    <script src="../sheep.js"></script>
+    <script src="flagyn.js"></script>
+    <script>
+      document.body.onclick=function(e){
+        if (e.target.tagName=='BUTTON') document.querySelector('.result[data-method="'+e.target.dataset.method+'"]').innerHTML=methods[e.target.dataset.method]();
+      };
+    </script>
+  </body>
+  <!-- MADE BY SEAN -->
+</html>
