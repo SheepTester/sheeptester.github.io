@@ -11,12 +11,23 @@
     <header>
       <h1>The Weekly News</h1>
       <dd>Top news, cartoons, upcoming dates, and more right here weekly</dd>
+      <div id="authors">
+        <h2>Publishers:</h2>
+        <ul>
+          <li>Julien Crespo</li>
+        </ul>
+      </div>
     </header>
     <div class="container">
       <!-- .container for having reader mode detect this nonsense -->
-      <a href="?n=2">#2</a>
+      <p>Click one of the links below and read stuff.</p>
+      <hr>
+      <ul>
+        <li><a href="?n=2">#2</a></li>
+        <li><a href="?n=welcome">Welcome!</a></li>
+      </ul>
     </div>
-    <footer>JLS Stanford Middle School. All Rights Reserved To PAUSD.</footer>
+    <footer>JLS Stanford Middle School. All Rights Reserved To PAUSD. <span class='disclaimer'>Made available to the web by Sean. He is not responsible for any of this horrifying grammar.</span></footer>
 
     <script src="../../sheep.js"></script>
     <script>
@@ -61,6 +72,9 @@ if (window.location.search) {
       document.querySelector('.container').innerHTML=e;
     });
   }
+}
+document.body.onclick=function(e){
+  if (e.target.tagName==='IMG') window.location.href=e.target.src;
 }
     </script>
   </body>

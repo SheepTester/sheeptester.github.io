@@ -44,4 +44,17 @@ var methods={
     }
     return word;
   },
+  simplealternate:function(){
+    var consonants='bcdfghjklmnpqrstvwxz',
+    vowels='aeiouy',
+    word='',
+    length=Math.floor(Math.random()*8+2),
+    onvowel=!Math.floor(Math.random()*2);
+    for (var i=0;i<length;i++) {
+      if (onvowel) word+=vowels[Math.floor(Math.random()*vowels.length)];
+      else word+=consonants[Math.floor(Math.random()*consonants.length)];
+      onvowel=!onvowel;
+    }
+    return word;
+  },
 };

@@ -14,16 +14,44 @@
     </style>
   </head>
   <body>
+    <p>Hold shift while holding a button to generate a bunch of words; hold control/meta to clear.</p>
+    <hr>
     <h2>Method 1:</h2>
     <button data-method='consvowel'>Generate</button>
     <p>This alternates between a "vowel" and a "consonant" and tries to add extra letters to them as well and shtuff.</p>
     <span class='result' data-method='consvowel'></span>
+    <hr>
+    <h2>Method 2:</h2>
+    <button data-method='simplealternate'>Generate</button>
+    <p>A <em>much</em> simpler, probably easier to pronounce, version of method 1.</p>
+    <span class='result' data-method='simplealternate'></span>
 
     <script src="../sheep.js"></script>
     <script src="flagyn.js"></script>
     <script>
-      document.body.onclick=function(e){
-        if (e.target.tagName=='BUTTON') document.querySelector('.result[data-method="'+e.target.dataset.method+'"]').innerHTML=methods[e.target.dataset.method]();
+      var interval;
+      document.body.onmousedown=function(e){
+        if (e.target.tagName=='BUTTON') {
+          var resultElem=document.querySelector('.result[data-method="'+e.target.dataset.method+'"]');
+          if (e.ctrlKey||e.metaKey) resultElem.innerHTML='';
+          else {
+            if (resultElem.innerHTML)
+              resultElem.innerHTML+='<br>'+methods[e.target.dataset.method]();
+            else
+              resultElem.innerHTML=methods[e.target.dataset.method]();
+            if (e.shiftKey) {
+              interval=setInterval(function(){
+                resultElem.innerHTML+='<br>'+methods[e.target.dataset.method]();
+              },50);
+            }
+          }
+        }
+      };
+      document.body.onmouseup=function(e){
+        if (interval) {
+          clearInterval(interval);
+          interval=0;
+        }
       };
     </script>
   </body>
