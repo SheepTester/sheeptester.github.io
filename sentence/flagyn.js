@@ -107,4 +107,55 @@ var methods={
     }
     return word;
   },
+  chingchong:function(){
+    var data={
+      initials:'bpmfdtnlgkhjqxzcsr'.split(''),
+      finals:'a.o.e.i.u.ü.ai.ei.ui.ao.ou.iou.ie.üe.er.an.en.in.un.ün.üan.ang.eng.ing.ong.iong.ia.iao.ian.iang.ua.uo.uai.uan.uang.ueng'.split('.'),
+      vowels:'aeiou',
+      tones:{
+        a:'aāáǎà',
+        e:'eēéěè',
+        i:'iīíǐì',
+        o:'oōóǒò',
+        u:'uūúǔù',
+        ü:'üǖǘǚǜ',
+      }
+    },word='',tone=Math.floor(Math.random()*5);
+    data.initials.push('zh');
+    data.initials.push('ch');
+    data.initials.push('sh');
+    if (Math.floor(Math.random()*2)) {
+      word=data.initials[Math.floor(Math.random()*data.initials.length)];
+      word+=data.finals[Math.floor(Math.random()*data.finals.length)];
+    } else {
+      word=data.finals[Math.floor(Math.random()*data.finals.length)];
+      if (word[0]=='i') {
+        if (data.vowels.includes(word[1])) word='y'+word.slice(1);
+        else word='y'+word;
+      } else if (word[0]=='u') {
+        if (data.vowels.includes(word[1])&&word[1]!='i') word='w'+word.slice(1);
+        else word='we'+word.slice(1);
+      } else if (word[0]=='ü')
+        word='yu'+word.slice(1);
+    }
+    if (tone>0) {
+      if (word.indexOf('a')>-1)
+        word=word.slice(0,word.indexOf('a'))+data.tones.a[tone]+word.slice(word.indexOf('a')+1);
+      else if (word.indexOf('o')>-1)
+        word=word.slice(0,word.indexOf('o'))+data.tones.o[tone]+word.slice(word.indexOf('o')+1);
+      else if (word.indexOf('e')>-1)
+        word=word.slice(0,word.indexOf('e'))+data.tones.e[tone]+word.slice(word.indexOf('e')+1);
+      else if (word.indexOf('i')>-1) {
+        if (word[word.indexOf('i')+1]==='u')
+          word=word.slice(0,word.indexOf('i')+1)+data.tones.u[tone]+word.slice(word.indexOf('i')+2);
+        else
+          word=word.slice(0,word.indexOf('i'))+data.tones.i[tone]+word.slice(word.indexOf('i')+1);
+      }
+      else if (word.indexOf('u')>-1)
+        word=word.slice(0,word.indexOf('u'))+data.tones.u[tone]+word.slice(word.indexOf('u')+1);
+      else if (word.indexOf('ü')>-1)
+        word=word.slice(0,word.indexOf('ü'))+data.tones.ü[tone]+word.slice(word.indexOf('ü')+1);
+    }
+    return word;
+  },
 };
