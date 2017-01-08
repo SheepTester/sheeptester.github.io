@@ -57,4 +57,17 @@ var methods={
     }
     return word;
   },
+  eyo:function(){
+    var consonants='j.k.n.p.r.s.t.rst.nst.rnst.jr.kr.ks.nk.nr.ns.nt.pn.pr.ps.rj.rk.rn.rp.rs.rt.sk.sn.sp.st.tr.ts'.split('.'),
+    vowels='aeiou',
+    word='',
+    length=Math.floor(Math.random()*8+1),
+    onvowel=!Math.floor(Math.random()*2);
+    for (var i=0;i<length;i++) {
+      if (onvowel) word+=vowels[Math.floor(Math.random()*vowels.length)];
+      else word+=consonants[Math.floor(Math.random()*consonants.length)];
+      onvowel=!onvowel;
+    }
+    return word;
+  },
 };
