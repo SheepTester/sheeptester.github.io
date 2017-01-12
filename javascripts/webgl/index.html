@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>WebGL Tests</title>
+    <meta charset="UTF-8">
+    <meta name="description" content="In which I find out how WebGL works and if I should like it or not."/>
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+    <style>
+      body {
+        margin: 0;
+        padding: 10px;
+        background: #1B1B21;
+        font-family: 'Roboto', sans-serif;
+      }
+      #stage {
+        background: rgba(255,255,255,0.1);
+        border-radius: 5px;
+        height: 360px;
+        width: 480px;
+        margin: auto;
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+      }
+      #choose {
+        margin: auto;
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 40px;
+        padding-left: 0;
+        padding-top: 320px;
+        width: 480px;
+      }
+      #choose li {
+        display: inline-block;
+        color: rgba(255,255,255,0.5);
+        background: rgba(255,255,255,0.1);
+        padding: 5px;
+        font-size: 20px;
+        height: 20px;
+        margin: 5px 2.5px;
+        cursor: pointer;
+        border-radius: 5px;
+      }
+      #choose li:first-child {
+        margin-left: 5px;
+      }
+      #choose li:last-child {
+        margin-right: 5px;
+      }
+    </style>
+  </head>
+  <body onload='init()'>
+    <canvas id="stage">your browser is no fun</canvas>
+    <ul id="choose" style='display:none;'>
+      <li data-js='helloworld'>Hello world!</li>
+    </ul>
+
+    <script src="../../sheep.js"></script>
+    <script src="index.js"></script>
+  </body>
+  <!-- MADE BY SEAN -->
+</html>

@@ -10,6 +10,7 @@ sheepmenu {
   opacity: 0.3;
   transition: bottom .5s, right .5s, box-shadow .5s, border-radius .5s, opacity .5s;
   background-image: url('https://sheeptester.github.io/SHEEP.svg');
+  cursor: pointer;
 }
 sheepmenu:hover {
   bottom: -10px;
@@ -108,4 +109,9 @@ sheepnotify.SHEEPDISAPPEAR {
 @keyframes SHEEPDISAPPEAR {
   from {transform: scale(1);opacity: 1;}
   to   {transform: scale(0);opacity: 0;}
+}
+sheepgettextwidth {
+  white-space: pre;
+  display: inline;
+  position: fixed;
 }

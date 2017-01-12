@@ -138,7 +138,7 @@ var methods={
       } else if (word[0]=='ü')
         word='yu'+word.slice(1);
     }
-    if (tone>0) {
+    if (tone>0&&document.querySelector('#tones').checked) {
       if (word.indexOf('a')>-1)
         word=word.slice(0,word.indexOf('a'))+data.tones.a[tone]+word.slice(word.indexOf('a')+1);
       else if (word.indexOf('o')>-1)
