@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>A Misspeller</title>
+    <meta charset="UTF-8">
+    <meta name="description" content="Supposedly humans can read misspelled words."/>
+    <style>
+      button {
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>A misspeller</h1>
+    <p>Supposedly humans can still understand misspelled words, given context.</p>
+    <p><em>Obviously</em> there are glitches, but I was just too lazy to fix them. You might experience infinite loops, but that's your fault for clicking the Misspell button.</p>
+    <textarea rows="8" cols="80"></textarea>
+    <button id='doit'>Misspell!</button>
+
+    <script src="../sheep.js"></script>
+    <script>
+function mispel() {
+  var text=document.querySelector('textarea').value.replace(/\r/g,'\n'),
+  index=-1,
+  result='';
+  while (index<text.length) {
+    let nextIndex,
+    word;
+    for (var i=index+1;i<text.length;i++) {
+      if (/[^a-zA-Z]/.test(text[i])) {
+        nextIndex=i;
+        break;
+      }
+    }
+    if (!nextIndex) nextIndex=text.length;
+    word=text.slice(index+1,nextIndex);
+    if (word&&word.length>2) {
+      var letters=word.slice(1,-1).split(''),
+      currentIndex=letters.length,
+      temporaryValue,
+      randomIndex;
+      while (0!==currentIndex) { // http://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
+        randomIndex=Math.floor(Math.random()*currentIndex);
+        currentIndex--;
+        temporaryValue=letters[currentIndex];
+        letters[currentIndex]=letters[randomIndex];
+        letters[randomIndex]=temporaryValue;
+      }
+      result+=word[0]+letters.join('')+word[word.length-1];
+    }
+    if (nextIndex===text.length) break;
+    else index=nextIndex;
+    result+=text[index];
+  }
+  document.querySelector('textarea').value=result;
+}
+document.querySelector('#doit').onclick=mispel;
+    </script>
+  </body>
+  <!-- MADE BY SEAN -->
+</html>

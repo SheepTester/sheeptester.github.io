@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Javascript Events</title>
+    <meta charset="UTF-8">
+    <meta name="description" content="A boring page where you can experience some of the JavaScript events."/>
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400" rel="stylesheet">
+    <style>
+      body {
+        margin: 10px;
+        font-family: 'Roboto',sans-serif;
+        font-size: 16px;
+        background: #eee;
+      }
+      .examplediv {
+        display: table;
+        box-shadow: 0 0 3px rgba(0,0,0,0.3);
+        padding: 5px;
+        margin: 10px;
+        color: white;
+        border-radius: 2px;
+      }
+      #red {
+        background: #f44336;
+      }
+      #green {
+        background: #4CAF50;
+      }
+      #blue {
+        background: #2196F3;
+      }
+      #statcontainer {
+        position: fixed;
+        top: 0;
+        right: 0;
+        overflow-y: auto;
+        height: 100%;
+      }
+      button {
+        border: none;
+        border-radius: 2px;
+        background: #607D8B;
+        color: white;
+        box-shadow: 0 0 3px rgba(0,0,0,0.3);
+        cursor: pointer;
+      }
+      button:active {
+        box-shadow: inset 0 0 3px rgba(0,0,0,0.3);
+      }
+      #stats {
+        display: none;
+      }
+      #stats span {
+        font-weight: bold;
+      }
+      .examplediv input {
+        display: block;
+        border: none;
+        padding: 5px;
+        margin: 5px;
+        box-shadow: 0 0 3px rgba(0,0,0,0.3);
+        border-radius: 2px;
+      }
+      #events {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+      }
+      @keyframes hi {
+        from {max-height: 0;padding: 0 5px;background: rgba(0,0,0,0.1);}
+        to {max-height: 20px;padding: 2px 5px;background: rgba(0,0,0,0.5);}
+      }
+      @keyframes bye {
+        from {max-height: 20px;padding: 2px 5px;background: rgba(0,0,0,0.5);}
+        to {max-height: 0;padding: 0 5px;background: rgba(0,0,0,0.1);}
+      }
+      #events li {
+        padding: 2px 5px;
+        background: rgba(0,0,0,0.5);
+        text-shadow: 0 0 3px rgba(0,0,0,0.3);
+        color: white;
+        animation: hi .5s;
+        font-size: 20px;
+        height: 20px;
+        overflow: hidden;
+        float: left;
+        clear: left;
+      }
+      #events li.bye {
+        animation: bye .5s;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="red" class='examplediv'>
+      Some content, I suppose.
+      <div id="green" class='examplediv'>
+        Some more content, I guess.
+      </div>
+    </div>
+    <div id="blue" class='examplediv'>
+      More content, I believe.
+      <input type="text" placeholder="Type in me!" autofocus/>
+    </div>
+    <div id="statcontainer">
+      <button id='show'>Show stats</button>
+      <div id="stats"></div>
+    </div>
+    <ul id='events'></ul>
+
+    <script src="../sheep.js"></script>
+    <script src='events.js'></script>
+  </body>
+  <!-- MADE BY SEAN -->
+</html>
