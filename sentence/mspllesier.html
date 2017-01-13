@@ -34,7 +34,7 @@ function mispel() {
     }
     if (!nextIndex) nextIndex=text.length;
     word=text.slice(index+1,nextIndex);
-    if (word&&word.length>2) {
+    if (word&&word.length>3) {
       var letters=word.slice(1,-1).split(''),
       currentIndex=letters.length,
       temporaryValue,
@@ -48,6 +48,7 @@ function mispel() {
       }
       result+=word[0]+letters.join('')+word[word.length-1];
     }
+    else result+=word;
     if (nextIndex===text.length) break;
     else index=nextIndex;
     result+=text[index];
