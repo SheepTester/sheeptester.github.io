@@ -297,6 +297,38 @@ place badge:before {
   width: 20px;
   margin-right: 5px;
 }
+#redirects h1 {
+  margin: 0;
+  padding: 10px;
+}
+#redirects dl {
+  margin: 0;
+  padding: 10px;
+}
+#redirects dt {
+  float: left;
+  clear: left;
+  padding-right: 5px;
+  margin: 5px 0;
+}
+#redirects dt:before {
+  content: '?';
+}
+#redirects dd {
+  margin: 0;
+  float: left;
+  margin: 5px 0;
+}
+#redirects a {
+  color: inherit;
+  text-decoration: none;
+  opacity: 0.8;
+  background: rgba(255,255,255,0.1);
+}
+#redirects a:hover {
+  opacity: 1;
+  background: rgba(255,255,255,0.15);
+}
 
 sarcasm {
   display: none; /* sarcasm is not needed here */

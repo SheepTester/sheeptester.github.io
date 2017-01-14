@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Dragging points test</title>
+    <meta charset="UTF-8">
+    <meta name="description" content="A scary failure that was once an attempt to make draggable points."/>
+    <style>
+      html, body {
+        height: 100%;
+        width: 100%;
+        overflow: hidden;
+        -webkit-user-select: none;
+        user-select: none;
+      }
+      body {
+        margin: 0;
+      }
+      point {
+        display: block;
+        position: absolute;
+        height: 10px;
+        width: 10px;
+        background: #C9C9C9;
+        border: 2px solid #BA5C5C;
+        border-radius: 50%;
+        opacity: 0;
+        cursor: pointer;
+      }
+      point:hover {
+        opacity: 0.8;
+      }
+      newbtn, newpathbtn {
+        display: table;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        cursor: pointer;
+        background: rgba(0,0,0,0.5);
+        color: white;
+        padding: 5px;
+      }
+      newpathbtn {
+        top: 0;
+        bottom: auto;
+      }
+      svg, pointcontainer {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height:100%;
+        width:100%;
+      }
+    </style>
+  </head>
+  <body>
+    <span>Drag a vertex to move it. Click to remove it. Click new triangle to spawn in a new triangle. The new point button adds a new vertex to the first shape.</span>
+    <svg xmlns="http://www.w3.org/2000/svg" fill='none' stroke-width='5' stroke='rgba(0,0,0,0.8)' stroke-linecap="round" stroke-linejoin="round"></svg>
+    <pointcontainer></pointcontainer>
+    <newbtn>New point</newbtn>
+    <newpathbtn>New triangle</newpathbtn>
+
+    <script src="../sheep.js"></script>
+    <script>
+var mx,
+my,
+drag={},
+smth=new Path(50,50,250,150,60,200);
+// document.querySelector('svg').innerHTML=smth.rep.outerHTML
+document.body.onmousemove=function(e){
+  mx=e.clientX;
+  my=e.clientY;
+};
+function Path() {
+  this.rep=document.createElementNS('http://www.w3.org/2000/svg','path');
+  // wow. HTTPS doesn't work but HTTP does. wow.
+  this.rep.setAttributeNS(null,'d','');
+  document.querySelector('svg').appendChild(this.rep);
+  this.points=[];
+  this.update=()=>{
+    var d='';
+    if (this.points.length>0) {
+      for (var i=0;i<this.points.length;i++) {
+        if (i===0) d+='M';
+        else d+='L';
+        d+=this.points[i].x+' '+this.points[i].y;
+      }
+      d+='z';
+    }
+    this.rep.setAttributeNS(null,'d',d);
+  };
+  for (var i=0;i<arguments.length;i+=2) this.points.push(new Point(this,arguments[i],arguments[i+1]));
+  this.update();
+}
+function Point(parent,x,y) {
+  var x,y;
+  this.parent=parent;
+  this.newpos=(x,y)=>{
+    this.x=x;
+    this.y=y;
+    this.rep.style.left=(this.x-7)+'px';
+    this.rep.style.top=(this.y-7)+'px';
+  };
+  this.mousedown=()=>{
+    this.rep.style.opacity='1';
+    drag.target=this.rep;
+    drag.offx=mx-this.x;
+    drag.offy=my-this.y;
+    drag.initx=this.x;
+    drag.inity=this.y;
+    document.querySelector('pointcontainer').addEventListener('mousemove',this.mousemove);
+    document.querySelector('pointcontainer').addEventListener('mouseup',this.mouseup);
+  };
+  this.mousemove=()=>{
+    this.newpos(mx-drag.offx,my-drag.offy);
+    this.parent.update();
+  };
+  this.mouseup=()=>{
+    if (this.rep.style.removeProperty) this.rep.style.removeProperty('opacity');
+    else this.rep.style.removeAttribute('opacity');
+    if (drag.initx===this.x&&drag.inity===this.y) {
+      this.parent.points.splice(this.parent.points.indexOf(this),1);
+      document.querySelector('pointcontainer').removeChild(this.rep);
+      this.parent.update();
+    }
+    drag={};
+    document.querySelector('pointcontainer').removeEventListener('mousemove',this.mousemove);
+    document.querySelector('pointcontainer').removeEventListener('mouseup',this.mouseup);
+  };
+  this.rep=document.createElement('point');
+  this.newpos(x||mx,y||my);
+  this.rep.onmousedown=this.mousedown;
+  document.querySelector('pointcontainer').appendChild(this.rep);
+}
+document.querySelector('newbtn').onmousedown=function(){
+  smth.points.push(new Point(smth));
+  smth.points[smth.points.length-1].mousedown();
+};
+document.querySelector('newbtn').onmouseup=function(){
+  if (drag.target) smth.points[smth.points.length-1].mouseup();
+}
+document.querySelector('newpathbtn').onclick=function(){
+  console.log(new Path(50,50,150,50,100,100))
+};
+    </script>
+  </body>
+  <!-- MADE BY SEAN -->
+</html>

@@ -3,6 +3,7 @@
   var el=document.createElement("link");
   el.type="text/css";
   el.rel="stylesheet";
+  // el.href="../sheep.css";
   el.href="https://sheeptester.github.io/sheep.css";
   document.head.appendChild(el);
   el=document.createElement("sheepmenu");
@@ -18,41 +19,41 @@
   }
 })();
 var SHEEP={
-  notify:function(message,link){
+  notify(message,link) {
     var s=document.createElement("sheepnotify"),link;
     s.innerHTML=message;
     if (link) {
-      s.className='SHEEPLINKY';
+      s.classList.add('SHEEPLINKY');
       s.href=link;
       setTimeout(function(){
-        s.className='SHEEPDISAPPEAR';
+        s.classList.add('SHEEPDISAPPEAR');
         setTimeout(function(){
           document.body.removeChild(s);
-        },200);
+        },300);
       },3000);
       s.onclick=function(e){
         window.location.href=link;
       };
     } else {
       s.onclick=function(e){
-        e.target.className='SHEEPDISAPPEAR';
+        e.target.classList.add('SHEEPDISAPPEAR');
         setTimeout(function(){
           document.body.removeChild(e.target);
-        },200);
+        },300);
       };
     }
     document.body.appendChild(s);
   },
   dismissed:JSON.parse(window.localStorage.dismissed),
-  dismiss:function(name){
+  dismiss(name) {
     SHEEP.dismissed[name]=1;
     window.localStorage.dismissed=JSON.stringify(SHEEP.dismissed);
   },
-  undismiss:function(name){
+  undismiss(name) {
     SHEEP.dismissed[name]=0;
     window.localStorage.dismissed=JSON.stringify(SHEEP.dismissed);
   },
-  textwidth:function(elem,text){
+  textwidth(elem,text) {
     /*
       would
       (document.querySelector('input')) gets value of input using input's styling
@@ -84,7 +85,7 @@ var SHEEP={
     document.body.removeChild(clone);
     return smth;
   },
-  search:function(input){
+  search(input) {
     if (typeof input==='string') {
       var result={},search=input;
       for (var i=1;i<search.length;i++) {

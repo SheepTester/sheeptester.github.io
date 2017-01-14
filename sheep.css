@@ -82,9 +82,10 @@ sheepnotify {
   bottom: 10px;
   right: 10px;
   padding: 5px;
-  animation: SHEEPAPPEAR .2s;
+  animation: SHEEPAPPEAR .3s linear;
   cursor: pointer;
   z-index: 1001;
+  overflow-y: hidden;
 }
 sheepnotify:after {
   content: 'Click to dismiss';
@@ -99,16 +100,35 @@ sheepnotify.SHEEPLINKY:after {
   opacity: 0.5;
 }
 sheepnotify.SHEEPDISAPPEAR {
-  animation: SHEEPDISAPPEAR .2s;
-  opacity: 0;
+  animation: SHEEPDISAPPEAR .3s linear;
 }
 @keyframes SHEEPAPPEAR {
-  from {transform: scale(0);opacity: 0;}
-  to   {transform: scale(1);opacity: 1;}
+  from {
+    max-height: 0;
+    padding: 0 5px;
+    border-top-width: 0;
+    border-bottom-width: 0;
+  }
+  to {
+    max-height: 50px;
+    padding: 5px;
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+  }
 }
 @keyframes SHEEPDISAPPEAR {
-  from {transform: scale(1);opacity: 1;}
-  to   {transform: scale(0);opacity: 0;}
+  from {
+    max-height: 50px;
+    padding: 5px;
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+  }
+  to {
+    max-height: 0;
+    padding: 0 5px;
+    border-top-width: 0;
+    border-bottom-width: 0;
+  }
 }
 sheepgettextwidth {
   white-space: pre;
