@@ -1,0 +1,30 @@
+<svg viewBox="0 0 200 100" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="sky" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0%"  stop-color="#5EB8C9"/>
+      <stop offset="100%" stop-color="#5E87C9"/>
+    </linearGradient>
+    <linearGradient id="water" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0%"  stop-color="#4587A8"/>
+      <stop offset="100%" stop-color="#2E5A8C"/>
+    </linearGradient>
+  </defs>
+  <style>#sea {transition: 1s;}</style>
+  <path fill="url(#sky)" d="M0 0H200V100H0z"/>
+  <path id='sea' fill="url(#water)" stroke='white' stroke-width='5px' d=""/>
+  <script>
+    <![CDATA[
+      var t=()=>{
+        var d='M',sea=document.querySelector('#sea'),x=-5;
+        while (x<205) {
+          d+=x+' '+Math.floor(Math.random()*20+50)+'L';
+          x+=Math.floor(Math.random()*30+5);
+        }
+        d+='205 '+Math.floor(Math.random()*20+50)+'V105H-5z';
+        sea.setAttributeNS(null,'d',d);
+      };
+      t();
+      setInterval(t,3000);
+    ]]>
+  </script>
+</svg>

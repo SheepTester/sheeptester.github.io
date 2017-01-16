@@ -1,0 +1,20 @@
+<svg viewBox="0 0 200 100" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="sky" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0%"  stop-color="#5EB8C9"/>
+      <stop offset="100%" stop-color="#5E87C9"/>
+    </linearGradient>
+  </defs>
+  <path fill="url(#sky)" d="M0 0H200V100H0z"/>
+  <path fill="white" d="
+    M30 70
+    a25 25 0 0 1 50 0
+    z
+    M60 70
+    a30 35 0 0 1 60 0
+    z
+    M100 70
+    a20 15 0 0 1 50 0
+    z
+  "/>
+</svg>

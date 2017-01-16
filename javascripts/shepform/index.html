@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>ShepForm Test</title>
+    <meta charset="UTF-8">
+    <meta name="description" content="A test page that should not concern you."/>
+    <link rel="stylesheet" href="shepform.css">
+    <link rel="stylesheet" href="colorinput.css">
+    <style>
+      input {
+        height: 30px;
+        width: 150px;
+        border-radius: 5px;
+        border: 5px solid rgba(0,0,0,0.3);
+      }
+      canvas {
+        image-rendering: -moz-crisp-edges;
+        image-rendering: -webkit-crisp-edges;
+        image-rendering: pixelated;
+        image-rendering: crisp-edges;
+      }
+    </style>
+  </head>
+  <body>
+    <shepselect>
+      <opt>donald trump</opt>
+      <opt>hillary clinton</opt>
+    </shepselect>
+    <br>
+    <input/>
+    <!-- <canvas width="100" height="100"></canvas> -->
+
+    <script src="../../sheep.js"></script>
+    <script src='shepform.js'></script>
+    <script src='colorinput.js'></script>
+    <script>
+      shep.tell('Hi');
+      isAColorInput(document.querySelector('input'),{value:'hsl(187,71%,50%)'});
+    </script>
+  </body>
+  <!-- MADE BY SEAN -->
+</html>

@@ -1,0 +1,38 @@
+shepmessage {
+  background: rgba(0,0,0,0.8);
+  color: white;
+  padding: 10px;
+  font-size: 20px;
+  position: fixed;
+  bottom: 0;
+  display: block;
+  left: 0;
+  right: 0;
+  height: 20px;
+  text-align: center;
+  animation: shepformappear .3s;
+  overflow-y: hidden;
+}
+shepmessage.sheptoberemoved {
+  animation: shepformbye .3s;
+}
+@keyframes shepformappear {
+  from {
+    max-height: 0;
+    padding: 0 10px;
+  }
+  to {
+    max-height: 20px;
+    padding: 10px;
+  }
+}
+@keyframes shepformbye {
+  from {
+    max-height: 20px;
+    padding: 10px;
+  }
+  to {
+    max-height: 0;
+    padding: 0 10px;
+  }
+}

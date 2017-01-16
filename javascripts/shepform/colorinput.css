@@ -1,0 +1,162 @@
+colorpicker {
+  display: block;
+  height: 200px;
+  width: 200px;
+  background: rgba(0,0,0,0.8);
+  position: absolute;
+  border-radius: 5px;
+}
+colorpicker:before {
+  content: '';
+  border-bottom: 10px solid rgba(0,0,0,0.8);
+  border-right: 10px solid transparent;
+  border-left: 10px solid transparent;
+  position: absolute;
+  top: -10px;
+  left: 10px;
+}
+colorpicker.pickerin {
+  animation: pickerin .3s;
+  overflow-y: hidden;
+}
+colorpicker.pickerout {
+  animation: pickerout .3s;
+  overflow-y: hidden;
+}
+@keyframes pickerin {
+  from {max-height: 0;}
+  to {max-height: 200px;}
+}
+@keyframes pickerout {
+  from {max-height: 200px;}
+  to {max-height: 0;}
+}
+colorpicker input {
+  border: none;
+  padding: 5px;
+  margin: 5px;
+  height: 30px;
+  width: calc(100% - 10px);
+  display: block;
+  box-sizing: border-box;
+  border-radius: 2px;
+}
+colorpicker > div {
+  display: none;
+}
+colorpicker > div.activeCOLOR {
+  display: block;
+}
+colorpicker > nav {
+  display: block;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: 5px;
+  height: 20px;
+  /*border: 1px solid rgba(255,255,255,0.5);*/
+  border-radius: 2px;
+  overflow: hidden;
+}
+colorpicker > nav > place {
+  display: inline-block;
+  width: 25%;
+  height: 100%;
+  cursor: pointer;
+  background-size: 15px;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+colorpicker > nav > place:nth-child(even) {
+  background-color: rgba(255,255,255,0.1);
+}
+colorpicker > nav > place:hover {
+  background-color: rgba(255,255,255,0.3);
+}
+colorpicker > nav > place.activeCOLOR {
+  background-color: rgba(255,255,255,0.5);
+  cursor: default;
+}
+colorpicker > nav > place.inputsCOLOR {
+  background-image: url(data:image/svg+xml,%3Csvg%20viewBox%3D%220%200%2010%2010%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cpath%20fill%3D%27white%27%20d%3D%27M0%200h10v2H6v8H4V2H0z%27/%3E%3C/svg%3E);
+}
+colorpicker > nav > place.shadesCOLOR {
+  background-image: url(data:image/svg+xml,%3Csvg%20viewBox%3D%220%200%2020%2010%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cpath%20fill%3D%27white%27%20d%3D%27M0%200h20v4H0zM0%206h20v4H0z%27/%3E%3C/svg%3E);
+}
+colorpicker > nav > place.wheelCOLOR {
+  background-image: url(data:image/svg+xml,%3Csvg%20viewBox%3D%220%200%2010%2010%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Ccircle%20fill%3D%27white%27%20cx%3D%225%22%20cy%3D%225%22%20r%3D%225%22/%3E%3C/svg%3E);
+}
+colorpicker > nav > place.slidersCOLOR {
+  background-image: url(data:image/svg+xml,%3Csvg%20viewBox%3D%220%200%2015%2010%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cpath%20fill%3D%27white%27%20d%3D%27M0%202h15v6H0zM9%200h2v10H9z%27/%3E%3C/svg%3E);
+}
+colorpicker svg, colorpicker slider, colorpicker hue {
+  margin: 5px;
+  display: block;
+  border-radius: 2px;
+}
+colorpicker saturation {
+  background-color: red;
+  background-image: linear-gradient(to right,white,transparent);
+  display: block;
+  height: 100px;
+  margin: 5px;
+  border-radius: 2px;
+  position: relative;
+}
+colorpicker value {
+  background-image: linear-gradient(to top,black,transparent);
+  display: block;
+  height: 100px;
+  border-radius: 2px;
+}
+colorpicker slider {
+  height: 20px;
+  position: relative;
+}
+colorpicker hue {
+  background-image: linear-gradient(to right,red,yellow,lime,cyan,blue,magenta,red);
+  height: 20px;
+  position: relative;
+}
+colorpicker svg.transparentCOLOR, colorpicker alpha {
+  background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAYAAACp8Z5+AAAAIUlEQVR42mN5/vz5fwYgkJCQAFEMLAxogAUm8+LFC+wqAE/1Bw1Qe7+NAAAALXRFWHRTb2Z0d2FyZQBieS5ibG9vZGR5LmNyeXB0by5pbWFnZS5QTkcyNEVuY29kZXKoBn/uAAAAAElFTkSuQmCC');
+  background-size: 8px;
+}
+colorpicker alpha {
+  border-radius: 2px;
+  display: block;
+  height: 20px;
+  margin: 5px;
+  position: relative;
+}
+colorpicker alphagradient {
+  background-image: linear-gradient(to right,transparent,red);
+  border-radius: 2px;
+  display: block;
+  height: 20px;
+}
+colorpicker drag1d {
+  display: block;
+  position: absolute;
+  width: 8px;
+  height: 24px;
+  top: -2px;
+  background: rgba(255,255,255,0.6);
+  border-radius: 4px;
+  transform: translateX(-4px);
+  box-shadow: 0 0 3px rgba(0,0,0,0.3);
+}
+colorpicker drag2d {
+  display: block;
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background: rgba(255,255,255,0.6);
+  border-radius: 5px;
+  transform: translateX(-5px) translateY(-5px);
+  box-shadow: 0 0 3px rgba(0,0,0,0.3);
+}
+colorpicker > div:not(.inputsCOLOR) {
+  user-select: none;
+}

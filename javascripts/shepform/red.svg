@@ -1,0 +1,9 @@
+<svg viewBox="0 0 200 20" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="scale">
+      <stop offset="0%"  stop-color="white"/>
+      <stop offset="100%" stop-color="red"/>
+    </linearGradient>
+  </defs>
+  <path fill="url(#scale)" d="M0 0H200V20H0z"/>
+</svg>
