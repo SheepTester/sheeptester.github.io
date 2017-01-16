@@ -1,5 +1,28 @@
 // too lazy to make my own
 var convertCOLOR={
+  round(n,place) {
+    return Math.round(n/Math.pow(10,place))*Math.pow(10,place);
+  },
+  hsv2hsl(hsv) {
+    // http://stackoverflow.com/questions/3423214/convert-hsb-hsv-color-to-hsl
+    var SB={s:hsv.s,b:hsv.v},SL={};
+    SL.l = convertCOLOR.round((2 - SB.s) * SB.b / 2,-2);
+    SL.s = convertCOLOR.round(SL.l&&SL.l<1 ? SB.s*SB.b/(SL.l<0.5 ? SL.l*2 : 2-SL.l*2) : SL.s,-2);
+    if (isNaN(SL.s)) SL.s=0;
+    SL.h=hsv.h;
+    return SL;
+  },
+  hsl2hsv(hsl) {
+    var SL={s:hsl.s,l:hsl.l},SB={};
+    var t = SL.s * (SL.l<0.5 ? SL.l : 1-SL.l);
+    SB.b = SL.l+t;
+    SB.s = convertCOLOR.round(SL.l>0 ? 2*t/SB.b : SB.s,-2);
+    if (isNaN(SB.s)) SB.s=0;
+    SB.h=hsl.h;
+    SB.v=convertCOLOR.round(SB.b,-2);
+    delete SB.b;
+    return SB;
+  },
   hsl2rgb(hsl) {
     // http://stackoverflow.com/questions/2353211/hsl-to-rgb-color-conversion
     var h=hsl.h,s=hsl.s,l=hsl.l;
@@ -21,9 +44,9 @@ var convertCOLOR={
       b = hue2rgb(p, q, h - 1/3);
     }
     return {
-      h:Math.round(r*255),
-      s:Math.round(g*255),
-      l:Math.round(b*255)
+      r:Math.round(r*255),
+      g:Math.round(g*255),
+      b:Math.round(b*255)
     };
   },
   rgb2hsl(rgb) {
@@ -42,7 +65,7 @@ var convertCOLOR={
         h /= 6;
     }
     return {
-      h:Math.round(h*360),
+      h:Math.round(h*360)/360,
       s:Math.round(s*100)/100,
       l:Math.round(l*100)/100
     };
@@ -78,7 +101,7 @@ var convertCOLOR={
 
 function canBeDragged(elem,xwise,ywise,moreoptions) {
   var drag={},
-  x,y,maxx,maxy,min=false,
+  x,y,maxx,maxy,min=false,onchange,
   idenifydrag=e=>{
     let x,y;
     if (xwise) x=Number(elem.style.left.slice(0,-2));
@@ -93,6 +116,10 @@ function canBeDragged(elem,xwise,ywise,moreoptions) {
     }
     if (xwise) elem.style.left=x+'px';
     if (ywise) elem.style.top=y+'px';
+    if (onchange) {
+      if (xwise) onchange(x,y);
+      else onchange(y);
+    }
   },
   mousedown=e=>{
     if (!drag.dragging) {
@@ -122,8 +149,10 @@ function canBeDragged(elem,xwise,ywise,moreoptions) {
     maxx=moreoptions.maxx;
     maxy=moreoptions.maxy;
     if (maxx||maxy) min=true;
+    onchange=moreoptions.onchange;
   }
   elem.parentNode.onmousedown=mousedown;
+  // elem.parentNode.onmousedown=mousedown; // touch support
 }
 function isAColorInput(input,options) {
   if (input&&input.tagName==='INPUT') {
@@ -131,7 +160,9 @@ function isAColorInput(input,options) {
     inputfocused=false,
     pickerfocused=false,
     timeout,
-    prevpickerfocus;
+    prevpickerfocus,
+    value={},
+    options;
     function isDescendant(parent,child) {
       // http://stackoverflow.com/questions/2234979/how-to-check-in-javascript-if-one-element-is-contained-within-another
       var node=child.parentNode;
@@ -184,10 +215,10 @@ function isAColorInput(input,options) {
       // s.querySelector('slider:last-of-type').classList.add('transparentCOLOR');
       v(s);
       s=t('nav');
-      classes=['inputsCOLOR active','shades','wheel','sliders'];
+      classes=['inputsCOLOR active','Text inputs','shades','Shades and tints','wheel','Color picker','sliders','RGB/CMYK'];
       inner='';
-      for (var i=0;i<classes.length;i++)
-        inner+='<place class="'+classes[i]+'COLOR"></place>';
+      for (var i=0;i<classes.length;i+=2)
+        inner+='<place class="'+classes[i]+'COLOR" title="'+classes[i+1]+'"></place>';
       s.innerHTML=inner;
       s.onclick=e=>{
         if (e.target.tagName==='PLACE') {
@@ -200,11 +231,19 @@ function isAColorInput(input,options) {
       v(s);
       o=picker.querySelectorAll('*');
       for (var i=0;i<o.length;i++) o[i].setAttribute('tabindex','0');
-      canBeDragged(picker.querySelector('drag2d'),true,true,{x:50,y:50,maxx:190,maxy:100});
-      o=picker.querySelectorAll('drag1d');
-      for (var i=0;i<o.length;i++) canBeDragged(o[i],true,false,{x:50,maxx:190});
+      canBeDragged(picker.querySelector('drag2d'),true,true,{x:50,y:50,maxx:190,maxy:100,onchange(x,y) {
+        let t=convertCOLOR.hsv2hsl({s:x/190,v:y/100});
+        value.s=t.s;
+        value.l=t.l;
+        updateOtherValues('hsl','saturation drag2d');
+      }});
+      canBeDragged(picker.querySelector('hue drag1d'),true,false,{x:50,maxx:190,onchange(x) {
+        value.h=x/190;
+        updateOtherValues('hsl','hue drag1d');
+      }});
     })();
     picker.setAttribute('tabindex','0');
+    picker.style.display='none';
     document.body.appendChild(picker);
     input.style.color='transparent';
     input.oninput=()=>input.value='';
@@ -214,7 +253,13 @@ function isAColorInput(input,options) {
         if (!pickerfocused) {
           var rect=input.getBoundingClientRect();
           picker.style.left=(rect.left+window.scrollX)+'px';
-          picker.style.top=(rect.top+window.scrollY+rect.height+10)+'px';
+          if (window.innerHeight-rect.bottom<200) {
+            picker.style.top=(window.scrollY+rect.top-210)+'px';
+            picker.classList.add('arrowafterCOLOR');
+          } else {
+            picker.style.top=(rect.top+window.scrollY+rect.height+10)+'px';
+            picker.classList.add('arrowbeforeCOLOR');
+          }
           picker.style.display='block';
           picker.classList.add('pickerin');
           timeout=setTimeout(()=>{
@@ -232,6 +277,8 @@ function isAColorInput(input,options) {
           timeout=setTimeout(()=>{
             picker.style.display='none';
             picker.classList.remove('pickerout');
+            picker.classList.remove('arrowbeforeCOLOR');
+            picker.classList.remove('arrowafterCOLOR');
           },300);
         }
       }
@@ -255,6 +302,8 @@ function isAColorInput(input,options) {
                 picker.style.display='none';
                 picker.classList.remove('pickerout');
                 prevpickerfocus=null;
+                picker.classList.remove('arrowbeforeCOLOR');
+                picker.classList.remove('arrowafterCOLOR');
               },300);
             }
           }
@@ -262,38 +311,100 @@ function isAColorInput(input,options) {
       }
       inputfocused=false;
     };
-    if (options.value) input.value=options.value;
+    if (options&&options.value) input.value=options.value;
     else if (!input.value) input.value='#000';
     input.style.backgroundColor=input.value;
-    let converted, object;
     if ('#rh'.indexOf(input.value[0])===-1) input.value='#'+input.value;
+    value.a=1; // temporary
     switch (input.value[0]) {
       case '#':
-        input.value=convertCOLOR.hex2long(input.value);
-        picker.querySelector('input.hexCOLOR').value=input.value;
-        converted=convertCOLOR.hex2rgb(input.value);
-        picker.querySelector('input.rgbCOLOR').value='rgb('+converted.r+','+converted.g+','+converted.b+')';
-        converted=convertCOLOR.rgb2hsl(converted);
-        picker.querySelector('input.hslCOLOR').value='hsl('+converted.h+','+(converted.s*100)+'%,'+(converted.l*100)+'%)';
+        value.hex=convertCOLOR.hex2long(input.value);
+        updateOtherValues('hex');
         break;
       case 'r':
-        picker.querySelector('input.rgbCOLOR').value=input.value;
-        object=input.value.slice(4,-1).split(',');
-        object={r:Number(object[0]),g:Number(object[1]),b:Number(object[2])};
-        picker.querySelector('input.hexCOLOR').value=convertCOLOR.rgb2hex(object);
-        converted=convertCOLOR.rgb2hsl(object);
-        picker.querySelector('input.hslCOLOR').value='hsl('+converted.h+','+(converted.s*100)+'%,'+(converted.l*100)+'%)';
+        var object=input.value.slice(4,-1).split(',');
+        value.r=Number(object[0]);
+        value.g=Number(object[1]);
+        value.b=Number(object[2]);
+        updateOtherValues('rgb');
         break;
       case 'h':
-        picker.querySelector('input.hslCOLOR').value=input.value;
-        object=input.value.slice(4,-1).split(',');
-        object={h:Number(object[0]),s:Number(object[1].slice(0,-1)),l:Number(object[2].slice(0,-1))};
-        // picker.querySelector('input.hexCOLOR').value=convertCOLOR.rgb2hex(object);
-        // converted=convertCOLOR.rgb2hsl(object);
-        // picker.querySelector('input.hslCOLOR').value='hsl('+converted.h+','+(converted.s*100)+'%,'+(converted.l*100)+'%)';
+        var object=input.value.slice(4,-1).split(',');
+        value.h=Number(object[0])/360;
+        value.s=Number(object[1].slice(0,-1))/100;
+        value.l=Number(object[2].slice(0,-1))/100;
+        updateOtherValues('hsl');
         break;
     }
+    function updateOtherValues(change,ignoreme) {
+      var change,ignoreme;
+      if (change) {
+        var object;
+        switch (change) {
+          case 'hex':
+            if (value.hex[0]!=='#') value.hex='#'+value.hex;
+            object=convertCOLOR.hex2rgb(value.hex);
+            value.r=object.r;
+            value.g=object.g;
+            value.b=object.b;
+            object=convertCOLOR.rgb2hsl(object);
+            value.h=object.h;
+            value.s=object.s;
+            value.l=object.l;
+            break;
+          case 'rgb':
+            value.hex=convertCOLOR.rgb2hex(value);
+            object=convertCOLOR.rgb2hsl(value);
+            value.h=object.h;
+            value.s=object.s;
+            value.l=object.l;
+            break;
+          case 'hsl':
+            object=convertCOLOR.hsl2rgb(value);
+            value.r=object.r;
+            value.g=object.g;
+            value.b=object.b;
+            value.hex=convertCOLOR.rgb2hex(object);
+            break;
+        }
+      }
+      function sel(selector) {
+        if (ignoreme!==selector) return picker.querySelector(selector);
+        else return {style:{}};
+      }
+      sel('input.hexCOLOR').value=value.hex;
+      sel('input.rgbCOLOR').value='rgb('+value.r+','+value.g+','+value.b+')';
+      sel('input.hslCOLOR').value='hsl('+Math.round(value.h*360)+','+(value.s*100)+'%,'+(value.l*100)+'%)';
+      sel('hue drag1d').style.left=Math.round(value.h*190)+'px';
+      sel('alpha drag1d').style.left=Math.round(value.a*190)+'px';
+      let brightness=convertCOLOR.hsl2hsv(value);
+      sel('saturation').style.backgroundColor='hsl('+Math.round(value.h*360)+',100%,50%)';
+      sel('saturation drag2d').style.top=Math.round(brightness.v*100)+'px';
+      sel('saturation drag2d').style.left=Math.round(brightness.s*190)+'px';
+      input.value=value.hex; // probably going to have format option
+      input.style.backgroundColor=value.hex;
+      if (change&&input.onchange) input.onchange();
+    }
+    picker.querySelector('input.hexCOLOR').onchange=e=>{
+      value.hex=e.target.value;
+      updateOtherValues('hex','input.hexCOLOR');
+    };
+    picker.querySelector('input.rgbCOLOR').onchange=e=>{
+      var object=e.target.value.slice(4,-1).split(',');
+      value.r=Number(object[0]);
+      value.g=Number(object[1]);
+      value.b=Number(object[2]);
+      updateOtherValues('rgb','input.rgbCOLOR');
+    };
+    picker.querySelector('input.hslCOLOR').onchange=e=>{
+      var object=e.target.value.slice(4,-1).split(',');
+      value.h=Number(object[0])/360;
+      value.s=Number(object[1].slice(0,-1))/100;
+      value.l=Number(object[2].slice(0,-1))/100;
+      updateOtherValues('hsl','input.hslCOLOR');
+    };
   } else {
     console.error('No sir, that\'s not an input element.');
+    return 666;
   }
 }

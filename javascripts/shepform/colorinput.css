@@ -5,23 +5,34 @@ colorpicker {
   background: rgba(0,0,0,0.8);
   position: absolute;
   border-radius: 5px;
+  box-shadow: 0 0 3px rgba(0,0,0,0.3);
+  z-index: 1000;
 }
-colorpicker:before {
+colorpicker.arrowbeforeCOLOR:before, colorpicker.arrowafterCOLOR:after {
   content: '';
-  border-bottom: 10px solid rgba(0,0,0,0.8);
   border-right: 10px solid transparent;
   border-left: 10px solid transparent;
   position: absolute;
-  top: -10px;
   left: 10px;
+  filter: drop-shadow(0 0 3px rgba(0,0,0,0.3));
+}
+colorpicker.arrowbeforeCOLOR:before {
+  border-bottom: 10px solid rgba(0,0,0,0.8);
+  top: -10px;
+}
+colorpicker.arrowafterCOLOR:after {
+  border-top: 10px solid rgba(0,0,0,0.8);
+  bottom: -10px;
+}
+colorpicker.pickerin, colorpicker.pickerout {
+  z-index: 0;
+  overflow-y: hidden;
 }
 colorpicker.pickerin {
   animation: pickerin .3s;
-  overflow-y: hidden;
 }
 colorpicker.pickerout {
   animation: pickerout .3s;
-  overflow-y: hidden;
 }
 @keyframes pickerin {
   from {max-height: 0;}
@@ -40,6 +51,12 @@ colorpicker input {
   display: block;
   box-sizing: border-box;
   border-radius: 2px;
+  font-size: 20px;
+  font-family: monospace;
+  background: rgba(255,255,255,0.8);
+}
+colorpicker input:focus {
+  background: rgba(255,255,255,1);
 }
 colorpicker > div {
   display: none;
@@ -105,7 +122,7 @@ colorpicker saturation {
   position: relative;
 }
 colorpicker value {
-  background-image: linear-gradient(to top,black,transparent);
+  background-image: linear-gradient(to bottom,black,transparent);
   display: block;
   height: 100px;
   border-radius: 2px;
