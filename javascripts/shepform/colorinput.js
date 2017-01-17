@@ -121,26 +121,40 @@ function canBeDragged(elem,xwise,ywise,moreoptions) {
       else onchange(y);
     }
   },
-  mousedown=e=>{
+  mousedown=(touch,e)=>{
     if (!drag.dragging) {
       drag.dragging=true;
       if (xwise) drag.offx=e.clientX-Number(elem.style.left.slice(0,-2));
       if (ywise) drag.offy=e.clientY-Number(elem.style.top.slice(0,-2));
-      elem.parentNode.onmousemove=mousemove;
-      elem.parentNode.onmouseup=mouseup;
-    }
-  },
-  mousemove=e=>{
-    if (drag.dragging) {
-      idenifydrag(e);
-    }
-  },
-  mouseup=e=>{
-    if (drag.dragging) {
-      idenifydrag(e);
-      drag.dragging=false;
-      elem.parentNode.onmousemove=null;
-      elem.parentNode.onmouseup=null;
+      if (touch) {
+        elem.parentNode.ontouchmove=e=>{
+          if (drag.dragging) {
+            idenifydrag(e.touches[0]);
+            e.preventDefault();
+          }
+        };
+        elem.parentNode.ontouchend=e=>{
+          if (drag.dragging) {
+            drag.dragging=false;
+            elem.parentNode.ontouchmove=null;
+            elem.parentNode.ontouchend=null;
+          }
+        };
+      } else {
+        elem.parentNode.onmousemove=e=>{
+          if (drag.dragging) {
+            idenifydrag(e);
+          }
+        };
+        elem.parentNode.onmouseup=e=>{
+          if (drag.dragging) {
+            idenifydrag(e);
+            drag.dragging=false;
+            elem.parentNode.onmousemove=null;
+            elem.parentNode.onmouseup=null;
+          }
+        };
+      }
     }
   };
   if (moreoptions) {
@@ -151,8 +165,8 @@ function canBeDragged(elem,xwise,ywise,moreoptions) {
     if (maxx||maxy) min=true;
     onchange=moreoptions.onchange;
   }
-  elem.parentNode.onmousedown=mousedown;
-  // elem.parentNode.onmousedown=mousedown; // touch support
+  elem.parentNode.onmousedown=e=>mousedown(false,e);
+  elem.parentNode.ontouchstart=e=>mousedown(true,e.touches[0]);
 }
 function isAColorInput(input,options) {
   if (input&&input.tagName==='INPUT') {
@@ -190,6 +204,24 @@ function isAColorInput(input,options) {
       v(s);
       s=t('div');
       r(s,'shadesCOLOR');
+      o=t('tints');
+      for (var i=0;i<10;i++) o.appendChild(t('tint'));
+      o.onmousedown=e=>{
+        if (e.target.tagName==='TINT') {
+          value.l=Number(e.target.dataset.l);
+          updateOtherValues('hsl');
+        }
+      };
+      s.appendChild(o);
+      o=t('shades');
+      for (var i=0;i<10;i++) o.appendChild(t('shade'));
+      o.onmousedown=e=>{
+        if (e.target.tagName==='SHADE') {
+          value.l=Number(e.target.dataset.l);
+          updateOtherValues('hsl');
+        }
+      };
+      s.appendChild(o);
       v(s);
       s=t('div');
       r(s,'wheelCOLOR');
@@ -207,12 +239,11 @@ function isAColorInput(input,options) {
       v(s);
       s=t('div');
       r(s,'slidersCOLOR');
-      classes=['black','red','black','green','black','blue','cyan','white','magenta','white','yellow','white'];
+      classes=['red','green','blue'/*,'cyan','magenta','yellow','key'*/];
       inner='';
-      for (var i=0;i<classes.length;i+=2)
-        inner+='<slider style="background-image:linear-gradient(to right,'+classes[i]+','+classes[i+1]+');"><drag1d></drag1d></slider>';
+      for (var i=0;i<classes.length;i++)
+        inner+='<slider class="'+classes[i]+'COLOR"><drag1d></drag1d></slider>';
       s.innerHTML=inner;
-      // s.querySelector('slider:last-of-type').classList.add('transparentCOLOR');
       v(s);
       s=t('nav');
       classes=['inputsCOLOR active','Text inputs','shades','Shades and tints','wheel','Color picker','sliders','RGB/CMYK'];
@@ -231,15 +262,27 @@ function isAColorInput(input,options) {
       v(s);
       o=picker.querySelectorAll('*');
       for (var i=0;i<o.length;i++) o[i].setAttribute('tabindex','0');
-      canBeDragged(picker.querySelector('drag2d'),true,true,{x:50,y:50,maxx:190,maxy:100,onchange(x,y) {
+      canBeDragged(picker.querySelector('drag2d'),true,true,{maxx:190,maxy:100,onchange(x,y) {
         let t=convertCOLOR.hsv2hsl({s:x/190,v:y/100});
         value.s=t.s;
         value.l=t.l;
         updateOtherValues('hsl','saturation drag2d');
       }});
-      canBeDragged(picker.querySelector('hue drag1d'),true,false,{x:50,maxx:190,onchange(x) {
+      canBeDragged(picker.querySelector('hue drag1d'),true,false,{maxx:190,onchange(x) {
         value.h=x/190;
         updateOtherValues('hsl','hue drag1d');
+      }});
+      canBeDragged(picker.querySelector('slider.redCOLOR drag1d'),true,false,{maxx:190,onchange(x) {
+        value.r=Math.round(x/190*255);
+        updateOtherValues('rgb','slider.redCOLOR drag1d');
+      }});
+      canBeDragged(picker.querySelector('slider.greenCOLOR drag1d'),true,false,{maxx:190,onchange(x) {
+        value.g=Math.round(x/190*255);
+        updateOtherValues('rgb','slider.greenCOLOR drag1d');
+      }});
+      canBeDragged(picker.querySelector('slider.blueCOLOR drag1d'),true,false,{maxx:190,onchange(x) {
+        value.b=Math.round(x/190*255);
+        updateOtherValues('rgb','slider.blueCOLOR drag1d');
       }});
     })();
     picker.setAttribute('tabindex','0');
@@ -377,16 +420,36 @@ function isAColorInput(input,options) {
       sel('input.hslCOLOR').value='hsl('+Math.round(value.h*360)+','+(value.s*100)+'%,'+(value.l*100)+'%)';
       sel('hue drag1d').style.left=Math.round(value.h*190)+'px';
       sel('alpha drag1d').style.left=Math.round(value.a*190)+'px';
-      let brightness=convertCOLOR.hsl2hsv(value);
+      var brightness=convertCOLOR.hsl2hsv(value);
       sel('saturation').style.backgroundColor='hsl('+Math.round(value.h*360)+',100%,50%)';
       sel('saturation drag2d').style.top=Math.round(brightness.v*100)+'px';
       sel('saturation drag2d').style.left=Math.round(brightness.s*190)+'px';
+      sel('slider.redCOLOR').style.backgroundImage='linear-gradient(to right,rgb(0,'+value.g+','+value.b+'),rgb(255,'+value.g+','+value.b+'))';
+      sel('slider.redCOLOR drag1d').style.left=Math.round(value.r/255*190)+'px';
+      sel('slider.greenCOLOR').style.backgroundImage='linear-gradient(to right,rgb('+value.r+',0,'+value.b+'),rgb('+value.r+',255,'+value.b+'))';
+      sel('slider.greenCOLOR drag1d').style.left=Math.round(value.g/255*190)+'px';
+      sel('slider.blueCOLOR').style.backgroundImage='linear-gradient(to right,rgb('+value.r+','+value.g+',0),rgb('+value.r+','+value.g+',255))';
+      sel('slider.blueCOLOR drag1d').style.left=Math.round(value.b/255*190)+'px';
+      var shades=sel('tints').children,
+      diff=(100-value.l*100)/10;
+      for (var i=0;i<shades.length;i++) {
+        shades[i].style.backgroundColor='hsl('+Math.round(value.h*360)+','+(value.s*100)+'%,'+Math.round((i+1)*diff+value.l*100)+'%)';
+        shades[i].dataset.l=Math.round((i+1)*diff+value.l*100)/100;
+      }
+      shades=sel('shades').children,
+      diff=value.l*100/10;
+      for (var i=0;i<shades.length;i++) {
+        shades[i].style.backgroundColor='hsl('+Math.round(value.h*360)+','+(value.s*100)+'%,'+Math.round(i*diff)+'%)';
+        shades[i].dataset.l=Math.round(i*diff)/100;
+      }
       input.value=value.hex; // probably going to have format option
       input.style.backgroundColor=value.hex;
       if (change&&input.onchange) input.onchange();
     }
     picker.querySelector('input.hexCOLOR').onchange=e=>{
       value.hex=e.target.value;
+      if (e.target.value[0]!=='#') e.target.value='#'+e.target.value;
+      if (e.target.value.length>7) e.target.value=e.target.value.slice(0,7);
       updateOtherValues('hex','input.hexCOLOR');
     };
     picker.querySelector('input.rgbCOLOR').onchange=e=>{

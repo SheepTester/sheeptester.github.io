@@ -64,6 +64,19 @@ colorpicker > div {
 colorpicker > div.activeCOLOR {
   display: block;
 }
+colorpicker shades, colorpicker tints {
+  display: block;
+  height: 20px;
+  border-radius: 2px;
+  overflow: hidden;
+  margin: 5px;
+}
+colorpicker shade, colorpicker tint {
+  display: inline-block;
+  width: 10%;
+  height: 100%;
+  cursor: pointer;
+}
 colorpicker > nav {
   display: block;
   position: absolute;
