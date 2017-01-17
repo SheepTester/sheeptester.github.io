@@ -1,7 +1,7 @@
 body {
   margin: 0;
   font-size: 30px;
-  background-image: url("img/darkforest.jpg");
+  background-image: url("../img/darkforest.jpg");
   background-size: cover;
   background-position: center center;
   background-repeat: no-repeat;

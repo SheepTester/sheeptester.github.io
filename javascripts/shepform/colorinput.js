@@ -109,10 +109,10 @@ function canBeDragged(elem,xwise,ywise,moreoptions) {
     if (xwise) x=e.clientX-drag.offx;
     if (ywise) y=e.clientY-drag.offy;
     if (min) {
-      if (xwise&&x<0) x=0;
-      else if (xwise&&maxx&&x>maxx) x=maxx;
-      if (ywise&&y<0) y=0;
-      else if (ywise&&maxy&&y>maxy) y=maxy;
+      if (xwise&&x<0) {drag.offx+=x;x=0;}
+      else if (xwise&&maxx&&x>maxx) {drag.offx+=x-maxx;x=maxx;}
+      if (ywise&&y<0) {drag.offy+=y;y=0;}
+      else if (ywise&&maxy&&y>maxy) {drag.offy+=y-maxy;y=maxy;}
     }
     if (xwise) elem.style.left=x+'px';
     if (ywise) elem.style.top=y+'px';
@@ -296,7 +296,7 @@ function isAColorInput(input,options) {
         if (!pickerfocused) {
           var rect=input.getBoundingClientRect();
           picker.style.left=(rect.left+window.scrollX)+'px';
-          if (window.innerHeight-rect.bottom<200) {
+          if (window.innerHeight-rect.bottom<210) {
             picker.style.top=(window.scrollY+rect.top-210)+'px';
             picker.classList.add('arrowafterCOLOR');
           } else {
@@ -420,6 +420,7 @@ function isAColorInput(input,options) {
       sel('input.hslCOLOR').value='hsl('+Math.round(value.h*360)+','+(value.s*100)+'%,'+(value.l*100)+'%)';
       sel('hue drag1d').style.left=Math.round(value.h*190)+'px';
       sel('alpha drag1d').style.left=Math.round(value.a*190)+'px';
+      sel('alphagradient').style.backgroundImage='linear-gradient(to right,transparent,'+value.hex+')';
       var brightness=convertCOLOR.hsl2hsv(value);
       sel('saturation').style.backgroundColor='hsl('+Math.round(value.h*360)+',100%,50%)';
       sel('saturation drag2d').style.top=Math.round(brightness.v*100)+'px';

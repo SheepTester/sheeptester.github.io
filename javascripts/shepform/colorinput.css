@@ -124,6 +124,7 @@ colorpicker svg, colorpicker slider, colorpicker hue {
   margin: 5px;
   display: block;
   border-radius: 2px;
+  overflow: hidden;
 }
 colorpicker saturation {
   background-color: red;
@@ -133,6 +134,7 @@ colorpicker saturation {
   margin: 5px;
   border-radius: 2px;
   position: relative;
+  overflow: hidden;
 }
 colorpicker value {
   background-image: linear-gradient(to bottom,black,transparent);
@@ -152,6 +154,7 @@ colorpicker hue {
 colorpicker svg.transparentCOLOR, colorpicker alpha {
   background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAYAAACp8Z5+AAAAIUlEQVR42mN5/vz5fwYgkJCQAFEMLAxogAUm8+LFC+wqAE/1Bw1Qe7+NAAAALXRFWHRTb2Z0d2FyZQBieS5ibG9vZGR5LmNyeXB0by5pbWFnZS5QTkcyNEVuY29kZXKoBn/uAAAAAElFTkSuQmCC');
   background-size: 8px;
+  overflow: hidden;
 }
 colorpicker alpha {
   border-radius: 2px;
@@ -170,22 +173,24 @@ colorpicker drag1d {
   display: block;
   position: absolute;
   width: 8px;
-  height: 24px;
-  top: -2px;
+  height: 20px;
+  top: 0;
   background: rgba(255,255,255,0.6);
-  border-radius: 4px;
   transform: translateX(-4px);
   box-shadow: 0 0 3px rgba(0,0,0,0.3);
+  cursor: pointer;
 }
 colorpicker drag2d {
   display: block;
   position: absolute;
   width: 10px;
   height: 10px;
-  background: rgba(255,255,255,0.6);
   border-radius: 5px;
   transform: translateX(-5px) translateY(-5px);
   box-shadow: 0 0 3px rgba(0,0,0,0.3);
+  border: 4px solid rgba(255,255,255,0.6);
+  box-sizing: border-box;
+  cursor: pointer;
 }
 colorpicker > div:not(.inputsCOLOR) {
   user-select: none;
