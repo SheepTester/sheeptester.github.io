@@ -131,6 +131,7 @@ function canBeDragged(elem,xwise,ywise,moreoptions) {
           if (drag.dragging) {
             idenifydrag(e.touches[0]);
             e.preventDefault();
+            return false;
           }
         };
         elem.parentNode.ontouchend=e=>{

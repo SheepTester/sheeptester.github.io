@@ -43,18 +43,36 @@ nav span {
   font-size: 20px;
   color: white;
 }
-nav .clickable, nav .btn {
+nav .clickable {
   cursor: pointer;
   transition: background .2s;
   color: rgba(255,255,255,0.8);
 }
-nav .clickable:not(.active):hover, nav .btn:hover {
+nav .clickable:not(.active):hover {
   background: rgba(0,0,0,0.2);
   color: white;
 }
 nav .clickable.active {
   cursor: default;
   color: white;
+  text-shadow: 0 0 3px rgba(0,0,0,0.8);
+}
+nav .btn {
+  cursor: pointer;
+  color: rgba(255,255,255,0.8);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  padding: 2px;
+  font-size: 16px;
+  border-radius: 5px;
+  margin: 10px;
+  background: rgba(255, 255, 255, 0.1);
+  transition: all .2s;
+}
+nav .btn:hover {
+  color: white;
+  background: rgba(255, 255, 255, 0.3);
+  padding: 4px;
+  margin: 8px;
 }
 #places {
   font-size: 0;
