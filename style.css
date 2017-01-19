@@ -79,7 +79,8 @@ nav .btn:hover {
   overflow-x: hidden;
 }
 place {
-  width: 25%;
+  width: calc(25% - 20px);
+  margin: 10px;
   display: inline-block;
   position: relative;
   cursor: pointer;
@@ -346,6 +347,41 @@ place badge:before {
 #redirects a:hover {
   opacity: 1;
   background: rgba(255,255,255,0.15);
+}
+sheepmenu.blockvision {
+  bottom: calc(50vh - 50vw);
+  border-top-left-radius: 0;
+  box-shadow: none;
+  width: 100vw;
+  height: 100vw;
+  right: 0;
+  opacity: 1;
+  transition: none;
+}
+sheepmenu.playhellos {
+  animation: hellos 0.3s cubic-bezier(0.55, 0.055, 0.675, 0.19);
+  z-index: 1000;
+  background-color: white;
+}
+@keyframes hellos {
+  0% {
+    bottom: calc(50vh - 50vw);
+    border-top-left-radius: 0;
+    box-shadow: none;
+    width: 100vw;
+    height: 100vw;
+    right: 0;
+    opacity: 1;
+  }
+  100% {
+    bottom: -20px;
+    border-top-left-radius: 80px;
+    box-shadow: 0 0 2px rgba(0,0,0,0.5);
+    width: 100px;
+    height: 100px;
+    right: -20px;
+    opacity: 0.3;
+  }
 }
 
 sarcasm {

@@ -8,7 +8,7 @@ sheepmenu {
   box-shadow: 0 0 10px rgba(0,0,0,0.5);
   z-index: 1000;
   opacity: 0.3;
-  transition: bottom .5s, right .5s, box-shadow .5s, border-radius .5s, opacity .5s;
+  transition: all .5s;
   background-image: url('https://sheeptester.github.io/SHEEP.svg');
   cursor: pointer;
 }

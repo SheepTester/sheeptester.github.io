@@ -1,13 +1,14 @@
 body {
   margin: 0;
-  background: #635BBC;
+  background: #e6d289;
   font-family: 'Roboto', sans-serif;
   font-size: 15px;
-  color: white;
+  color: rgba(0,0,0,0.5);
 }
 h1, h2, h3, h4, h5, h6 {
   margin: 5px 0;
   font-weight: normal;
+  color: rgba(0,0,0,0.8);
 }
 h1 {font-size:35px;}
 h2 {font-size:30px;}
@@ -24,16 +25,24 @@ dd {
 header {
   position: fixed;
   top: 0;
-  padding: 5px;
+  padding: 5px 20px;
   width: 100%;
   box-sizing: border-box;
   background: rgba(0,0,0,0.5);
   height: 100px;
   box-shadow: 0 0 3px rgba(0,0,0,0.3);
+  color: white;
 }
 header h1 {
   font-size: 60px;
   margin: 0;
+  color: white;
+}
+header h2 {
+  color: white;
+}
+header ul li:before {
+  color: white;
 }
 footer {
   position: fixed;
@@ -44,6 +53,7 @@ footer {
   height: 30px;
   background: rgba(0,0,0,0.5);
   box-shadow: 0 0 3px rgba(0,0,0,0.3);
+  color: white;
 }
 .container {
   margin-bottom: 30px;
@@ -60,14 +70,14 @@ ul ul, ol ul {
 }
 ul>li:before {
   content: '- ';
-  color: rgba(255,255,255,0.5);
+  color: rgba(0,0,0,0.5);
 }
 ol>li {
   counter-increment: merp;
 }
 ol>li:before {
   content: counter(merp) ' ';
-  color: rgba(255,255,255,0.5);
+  color: rgba(0,0,0,0.5);
   user-select: none;
   -webkit-user-select: none;
   -moz-user-select: none;
@@ -77,35 +87,36 @@ ol>li:first-child {
   counter-reset: merp;
 }
 .container a {
-  color: white;
-  background: rgba(255,255,255,0.1);
+  color: inherit;
+  background: rgba(0,0,0,0.1);
   text-decoration: none;
 }
 .container a:hover {
-  background: rgba(255,255,255,0.2);
+  background: rgba(0,0,0,0.2);
 }
 .container a:active {
-  background: rgba(255,255,255,0.4);
+  background: rgba(0,0,0,0.4);
 }
 .container p {
   margin: 5px 0;
 }
 .container blockquote {
   margin: 5px;
-  border-left: 2px solid rgba(255,255,255,0.5);
+  border-left: 2px solid rgba(0,0,0,0.5);
   padding-left: 10px;
 }
 .container img {
   box-shadow: 0 0 3px rgba(0,0,0,0.5);
   border-radius: 5px;
   cursor: pointer;
+  max-width: 100%;
 }
 #authors {
   position: absolute;
   right: 0;
   top: 0;
-  padding: 10px;
-  border-left: 5px solid rgba(0,0,0,0.2);
+  padding: 10px 30px;
+  background: rgba(0,0,0,0.2);
   height: 100px;
   box-sizing: border-box;
 }
