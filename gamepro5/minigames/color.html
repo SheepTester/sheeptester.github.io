@@ -66,7 +66,7 @@
   </head>
   <body>
     <p>based off <a href="https://scratch.mit.edu/projects/140078403/">color conflict</a> by <a href="https://scratch.mit.edu/users/Hobson-TV">Hobson-TV on Scratch</a> / follow him for funny animations and <em>interesting</em> games<br>sometimes bots get stuck on an edge</p>
-    <button id='oneplayer'>play with bot</button> speed of bot <input type="number" value="150" id='sped'/> (recommended: 80-200)
+    <button id='oneplayer'>play with bot</button> speed of bot <input type="number" value="100" id='sped'/> (recommended: 80-200)
     <button id='twoplayer'>2-player (if you have friends)</button> <button id='nulplayer'>0-player because bots are fun to watch</button>
     <game>
       <table></table>
@@ -79,15 +79,15 @@
     <script src="../../sheep.js"></script>
     <script>
 (_=>{
-  'use strict';
+  // 'use strict';
   for (var i=0;i<11;i++) {
     var s=document.createElement('tr');
     for (var j=0;j<15;j++) s.appendChild(document.createElement('td'));
     document.querySelector('table').appendChild(s);
   }
   // left up down right
-  var p1={x:1,y:5,moving:false,rep:document.querySelector('player.p1'),color:'red',keys:[65,87,83,68]},
-  p2={x:13,y:5,moving:false,rep:document.querySelector('player.p2'),color:'blue',keys:[37,38,40,39]},
+  var p1={x:1,y:5,moving:false,rep:document.querySelector('player.p1'),color:'red',keys:[65,87,83,68],targetgrey:false},
+  p2={x:13,y:5,moving:false,rep:document.querySelector('player.p2'),color:'blue',keys:[37,38,40,39],targetgrey:false},
   botintervals;
   function getTDAt(x,y) {
     var t=document.querySelector('table').children[y];
@@ -137,20 +137,89 @@
     directions=[[-1,0],[1,0],[0,-1],[0,1]],
     t,
     opposite=this.color==='red'?'blue':'red';
+    if (this.color==='red') {
+      surrounds=[
+        getTDAt(this.x,this.y+1), // down
+        getTDAt(this.x,this.y-1), // up
+        getTDAt(this.x+1,this.y), // right
+        getTDAt(this.x-1,this.y)  // left
+      ];
+      directions=[[0,1],[0,-1],[1,0],[-1,0]];
+    }
     for (var i=0;i<4;i++) {
       if (surrounds[i]) surrounds[i]=surrounds[i].className;
       else surrounds[i]='NO.';
     }
-    if (surrounds.indexOf('NO.')>-1||!Math.floor(Math.random()*4)) {
+    targetGrey=type=>{
+      function arrInd(array) {
+        for (var i=0;i<directions.length;i++) {
+          if (directions[i][0]==array[0]&&directions[i][1]==array[1]) return i;
+        }
+        return -1;
+      }
+      var t;
+      if (this.targetgrey) {
+        var i=this.targetgrey[0],
+        j=this.targetgrey[1];
+        if (this.x>j) t=arrInd([-1,0]);
+        else if (this.x<j) t=arrInd([1,0]);
+        else if (this.y<i) t=arrInd([0,1]);
+        else if (this.y>i) t=arrInd([0,-1]);
+        else {
+          this.targetgrey=false;
+          t=Math.floor(Math.random()*4);
+          while (surrounds[t]==='NO.') t=(t+1)%4;
+        }
+      } else {
+        looper:
+        for (var i=0;i<11;i++) {
+          for (var j=0;j<15;j++) {
+            if (getTDAt(j,i).className===(type==='grey'?'':opposite)) {
+              this.targetgrey=[i,j];
+              if (this.x>j) t=arrInd([-1,0]);
+              else if (this.x<j) t=arrInd([1,0]);
+              else if (this.y<i) t=arrInd([0,1]);
+              else if (this.y>i) t=arrInd([0,-1]);
+              else {
+                this.targetgrey=false;
+                t=Math.floor(Math.random()*4);
+                while (surrounds[t]==='NO.') t=(t+1)%4;
+              }
+              break looper;
+            }
+          }
+        }
+      }
+      return t;
+    }
+    function checkboard() {
+      var greys=0,oppos=0,mine=0;
+      for (var i=0;i<11;i++) {
+        for (var j=0;j<15;j++) {
+          if (!getTDAt(j,i).className) greys++;
+          else if (getTDAt(j,i).className===opposite) oppos++;
+          else if (getTDAt(j,i).className===this.color) mine++;
+        }
+      }
+      return {finishsoon:greys<60,losing:mine<oppos};
+    }
+    if (this.targetgrey) t=targetGrey();
+    else if (surrounds.indexOf('NO.')>-1||!Math.floor(Math.random()*4)) {
       t=Math.floor(Math.random()*4);
       while (surrounds[t]==='NO.') t=(t+1)%4;
     }
     else if (surrounds.indexOf(opposite)>-1) t=surrounds.indexOf(opposite);
     else if (surrounds.indexOf('')>-1) t=surrounds.indexOf('');
-    else t=surrounds.indexOf(this.color);
-    this.x+=directions[t][0];
-    this.y+=directions[t][1];
-    this.render();
+    else if (checkboard().finishsoon&&checkboard().losing&&Math.floor(Math.random()*5)) t=targetGrey('oppo');
+    else if (checkboard().finishsoon) t=targetGrey('grey');
+    else {t=Math.floor(Math.random()*4);}
+    try {
+      this.x+=directions[t][0];
+      this.y+=directions[t][1];
+      this.render();
+    } catch (e) {
+      console.log(t,this.targetgrey,e);
+    }
   };
   p1.keypress=p2.keypress=function(e){
     if (!this.moving) {
