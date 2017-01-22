@@ -50,6 +50,7 @@ var sheeptest=(function(){
     {url:'?penland',img:'img/penland.png',name:'Penland'},
     {url:'javascripts/shepform',img:'img/colorpicker.png',name:'Color input',featured:1},
     {url:'javascripts/clicker',img:'img/click.png',name:'Clicker Game'},
+    {url:'gamepro5/minigames/color.html',img:'img/color.png',name:'Color fight thing',new:1},
     {url:'animations',img:'img/anima.png',name:'Animations'},
     {url:'javascripts',img:'img/js.png',name:'Javascripts'},
     {url:'sentence',img:'img/sentence.png',name:'Sentence Generator'},

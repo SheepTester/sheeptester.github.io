@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>color fight thing</title>
+    <meta charset="UTF-8">
+    <meta name="description" content="a fight game thing like splatoon but im stealing from a different game teehee"/>
+    <style>
+      body {
+        margin: 0;
+      }
+      table {
+        border-spacing: 0;
+      }
+      td {
+        width: 50px;
+        height: 50px;
+        border: 5px solid rgba(0,0,0,0.3);
+        border-top-color: rgba(255,255,255,0.3);
+        border-right-color: rgba(255,255,255,0.3);
+        background-color: #aaa;
+        box-sizing: border-box;
+      }
+      td.red, player.p1 {
+        background-color: #cb4d4d;
+      }
+      td.blue, player.p2 {
+        background-color: #53b0d5;
+      }
+      game, player {
+        display: block;
+      }
+      game {
+        font-size: 0;
+        position: relative;
+      }
+      player {
+        border-radius: 50%;
+        width: 30px;
+        height: 30px;
+        margin: 10px;
+        position: absolute;
+        box-shadow: 0 0 5px rgba(0,0,0,0.8);
+      }
+      p {
+        margin: 0;
+      }
+      win {
+        position: fixed;
+        width: 100%;
+        margin: auto 0;
+        top: 0;
+        bottom: 0;
+        height: 60px;
+        font-size: 60px;
+        text-align: center;
+        display: none;
+        text-shadow: 0 0 10px black;
+      }
+      win.red {
+        color: #cb4d4d;
+      }
+      win.blue {
+        color: #53b0d5;
+      }
+    </style>
+  </head>
+  <body>
+    <p>based off <a href="https://scratch.mit.edu/projects/140078403/">color conflict</a> by <a href="https://scratch.mit.edu/users/Hobson-TV">Hobson-TV on Scratch</a> / follow him for funny animations and <em>interesting</em> games<br>sometimes bots get stuck on an edge</p>
+    <button id='oneplayer'>play with bot</button> speed of bot <input type="number" value="150" id='sped'/> (recommended: 80-200)
+    <button id='twoplayer'>2-player (if you have friends)</button> <button id='nulplayer'>0-player because bots are fun to watch</button>
+    <game>
+      <table></table>
+      <player class='p1'></player>
+      <player class='p2'></player>
+      <win class='red'>Blue loses!</win>
+      <win class='blue'>Red loses!</win>
+    </game>
+
+    <script src="../../sheep.js"></script>
+    <script>
+(_=>{
+  'use strict';
+  for (var i=0;i<11;i++) {
+    var s=document.createElement('tr');
+    for (var j=0;j<15;j++) s.appendChild(document.createElement('td'));
+    document.querySelector('table').appendChild(s);
+  }
+  // left up down right
+  var p1={x:1,y:5,moving:false,rep:document.querySelector('player.p1'),color:'red',keys:[65,87,83,68]},
+  p2={x:13,y:5,moving:false,rep:document.querySelector('player.p2'),color:'blue',keys:[37,38,40,39]},
+  botintervals;
+  function getTDAt(x,y) {
+    var t=document.querySelector('table').children[y];
+    if (t) return t.children[x];
+    else return undefined;
+  }
+  p1.render=p2.render=function(){
+    if (this.x<0) this.x=0;
+    if (this.y<0) this.y=0;
+    if (this.x>14) this.x=14;
+    if (this.y>10) this.y=10;
+    this.rep.style.left=(this.x*50)+'px';
+    this.rep.style.top=(this.y*50)+'px';
+    getTDAt(this.x,this.y).className=this.color;
+    var end=true;
+    loopy:
+    for (var i=0;i<11;i++) {
+      for (var j=0;j<15;j++) {
+        if (!getTDAt(j,i).className) {
+          end=false;
+          break loopy;
+        }
+      }
+    }
+    if (end) {
+      if (botintervals) clearInterval(botintervals);
+      document.body.onkeydown=null;
+      document.body.onkeyup=null;
+      var reds=0,blues=0;
+      for (var i=0;i<11;i++) {
+        for (var j=0;j<15;j++) {
+          if (getTDAt(j,i).className==='red') reds++;
+          else blues++;
+        }
+      }
+      if (reds>blues) document.querySelector('win.red').style.display='block';
+      else document.querySelector('win.blue').style.display='block';
+    }
+  };
+  p1.bot=p2.bot=function(){
+    var surrounds=[
+      getTDAt(this.x-1,this.y), // left
+      getTDAt(this.x+1,this.y), // right
+      getTDAt(this.x,this.y-1), // up
+      getTDAt(this.x,this.y+1)  // down
+    ],
+    directions=[[-1,0],[1,0],[0,-1],[0,1]],
+    t,
+    opposite=this.color==='red'?'blue':'red';
+    for (var i=0;i<4;i++) {
+      if (surrounds[i]) surrounds[i]=surrounds[i].className;
+      else surrounds[i]='NO.';
+    }
+    if (surrounds.indexOf('NO.')>-1||!Math.floor(Math.random()*4)) {
+      t=Math.floor(Math.random()*4);
+      while (surrounds[t]==='NO.') t=(t+1)%4;
+    }
+    else if (surrounds.indexOf(opposite)>-1) t=surrounds.indexOf(opposite);
+    else if (surrounds.indexOf('')>-1) t=surrounds.indexOf('');
+    else t=surrounds.indexOf(this.color);
+    this.x+=directions[t][0];
+    this.y+=directions[t][1];
+    this.render();
+  };
+  p1.keypress=p2.keypress=function(e){
+    if (!this.moving) {
+      var change=true;
+      switch (e.keyCode) {
+        case this.keys[0]:
+          this.x--;
+          break;
+        case this.keys[1]:
+          this.y--;
+          break;
+        case this.keys[2]:
+          this.y++;
+          break;
+        case this.keys[3]:
+          this.x++;
+          break;
+        default:
+          change=false;
+      }
+      if (change) {
+        this.render();
+        this.moving=true;
+        e.preventDefault();
+        return false;
+      }
+      else return 'ok';
+    }
+  };
+  p1.keyup=p2.keyup=function(){
+    if (this.moving) this.moving=false;
+    return 'ok';
+  };
+  p1.render();
+  p2.render();
+  document.querySelector('#oneplayer').onclick=e=>{
+    document.body.onkeydown=e=>p1.keypress(e);
+    document.body.onkeyup=e=>p1.keyup();
+    botintervals=setInterval(_=>p2.bot(),Number(document.querySelector('#sped').value));
+  };
+  document.querySelector('#twoplayer').onclick=e=>{
+    document.body.onkeydown=e=>{
+      var t=p2.keypress(e);
+      return p1.keypress(e)&&t;
+    };
+    document.body.onkeyup=e=>{
+      p1.keyup();
+      p2.keyup();
+    };
+  };
+  document.querySelector('#nulplayer').onclick=e=>{
+    botintervals=setInterval(_=>{p1.bot();p2.bot();},50);
+  };
+})();
+    </script>
+  </body>
+  <!-- MADE BY SEAN -->
+</html>

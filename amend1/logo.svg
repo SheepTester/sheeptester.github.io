@@ -1,0 +1,37 @@
+<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="gold">
+      <stop offset="0%" stop-color="#ffc300"/>
+      <stop offset="100%" stop-color="#997500"/>
+    </linearGradient>
+    <linearGradient id="metal">
+      <stop offset="0%" stop-color="#757575"/>
+      <stop offset="100%" stop-color="#474747"/>
+    </linearGradient>
+  </defs>
+  <path d="
+    M30 45
+    V30
+    a20 20 0 0 1 40 0
+    h-10
+    a10 10 0 0 0 -20 0
+    V45
+    z
+  " fill='url(#metal)'/>
+  <rect x='20' y='40' width='60' height='50' fill='url(#gold)' rx='2' ry='2'/>
+  <path d="
+    M40 50
+    h20
+    v10
+    h-5
+    v10
+    h5
+    v10
+    h-20
+    v-10
+    h5
+    v-10
+    h-5
+    z
+  " fill='#2e2300'/>
+</svg>
