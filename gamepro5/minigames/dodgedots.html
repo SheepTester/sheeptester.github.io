@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>dodge dots game thing</title>
+    <meta charset="UTF-8">
+    <meta name="description" content="i guess this is a game where you dodge things on a tic tac board"/>
+    <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
+    <style>
+      html {
+        height: 100%;
+        width: 100%;
+      }
+      body {
+        margin: 0;
+        color: white;
+        background-image: linear-gradient(75deg,#FF5226 0%,#FF5226 33%,#FF6F26 33%,#FF6F26 67%,#FFAF00 67%,#FFAF00 100%);
+        font-family: 'Montserrat', sans-serif;
+      }
+      a {
+        color: inherit;
+        background: rgba(0,0,0,0.1);
+        text-decoration: none;
+        border-radius: 3px;
+      }
+      a:hover {background: rgba(0,0,0,0.2);}
+      a:active {background: rgba(0,0,0,0.3);}
+      game {
+        display: block;
+        background: white;
+        font-size: 0;
+        position: fixed;
+        margin: auto;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        width: 165px;
+        height: 165px;
+        padding: 40px 160px;
+        border-radius: 10px;
+        box-shadow: 0 0 3px rgba(0,0,0,0.3);
+      }
+      row {
+        display: block;
+        height: 55px;
+        width: 165px;
+      }
+      place {
+        display: inline-block;
+        height: 15px;
+        width: 15px;
+        border-radius: 50%;
+        background: #BDC8CE;
+        margin: 20px;
+      }
+      p {
+        margin: 10px;
+      }
+      player {
+        margin: 20px;
+        height: 15px;
+        width: 15px;
+        border-radius: 50%;
+        background: #FF6F26;
+        display: block;
+        position: absolute;
+        transform: translateX(160px) translateY(40px) scale(1.1);
+        transition: top .3s, left .3s;
+        transition-timing-function: cubic-bezier(1,0,0,1);
+      }
+      player.x0 {left:0px;}
+      player.x1 {left:55px;}
+      player.x2 {left:110px;}
+      player.y0 {top:0px;}
+      player.y1 {top:55px;}
+      player.y2 {top:110px;}
+      score {
+        color: #FF5A26;
+        position: absolute;
+        top: 10px;
+        left: 15px;
+        display: block;
+        font-size: 40px;
+        font-weight: bold;
+      }
+      @media (max-width: 500px) {
+        game {
+          padding: 40px;
+        }
+        player {
+          transform: translateX(40px) translateY(40px) scale(1.1);
+        }
+        bullet {
+          transform: translateX(40px) translateY(40px);
+        }
+      }
+      message {
+        color: #FF9E07;
+        display: block;
+        font-size: 20px;
+        margin: auto;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 100%;
+        text-align: center;
+        left: 0;
+        height: 20px;
+      }
+      bullet {
+        margin: 20px;
+        height: 15px;
+        width: 15px;
+        border-radius: 7.5px;
+        background: #FF5A26;
+        display: block;
+        position: absolute;
+        transform: translateX(160px) translateY(40px);
+        animation-delay: 0.5s;
+        animation-duration: 0.5s;
+        animation-timing-function: cubic-bezier(1,0,0,1);
+      }
+      bullet.up {
+        animation-name: up;
+      }
+      bullet.down {
+        animation-name: down;
+      }
+      bullet.right {
+        animation-name: right;
+      }
+      bullet.left {
+        animation-name: left;
+      }
+      @keyframes up {
+        0% {height:15px;top:165px;}
+        50% {height:235px;top:-55px;}
+        100% {height:15px;top:-55px;}
+      }
+      @keyframes down {
+        0% {height:15px;top:-55px;}
+        50% {height:235px;top:-55px;}
+        100% {height:15px;top:165px;}
+      }
+      @keyframes left {
+        0% {width:15px;left:165px;}
+        50% {width:235px;left:-55px;}
+        100% {width:15px;left:-55px;}
+      }
+      @keyframes right {
+        0% {width:15px;left:-55px;}
+        50% {width:235px;left:-55px;}
+        100% {width:15px;left:165px;}
+      }
+    </style>
+  </head>
+  <body>
+    <p>pretty much a copy of <a href="https://scratch.mit.edu/projects/122881995/">reds</a> by <a href="https://scratch.mit.edu/users/EPlCUS/">eplcus on scratch</a>; all credits to them for the unique game concept / arrow keys or swipe to move</p>
+    <game>
+      <message>click/tap to start</message>
+    </game>
+
+    <script src="../../sheep.js"></script>
+    <script>
+function start() {
+  for (var i=0;i<3;i++) {
+    var s=document.createElement('row');
+    for (var j=0;j<3;j++) s.appendChild(document.createElement('place'));
+    document.querySelector('game').appendChild(s);
+  }
+  document.querySelector('game').appendChild(document.createElement('player'));
+  document.querySelector('game').appendChild(document.createElement('score'));
+  document.querySelector('score').innerHTML=0;
+  var x=1,
+  y=1,
+  moving=false,
+  score=0,
+  scoreinterval,
+  bulletinterval,
+  touch={};
+  function newbullet() {
+    var bulletcount,
+    bulletDirs=[];
+    if (score>25) bulletcount=Math.floor(Math.random()*3+1);
+    else if (score>12) bulletcount=2;
+    else bulletcount=1;
+    function create(n) {
+      var s=document.createElement('bullet'),
+      way=Math.floor(Math.random()*2);
+      if (Math.floor(Math.random()*2)) {
+        bulletDirs[n]='h';
+        s.style.left=(way?'-5':'16')+'5px';
+        s.style.top=(Math.floor(Math.random()*3)*55)+'px';
+        s.className=way?'right':'left';
+      } else {
+        bulletDirs[n]='v';
+        s.style.top=(way?'-5':'16')+'5px';
+        s.style.left=(Math.floor(Math.random()*3)*55)+'px';
+        s.className=way?'down':'up';
+      }
+      document.querySelector('game').appendChild(s);
+    }
+    create(0);
+    if (bulletcount>1) create(1);
+    if (bulletcount>2) {
+      create(2);
+      if (bulletDirs[0]===bulletDirs[1]&&bulletDirs[1]===bulletDirs[2]) {
+        var s=document.querySelectorAll('bullet')[2], // get third bullet
+        left=s.style.left; // save left style
+        s.style.left=s.style.top; // swap left and top styles
+        s.style.top=left;
+        switch (s.className) {
+          case 'right':
+            s.className='down';
+            break;
+          case 'down':
+            s.className='right';
+            break;
+          case 'up':
+            s.className='left';
+            break;
+          case 'left':
+            s.className='up';
+            break;
+        }
+      }
+    }
+    setTimeout(_=>{
+      var s=document.querySelectorAll('bullet');
+      for (var i=0;i<s.length;i++) s[i].parentNode.removeChild(s[i]);
+    },980);
+  }
+  document.querySelector('player').className='x'+x+' y'+y;
+  document.body.onkeydown=e=>{
+    if (!moving) {
+      var change=true;
+      switch (e.keyCode) {
+        case 38:
+          y--;
+          break;
+        case 40:
+          y++;
+          break;
+        case 37:
+          x--;
+          break;
+        case 39:
+          x++;
+          break;
+        default:
+          change=false;
+      }
+      if (change) {
+        if (x<0||x>2||y<0||y>2) {
+          if (x<0) x=0;
+          if (x>2) x=2;
+          if (y<0) y=0;
+          if (y>2) y=2;
+        } else {
+          moving=true;
+          setTimeout(_=>{if (moving) moving=false;},300);
+          document.querySelector('player').className='x'+x+' y'+y;
+          e.preventDefault();
+          return false;
+        }
+      }
+    }
+  };
+  document.ontouchstart=e=>{
+    if (moving) return 'false';
+    touch.x=e.touches[0].clientX;
+    touch.y=e.touches[0].clientY;
+    touch.lastx=e.touches[0].clientX;
+    touch.lasty=e.touches[0].clientY;
+    document.ontouchmove=e=>{
+      touch.lastx=e.touches[0].clientX;
+      touch.lasty=e.touches[0].clientY;
+      e.preventDefault();
+      return false;
+    };
+    document.ontouchend=e=>{
+      var diffx=touch.lastx-touch.x,
+      diffy=touch.lasty-touch.y;
+      if (diffx!==0&&diffy!==0) {
+        if (Math.abs(diffx)>Math.abs(diffy)) {
+          if (diffx>0) x++;
+          else x--;
+        } else {
+          if (diffy>0) y++;
+          else y--;
+        }
+        if (x<0||x>2||y<0||y>2) {
+          if (x<0) x=0;
+          if (x>2) x=2;
+          if (y<0) y=0;
+          if (y>2) y=2;
+        } else {
+          moving=true;
+          setTimeout(_=>{if (moving) moving=false;},300);
+          document.querySelector('player').className='x'+x+' y'+y;
+        }
+      }
+      touch={};
+      document.ontouchmove=null;
+      document.ontouchend=null;
+    };
+  };
+  scoreinterval=setInterval(_=>{
+    score++;
+    document.querySelector('score').innerHTML=score;
+  },800);
+  console.log('clearInterval('+scoreinterval+') // stop score counting');
+  setTimeout(_=>setInterval(_=>newbullet(),1500),500);
+}
+document.querySelector('game').ontouchstart=document.querySelector('game').onclick=e=>{
+  document.querySelector('game').removeChild(document.querySelector('message'));
+  document.querySelector('game').onclick=null;
+  document.querySelector('game').ontouchstart=null;
+  start();
+};
+    </script>
+  </body>
+  <!-- MADE BY SEAN -->
+</html>

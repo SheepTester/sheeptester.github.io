@@ -65,9 +65,9 @@
     </style>
   </head>
   <body>
-    <p>based off <a href="https://scratch.mit.edu/projects/140078403/">color conflict</a> by <a href="https://scratch.mit.edu/users/Hobson-TV">Hobson-TV on Scratch</a> / follow him for funny animations and <em>interesting</em> games<br>sometimes bots get stuck on an edge</p>
+    <p>based off <a href="https://scratch.mit.edu/projects/140078403/">color conflict</a> by <a href="https://scratch.mit.edu/users/Hobson-TV">Hobson-TV on Scratch</a> / follow him for funny animations and <em>interesting</em> games<br>sometimes bots get stuck on an edge; WASD for red, arrow keys for blue</p>
     <button id='oneplayer'>play with bot</button> speed of bot <input type="number" value="100" id='sped'/> (recommended: 80-200)
-    <button id='twoplayer'>2-player (if you have friends)</button> <button id='nulplayer'>0-player because bots are fun to watch</button>
+    <button id='twoplayer'>2-player (if you have friends)</button> <button id='nulplayer'>0-player because bots are fun to watch</button> (recommended: 10-50)
     <game>
       <table></table>
       <player class='p1'></player>
@@ -271,7 +271,7 @@
     };
   };
   document.querySelector('#nulplayer').onclick=e=>{
-    botintervals=setInterval(_=>{p1.bot();p2.bot();},50);
+    botintervals=setInterval(_=>{p1.bot();p2.bot();},Number(document.querySelector('#sped').value));
   };
 })();
     </script>
