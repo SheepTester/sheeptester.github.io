@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Having some pun today</title>
+    <meta charset="UTF-8">
+    <meta name="description" content="There's too many words in English that end with -sion or -tion."/>
+    <style>
+      body {
+        margin: 10px;
+        font-family: monospace;
+      }
+    </style>
+  </head>
+  <body>
+    <p>I got the words from <a href="http://www.morewords.com/ends-with/tion/">here</a> and <a href="http://www.morewords.com/ends-with/sion/">here</a>. Saved me a lot of time.</p>
+    <h1>Scroll down.</h1>
+    <h2>-tion to -sean</h2>
+    <p id='tion'></p>
+    <h2>-sion to -sean</h2>
+    <p id='sion'></p>
+
+    <script src="../sheep.js"></script>
+    <script>
+SHEEP.ajax('tion.txt',e=>{
+  var words=e.split(/\r?\n/),str='';
+  for (var i=0;i<words.length;i++) str+=words[i].replace(/tion/g,'sean')+' ';
+  document.querySelector('#tion').innerHTML=str;
+});
+SHEEP.ajax('sion.txt',e=>{
+  var words=e.split(/\r?\n/),str='';
+  for (var i=0;i<words.length;i++) str+=words[i].replace(/sion/g,'sean')+' ';
+  document.querySelector('#sion').innerHTML=str;
+});
+    </script>
+  </body>
+  <!-- MADE BY SEAN -->
+</html>

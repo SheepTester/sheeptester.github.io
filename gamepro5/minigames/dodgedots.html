@@ -360,6 +360,10 @@ function start() {
   function die() {
     clearInterval(scoreinterval);
     clearInterval(bulletinterval);
+    document.body.onkeydown=null;
+    document.body.ontouchstart=null;
+    document.body.ontouchmove=null;
+    document.body.ontouchend=null;
     document.querySelector('game').className='fade';
     setTimeout(_=>{
       var s=document.querySelectorAll('bullet');
