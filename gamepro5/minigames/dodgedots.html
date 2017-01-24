@@ -83,17 +83,6 @@
         font-size: 40px;
         font-weight: bold;
       }
-      @media (max-width: 500px) {
-        game {
-          padding: 40px;
-        }
-        player {
-          transform: translateX(40px) translateY(40px) scale(1.1);
-        }
-        bullet {
-          transform: translateX(40px) translateY(40px);
-        }
-      }
       message {
         color: #FF9E07;
         display: block;
@@ -106,6 +95,11 @@
         text-align: center;
         left: 0;
         height: 20px;
+        animation: fadein .25s;
+      }
+      @keyframes fadein {
+        from {opacity:0;}
+        to {opacity:1;}
       }
       bullet {
         margin: 20px;
@@ -120,6 +114,9 @@
         animation-duration: 0.5s;
         animation-timing-function: cubic-bezier(1,0,0,1);
       }
+      bullet.appear {
+        animation: appear .3s cubic-bezier(1,0,0,1);
+      }
       bullet.up {
         animation-name: up;
       }
@@ -131,6 +128,18 @@
       }
       bullet.left {
         animation-name: left;
+      }
+      @keyframes appear {
+        0% {
+          margin: 27.5px;
+          height: 0;
+          width: 0;
+        }
+        100% {
+          margin: 20px;
+          height: 15px;
+          width: 15px;
+        }
       }
       @keyframes up {
         0% {height:15px;top:165px;}
@@ -152,6 +161,21 @@
         50% {width:235px;left:-55px;}
         100% {width:15px;left:165px;}
       }
+      game.fade > *:not(score) {
+        transition: opacity .25s;
+        opacity: 0;
+      }
+      @media (max-width: 500px) {
+        game {
+          padding: 40px;
+        }
+        player {
+          transform: translateX(40px) translateY(40px) scale(1.1);
+        }
+        bullet {
+          transform: translateX(40px) translateY(40px);
+        }
+      }
     </style>
   </head>
   <body>
@@ -169,7 +193,6 @@ function start() {
     document.querySelector('game').appendChild(s);
   }
   document.querySelector('game').appendChild(document.createElement('player'));
-  document.querySelector('game').appendChild(document.createElement('score'));
   document.querySelector('score').innerHTML=0;
   var x=1,
   y=1,
@@ -191,13 +214,14 @@ function start() {
         bulletDirs[n]='h';
         s.style.left=(way?'-5':'16')+'5px';
         s.style.top=(Math.floor(Math.random()*3)*55)+'px';
-        s.className=way?'right':'left';
+        s.dataset.dir=way?'right':'left';
       } else {
         bulletDirs[n]='v';
         s.style.top=(way?'-5':'16')+'5px';
         s.style.left=(Math.floor(Math.random()*3)*55)+'px';
-        s.className=way?'down':'up';
+        s.dataset.dir=way?'down':'up';
       }
+      s.className='appear';
       document.querySelector('game').appendChild(s);
     }
     create(0);
@@ -209,26 +233,48 @@ function start() {
         left=s.style.left; // save left style
         s.style.left=s.style.top; // swap left and top styles
         s.style.top=left;
-        switch (s.className) {
+        switch (s.dataset.dir) {
           case 'right':
-            s.className='down';
+            s.dataset.dir='down';
             break;
           case 'down':
-            s.className='right';
+            s.dataset.dir='right';
             break;
           case 'up':
-            s.className='left';
+            s.dataset.dir='left';
             break;
           case 'left':
-            s.className='up';
+            s.dataset.dir='up';
             break;
         }
       }
     }
     setTimeout(_=>{
       var s=document.querySelectorAll('bullet');
-      for (var i=0;i<s.length;i++) s[i].parentNode.removeChild(s[i]);
-    },980);
+      for (var i=0;i<s.length;i++) s[i].className=s[i].dataset.dir;
+      setTimeout(_=>{
+        var s=document.querySelectorAll('bullet');
+        for (var i=0;i<s.length;i++) {
+          if (Math.abs(55-Number(s[i].style.left.slice(0,-2)))===110) {
+            var ty=Number(s[i].style.top.slice(0,-2))/55;
+            if (ty==y) {
+              die();
+              break;
+            }
+          } else {
+            var tx=Number(s[i].style.left.slice(0,-2))/55;
+            if (tx==x) {
+              die();
+              break;
+            }
+          }
+        }
+      },500);
+      setTimeout(_=>{
+        var s=document.querySelectorAll('bullet');
+        for (var i=0;i<s.length;i++) s[i].parentNode.removeChild(s[i]);
+      },980);
+    },300);
   }
   document.querySelector('player').className='x'+x+' y'+y;
   document.body.onkeydown=e=>{
@@ -267,7 +313,7 @@ function start() {
     }
   };
   document.ontouchstart=e=>{
-    if (moving) return 'false';
+    // if (moving) return 'false';
     touch.x=e.touches[0].clientX;
     touch.y=e.touches[0].clientY;
     touch.lastx=e.touches[0].clientX;
@@ -295,8 +341,8 @@ function start() {
           if (y<0) y=0;
           if (y>2) y=2;
         } else {
-          moving=true;
-          setTimeout(_=>{if (moving) moving=false;},300);
+          // moving=true;
+          // setTimeout(_=>{if (moving) moving=false;},300);
           document.querySelector('player').className='x'+x+' y'+y;
         }
       }
@@ -310,10 +356,33 @@ function start() {
     document.querySelector('score').innerHTML=score;
   },800);
   console.log('clearInterval('+scoreinterval+') // stop score counting');
-  setTimeout(_=>setInterval(_=>newbullet(),1500),500);
+  setTimeout(_=>bulletinterval=setInterval(_=>newbullet(),1500),500);
+  function die() {
+    clearInterval(scoreinterval);
+    clearInterval(bulletinterval);
+    document.querySelector('game').className='fade';
+    setTimeout(_=>{
+      var s=document.querySelectorAll('bullet');
+      for (var i=0;i<s.length;i++) s[i].parentNode.removeChild(s[i]);
+      var s=document.querySelectorAll('row');
+      for (var i=0;i<s.length;i++) s[i].parentNode.removeChild(s[i]);
+      document.querySelector('game').removeChild(document.querySelector('player'));
+      document.querySelector('game').className='';
+    },250);
+    var s=document.createElement('message');
+    s.innerHTML='click/tap to play again';
+    document.querySelector('game').appendChild(s);
+    document.querySelector('game').ontouchstart=document.querySelector('game').onclick=e=>{
+      document.querySelector('game').removeChild(document.querySelector('message'));
+      document.querySelector('game').onclick=null;
+      document.querySelector('game').ontouchstart=null;
+      start();
+    };
+  }
 }
 document.querySelector('game').ontouchstart=document.querySelector('game').onclick=e=>{
   document.querySelector('game').removeChild(document.querySelector('message'));
+  document.querySelector('game').appendChild(document.createElement('score'));
   document.querySelector('game').onclick=null;
   document.querySelector('game').ontouchstart=null;
   start();
