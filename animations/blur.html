@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>blurred glass</title>
+    <meta charset="UTF-8">
+    <meta name="description" content="A CSS test, I suppose"/>
+    <style>
+      html, body {
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+      }
+      body {
+        margin: 0;
+        background: url(http://www.vanseodesign.com/blog/wp-content/uploads/2011/10/pattern.jpg) repeat 50% 100% fixed;
+        color: white;
+        font-family: sans-serif;
+      }
+      div:before {
+        content: '';
+        width: 100%;
+        height: 100%;
+        background: url(http://www.vanseodesign.com/blog/wp-content/uploads/2011/10/pattern.jpg) repeat 50% 100% fixed;
+        filter: blur(10px);
+        -webkit-filter: blur(10px);
+        -moz-filter: blur(10px);
+        -o-filter: blur(10px);
+        -ms-filter: blur(10px);
+        display: block;
+        position: absolute;
+        z-index: -1;
+        top: 0;
+        left: 0;
+        right: 0;
+      }
+      div {
+        height: 300px;
+        width: 300px;
+        position: relative;
+        top: 10px;
+        left: 10px;
+        background-color: rgba(255,255,255,0.4);
+        box-shadow: 0 0 3px rgba(0,0,0,0.3);
+        cursor: move;
+        border-radius: 5px;
+      }
+    </style>
+  </head>
+  <body>
+    <div></div>
+
+    <script src="../sheep.js"></script>
+    <script>
+    function canBeDragged(elem,xwise,ywise,moreoptions) {
+      var drag={},
+      x,y,maxx,maxy,min=false,onchange,
+      idenifydrag=e=>{
+        let x,y;
+        if (xwise) x=Number(elem.style.left.slice(0,-2));
+        if (ywise) y=Number(elem.style.top.slice(0,-2));
+        if (xwise) x=e.clientX-drag.offx;
+        if (ywise) y=e.clientY-drag.offy;
+        if (min) {
+          if (xwise&&x<0) {drag.offx+=x;x=0;}
+          else if (xwise&&maxx&&x>maxx) {drag.offx+=x-maxx;x=maxx;}
+          if (ywise&&y<0) {drag.offy+=y;y=0;}
+          else if (ywise&&maxy&&y>maxy) {drag.offy+=y-maxy;y=maxy;}
+        }
+        if (xwise) elem.style.left=x+'px';
+        if (ywise) elem.style.top=y+'px';
+        if (onchange) {
+          if (xwise) onchange(x,y);
+          else onchange(y);
+        }
+      },
+      mousedown=(touch,e)=>{
+        if (!drag.dragging) {
+          drag.dragging=true;
+          if (xwise) drag.offx=e.clientX-Number(elem.style.left.slice(0,-2));
+          if (ywise) drag.offy=e.clientY-Number(elem.style.top.slice(0,-2));
+          if (touch) {
+            elem.parentNode.ontouchmove=e=>{
+              if (drag.dragging) {
+                idenifydrag(e.touches[0]);
+                e.preventDefault();
+                return false;
+              }
+            };
+            elem.parentNode.ontouchend=e=>{
+              if (drag.dragging) {
+                drag.dragging=false;
+                elem.parentNode.ontouchmove=null;
+                elem.parentNode.ontouchend=null;
+              }
+            };
+          } else {
+            elem.parentNode.onmousemove=e=>{
+              if (drag.dragging) {
+                idenifydrag(e);
+              }
+            };
+            elem.parentNode.onmouseup=e=>{
+              if (drag.dragging) {
+                idenifydrag(e);
+                drag.dragging=false;
+                elem.parentNode.onmousemove=null;
+                elem.parentNode.onmouseup=null;
+              }
+            };
+          }
+        }
+      };
+      if (moreoptions) {
+        if (xwise) elem.style.left=(moreoptions.x||0)+'px';
+        if (ywise) elem.style.top=(moreoptions.y||0)+'px';
+        maxx=moreoptions.maxx;
+        maxy=moreoptions.maxy;
+        if (maxx||maxy) min=true;
+        onchange=moreoptions.onchange;
+      }
+      elem.parentNode.onmousedown=e=>mousedown(false,e);
+      elem.parentNode.ontouchstart=e=>mousedown(true,e.touches[0]);
+    }
+    canBeDragged(document.querySelector('div'),true,true,{x:0,y:0});
+    </script>
+  </body>
+  <!-- MADE BY SEAN -->
+</html>

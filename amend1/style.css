@@ -15,6 +15,18 @@ nav {
   background: #82983a;
   bottom: 0;
   font-size: 0;
+  animation: RAINBOWS 6s infinite;
+}
+@keyframes RAINBOWS {
+  0% {background:#c44a4a}
+  12.5% {background:#c4804a}
+  25% {background:#c4be4a}
+  37.5% {background:#76c44a}
+  50% {background:#4ac4b9}
+  62.5% {background:#4a83c4}
+  75% {background:#6e4ac4}
+  87.5% {background:#c44a88}
+  100% {background:#c44a4a}
 }
 nav img {
   height: 20px;
@@ -82,8 +94,34 @@ cite p {
   /*white-space: pre-wrap;*/
   vertical-align: baseline;
 }
+cite a {
+  position: relative;
+}
+cite a::after {
+  content: 'Go to ' attr(href);
+  color: white;
+  background: rgba(0,0,0,0.8);
+  position: absolute;
+  text-indent: 0;
+  left: 0;
+  top: -100%;
+  font-family: 'Open Sans', sans-serif;
+  font-size: 10px;
+  line-height: 1;
+  cursor: default;
+  padding: 0 5px;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height .5s, padding .4s;
+  transition-timing-function: cubic-bezier(0,0,0,1);
+}
+cite a:hover::after {
+  max-height: 300px;
+  padding: 5px;
+}
 .container {
   margin: 10px;
+  margin-bottom: 50px;
 }
 h1,h2,h3,h4,h5,h6 {
   font-weight: normal;
