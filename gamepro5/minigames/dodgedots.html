@@ -113,6 +113,7 @@
         animation-delay: 0.5s;
         animation-duration: 0.5s;
         animation-timing-function: cubic-bezier(1,0,0,1);
+        animation-fill-mode: forwards;
       }
       bullet.appear {
         animation: appear .3s cubic-bezier(1,0,0,1);
@@ -162,7 +163,7 @@
         100% {width:15px;left:165px;}
       }
       game.fade > *:not(score) {
-        transition: opacity .25s;
+        transition: opacity .25s forwards;
         opacity: 0;
       }
       @media (max-width: 500px) {
@@ -273,7 +274,7 @@ function start() {
       setTimeout(_=>{
         var s=document.querySelectorAll('bullet');
         for (var i=0;i<s.length;i++) s[i].parentNode.removeChild(s[i]);
-      },980);
+      },1000);
     },300);
   }
   document.querySelector('player').className='x'+x+' y'+y;

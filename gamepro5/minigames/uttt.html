@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Ultimate Tic Tac Toe</title>
+    <meta charset="UTF-8">
+    <meta name="description" content="UTTT for people with friends."/>
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300" rel="stylesheet">
+    <style>
+      body {
+        background: #0B0E1A;
+        color: white;
+        font-size: 16px;
+        margin: 10px;
+        font-family: 'Roboto', sans-serif;
+      }
+      a {
+        color: inherit;
+        text-decoration: none;
+        background: rgba(255,255,255,0.1);
+      }
+      tic, tac, toe {
+        display: block;
+        font-size: 0;
+        border: 0 solid #1F2B36;
+      }
+      tac, toe {
+        float: left;
+      }
+      tac:nth-child(3n+1),toe:nth-child(3n+1) {
+        clear: left;
+      }
+      tac:nth-child(3n+1),tac:nth-child(3n+2) {
+        border-right-width: 3px;
+      }
+      tac:nth-child(-n+6) {
+        border-bottom-width: 3px;
+      }
+      toe:nth-child(3n+1),toe:nth-child(3n+2) {
+        border-right-width: 1px;
+      }
+      toe:nth-child(-n+6) {
+        border-bottom-width: 1px;
+      }
+      tac {
+        padding: 10px;
+        width: 92px;
+        height: 92px;
+      }
+      toe {
+        height: 30px;
+        width: 30px;
+      }
+      .o {
+        background-image: url('o.svg');
+      }
+      .x {
+        background-image: url('x.svg');
+      }
+      tac.playable toe {
+        border-color: #415B70;
+      }
+      tac.playable toe:not(.x):not(.o) {
+        cursor: pointer;
+      }
+      tac.playable toe:not(.x):not(.o):hover {
+        background-color: rgba(255,255,255,0.1);
+      }
+    </style>
+  </head>
+  <body>
+    <p><a href="https://mathwithbaddrawings.com/2013/06/16/ultimate-tic-tac-toe/">UTTT</a> for people with friends. Since it's quite likely you don't have any, I might make a bot one day.</p>
+    <tic></tic>
+
+    <script src="../../sheep.js"></script>
+    <script>
+(function() {
+  var board=[],
+  player=1;
+  for (var i=0;i<9;i++) {
+    board.push([]);
+    var s=document.createElement('tac');
+    s.classList.add('playable');
+    for (var j=0;j<9;j++) {
+      board[i].push(0);
+      s.appendChild(document.createElement('toe'));
+    }
+    document.querySelector('tic').appendChild(s);
+  }
+  function getChildIndex(elem) {
+    var i=0;
+    while ((elem=elem.previousSibling)!=null) i++;
+    return i;
+  }
+  document.querySelector('tic').onclick=e=>{
+    if (e.target.tagName==='TOE'&&e.target.classList.length===0&&e.target.parentNode.classList.contains('playable')) {
+      var boardIndex=getChildIndex(e.target.parentNode),
+      innerboardIndex=getChildIndex(e.target);
+      e.target.classList.add(player===1?'o':'x');
+      board[boardIndex][innerboardIndex]=player;
+      player=player%2+1;
+      var s=document.querySelectorAll('tac.playable');
+      for (var i=0;i<s.length;i++) s[i].classList.remove('playable');
+      document.querySelector('tic').children[innerboardIndex].classList.add('playable');
+    }
+  };
+}());
+    </script>
+  </body>
+  <!-- MADE BY SEAN -->
+</html>
