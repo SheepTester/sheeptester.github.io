@@ -50,10 +50,10 @@
         height: 30px;
         width: 30px;
       }
-      .o {
+      toe.o,tac.o {
         background-image: url('o.svg');
       }
-      .x {
+      toe.x,tac.x {
         background-image: url('x.svg');
       }
       tac.playable toe {
@@ -65,17 +65,58 @@
       tac.playable toe:not(.x):not(.o):hover {
         background-color: rgba(255,255,255,0.1);
       }
+      tic {
+        height: 342px;
+        width: 342px;
+        margin-bottom: 10px;
+      }
+      turnbar {
+        width: 342px;
+        height: 2px;
+        background: rgba(255,255,255,0.3);
+        display: block;
+      }
+      turnbar.o {
+        background: #65CEA6;
+      }
+      turnbar.x {
+        background: #F3045D;
+      }
+      button {
+        margin: 10px;
+        background: rgba(255,255,255,0.3);
+        border: none;
+        color: white;
+        padding: 5px 10px;
+        border-radius: 2px;
+        cursor: pointer;
+      }
+      button:not(:disabled):hover {
+        background: rgba(255,255,255,0.5);
+      }
+      button:not(:disabled):active {
+        transition: background .3s cubic-bezier(0,0,0,1);
+        background: rgba(255,255,255,0.3);
+      }
+      button:disabled {
+        cursor: default;
+        background: rgba(255,255,255,0.1);
+        color: rgba(255,255,255,0.6)
+      }
     </style>
   </head>
   <body>
     <p><a href="https://mathwithbaddrawings.com/2013/06/16/ultimate-tic-tac-toe/">UTTT</a> for people with friends. Since it's quite likely you don't have any, I might make a bot one day.</p>
     <tic></tic>
+    <turnbar></turnbar>
+    <button id='dummies'>Activate dummies</button>
 
     <script src="../../sheep.js"></script>
     <script>
 (function() {
   var board=[],
-  player=1;
+  player=1,
+  dummyInterval;
   for (var i=0;i<9;i++) {
     board.push([]);
     var s=document.createElement('tac');
@@ -91,17 +132,86 @@
     while ((elem=elem.previousSibling)!=null) i++;
     return i;
   }
-  document.querySelector('tic').onclick=e=>{
-    if (e.target.tagName==='TOE'&&e.target.classList.length===0&&e.target.parentNode.classList.contains('playable')) {
-      var boardIndex=getChildIndex(e.target.parentNode),
-      innerboardIndex=getChildIndex(e.target);
-      e.target.classList.add(player===1?'o':'x');
+  function winTTT(board) {
+    function areSame() {
+      if (arguments.length<2) return true;
+      for (var i=1;i<arguments.length;i++) if (!arguments[i]||typeof arguments[i]==='object'||arguments[i]!==arguments[i-1]) return false;
+      return true;
+    }
+    /*0 1 2
+      3 4 5
+      6 7 8*/
+    if (areSame(board[0],board[4],board[8])) return [board[0]]; // arrays are considered true
+    if (areSame(board[2],board[4],board[6])) return [board[2]];
+    for (var i=0;i<3;i++) {
+      if (areSame(board[i],board[i+3],board[i+6])) return [board[i]];
+      if (areSame(board[i*3],board[i*3+1],board[i*3+2])) return [board[i*3]];
+    }
+    return false;
+  }
+  function tie() {
+    for (var i=0;i<board.length;i++) if (typeof board[i]==='object') return false;
+    return true;
+  }
+  function doStuffWith(toeElem) {
+    if (toeElem.tagName==='TOE'&&toeElem.classList.length===0&&toeElem.parentNode.classList.contains('playable')) {
+      var boardIndex=getChildIndex(toeElem.parentNode),
+      innerboardIndex=getChildIndex(toeElem);
+      toeElem.classList.add(player===1?'o':'x');
       board[boardIndex][innerboardIndex]=player;
       player=player%2+1;
       var s=document.querySelectorAll('tac.playable');
       for (var i=0;i<s.length;i++) s[i].classList.remove('playable');
-      document.querySelector('tic').children[innerboardIndex].classList.add('playable');
+      document.querySelector('turnbar').className=player===1?'o':'x';
+      var win=winTTT(board[boardIndex]);
+      if (win) {
+        win=win[0];
+        board[boardIndex]=win;
+        document.querySelector('tic').children[boardIndex].className=win===1?'o':'x';
+        document.querySelector('tic').children[boardIndex].innerHTML='';
+        win=winTTT(board);
+        if (win) {
+          document.querySelector('tic').onclick=null;
+          document.querySelector('turnbar').className='';
+          return true;
+        } else if (tie()) {
+          document.querySelector('tic').onclick=null;
+          document.querySelector('turnbar').className='';
+          return true;
+        }
+      } else if (!board[boardIndex].includes(0)) {
+        board[boardIndex]=0;
+        document.querySelector('tic').children[boardIndex].className='';
+        document.querySelector('tic').children[boardIndex].innerHTML='';
+        if (tie()) {
+          document.querySelector('tic').onclick=null;
+          document.querySelector('turnbar').className='';
+          return true;
+        }
+      }
+      if (typeof board[innerboardIndex]==='object') {
+        document.querySelector('tic').children[innerboardIndex].classList.add('playable');
+      } else {
+        var s=document.querySelectorAll('tac');
+        for (var i=0;i<s.length;i++) if (s[i].innerHTML) s[i].classList.add('playable');
+      }
     }
+  }
+  document.querySelector('turnbar').className=player===1?'o':'x';
+  document.querySelector('tic').onclick=e=>doStuffWith(e.target);
+  document.querySelector('#dummies').onclick=e=>{
+    document.querySelector('#dummies').onclick=null;
+    document.querySelector('#dummies').disabled=true;
+    dummyInterval=console.log(setInterval(_=>{
+      if (document.querySelectorAll('tac.playable').length>1) {
+        var t=document.querySelector('tic').children[Math.floor(Math.random()*9)];
+        if (t.children.length) doStuffWith(t.children[Math.floor(Math.random()*9)]);
+      } else {
+        var t=document.querySelector('tac.playable');
+        if (t) doStuffWith(t.children[Math.floor(Math.random()*9)]);
+        else clearInterval(dummyInterval);
+      }
+    },100));
   };
 }());
     </script>
