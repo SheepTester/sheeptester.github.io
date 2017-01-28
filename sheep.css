@@ -33,6 +33,7 @@ sheepmenu#SHEEPANIMATING {
   box-shadow: none;
   width: 100vw;
   height: 100vw;
+  opacity: 1;
 }
 @keyframes SHEEPBYE {
   0% {
@@ -48,6 +49,29 @@ sheepmenu#SHEEPANIMATING {
     box-shadow: none;
     width: 100vw;
     height: 100vw;
+  }
+}
+@keyframes SHEEPBYEPORTRAIT {
+  0% {
+    width: 100px;
+    height: 100px;
+    right: 0;
+    bottom: -10px;
+  }
+  100% {
+    width: 100vh;
+    height: 100vh;
+    right: calc(50vw - 50vh);
+    bottom: calc(50vw - 25vh);
+  }
+}
+@media all and (orientation: portrait) {
+  sheepmenu#SHEEPANIMATING {
+    animation-name: SHEEPBYE, SHEEPBYEPORTRAIT;
+    width: 100vh;
+    height: 100vh;
+    right: calc(50vw - 50vh);
+    bottom: calc(50vw - 25vh);
   }
 }
 ::selection {

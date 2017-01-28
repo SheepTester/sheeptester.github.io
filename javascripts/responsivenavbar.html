@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>The Responsive Navbar</title>
+    <meta charset="UTF-8">
+    <meta name="description" content="Responsive design is cool, and since we use iPads at school, I want to make my pages responsive."/>
+    <style>
+      html {
+        height: 100%;
+        width: 100%;
+        background: black;
+      }
+      body {
+        margin: 0;
+        height: 100%;
+        background: white;
+        position: relative;
+        overflow: hidden;
+      }
+      p {
+        padding: 10px;
+        margin: 0;
+        padding-bottom: 0;
+      }
+      themerp {
+        height: 100%;
+        width: 100%;
+        top: 0;
+        position: fixed;
+        cursor: ew-resize;
+      }
+      nav {
+        position: absolute;
+        bottom: 0;
+        background: #25dab8;
+        left: 0;
+        right: 0;
+        color: white;
+        font-size: 0;
+        font-family: sans-serif;
+        white-space: nowrap;
+        overflow-x: hidden;
+        height: 30px;
+      }
+      nav btn {
+        font-size: 20px;
+        padding: 5px;
+        display: inline-block;
+        cursor: pointer;
+        line-height: 1;
+      }
+      nav btn:hover {
+        background: rgba(0,0,0,0.2);
+      }
+      nav btn:active {
+        background: rgba(0,0,0,0.1);
+        transition: background .3s cubic-bezier(0,0,0,1);
+      }
+      sheepmenu {
+        position: absolute !important;
+      }
+      #width {
+        font-weight: bold;
+      }
+      menuicon {
+        display: none;
+        height: 20px;
+        width: 20px;
+        background-image: url('hamburger.svg');
+        padding: 2px 4px;
+        border: 1px solid rgba(0,0,0,0.2);
+        margin: 2px;
+        background-size: 20px;
+        background-position: center;
+        background-repeat: no-repeat;
+        border-radius: 2px;
+        cursor: pointer;
+      }
+      menuicon:hover {
+        background-color: rgba(0,0,0,0.1);
+      }
+      menuicon:active {
+        background-color: transparent;
+        transition: background-color .5s cubic-bezier(0,0,0,1);
+      }
+      @media (max-width:820px) {
+        nav {
+          overflow-x: visible;
+        }
+        nav btn {
+          display: none;
+        }
+        nav btncontainer {
+          background: rgba(37,218,184,0.8);
+          position: absolute;
+          bottom: 100%;
+          left: 0;
+          width: 100%;
+          height: 0;
+          transition: height .5s;
+          display: block;
+        }
+        nav.open btn {
+          display: block;
+        }
+        nav.open btncontainer {
+          height: auto;
+        }
+        menuicon {
+          display: inline-block;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <p>Responsive design is cool, and since we use iPads at school, I want to make my pages responsive.</p>
+    <p>Drag the screen to resize the page.</p>
+    <p>Width of page: <span id='width'></span></p>
+    <themerp></themerp>
+    <nav>
+      <menuicon></menuicon>
+      <btncontainer>
+        <btn>Terples-Giggles</btn>
+        <btn>Serples-Niggles</btn>
+        <btn>Verples-Jiggles</btn>
+        <btn>Merples-Liggles</btn>
+        <btn>Slerples-Eggles</btn>
+      </btncontainer>
+    </nav>
+
+    <script src="../sheep.js"></script>
+    <script>
+function canBeDragged(elem,xwise,ywise,moreoptions) {
+  var drag={},
+  x,y,maxx,maxy,minx,miny,min=false,max=false,onchange,
+  idenifydrag=e=>{
+    let x,y;
+    if (xwise) x=Number(elem.style.left.slice(0,-2));
+    if (ywise) y=Number(elem.style.top.slice(0,-2));
+    if (xwise) x=e.clientX-drag.offx;
+    if (ywise) y=e.clientY-drag.offy;
+    if (min) {
+      if (xwise&&minx!==undefined&&x<minx) {drag.offx+=x;x=minx;}
+      if (ywise&&miny!==undefined&&y<miny) {drag.offy+=y;y=miny;}
+    }
+    if (max) {
+      if (xwise&&maxx!==undefined&&x>maxx) {drag.offx+=x-maxx;x=maxx;}
+      if (ywise&&maxy!==undefined&&y>maxy) {drag.offy+=y-maxy;y=maxy;}
+    }
+    if (xwise) elem.style.left=x+'px';
+    if (ywise) elem.style.top=y+'px';
+    if (onchange) {
+      if (xwise) onchange(x,y);
+      else onchange(y);
+    }
+  },
+  mousedown=(touch,e)=>{
+    if (!drag.dragging) {
+      drag.dragging=true;
+      if (xwise) drag.offx=e.clientX-Number(elem.style.left.slice(0,-2));
+      if (ywise) drag.offy=e.clientY-Number(elem.style.top.slice(0,-2));
+      if (touch) {
+        elem.parentNode.ontouchmove=e=>{
+          if (drag.dragging) {
+            idenifydrag(e.touches[0]);
+            e.preventDefault();
+            return false;
+          }
+        };
+        elem.parentNode.ontouchend=e=>{
+          if (drag.dragging) {
+            drag.dragging=false;
+            elem.parentNode.ontouchmove=null;
+            elem.parentNode.ontouchend=null;
+          }
+        };
+      } else {
+        elem.parentNode.onmousemove=e=>{
+          if (drag.dragging) {
+            idenifydrag(e);
+          }
+        };
+        elem.parentNode.onmouseup=e=>{
+          if (drag.dragging) {
+            idenifydrag(e);
+            drag.dragging=false;
+            elem.parentNode.onmousemove=null;
+            elem.parentNode.onmouseup=null;
+          }
+        };
+      }
+    }
+  };
+  if (moreoptions) {
+    if (xwise) elem.style.left=(moreoptions.x||0)+'px';
+    if (ywise) elem.style.top=(moreoptions.y||0)+'px';
+    maxx=moreoptions.maxx;
+    maxy=moreoptions.maxy;
+    minx=moreoptions.minx;
+    miny=moreoptions.miny;
+    if (maxx!==undefined||maxy!==undefined) max=true;
+    if (minx!==undefined||miny!==undefined) min=true;
+    onchange=moreoptions.onchange;
+  }
+  elem.parentNode.onmousedown=e=>mousedown(false,e);
+  elem.parentNode.ontouchstart=e=>mousedown(true,e.touches[0]);
+}
+document.querySelector('#width').innerHTML=document.body.offsetWidth+'px';
+canBeDragged(document.querySelector('themerp'),true,false,{x:0,maxx:0,onchange(x){
+  document.body.style.marginRight=-x+'px';
+  document.querySelector('#width').innerHTML=document.body.offsetWidth+'px';
+}});
+document.querySelector('menuicon').onclick=e=>{
+  if (document.querySelector('nav').classList.contains('open')) document.querySelector('nav').classList.remove('open');
+  else document.querySelector('nav').classList.add('open');
+};
+    </script>
+  </body>
+  <!-- MADE BY SEAN -->
+</html>

@@ -396,6 +396,14 @@ sheepmenu.playhellos {
   transition: all 0.3s cubic-bezier(0.55, 0.055, 0.675, 0.19);
   z-index: 1000;
 }
+@media all and (orientation: portrait) {
+  sheepmenu.blockvision, sheepmenu.blockvision:hover, sheepmenu.blockvision:active {
+    width: 100vh;
+    height: 100vh;
+    right: calc(50vw - 50vh);
+    bottom: calc(50vw - 25vh);
+  }
+}
 @keyframes hellos {
   0% {
     bottom: calc(50vh - 50vw);
@@ -433,6 +441,52 @@ body.blank noscript {
   top: 0;
   left: 0;
   bottom: 0;
+}
+menuicon {
+  display: none;
+  height: 20px;
+  width: 20px;
+  background-image: url('img/hamburger.svg');
+  padding: 4px 6px;
+  border: 2px solid rgba(0,0,0,0.2);
+  margin: 4px;
+  background-size: 20px;
+  background-position: center;
+  background-repeat: no-repeat;
+  border-radius: 2px;
+  cursor: pointer;
+}
+menuicon:hover {
+  background-color: rgba(0,0,0,0.1);
+}
+menuicon:active {
+  background-color: transparent;
+  transition: background-color .5s cubic-bezier(0,0,0,1);
+}
+@media (max-width:430px) {
+  nav .clickable {
+    display: none;
+  }
+  nav btncontainer {
+    background: rgba(79,161,167,0.7);
+    position: absolute;
+    bottom: 100%;
+    left: 0;
+    width: 100%;
+    display: block;
+  }
+  menuicon {
+    display: inline-block;
+  }
+  nav.open .clickable {
+    display: block;
+  }
+  nav.open btncontainer {
+    height: auto;
+  }
+  nav.open menuicon {
+    background-image: url('img/down.svg');
+  }
 }
 
 sarcasm {

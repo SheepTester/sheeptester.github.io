@@ -216,6 +216,10 @@ var sheeptest=(function(){
     window.localStorage.removeItem('userid');
     window.location.replace('https://web300.secure-secure.co.uk/thingkingland.com/sheeptester/signout.php');
   };
+  document.querySelector('menuicon').onclick=e=>{
+    if (document.querySelector('nav').classList.contains('open')) document.querySelector('nav').classList.remove('open');
+    else document.querySelector('nav').classList.add('open');
+  };
 
   var bob=function(){/*use sheeptest()() to call me*/console.log('%chi bob\noh wait im bob\nnvm hi stranger','padding:5px;background:#404637;color:#9EC962;line-height:1.5;font-size:30px;font-family:sans-serif;');};
   bob.prototype={

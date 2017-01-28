@@ -3,7 +3,7 @@
   var el=document.createElement("link");
   el.type="text/css";
   el.rel="stylesheet";
-  // el.href="../sheep.css";
+  // el.href="sheep.css";
   el.href="https://sheeptester.github.io/sheep.css";
   document.head.appendChild(el);
   el=document.createElement("sheepmenu");

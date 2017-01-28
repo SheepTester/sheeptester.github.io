@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Click anywhere</title>
+    <meta charset="UTF-8">
+    <meta name="description" content="A test."/>
+    <style>
+      div {
+        background: rgba(37,218,189,0.5);
+        height: 150px;
+        width: 150px;
+        position: absolute;
+        top: 150px;
+        left: 80px;
+        border-radius: 5px;
+        box-shadow: 0 0 3px rgba(0,0,0,0.3);
+        text-shadow: 0 0 3px rgba(0,0,0,0.3);
+        box-sizing: border-box;
+        padding: 10px;
+        cursor: not-allowed;
+      }
+      outsideclickdetector {
+        position: fixed;
+        opacity: 0;
+        display: block;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: -1;
+        cursor: vertical-text;
+      }
+    </style>
+  </head>
+  <body>
+    <div>Here we have a div. Click outside of me.</div>
+
+    <script src="../sheep.js"></script>
+    <script>
+function onoutsideclick(fun) {
+  var s=document.createElement('outsideclickdetector');
+  s.onclick=e=>fun(e);
+  document.body.appendChild(s);
+}
+onoutsideclick(e=>alert('you clicked outside of it!!1!'));
+    </script>
+  </body>
+  <!-- MADE BY SEAN -->
+</html>
