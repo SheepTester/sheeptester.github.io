@@ -18,6 +18,10 @@
     <p id='tion'></p>
     <h2>-sion to -sean</h2>
     <p id='sion'></p>
+    <h2>-cian to -sean</h2>
+    <p id='cian'></p>
+    <h2>-cion to -sean</h2>
+    <p id='cion'></p>
 
     <script src="../sheep.js"></script>
     <script>
@@ -30,6 +34,16 @@ SHEEP.ajax('sion.txt',e=>{
   var words=e.split(/\r?\n/),str='';
   for (var i=0;i<words.length;i++) str+=words[i].replace(/sion/g,'sean')+' ';
   document.querySelector('#sion').innerHTML=str;
+});
+SHEEP.ajax('cian.txt',e=>{
+  var words=e.split(/\r?\n/),str='';
+  for (var i=0;i<words.length;i++) str+=words[i].replace(/cian/g,'sean')+' ';
+  document.querySelector('#cian').innerHTML=str;
+});
+SHEEP.ajax('cion.txt',e=>{
+  var words=e.split(/\r?\n/),str='';
+  for (var i=0;i<words.length;i++) str+=words[i].replace(/cion/g,'sean')+' ';
+  document.querySelector('#cion').innerHTML=str;
 });
     </script>
   </body>

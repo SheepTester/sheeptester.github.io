@@ -2,9 +2,10 @@ var sheeptest=(function(){
   if (document.querySelector('sheepmenu')) {
     document.querySelector('sheepmenu').classList.add('blockvision');
     document.body.onload=_=>{
-      document.querySelector('sheepmenu').classList.remove('blockvision');
+      document.body.classList.remove('blank');
       document.querySelector('sheepmenu').classList.add('playhellos');
-      setTimeout(_=>document.querySelector('sheepmenu').classList.remove('playhellos'),300);
+      setTimeout(_=>document.querySelector('sheepmenu').classList.remove('blockvision'),0);
+      setTimeout(_=>document.querySelector('sheepmenu').classList.remove('playhellos'),500);
     };
   }
   if (window.location.search) {
@@ -87,7 +88,7 @@ var sheeptest=(function(){
     if (e.target.dataset.href) window.location.href=e.target.dataset.href;
     else if (e.target.parentNode.dataset.href) window.location.href=e.target.parentNode.dataset.href;
   };
-  document.querySelector("nav").onclick=function(e){
+  document.querySelector("nav").ontouchstart=document.querySelector("nav").onclick=function(e){
     if (e.target.className=="clickable") {
       document.querySelector(".active.clickable").className="clickable";
       document.querySelector(".active.page").className="page";

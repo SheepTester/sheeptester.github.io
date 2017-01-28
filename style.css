@@ -10,6 +10,11 @@ body {
   background-color: #222;
   line-height: 1;
 }
+@media (max-width: 800px) {
+  body {
+    font-size: 20px;
+  }
+}
 #background {
   background-image: url('img/blorrest.jpg');
   background-size: cover;
@@ -74,6 +79,11 @@ nav .btn:hover {
   padding: 4px;
   margin: 8px;
 }
+@media (max-width: 500px) {
+  #view {
+    display: none;
+  }
+}
 #places {
   font-size: 0;
   overflow-x: hidden;
@@ -87,6 +97,21 @@ place {
   z-index: 0;
   background: #4FA1A7;
   transition: transform .2s, z-index .2s;
+}
+@media (max-width: 800px) {
+  place {
+    width: calc(33% - 20px);
+  }
+}
+@media (max-width: 600px) {
+  place {
+    width: calc(50% - 20px);
+  }
+}
+@media (max-width: 400px) {
+  place {
+    width: calc(100% - 20px);
+  }
 }
 place:hover {
   transform: scale(1.05);
@@ -128,9 +153,13 @@ placelist:nth-child(even) {
 placelist:hover {
   background: rgba(79,161,167,0.8);
 }
+#stalking {
+  padding: 0 10px 50px;
+}
 #stalking p, #stalking h1 {
   margin: 0;
   padding: 5px 0;
+  font-weight: normal;
 }
 #stalking p strong {
   font-size: 1.5em;
@@ -151,6 +180,9 @@ list {
   background: rgba(255,255,255,0.1);
   display: block;
   padding: 0 5px;
+  white-space: nowrap;
+  overflow-x: auto;
+  overflow-y: hidden;
 }
 list social {
   display: inline-block;
@@ -319,6 +351,7 @@ place badge:before {
 #redirects h1 {
   margin: 0;
   padding: 10px;
+  font-weight: normal;
 }
 #redirects dl {
   margin: 0;
@@ -348,7 +381,7 @@ place badge:before {
   opacity: 1;
   background: rgba(255,255,255,0.15);
 }
-sheepmenu.blockvision {
+sheepmenu.blockvision, sheepmenu.blockvision:hover, sheepmenu.blockvision:active {
   bottom: calc(50vh - 50vw);
   border-top-left-radius: 0;
   box-shadow: none;
@@ -357,11 +390,11 @@ sheepmenu.blockvision {
   right: 0;
   opacity: 1;
   transition: none;
+  z-index: 1000;
 }
 sheepmenu.playhellos {
-  animation: hellos 0.3s cubic-bezier(0.55, 0.055, 0.675, 0.19);
+  transition: all 0.3s cubic-bezier(0.55, 0.055, 0.675, 0.19);
   z-index: 1000;
-  background-color: white;
 }
 @keyframes hellos {
   0% {
@@ -382,6 +415,24 @@ sheepmenu.playhellos {
     right: -20px;
     opacity: 0.3;
   }
+}
+body.blank {
+  background: white;
+  color: black;
+}
+body.blank *:not(noscript) {
+  display: none;
+}
+body.blank noscript {
+  line-height: 1;
+  height: 18px;
+  width: 100%;
+  text-align: center;
+  margin: auto;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
 }
 
 sarcasm {
