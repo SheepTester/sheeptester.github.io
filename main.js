@@ -1,13 +1,15 @@
 var sheeptest=(function(){
   if (document.querySelector('sheepmenu')) {
     document.querySelector('sheepmenu').classList.add('blockvision');
-    document.body.onload=_=>{
-      document.body.classList.remove('blank');
+  }
+  document.body.onload=_=>{
+    document.body.classList.remove('blank');
+    if (document.querySelector('sheepmenu')) {
       document.querySelector('sheepmenu').classList.add('playhellos');
       setTimeout(_=>document.querySelector('sheepmenu').classList.remove('blockvision'),0);
       setTimeout(_=>document.querySelector('sheepmenu').classList.remove('playhellos'),500);
-    };
-  }
+    }
+  };
   if (window.location.search) {
     var redirect=window.location.search.slice(1);
     if (redirect.slice(0,8)=="existing") {
