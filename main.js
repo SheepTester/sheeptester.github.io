@@ -2,6 +2,7 @@ var sheeptest=(function(){
   if (document.querySelector('sheepmenu')) {
     document.querySelector('sheepmenu').classList.add('blockvision');
   }
+  var bulletWidth;
   document.body.onload=_=>{
     document.body.classList.remove('blank');
     if (document.querySelector('sheepmenu')) {
@@ -9,6 +10,14 @@ var sheeptest=(function(){
       setTimeout(_=>document.querySelector('sheepmenu').classList.remove('blockvision'),0);
       setTimeout(_=>document.querySelector('sheepmenu').classList.remove('playhellos'),500);
     }
+    var clone=document.createElement('span');
+    clone.className='getTextLength';
+    clone.innerHTML='&bull;&bull;&bull;&bull;&bull;';
+    clone.style.font=document.defaultView.getComputedStyle(document.querySelector('input[type=password]')).font;
+    document.body.appendChild(clone);
+    var smth=clone.clientWidth/5;
+    document.body.removeChild(clone);
+    bulletWidth=smth;
   };
   if (window.location.search) {
     var redirect=window.location.search.slice(1);
@@ -157,16 +166,6 @@ var sheeptest=(function(){
     document.querySelector("#signedin").style.display='none';
     document.querySelector("#user").innerHTML='signed out';
   }
-  var bulletWidth=(function(){
-    var clone=document.createElement('span');
-    clone.className='getTextLength';
-    clone.innerHTML='&bull;&bull;&bull;&bull;&bull;';
-    clone.style.font=document.defaultView.getComputedStyle(document.querySelector('input[type=password]')).font;
-    document.body.appendChild(clone);
-    var smth=clone.offsetWidth/5;
-    document.body.removeChild(clone);
-    return smth;
-  })();
   document.querySelector('#signedout').oninput=function(e){
     function fitVal(elm) {
       var clone=document.createElement('span');

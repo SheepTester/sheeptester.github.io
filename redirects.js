@@ -1,6 +1,7 @@
 (function(){
   var redirects={
     "platformre":"https://sheeptester.github.io/platformre/",
+    "plat":"https://sheeptester.github.io/platformre/",
     "makelevel":"https://sheeptester.github.io/platformre/maker/",
     "gamepro5":"https://www.youtube.com/channel/UCFXJec3TUakUam-Xgll2-Ow",
     "panthre":"https://www.youtube.com/channel/UCS5jP47FySoyh7tXYHDwQoA",
