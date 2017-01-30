@@ -156,11 +156,6 @@ p {
   margin: 10px;
   margin-bottom: 20px;
 }
-@media screen and (max-width: 880px) {
-  nav logo {
-    font-size: 0;
-  }
-}
 menuicon {
   display: none;
   height: 20px;
@@ -195,12 +190,20 @@ h1 {
   background: rgba(255,255,255,0.1);
   transition: background .3s;
 }
-.container img {
+#logo {
   height: 100px;
 }
 .container imgcontainer {
   text-align: center;
   display: block;
+  font-style: italic;
+  font-size: 25px;
+}
+highlight {
+  background: yellow;
+  color: black;
+  font-style: normal;
+  font-weight: bold;
 }
 .container ul {
   margin: 0;
@@ -212,10 +215,39 @@ h1 {
   content: '- ';
   color: rgba(255,255,255,0.5);
 }
+.container img {
+  max-width: 100%;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+  position: relative;
+}
+.container cap {
+  display: block;
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+  background: rgba(255,255,255,0.1);
+  box-sizing: border-box;
+  margin-top: -5px;
+  padding: 5px 10px;
+  max-width: 100%;
+}
+img.upsidedown {
+  transform: rotate(180deg);
+}
+.container footer {
+  text-align: right;
+  margin-right: 60px;
+}
+@media screen and (max-width: 880px) {
+  nav logo {
+    font-size: 0;
+  }
+}
 @media (max-width:650px) {
   nav logo {
     position: relative;
     top: -12.5px;
+    font-size: 20px;
   }
   nav a {
     display: none;

@@ -1,6 +1,11 @@
 (_=>{
 	var s=document.querySelectorAll('a');
-  for (var i=0;i<s.length;i++) if (!s[i].href) s[i].href='https://'+s[i].textContent;
+  for (var i=0;i<s.length;i++) if (!s[i].href) s[i].href='http://'+s[i].textContent;
+  s=document.querySelectorAll('cap');
+  for (var i=0;i<s.length;i++) if (!s[i].innerHTML) {
+    s[i].innerHTML=s[i].previousSibling.previousSibling.getAttribute('title'); // pS gets whitespace nodes too
+    s[i].style.width=s[i].previousSibling.previousSibling.offsetWidth+'px'
+  }
   document.querySelector('menuicon').onclick=e=>{
     if (document.querySelector('nav').classList.contains('open')) document.querySelector('nav').classList.remove('open');
     else document.querySelector('nav').classList.add('open');
