@@ -1,6 +1,5 @@
 body {
   margin: 0;
-  background: #222;
   color: rgba(255,255,255,0.8);
   font-family: 'Open Sans', sans-serif;
 }
@@ -12,11 +11,29 @@ nav {
   width: 100%;
   height: 40px;
   position: fixed;
-  background: #82983a;
   bottom: 0;
   font-size: 0;
-  animation: RAINBOWS 6s infinite;
+  /*animation: RAINBOWS 6s infinite;*/
+  z-index: 10;
 }
+body {background: #242424;transition: background-color .5s;}
+nav, nav btncontainer {background-color: rgba(92,92,92,0.8);transition: background-color .5s;}
+nav:hover {background: rgb(92,92,92);}
+body.blue {background: #0b1723;}
+body.blue nav, body.blue nav btncontainer {background-color: rgba(58,119,182,0.8);}
+body.blue nav:hover {background: rgb(58,119,182);}
+body.red {background: #1f0a0a;}
+body.red nav, body.red nav btncontainer {background-color: rgba(187,62,62,0.8);}
+body.red nav:hover {background: rgb(187,62,62);}
+body.green {background: #0b1f0a;}
+body.green nav, body.green nav btncontainer {background-color: rgba(62,172,57,0.8);}
+body.green nav:hover {background: rgb(62,172,57);}
+body.yellow {background: #1f1d0a;}
+body.yellow nav, body.yellow nav btncontainer {background-color: rgba(176,165,54,0.8);}
+body.yellow nav:hover {background: rgb(176,165,54);}
+body.pink {background: #1b0813;}
+body.pink nav, body.pink nav btncontainer {background-color: rgba(196,59,133,0.8);}
+body.pink nav:hover {background: rgb(196,59,133));}
 @keyframes RAINBOWS {
   0% {background:#c44a4a}
   12.5% {background:#c4804a}
@@ -64,6 +81,14 @@ nav a:hover:after {
 }
 nav a:active:after {
   background: rgba(0,0,0,0.3);
+}
+nav a.active {
+  cursor: default;
+  color: white;
+  background: rgba(0,0,0,0.1);
+}
+nav a.active:after {
+  display: none;
 }
 nav logo {
   display: inline-block;
@@ -134,5 +159,83 @@ p {
 @media screen and (max-width: 880px) {
   nav logo {
     font-size: 0;
+  }
+}
+menuicon {
+  display: none;
+  height: 20px;
+  width: 20px;
+  background-image: url('../img/hamburger.svg');
+  padding: 4px 6px;
+  border: 2px solid rgba(0,0,0,0.2);
+  margin: 4px;
+  background-size: 20px;
+  background-position: center;
+  background-repeat: no-repeat;
+  border-radius: 2px;
+  cursor: pointer;
+}
+menuicon:hover {
+  background-color: rgba(0,0,0,0.1);
+}
+menuicon:active {
+  background-color: transparent;
+  transition: background-color .5s cubic-bezier(0,0,0,1);
+}
+h1 {
+  border-bottom: 1px solid rgba(255,255,255,0.5);
+}
+.container a {
+  background: rgba(255,255,255,0.1);
+}
+.container a:hover {
+  background: rgba(255,255,255,0.3);
+}
+.container a:active {
+  background: rgba(255,255,255,0.1);
+  transition: background .3s;
+}
+.container img {
+  height: 100px;
+}
+.container imgcontainer {
+  text-align: center;
+  display: block;
+}
+.container ul {
+  margin: 0;
+  padding: 0;
+  padding-left: 10px;
+  list-style: none;
+}
+.container ul li:before {
+  content: '- ';
+  color: rgba(255,255,255,0.5);
+}
+@media (max-width:650px) {
+  nav logo {
+    position: relative;
+    top: -12.5px;
+  }
+  nav a {
+    display: none;
+  }
+  nav btncontainer {
+    position: absolute;
+    bottom: 100%;
+    left: 0;
+    width: 100%;
+  }
+  nav menuicon {
+    display: inline-block;
+  }
+  nav.open a {
+    display: block;
+  }
+  nav.open btncontainer {
+    height: auto;
+  }
+  nav.open menuicon {
+    background-image: url('../img/down.svg');
   }
 }

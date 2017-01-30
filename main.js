@@ -19,6 +19,7 @@ var sheeptest=(function(){
     document.body.removeChild(clone);
     bulletWidth=smth;
   };
+  setTimeout(_=>{if (document.body.classList.contains('blank')) document.body.classList.remove('blank');},500); // just in case
   if (window.location.search) {
     var redirect=window.location.search.slice(1);
     if (redirect.slice(0,8)=="existing") {

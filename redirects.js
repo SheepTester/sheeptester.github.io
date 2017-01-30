@@ -10,6 +10,7 @@
     "spam":"http://176.32.230.44/thingkingland.com/spammer/",
     "dairy":"http://176.32.230.44/thingkingland.com/mysql/dairy.php",
     'gaffasaurus':'https://www.youtube.com/channel/UCrvlbaPVXWjHGG3YtelpbNw/',
+    'noskillzjusthacks':'https://www.youtube.com/channel/UCEAF8wDyCTKDIiVHnnu7a2Q',
   };
   if (window.location.search) {
     var redirect=window.location.search.slice(1);
