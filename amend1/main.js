@@ -15,6 +15,14 @@
     var h2s=document.querySelectorAll('h2');
     for (var i=0;i<h2s.length;i++) h2scrolls.push(h2s[i].offsetTop-10);
   })();
+  window.onresize=e=>{
+    console.log('resized');
+    var h2s=document.querySelectorAll('h2');
+    h2scrolls=[];
+    for (var i=0;i<h2s.length;i++) h2scrolls.push(h2s[i].offsetTop-10);
+    var s=document.querySelectorAll('cap');
+    for (var i=0;i<s.length;i++) s[i].style.width=s[i].previousSibling.previousSibling.offsetWidth+'px'
+  };
   window.onscroll=e=>{
     var activeH2,
     scroll=document.body.scrollTop;

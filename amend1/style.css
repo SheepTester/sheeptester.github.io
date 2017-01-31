@@ -1,3 +1,6 @@
+html {
+  width: 100%;
+}
 body {
   margin: 0;
   color: rgba(255,255,255,0.8);
@@ -214,6 +217,7 @@ highlight {
 .container ul li:before {
   content: '- ';
   color: rgba(255,255,255,0.5);
+  display: inline;
 }
 .container img {
   max-width: 100%;
