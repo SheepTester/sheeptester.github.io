@@ -45,4 +45,6 @@
       }
     }
   };
+  window.onresize();
+  window.onscroll();
 })();
