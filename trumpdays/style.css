@@ -1,0 +1,37 @@
+@import url('https://fonts.googleapis.com/css?family=Oswald');
+html, body {
+  height: 100%;
+  width: 100%;
+}
+body {
+  margin: 0;
+  background-image: linear-gradient(180deg,#2B2E4A 0%,#2B2E4A 40%,#E84545 40%,#E84545 70%,#903749 70%,#903749 90%,#53354A 90%,#53354A 100%);
+  color: white;
+  font-family: 'Oswald', sans-serif;
+  line-height: 1;
+}
+days, sometext, end {
+  position: fixed;
+  width: 100%;
+  display: block;
+  text-align: center;
+}
+days {
+  bottom: 60%;
+  font-size: 30vh;
+  box-sizing: border-box;
+  margin-bottom: -1.5vh;
+  color: #E84545;
+}
+sometext {
+  top: 40%;
+  font-size: 5vh;
+  padding-top: 3vh;
+  color: #53354A;
+}
+end {
+  bottom: 10%;
+  font-size: 3vh;
+  padding-bottom: 5vh;
+  color: #53354A;
+}

@@ -63,6 +63,7 @@ var sheeptest=(function(){
     {url:'?penland',img:'img/penland.png',name:'Penland'},
     {url:'javascripts/shepform',img:'img/colorpicker.png',name:'Color input',featured:1},
     {url:'javascripts/clicker',img:'img/click.png',name:'Clicker Game'},
+    {url:'trumpdays',img:'img/trumpdays.png',name:'Trump days',new:1},
     {url:'gamepro5/minigames/dodgedots.html',img:'img/reds.png',name:'Dodge dots game thing',new:1},
     {url:'gamepro5/minigames/color.html',img:'img/color.png',name:'Color fight thing',new:1},
     {url:'animations',img:'img/anima.png',name:'Animations'},

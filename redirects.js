@@ -3,7 +3,7 @@
     "platformre":"https://sheeptester.github.io/platformre/",
     "plat":"https://sheeptester.github.io/platformre/",
     "makelevel":"https://sheeptester.github.io/platformre/maker/",
-    "gamepro5":"https://www.youtube.com/channel/UCFXJec3TUakUam-Xgll2-Ow",
+    "gamepro5":"https://www.youtube.com/Gamepro5",
     "panthre":"https://www.youtube.com/channel/UCS5jP47FySoyh7tXYHDwQoA",
     "penland":"https://sheeptester.github.io/platformre/penland/inv.html",
     "hotel":"http://176.32.230.44/thingkingland.com/thehotel/",

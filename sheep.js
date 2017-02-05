@@ -127,6 +127,90 @@ var SHEEP={
     };
     xmlHttp.open("GET",url,true); // true for asynchronous
     xmlHttp.send(null);
+  },
+  draggable(elem,xwise,ywise,options) {
+    /* OPTIONS: x y minx miny maxx maxy onchange parentdrag*/
+    var drag={},
+    x,y,min,max,
+    idenifydrag=e=>{
+      var x,y;
+      if (xwise) x=Number(elem.style.left.slice(0,-2));
+      if (ywise) y=Number(elem.style.top.slice(0,-2));
+      if (xwise) x=e.clientX-drag.offx;
+      if (ywise) y=e.clientY-drag.offy;
+      if (min) {
+        if (xwise&&x<0) {drag.offx+=x;x=0;}
+        else if (xwise&&options.minx&&x>options.minx) {drag.offx+=x-options.minx;x=options.minx;}
+        if (ywise&&y<0) {drag.offy+=y;y=0;}
+        else if (ywise&&options.miny&&y>options.miny) {drag.offy+=y-options.miny;y=options.miny;}
+      }
+      if (max) {
+        if (xwise&&x<0) {drag.offx+=x;x=0;}
+        else if (xwise&&options.maxx&&x>options.maxx) {drag.offx+=x-options.maxx;x=options.maxx;}
+        if (ywise&&y<0) {drag.offy+=y;y=0;}
+        else if (ywise&&options.maxy&&y>options.maxy) {drag.offy+=y-options.maxy;y=options.maxy;}
+      }
+      if (xwise) elem.style.left=x+'px';
+      if (ywise) elem.style.top=y+'px';
+      if (options.onchange) {
+        if (xwise) options.onchange(x,y);
+        else options.onchange(y);
+      }
+    },
+    mousedown=(touch,e)=>{
+      if (!drag.dragging) {
+        drag.dragging=true;
+        if (xwise) drag.offx=e.clientX-Number(elem.style.left.slice(0,-2));
+        if (ywise) drag.offy=e.clientY-Number(elem.style.top.slice(0,-2));
+        if (touch) {
+          move=e=>{
+            if (drag.dragging) {
+              idenifydrag(e.touches[0]);
+              e.preventDefault();
+              return false;
+            }
+          };
+          end=e=>{
+            if (drag.dragging) {
+              drag.dragging=false;
+              document.removeEventListener("touchmove",move,false);
+              document.removeEventListener("touchend",end,false);
+            }
+          };
+          document.addEventListener("touchmove",move,false);
+          document.addEventListener("touchend",end,false);
+        } else {
+          move=e=>{
+            if (drag.dragging) {
+              idenifydrag(e);
+            }
+          };
+          up=e=>{
+            if (drag.dragging) {
+              idenifydrag(e);
+              drag.dragging=false;
+              document.removeEventListener("mousemove",move,false);
+              document.removeEventListener("mouseup",up,false);
+            }
+          };
+          document.addEventListener("mousemove",move,false);
+          document.addEventListener("mouseup",up,false);
+        }
+      }
+    };
+    if (options) {
+      if (xwise) elem.style.left=(options.x||0)+'px';
+      if (ywise) elem.style.top=(options.y||0)+'px';
+      if (options.minx||options.miny) min=true;
+      if (options.maxx||options.maxy) max=true;
+    }
+    if (options.parentdrag) {
+      elem.parentNode.addEventListener("mousedown",e=>mousedown(false,e),false);
+      elem.parentNode.addEventListener("touchstart",e=>mousedown(true,e.touches[0]),false);
+    } else {
+      elem.addEventListener("mousedown",e=>mousedown(false,e),false);
+      elem.addEventListener("touchstart",e=>mousedown(true,e.touches[0]),false);
+    }
   }
 };
 (function(){
