@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>;)</title>
+    <meta charset="UTF-8">
+    <meta name="description" content=";)"/>
+    <style>
+      parent {
+        display: block;
+        position: relative;
+        height: 300px;
+        width: 500px;
+        background: #607D8B;
+      }
+      child {
+        display: block;
+        height: 50px;
+        width: 50px;
+        background: #9E9E9E;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>for navigation noobs</h1>
+    <ul>
+      <li><a href="minigames">minigames</a></li>
+      <li><a href="weekly">the weekly news</a></li>
+    </ul>
+    <p>if you're bored drag the box below</p>
+    <parent>
+      <child></child>
+    </parent>
+
+    <script src="../sheep.js"></script>
+    <script>
+SHEEP.draggable(document.querySelector('child'),true,true,{fitparent:1,parentdrag:1})
+    </script>
+  </body>
+  <!-- MADE BY SEAN -->
+</html>

@@ -1,5 +1,5 @@
 (function() {
-  var days=Math.floor((new Date('1-20-2021 12:00')-new Date())/86400000);
+  var days=Math.floor((Number(new Date('1-20-2021 12:00'))-Number(new Date()))/86400000);
   if (days<=0) {
     document.querySelector('days').innerHTML="finally";
     document.querySelector('sometext').innerHTML="Trump's first term is over";

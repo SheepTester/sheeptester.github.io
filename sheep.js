@@ -129,7 +129,7 @@ var SHEEP={
     xmlHttp.send(null);
   },
   draggable(elem,xwise,ywise,options) {
-    /* OPTIONS: x y minx miny maxx maxy onchange parentdrag*/
+    /* OPTIONS: x y minx miny maxx maxy onchange parentdrag min max fitparent*/
     var drag={},
     x,y,min,max,
     idenifydrag=e=>{
@@ -139,16 +139,26 @@ var SHEEP={
       if (xwise) x=e.clientX-drag.offx;
       if (ywise) y=e.clientY-drag.offy;
       if (min) {
-        if (xwise&&x<0) {drag.offx+=x;x=0;}
-        else if (xwise&&options.minx&&x>options.minx) {drag.offx+=x-options.minx;x=options.minx;}
-        if (ywise&&y<0) {drag.offy+=y;y=0;}
-        else if (ywise&&options.miny&&y>options.miny) {drag.offy+=y-options.miny;y=options.miny;}
+        if (xwise) {
+          var m=options.min||options.minx;
+          if (m&&x<m) {drag.offx+=x-m;x=m;}
+          else if (options.fitparent&&x<0) {drag.offx+=x;x=0;}
+        }
+        if (ywise) {
+          var m=options.min||options.miny;
+          if (m&&y<m) {drag.offy+=y-m;y=m;}
+          else if (options.fitparent&&y<0) {drag.offy+=y;y=0;}
+        }
       }
       if (max) {
-        if (xwise&&x<0) {drag.offx+=x;x=0;}
-        else if (xwise&&options.maxx&&x>options.maxx) {drag.offx+=x-options.maxx;x=options.maxx;}
-        if (ywise&&y<0) {drag.offy+=y;y=0;}
-        else if (ywise&&options.maxy&&y>options.maxy) {drag.offy+=y-options.maxy;y=options.maxy;}
+        if (xwise) {
+          var m=options.max||options.maxx||(options.fitparent?elem.parentNode.offsetWidth-elem.offsetWidth:0);
+          if (m&&x>m) {drag.offx+=x-m;x=m;}
+        }
+        if (ywise) {
+          var m=options.max||options.maxy||(options.fitparent?elem.parentNode.offsetHeight-elem.offsetHeight:0);
+          if (m&&y>m) {drag.offy+=y-m;y=m;}
+        }
       }
       if (xwise) elem.style.left=x+'px';
       if (ywise) elem.style.top=y+'px';
@@ -201,9 +211,12 @@ var SHEEP={
     if (options) {
       if (xwise) elem.style.left=(options.x||0)+'px';
       if (ywise) elem.style.top=(options.y||0)+'px';
-      if (options.minx||options.miny) min=true;
-      if (options.maxx||options.maxy) max=true;
+      if (options.min||options.minx||options.miny||options.fitparent) min=true;
+      if (options.max||options.maxx||options.maxy||options.fitparent) max=true;
     }
+    if (document.defaultView.getComputedStyle(elem).position!='absolute') elem.style.position='absolute';
+    if (elem.parentNode!==document.body&&document.defaultView.getComputedStyle(elem.parentNode).position=='static')
+      elem.parentNode.style.position='relative';
     if (options.parentdrag) {
       elem.parentNode.addEventListener("mousedown",e=>mousedown(false,e),false);
       elem.parentNode.addEventListener("touchstart",e=>mousedown(true,e.touches[0]),false);
