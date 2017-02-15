@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>RPG Concept</title>
+    <meta charset="UTF-8">
+    <meta name="description" content="Concept CSS for a game I guess."/>
+    <link href="https://fonts.googleapis.com/css?family=Inconsolata" rel="stylesheet">
+    <style>
+      html, body {
+        height: 100%;
+        width: 100%;
+      }
+      body {
+        margin: 0;
+        font-family: 'Inconsolata', monospace;
+        color: #b6c9b6;
+        font-size: 15px;
+        line-height: 1;
+        background: #384d38;
+      }
+      stuff {
+        display: block;
+        background: #384d38;
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 0;
+        transition: filter .2s;
+      }
+      inv {
+        display: inline-block;
+        background: #273527;
+        position: absolute;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        width: 250px;
+        border-right: 10px solid #261c1c;
+      }
+      meters {
+        display: block;
+        width: 100%;
+        border-top: 10px solid #261c1c;
+        border-bottom: 10px solid #261c1c;
+        padding: 10px;
+        box-sizing: border-box;
+      }
+      l {
+        display: block;
+        position: relative;
+      }
+      h {
+        display: block;
+        font-size: 20px;
+        padding: 10px;
+        box-sizing: border-box;
+      }
+      bar {
+        display: block;
+        position: absolute;
+        right: 0;
+        top: 0;
+        height: 11px;
+        margin: 2px 0;
+        width: 150px;
+        background: rgba(0,0,0,0.5);
+        box-sizing: border-box;
+        border-style: solid;
+        border-width: 0;
+        transition: border-right-width .2s;
+      }
+      #health bar {border-color: #ae3d3d;}
+      #armor bar {border-color: #71787a;}
+      #hunger bar {border-color: #945e33;}
+      #thirst bar {border-color: #4374ad;}
+      #mass bar {border-color: #43899d;}
+      #volume bar {border-color: #673885;}
+      message {
+        display: block;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(255,255,255,0.8);
+        height: 0;
+        font-size: 40px;
+        color: black;
+        text-align: center;
+        overflow-y: hidden;
+        transition: height .2s;
+        z-index: 10;
+      }
+      items, equips {
+        display: block;
+        border-bottom: 10px solid #261c1c;
+        padding: 5px;
+        box-sizing: border-box;
+        font-size: 0;
+      }
+      item {
+        display: inline-block;
+        width: calc(25% - 10px);
+        height: 0;
+        padding-bottom: calc(25% - 10px);
+        margin: 5px;
+        background-color: rgba(0,0,0,0.2);
+        border-radius: 2px;
+        background-repeat: no-repeat;
+        background-size: 80%;
+        background-position: center;
+        cursor: pointer;
+      }
+      item:hover {
+        background-color: rgba(0,0,0,0.4);
+      }
+      rightclick {
+        display: block;
+        position: fixed;
+        padding: 0 5px;
+        max-height: 0;
+        overflow-y: hidden;
+        background: rgba(0,0,0,0.8);
+        transition: max-height .2s cubic-bezier(0,0,0,1), padding .2s;
+      }
+      rightclick choice {
+        display: block;
+        cursor: pointer;
+      }
+      rightclick choice:hover {
+        background: rgba(255,255,255,0.1);
+      }
+      body.message stuff, body.rightclick stuff {
+        filter: blur(5px);
+      }
+      body.message stuff *, body.rightclick stuff * {
+        pointer-events: none;
+      }
+      body.message message {
+        height: 40px;
+      }
+      body.rightclick rightclick {
+        max-height: 50%;
+        padding: 5px;
+      }
+    </style>
+  </head>
+  <body>
+    <stuff>
+      <inv>
+        <h>La Inventaro</h>
+        <meters>
+          <l id="health">Sano<bar></bar></l>
+          <l id="armor">Protekto<bar></bar></l>
+          <l id="hunger">Sato<bar></bar></l>
+          <l id="thirst">Malsoifo<bar></bar></l>
+          <l id="mass">Maso<bar></bar></l>
+          <l id="volume">Volumeno<bar></bar></l>
+        </meters>
+        <equips>
+          <item id="helm"></item>
+          <item id="eyes"></item>
+          <item id="chest"></item>
+          <item id="legs"></item>
+          <item id="shoes"></item>
+          <item id="lefthand"></item>
+          <item id="ritehand"></item>
+        </equips>
+        <items></items>
+      </inv>
+    </stuff>
+    <rightclick></rightclick>
+    <message>Hello!</message>
+
+    <script src="../../sheep.js"></script>
+    <script>
+(function() {
+  var s;
+  s=document.querySelectorAll('bar');
+  for (var i=0;i<s.length;i++) {
+    s[i].style.borderRightWidth=Math.floor(Math.random()*150)+'px';
+  }
+  for (var i=0;i<Math.floor(Math.random()*10+5);i++) {
+    var t=document.createElement('item');
+    t.style.backgroundImage='url("item.svg")';
+    document.querySelector('items').appendChild(t);
+  }
+  function rightclick(e,choices,choicefunc) {
+    var outside=e=>{
+      document.body.classList.remove('rightclick');
+      document.querySelector('stuff').removeEventListener("click",outside,false);
+      document.querySelector('rightclick').onclick=null;
+    };
+    while (document.querySelector('rightclick').hasChildNodes()) {
+      document.querySelector('rightclick').removeChild(document.querySelector('rightclick').lastChild);
+    }
+    for (var i=0;i<choices.length;i++) {
+      var t=document.createElement('choice');
+      t.innerHTML=choices[i];
+      document.querySelector('rightclick').appendChild(t);
+    }
+    document.body.classList.add('rightclick');
+    document.querySelector('rightclick').style.left=(e.clientX-3)+'px';
+    document.querySelector('rightclick').style.top=(e.clientY-3)+'px';
+    document.querySelector('stuff').addEventListener("click",outside,false);
+    document.querySelector('rightclick').onclick=e=>{
+      if (e.target.tagName==='CHOICE') {
+        choicefunc(e.target.innerHTML);
+        outside();
+      }
+    };
+  }
+  document.querySelector('equips').onmousedown=e=>{
+    if (e.target.tagName==='ITEM')
+      rightclick(e,
+        ['formeti ĉi tio','forlasu ĉi tio'],
+        e=>{
+          switch (e) {
+            //
+          }
+        }
+      );
+  };
+  document.querySelector('items').onmousedown=e=>{
+    if (e.target.tagName==='ITEM')
+      rightclick(e,
+        ['tenu ĉi tio de maldekstra mano','tenu ĉi tio de dekstra mano','manĝu ĉi tio','forlasu ĉi tio','portu ĉi tio','malkonstruu ĉi tio','uzu ĉi tio konstrui'],
+        e=>{
+          switch (e) {
+            //
+          }
+        }
+      );
+  };
+  /* setTimeout(_=>{
+    document.body.classList.add('message');
+    setTimeout(_=>document.body.classList.remove('message'),2000);
+  },500); */
+}());
+    </script>
+  </body>
+  <!-- MADE BY SEAN -->
+</html>
