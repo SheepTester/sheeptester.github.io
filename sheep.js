@@ -120,10 +120,13 @@ var SHEEP={
     }
     else return undefined;
   },
-  ajax(url,callback) {
-    var xmlHttp=new XMLHttpRequest();
+  ajax(url,callback,error) {
+    var xmlHttp=new XMLHttpRequest(),error;
     xmlHttp.onreadystatechange=function(){
-      if (xmlHttp.readyState===4&&xmlHttp.status===200) callback(xmlHttp.responseText);
+      if (xmlHttp.readyState===4) {
+        if (xmlHttp.status===200) callback(xmlHttp.responseText);
+        else if (error) error(xmlHttp.status);
+      }
     };
     xmlHttp.open("GET",url,true); // true for asynchronous
     xmlHttp.send(null);
@@ -239,6 +242,7 @@ var SHEEP={
      / ____ \ (_| \__ \
     /_/    \_\__,_|___/
                            */
+  SHEEP.ajax('https://sheeptester.github.io/showads.js',e=>{},e=>window.location.replace('https://sheeptester.github.io?tryTurningOffYourAdblock'));
   if (!Math.floor(Math.random()*5)) {
     switch (true) {
       case !SHEEP.dismissed.leafism:
