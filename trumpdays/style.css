@@ -35,3 +35,8 @@ end {
   padding-bottom: 5vh;
   color: #53354A;
 }
+a {
+  color: inherit;
+  text-decoration: none;
+  background: rgba(255,255,255,0.1);
+}
