@@ -5,7 +5,7 @@
   el.rel="stylesheet";
   // el.href="sheep.css";
   el.href="https://sheeptester.github.io/sheep.css";
-  document.head.appendChild(el);
+  document.head.insertBefore(el,document.head.firstChild);
   el=document.createElement("sheepmenu");
   document.body.appendChild(el);
   document.querySelector("sheepmenu").onclick=function(){

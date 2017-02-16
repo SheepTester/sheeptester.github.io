@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>A Game Concept</title>
+    <meta charset="UTF-8">
+    <meta name="description" content="In which you type and things happen."/>
+    <link href="https://fonts.googleapis.com/css?family=Inconsolata" rel="stylesheet">
+    <style>
+      html, body {
+        height: 100%;
+        width: 100%;
+      }
+      body {
+        margin: 0;
+        font-family: 'Inconsolata', monospace;
+        color: #cab7a0;
+        font-size: 15px;
+        line-height: 1;
+        background: #2e241a;
+        position: relative;
+      }
+      input {
+        background: #211a12;
+        border: none;
+        padding: 5px;
+        box-sizing: border-box;
+        width: 100%;
+        position: absolute;
+        bottom: 0;
+        color: inherit;
+        height: 25px;
+        z-index: 3;
+      }
+      ::-webkit-input-placeholder {
+        color: rgba(202,183,160,0.5);
+      }
+      text {
+        display: block;
+        position: absolute;
+        bottom: 0;
+        padding: 5px;
+        padding-bottom: 30px;
+        box-sizing: border-box;
+        max-height: 100%;
+        overflow-y: scroll;
+        word-wrap: break-word;
+        width: 100%;
+      }
+      .userinput {
+        color: #d0c553;
+      }
+      .userinput:before {
+        content: '> '
+      }
+      .location {
+        color: #6582b3;
+        font-weight: bold;
+      }
+    </style>
+  </head>
+  <body>
+    <input type="text" placeholder="What to do" spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off" id='act' autofocus/>
+    <text></text>
+
+    <script src="../../sheep.js"></script>
+    <script>
+(function() {
+  function comprehend(input) {
+    input=input.toLowerCase().split(/\W/);
+    for (var i=0;i<input.length;i++) {
+      if (!input[i]||input[i]==='i'||input[i]==='we') {
+        input.splice(i,1);
+        i--;
+      }
+      else if (input[i]==='you') input[i]='me';
+      else if (input[i]==='your') input[i]='my';
+      else if (input[i]==='yours') input[i]='mine';
+      else if (input[i]==='my') input[i]='your';
+      else if (input[i]==='me'||input[i]==='us') input[i]='you';
+      else if (input[i]==='mine') input[i]='yours';
+      else if (input[i]==='here') input[i]='there';
+      else if (input[i]==='there') input[i]='here';
+      else if (input[i]==='this') input[i]='that';
+      else if (input[i]==='that') input[i]='this';
+      else if (input[i]==='myself') input[i]='yourself';
+      else if (input[i]==='yourself') input[i]='myself';
+      else if (input[i]==='where'||input[i]==='what'||input[i]==='when'||input[i]==='why'||input[i]==='who'||input[i]==='whose'||input[i]==='how')
+        return "stop asking questions";
+      else if (input[i]===String.fromCharCode(102)+String.fromCharCode(117)+String.fromCharCode(99)+String.fromCharCode(107))
+        return 'did you mean "fly"?';
+    }
+    console.log(input);
+    if (input.length===0) return 'you did nothing';
+    else if (input.length===1) {
+      var i=input[0];
+      if (i==='n'||i==='north') return 'you go north';
+      else if (i==='e'||i==='east') return 'you go east';
+      else if (i==='w'||i==='west') return 'you go west';
+      else if (i==='s'||i==='south') return 'you go south';
+      else if (i==='u'||i==='up') return 'you go up';
+      else if (i==='d'||i==='down') return 'you go down';
+      else if (i==='inv') return 'you have nothing';
+      else if (i==='die'||i==='suicide'||i==='choke'||i==='suffocate'||i==='asphyxiate') return 'you lack the motivation to '+i;
+      else if (i==='go') return 'go where';
+      else return 'you do not have the mental and/or physical capacity to do that, unfortunately';
+    } else if (input[0]==='eat') {
+      return 'you ate '+input.slice(1).join(' ');
+    } else if (input[0]==='go') {
+      var i=input[1];
+      if (i==='n'||i==='north') return 'you go north';
+      else if (i==='e'||i==='east') return 'you go east';
+      else if (i==='w'||i==='west') return 'you go west';
+      else if (i==='s'||i==='south') return 'you go south';
+      else if (i==='u'||i==='up') return 'you go up';
+      else if (i==='d'||i==='down') return 'you go down';
+      else if (i==='nowhere') return 'that seems unproductive';
+      else return 'you can\'t go that way';
+    } else if (input[0]==='look'||input[0]==='inspect') {
+      if (input[1]==='at') input.splice(1,1);
+      return 'you stare intensely at '+input.slice(1).join(' ');
+    } else if (input[0]==='talk') {
+      if (input[1]==='to') input.splice(1,1);
+      return 'you say hello to '+input.slice(1).join(' ')+' but they lack the mental capacity to respond';
+    } else if (input[0]==='walk') {
+      if (input[1]==='to') input.splice(1,1);
+      return 'you walk to '+input.slice(1).join(' ');
+    } else if (input[0]==='use') {
+      return 'you productively took advantage of the abilities of '+input.slice(1).join(' ');
+    } else if (input[0]==='open') {
+      return 'you messily rip open the inner-workings of '+input.slice(1).join(' ');
+    } else if (input[0]==='push') {
+      return 'you rudely disrupted the positioning of '+input.slice(1).join(' ');
+    } else if (input[0]==='pick'||input[0]==='collect'||input[0]==='keep'||input[0]==='take') {
+      if (input[1]==='up') input.splice(1,1);
+      return 'you stole '+input.slice(1).join(' ');
+    }
+    else return 'you do not have the mental and/or physical capacity to do that, unfortunately';
+  }
+  document.querySelector('text').innerHTML='<span class="location">Somewhere</span>'+'<br><br>You find yourself stranded somewhere.<br><br>'.replace(/\s/g,'&nbsp;');
+  document.querySelector('#act').onkeydown=e=>{
+    if (e.keyCode===13&&document.querySelector('#act').value) {
+      document.querySelector('text').innerHTML+='<span class="userinput">'+
+      document.querySelector('#act').value
+        .replace(/&/g,'&amp;')
+        .replace(/</g,'&lt;')
+        .replace(/>/g,'&gt;')
+        .replace(/\s/g,'&nbsp;')+
+      '</span><br>'+
+      comprehend(document.querySelector('#act').value)
+        .replace(/&/g,'&amp;')
+        .replace(/</g,'&lt;')
+        .replace(/>/g,'&gt;')
+        .replace(/\s/g,'&nbsp;')+
+      '<br><br>';
+      document.querySelector('#act').value='';
+    }
+  };
+  document.body.onclick=e=>{
+    document.querySelector('#act').focus();
+  };
+}());
+    </script>
+  </body>
+  <!-- MADE BY SEAN -->
+</html>

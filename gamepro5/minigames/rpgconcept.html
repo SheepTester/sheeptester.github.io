@@ -79,6 +79,7 @@
       #volume bar {border-color: #673885;}
       message {
         display: block;
+        position: fixed;
         left: 0;
         right: 0;
         bottom: 0;
@@ -130,6 +131,52 @@
       rightclick choice:hover {
         background: rgba(255,255,255,0.1);
       }
+      visual {
+        display: inline-block;
+        background: #273527;
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        width: 250px;
+        border-left: 10px solid #261c1c;
+      }
+      textplace {
+        display: inline-block;
+        position: absolute;
+        top: 0;
+        right: 250px;
+        bottom: 0;
+        left: 250px;
+        margin: 0 10px;
+      }
+      textplace input {
+        background: #2e3e2e;
+        border: none;
+        padding: 5px;
+        box-sizing: border-box;
+        width: 100%;
+        position: absolute;
+        bottom: 0;
+        color: inherit;
+        height: 25px;
+        z-index: 3;
+      }
+      ::-webkit-input-placeholder {
+        color: rgba(182,201,182,0.5);
+      }
+      text {
+        display: block;
+        position: absolute;
+        bottom: 0;
+        padding: 5px;
+        padding-bottom: 30px;
+        box-sizing: border-box;
+        max-height: 100%;
+        overflow-y: scroll;
+        word-wrap: break-word;
+        width: 100%;
+      }
       body.message stuff, body.rightclick stuff {
         filter: blur(5px);
       }
@@ -148,19 +195,19 @@
   <body>
     <stuff>
       <inv>
-        <h>La Inventaro</h>
+        <h>Inventory</h>
         <meters>
-          <l id="health">Sano<bar></bar></l>
-          <l id="armor">Protekto<bar></bar></l>
-          <l id="hunger">Sato<bar></bar></l>
-          <l id="thirst">Malsoifo<bar></bar></l>
-          <l id="mass">Maso<bar></bar></l>
-          <l id="volume">Volumeno<bar></bar></l>
+          <l id="health">Health<bar></bar></l>
+          <l id="armor">Protection<bar></bar></l>
+          <l id="hunger">Satiation<bar></bar></l>
+          <l id="thirst">Disthirst<bar></bar></l>
+          <l id="mass">Mass<bar></bar></l>
+          <l id="volume">Volume<bar></bar></l>
         </meters>
         <equips>
           <item id="helm"></item>
           <item id="eyes"></item>
-          <item id="chest"></item>
+          <item id="torso"></item>
           <item id="legs"></item>
           <item id="shoes"></item>
           <item id="lefthand"></item>
@@ -168,6 +215,11 @@
         </equips>
         <items></items>
       </inv>
+      <visual></visual>
+      <textplace>
+        <input type="text" placeholder="What to do" id='act'/>
+        <text></text>
+      <textplace>
     </stuff>
     <rightclick></rightclick>
     <message>Hello!</message>
@@ -213,7 +265,7 @@
   document.querySelector('equips').onmousedown=e=>{
     if (e.target.tagName==='ITEM')
       rightclick(e,
-        ['formeti ĉi tio','forlasu ĉi tio'],
+        ['drop','stop wearing'],
         e=>{
           switch (e) {
             //
@@ -224,13 +276,22 @@
   document.querySelector('items').onmousedown=e=>{
     if (e.target.tagName==='ITEM')
       rightclick(e,
-        ['tenu ĉi tio de maldekstra mano','tenu ĉi tio de dekstra mano','manĝu ĉi tio','forlasu ĉi tio','portu ĉi tio','malkonstruu ĉi tio','uzu ĉi tio konstrui'],
+        ['hold in left hand','hold in right hand','eat','drop','wear','demolish','use to craft'],
         e=>{
           switch (e) {
             //
           }
         }
       );
+  };
+  document.querySelector('#act').onkeydown=e=>{
+    if (e.keyCode===13) {
+      document.querySelector('text').innerHTML+=document.querySelector('#act').value.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\s/g,'&nbsp;')+'<br>OK<br>';
+      document.querySelector('#act').value='';
+    }
+  };
+  document.querySelector('textplace').onclick=e=>{
+    document.querySelector('#act').focus();
   };
   /* setTimeout(_=>{
     document.body.classList.add('message');
