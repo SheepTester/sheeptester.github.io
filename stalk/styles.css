@@ -101,15 +101,15 @@ text {
   display: block;
   margin: 5px;
 }
-text a {
+a {
   background-color: rgba(0,0,0,0.1);
   color: inherit;
   text-decoration: none;
 }
-text a:hover {
+a:hover {
   background-color: rgba(0,0,0,0.3);
 }
-text a:active {
+a:active {
   background-color: rgba(0,0,0,0.1);
   transition: background-color .2s;
 }
@@ -170,7 +170,14 @@ h1 {
   padding-bottom: 0;
   transition: filter .5s;
 }
-body.bio h1 {
+p {
+  margin: 0;
+  padding: 10px;
+  color: white;
+  padding-top: 0;
+  transition: filter .5s;
+}
+body.bio h1, body.bio p {
   pointer-events: none;
   filter: blur(5px);
 }
