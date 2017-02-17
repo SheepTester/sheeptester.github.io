@@ -1,0 +1,176 @@
+bio {
+  background: rgba(255,255,255,0.8);
+  border-radius: 5px;
+  display: block;
+  position: fixed;
+  margin: auto;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 80vh;
+  width: 80vh;
+  color: #252A34;
+  box-sizing: border-box;
+  padding: 20px;
+  opacity: 0;
+  pointer-events: none;
+  /*filter: blur(5px);*/
+  overflow-y: auto;
+  transition: opacity .2s, filter .5s;
+}
+@media (orientation: portrait) {
+  bio {
+    height: 80vw;
+    width: 80vw;
+  }
+}
+name {
+  display: block;
+  font-size: 3em;
+}
+nick {
+  display: inline-block;
+  font-weight: bold;
+  padding-right: 20px;
+}
+gender {
+  display: inline-block;
+  height: 50px;
+  width: 50px;
+  border-radius: 2px;
+  box-sizing: border-box;
+  background-image: url('gender.svg');
+  background-size: 100px;
+  transition: background .5s;
+  margin: 5px;
+  font-size: 30px;
+  line-height: 50px;
+  margin-right: 0;
+  position: relative;
+}
+bio.girl gender {
+  background-color: #FF2E63;
+  background-position: right;
+}
+bio.boy gender {
+  background-color: #08D9D6;
+  background-position: left;
+}
+info {
+  display: inline-block;
+  height: 50px;
+  border-radius: 2px;
+  background: rgba(0,0,0,0.1);
+  margin: 5px;
+  font-size: 30px;
+  line-height: 50px;
+  padding: 0 10px;
+  position: relative;
+  margin-right: 0;
+}
+info:before, gender:before {
+  content: attr(data-thing);
+  position: absolute;
+  display: block;
+  top: 0;
+  left: 0;
+  font-size: 10px;
+  color: rgba(0,0,0,0.5);
+  line-height: 1;
+  margin: 2px 5px;
+}
+list {
+  display: block;
+  margin: 10px 5px;
+  font-size: 20px;
+}
+list:before {
+  content: attr(data-name) '  ';
+  font-weight: bold;
+  white-space: pre;
+}
+h {
+  font-size: 20px;
+  display: block;
+  font-weight: bold;
+  margin: 5px;
+  margin-top: 10px;
+}
+text {
+  display: block;
+  margin: 5px;
+}
+text a {
+  background-color: rgba(0,0,0,0.1);
+  color: inherit;
+  text-decoration: none;
+}
+text a:hover {
+  background-color: rgba(0,0,0,0.3);
+}
+text a:active {
+  background-color: rgba(0,0,0,0.1);
+  transition: background-color .2s;
+}
+body.bio bio {
+  opacity: 1;
+  pointer-events: all;
+  filter: none;
+}
+people {
+  display: flex;
+  color: #537780;
+  font-size: 20px;
+  flex-wrap: wrap;
+  padding: 5px;
+  transition: filter .5s;
+}
+person {
+  flex-grow: 1;
+  display: inline-block;
+  padding: 5px;
+  margin: 5px;
+  text-align: center;
+  cursor: pointer;
+  transition: box-shadow .2s;
+  height: 30px;
+  box-sizing: border-box;
+}
+person:nth-child(3n+1) {background-color: #FFFCCA;}
+person:nth-child(3n+2) {background-color: #55E9BC;}
+person:nth-child(3n+3) {background-color: #11D3BC;}
+person:hover {
+  box-shadow: inset 0 0 0 5px rgba(0,0,0,0.1);
+}
+person:active {
+  box-shadow: inset 0 0 0 15px rgba(0,0,0,0.1);
+}
+body.bio people {
+  pointer-events: none;
+  filter: blur(5px);
+}
+html, body {
+  height: 100%;
+  width: 100%;
+}
+body {
+  margin: 0;
+  background: #537780;
+  font-family: 'Questrial', sans-serif;
+  line-height: 1;
+  font-size: 15px;
+}
+h1 {
+  font-weight: normal;
+  font-size: 30px;
+  margin: 0;
+  padding: 10px;
+  color: white;
+  padding-bottom: 0;
+  transition: filter .5s;
+}
+body.bio h1 {
+  pointer-events: none;
+  filter: blur(5px);
+}

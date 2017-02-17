@@ -1,0 +1,65 @@
+[
+  {
+    "full_name":"Christopher Yao",
+    "nick":"Chris",
+    "isgirl":false,
+    "race":"Asian",
+    "born":null,
+    "birthday":[20,10,2003],
+    "aliases":[
+      "Chris",
+      "Scott (<em>Infinity Chip</em>)",
+      "Christogoofer Yaoch",
+      "Gaffasaurus (YouTube)"
+    ],
+    "profiles":[
+      "email","mailto:mrpenguin.unlucky@gmail.com",
+      "google+","https://plus.google.com/u/0/106434603220854241121",
+      "youtube","https://www.youtube.com/channel/UCrvlbaPVXWjHGG3YtelpbNw/"
+    ],
+    "ships":[
+      "Chrisaela","x Michaela",
+      "Chrisathan","x Sneh"
+    ],
+    "schools":[
+      "JLS",6,8
+    ],
+    "organisations":[
+      "Real Axolotls"
+    ],
+    "desc":"short, founder of Axolotls, wears glasses"
+  },
+  {
+    "full_name":"Jessica Huang",
+    "nick":"Jessica",
+    "isgirl":true,
+    "race":"Asian",
+    "born":"China",
+    "birthday":[11,5,2003],
+    "aliases":[
+      "MutantKitsune (MC)",
+      "Lexiana (<em>Infinity Chip</em>)"
+    ],
+    "profiles":[
+      "email","mailto:snowlight789@gmail.com",
+      "google+","https://plus.google.com/+JessicaHuangTheQuetzalKirin"
+    ],
+    "ships":[
+      "Jasonica","x Jason",
+      "Jessipei","x Peipei",
+      "Jessipoole","x Henry",
+      "Jessivan","x Evan",
+      "Joessica","x Alex C",
+      "Zachica","x Zach",
+      "Kevinica","x Kevin"
+    ],
+    "schools":[
+      "JLS",6,6,
+      "Jordan",7,8
+    ],
+    "organisations":[
+      "Real Axolotls"
+    ],
+    "desc":"was in JLS, too many ships"
+  }
+]

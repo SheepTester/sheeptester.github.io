@@ -1,0 +1,29 @@
+<svg viewBox="0 0 100 50" xmlns="http://www.w3.org/2000/svg" fill="white" fill-opacity='0.8'>
+  <path d="
+    M20 15
+    a15 15 0 0 0 0 30
+    a15 15 0 0 0 0 -30
+    z
+    M45 5h-20l20 20z
+    M10 37l3 3l30 -30l-3 -3l-30 30z
+  "/>
+  <path d="
+    M75 5
+    a10 10 0 0 0 0 20
+    a10 10 0 0 0 0 -20
+    z
+    M73 10
+    V30
+    h-10
+    v4
+    h10
+    V45
+    H77
+    V34
+    h10
+    v-4
+    h-10
+    V10
+    z
+  "/>
+</svg>
