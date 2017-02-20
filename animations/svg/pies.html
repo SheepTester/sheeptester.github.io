@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Pie thing I suppose</title>
+    <meta charset="UTF-8">
+    <meta name="description" content="Hi!"/>
+    <style>
+      slider {
+        width: 100%;
+        display: block;
+        height: 25px;
+        background: grey;
+        position: relative;
+        width: 720px;
+      }
+      svg {
+        display: block;
+      }
+      drag {
+        background: darkgrey;
+        display: block;
+        position: absolute;
+        height: 25px;
+        width: 5px;
+      }
+    </style>
+  </head>
+  <body>
+    <svg xmlns="http://www.w3.org/2000/svg" fill="#A94444" width="100"></svg>
+    Point one<slider id="pointone"><drag></drag></slider>
+    Point two<slider id="pointtwo"><drag></drag></slider>
+
+    <script src="../../sheep.js"></script>
+    <script>
+var p1=0,p2=90,r=50;
+function update() {
+  document.querySelector('svg').innerHTML='<path d="M25 25L'+(Math.sin(p1/180*Math.PI)*50+25)+' '+(Math.cos(p1/180*Math.PI)*50+25)+'A'+r+' '+r+' 0 '+(p1-p2>0?1:0)+' 0 '+(Math.sin(p2/180*Math.PI)*50+25)+' '+(Math.cos(p2/180*Math.PI)*50+25)+'z"/>';
+}
+update();
+SHEEP.draggable(document.querySelector('#pointone drag'),true,false,{x:0,parentdrag:1,min:0,max:720,onchange:e=>{
+  p1=e/2;
+  update();
+}});
+    </script>
+  </body>
+  <!-- MADE BY SEAN -->
+</html>
