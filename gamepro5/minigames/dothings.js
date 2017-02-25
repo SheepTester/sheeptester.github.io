@@ -5,6 +5,7 @@
     else save();
   } catch (e) {}
   function update(list) {
+    document.querySelector('#ess').innerHTML=elements.length;
     while (list.hasChildNodes()) list.removeChild(list.lastChild);
     for (var i=0;i<elements.length;i++) {
       var s=document.createElement('element');

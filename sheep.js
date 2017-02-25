@@ -242,7 +242,7 @@ var SHEEP={
      / ____ \ (_| \__ \
     /_/    \_\__,_|___/
                            */
-  SHEEP.ajax('https://sheeptester.github.io/showads.js',e=>{},e=>window.location.replace('https://sheeptester.github.io?tryTurningOffYourAdblock'));
+  // SHEEP.ajax('https://sheeptester.github.io/showads.js',e=>{},e=>window.location.replace('https://sheeptester.github.io?tryTurningOffYourAdblock'));
   if (!Math.floor(Math.random()*5)) {
     switch (true) {
       case !SHEEP.dismissed.leafism:
