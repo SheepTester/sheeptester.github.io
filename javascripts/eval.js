@@ -49,15 +49,19 @@
     white-space: pre;
   }
   evalcontainer > evaloutput > evaloutputentry::before {
-    content: "> ";
+    content: ">\\00a0";
     color: rgba(255,255,255,0.5);
   }
   evalcontainer > evaloutput > evaloutputentry.EVALRESULT {
     border-bottom: 1px solid rgba(255,255,255,0.1);
   }
   evalcontainer > evaloutput > evaloutputentry.EVALRESULT::before {
-    content: "< ";
+    content: "<\\00a0";
     font-style: normal;
+  }
+  evalcontainer > evaloutput > evaloutputentry.EVALWARN {
+    background: #FFEB3B;
+    color: black;
   }
   evalcontainer > evaloutput > evaloutputentry.EVALSTRING {
     color: #FFEB3B;
@@ -73,6 +77,9 @@
   }
   evalcontainer > evaloutput > evaloutputentry.EVALERROR {
     background: #f44336;
+  }
+  evalcontainer > evaloutput > evaloutputentry.EVALWARN.EVALSTRING {
+    color: black;
   }
   evalcontainer > evaloutput > evaloutputentry.EVALLOG::before {
     content: "";
@@ -99,7 +106,7 @@
       if (e.keyCode===13&&!e.shiftKey) {
         var t=document.createElement("evaloutputentry"),
         evaloutput;
-        t.textContent=textarea.value;
+        t.textContent=textarea.value.replace(/\s/g,'\\u00a0');
         output.appendChild(t);
         t=document.createElement("evaloutputentry");
         t.classList.add('EVALRESULT');
@@ -134,7 +141,7 @@
           evaloutput=e;
           t.classList.add('EVALERROR');
         }
-        t.innerHTML=evaloutput;
+        t.textContent=(evaloutput+'').replace(/\s/g,'\\u00a0');
         output.appendChild(t);
         output.scrollTop=output.scrollHeight;
         textarea.value='';
@@ -150,36 +157,60 @@
         while (output.hasChildNodes()) output.removeChild(output.lastChild);
       }
     };
+    function merp(u,t) {
+      switch (typeof u) {
+        case 'object':
+          u=JSON.stringify(u);
+          t.classList.add('EVALFUNCTION');
+          break;
+        case 'string':
+          u=`"${u}"`;
+          t.classList.add('EVALSTRING');
+          break;
+        case 'number':
+        case 'boolean':
+          t.classList.add('EVALNUMBER');
+          break;
+        case 'function':
+          u=u.toString();
+          t.classList.add('EVALFUNCTION');
+          break;
+        case 'undefined':
+          t.classList.add('EVALUNDEFINED');
+          break;
+        case 'symbol':
+          u=u.toString();
+          t.classList.add('EVALSTRING');
+          break;
+      }
+      return u;
+    }
     console.log=function(){
       for (var i=0;i<arguments.length;i++) {
         var t=document.createElement("evaloutputentry"),u=arguments[i];
         t.classList.add('EVALLOG');
-        switch (typeof u) {
-          case 'object':
-            u=JSON.stringify(u);
-            t.classList.add('EVALFUNCTION');
-            break;
-          case 'string':
-            u=`"${u}"`;
-            t.classList.add('EVALSTRING');
-            break;
-          case 'number':
-          case 'boolean':
-            t.classList.add('EVALNUMBER');
-            break;
-          case 'function':
-            u=u.toString();
-            t.classList.add('EVALFUNCTION');
-            break;
-          case 'undefined':
-            t.classList.add('EVALUNDEFINED');
-            break;
-          case 'symbol':
-            u=u.toString();
-            t.classList.add('EVALSTRING');
-            break;
-        }
-        t.innerHTML=u;
+        u=merp(u,t);
+        t.textContent=(u+'').replace(/\s/g,'\\u00a0');
+        output.appendChild(t);
+      }
+    };
+    console.warn=function(){
+      for (var i=0;i<arguments.length;i++) {
+        var t=document.createElement("evaloutputentry"),u=arguments[i];
+        t.classList.add('EVALLOG');
+        t.classList.add('EVALWARN');
+        u=merp(u,t);
+        t.textContent=(u+'').replace(/\s/g,'\\u00a0');
+        output.appendChild(t);
+      }
+    };
+    console.error=function(){
+      for (var i=0;i<arguments.length;i++) {
+        var t=document.createElement("evaloutputentry"),u=arguments[i];
+        t.classList.add('EVALLOG');
+        t.classList.add('EVALERROR');
+        u=merp(u,t);
+        t.textContent=(u+'').replace(/\s/g,'\\u00a0');
         output.appendChild(t);
       }
     };
