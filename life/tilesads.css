@@ -1,0 +1,53 @@
+body {
+  margin: 0;
+  background: black;
+  line-height: 1;
+}
+board {
+  display: block;
+  font-size: 0;
+  white-space: nowrap;
+  user-select: none;
+}
+row {
+  display: block;
+  border-bottom: 1px solid black;
+}
+cell {
+  display: inline-block;
+  border-right: 1px solid black;
+  height: 16px;
+  width: 16px;
+  cursor: default;
+  position: relative;
+}
+cell:hover {
+  box-shadow: inset 0 0 0 1px white;
+  z-index: 1;
+}
+cell.live, cell.llchange::after {
+  background-color: #8BC34A;
+}
+cell.dead, cell.live.llchange::after {
+  background-color: #33691E;
+}
+cell.llchange::after {
+  content: '';
+  position: absolute;
+  display: block;
+  height: 4px;
+  width: 4px;
+  top: 6px;
+  left: 6px;
+  right: 6px;
+  bottom: 6px;
+}
+cell.dying::after, cell.living::after {
+  display: none;
+}
+cell.dying {
+  background-color: #9C27B0;
+}
+cell.living {
+  background-color: #FF9800;
+}

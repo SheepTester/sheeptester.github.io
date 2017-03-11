@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>onwheel test</title>
+    <meta charset="UTF-8">
+    <meta name="description" content="tests"/>
+  </head>
+  <body>
+    <p>deltaX: <strong id='X'></strong> deltaY: <strong id='Y'></strong> deltaZ: <strong id='Z'></strong></p>
+
+    <script src="../sheep.js"></script>
+    <script>
+document.onwheel=e=>{
+  document.querySelector('#X').innerHTML=e.deltaX;
+  document.querySelector('#Y').innerHTML=e.deltaY;
+  document.querySelector('#Z').innerHTML=e.deltaZ;
+};
+    </script>
+  </body>
+  <!-- MADE BY SEAN -->
+</html>

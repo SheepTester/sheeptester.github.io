@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Conway's Game of Life</title>
+    <meta charset="UTF-8">
+    <meta name="description" content="Life is just a game."/>
+    <link rel="stylesheet" href="tilesads.css">
+    <link rel="stylesheet" href="uiads.css">
+  </head>
+  <body>
+    <board></board>
+    <ui>
+      <uicontainer>
+        <btn id='play'>play</btn>
+        <btn id='next'>next generation</btn>
+        <btn id='clear'>clear</btn>
+      </uicontainer>
+      <uicontainer id='tool'>
+        paint type:<br>
+        <input type="radio" name='tool' value="toggle">toggle<br>
+        <input type="radio" name='tool' value="life" checked>lifen<br>
+        <input type="radio" name='tool' value="kill">kill
+      </uicontainer>
+      <uicontainer>
+        Generations: <span id='gens'>0</span><br>
+        Frame delay: <span id='delay'>100</span><br>
+        <input type="range" value="100" min='0' max='1000' id='delayinput'>
+      </uicontainer>
+    </ui>
+
+    <script src="../sheep.js"></script>
+    <script src="renderads.js" charset="utf-8"></script>
+    <script>
+      var interval,gens=0;
+      window.onresize=e=>render.testBoard(document.querySelector('board'),Math.floor(window.innerWidth/17),Math.floor(window.innerHeight/17));
+      onresize();
+      document.querySelector('board').onmousedown=e=>{
+        render.cellEdit(e);
+        document.querySelector('board').addEventListener("mousemove",render.cellEdit,false);
+      };
+      document.querySelector('board').onmouseup=e=>{
+        render.finishedEditing(e);
+        onresize();
+        document.querySelector('board').removeEventListener("mousemove",render.cellEdit,false);
+      };
+      document.body.onkeydown=e=>{
+        var t=true;
+        switch (e.keyCode) {
+          case 37:
+            render.scroll(render.scroll().scrollX-1,render.scroll().scrollY);
+            break;
+          case 39:
+            render.scroll(render.scroll().scrollX+1,render.scroll().scrollY);
+            break;
+          case 38:
+            render.scroll(render.scroll().scrollX,render.scroll().scrollY-1);
+            break;
+          case 40:
+            render.scroll(render.scroll().scrollX,render.scroll().scrollY+1);
+            break;
+          case 32:
+            document.querySelector('#play').click();
+            t=false;
+          default:
+            t=false;
+        }
+        if (t) onresize();
+      };
+      document.onwheel=e=>{
+        var tileHeight=17,deltaX=Math.floor(e.deltaX/tileHeight),deltaY=Math.floor(e.deltaY/tileHeight);
+        if (e.deltaY!==0) {
+          if (e.shiftKey) render.scroll(render.scroll().scrollX+deltaY,render.scroll().scrollY);
+          else render.scroll(render.scroll().scrollX,render.scroll().scrollY+deltaY);
+        }
+        else render.scroll(render.scroll().scrollX+deltaX,render.scroll().scrollY);
+        onresize();
+      };
+      document.querySelector('#play').onclick=e=>{
+        if (interval) {
+          clearInterval(interval);
+          interval=0;
+          document.querySelector('#play').innerHTML='play';
+        } else {
+          interval=setInterval(_=>{gens++;render.update();onresize();document.querySelector('#gens').innerHTML=gens;},Number(document.querySelector('#delayinput').value));
+          document.querySelector('#play').innerHTML='pause';
+        }
+      };
+      document.querySelector('#next').onclick=e=>{
+        gens++;
+        render.update();
+        onresize();
+        document.querySelector('#gens').innerHTML=gens;
+      };
+      document.querySelector('#clear').onclick=e=>{
+        render.board({});
+        onresize();
+      };
+      document.querySelector('#delayinput').onmousemove=e=>{
+        document.querySelector('#delay').innerHTML=document.querySelector('#delayinput').value;
+      };
+      document.querySelector('#delayinput').onchange=e=>{
+        document.querySelector('#delay').innerHTML=document.querySelector('#delayinput').value;
+        document.querySelector('#play').click();
+      };
+      document.querySelector('#tool').onclick=e=>render.tool(document.querySelector('input[name="tool"]:checked').value);
+    </script>
+  </body>
+  <!-- MADE BY SEAN -->
+</html>
