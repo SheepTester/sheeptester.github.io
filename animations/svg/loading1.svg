@@ -1,0 +1,20 @@
+<svg viewBox="0 0 100 4" xmlns="http://www.w3.org/2000/svg" stroke-linecap='round'>
+  <style>
+    path#wow {
+      animation: wow 1s cubic-bezier(0.8,0,0.2,1), wows 1s cubic-bezier(0.5,0,0.5,1);
+      animation-iteration-count: infinite;
+      animation-direction: alternate;
+      animation-fill-mode: forwards;
+    }
+    @keyframes wow {
+      0% {stroke-dashoffset: 0px;}
+      100% {stroke-dashoffset: -76px;}
+    }
+    @keyframes wows {
+      0% {stroke-dasharray: 20px 100px;}
+      30% {stroke-dasharray: 30px 100px;}
+      100% {stroke-dasharray: 20px 100px;}
+    }
+  </style>
+  <path fill="none" stroke='black' stroke-width='4' d="M2 2H98" id='wow'/>
+</svg>

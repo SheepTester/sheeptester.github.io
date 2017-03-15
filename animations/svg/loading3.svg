@@ -1,0 +1,31 @@
+<svg viewBox="0 0 100 20" xmlns="http://www.w3.org/2000/svg">
+  <!-- ff0072 ff4300 ffd000 00ffb6 00d8ff -->
+  <style>
+    #back {
+      animation: colour 5s infinite;
+    }
+    @keyframes colour {
+      0% {fill: #ff0072;}
+      5% {fill: #ff4300;}
+      20% {fill: #ff4300;}
+      25% {fill: #ffd000;}
+      40% {fill: #ffd000;}
+      45% {fill: #00ffb6;}
+      60% {fill: #00ffb6;}
+      65% {fill: #00d8ff;}
+      80% {fill: #00d8ff;}
+      85% {fill: #ff0072;}
+      100% {fill: #ff0072;}
+    }
+    #load {
+      stroke-dasharray: 0px 80px;
+      animation: boing 1s cubic-bezier(0.5,0,0.5,1) infinite alternate;
+    }
+    @keyframes boing {
+      from {stroke-dashoffset: 0px;}
+      to {stroke-dashoffset: 80px;}
+    }
+  </style>
+  <path id="back" d="M0 0H100V20H0z"/>
+  <path id='load' fill="none" stroke='black' stroke-opacity='0.7' stroke-width='10' d="M10 10H90" stroke-linecap='round'/>
+</svg>

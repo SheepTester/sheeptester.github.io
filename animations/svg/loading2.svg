@@ -1,0 +1,49 @@
+<svg viewBox="180 130 135 135" xmlns="http://www.w3.org/2000/svg" stroke-linecap='round' fill='none' stroke-width='10'>
+  <!-- https://scratch.mit.edu/projects/111724403/ -->
+  <style>
+    path {
+      stroke-dasharray: 0px 470px;
+      animation-duration: 4s;
+    }
+    l1 {
+      animation-name: l1;
+    }
+    @keyframes {
+      from {stroke-dashoffset: 0px;}
+      to {stroke-dashoffset: 470px;}
+    }
+    l2 {
+      animation-name: l2;
+    }
+    @keyframes {
+      from {stroke-dashoffset: 94px;}
+      to {stroke-dashoffset: 564px;}
+    }
+    l3 {
+      animation-name: l3;
+    }
+    @keyframes {
+      from {stroke-dashoffset: 0px;}
+      to {stroke-dashoffset: 470px;}
+    }
+    l4 {
+      animation-name: l4;
+    }
+    @keyframes {
+      from {stroke-dashoffset: 0px;}
+      to {stroke-dashoffset: 470px;}
+    }
+    l5 {
+      animation-name: l5;
+    }
+    @keyframes {
+      from {stroke-dashoffset: 0px;}
+      to {stroke-dashoffset: 470px;}
+    }
+  </style>
+  <path stroke='#f6511d' id="l1" d="M255 138 C264 148 247 179 244 199 C241 218 226 250 236 258 C245 266 270 244 282 232 C294 220 314 194 305 186 C295 177 264 196 243 199 C224 202 195 215 185 206 C177 198 198 174 211 162 C222 150 247 130 255 138 z"/>
+  <path stroke='#e1b400' id="l2" d="M255 138 C264 148 247 179 244 199 C241 218 226 250 236 258 C245 266 270 244 282 232 C294 220 314 194 305 186 C295 177 264 196 243 199 C224 202 195 215 185 206 C177 198 198 174 211 162 C222 150 247 130 255 138 z"/>
+  <path stroke='#00a6ed' id="l3" d="M255 138 C264 148 247 179 244 199 C241 218 226 250 236 258 C245 266 270 244 282 232 C294 220 314 194 305 186 C295 177 264 196 243 199 C224 202 195 215 185 206 C177 198 198 174 211 162 C222 150 247 130 255 138 z"/>
+  <path stroke='#7fb800' id="l4" d="M255 138 C264 148 247 179 244 199 C241 218 226 250 236 258 C245 266 270 244 282 232 C294 220 314 194 305 186 C295 177 264 196 243 199 C224 202 195 215 185 206 C177 198 198 174 211 162 C222 150 247 130 255 138 z"/>
+  <path stroke='#0d2c54' id="l5" d="M255 138 C264 148 247 179 244 199 C241 218 226 250 236 258 C245 266 270 244 282 232 C294 220 314 194 305 186 C295 177 264 196 243 199 C224 202 195 215 185 206 C177 198 198 174 211 162 C222 150 247 130 255 138 z"/>
+</svg>
