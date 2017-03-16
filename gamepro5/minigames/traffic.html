@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Red light green light</title>
+    <meta charset="UTF-8">
+    <meta name="description" content="Isn't there a Chinese version of this game? Oh yeah 一二三木頭人."/>
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+    <style>
+      body {
+        line-height: 1;
+        font-family: 'Open Sans', sans-serif;
+        font-size: 15px;
+      }
+      traffic {
+        display: block;
+        position: fixed;
+        width: 50px;
+        height: 110px;
+        box-sizing: border-box;
+        padding: 10px;
+        background-color: #212325;
+        margin: 0 auto;
+        left: 0;
+        right: 0;
+        border-radius: 2px;
+        overflow-y: hidden;
+      }
+      light {
+        display: block;
+        height: 30px;
+        width: 30px;
+        border-radius: 50%;
+        transition: all .5s;
+        background-color: #212325;
+        margin-top: 90px;
+      }
+      light.stop {
+        background-color: #f44336;
+        margin-top: 0;
+      }
+      light.slow {
+        background-color: #FFEB3B;
+        margin-top: 30px;
+      }
+      light.go {
+        background-color: #8BC34A;
+        margin-top: 60px;
+      }
+      msg {
+        text-align: center;
+        display: block;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        top: 125px;
+      }
+      prog {
+        display: block;
+        position: fixed;
+        z-index: -1;
+        top: 0;
+        left: 0;
+        width: 100%;
+        background-color: #eee;
+        transition: height .2s;
+      }
+      score {
+        display: block;
+        position: fixed;
+        width: 100%;
+        top: 0;
+        bottom: 0;
+        margin: auto;
+        font-size: 10vh;
+        text-align: center;
+        height: 10vh;
+        left: 0;
+        opacity: 0;
+      }
+      score::before, score::after {
+        color: #666;
+        position: absolute;
+        left: 0;
+        right: 0;
+        display: block;
+        font-size: 2vh;
+      }
+      score::before {
+        content: 'you won!';
+        top: -2vh;
+      }
+      score::after {
+        content: 'milliseconds';
+        bottom: -2vh;
+      }
+      body.finished * {
+        opacity: 0;
+        transition: opacity 3s;
+        pointer-events: none;
+      }
+      body.finished score {
+        opacity: 1;
+        transition: opacity 3s;
+        pointer-events: all;
+      }
+    </style>
+  </head>
+  <body>
+    <traffic><light></light></traffic>
+    <msg></msg>
+    <prog></prog>
+    <score>sdf</score>
+
+    <script src="../../sheep.js"></script>
+    <script>
+(function() {
+  var prog=0,down=false,light='init',clicks=0,time,interval,maxClicksPerSecond=0,beginningTime=new Date(),
+  count=e=>{
+    if (!down&&(!e.keyCode||e.keyCode===32)) {
+      prog++;
+      clicks++;
+      if (light===0) prog=0;
+      if (light===0.5&&clicks*1000/(new Date()-time)>maxClicksPerSecond) prog=0;
+      document.querySelector('prog').style.height=prog*2+'%';
+      down=true;
+      if (prog>=50) {
+        document.body.className='finished';
+        document.querySelector('score').innerHTML=new Date()-beginningTime;
+        document.removeEventListener("keydown",count,false);
+        document.removeEventListener("touchstart",count,false);
+        document.removeEventListener("keyup",countend,false);
+        document.removeEventListener("touchend",countend,false);
+      }
+    }
+  },
+  countend=e=>down=false,
+  timeout=_=>{
+    var nextLight=Math.floor(Math.random()*2)/2;
+    if (nextLight===light) nextLight=(nextLight+0.5)%1.5;
+    if (light==='init') nextLight=1;
+    switch (nextLight) {
+      case 0:
+        document.querySelector('light').className='stop';
+        break;
+      case 0.5:
+        document.querySelector('light').className='slow';
+        break;
+      case 1:
+        document.querySelector('light').className='go';
+        break;
+    }
+    setTimeout(_=>{
+      light=nextLight;
+      switch (light) {
+        case 0:
+          document.querySelector('msg').innerHTML='stop!';
+          break;
+        case 0.5:
+          time=new Date();
+          clicks=0;
+          maxClicksPerSecond=Math.floor(Math.random()*5+2);
+          document.querySelector('msg').innerHTML=`slow! speed limit is ${maxClicksPerSecond} clicks per second!`;
+          break;
+        case 1:
+          document.querySelector('msg').innerHTML='go!';
+          break;
+      }
+      setTimeout(timeout,Math.floor(Math.random()*2000+500));
+    },500);
+  };
+  document.addEventListener("keydown",count,false);
+  document.addEventListener("touchstart",count,false);
+  document.addEventListener("keyup",countend,false);
+  document.addEventListener("touchend",countend,false);
+  setTimeout(timeout,0);
+}());
+    </script>
+  </body>
+  <!-- MADE BY SEAN -->
+</html>
