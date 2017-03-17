@@ -79,7 +79,7 @@ var sheeptest=(function(){
   ];
   if (preferences.view==='grid') {
     document.querySelector('#view').innerHTML='list view';
-    var inner='';
+    var inner='<place id="more"><p>All links</p></place>';
     for (var i=0;i<places2go.length;i++) {
       var badge='';
       if (places2go[i].featured) badge='<badge class="featured">featured</badge>';
@@ -89,7 +89,7 @@ var sheeptest=(function(){
     document.querySelector('#places').innerHTML=inner;
   } else {
     document.querySelector('#view').innerHTML='grid view';
-    var inner='';
+    var inner='<placelist id="more">All links</placelist>';
     for (var i=0;i<places2go.length;i++) {
       var badge='';
       if (places2go[i].featured) badge='<badge class="featured">featured</badge>';
@@ -98,9 +98,36 @@ var sheeptest=(function(){
     }
     document.querySelector('#places').innerHTML=inner;
   }
+  var sites;
   document.querySelector('#places').onclick=function(e){
     if (e.target.dataset.href) window.location.href=e.target.dataset.href;
     else if (e.target.parentNode.dataset.href) window.location.href=e.target.parentNode.dataset.href;
+    else if (e.target.id==='more') {
+      document.querySelector('more').style.display='block';
+      function render() {
+        var el=document.querySelector('morecontainer');
+        while (el.hasChildNodes()) el.removeChild(el.lastChild);
+        var s=document.createElement("closemore");
+        s.innerHTML='close';
+        s.onclick=e=>document.querySelector('more').style.display='none';
+        el.appendChild(s);
+        for (var i=0;i<sites.length;i+=2) {
+          var s=document.createElement("a");
+          s.href=sites[i+1];
+          s.textContent=sites[i];
+          el.appendChild(s);
+        }
+      }
+      if (!sites) SHEEP.ajax(
+        'https://gist.githubusercontent.com/SheepTester/74cf1a0d5da818c4e0470a84c6c00225/raw/4a5032b1e33d0f508d77b778403bb6ea90457a5b/sites.txt',
+        e=>{
+          sites=e.split(/\r?\n/);
+          for (var i=0;i<sites.length;i++) if (!sites[i]) sites.splice(i,1);
+          render();
+        }
+      );
+      else render();
+    }
   };
   document.querySelector("nav").ontouchstart=document.querySelector("nav").onclick=function(e){
     if (e.target.className=="clickable") {

@@ -37,7 +37,7 @@ nav {
   left: 0;
   width: 100%;
   height: 40px;
-  background: rgba(79,161,167,0.8);
+  background-color: rgba(79,161,167,0.8);
   padding: 0 5px;
   font-size: 0;
   z-index: 15;
@@ -54,7 +54,7 @@ nav .clickable {
   color: rgba(255,255,255,0.8);
 }
 nav .clickable:not(.active):hover {
-  background: rgba(0,0,0,0.2);
+  background-color: rgba(0,0,0,0.2);
   color: white;
 }
 nav .clickable.active {
@@ -70,12 +70,12 @@ nav .btn {
   font-size: 16px;
   border-radius: 5px;
   margin: 10px;
-  background: rgba(255, 255, 255, 0.1);
+  background-color: rgba(255, 255, 255, 0.1);
   transition: all .2s;
 }
 nav .btn:hover {
   color: white;
-  background: rgba(255, 255, 255, 0.3);
+  background-color: rgba(255, 255, 255, 0.3);
   padding: 4px;
   margin: 8px;
 }
@@ -95,22 +95,35 @@ place {
   position: relative;
   cursor: pointer;
   z-index: 0;
-  background: #4FA1A7;
+  background-color: #4FA1A7;
+  vertical-align: top;
   transition: transform .2s, z-index .2s;
+}
+place#more {
+  padding-bottom: calc(25% - 20px);
 }
 @media (max-width: 800px) {
   place {
     width: calc(33% - 20px);
+  }
+  place#more {
+    padding-bottom: calc(33% - 20px);
   }
 }
 @media (max-width: 600px) {
   place {
     width: calc(50% - 20px);
   }
+  place#more {
+    padding-bottom: calc(50% - 20px);
+  }
 }
 @media (max-width: 400px) {
   place {
     width: calc(100% - 20px);
+  }
+  place#more {
+    padding-bottom: calc(100% - 20px)
   }
 }
 place:hover {
@@ -148,10 +161,13 @@ placelist {
   transition: background .2s;
 }
 placelist:nth-child(even) {
-  background: rgba(255,255,255,0.1);
+  background-color: rgba(255,255,255,0.1);
 }
-placelist:hover {
-  background: rgba(79,161,167,0.8);
+placelist#more {
+  background-color: rgba(255,255,255,0.2);
+}
+placelist:hover, placelist#more:hover {
+  background-color: rgba(79,161,167,0.8);
 }
 #stalking {
   padding: 0 10px 50px;
@@ -177,7 +193,7 @@ placelist:hover {
   content: '- ';
 }
 list {
-  background: rgba(255,255,255,0.1);
+  background-color: rgba(255,255,255,0.1);
   display: block;
   padding: 0 5px;
   white-space: nowrap;
@@ -201,7 +217,7 @@ list social ball {
   display: block;
   height: 50px;
   width: 50px;
-  background: white;
+  background-color: white;
   border-radius: 50%;
   position: absolute;
   margin: auto;
@@ -210,13 +226,13 @@ list social ball {
   left: 0;
   right: 0;
 }
-#scratch {background: #25AFF4;}
-#scratch ball {border: 5px solid white; background: #F8A839;}
+#scratch {background-color: #25AFF4;}
+#scratch ball {border: 5px solid white; background-color: #F8A839;}
 #instagram {background-image: url('img/instagram_gradient.png'); background-size: 100px 100px;}
-#github {background: #333333;}
-#google {background: #DB4437;}
-#youtube {background: #E62117;}
-#tumblr {background: #36465D;}
+#github {background-color: #333333;}
+#google {background-color: #DB4437;}
+#youtube {background-color: #E62117;}
+#tumblr {background-color: #36465D;}
 #users h1 {
   margin: 0;
   font-weight: normal;
@@ -245,7 +261,7 @@ list social ball {
 }
 #signedout input[type=submit] {
   border-bottom: none;
-  background: rgba(255,255,255,0.3);
+  background-color: rgba(255,255,255,0.3);
   cursor: pointer;
   margin-top: 0;
 }
@@ -253,7 +269,7 @@ list social ball {
   cursor: default;
 }
 #signedout input[type=submit]:not(:disabled):hover {
-  background: rgba(255,255,255,0.4);
+  background-color: rgba(255,255,255,0.4);
 }
 #signedout p {
   margin: 0;
@@ -272,7 +288,7 @@ list social ball {
   display: none;
 }
 #signedin button {
-  background: rgba(255,255,255,0.3);
+  background-color: rgba(255,255,255,0.3);
   border: none;
   color: white;
   cursor: pointer;
@@ -288,18 +304,19 @@ list social ball {
   width: 100px;
 }
 #signedin button:hover {
-  background: rgba(255,255,255,0.4);
+  background-color: rgba(255,255,255,0.4);
 }
 placelist badge {
   display: inline-block;
   font-size: 30px;
   padding: 0 5px;
-  border-radius: 5px;
   max-width: 20px;
   height: 30px;
   overflow: hidden;
   transition: max-width .5s;
   white-space: nowrap;
+  margin-right: 5px;
+  margin-bottom: 5px;
 }
 placelist badge:hover {
   max-width: 25%;
@@ -310,15 +327,19 @@ placelist badge:before {
   height: 20px;
   width: 20px;
   margin-right: 5px;
+  margin-bottom: -3px;
+  margin-top: 5px;
+  box-sizing: border-box;
+  vertical-align: top;
 }
 .featured {
-  background: #7DAB55;
+  background-color: #7DAB55;
 }
 .featured:before {
   background-image: url('img/star.svg');
 }
 .new {
-  background: #B18C5B;
+  background-color: #B18C5B;
 }
 .new:before {
   background-image: url('img/material_new_releases.svg');
@@ -331,7 +352,6 @@ place badge {
   font-size: 20px;
   margin: 5px;
   padding: 5px;
-  border-radius: 5px;
   max-width: 20px;
   height: 20px;
   overflow: hidden;
@@ -347,6 +367,8 @@ place badge:before {
   height: 20px;
   width: 20px;
   margin-right: 5px;
+  margin-bottom: -3px;
+  box-sizing: border-box;
 }
 #redirects h1 {
   margin: 0;
@@ -375,11 +397,11 @@ place badge:before {
   color: inherit;
   text-decoration: none;
   opacity: 0.8;
-  background: rgba(255,255,255,0.1);
+  background-color: rgba(255,255,255,0.1);
 }
 #redirects a:hover {
   opacity: 1;
-  background: rgba(255,255,255,0.15);
+  background-color: rgba(255,255,255,0.15);
 }
 sheepmenu.blockvision, sheepmenu.blockvision:hover, sheepmenu.blockvision:active {
   bottom: calc(50vh - 50vw);
@@ -425,7 +447,7 @@ sheepmenu.playhellos {
   }
 }
 body.blank {
-  background: white;
+  background-color: white;
   color: black;
 }
 body.blank *:not(noscript) {
@@ -468,7 +490,7 @@ menuicon:active {
     display: none;
   }
   nav btncontainer {
-    background: rgba(79,161,167,0.7);
+    background-color: rgba(79,161,167,0.7);
     position: absolute;
     bottom: 100%;
     left: 0;
@@ -487,6 +509,52 @@ menuicon:active {
   nav.open menuicon {
     background-image: url('img/down.svg');
   }
+}
+more {
+  display: none;
+  position: fixed;
+  background-color: rgba(0,0,0,0.5);
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 101;
+}
+more morecontainer {
+  display: block;
+  position: absolute;
+  background-color: rgba(0,0,0,0.5);
+  top: 0;
+  left: 0;
+  bottom: 0;
+  height: 70vh;
+  width: 100%;
+  margin: auto 0;
+  padding: 20px;
+  box-sizing: border-box;
+}
+more morecontainer a, more morecontainer closemore {
+  display: inline-block;
+  background-color: #4FA1A7;
+  color: white;
+  text-decoration: none;
+  margin: 5px;
+  padding: 5px;
+  transition: all .2s;
+}
+more morecontainer closemore {
+  background-color: #d24b4b;
+  cursor: pointer;
+}
+more morecontainer a:hover, more morecontainer closemore:hover {
+  background-color: white;
+  color: #4FA1A7;
+}
+more morecontainer closemore:hover {
+  color: #d24b4b;
+}
+more morecontainer a:active, more morecontainer closemore:active {
+  box-shadow: inset 0 0 0 3px rgba(0,0,0,0.2);
 }
 
 sarcasm {
