@@ -255,7 +255,7 @@ list social ball {
   color: rgba(255,255,255,0.5);
 }
 #signedout .error {
-  color: #f44336;
+  color: #d24b4b;
   margin: 0 10px;
   display: table;
 }
@@ -532,6 +532,7 @@ more morecontainer {
   margin: auto 0;
   padding: 20px;
   box-sizing: border-box;
+  overflow-y: auto;
 }
 more morecontainer a, more morecontainer closemore {
   display: inline-block;
@@ -555,6 +556,16 @@ more morecontainer closemore:hover {
 }
 more morecontainer a:active, more morecontainer closemore:active {
   box-shadow: inset 0 0 0 3px rgba(0,0,0,0.2);
+}
+more disclaimer {
+  display: block;
+  font-size: 10px;
+  position: absolute;
+  bottom: 15vh;
+  right: 0;
+  margin: 10px;
+  color: rgba(255,255,255,0.5);
+  pointer-events: none;
 }
 
 sarcasm {

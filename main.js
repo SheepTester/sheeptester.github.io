@@ -79,7 +79,7 @@ var sheeptest=(function(){
   ];
   if (preferences.view==='grid') {
     document.querySelector('#view').innerHTML='list view';
-    var inner='<place id="more"><p>All links</p></place>';
+    var inner='<place id="more"><p>More links</p></place>';
     for (var i=0;i<places2go.length;i++) {
       var badge='';
       if (places2go[i].featured) badge='<badge class="featured">featured</badge>';
@@ -89,7 +89,7 @@ var sheeptest=(function(){
     document.querySelector('#places').innerHTML=inner;
   } else {
     document.querySelector('#view').innerHTML='grid view';
-    var inner='<placelist id="more">All links</placelist>';
+    var inner='<placelist id="more">More links</placelist>';
     for (var i=0;i<places2go.length;i++) {
       var badge='';
       if (places2go[i].featured) badge='<badge class="featured">featured</badge>';
@@ -119,14 +119,13 @@ var sheeptest=(function(){
         }
       }
       if (!sites) SHEEP.ajax(
-        'https://gist.githubusercontent.com/SheepTester/74cf1a0d5da818c4e0470a84c6c00225/raw/4a5032b1e33d0f508d77b778403bb6ea90457a5b/sites.txt',
+        'https://gist.githubusercontent.com/SheepTester/74cf1a0d5da818c4e0470a84c6c00225/raw/',
         e=>{
           sites=e.split(/\r?\n/);
           for (var i=0;i<sites.length;i++) if (!sites[i]) sites.splice(i,1);
           render();
         }
       );
-      else render();
     }
   };
   document.querySelector("nav").ontouchstart=document.querySelector("nav").onclick=function(e){
