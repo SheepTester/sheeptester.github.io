@@ -40,6 +40,31 @@ var sheeptest=(function(){
     else if (redirect.slice(0,6)=="signin") {
       window.location.hash='users';
     }
+    else if (redirect[0]==='.') {
+      var replacers={
+        j:'javascripts',
+        p:'platformre',
+        a:'animations',
+        s:'sentence',
+        h:'happynumbers',
+        b:'htmlblocks',
+        m:'minigames',
+        w:'words-go-here',
+        g:'gamepro5'
+      };
+      redirect=redirect.slice(1).replace('.','.html'),layers=[];
+      for (var i=0;i<redirect.length;i++)
+        if (redirect[i]!==redirect[i].toLowerCase()) {
+          layers.push(redirect.slice(0,i).toLowerCase());
+          redirect=redirect.slice(i);
+          i=0;
+        }
+      layers.push(redirect.toLowerCase());
+      for (var i=0;i<layers.length;i++) if (replacers[layers[i]]) {
+        layers[i]=replacers[layers[i]];
+      }
+      window.location.replace('/'+layers.join('/'));
+    }
     else window.location.replace(redirect);
   }
   if (window.location.hash) {
