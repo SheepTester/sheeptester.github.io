@@ -519,6 +519,7 @@ more {
   width: 100%;
   height: 100%;
   z-index: 101;
+  cursor: pointer;
 }
 more morecontainer {
   display: block;
@@ -533,6 +534,7 @@ more morecontainer {
   padding: 20px;
   box-sizing: border-box;
   overflow-y: auto;
+  cursor: default;
 }
 more morecontainer a, more morecontainer closemore {
   display: inline-block;

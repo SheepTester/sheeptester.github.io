@@ -102,7 +102,7 @@ var sheeptest=(function(){
   document.querySelector('#places').onclick=function(e){
     if (e.target.dataset.href) window.location.href=e.target.dataset.href;
     else if (e.target.parentNode.dataset.href) window.location.href=e.target.parentNode.dataset.href;
-    else if (e.target.id==='more') {
+    else if (e.target.id==='more'||e.target.parentNode.id==='more') {
       document.querySelector('more').style.display='block';
       function render() {
         var el=document.querySelector('morecontainer');
@@ -127,6 +127,9 @@ var sheeptest=(function(){
         }
       );
     }
+  };
+  document.querySelector('more').onclick=e=>{
+    if (e.target.tagName==='MORE') document.querySelector('more').style.display='none';
   };
   document.querySelector("nav").ontouchstart=document.querySelector("nav").onclick=function(e){
     if (e.target.className=="clickable") {

@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Keyboard Shortcut Guide</title>
+    <meta charset="UTF-8">
+    <meta name="description" content="A little thing appears when you hold down, say, ctrl."/>
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+    <style>
+      body {
+        font-family: 'Open Sans', sans-serif;
+      }
+      guide {
+        display: block;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        margin: 3vh auto;
+        padding: 2vh 0;
+        background-color: #212526;
+        color: white;
+        line-height: 1;
+        font-size: 3vh;
+        overflow-x: hidden;
+        white-space: pre;
+        z-index: 1001;
+        height: 3vh;
+        transition: width .2s;
+      }
+      guide.placeholder {
+        display: table;
+        bottom: 100%;
+      }
+      guide > already-typed {
+        padding: 0 2vh;
+        font-weight: bold;
+      }
+      guide > cut > to-type {
+        padding-right: 2vh;
+        font-weight: bold;
+      }
+      guide > cut {
+        padding: 0 2vh;
+        border-left: 1px solid rgba(255,255,255,0.5);
+      }
+    </style>
+  </head>
+  <body>
+    <p>Press a keyboard shortcut. How about <code>ctrl+shift+Q</code> or <code>command+Q</code>?</p>
+
+    <script src="../sheep.js"></script>
+    <script>
+var shorties=[
+  {shortcut:'meta+q',label:'quit'},
+  {shortcut:'meta+w',label:'close tab'},
+  {shortcut:'ctrl+shift+q',label:'quit Chrome'},
+  {shortcut:'ctrl+w',label:'close tab'},
+  {shortcut:'ctrl+shift+l',label:'do nothing'},
+  {shortcut:'ctrl+c',label:'copy'},
+  {shortcut:'ctrl+x',label:'cut'},
+  {shortcut:'ctrl+v',label:'paste'},
+  {shortcut:'meta+c',label:'copy'},
+  {shortcut:'meta+x',label:'cut'},
+  {shortcut:'meta+v',label:'paste'}
+];
+function ShortcutGuide(shortcuts) {
+  var keydowns=[],
+  keys={
+    32:'space',
+    192:'`',
+    189:'-',
+    187:'=',
+    219:'[',
+    220:'\\',
+    221:']',
+    186:';',
+    222:'\'',
+    188:',',
+    190:'.',
+    191:'/',
+    37:'←',
+    38:'↑',
+    39:'→',
+    40:'↓'
+  },
+  contains=(array1,array2)=>{
+    // if (array1.length!==array2.length) return false;
+    for (var i=0;i<array1.length;i++) if (array2.indexOf(array1[i])===-1) return false;
+    return true;
+  },
+  render=_=>{
+    while (guide.hasChildNodes()) guide.removeChild(guide.lastChild);
+    if (keydowns.length&&(keydowns[0]==='ctrl'||keydowns[0]==='meta'||keydowns[0]==='alt')) {
+      var s=document.createElement("already-typed");
+      s.innerHTML=keydowns.join(' + ');
+      guide.appendChild(s);
+      for (var i=0,cuts=0;i<shortcuts.length;i++) {
+        if (contains(keydowns,shortcuts[i].shortcut.replace(/meta/g,'⌘').split('+'))) {
+          var t=document.createElement("cut"),
+          u,
+          remains=shortcuts[i].shortcut.replace(/meta/g,'⌘').split('+');
+          if (keydowns.length!==remains.length) {
+            u=document.createElement("to-type");
+            for (var j=0;j<keydowns.length;j++) {
+              remains.splice(remains.indexOf(keydowns[j]),1);
+            }
+            u.innerHTML='+ '+remains.join(' + ');
+            t.appendChild(u);
+          }
+          t.appendChild(document.createTextNode(shortcuts[i].label));
+          guide.appendChild(t);
+          cuts++;
+        }
+        if (cuts>=3) break;
+      }
+      placeholder.innerHTML=guide.innerHTML;
+      guide.style.width=(placeholder.offsetWidth+1)+'px';
+    }
+    else guide.style.width='0';
+  },
+  keydown=e=>{
+    if (e.shiftKey&&keydowns.indexOf('shift')===-1) keydowns.push('shift');
+    else if (e.ctrlKey&&keydowns.indexOf('ctrl')===-1) keydowns.push('ctrl');
+    else if (e.metaKey&&keydowns.indexOf('⌘')===-1) keydowns.push('⌘');
+    else if (e.altKey&&keydowns.indexOf('alt')===-1) keydowns.push('alt');
+    else if (keys[e.keyCode]&&keydowns.indexOf(keys[e.keyCode])===-1) keydowns.push(keys[e.keyCode]);
+    else if (e.keyCode>47&&e.keyCode<91&&keydowns.indexOf(String.fromCharCode(e.keyCode).toLowerCase())===-1)
+      keydowns.push(String.fromCharCode(e.keyCode).toLowerCase());
+    render();
+  },
+  keyup=e=>{
+    for (var i=0;i<keydowns.length;i++) {
+      switch (keydowns[i]) {
+        case 'shift':
+          if (!e.shiftKey) keydowns.splice(i,1);
+          else i++;
+          break;
+        case 'ctrl':
+          if (!e.ctrlKey) keydowns.splice(i,1);
+          else i++;
+          break;
+        case 'meta':
+          if (!e.metaKey) keydowns.splice(i,1);
+          else i++;
+          break;
+        case 'alt':
+          if (!e.altKey) keydowns.splice(i,1);
+          else i++;
+          break;
+        default:
+          if (keydowns[i]===keys[e.keyCode]) keydowns.splice(i,1);
+          else if (keydowns[i].toUpperCase().charCodeAt()===e.keyCode) keydowns.splice(i,1);
+          else i++;
+      }
+      i--;
+    }
+    render();
+  },
+  guide=document.createElement("guide"),
+  placeholder=document.createElement("guide");
+  guide.style.width='0';
+  document.querySelector('body').appendChild(guide);
+  placeholder.className='placeholder';
+  document.querySelector('body').appendChild(placeholder);
+  document.addEventListener("keydown",keydown,false);
+  document.addEventListener("keyup",keyup,false);
+}
+console.log(new ShortcutGuide(shorties));
+    </script>
+  </body>
+  <!-- MADE BY SEAN -->
+</html>
