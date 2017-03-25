@@ -177,6 +177,7 @@ var sheeptest=(function(){
     instagram:'https://www.instagram.com/sheeptester/',
     tumblr:'https://sheep-tester.tumblr.com/',
     youtube:'https://www.youtube.com/channel/UCI8DtrWZvGNsXxUNkW53FAg',
+    blogger:'http://boxofsean.blogspot.com/',
   };
   (function(){
     var inner='';
