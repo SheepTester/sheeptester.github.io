@@ -34,10 +34,13 @@ function ColourInput(elem,options) {
   this.square=document.createElement("canvas");
   this.square.width=options.selectorSize*pixelratio;
   this.square.height=options.selectorSize*pixelratio;
-  this.square.addEventListener("mousedown",e=>{
-    var sliderOnMove=e=>{
-      var x=(e.clientX-this.square.offsetLeft)/this.square.offsetWidth,
-      y=(this.square.offsetHeight-e.clientY+this.square.offsetTop)/this.square.offsetHeight;
+  var mouse=e=>{
+    var sliderOnMove=ev=>{
+      var e;
+      if (ev.touches) e=ev.touches[0];
+      else e=ev;
+      var x=(e.pageX-this.square.offsetLeft+1)/this.square.offsetWidth,
+      y=(this.square.offsetHeight-e.pageY+this.square.offsetTop-1)/this.square.offsetHeight;
       x=x*data[data[slider].x].range;
       y=y*data[data[slider].y].range;
       if (x<0) x=0;
@@ -48,27 +51,36 @@ function ColourInput(elem,options) {
       converted[data[data[slider].x].name]=x+data[data[slider].x].offset;
       converted[data[data[slider].y].name]=y+data[data[slider].y].offset;
       this.colour=data[slider].group==='RGB'?ColourInput.convert.smallRGB(converted.r,converted.g,converted.b):ColourInput.convert[data[slider].group+'toRGB'](converted);
-      this.render(true);
-      e.preventDefault();
+      this.render(data[slider].group==='Lab');
+      ev.preventDefault();
       return false;
     },
     sliderUp=e=>{
       document.removeEventListener("mousemove",sliderOnMove,false);
       document.removeEventListener("mouseup",sliderUp,false);
+      document.removeEventListener("touchmove",sliderOnMove,{passive:false});
+      document.removeEventListener("touchend",sliderUp,{passive:false});
       this.render();
     },
     slider=this.parent.querySelector('input[name="slider"]:checked').dataset.for;
     document.addEventListener("mousemove",sliderOnMove,false);
     document.addEventListener("mouseup",sliderUp,false);
+    document.addEventListener("touchmove",sliderOnMove,{passive:false});
+    document.addEventListener("touchend",sliderUp,{passive:false});
     sliderOnMove(e);
-  },false);
+  };
+  this.square.addEventListener("mousedown",mouse,false);
+  this.square.addEventListener("touchstart",mouse,false);
   this.parent.appendChild(this.square);
   this.line=document.createElement("canvas");
   this.line.width=pixelratio;
   this.line.height=options.selectorSize*pixelratio;
-  this.line.addEventListener("mousedown",e=>{
-    var sliderOnMove=e=>{
-      var y=(this.line.offsetHeight-e.clientY+this.line.offsetTop)/this.line.offsetHeight;
+  mouse=e=>{
+    var sliderOnMove=ev=>{
+      var e;
+      if (ev.touches) e=ev.touches[0];
+      else e=ev;
+      var y=(this.line.offsetHeight-e.pageY+this.line.offsetTop-1)/this.line.offsetHeight;
       y=y*data[slider].range;
       if (y<0) y=0;
       else if (y>=data[slider].range) y=data[slider].range-1;
@@ -76,19 +88,25 @@ function ColourInput(elem,options) {
       converted[data[slider].name]=y+data[slider].offset;
       this.colour=data[slider].group==='RGB'?ColourInput.convert.smallRGB(converted.r,converted.g,converted.b):ColourInput.convert[data[slider].group+'toRGB'](converted);
       this.render(true);
-      e.preventDefault();
+      ev.preventDefault();
       return false;
     },
     sliderUp=e=>{
       document.removeEventListener("mousemove",sliderOnMove,false);
       document.removeEventListener("mouseup",sliderUp,false);
+      document.removeEventListener("touchmove",sliderOnMove,{passive:false});
+      document.removeEventListener("touchend",sliderUp,{passive:false});
       this.render();
     },
     slider=this.parent.querySelector('input[name="slider"]:checked').dataset.for;
     document.addEventListener("mousemove",sliderOnMove,false);
     document.addEventListener("mouseup",sliderUp,false);
+    document.addEventListener("touchmove",sliderOnMove,{passive:false});
+    document.addEventListener("touchend",sliderUp,{passive:false});
     sliderOnMove(e);
-  },false);
+  };
+  this.line.addEventListener("mousedown",mouse,false);
+  this.line.addEventListener("touchstart",mouse,false);
   this.parent.appendChild(this.line);
   var inputsCanRenderToo=e=>this.render(),
   inputsCanSeeColoursToo=_=>this.colour,
@@ -102,7 +120,10 @@ function ColourInput(elem,options) {
       this.radio.name='slider';
       this.radio.dataset.for=name;
       this.radio.addEventListener("focus",e=>this.input.focus(),false);
-      this.radio.addEventListener("click",inputsCanRenderToo,false);
+      this.radio.addEventListener("click",e=>{
+        lastcolour={};
+        inputsCanRenderToo();
+      },false);
       parent.appendChild(this.radio);
     }
     this.label=document.createElement("label");
@@ -156,7 +177,55 @@ function ColourInput(elem,options) {
     parent.appendChild(this.input);
   }
   this.preview=document.createElement("colour-preview");
+  this.preview.style.backgroundImage='linear-gradient(45deg,#eee 25%,transparent 25%,transparent 75%,#eee 75%,#eee 100%),linear-gradient(45deg,#eee 25%,white 25%,white 75%,#eee 75%,#eee 100%)';
+  this.preview.style.backgroundPosition='0px 0px,10px 10px';
+  this.preview.style.backgroundSize='20px 20px';
+  this.colourpreview=document.createElement("colour-preview");
+  this.preview.appendChild(this.colourpreview);
   this.parent.appendChild(this.preview);
+  this.htmlcolours=document.createElement("ul");
+  for (var span in ColourInput.html) {
+    var s=document.createElement("li");
+    s.textContent=span;
+    s.style.backgroundColor=span;
+    var c=ColourInput.html[span],inverted=ColourInput.convert.bigRGB(ColourInput.convert.invertRGB(ColourInput.convert.smallRGB(c.r,c.g,c.b)));
+    inverted.r+=((inverted.a<180)*2-1)*50;
+    inverted.g+=((inverted.g<150)*2-1)*50;
+    inverted.b+=((inverted.b<206)*2-1)*50;
+    s.style.color=`rgb(${inverted.r},${inverted.g},${inverted.b})`;
+    this.htmlcolours.appendChild(s);
+  }
+  this.htmlcolours.addEventListener("click",e=>{
+    if (e.target.tagName==='LI') {
+      var c=ColourInput.html[e.target.textContent];
+      this.colour=ColourInput.convert.smallRGB(c.r,c.g,c.b);
+      this.render();
+    }
+  },false);
+  this.parent.appendChild(this.htmlcolours);
+  this.materials=document.createElement("table");
+  for (var span in ColourInput.material) {
+    var s=document.createElement("tr");
+    for (var i in ColourInput.material[span]) {
+      var t=document.createElement("td");
+      t.style.backgroundColor='#'+ColourInput.material[span][i];
+      if (i==='500') t.textContent=span;
+      else t.textContent=i;
+      s.appendChild(t);
+    }
+    this.materials.appendChild(s);
+  }
+  this.materials.addEventListener("click",e=>{
+    if (e.target.tagName==='TD') {
+      var c;
+      if (ColourInput.material[e.target.textContent]) c=ColourInput.material[e.target.textContent][500];
+      else c=ColourInput.material[e.target.parentNode.children[5].textContent][e.target.textContent];
+      c=ColourInput.convert.hextoRGBA(c);
+      this.colour=ColourInput.convert.smallRGB(c.r,c.g,c.b);
+      this.render();
+    }
+  },false);
+  this.parent.appendChild(this.materials);
   this.hex=new boringInput(this.parent);
   this.hex.input.addEventListener("change",e=>{
     var hex=this.hex.input.value.replace(/[^1234567890abcdef]/gi,'').toLowerCase();
@@ -277,37 +346,55 @@ function ColourInput(elem,options) {
     this.M.input.value=t.m;
     this.Y.input.value=t.y;
     this.hex.input.value='#'+ColourInput.convert.RGBAtohex(this.colour)+(alpha<1?('0'+Math.floor(alpha*255.99).toString(16)).slice(-2):'');
-    if (lastcolour.r!==this.colour.r||lastcolour.g!==this.colour.g||lastcolour.b!==this.colour.b) {
-      this.preview.style.backgroundColor=this.rgb.input.value;
+    this.colourpreview.style.backgroundColor=this.rgb.input.value;
+    if (lastcolour.quick!==quick||lastcolour.r!==this.colour.r||lastcolour.g!==this.colour.g||lastcolour.b!==this.colour.b) {
       var c=this.square.getContext('2d'),
       slider=this.parent.querySelector('input[name="slider"]:checked').dataset.for,
       inverted=ColourInput.convert.bigRGB(ColourInput.convert.invertRGB(this.colour)),
       converted;
-      this.square.width=this.square.width;
+      inverted.r+=((inverted.a<180)*2-1)*50;
+      inverted.g+=((inverted.g<150)*2-1)*50;
+      inverted.b+=((inverted.b<206)*2-1)*50;
       this.line.width=this.line.width;
       function pixel(x,y,rgba,quick) {
         c.fillStyle=`rgb${rgba.a!==undefined?'a':''}(${rgba.r},${rgba.g},${rgba.b}${rgba.a!==undefined?','+rgba.a:''})`;
         if (quick) c.fillRect(x,y,5.5,5.5);
         else c.fillRect(x,y,1.5,1.5);
       }
-      c.translate(0,this.square.height);
-      c.scale(pixelratio*options.selectorSize/data[data[slider].x].range,-pixelratio*options.selectorSize/data[data[slider].y].range);
       converted=data[slider].group==='RGB'?ColourInput.convert.bigRGB(this.colour):ColourInput.convert['RGBto'+data[slider].group](this.colour);
-      for (var x=0;x<data[data[slider].x].range;quick?x+=5:x++)
-        for (var y=0;y<data[data[slider].y].range;quick?y+=5:y++) {
-          var t=Object.assign({},converted);
-          t[data[data[slider].x].name]=x+data[data[slider].x].offset;
-          t[data[data[slider].y].name]=y+data[data[slider].y].offset;
-          pixel(
-            x,
-            y,
-            data[slider].group==='RGB'?t:ColourInput.convert.bigRGB(ColourInput.convert[data[slider].group+'toRGB'](t)),
-            quick
-          );
-        }
+      if (lastcolour.slider===converted[data[slider].name]&&lastcolour.quick===quick) {
+        for (var x=lastcolour.sliderx-3-data[data[slider].x].offset;x<=lastcolour.sliderx+3-data[data[slider].x].offset;x++)
+          for (var y=lastcolour.slidery-3-data[data[slider].y].offset;y<=lastcolour.slidery+3-data[data[slider].y].offset;y++) {
+            var t=Object.assign({},converted);
+            t[data[data[slider].x].name]=x+data[data[slider].x].offset;
+            t[data[data[slider].y].name]=y+data[data[slider].y].offset;
+            pixel(
+              x,
+              y,
+              data[slider].group==='RGB'?t:ColourInput.convert.bigRGB(ColourInput.convert[data[slider].group+'toRGB'](t))
+            );
+          }
+      } else {
+        this.square.width=this.square.width;
+        c.translate(0,this.square.height);
+        c.scale(pixelratio*options.selectorSize/data[data[slider].x].range,-pixelratio*options.selectorSize/data[data[slider].y].range);
+        for (var x=0;x<data[data[slider].x].range;quick?x+=5:x++)
+          for (var y=0;y<data[data[slider].y].range;quick?y+=5:y++) {
+            var t=Object.assign({},converted);
+            t[data[data[slider].x].name]=x+data[data[slider].x].offset;
+            t[data[data[slider].y].name]=y+data[data[slider].y].offset;
+            pixel(
+              x,
+              y,
+              data[slider].group==='RGB'?t:ColourInput.convert.bigRGB(ColourInput.convert[data[slider].group+'toRGB'](t)),
+              quick
+            );
+          }
+      }
       c.beginPath();
       c.arc(converted[data[data[slider].x].name]-data[data[slider].x].offset,converted[data[data[slider].y].name]-data[data[slider].y].offset,2,0,2*Math.PI);
       c.strokeStyle=`rgb(${inverted.r},${inverted.g},${inverted.b})`;
+      c.lineWidth=1;
       c.stroke();
       c=this.line.getContext('2d');
       c.translate(0,this.line.height);
@@ -321,7 +408,11 @@ function ColourInput(elem,options) {
           data[slider].group==='RGB'?t:ColourInput.convert.bigRGB(ColourInput.convert[data[slider].group+'toRGB'](t)));
       }
       pixel(0,converted[data[slider].name]-data[slider].offset,inverted);
-      if (!quick) lastcolour=Object.assign({},this.colour);
+      lastcolour=Object.assign({},this.colour);
+      lastcolour.slider=converted[data[slider].name];
+      lastcolour.sliderx=converted[data[data[slider].x].name];
+      lastcolour.slidery=converted[data[data[slider].y].name];
+      lastcolour.quick=quick;
     }
   };
   this.render();
@@ -481,3 +572,5 @@ ColourInput.convert={
     return {r:r,g:g,b:b};
   }
 };
+ColourInput.html={"indianred":{r:205,g:92,b:92},"lightcoral":{r:240,g:128,b:128},"salmon":{r:250,g:128,b:114},"darksalmon":{r:233,g:150,b:122},"lightsalmon":{r:255,g:160,b:122},"crimson":{r:220,g:20,b:60},"red":{r:255,g:0,b:0},"firebrick":{r:178,g:34,b:34},"darkred":{r:139,g:0,b:0},"pink":{r:255,g:192,b:203},"lightpink":{r:255,g:182,b:193},"hotpink":{r:255,g:105,b:180},"deeppink":{r:255,g:20,b:147},"mediumvioletred":{r:199,g:21,b:133},"palevioletred":{r:219,g:112,b:147},"coral":{r:255,g:127,b:80},"tomato":{r:255,g:99,b:71},"orangered":{r:255,g:69,b:0},"darkorange":{r:255,g:140,b:0},"orange":{r:255,g:165,b:0},"gold":{r:255,g:215,b:0},"yellow":{r:255,g:255,b:0},"lightyellow":{r:255,g:255,b:224},"lemonchiffon":{r:255,g:250,b:205},"lightgoldenrodyellow":{r:250,g:250,b:210},"papayawhip":{r:255,g:239,b:213},"moccasin":{r:255,g:228,b:181},"peachpuff":{r:255,g:218,b:185},"palegoldenrod":{r:238,g:232,b:170},"khaki":{r:240,g:230,b:140},"darkkhaki":{r:189,g:183,b:107},"lavender":{r:230,g:230,b:250},"thistle":{r:216,g:191,b:216},"plum":{r:221,g:160,b:221},"violet":{r:238,g:130,b:238},"orchid":{r:218,g:112,b:214},"fuchsia":{r:255,g:0,b:255},"magenta":{r:255,g:0,b:255},"mediumorchid":{r:186,g:85,b:211},"mediumpurple":{r:147,g:112,b:219},"rebeccapurple":{r:102,g:51,b:153},"blueviolet":{r:138,g:43,b:226},"darkviolet":{r:148,g:0,b:211},"darkorchid":{r:153,g:50,b:204},"darkmagenta":{r:139,g:0,b:139},"purple":{r:128,g:0,b:128},"indigo":{r:75,g:0,b:130},"slateblue":{r:106,g:90,b:205},"darkslateblue":{r:72,g:61,b:139},"mediumslateblue":{r:123,g:104,b:238},"greenyellow":{r:173,g:255,b:47},"chartreuse":{r:127,g:255,b:0},"lawngreen":{r:124,g:252,b:0},"lime":{r:0,g:255,b:0},"limegreen":{r:50,g:205,b:50},"palegreen":{r:152,g:251,b:152},"lightgreen":{r:144,g:238,b:144},"mediumspringgreen":{r:0,g:250,b:154},"springgreen":{r:0,g:255,b:127},"mediumseagreen":{r:60,g:179,b:113},"seagreen":{r:46,g:139,b:87},"forestgreen":{r:34,g:139,b:34},"green":{r:0,g:128,b:0},"darkgreen":{r:0,g:100,b:0},"yellowgreen":{r:154,g:205,b:50},"olivedrab":{r:107,g:142,b:35},"olive":{r:128,g:128,b:0},"darkolivegreen":{r:85,g:107,b:47},"mediumaquamarine":{r:102,g:205,b:170},"darkseagreen":{r:143,g:188,b:139},"lightseagreen":{r:32,g:178,b:170},"darkcyan":{r:0,g:139,b:139},"teal":{r:0,g:128,b:128},"aqua":{r:0,g:255,b:255},"cyan":{r:0,g:255,b:255},"lightcyan":{r:224,g:255,b:255},"paleturquoise":{r:175,g:238,b:238},"aquamarine":{r:127,g:255,b:212},"turquoise":{r:64,g:224,b:208},"mediumturquoise":{r:72,g:209,b:204},"darkturquoise":{r:0,g:206,b:209},"cadetblue":{r:95,g:158,b:160},"steelblue":{r:70,g:130,b:180},"lightsteelblue":{r:176,g:196,b:222},"powderblue":{r:176,g:224,b:230},"lightblue":{r:173,g:216,b:230},"skyblue":{r:135,g:206,b:235},"lightskyblue":{r:135,g:206,b:250},"deepskyblue":{r:0,g:191,b:255},"dodgerblue":{r:30,g:144,b:255},"cornflowerblue":{r:100,g:149,b:237},"royalblue":{r:65,g:105,b:225},"blue":{r:0,g:0,b:255},"mediumblue":{r:0,g:0,b:205},"darkblue":{r:0,g:0,b:139},"navy":{r:0,g:0,b:128},"midnightblue":{r:25,g:25,b:112},"cornsilk":{r:255,g:248,b:220},"blanchedalmond":{r:255,g:235,b:205},"bisque":{r:255,g:228,b:196},"navajowhite":{r:255,g:222,b:173},"wheat":{r:245,g:222,b:179},"burlywood":{r:222,g:184,b:135},"tan":{r:210,g:180,b:140},"rosybrown":{r:188,g:143,b:143},"sandybrown":{r:244,g:164,b:96},"goldenrod":{r:218,g:165,b:32},"darkgoldenrod":{r:184,g:134,b:11},"peru":{r:205,g:133,b:63},"chocolate":{r:210,g:105,b:30},"saddlebrown":{r:139,g:69,b:19},"sienna":{r:160,g:82,b:45},"brown":{r:165,g:42,b:42},"maroon":{r:128,g:0,b:0},"white":{r:255,g:255,b:255},"snow":{r:255,g:250,b:250},"honeydew":{r:240,g:255,b:240},"mintcream":{r:245,g:255,b:250},"azure":{r:240,g:255,b:255},"aliceblue":{r:240,g:248,b:255},"ghostwhite":{r:248,g:248,b:255},"whitesmoke":{r:245,g:245,b:245},"seashell":{r:255,g:245,b:238},"beige":{r:245,g:245,b:220},"oldlace":{r:253,g:245,b:230},"floralwhite":{r:255,g:250,b:240},"ivory":{r:255,g:255,b:240},"antiquewhite":{r:250,g:235,b:215},"linen":{r:250,g:240,b:230},"lavenderblush":{r:255,g:240,b:245},"mistyrose":{r:255,g:228,b:225},"gainsboro":{r:220,g:220,b:220},"lightgray":{r:211,g:211,b:211},"silver":{r:192,g:192,b:192},"darkgray":{r:169,g:169,b:169},"gray":{r:128,g:128,b:128},"dimgray":{r:105,g:105,b:105},"lightslategray":{r:119,g:136,b:153},"slategray":{r:112,g:128,b:144},"darkslategray":{r:47,g:79,b:79},"black":{r:0,g:0,b:0}};
+ColourInput.material={"Red":{"50":"FFEBEE","100":"FFCDD2","200":"EF9A9A","300":"E57373","400":"EF5350","500":"F44336","600":"E53935","700":"D32F2F","800":"C62828","900":"B71C1C","A100":"FF8A80","A200":"FF5252","A400":"FF1744","A700":"D50000"},"Pink":{"50":"FCE4EC","100":"F8BBD0","200":"F48FB1","300":"F06292","400":"EC407A","500":"E91E63","600":"D81B60","700":"C2185B","800":"AD1457","900":"880E4F","A100":"FF80AB","A200":"FF4081","A400":"F50057","A700":"C51162"},"Purple":{"50":"F3E5F5","100":"E1BEE7","200":"CE93D8","300":"BA68C8","400":"AB47BC","500":"9C27B0","600":"8E24AA","700":"7B1FA2","800":"6A1B9A","900":"4A148C","A100":"EA80FC","A200":"E040FB","A400":"D500F9","A700":"AA00FF"},"Deep Purple":{"50":"EDE7F6","100":"D1C4E9","200":"B39DDB","300":"9575CD","400":"7E57C2","500":"673AB7","600":"5E35B1","700":"512DA8","800":"4527A0","900":"311B92","A100":"B388FF","A200":"7C4DFF","A400":"651FFF","A700":"6200EA"},"Indigo":{"50":"E8EAF6","100":"C5CAE9","200":"9FA8DA","300":"7986CB","400":"5C6BC0","500":"3F51B5","600":"3949AB","700":"303F9F","800":"283593","900":"1A237E","A100":"8C9EFF","A200":"536DFE","A400":"3D5AFE","A700":"304FFE"},"Blue":{"50":"E3F2FD","100":"BBDEFB","200":"90CAF9","300":"64B5F6","400":"42A5F5","500":"2196F3","600":"1E88E5","700":"1976D2","800":"1565C0","900":"0D47A1","A100":"82B1FF","A200":"448AFF","A400":"2979FF","A700":"2962FF"},"Light Blue":{"50":"E1F5FE","100":"B3E5FC","200":"81D4FA","300":"4FC3F7","400":"29B6F6","500":"03A9F4","600":"039BE5","700":"0288D1","800":"0277BD","900":"01579B","A100":"80D8FF","A200":"40C4FF","A400":"00B0FF","A700":"0091EA"},"Cyan":{"50":"E0F7FA","100":"B2EBF2","200":"80DEEA","300":"4DD0E1","400":"26C6DA","500":"00BCD4","600":"00ACC1","700":"0097A7","800":"00838F","900":"006064","A100":"84FFFF","A200":"18FFFF","A400":"00E5FF","A700":"00B8D4"},"Teal":{"50":"E0F2F1","100":"B2DFDB","200":"80CBC4","300":"4DB6AC","400":"26A69A","500":"009688","600":"00897B","700":"00796B","800":"00695C","900":"004D40","A100":"A7FFEB","A200":"64FFDA","A400":"1DE9B6","A700":"00BFA5"},"Green":{"50":"E8F5E9","100":"C8E6C9","200":"A5D6A7","300":"81C784","400":"66BB6A","500":"4CAF50","600":"43A047","700":"388E3C","800":"2E7D32","900":"1B5E20","A100":"B9F6CA","A200":"69F0AE","A400":"00E676","A700":"00C853"},"Light Green":{"50":"F1F8E9","100":"DCEDC8","200":"C5E1A5","300":"AED581","400":"9CCC65","500":"8BC34A","600":"7CB342","700":"689F38","800":"558B2F","900":"33691E","A100":"CCFF90","A200":"B2FF59","A400":"76FF03","A700":"64DD17"},"Lime":{"50":"F9FBE7","100":"F0F4C3","200":"E6EE9C","300":"DCE775","400":"D4E157","500":"CDDC39","600":"C0CA33","700":"AFB42B","800":"9E9D24","900":"827717","A100":"F4FF81","A200":"EEFF41","A400":"C6FF00","A700":"AEEA00"},"Yellow":{"50":"FFFDE7","100":"FFF9C4","200":"FFF59D","300":"FFF176","400":"FFEE58","500":"FFEB3B","600":"FDD835","700":"FBC02D","800":"F9A825","900":"F57F17","A100":"FFFF8D","A200":"FFFF00","A400":"FFEA00","A700":"FFD600"},"Amber":{"50":"FFF8E1","100":"FFECB3","200":"FFE082","300":"FFD54F","400":"FFCA28","500":"FFC107","600":"FFB300","700":"FFA000","800":"FF8F00","900":"FF6F00","A100":"FFE57F","A200":"FFD740","A400":"FFC400","A700":"FFAB00"},"Orange":{"50":"FFF3E0","100":"FFE0B2","200":"FFCC80","300":"FFB74D","400":"FFA726","500":"FF9800","600":"FB8C00","700":"F57C00","800":"EF6C00","900":"E65100","A100":"FFD180","A200":"FFAB40","A400":"FF9100","A700":"FF6D00"},"Deep Orange":{"50":"FBE9E7","100":"FFCCBC","200":"FFAB91","300":"FF8A65","400":"FF7043","500":"FF5722","600":"F4511E","700":"E64A19","800":"D84315","900":"BF360C","A100":"FF9E80","A200":"FF6E40","A400":"FF3D00","A700":"DD2C00"},"Brown":{"50":"EFEBE9","100":"D7CCC8","200":"BCAAA4","300":"A1887F","400":"8D6E63","500":"795548","600":"6D4C41","700":"5D4037","800":"4E342E","900":"3E2723"},"Grey":{"50":"FAFAFA","100":"F5F5F5","200":"EEEEEE","300":"E0E0E0","400":"BDBDBD","500":"9E9E9E","600":"757575","700":"616161","800":"424242","900":"212121"},"Blue Grey":{"50":"ECEFF1","100":"CFD8DC","200":"B0BEC5","300":"90A4AE","400":"78909C","500":"607D8B","600":"546E7A","700":"455A64","800":"37474F","900":"263238"}};
