@@ -4,42 +4,334 @@
     <title>Colour Input II</title>
     <meta charset="UTF-8">
     <meta name="description" content="A better-made colour input."/>
+    <link href="https://fonts.googleapis.com/css?family=Questrial" rel="stylesheet">
     <style media="screen">
+      body {
+        font-family: 'Questrial', sans-serif;
+      }
+      body > div {
+        height: 360px;
+        width: 480px;
+        background-color: #E5E5E5;
+        position: fixed;
+        border: 1px solid black;
+        top: 100px;
+        left: 10px;
+        opacity: 0;
+        pointer-events: none;
+        transition: all .5s;
+      }
+      body > div.block {
+        opacity: 1;
+        pointer-events: all;
+        top: 50px;
+      }
+      body > div:after, body > div:before {
+      	bottom: 100%;
+      	left: 40px;
+      	border: solid transparent;
+      	content: "";
+      	height: 0;
+      	width: 0;
+      	position: absolute;
+      	pointer-events: none;
+      }
+      body > div:after {
+      	border-color: rgba(229,229,229,0);
+      	border-bottom-color: #E5E5E5;
+      	border-width: 10px;
+      	margin-left: -10px;
+      }
+      body > div:before {
+      	border-color: rgba(0, 0, 0, 0);
+      	border-bottom-color: #000000;
+      	border-width: 11px;
+      	margin-left: -11px;
+      }
       canvas:first-of-type {
         height: 256px;
         width: 256px;
+        border: 1px solid black;
+        margin-left: 20px;
+        margin-top: 10px;
+        display: inline-block;
       }
       canvas:nth-of-type(2) {
         height: 256px;
-        width: 30px;
+        width: 20px;
+        border: 1px solid black;
+        display: inline-block;
+        margin: 0 18px;
+        margin-top: 10px;
+        margin-right: 100px;
       }
       colour-preview {
         display: inline-block;
-        height: 50px;
-        width: 50px;
+        height: 78px;
+        width: 128px;
+      }
+      div > colour-preview {
+        position: absolute;
+        top: 10px;
+        right: 15px;
+        border: 1px solid black;
       }
       ul {
-        max-height: 150px;
+        max-height: 40px;
         overflow-y: auto;
         display: inline-block;
         list-style: none;
         padding: 0;
         margin: 0;
+        border: 1px solid black;
+        font-size: 12px;
+        position: absolute;
+        top: 95px;
+        width: 128px;
+        right: 15px;
+        user-select: none;
+      }
+      ul li {
+        cursor: pointer;
+      }
+      ul li:hover {
+        box-shadow: 0 0 3px rgba(0,0,0,0.8);
+        position: relative;
+        z-index: 1;
       }
       table {
         border-spacing: 0;
-        display: inline-table;
-        vertical-align: bottom;
+        display: block;
+        position: absolute;
+        top: 135px;
+        max-width: 128px;
+        right: 15px;
+        max-height: 40px;
+        user-select: none;
+        overflow: auto;
+        border: 1px solid black;
+        font-size: 10px;
+        background-color: black;
+      }
+      table::-webkit-scrollbar, ul::-webkit-scrollbar {
+        display: none;
+      }
+      table td {
+        cursor: pointer;
+        transition: all .2s;
+      }
+      table td:hover {
+        position: relative;
+        z-index: 1;
+        transform: scale(1.2);
+        box-shadow: 0 0 3px rgba(0,0,0,0.5);
+      }
+      uncreative-tag-name {
+        display: inline-block;
+        margin: 10px 5px;
+        width: 71px;
+      }
+      uncreative-tag-name.bobs {
+        width: 58px;
+      }
+      uncreative-tag-name input, uncreative-tag-name label {
+        display: block;
+        float: left;
+      }
+      uncreative-tag-name input[type=radio] {
+        clear: left;
+      }
+      uncreative-tag-name.bobs label {
+        clear: left;
+      }
+      uncreative-tag-name input[type=text] {
+        width: 40px;
+      }
+      input.HIBOB {
+        width: 130px;
+        display: block;
+        position: absolute;
+        right: 15px;
+        width: 130px;
+        border: 1px solid;
+        background-color: #A0A0A0;
+        height: 17px;
+        font-size: 15px;
+      }
+      input.HIBOB.higgles1 {
+        top: 180px;
+      }
+      input.HIBOB.higgles2 {
+        top: 200px;
+      }
+      input.HIBOB.higgles3 {
+        top: 220px;
+      }
+      label[for=alpha] {
+        display: none;
+      }
+      input[type=range] {
+        margin: 0;
+        width: 100px;
+        position: absolute;
+        right: 45px;
+        top: 245px;
+        -webkit-appearance: none;
+        width: 100px;
+        background: transparent;
+      }
+      input[type=range]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+      }
+      input[type=range]::-ms-track {
+        width: 100%;
+        cursor: pointer;
+        background: transparent;
+        border-color: transparent;
+        color: transparent;
+      }
+      input[type=range]::-webkit-slider-thumb {
+        background-color: #E0E0E0;
+        height: 10px;
+        width: 10px;
+        cursor: pointer;
+        margin-top: -4px;
+        border: 1px solid black;
+        border-radius: 50%;
+        box-shadow: inset -1px -1px 0px 1px #B0B0B0;
+      }
+      input[type=range]::-webkit-slider-runnable-track {
+        width: 100%;
+        height: 2px;
+        background-color: black;
+      }
+      input {
+        text-align: right;
+        box-sizing: border-box;
+        padding-right: .2em;
+      }
+      input[name=alpha] {
+        width: 25px;
+        height: 12px;
+        border: 1px solid black;
+        font-size: 10px;
+        background-color: #808080;
+        position: absolute;
+        right: 15px;
+        top: 240px;
+      }
+      uncreative-tag-name input[type=radio] {
+        -webkit-appearance: none;
+        display: inline-block;
+        height: 10px;
+        width: 10px;
+        border: 1px solid black;
+        border-radius: 50%;
+        background-color: white;
+        box-shadow: inset 1px 1px 0px 1px #D0D0D0;
+        cursor: pointer;
+        margin: 0;
+        margin-top: 2.5px;
+        margin-right: 3px;
+      }
+      uncreative-tag-name input[type=radio]:checked {
+        background-color: #9090FF;
+        box-shadow: inset 0 0 0px 1px white, inset -1px -1px 0 2.5px #0000FF;
+      }
+      uncreative-tag-name label::after {
+        content: ':';
+      }
+      uncreative-tag-name input[type=text] {
+        height: 15px;
+        width: 40px;
+        font-size: 15px;
+        border: 1px solid black;
+        float: right;
+      }
+      button {
+        background-color: rgba(0,0,0,0.5);
+        color: rgba(255,255,255,0.8);
+        border: none;
+        padding: 10px;
+        border-radius: 2px;
+        cursor: pointer;
+      }
+      button:hover {background-color: rgba(0,0,0,0.6);color: rgba(255,255,255,0.9);}
+      button:active {background-color: rgba(0,0,0,0.55);color: rgba(255,255,255,0.85);}
+      span.red {color: #cd5c5c;}
+      span.ora {color: #ff7f50;}
+      span.yel {color: #bdb76b;}
+      code {
+        border: 1px solid #778899;
+        background-color: #2f4f4f;
+        padding: 10px;
+        border-radius: 2px;
+        color: white;
       }
     </style>
   </head>
   <body>
     <div></div>
+    <p><button type="button">SHOW ME THE GLORRRIOUS COLOUR PICKER!!!</button></p>
+    <p>to use in your mess of HTML: <code><span class='red'>&lt;script</span> <span class='ora'>src</span>=<span class='yel'>"colourspace.js"</span><span class='red'>&gt;&lt;/script&gt;</span></code></p>
     <p>design and color convertion scripts stolen from <a href="https://scratch.mit.edu/users/MartinBraendli/">MartinBraendli</a>'s Scratch project <a href="https://scratch.mit.edu/projects/116343198/">Colour Space (100% pen GUI)</a>.</p>
 
     <script src="../../sheep.js"></script>
     <script src="colourspace.js"></script>
-    <script>var input;console.log(input=new ColourInput(document.querySelector('div')));</script>
+    <script>
+var input;
+console.log(input=new ColourInput(document.querySelector('div'),{
+  onchange(rgba) {
+    document.body.style.backgroundColor=`rgba(${rgba.r},${rgba.g},${rgba.b},${rgba.a})`;
+  }
+}));
+function uncreativeFunctionName(g) {
+  var s=document.createElement("uncreative-tag-name");
+  s.appendChild(input[g[0]].radio);
+  s.appendChild(input[g[0]].label);
+  s.appendChild(input[g[0]].input);
+  s.appendChild(input[g[1]].radio);
+  s.appendChild(input[g[1]].label);
+  s.appendChild(input[g[1]].input);
+  s.appendChild(input[g[2]].radio);
+  s.appendChild(input[g[2]].label);
+  s.appendChild(input[g[2]].input);
+  input.parent.appendChild(s);
+}
+uncreativeFunctionName('RGB');
+uncreativeFunctionName('HSV');
+uncreativeFunctionName('hsl');
+uncreativeFunctionName('Lab');
+uncreativeFunctionName('cmy');
+var s=document.createElement("uncreative-tag-name");
+s.appendChild(input.K.label);
+s.appendChild(input.K.input);
+s.appendChild(input.C.label);
+s.appendChild(input.C.input);
+s.appendChild(input.M.label);
+s.appendChild(input.M.input);
+s.appendChild(input.Y.label);
+s.appendChild(input.Y.input);
+s.className='bobs';
+input.parent.appendChild(s);
+input.hex.input.className='HIBOB higgles1';
+input.rgb.input.className='HIBOB higgles2';
+input.hsl.input.className='HIBOB higgles3';
+input.parent.className='';
+document.querySelector('button').onclick=e=>{
+  if (input.parent.className==='') {
+    input.parent.className='block';
+    var t=e=>{
+      var x=e.target;
+      if (x===document.querySelector('button')||x===input.parent) return true;
+      while (x=x.parentElement) if (x===input.parent) return true;
+      input.parent.className='';
+      document.removeEventListener("click",t,false);
+    };
+    document.addEventListener("click",t,false);
+  }
+};
+    </script>
   </body>
   <!-- MADE BY SEAN -->
 </html>

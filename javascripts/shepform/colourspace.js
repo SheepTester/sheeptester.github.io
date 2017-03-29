@@ -29,7 +29,8 @@ function ColourInput(elem,options) {
     m:{x:'y',y:'c',range:256,offset:0,group:'CMY',name:'m'},
     y:{x:'m',y:'c',range:256,offset:0,group:'CMY',name:'y'},
   };
-  this.colour=options.defaultRGB||ColourInput.convert.hextoRGBA('009688');
+  if (options.defaultRGB) this.colour=ColourInput.convert.smallRGB(options.defaultRGB.r,options.defaultRGB.g,options.defaultRGB.b);
+  else this.colour=ColourInput.convert.hextoRGBA('009688');
   this.colour=ColourInput.convert.smallRGB(this.colour.r,this.colour.g,this.colour.b);
   this.square=document.createElement("canvas");
   this.square.width=options.selectorSize*pixelratio;
@@ -39,8 +40,8 @@ function ColourInput(elem,options) {
       var e;
       if (ev.touches) e=ev.touches[0];
       else e=ev;
-      var x=(e.pageX-this.square.offsetLeft+1)/this.square.offsetWidth,
-      y=(this.square.offsetHeight-e.pageY+this.square.offsetTop-1)/this.square.offsetHeight;
+      var x=(e.clientX-this.square.getBoundingClientRect().left+1)/this.square.offsetWidth,
+      y=(this.square.offsetHeight-e.clientY+this.square.getBoundingClientRect().top-1)/this.square.offsetHeight;
       x=x*data[data[slider].x].range;
       y=y*data[data[slider].y].range;
       if (x<0) x=0;
@@ -80,7 +81,7 @@ function ColourInput(elem,options) {
       var e;
       if (ev.touches) e=ev.touches[0];
       else e=ev;
-      var y=(this.line.offsetHeight-e.pageY+this.line.offsetTop-1)/this.line.offsetHeight;
+      var y=(this.line.offsetHeight-e.clientY+this.line.getBoundingClientRect().top-1)/this.line.offsetHeight;
       y=y*data[slider].range;
       if (y<0) y=0;
       else if (y>=data[slider].range) y=data[slider].range-1;
@@ -314,7 +315,7 @@ function ColourInput(elem,options) {
   this.M=new Input(this.parent,'M',0,100);
   this.Y=new Input(this.parent,'Y',0,100);
   this.R.radio.checked=true;
-  var lastcolour={};
+  var lastcolour={},truelastcolour={};
   this.render=quick=>{
     quick=quick||false;
     var alpha=this.alpha.input.value/100,
@@ -347,6 +348,12 @@ function ColourInput(elem,options) {
     this.Y.input.value=t.y;
     this.hex.input.value='#'+ColourInput.convert.RGBAtohex(this.colour)+(alpha<1?('0'+Math.floor(alpha*255.99).toString(16)).slice(-2):'');
     this.colourpreview.style.backgroundColor=this.rgb.input.value;
+    if (options.onchange&&(truelastcolour.r!==this.colour.r||truelastcolour.g!==this.colour.g||truelastcolour.b!==this.colour.b||truelastcolour.a!==alpha)) {
+      var t=ColourInput.convert.bigRGB(this.colour);
+      t.a=alpha;
+      options.onchange(t);
+    }
+    truelastcolour={r:this.colour.r,g:this.colour.g,b:this.colour.b,a:alpha}
     if (lastcolour.quick!==quick||lastcolour.r!==this.colour.r||lastcolour.g!==this.colour.g||lastcolour.b!==this.colour.b) {
       var c=this.square.getContext('2d'),
       slider=this.parent.querySelector('input[name="slider"]:checked').dataset.for,
