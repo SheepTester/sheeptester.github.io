@@ -405,27 +405,39 @@ place badge:before {
   background-color: rgba(255,255,255,0.15);
 }
 sheepmenu.blockvision, sheepmenu.blockvision:hover, sheepmenu.blockvision:active {
-  bottom: calc(50vh - 50vw);
-  border-top-left-radius: 0;
-  box-shadow: none;
+  border-radius: 0;
   width: 100vw;
-  height: 100vw;
+  height: 100vh;
+  bottom: 0;
   right: 0;
-  opacity: 1;
-  transition: none;
-  z-index: 1000;
+  background-color: white;
+  box-shadow: none;
+  pointer-events: none;
+}
+sheepmenu.blockvision > svg, sheepmenu.blockvision:hover > svg, sheepmenu.blockvision:active > svg {
+  position: absolute;
+  padding: 0;
+  margin: auto;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  stroke: black;
+  width: 60px;
+  height: 60px;
+  opacity: 0;
 }
 sheepmenu.playhellos {
-  transition: all 0.3s cubic-bezier(0.55, 0.055, 0.675, 0.19);
-  z-index: 1000;
+  transition: all 0.5s;
 }
-@media all and (orientation: portrait) {
-  sheepmenu.blockvision, sheepmenu.blockvision:hover, sheepmenu.blockvision:active {
-    width: 100vh;
-    height: 100vh;
-    right: calc(50vw - 50vh);
-    bottom: calc(50vw - 25vh);
-  }
+sheepmenu.playhellos > svg {
+  transition: all 0.5s;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: auto;
 }
 @keyframes hellos {
   0% {

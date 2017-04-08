@@ -1,18 +1,79 @@
 /* reference me and all of your worries about making everything perfect goes away! ;) */
 (function(){
-  var el=document.createElement("link");
+  var thisscript=document.querySelector('script[src$="sheep.js"]'),
+  el=document.createElement("link");
   el.type="text/css";
   el.rel="stylesheet";
-  // el.href="sheep.css";
-  el.href="https://sheeptester.github.io/sheep.css";
+  if (thisscript) el.href=thisscript.getAttribute('src').replace('.js','.css');
+  else el.href="https://sheeptester.github.io/sheep.css";
   document.head.insertBefore(el,document.head.firstChild);
   el=document.createElement("sheepmenu");
+  var svg=document.createElementNS("http://www.w3.org/2000/svg","svg"); // http://stackoverflow.com/questions/8215021/create-svg-tag-with-javascript
+  svg.setAttributeNS("http://www.w3.org/2000/xmlns/","xmlns:xlink","http://www.w3.org/1999/xlink");
+  svg.setAttributeNS(null,'viewBox','0 0 480 480');
+  svg.draggable=false;
+  var path=document.createElementNS("http://www.w3.org/2000/svg","path"); // http://stackoverflow.com/questions/16488884/add-svg-element-to-existing-svg-using-dom
+  path.setAttributeNS(null,'d',`M90 90a50 50 0 0 0 0 100H98.579A150 150 0 1 0 381.421 190H390a50 50 0 0 0 0 -100a50 50 0 1 1 -100 0a50 50 0 1 1 -100 0a50 50 0 1 1 -100 0z`);
+  svg.appendChild(path);
+  el.appendChild(svg);
   document.body.appendChild(el);
-  document.querySelector("sheepmenu").onclick=function(){
-    document.querySelector("sheepmenu").id="SHEEPANIMATING";
-    window.setTimeout(function(){
-      window.location="https://sheeptester.github.io/";
-    },400);
+  var touchedAlready=false;
+  el.onmousedown=function(e){
+    if (touchedAlready) return true;
+    var mousemoved=false,
+    merp=document.createElement("sheepmenu-dragcover"),
+    merpies=el.getBoundingClientRect(),
+    offset={x:e.clientX-merpies.left,y:e.clientY-merpies.top},
+    mouseup=e=>{
+      document.removeEventListener("mousemove",mousemove,false);
+      document.removeEventListener("mouseup",mouseup,false);
+      document.body.classList.remove('SHEEPDRAGGING');
+      setTimeout(_=>document.body.removeChild(merp),200);
+      if (!mousemoved) {
+        el.id="SHEEPANIMATING";
+        window.setTimeout(_=>window.location="https://sheeptester.github.io/",300);
+      }
+    },
+    mousemove=e=>{
+      mousemoved=true;
+      document.body.classList.add('SHEEPDRAGGING');
+      el.style.right=(innerWidth-merpies.width-e.clientX+offset.x)+'px';
+      el.style.bottom=(innerHeight-merpies.height-e.clientY+offset.y)+'px';
+      e.preventDefault();
+      return false;
+    };
+    document.addEventListener("mousemove",mousemove,false);
+    document.addEventListener("mouseup",mouseup,false);
+    document.body.appendChild(merp);
+  };
+  el.ontouchstart=function(e){
+    touchedAlready=true;
+    var mousemoved=false,
+    merp=document.createElement("sheepmenu-dragcover"),
+    merpies=el.getBoundingClientRect(),
+    offset={x:e.touches[0].clientX-merpies.left,y:e.touches[0].clientY-merpies.top},
+    mouseup=e=>{
+      document.removeEventListener("mousemove",mousemove,false);
+      document.removeEventListener("mouseup",mouseup,false);
+      document.body.classList.remove('SHEEPDRAGGING');
+      setTimeout(_=>document.body.removeChild(merp),200);
+      touchedAlready=false;
+      if (!mousemoved) {
+        el.id="SHEEPANIMATING";
+        window.setTimeout(_=>window.location="https://sheeptester.github.io/",300);
+      }
+    },
+    mousemove=e=>{
+      mousemoved=true;
+      document.body.classList.add('SHEEPDRAGGING');
+      el.style.right=(innerWidth-merpies.width-e.touches[0].clientX+offset.x)+'px';
+      el.style.bottom=(innerHeight-merpies.height-e.touches[0].clientY+offset.y)+'px';
+      e.preventDefault();
+      return false;
+    };
+    document.addEventListener("touchmove",mousemove,{passive:false});
+    document.addEventListener("touchend",mouseup,{passive:false});
+    document.body.appendChild(merp);
   };
   if (!window.localStorage.dismissed) {
     window.localStorage.dismissed='{}';

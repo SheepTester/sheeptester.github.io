@@ -1,0 +1,14 @@
+<svg viewBox="0 0 480 480" xmlns="http://www.w3.org/2000/svg" fill='none' stroke='black' stroke-width='20'>
+  <path d="
+    M90 90
+    a50 50 0 0 0 0 100
+    H98.579
+    A150 150 0 1 0 381.421 190
+    H390
+    a50 50 0 0 0 0 -100
+    a50 50 0 1 1 -100 0
+    a50 50 0 1 1 -100 0
+    a50 50 0 1 1 -100 0
+    z
+  "/>
+</svg>

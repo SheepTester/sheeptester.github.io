@@ -1,78 +1,99 @@
 sheepmenu {
-  width: 100px;
-  height: 100px;
+  width: 50px;
+  height: 50px;
   position: fixed;
-  bottom: -20px;
-  right: -20px;
-  border-top-left-radius: 80px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.5);
+  bottom: 10px;
+  right: 10px;
+  border-radius: 25px;
+  box-shadow: 0 0 2px rgba(0,0,0,0.5);
   z-index: 1000;
-  opacity: 0.3;
-  transition: all .5s;
-  background-image: url('https://sheeptester.github.io/SHEEP.svg');
+  background-color: rgba(0,0,0,0.4);
+  transition: all .2s;
+  user-select: none;
   cursor: pointer;
 }
 sheepmenu:hover {
-  bottom: -10px;
-  right: 0;
-  border-top-left-radius: 100px;
-  box-shadow: 0 0 15px rgba(0,0,0,0.5);
-  opacity: 1;
+  box-shadow: 0 0 4px rgba(0,0,0,0.5);
+  background-color: rgba(255,255,255,0.8);
 }
 sheepmenu:active {
   box-shadow: 0 0 2px rgba(0,0,0,0.5);
-  transition: box-shadow .2s;
+  transform: scale(0.9);
+}
+sheepmenu > svg {
+  height: 45px;
+  width: 45px;
+  padding: 0 2.5px;
+  padding-top: 4px;
+  fill: none;
+  stroke: white;
+  stroke-opacity: 0.7;
+  stroke-width: 20;
+  transition: all .2s;
+}
+sheepmenu:hover > svg {
+  stroke: black;
 }
 sheepmenu#SHEEPANIMATING {
-  position: fixed;
-  z-index: 1000;
-  animation: SHEEPBYE 0.3s cubic-bezier(0.215, 0.61, 0.355, 1);
-  right: 0;
-  bottom: calc(50vh - 50vw);
-  border-top-left-radius: 0;
-  box-shadow: none;
-  width: 100vw;
-  height: 100vw;
-  opacity: 1;
+  animation: SHEEPBYE 0.2s forwards;
+  pointer-events: none;
+  bottom: 0 !important;
+  right: 0 !important;
 }
 @keyframes SHEEPBYE {
   0% {
-    bottom: -10px;
-    border-top-left-radius: 100px;
+    border-radius: 25px;
+    width: 50px;
+    height: 50px;
+    background-color: rgba(255,255,255,0.8);
     box-shadow: 0 0 2px rgba(0,0,0,0.5);
-    width: 100px;
-    height: 100px;
   }
   100% {
-    bottom: calc(50vh - 50vw);
-    border-top-left-radius: 0;
-    box-shadow: none;
+    border-radius: 0;
     width: 100vw;
-    height: 100vw;
+    height: 100vh;
+    background-color: white;
+    box-shadow: none;
   }
 }
-@keyframes SHEEPBYEPORTRAIT {
-  0% {
-    width: 100px;
-    height: 100px;
-    right: 0;
-    bottom: -10px;
-  }
-  100% {
-    width: 100vh;
-    height: 100vh;
-    right: calc(50vw - 50vh);
-    bottom: calc(50vw - 25vh);
-  }
+sheepmenu#SHEEPANIMATING > svg {
+  position: absolute;
+  padding: 0;
+  margin: auto;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  stroke: black;
+  width: 60px;
+  height: 60px;
+  opacity: 0;
 }
-@media all and (orientation: portrait) {
-  sheepmenu#SHEEPANIMATING {
-    animation-name: SHEEPBYE, SHEEPBYEPORTRAIT;
-    width: 100vh;
-    height: 100vh;
-    right: calc(50vw - 50vh);
-    bottom: calc(50vw - 25vh);
-  }
+sheepmenu-dragcover {
+  display: block;
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  opacity: 0;
+  background-color: rgba(0,0,0,0.5);
+  z-index: 10000;
+  transition: opacity .2s;
+}
+body.SHEEPDRAGGING > sheepmenu-dragcover {
+  opacity: 1;
+}
+body.SHEEPDRAGGING > sheepmenu {
+  z-index: 10001;
+  background-color: rgba(255,255,255,0.8);
+  box-shadow: 0 0 2px rgba(0,0,0,0.5);
+  transform: scale(0.9);
+  transition: none;
+}
+body.SHEEPDRAGGING > sheepmenu > svg {
+  stroke: black;
 }
 ::selection {
   background: rgba(0, 188, 212, 0.4);
