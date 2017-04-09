@@ -8,6 +8,9 @@
   else el.href="https://sheeptester.github.io/sheep.css";
   document.head.insertBefore(el,document.head.firstChild);
   el=document.createElement("sheepmenu");
+  if (!localStorage.sheepmenuposition) localStorage.sheepmenuposition='10-10';
+  el.style.right=localStorage.sheepmenuposition.slice(0,localStorage.sheepmenuposition.indexOf(','))+'px';
+  el.style.bottom=localStorage.sheepmenuposition.slice(localStorage.sheepmenuposition.indexOf(',')+1)+'px';
   var svg=document.createElementNS("http://www.w3.org/2000/svg","svg"); // http://stackoverflow.com/questions/8215021/create-svg-tag-with-javascript
   svg.setAttributeNS("http://www.w3.org/2000/xmlns/","xmlns:xlink","http://www.w3.org/1999/xlink");
   svg.setAttributeNS(null,'viewBox','0 0 480 480');
@@ -19,7 +22,7 @@
   document.body.appendChild(el);
   var touchedAlready=false;
   el.onmousedown=function(e){
-    if (touchedAlready) return true;
+    if (touchedAlready||e.button===2||e.target.tagName==='SHEEPMENU-MENU'||e.target.tagName==='SHEEPMENU-MENUITEM') return true;
     var mousemoved=false,
     merp=document.createElement("sheepmenu-dragcover"),
     merpies=el.getBoundingClientRect(),
@@ -29,10 +32,13 @@
       document.removeEventListener("mouseup",mouseup,false);
       document.body.classList.remove('SHEEPDRAGGING');
       setTimeout(_=>document.body.removeChild(merp),200);
-      if (!mousemoved) {
+      if (mousemoved) localStorage.sheepmenuposition=el.style.right.slice(0,-2)+','+el.style.bottom.slice(0,-2);
+      else {
         el.id="SHEEPANIMATING";
         window.setTimeout(_=>window.location="https://sheeptester.github.io/",300);
       }
+      e.preventDefault();
+      return false;
     },
     mousemove=e=>{
       mousemoved=true;
@@ -45,35 +51,78 @@
     document.addEventListener("mousemove",mousemove,false);
     document.addEventListener("mouseup",mouseup,false);
     document.body.appendChild(merp);
+    e.preventDefault();
+    return false;
   };
   el.ontouchstart=function(e){
+    if (e.target.tagName==='SHEEPMENU-MENU'||e.target.tagName==='SHEEPMENU-MENUITEM') return true;
     touchedAlready=true;
     var mousemoved=false,
     merp=document.createElement("sheepmenu-dragcover"),
     merpies=el.getBoundingClientRect(),
-    offset={x:e.touches[0].clientX-merpies.left,y:e.touches[0].clientY-merpies.top},
+    offset={x:e.touches[0].clientX-merpies.left,y:e.touches[0].clientY-merpies.top,lx:0,ly:0,ox:e.touches[0].clientX,oy:e.touches[0].clientY},
+    pressstart=+new Date(),
+    timeout=setTimeout(_=>{if (!el.classList.contains('SHEEPREADYFORMENU')) el.classList.add('SHEEPREADYFORMENU');},700),
     mouseup=e=>{
-      document.removeEventListener("mousemove",mousemove,false);
-      document.removeEventListener("mouseup",mouseup,false);
+      document.removeEventListener("touchmove",mousemove,{passive:false});
+      document.removeEventListener("touchend",mouseup,{passive:false});
       document.body.classList.remove('SHEEPDRAGGING');
       setTimeout(_=>document.body.removeChild(merp),200);
       touchedAlready=false;
-      if (!mousemoved) {
+      clearTimeout(timeout);
+      if (el.classList.contains('SHEEPREADYFORMENU')) el.classList.remove('SHEEPREADYFORMENU');
+      if (mousemoved) localStorage.sheepmenuposition=el.style.right.slice(0,-2)+','+el.style.bottom.slice(0,-2);
+      else if (+new Date()-pressstart<700) {
         el.id="SHEEPANIMATING";
         window.setTimeout(_=>window.location="https://sheeptester.github.io/",300);
       }
+      if (+new Date()-pressstart>=700&&offset.lx<10&&offset.ly<10) {
+        el.classList.add('SHEEPMENUDONTACTIVE');
+        var menu=document.createElement("sheepmenu-menu"),
+        location=el.getBoundingClientRect();
+        menu.classList.add('SHEEPMENUTOUCH');
+        if (location.left<innerWidth/2) menu.style.right='auto';
+        else menu.style.left='auto';
+        if (location.top<innerHeight/2) menu.style.bottom='auto';
+        else menu.style.top='auto';
+        for (var span in SHEEP.menu) {
+          var t=document.createElement("sheepmenu-menuitem");
+          t.textContent=span;
+          t.onclick=SHEEP.menu[span];
+          menu.appendChild(t);
+        }
+        el.appendChild(menu);
+        var remove=e=>{
+          if (e.target.tagName!=='SHEEPMENU-MENU'&&e.target.tagName!=='SHEEPMENU-MENUITEM') {
+            contexted=false;
+            el.classList.remove('SHEEPMENUDONTACTIVE');
+            el.removeChild(menu);
+            document.removeEventListener("touchstart",remove,false);
+          }
+          if (e.button===2) contexted=true;
+        };
+        document.addEventListener("touchstart",remove,false);
+      }
+      e.preventDefault();
+      return false;
     },
     mousemove=e=>{
       mousemoved=true;
       document.body.classList.add('SHEEPDRAGGING');
       el.style.right=(innerWidth-merpies.width-e.touches[0].clientX+offset.x)+'px';
       el.style.bottom=(innerHeight-merpies.height-e.touches[0].clientY+offset.y)+'px';
+      offset.lx=Math.abs(offset.ox-e.touches[0].clientX);
+      offset.ly=Math.abs(offset.oy-e.touches[0].clientY);
+      if (offset.lx<10&&offset.ly<10) {if (!el.classList.contains('SHEEPREADYFORMENU')) el.classList.add('SHEEPREADYFORMENU');}
+      else {if (el.classList.contains('SHEEPREADYFORMENU')) el.classList.remove('SHEEPREADYFORMENU');}
       e.preventDefault();
       return false;
     };
     document.addEventListener("touchmove",mousemove,{passive:false});
     document.addEventListener("touchend",mouseup,{passive:false});
     document.body.appendChild(merp);
+    e.preventDefault();
+    return false;
   };
   if (!window.localStorage.dismissed) {
     window.localStorage.dismissed='{}';
@@ -299,9 +348,57 @@ var SHEEP={
       ctx.oBackingStorePixelRatio||
       ctx.backingStorePixelRatio||1;
     return dpr/bsr;
+  },
+  menu:{
+    'go to index page':_=>window.location='https://sheeptester.github.io/',
+    'reset little sheep position':_=>{
+      localStorage.sheepmenuposition='10-10';
+      var t=document.querySelector('sheepmenu');
+      t.style.right='10px';
+      t.style.bottom='10px';
+    },
+    'see page description':_=>{
+      var t=document.querySelector('meta[name=description]');
+      if (t) SHEEP.notify('<strong>Page description</strong><br>'+t.content);
+      else SHEEP.notify('This page has no description.');
+    }
   }
 };
 (function(){
+  var el=document.querySelector('sheepmenu'),
+  contexted=false;
+  el.oncontextmenu=e=>{
+    if (contexted) contexted=false;
+    else {
+      contexted=true;
+      el.classList.add('SHEEPMENUDONTACTIVE');
+      var menu=document.createElement("sheepmenu-menu"),
+      location=el.getBoundingClientRect();
+      if (location.left<innerWidth/2) menu.style.right='auto';
+      else menu.style.left='auto';
+      if (location.top<innerHeight/2) menu.style.bottom='auto';
+      else menu.style.top='auto';
+      for (var span in SHEEP.menu) {
+        var t=document.createElement("sheepmenu-menuitem");
+        t.textContent=span;
+        t.onclick=SHEEP.menu[span];
+        menu.appendChild(t);
+      }
+      el.appendChild(menu);
+      var remove=e=>{
+        if (e.target.tagName!=='SHEEPMENU-MENU'&&e.target.tagName!=='SHEEPMENU-MENUITEM') {
+          contexted=false;
+          el.classList.remove('SHEEPMENUDONTACTIVE');
+          el.removeChild(menu);
+          document.removeEventListener("mousedown",remove,false);
+        }
+        if (e.button===2) contexted=true;
+      };
+      document.addEventListener("mousedown",remove,false);
+      e.preventDefault();
+      return false;
+    }
+  };
   if (!SHEEP.dismissed.accounts) {
     SHEEP.dismiss('accounts');
     SHEEP.notify('A very insecure system of accounts has been introduced.','/?signin');

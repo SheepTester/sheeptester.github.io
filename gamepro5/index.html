@@ -33,7 +33,10 @@
 
     <script src="../sheep.js"></script>
     <script>
-SHEEP.draggable(document.querySelector('child'),true,true,{fitparent:1,parentdrag:1})
+SHEEP.draggable(document.querySelector('child'),true,true,{fitparent:1,parentdrag:1});
+SHEEP.menu['Test menu item']=_=>{
+  SHEEP.notify('hullo!');
+};
     </script>
   </body>
   <!-- MADE BY SEAN -->

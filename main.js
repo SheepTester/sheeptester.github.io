@@ -2,6 +2,7 @@ var sheeptest=(function(){
   if (document.querySelector('sheepmenu')) {
     document.querySelector('sheepmenu').classList.add('blockvision');
   }
+  if (window.SHEEP) delete SHEEP.menu['go to index page'];
   var bulletWidth;
   document.body.onload=_=>{
     document.body.classList.remove('blank');

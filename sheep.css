@@ -16,7 +16,7 @@ sheepmenu:hover {
   box-shadow: 0 0 4px rgba(0,0,0,0.5);
   background-color: rgba(255,255,255,0.8);
 }
-sheepmenu:active {
+sheepmenu:not(.SHEEPMENUDONTACTIVE):active {
   box-shadow: 0 0 2px rgba(0,0,0,0.5);
   transform: scale(0.9);
 }
@@ -95,6 +95,9 @@ body.SHEEPDRAGGING > sheepmenu {
 body.SHEEPDRAGGING > sheepmenu > svg {
   stroke: black;
 }
+sheepmenu.SHEEPREADYFORMENU {
+  transform: scale(1.1) !important;
+}
 ::selection {
   background: rgba(0, 188, 212, 0.4);
 }
@@ -131,7 +134,7 @@ sheepnotify.SHEEPLINKY:after {
   opacity: 0.5;
 }
 sheepnotify.SHEEPDISAPPEAR {
-  animation: SHEEPDISAPPEAR .3s linear;
+  animation: SHEEPDISAPPEAR .3s linear forwards;
 }
 @keyframes SHEEPAPPEAR {
   from {
@@ -165,4 +168,29 @@ sheepgettextwidth {
   white-space: pre;
   display: inline;
   position: fixed;
+}
+sheepmenu > sheepmenu-menu {
+  display: block;
+  position: absolute;
+  top: 40px;
+  bottom: 40px;
+  left: 20px;
+  right: 20px;
+  background-color: rgba(0,0,0,0.8);
+  color: rgba(255,255,255,0.6);
+  padding: 5px;
+  line-height: 1;
+}
+sheepmenu > sheepmenu-menu.SHEEPMENUTOUCH {
+  padding: 5px 10px;
+}
+sheepmenu > sheepmenu-menu > sheepmenu-menuitem {
+  display: block;
+  white-space: pre;
+}
+sheepmenu > sheepmenu-menu.SHEEPMENUTOUCH > sheepmenu-menuitem {
+  padding: 10px;
+}
+sheepmenu > sheepmenu-menu > sheepmenu-menuitem:hover {
+  color: white;
 }

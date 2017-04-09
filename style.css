@@ -408,8 +408,8 @@ sheepmenu.blockvision, sheepmenu.blockvision:hover, sheepmenu.blockvision:active
   border-radius: 0;
   width: 100vw;
   height: 100vh;
-  bottom: 0;
-  right: 0;
+  bottom: 0 !important;
+  right: 0 !important;
   background-color: white;
   box-shadow: none;
   pointer-events: none;
