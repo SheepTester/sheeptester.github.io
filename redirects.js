@@ -6,9 +6,9 @@
     "gamepro5":"https://www.youtube.com/Gamepro5",
     "panthre":"https://www.youtube.com/channel/UCS5jP47FySoyh7tXYHDwQoA",
     "penland":"https://sheeptester.github.io/platformre/penland/inv.html",
-    "hotel":"http://176.32.230.44/thingkingland.com/thehotel/",
-    "spam":"http://176.32.230.44/thingkingland.com/spammer/",
-    "dairy":"http://176.32.230.44/thingkingland.com/mysql/dairy.php",
+    "hotel":"http://thingkingland-com.stackstaging.com/thehotel/",
+    "spam":"http://thingkingland-com.stackstaging.com/spammer/",
+    "dairy":"http://thingkingland-com.stackstaging.com/mysql/dairy.php",
     'gaffasaurus':'https://www.youtube.com/channel/UCrvlbaPVXWjHGG3YtelpbNw/',
     'noskillzjusthacks':'https://www.youtube.com/channel/UCEAF8wDyCTKDIiVHnnu7a2Q',
   };

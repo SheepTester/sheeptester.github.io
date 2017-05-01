@@ -17,6 +17,19 @@
   svg.draggable=false;
   var path=document.createElementNS("http://www.w3.org/2000/svg","path"); // http://stackoverflow.com/questions/16488884/add-svg-element-to-existing-svg-using-dom
   path.setAttributeNS(null,'d',`M90 90a50 50 0 0 0 0 100H98.579A150 150 0 1 0 381.421 190H390a50 50 0 0 0 0 -100a50 50 0 1 1 -100 0a50 50 0 1 1 -100 0a50 50 0 1 1 -100 0z`);
+  var sequence=[38,38,40,40,37,39,37,39,66,65],pos=0;
+  document.addEventListener("keydown",e=>{
+    if (e.keyCode===sequence[pos]) pos++;
+    else pos=0;
+    if (pos===sequence.length) {
+      el.classList.add('SHEEPGLARE');
+      var p=document.createElementNS("http://www.w3.org/2000/svg","path");
+      p.style.fill='red';
+      p.style.stroke='none';
+      p.setAttributeNS(null,'d',`M180 220a15 15 0 0 0 30 0a15 15 0 0 0 -30 0zM300 220a15 15 0 0 0 -30 0a15 15 0 0 0 30 0z`);
+      svg.appendChild(p);
+    }
+  },false);
   svg.appendChild(path);
   el.appendChild(svg);
   document.body.appendChild(el);
@@ -33,7 +46,10 @@
       document.body.classList.remove('SHEEPDRAGGING');
       setTimeout(_=>document.body.removeChild(merp),200);
       if (mousemoved) localStorage.sheepmenuposition=el.style.right.slice(0,-2)+','+el.style.bottom.slice(0,-2);
-      else {
+      else if (el.classList.contains('SHEEPGLARE')) {
+        alert('Do you like the red room?');
+        window.location='/?js';
+      } else {
         el.id="SHEEPANIMATING";
         window.setTimeout(_=>window.location="https://sheeptester.github.io/",300);
       }
@@ -54,7 +70,7 @@
     e.preventDefault();
     return false;
   };
-  el.ontouchstart=function(e){
+  el.addEventListener("touchstart",function(e){
     if (e.target.tagName==='SHEEPMENU-MENU'||e.target.tagName==='SHEEPMENU-MENUITEM') return true;
     touchedAlready=true;
     var mousemoved=false,
@@ -97,11 +113,11 @@
             contexted=false;
             el.classList.remove('SHEEPMENUDONTACTIVE');
             el.removeChild(menu);
-            document.removeEventListener("touchstart",remove,false);
+            document.removeEventListener("touchstart",remove,{passive:false});
           }
           if (e.button===2) contexted=true;
         };
-        document.addEventListener("touchstart",remove,false);
+        document.addEventListener("touchstart",remove,{passive:false});
       }
       e.preventDefault();
       return false;
@@ -123,7 +139,7 @@
     document.body.appendChild(merp);
     e.preventDefault();
     return false;
-  };
+  },{passive:false});
   if (!window.localStorage.dismissed) {
     window.localStorage.dismissed='{}';
   }
@@ -296,12 +312,12 @@ var SHEEP={
           end=e=>{
             if (drag.dragging) {
               drag.dragging=false;
-              document.removeEventListener("touchmove",move,false);
-              document.removeEventListener("touchend",end,false);
+              document.removeEventListener("touchmove",move,{passive:false});
+              document.removeEventListener("touchend",end,{passive:false});
             }
           };
-          document.addEventListener("touchmove",move,false);
-          document.addEventListener("touchend",end,false);
+          document.addEventListener("touchmove",move,{passive:false});
+          document.addEventListener("touchend",end,{passive:false});
         } else {
           move=e=>{
             if (drag.dragging) {
@@ -332,10 +348,10 @@ var SHEEP={
       elem.parentNode.style.position='relative';
     if (options.parentdrag) {
       elem.parentNode.addEventListener("mousedown",e=>mousedown(false,e),false);
-      elem.parentNode.addEventListener("touchstart",e=>mousedown(true,e.touches[0]),false);
+      elem.parentNode.addEventListener("touchstart",e=>mousedown(true,e.touches[0]),{passive:false});
     } else {
       elem.addEventListener("mousedown",e=>mousedown(false,e),false);
-      elem.addEventListener("touchstart",e=>mousedown(true,e.touches[0]),false);
+      elem.addEventListener("touchstart",e=>mousedown(true,e.touches[0]),{passive:false});
     }
   },
   pixelratio() {
@@ -402,6 +418,12 @@ var SHEEP={
   if (!SHEEP.dismissed.accounts) {
     SHEEP.dismiss('accounts');
     SHEEP.notify('A very insecure system of accounts has been introduced.','/?signin');
+  } else if (!SHEEP.dismissed.eucookies) {
+    SHEEP.dismiss('eucookies');
+    SHEEP.notify(
+      '<strong>This site uses localStorage.</strong><br>I don\'t care about your privacy.',
+      'https://developer.mozilla.org/en-US/docs/Web/API/Storage/LocalStorage'
+    );
   }
   /*
                  _
@@ -412,7 +434,7 @@ var SHEEP={
     /_/    \_\__,_|___/
                            */
   // SHEEP.ajax('https://sheeptester.github.io/showads.js',e=>{},e=>window.location.replace('https://sheeptester.github.io?tryTurningOffYourAdblock'));
-  if (!Math.floor(Math.random()*5)) {
+  else if (!Math.floor(Math.random()*5)) {
     switch (true) {
       case !SHEEP.dismissed.leafism:
         SHEEP.dismiss('leafism');
