@@ -145,7 +145,7 @@ var sheeptest=(function(){
         }
       }
       if (!sites) SHEEP.ajax(
-        'https://gist.githubusercontent.com/SheepTester/74cf1a0d5da818c4e0470a84c6c00225/raw/',
+        'https://gist.githubusercontent.com/SheepTester/74cf1a0d5da818c4e0470a84c6c00225/raw/sites.txt',
         e=>{
           sites=e.split(/\r?\n/);
           for (var i=0;i<sites.length;i++) if (!sites[i]) sites.splice(i,1);
