@@ -87,6 +87,7 @@ nav .btn:hover {
 #places {
   font-size: 0;
   overflow-x: hidden;
+  padding: 5px 0 40px 5px;
 }
 place {
   width: calc(25% - 20px);
@@ -171,6 +172,7 @@ placelist:hover, placelist#more:hover {
 }
 #stalking {
   padding: 0 10px 50px;
+  height: auto;
 }
 #stalking p, #stalking h1 {
   margin: 0;
@@ -581,6 +583,16 @@ more disclaimer {
   margin: 10px;
   color: rgba(255,255,255,0.5);
   pointer-events: none;
+}
+::-webkit-scrollbar {
+  width: 5px !important;
+}
+::-webkit-scrollbar-track {
+  background-color: black !important;
+}
+::-webkit-scrollbar-thumb {
+  background-color: #4fa1a7 !important;
+  border-radius: 0 !important;
 }
 
 sarcasm {

@@ -51,6 +51,7 @@ var sheeptest=(function(){
         b:'htmlblocks',
         m:'minigames',
         w:'words-go-here',
+        c:'words-go-here/misc',
         g:'gamepro5'
       };
       redirect=redirect.slice(1).replace('.','.html'),layers=[];
@@ -85,23 +86,24 @@ var sheeptest=(function(){
   }
   var preferences=JSON.parse(localStorage.preferences);
   var places2go=[
+    {url:'all.html',img:'img/all.png',name:'Almost Everything',featured:1},
     {url:'platformre',img:'img/plat.svg',name:'Platformre'},
     {url:'platformre/maker',img:'img/platmakre.png',name:'Level editor'},
     {url:'?penland',img:'img/penland.png',name:'Penland'},
-    {url:'javascripts/shepform',img:'img/colorpicker.png',name:'Color input',featured:1},
+    {url:'javascripts/shepform',img:'img/colorpicker.png',name:'Color input'},
     {url:'javascripts/clicker',img:'img/click.png',name:'Clicker Game'},
-    {url:'trumpdays',img:'img/trumpdays.png',name:'Trump days',new:1},
-    {url:'gamepro5/minigames/dodgedots.html',img:'img/reds.png',name:'Dodge dots game thing',new:1},
-    {url:'gamepro5/minigames/color.html',img:'img/color.png',name:'Color fight thing',new:1},
+    {url:'trumpdays',img:'img/trumpdays.png',name:'Trump days'},
+    {url:'gamepro5/minigames/dodgedots.html',img:'img/reds.png',name:'Dodge dots game thing'},
+    {url:'gamepro5/minigames/color.html',img:'img/color.png',name:'Color fight thing'},
     {url:'animations',img:'img/anima.png',name:'Animations'},
     {url:'javascripts',img:'img/js.png',name:'Javascripts'},
     {url:'sentence',img:'img/sentence.png',name:'Sentence Generator'},
     {url:'happynumbers',img:'img/mems.png',name:'Happy Number Finder'},
-    {url:'javascripts/mutate.html',img:'img/life.png',name:'Cell Simulation',new:1},
+    {url:'javascripts/mutate.html',img:'img/life.png',name:'Cell Simulation'},
     {url:'eyo-dictionary/validator.html',img:'img/die.png',name:'Eyo Word Validator'},
     {url:'eyo-dictionary',img:'img/eyo.png',name:'Eyo Dictionary'},
     {url:'contextmenutest.html',img:'img/rightclick.png',name:'Context Menu Test'},
-    {url:'blog',img:'img/blog..png',name:'Blog',new:1},
+    {url:'blog',img:'img/blog..png',name:'Blog'},
   ];
   if (preferences.view==='grid') {
     document.querySelector('#view').innerHTML='list view';

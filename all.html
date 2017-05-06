@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Most of the files here</title>
+    <meta charset="UTF-8">
+    <meta name="description" content="See all the files in one place. Except for a few files. So it really isn't ALL the files. Eh."/>
+    <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
+    <style>
+      body {
+        margin: 15px 10px;
+        font-size: 15px;
+        line-height: 1;
+        font-family: 'Montserrat', sans-serif;
+        color: white;
+        background-color: #673ab7;
+      }
+      :focus {
+        outline: none;
+        box-shadow: 0 0 0 2px rgba(255,255,255,0.5);
+      }
+      div {
+        background-color: rgba(255,255,255,0.1);
+        padding: 5px 10px;
+        margin: 10px 5px;
+        border-radius: 2px;
+        transition: height .2s;
+      }
+      div.closed {
+        height: 25px;
+        overflow: hidden;
+        cursor: pointer;
+      }
+      div.closed:hover {
+        background-color: rgba(255,255,255,0.15);
+      }
+      span {
+        display: block;
+        margin: 0;
+        padding: 5px;
+        font-size: 15px;
+        cursor: pointer;
+        border-radius: 2px;
+        margin-bottom: 5px;
+      }
+      div:not(.closed) span:hover {
+        background-color: rgba(255,255,255,0.1);
+      }
+      div.closed span {
+        pointer-events: none;
+      }
+      div.closed span:hover {
+        background-color: transparent;
+      }
+      a {
+        display: table;
+        color: white;
+        margin: 0 5px;
+        padding: 5px;
+        text-decoration: none;
+        cursor: pointer;
+        border-radius: 2px;
+      }
+      a:hover {
+        background-color: rgba(0,0,0,0.1);
+      }
+      a::before {
+        content: '';
+        display: inline-block;
+        height: 15px;
+        width: 15px;
+        background-size: 20px;
+        background-position: center;
+        background-repeat: no-repeat;
+        margin-right: 5px;
+      }
+      a.html::before {
+        background-image: url('img/html.svg');
+      }
+      a.index.html::before {
+        background-color: rgba(255,255,255,0.2);
+        border-radius: 50%;
+        box-shadow: 0 0 0 3px rgba(255,255,255,0.1);
+      }
+      a.css::before {
+        background-image: url('img/css.svg');
+      }
+      a.js::before {
+        background-image: url('img/js.svg');
+        background-size: 15px;
+      }
+      a.img::before {
+        background-image: url('img/material_image.svg');
+        background-size: 10px;
+      }
+      a.file::before {
+        background-image: url('img/material_insert_drive_file.svg');
+        background-size: 12px;
+      }
+      h1 {
+        font-weight: normal;
+        margin: 0;
+        font-size: 10px;
+      }
+      button {
+        background-color: rgba(255,255,255,0.1);
+        border: none;
+        color: white;
+        margin: 5px;
+        padding: 5px;
+        border-radius: 2px;
+        cursor: pointer;
+      }
+      button:hover {
+        background-color: rgba(255,255,255,0.2);
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Most of the files on SheepTester</h1>
+    <button id='open'>Open all</button><button id='close'>Close all</button>
+    <script src="../sheep.js"></script>
+    <script>
+var sites,
+heading=document.querySelector('h1');
+(document.body.onresize=e=>{
+  heading.style.fontSize='10px';
+  heading.style.fontSize=Math.floor(document.body.clientWidth/SHEEP.textwidth(heading)*10)+'px';
+})();
+SHEEP.ajax('https://gist.githubusercontent.com/SheepTester/74cf1a0d5da818c4e0470a84c6c00225/raw/sites.json',e=>{
+  sites=JSON.parse(e);
+  function dothe(array,link) {
+    var s=document.createElement("div"),
+    t=document.createElement("span");
+    t.appendChild(document.createTextNode(array[0]));
+    t.onclick=e=>{
+      s.classList.add('closed');
+      e.stopPropagation();
+    };
+    s.appendChild(t);
+    s.classList.add('closed');
+    s.onclick=e=>s.classList.remove('closed');
+    s.onscroll=e=>{
+      if (s.classList.contains('closed')) s.scrollTop=0;
+    };
+    for (var i=1;i<array.length;i++) {
+      if (typeof array[i]==='object') s.appendChild(dothe(array[i],link+array[i][0]+'/'));
+      else {
+        var t=document.createElement("a");
+        t.appendChild(document.createTextNode(array[i]));
+        if (array[i]==='index.html') {
+          t.href=link;
+          t.classList.add('index');
+        }
+        else t.href=link+array[i];
+        switch (array[i].slice(array[i].lastIndexOf('.')+1)) {
+          case 'html':
+            t.classList.add('html');
+            break;
+          case 'css':
+            t.classList.add('css');
+            break;
+          case 'js':
+            t.classList.add('js');
+            break;
+          case 'png':
+          case 'svg':
+          case 'jpg':
+          case 'ico':
+            t.classList.add('img');
+            break;
+          default:
+            t.classList.add('file');
+        }
+        s.appendChild(t);
+      }
+    }
+    return s;
+  }
+  var s=dothe(sites,'https://sheeptester.github.io/');
+  s.classList.remove('closed');
+  s.children[0].innerHTML='Index';
+  document.body.appendChild(s);
+  document.querySelector('#open').onclick=e=>{
+    var s=document.querySelectorAll('div.closed');
+    for (var i=0;i<s.length;i++) s[i].classList.remove('closed');
+  };
+  document.querySelector('#close').onclick=e=>{
+    var s=document.querySelectorAll('div:not(.closed)');
+    for (var i=0;i<s.length;i++) s[i].classList.add('closed');
+  };
+},e=>{
+  var s=document.createElement("p");
+  s.appendChild(document.createTextNode('There appears to be a problem. Please tell me that this is happening.'));
+  document.body.appendChild(s);
+});
+    </script>
+  </body>
+  <!-- MADE BY SEAN -->
+</html>
