@@ -1,13 +1,15 @@
 /* reference me and all of your worries about making everything perfect goes away! ;) */
 (function(){
   var thisscript=document.querySelector('script[src$="sheep.js"]'),
-  el=document.createElement("link");
-  el.type="text/css";
-  el.rel="stylesheet";
-  if (thisscript) el.href=thisscript.getAttribute('src').replace('.js','.css');
-  else el.href="https://sheeptester.github.io/sheep.css";
-  document.head.insertBefore(el,document.head.firstChild);
-  el=document.createElement("sheepmenu");
+  style=document.createElement("link");
+  style.type="text/css";
+  style.rel="stylesheet";
+  if (thisscript) style.href=thisscript.getAttribute('src').replace('.js','.css');
+  else style.href="https://sheeptester.github.io/sheep.css";
+  document.head.insertBefore(style,document.head.firstChild);
+  var el=document.createElement("sheepmenu");
+  el.style.display='none';
+  style.onload=e=>el.style.display='block';
   if (!localStorage.sheepmenuposition) localStorage.sheepmenuposition='10-10';
   el.style.right=localStorage.sheepmenuposition.slice(0,localStorage.sheepmenuposition.indexOf(','))+'px';
   el.style.bottom=localStorage.sheepmenuposition.slice(localStorage.sheepmenuposition.indexOf(',')+1)+'px';

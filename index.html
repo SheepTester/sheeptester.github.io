@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <script src="redirects.js"></script>
     <title>SheepTester</title>
     <meta charset="UTF-8">
     <meta name="description" content="This is a page for humans to look at. But bots are welcome too."/>
@@ -8,13 +9,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="keywords" content="sheeptester, sheep tester, sheep">
     <link rel="shortcut icon" href="favicon.ico">
-    <script src="redirects.js"></script>
     <!-- redirect before rest of page tries to load -->
     <link rel="stylesheet" type="text/css" href="style.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
   </head>
   <body class='blank'>
-    <noscript>Your Javascript isn't working</noscript>
+    <noscript>Your Javascript isn't working.</noscript>
     <nav>
       <span class='btn' id='view'>list/grid view</span>
       <menuicon></menuicon>
@@ -22,7 +22,7 @@
         <span class='clickable active' data-place='places'>places</span>
         <span class='clickable' data-place='stalking'>stalking</span>
         <span class='clickable' data-place='redirects'>redirects</span>
-        <span class='clickable' data-place='users' id='user'>loading</span>
+        <!-- <span class='clickable' data-place='users' id='user'>loading</span> -->
       </btncontainer>
     </nav>
     <div id="background"></div>

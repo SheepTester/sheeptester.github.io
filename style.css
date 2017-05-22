@@ -90,7 +90,7 @@ nav .btn:hover {
   padding: 5px 0 40px 5px;
 }
 place {
-  width: calc(25% - 20px);
+  width: calc(16.5% - 20px);
   margin: 10px;
   display: inline-block;
   position: relative;
@@ -101,7 +101,23 @@ place {
   transition: transform .2s, z-index .2s;
 }
 place#more {
-  padding-bottom: calc(25% - 20px);
+  padding-bottom: calc(16.5% - 20px);
+}
+@media (max-width: 2550px) {
+  place {
+    width: calc(20% - 20px);
+  }
+  place#more {
+    padding-bottom: calc(20% - 20px);
+  }
+}
+@media (max-width: 1600px) {
+  place {
+    width: calc(25% - 20px);
+  }
+  place#more {
+    padding-bottom: calc(25% - 20px);
+  }
 }
 @media (max-width: 800px) {
   place {
@@ -469,7 +485,7 @@ body.blank *:not(noscript) {
   display: none;
 }
 body.blank noscript {
-  line-height: 1;
+  line-height: 18px;
   height: 18px;
   width: 100%;
   text-align: center;

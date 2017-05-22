@@ -24,7 +24,7 @@ var sheeptest=(function(){
   setTimeout(_=>{if (document.querySelector('sheepmenu').classList.contains('blockvision')) document.querySelector('sheepmenu').classList.remove('blockvision');},1000); // just in case
   if (window.location.search) {
     var redirect=window.location.search.slice(1);
-    if (redirect.slice(0,8)=="existing") {
+    /*if (redirect.slice(0,8)=="existing") {
       window.location.hash='users';
       document.querySelector("#createform .name").value=redirect.slice(9);
       document.querySelector("#createform .error:first-of-type").innerHTML='User already exists.';
@@ -41,7 +41,7 @@ var sheeptest=(function(){
     else if (redirect.slice(0,6)=="signin") {
       window.location.hash='users';
     }
-    else if (redirect[0]==='.') {
+    else */if (redirect[0]==='.') {
       var replacers={
         j:'javascripts',
         p:'platformre',
@@ -214,7 +214,7 @@ var sheeptest=(function(){
     xmlHttp.open("GET",theUrl,true); // true for asynchronous
     xmlHttp.send(null);
   }
-  var data={};
+  /*var data={};
   if (window.localStorage.getItem('userid')) {
     httpGetAsync('https://web300.secure-secure.co.uk/thingkingland.com/sheeptester/getstuff.php?userid='+window.localStorage.getItem('userid'),function(e){
       data=JSON.parse(e);
@@ -277,7 +277,7 @@ var sheeptest=(function(){
   document.querySelector('#signedin button').onclick=function(){
     window.localStorage.removeItem('userid');
     window.location.replace('https://web300.secure-secure.co.uk/thingkingland.com/sheeptester/signout.php');
-  };
+  };*/
   document.querySelector('menuicon').onclick=e=>{
     if (document.querySelector('nav').classList.contains('open')) document.querySelector('nav').classList.remove('open');
     else document.querySelector('nav').classList.add('open');

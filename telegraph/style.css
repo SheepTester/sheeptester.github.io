@@ -1,0 +1,340 @@
+body {
+  margin: 0;
+  line-height: 1;
+  font-size: 15px;
+  font-family: 'Open Sans', sans-serif;
+  background-color: #eee;
+}
+#time {
+  position: fixed;
+  border-left: 0px solid #2c5acc;
+  box-sizing: border-box;
+  background-color: rgba(0,0,0,0.1);
+  height: 5vh;
+  bottom: 10vh;
+  left: 10vw;
+  right: 10vw;
+  border-radius: 5px;
+}
+#time.dah {
+  border-left-color: #5279da;
+}
+#time::before, #time::after {
+  line-height: 3vh;
+  font-weight: bold;
+  text-align: center;
+  color: rgba(0,0,0,0.5);
+  position: absolute;
+  height: 3vh;
+  font-size: 3vh;
+  margin: 1vh;
+}
+#time::before {
+  content: '·';
+  width: calc(80vw / 3 - 2vh);
+  right: calc(80vw / 1.5);
+}
+#time::after {
+  content: '−';
+  background-color: rgba(0,0,0,0.1);
+  width: calc(80vw / 1.5 - 2vh);
+  right: 0;
+  border-radius: 2px;
+}
+#suggestions > span {
+  display: inline-block;
+  font-family: 'Inconsolata', monospace;
+  height: 6vh;
+  line-height: 1;
+  background-color: rgba(0,0,0,0.05);
+  padding: 5px 10px;
+  margin-right: 5px;
+  margin-bottom: 5px;
+  border-radius: 2px;
+}
+#suggestions > span.selected {
+  /*box-shadow: inset 0 0 0 2px rgba(0,0,0,0.1);*/
+  background-color: #2c5acc;
+}
+#suggestions > span.selected > span.letter, #suggestions > span.selected > span.done {
+  color: white;
+}
+#suggestions > span > span.letter {
+  font-size: 6vh;
+  color: rgba(0,0,0,0.8);
+}
+#suggestions > span > span.done, #suggestions > span > span.notdone {
+  padding-bottom: 5px;
+  font-weight: bold;
+}
+#suggestions > span > span.done {
+  color: rgba(0,0,0,0.8);
+}
+#suggestions > span > span.notdone {
+  color: rgba(0,0,0,0.3);
+}
+#text {
+  display: block;
+  position: fixed;
+  bottom: 70vh;
+  font-size: 10vh;
+  width: 100%;
+  left: 0;
+  text-align: center;
+  color: #2c5acc;
+  word-wrap: break-word;
+}
+#pattern {
+  display: block;
+  position: fixed;
+  top: 30vh;
+  font-size: 4vh;
+  height: 4vh;
+  width: 100%;
+  left: 0;
+  text-align: center;
+  color: rgba(0,0,0,0.3);
+  font-family: 'Inconsolata', monospace;
+  word-wrap: break-word;
+}
+#suggestions {
+  position: fixed;
+  top: 40vh;
+  font-size: 4.5vh;
+  left: 5vw;
+  right: 5vw;
+  text-align: center;
+  user-select: none;
+  cursor: default;
+}
+#options {
+  height: 30px;
+  width: 30px;
+  background-color: transparent;
+  cursor: pointer;
+  border: 2px solid rgba(0,0,0,0.3);
+  border-radius: 50%;
+  position: fixed;
+  bottom: 10px;
+  left: 10px;
+  padding: 0;
+  transition: left .2s;
+}
+#options::before, #options::after {
+  content: '';
+  position: absolute;
+  height: 2px;
+  display: block;
+  left: 5px;
+  background-color: rgba(0,0,0,0.3);
+}
+#options::before {
+  bottom: 9px;
+  width: 10px;
+}
+#options::after {
+  top: 9px;
+  right: 5px;
+}
+body.close #options {
+  left: 300px;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  border-left: none;
+}
+body.close #options::before, body.close #options::after {
+  right: 5px;
+  width: auto;
+  top: 0;
+  bottom: 0;
+  margin: auto 0;
+}
+body.close #options::before {
+  transform: rotate(-45deg);
+}
+body.close #options::after {
+  transform: rotate(45deg);
+}
+#options:hover {
+  border-color: #2c5acc;
+}
+#options:hover::before, #options:hover::after {
+  background-color: #2c5acc;
+}
+#stuff {
+  position: fixed;
+  left: -300px;
+  width: 300px;
+  height: 100%;
+  top: 0;
+  background-color: rgba(0,0,0,0.8);
+  transition: left .2s;
+  overflow-y: auto;
+}
+body.close #stuff {
+  left: 0;
+}
+#stuff > div {
+  margin: 15px;
+  border-radius: 2px;
+  background-color: rgba(255,255,255,0.1);
+  color: white;
+  padding: 15px;
+  line-height: 1.5;
+  position: relative;
+  padding-top: 75px;
+}
+#stuff > div::before {
+  content: attr(data-title);
+  display: block;
+  line-height: 1;
+  font-size: 30px;
+  background-color: #2c5acc;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  box-sizing: border-box;
+  padding: 15px;
+  height: 60px;
+  border-top-left-radius: 2px;
+  border-top-right-radius: 2px;
+}
+#dict table {
+  width: 100%;
+  font-family: 'Inconsolata', monospace;
+  font-size: 20px;
+}
+#dict th {
+  font-weight: normal;
+}
+#dict td {
+  font-weight: bold;
+  color: rgba(255,255,255,0.5);
+}
+button.up, button.down {
+  background-color: rgba(255,255,255,0.1);
+  cursor: pointer;
+  border: none;
+  height: 1em;
+  width: 1em;
+  margin: 0 5px;
+  vertical-align: baseline;
+  position: relative;
+  padding: 0;
+  border-radius: 50%;
+}
+button.up:hover, button.down:hover, #clear:hover, div.popup span.close:hover {background-color: #2c5acc;}
+button.up:active, button.down:active, #clear:active, div.popup span.close:active {background-color: #5279da;}
+button.up::after, button.down::after {
+  content: '';
+  position: absolute;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  width: 0;
+  height: 0;
+  margin: auto;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+button.down::after {
+  border-top: 7.5px solid rgba(255,255,255,0.8);
+}
+button.up::after {
+  border-bottom: 7.5px solid rgba(255,255,255,0.8);
+}
+#clear {
+  background-color: rgba(255,255,255,0.1);
+  cursor: pointer;
+  border: none;
+  border-radius: 2px;
+  color: white;
+}
+div.shadow {
+  position: fixed;
+  background-color: rgba(0,0,0,0.5);
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  user-select: none;
+  opacity: 0;
+  transition: opacity .2s;
+}
+div.shadow.showing {
+  opacity: 1;
+}
+div.popup {
+  background-color: rgba(255,255,255,0.3);
+  position: fixed;
+  margin: auto;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 50vh;
+  width: 50vw;
+  padding: 20px;
+  box-sizing: border-box;
+  color: white;
+  border-radius: 2px;
+  line-height: 1.5;
+  padding-bottom: 70px;
+  transform: scale(0);
+  transition: transform .2s;
+}
+div.popup.showing {
+  transform: scale(1);
+  transition: transform .2s cubic-bezier(0,1.33,0.59,1.38);
+}
+@keyframes popout {
+  from {transform: scale(1);}
+  to {transform: scale(0);}
+}
+div.popup p {
+  margin: 0;
+  height: 100%;
+  overflow-y: auto;
+}
+div.popup p h1, div.popup p h2 {
+  margin: 0;
+  font-weight: normal;
+}
+div.popup span.close {
+  border: none;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: 20px;
+  font-size: 20px;
+  padding: 5px;
+  height: 20px;
+  text-align: center;
+  background-color: rgba(255,255,255,0.2);
+  cursor: pointer;
+  line-height: 1;
+}
+div.popup::after {
+  content: 'v1Ru5.js';
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  color: rgba(255,255,255,0.5);
+  font-size: 8px;
+  margin: 2px;
+}
+#goal span {
+  display: block;
+}
+#goal span.unlocked {
+  text-decoration: line-through;
+  color: rgba(255,255,255,0.5);
+  cursor: pointer;
+}
+#goal span.unlocked:hover {
+  color: rgba(255,255,255,0.6);
+}

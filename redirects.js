@@ -15,9 +15,9 @@
   if (window.location.search) {
     var redirect=window.location.search.slice(1);
     if (redirects.hasOwnProperty(redirect)) window.location.replace(redirects[redirect]);
-    else if (redirect.slice(0,2)=="rr") window.location.replace("https://i.cloudup.com/LE0xyc4dgp.mp4");
-    else if (redirect.slice(0,2)=="js") window.location.replace("https://akk.li/pics/anne.jpg");
-    else if (redirect.slice(0,3)=="try") window.location.replace("https://www.google.com/#tbm=isch&q=trypophobia");
-    else if (redirect.slice(0,11)=="javascript:") console.log('%ceval is evil','color:red;font-size:100px;');
+    else if (redirect.slice(0,2).toLowerCase()==="rr") window.location.replace("https://i.cloudup.com/LE0xyc4dgp.mp4");
+    else if (redirect.slice(0,2).toLowerCase()==="js") window.location.replace("https://akk.li/video/jeff.mp4");
+    else if (redirect.slice(0,3).toLowerCase()==="try") window.location.replace("https://www.google.com/#tbm=isch&q=trypophobia");
+    else if (redirect.slice(0,11)==="javascript:") console.log('%ceval is evil','color:red;font-size:100px;');
   }
 })();
