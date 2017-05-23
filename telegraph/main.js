@@ -13,6 +13,7 @@ options=document.querySelector('#stuff'),
 disablemorsing=false,
 beeper=document.querySelector('#beep'),
 goal=document.querySelector('#goal'),
+hear=document.querySelector('#lgoal'),
 xmlHttp=new XMLHttpRequest();
 xmlHttp.onreadystatechange=function(){
   if (xmlHttp.readyState===4&&xmlHttp.status===200) {
@@ -22,10 +23,17 @@ xmlHttp.onreadystatechange=function(){
     for (var span in dict) {
       if (v%3===0) r=document.createElement("tr");
       var u=document.createElement("th");
-      u.textContent=span;
+      if (span==='\b') {
+        u.textContent='ERROR';
+        u.colSpan='2';
+      } else u.textContent=span;
       r.appendChild(u);
       u=document.createElement("td");
       u.textContent=dict[span].replace(/0/g,'·').replace(/1/g,'−');
+      if (span==='\b') {
+        u.colSpan='2';
+        v+=2;
+      }
       r.appendChild(u);
       if (v%3===2) s.appendChild(r),r=undefined;
       v++;
@@ -37,7 +45,7 @@ xmlHttp.onreadystatechange=function(){
 xmlHttp.open("GET",'https://gist.githubusercontent.com/SheepTester/9945b4a49fad9ce059ccab7d56761b90/raw/morsecode.txt',true);
 xmlHttp.send(null);
 document.onmousedown=e=>{
-  if (e.which!==3&&!options.contains(e.target)&&!disablemorsing) {
+  if (e.which!==3&&!options.contains(e.target)&&!disablemorsing&&!clickytime) {
     beeper.currentTime=0;
     beeper.play();
     clearTimeout(timeout);
@@ -49,7 +57,7 @@ document.onmousedown=e=>{
 document.addEventListener("touchstart",document.onmousedown,{passive:false});
 document.onmouseup=e=>{
   if (e.which!==3) {
-    if (!options.contains(e.target)&&!disablemorsing) {
+    if (!options.contains(e.target)&&!disablemorsing&&clickytime) {
       beeper.pause();
       if ((+new Date()-clickytime)/dotlength>=3) pattern+='-',letter+='1';
       else pattern+='.',letter+='0';
@@ -60,9 +68,18 @@ document.onmouseup=e=>{
         pattern+='/';
         letter='';
         pat.textContent=pattern;
-        if (suggests.children[0]&&suggests.children[0].classList.contains('selected')) text.textContent+=suggests.children[0].children[0].textContent;
+        if (suggests.children[0]&&suggests.children[0].classList.contains('selected')) {
+          var t=suggests.children[0].children[0].textContent;
+          if (t==='ERROR') {
+            t=text.textContent;
+            if (t[t.length-1]===' ') t=t.slice(0,-1);
+            if (~t.lastIndexOf(' ')) text.textContent=t.slice(0,t.lastIndexOf(' '));
+            else text.textContent='';
+          }
+          else text.textContent+=t;
+        }
         suggests.innerHTML='';
-        var t=text.textContent.slice(text.textContent.lastIndexOf(' ')+1);
+        t=text.textContent.slice(text.textContent.lastIndexOf(' ')+1);
         if (goals[t]&&!goals[t].classList.contains('unlocked')) {
           goals[t].classList.add('unlocked');
           goals[t].click();
@@ -71,7 +88,7 @@ document.onmouseup=e=>{
           pattern+='/';
           letter='';
           pat.textContent=pattern;
-          text.textContent+=' ';
+          if (text.textContent[text.textContent.length-1]!==' ') text.textContent+=' ';
         },dotlength*4);
       },dotlength*3);
     }
@@ -110,7 +127,8 @@ function suggest(letter) {
       pat=dict[suggestions[i]].replace(/0/g,'·').replace(/1/g,'−');
       if (i===0&&dict[suggestions[0]]===letter) s.classList.add('selected');
       var t=document.createElement("span");
-      t.appendChild(document.createTextNode(suggestions[i]));
+      if (suggestions[i]==='\b') t.appendChild(document.createTextNode('ERROR'));
+      else t.appendChild(document.createTextNode(suggestions[i]));
       t.classList.add('letter');
       s.appendChild(t);
       t=document.createElement("span");
@@ -186,7 +204,53 @@ for (var span in goals) {
   goal.appendChild(s);
   goals[span]=s;
 }
+for (var span in hearing)
+  (span=>{
+    var s=document.createElement("div"),
+    t=document.createElement("button"),
+    u=document.createElement("input"),
+    goalmessage=hearing[span];
+    t.onclick=e=>{
+      t.disabled=disablemorsing=true;
+      for (var i=0,dots=0;i<span.length;i++) {
+        var patte=dict[span[i]];
+        for (var j=0;j<patte.length;j++) {
+          if (patte[j]==='0') {
+            setTimeout(_=>beeper.play(),dots*dotlength);
+            dots++;
+            setTimeout(_=>beeper.pause(),dots*dotlength);
+            dots++;
+          } else {
+            setTimeout(_=>beeper.play(),dots*dotlength);
+            dots+=3;
+            setTimeout(_=>beeper.pause(),dots*dotlength);
+            dots++;
+          }
+          if (i===span.length-1) setTimeout(_=>t.disabled=disablemorsing=false,dots*dotlength);
+        }
+        dots+=2;
+      }
+    };
+    s.appendChild(t);
+    u.onchange=e=>{
+      if (u.value.toUpperCase()===span) {
+        s.classList.add('unlocked');
+        popup(goalmessage);
+        u.disabled=true;
+      }
+    };
+    u.placeholder='put guess here';
+    s.onclick=e=>{
+      if (e.target!==t&&s.classList.contains('unlocked')) popup(goalmessage);
+    };
+    s.appendChild(u);
+    hear.appendChild(s);
+    hearing[span]=s;
+  })(span);
 timeout=setTimeout(_=>{
   SHEEP.notify('Oh yeah, click/tap to use the telegraph.');
 },3000);
-// popup(`<h1>|-|4(|(3|)</h1>|_| 60+ |-|4(|(3|) |\\/|8`);
+(function() {
+  var s=document.querySelectorAll('#credits a');
+  for (var i=0;i<s.length;i++) if (!s[i].href) s[i].href='//'+s[i].innerHTML;
+}());
