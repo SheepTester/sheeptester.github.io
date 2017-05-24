@@ -20,9 +20,8 @@ if (SHEEP.dismissed.telegraphintro) {
   disablemorsing=false;
 } else {
   setTimeout(_=>{
+    document.body.removeChild(document.querySelector('#madeby'));
     disablemorsing=false;
-    var t=document.querySelector('#madeby');
-    t.style.pointerEvents='all';
     SHEEP.dismiss('telegraphintro');
   },500);
 }
