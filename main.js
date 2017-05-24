@@ -90,6 +90,7 @@ var sheeptest=(function(){
     {url:'platformre',img:'img/plat.svg',name:'Platformre'},
     {url:'platformre/maker',img:'img/platmakre.png',name:'Level editor'},
     {url:'?penland',img:'img/penland.png',name:'Penland'},
+    {url:'telegraph',img:'img/tele.png',name:'Telegraph'},
     {url:'javascripts/shepform',img:'img/colorpicker.png',name:'Color input'},
     {url:'javascripts/clicker',img:'img/click.png',name:'Clicker Game'},
     {url:'trumpdays',img:'img/trumpdays.png',name:'Trump days'},

@@ -10,11 +10,22 @@ suggests=document.querySelector('#suggestions'),
 dict={},
 dictionary=document.querySelector('#dict'),
 options=document.querySelector('#stuff'),
-disablemorsing=false,
+disablemorsing=true,
 beeper=document.querySelector('#beep'),
 goal=document.querySelector('#goal'),
 hear=document.querySelector('#lgoal'),
 xmlHttp=new XMLHttpRequest();
+if (SHEEP.dismissed.telegraphintro) {
+  document.body.removeChild(document.querySelector('#madeby'));
+  disablemorsing=false;
+} else {
+  setTimeout(_=>{
+    disablemorsing=false;
+    var t=document.querySelector('#madeby');
+    t.style.pointerEvents='all';
+    SHEEP.dismiss('telegraphintro');
+  },500);
+}
 xmlHttp.onreadystatechange=function(){
   if (xmlHttp.readyState===4&&xmlHttp.status===200) {
     var t=xmlHttp.responseText.split(/\r?\n/);
@@ -51,10 +62,14 @@ document.onmousedown=e=>{
     clearTimeout(timeout);
     clickytime=+new Date();
     window.requestAnimationFrame(update);
+    document.activeElement.blur();
     e.preventDefault();
   }
 };
 document.addEventListener("touchstart",document.onmousedown,{passive:false});
+document.onkeydown=e=>{
+  if (e.keyCode===32) document.onmousedown({which:1,preventDefault(){}});
+};
 document.onmouseup=e=>{
   if (e.which!==3) {
     if (!options.contains(e.target)&&!disablemorsing&&clickytime) {
@@ -94,6 +109,10 @@ document.onmouseup=e=>{
     }
   }
 };
+document.addEventListener("touchend",document.onmouseup,{passive:false});
+document.onkeyup=e=>{
+  if (e.keyCode===32) document.onmouseup({which:1});
+};
 document.querySelector('#options').onclick=e=>{
   if (document.body.classList.contains('close')) {
     document.body.classList.remove('close');
@@ -101,7 +120,6 @@ document.querySelector('#options').onclick=e=>{
     document.body.classList.add('close');
   }
 };
-document.addEventListener("touchend",document.onmouseup,{passive:false});
 function update() {
   if (clickytime) {
     var dots=(+new Date()-clickytime)/dotlength;
@@ -254,3 +272,19 @@ timeout=setTimeout(_=>{
   var s=document.querySelectorAll('#credits a');
   for (var i=0;i<s.length;i++) if (!s[i].href) s[i].href='//'+s[i].innerHTML;
 }());
+function unlockall(p) {
+  if (!p) return 'nope';
+  var t=document.querySelectorAll(`${p[17]}${p[8]}${p[2]}${p[7]}${p[3]}${p[0]}${p[13]}${p[6]}${p[7]}${p[16]}`);
+  if (t.length===0) return 'nope';
+  for (var i=0;i<t.length;i++) t[i].classList.add('unlocked');
+  t=document.querySelectorAll(`${p[17]}${p[3]}${p[8]}${p[2]}${p[7]}${p[3]}${p[0]}${p[1]}${p[12]}${p[11]}`);
+  for (var i=0;i<t.length;i++) {
+    t[i].classList.add('unlocked');
+    t[i].children[1].disabled=true;
+  }
+  return 'sure';
+  /*
+    GUESS THE PASSWORD
+    ' '+fruit company name that means sorrow or mourning+' '+unit for twice the number of papers in a book+' '+visean+'#'
+  */
+}

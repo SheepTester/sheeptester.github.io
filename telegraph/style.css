@@ -308,6 +308,7 @@ div.popup img {
   display: block;
   max-width: 100%;
   border-radius: 2px;
+  margin-bottom: 5px;
 }
 div.popup span.close {
   border: none;
@@ -428,3 +429,65 @@ div.popup::after {
 }
 #credits #bigger:hover {opacity: 0.5;}
 #credits #bigger:active {opacity: 0.6;}
+#stuff > #navygame {
+  padding: 0;
+  padding-top: 60px;
+}
+#navygame img {
+  width: 100%;
+}
+#madeby {
+  position: fixed;
+  pointer-events: none;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  line-height: 100vh;
+  font-size: 10vh;
+  background-color: white;
+  color: #2c5acc;
+  z-index: 69;
+  user-select: none;
+  animation: fadeout .2s .5s forwards, grow .3s forwards;
+}
+@keyframes fadeout {
+  from {opacity: 1;}
+  to {opacity: 0;}
+}
+@keyframes grow {
+  from {transform: scale(1);}
+  to {transform: scale(1.1);}
+}
+#madeby::before {
+  content: 'civil war/';
+  position: absolute;
+  line-height: 0;
+  height: 0;
+  top: 0;
+  bottom: 8vh;
+  left: 0;
+  right: 0;
+  margin: auto 0;
+  color: rgba(0,0,0,0.5);
+  font-size: 3vh;
+}
+#madeby::after {
+  content: 'made by Sean';
+  position: absolute;
+  line-height: 0;
+  height: 0;
+  top: 15vh;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto 0;
+  color: rgba(0,0,0,0.5);
+  font-size: 3vh;
+  animation: up .2s forwards;
+}
+@keyframes up {
+  from {top: 25vh;opacity: 0;}
+  to {top: 15vh;opacity: 1;}
+}
