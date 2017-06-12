@@ -1,4 +1,5 @@
 /* reference me and all of your worries about making everything perfect goes away! ;) */
+var localStorage=window.localStorage||{setItem(prop,val){localStorage[prop]=val;},getItem(prop){return localStorage[prop]}};
 (function(){
   var thisscript=document.querySelector('script[src$="sheep.js"]'),
   style=document.createElement("link");
