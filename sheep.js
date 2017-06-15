@@ -79,7 +79,7 @@ var localStorage=window.localStorage||{setItem(prop,val){localStorage[prop]=val;
     var mousemoved=false,
     merp=document.createElement("sheepmenu-dragcover"),
     merpies=el.getBoundingClientRect(),
-    offset={x:e.touches[0].clientX-merpies.left,y:e.touches[0].clientY-merpies.top,lx:0,ly:0,ox:e.touches[0].clientX,oy:e.touches[0].clientY},
+    offset={x:e.changedTouches[0].clientX-merpies.left,y:e.changedTouches[0].clientY-merpies.top,lx:0,ly:0,ox:e.changedTouches[0].clientX,oy:e.changedTouches[0].clientY},
     pressstart=+new Date(),
     timeout=setTimeout(_=>{if (!el.classList.contains('SHEEPREADYFORMENU')) el.classList.add('SHEEPREADYFORMENU');},700),
     mouseup=e=>{
@@ -128,10 +128,10 @@ var localStorage=window.localStorage||{setItem(prop,val){localStorage[prop]=val;
     mousemove=e=>{
       mousemoved=true;
       document.body.classList.add('SHEEPDRAGGING');
-      el.style.right=(innerWidth-merpies.width-e.touches[0].clientX+offset.x)+'px';
-      el.style.bottom=(innerHeight-merpies.height-e.touches[0].clientY+offset.y)+'px';
-      offset.lx=Math.abs(offset.ox-e.touches[0].clientX);
-      offset.ly=Math.abs(offset.oy-e.touches[0].clientY);
+      el.style.right=(innerWidth-merpies.width-e.changedTouches[0].clientX+offset.x)+'px';
+      el.style.bottom=(innerHeight-merpies.height-e.changedTouches[0].clientY+offset.y)+'px';
+      offset.lx=Math.abs(offset.ox-e.changedTouches[0].clientX);
+      offset.ly=Math.abs(offset.oy-e.changedTouches[0].clientY);
       if (offset.lx<10&&offset.ly<10) {if (!el.classList.contains('SHEEPREADYFORMENU')) el.classList.add('SHEEPREADYFORMENU');}
       else {if (el.classList.contains('SHEEPREADYFORMENU')) el.classList.remove('SHEEPREADYFORMENU');}
       e.preventDefault();
@@ -307,7 +307,7 @@ var SHEEP={
         if (touch) {
           move=e=>{
             if (drag.dragging) {
-              idenifydrag(e.touches[0]);
+              idenifydrag(e.changedTouches[0]);
               e.preventDefault();
               return false;
             }
@@ -351,10 +351,10 @@ var SHEEP={
       elem.parentNode.style.position='relative';
     if (options.parentdrag) {
       elem.parentNode.addEventListener("mousedown",e=>mousedown(false,e),false);
-      elem.parentNode.addEventListener("touchstart",e=>mousedown(true,e.touches[0]),{passive:false});
+      elem.parentNode.addEventListener("touchstart",e=>mousedown(true,e.changedTouches[0]),{passive:false});
     } else {
       elem.addEventListener("mousedown",e=>mousedown(false,e),false);
-      elem.addEventListener("touchstart",e=>mousedown(true,e.touches[0]),{passive:false});
+      elem.addEventListener("touchstart",e=>mousedown(true,e.changedTouches[0]),{passive:false});
     }
   },
   pixelratio() {
@@ -380,6 +380,9 @@ var SHEEP={
       var t=document.querySelector('meta[name=description]');
       if (t) SHEEP.notify('<strong>Page description</strong><br>'+t.content);
       else SHEEP.notify('This page has no description.');
+    },
+    'eval.js':_=>{
+      window.location="javascript:var s=document.createElement('script');s.type='text/javascript';s.src='https://sheeptester.github.io/javascripts/eval.js';document.body.appendChild(s);void(0);";
     }
   }
 };
