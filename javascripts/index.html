@@ -3,9 +3,15 @@
   <head>
     <title>Javascripts</title>
     <meta charset="UTF-8">
+    <link rel="stylesheet" href="simplecolour.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
       body {
         font-family: monospace;
+      }
+      code {
+        background-color: #eee;
+        color: #666;
       }
     </style>
   </head>
@@ -23,8 +29,13 @@
     <p><a href="javascript:var s=document.createElement('script');s.type='text/javascript';s.src='https://sheeptester.github.io/javascripts/eval.js';document.body.appendChild(s);void(0);">eval.js</a> - Runs JavaScript; for people who have developer tools disabled by their school.</p>
     <p><a href="shortcuts.html">shortcuts.html</a> - Keyboard shortcut guide.</p>
     <p><a href="pen.js">pen.js</a> - Scratch pen blocks but in JavaScript! This page has it so you can try it out in the console.</p>
+    <p><a href="simplecolour.js">simplecolour.js</a> - A simpler colour picker; try it here: <input type="radio" class="simplecolourpicker" checked>; <code>&lt;input type="radio" class="simplecolourpicker" checked&gt;</code> will create the colour picker, the styles I've used are at <a href="simplecolour.css">simplecolour.css</a></p>
 
     <script src="../sheep.js"></script>
     <script src="pen.js"></script>
+    <script src="simplecolour.js"></script>
+    <script>
+      var picker=document.querySelector('.simplecolourpicker');
+    </script>
   </body>
 </html>

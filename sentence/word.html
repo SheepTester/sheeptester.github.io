@@ -14,7 +14,7 @@
     </style>
   </head>
   <body>
-    <p>Hold shift while holding a button to generate a bunch of words; hold control/meta to clear.</p>
+    <p>Hold shift while holding a button to generate a bunch of words; hold control/meta to clear. <input type="checkbox" id='space'/>Add space after each word (for copying and pasting into one line).</p>
     <hr>
     <h2 id='m1'>Method 1</h2>
     <button data-method='consvowel'>Generate</button>
@@ -40,23 +40,29 @@
     <button data-method='chingchong'>Generate</button> <input type="checkbox" id='tones' checked/>Use accented ching-chong (tones)
     <p>Making ching-chong Chinese word stereotypes taking advantage of pinyin.</p>
     <span class='result' data-method='chingchong'></span>
+    <hr>
+    <h2 id='m6'>Method 6</h2>
+    <button data-method='strictalt'>Generate</button>
+    <p>Alternates between consonant and vowel with no diphthongs nor consonant clusters. I've taken one of the orders from <a href="https://en.wikipedia.org/wiki/Letter_frequency">Wikipedia</a> (<strong>eotha sinrd luymw fgcbp kvjqxz</strong>) and added each consonant from most used to least and stopped when the words started looking weird (letter c).</p>
+    <span class='result' data-method='strictalt'></span>
 
     <script src="../sheep.js"></script>
     <script src="flagyn.js"></script>
     <script>
-      var interval;
+      var interval,
+      spaces=document.querySelector('#space');
       document.body.onmousedown=function(e){
         if (e.target.tagName=='BUTTON') {
           var resultElem=document.querySelector('.result[data-method="'+e.target.dataset.method+'"]');
           if (e.ctrlKey||e.metaKey) resultElem.innerHTML='';
           else {
             if (resultElem.innerHTML)
-              resultElem.innerHTML+='<br>'+methods[e.target.dataset.method]();
+              resultElem.innerHTML+='<br>'+methods[e.target.dataset.method]()+(spaces.checked?' ':'');
             else
-              resultElem.innerHTML=methods[e.target.dataset.method]();
+              resultElem.innerHTML=methods[e.target.dataset.method]()+(spaces.checked?' ':'');
             if (e.shiftKey) {
               interval=setInterval(function(){
-                resultElem.innerHTML+='<br>'+methods[e.target.dataset.method]();
+                resultElem.innerHTML+='<br>'+methods[e.target.dataset.method]()+(spaces.checked?' ':'');
               },50);
             }
           }

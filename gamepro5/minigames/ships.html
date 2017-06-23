@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Battle Ships</title>
+    <meta charset="UTF-8">
+    <meta name="description" content=""/>
+    <style>
+      html, body, canvas {
+        width: 100%;
+        height: 100%;
+      }
+      body {
+        background-color: #012677;
+        margin: 0;
+        font-size: 0;
+        background-image: url('ocean.svg');
+        background-size: 60px 50px;
+      }
+    </style>
+  </head>
+  <body>
+    <script src="../../sheep.js"></script>
+    <script>
+var canvas=document.createElement("canvas"),
+c=canvas.getContext('2d'),
+pxr=(window.devicePixelRatio||1)/(c.webkitBackingStorePixelRatio||c.mozBackingStorePixelRatio||c.msBackingStorePixelRatio||c.oBackingStorePixelRatio||c.backingStorePixelRatio||1);
+document.body.appendChild(canvas);
+(window.onresize=e=>{
+  canvas.height=window.innerHeight*pxr;
+  canvas.width=window.innerWidth*pxr;
+  c.translate(canvas.width/2,canvas.height/2);
+  c.scale(pxr,pxr);
+})();
+function hsl(obj) {
+  if (obj.h===undefined) var [h,s,l,a]=obj;
+  else var {h,s,l,a}=obj;
+  if (a) return `hsla(${h},${s}%,${l}%,${a})`;
+  else return `hsl(${h},${s}%,${l}%)`;
+}
+class Shadow {
+  constructor(x,y,width,height) {
+    this.x=x,this.y=y,this.width=width,this.height=height;
+    Shadow.shadows.push(this);
+  }
+  get x() {return this._x;}
+  set x(x) {this._x=x;this.cx=x+this.width/2;}
+  get y() {return this._y;}
+  set y(y) {this._y=y;this.cy=y+this.height/2;}
+  get width() {return this._w;}
+  set width(w) {this._w=w;this.cx=this.x+(this.rx=w/2);}
+  get height() {return this._h;}
+  set height(h) {this._h=h;this.cy=this.y+(this.ry=h/2);}
+  draw() {
+    // c.save(); // https://stackoverflow.com/questions/2172798/how-to-draw-an-oval-in-html5-canvas
+    // c.beginPath();
+    // c.translate(cx-rx,cy-ry);
+    // c.scale(rx,ry);
+    // c.arc(1,1,1,0,2*Math.PI,false);
+    // c.restore();
+    // c.stroke();
+  }
+  die() {
+    c.fillStyle='rgba(0,0,0,0.3)';
+    Shadow.shadows.splice(Shadow.shadows.indexOf(this),1);
+  }
+  static render() {
+    for (var i=0;i<Shadow.shadows.length;i++) Shadow.shadows[i].draw();
+  }
+}
+Shadow.shadows=[];
+class Particle {
+  constructor(x,y,colour,size) {
+    this.x=x;
+    this.y=y;
+    this.colour=colour;
+    this.size=size; // diameter
+    this.xv=0;
+    this.yv=0;
+    this.sizevel=0;
+    Particle.particles.push(this);
+  }
+  move() {
+    this.x+=this.xv;
+    this.y+=this.yv;
+    this.size+=this.sizevel;
+    c.fillStyle=this.colour;
+    c.beginPath();
+    if (this.size>0) c.arc(this.x,this.y,this.size/2,0,2*Math.PI);
+    c.fill();
+    if (this.update) this.update();
+  }
+  die() {
+    Particle.particles.splice(Particle.particles.indexOf(this),1);
+    this.x=this.y=this.colour=this.xv=this.size=this.yv=this.sizevel=null;
+  }
+  static render() {
+    for (var i=0;i<Particle.particles.length;i++) Particle.particles[i].move();
+  }
+}
+Particle.particles=[];
+class Boom extends Particle {
+  constructor(x,y) {
+    var fire=Math.floor(Math.random()*60),
+    brightness=Math.floor(Math.random()*50+50);
+    super(x,y,hsl([fire,100,brightness]),Math.floor(Math.random()*50+20));
+    this.fire=fire;
+    this.brightness=brightness;
+    this.originalsize=this.size;
+    this.sizevel=Math.floor(Math.random()*6+2);
+    this.age=100;
+    this.agespeed=Math.random()*5+1;
+  }
+  update() {
+    this.sizevel-=0.5;
+    if (this.size<=0) this.die();
+    this.age-=this.agespeed;
+    this.colour=hsl([this.fire,Math.floor(Math.max(this.age,0)),this.brightness]);
+  }
+}
+class Smoke extends Particle {
+  constructor(x,y) {
+    // var lightness=Math.floor(Math.random()*50+50);
+    super(x,y,hsl([0,0,Math.floor(Math.random()*50+50)]),Math.floor(Math.random()*15+5));
+    // this.lightness=lightness;
+    this.originalsize=this.size;
+    this.sizevel=Math.floor(Math.random()*6+2);
+    this.age=0;
+  }
+  update() {
+    this.sizevel-=0.5;
+    if (this.size<=0) this.die();
+    // this.colour=hsl([0,0,this.lightness,Math.min(this.size/this.originalsize,1)]);
+  }
+}
+class Spark extends Particle {
+  constructor(x,y,cx,cy) {
+    super(x,y,'white',4);
+    this.xv=(x-cx)/4;
+    this.yv=(y-cy)/4;
+    this.age=0;
+  }
+  update() {
+    this.yv+=0.3;
+    this.age+=4;
+    if (this.age>100) this.die();
+    this.colour=`rgba(255,255,255,${1-this.age/100})`;
+  }
+}
+class Ship {
+  constructor(texture,x,y,width,height,explodable) {
+    this.paths=[];
+    texture=texture.slice(texture.indexOf('..')+2);
+    for (var i=0;i<texture.length;) // from words-go-here/misc/doodle.html
+      this.paths.push(texture.slice(i+2,i=~(~texture.indexOf('..',i+2)||~texture.length)+2).split('.').map(a=>parseInt(a,36)));
+    this.x=x;
+    this.y=y;
+    this.width=width;
+    this.height=height;
+    this.xv=this.yv=0;
+    Ship.ships.push(this);
+    this.explodable=explodable;
+  }
+  move() {
+    this.x+=this.xv;
+    this.y+=this.yv;
+    for (var i=0;i<this.paths.length;i++) {
+      c.beginPath();
+      c.moveTo(this.x+this.paths[i][0],this.y+this.paths[i][1]);
+      for (var j=2;j<this.paths[i].length;j+=2) c.lineTo(this.x+this.paths[i][j],this.y+this.paths[i][j+1]);
+      c.stroke();
+    }
+    if (this.update) this.update();
+  }
+  explode(noexplode=false) {
+    if (!noexplode) {
+      for (var i of ' '.repeat(30)) new Boom(Math.floor(Math.random()*this.width+this.x),Math.floor(Math.random()*this.height+this.y));
+      for (var i of ' '.repeat(100)) new Spark(Math.floor(Math.random()*this.width+this.x),Math.floor(Math.random()*this.height+this.y),this.x+this.width/2,this.y+this.height/2);
+    }
+    Ship.ships.splice(Ship.ships.indexOf(this),1);
+    this.x=this.y=this.xv=this.paths=this.yv=null;
+  }
+  static render() {
+    c.strokeStyle='white';
+    c.lineWidth=2;
+    c.lineCap='round';
+    c.lineJoin='round';
+    for (var i=0;i<Ship.ships.length;i++) Ship.ships[i].move();
+  }
+}
+class SkyMissile extends Ship {
+  constructor(x) {
+    super(
+      `1e.5k..57c.7.g.6.l.6.p.6.t.7.x.6.11.6..57c.6.c.b.c.g.c.l.d.p.d.u.d.z.e.13.f.17.f.1c.f.1h.g.1k.g.1p.f.1t.f.1y.f.23.f.27.f.2b.f.2e.g.2h.g.2m.g.2r.g.2w.g.31.g.34.g.39.g.3b.g.3f.g.3k.g.3p.g.3t.g.3y.g.42.f.45.f.4a.e.4e.e.4h.d.4l.d.4q.d.4v.d.50.c.54.c.57..57c.53.d.57.f.5b.g.5f.j.5j.n.5k.r.5h.t.5d.w.59.w.54.x.50.y.4w.y.4r.z.4n.z.4i.z.4d.z.48.z.43.10.3z.10.3u.z.3q.z.3l.y.3h.y.3d..57y.3d.z.39.z.36.z.32.y.2y.y.2t.y.2o.y.2j.z.2f.z.2b.10.28.10.25.11.21.11.1x.11.1t.11.1p.11.1l.10.1h.10.1c.10.17.10.14.z.11.z.w.z.r.z.m.z.h.z.c.y.8.y.6..571.7.5.6.9.6..573.9.3.e.3.j.3.n.3.s.4.w.5.z.5.13.7.17.9.1b.c.1f..5713.1d.15.19.15.14.16.11.17.x.19.t.19.o.19.j.1a.f.1a.a.1a.5.16.6.11.6.10.6..57h.4c.m.4c.q.4b.v.4b.w.4b..57g.4k.k.4j.p.4j.u.4j.y.4j..`,
+    x,-innerHeight/2-30,50,200,false);
+    this.yv=10;
+  }
+  update() {
+    new Smoke(this.x+Math.floor(Math.random()*this.width),this.y);
+    if (this.y>innerHeight/2) this.explode(true);
+    for (var ship of Ship.ships) {
+      if (ship.explodable) {
+        if (!(this.x>ship.x+ship.width||ship.x>this.x+this.width||this.y>ship.y+ship.height||ship.y>this.y+this.height)) {
+          ship.explode();
+          this.explode();
+          break;
+        }
+      }
+    }
+  }
+}
+class CannonBall extends Ship {
+  constructor(x,y,xv,yv) {
+    super('p.p..57e.0.9.0.5.3.1.6.0.a.0.f.3.j.7.m.b.n.g.n.k.k.n.g.p.c.n.8.k.4.g.2.f.2..',x,y,25,25,false);
+    this.startingy=y;
+    this.xv=xv;
+    this.yv=yv;
+  }
+  update() {
+    new Smoke(this.x+12.5,this.y+12.5);
+    this.yv+=0.5;
+    if (this.y>innerHeight/2) this.explode(true);
+    if (this.startingy<this.y) this.explode();
+    else for (var ship of Ship.ships) {
+      if (ship.explodable) {
+        if (!(this.x>ship.x+ship.width||ship.x>this.x+25||this.y>ship.y+ship.height||ship.y>this.y+25)) {
+          ship.explode();
+          this.explode();
+          break;
+        }
+      }
+    }
+  }
+}
+Ship.ships=[];
+var stoprendering=false;
+window.onblur=e=>stoprendering=true;
+window.onfocus=e=>stoprendering?(stoprendering=false,window.requestAnimationFrame(render)):0;
+var titantic=new Ship(`5k.5k..57c.v.c.z.c.13.e.17.g.1b.i.1f.k.1j.o.1l.s.1l.u.1l.12.1n.16.1n.18.1n.1c.1n.1g.1l.1k.1l.1o.1j.1s.1j.1w.1j.20.1h.24.1f.28.1d.2a.19.2c.17.2e.13.2e.z.2c.v.28.t.24.t.20.t.1y.t.1u.t.1q.r.1o.r.1k.r.1g.r.1c.r.16.p.12.p.y.p.u.p.q.p.m.p.i.p.g.r..57w.l.w.h.w.d.w.9.y.5.12.5.16.3.18.7.18.b.18.f.18.j.18.l..571q.r.1q.n.1q.j.1q.f.1s.b.1w.b.20.d.24.f.24.j.24.n.24.p..`,0,0,90,70,true),
+player=new Ship(
+  `6o.1y..572.1j.2.1n.2.1r.4.1v.6.1x..576.1h.a.1h.e.1h.i.1h.m.1h.q.1h.u.1h.y.1h.12.1h.16.1h.1a.1h.1e.1h.1i.1h.1m.1h.1q.1h.1u.1h.1y.1h.22.1h.26.1h.28.1h.2c.1h.2g.1h.2k.1h.2o.1h.2s.1h.2w.1h.30.1h.34.1h.38.1h.3c.1h.3g.1h.3i.1h.3m.1h.3q.1h.3u.1h.3y.1f.42.1f.46.1f.48.1f.4c.1f.4g.1f.4k.1h.4w.1h.52.1h.54.1j.5a.1j.5c.1j.5g.1j.5k.1j.5m.1j.5q.1j.5u.1j.5y.1h.62.1h.66.1h.6a.1h.6e.1h.6i.1h..576m.1j.6k.1n.6k.1r.6i.1v.6g.1z.6e.1z..57a.21.e.1z.i.1z.m.1z.q.1z.u.1z.y.1z.10.1z.14.1z.18.1z.1c.1z.1g.1z.1i.1z.1m.1z.1q.1z.1u.1z.1w.1z.20.1z.24.1z.28.1z.2c.1z.2g.1z.2k.1z.2o.1z.2q.1z.2u.1z.2y.1z.32.1z.34.1z.38.1z.3a.1z.3e.1z.3i.1z.3m.1z.3q.1z.3u.1z.3y.1z.42.1x.46.1x.4a.1x.4e.1x.4i.1x.4m.1x.4q.1x.4u.1x.4y.1x.52.1x.56.1x.5a.1z.5e.1z.5i.1z.5m.1z.5q.1z.5u.1z.5y.1z.62.21.66.21.6a.21.6e.1z.6i.1z.6m.21.6o.21..5730.h.30.l.30.p.30.t.30.x.30.11.30.13.30.17.2y.1b.2w.1d..5730.f.34.f.38.f.3c.f.3g.f.3i.j.3i.n.3i.r.3i.v.3i.z.3i.13.3i.17.3i.1b.3i.1f..572y.t.2w.r.2u.n.2q.l.2m.l.2i.l.2e.n.2c.r.28.t.24.t.20.v.1w.v.1s.v.1o.x.1q.11.1u.11.1y.11.22.z.26.z.2a.z.2c.x..5728.x.28.11.28.15.28.19.2a.1d..573i.z.3m.z.3q.z.3u.z.3y.z.42.z.46.z.4a.z.4e.z.4i.11.4g.13.4c.13.48.13.44.15.40.15.3w.15.3s.15.3o.15.3k.15.3i.15..574i.1b.4i.19.4i.15.4g.11.4g.x.4g.t.4g.p.4g.l.4g.h.4i.d..571q.5.1q.9.1q.d.1q.h.1o.l.1o.p.1o.t.1o.x.1o.z.1o.13.1o.17.1o.1b.1o.1f..`,
+  -innerWidth/2+20,0,240,70,true
+);
+function render() {
+  c.clearRect(-innerWidth/2,-innerHeight/2,innerWidth,innerHeight);
+  c.fillStyle='grey';
+  // c.fillRect(0,0,100,50);
+  Shadow.render();
+  Ship.render();
+  Particle.render();
+  if (!stoprendering) window.requestAnimationFrame(render);
+}
+window.requestAnimationFrame(render);
+    </script>
+  </body>
+  <!-- MADE BY SEAN -->
+</html>

@@ -1,0 +1,22 @@
+<svg viewBox="0 0 60 50" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    /* <![CDATA[ */
+    #wave1 {animation: h1 3s infinite alternate;}
+    #wave1 path {animation: v1 2.5s infinite alternate;}
+    @keyframes h1 {from {transform: translateX(-30px);}to {transform: translateX(0px);}}
+    @keyframes v1 {from {transform: translateY(10px);}to {transform: translateY(0px);}}
+
+    #wave2 {animation: h2 3.5s infinite alternate;}
+    #wave2 path {animation: v2 2.8s infinite alternate;}
+    @keyframes h2 {from {transform: translateX(-5px);}to {transform: translateX(-35px);}}
+    @keyframes v2 {from {transform: translateY(0px);}to {transform: translateY(10px);}}
+    /* ]]> */
+  </style>
+  <path fill="#012677" d="M0 0H100V50H0z"/>
+  <g id='wave1'>
+    <path fill="#001449" d="M0 0c20 20,40 20,60 0c20 20,40 20,60 0V50H0z"/>
+  </g>
+  <g id='wave2'>
+    <path fill="#012677" d="M0 25c20 20,40 20,60 0c20 20,40 20,60 0V50H0z"/>
+  </g>
+</svg>

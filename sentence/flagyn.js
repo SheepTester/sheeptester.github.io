@@ -1,5 +1,5 @@
 var methods={
-  consvowel:function(){
+  consvowel() {
     var data={
       consonants:[ // ['letter','addbefore','addafter'] bcdfghjk(l)mnpq(r)(s)tvwx(z) NOTE: What about doubles like 'eddie'?
         ['b','hlmrsz','lrsz'],
@@ -44,7 +44,7 @@ var methods={
     }
     return word;
   },
-  simplealternate:function(){
+  simplealternate() {
     var consonants='bcdfghjklmnpqrstvwxz',
     vowels='aeiouy',
     word='',
@@ -57,7 +57,7 @@ var methods={
     }
     return word;
   },
-  eyo:function(){
+  eyo() {
     var consonants='j.k.n.p.r.s.t.rst.nst.rnst.jr.kr.ks.nk.nr.ns.nt.pn.pr.ps.rj.rk.rn.rp.rs.rt.sk.sn.sp.st.tr.ts'.split('.'),
     vowels='aeiou',
     word='',
@@ -70,7 +70,7 @@ var methods={
     }
     return word;
   },
-  easypron:function(){
+  easypron() {
     var data={
       consonants:[ // ['letter','addafter'] bcdfghjk(l)mnpq(r)(s)tvwx(z) NOTE: What about doubles like 'eddie'?
         ['b','rl'],
@@ -107,7 +107,7 @@ var methods={
     }
     return word;
   },
-  chingchong:function(){
+  chingchong() {
     var data={
       initials:'bpmfdtnlgkhjqxzcsr'.split(''),
       finals:'a.o.e.i.u.ü.ai.ei.ui.ao.ou.iou.ie.üe.er.an.en.in.un.ün.üan.ang.eng.ing.ong.iong.ia.iao.ian.iang.ua.uo.uai.uan.uang.ueng'.split('.'),
@@ -158,4 +158,13 @@ var methods={
     }
     return word;
   },
+  strictalt() {
+    var consonants='thsnrdlymwfg',
+    vowels='aeiou',
+    length=Math.floor(Math.random()*10+2),
+    word='';
+    for (var i=0,isvowel=Math.floor(Math.random()*2);i<length;i++,isvowel=!isvowel)
+      word+=isvowel?vowels[Math.floor(Math.random()*vowels.length)]:consonants[Math.floor(Math.random()*consonants.length)];
+    return word;
+  }
 };
