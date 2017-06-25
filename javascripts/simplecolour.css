@@ -41,15 +41,18 @@
   padding: 5px;
   box-sizing: border-box;
   cursor: pointer;
+  margin-bottom: 5px;
 }
 .simplecolourhex:focus {
   cursor: text;
 }
 .simplecoloursquare {
+  display: inline-block;
+  height: 100px;
+  width: 100px;
   background-color: red;
 }
 .simplecoloursquareknob {
-  position: absolute;
   height: 6px;
   width: 6px;
   border: 1px solid white;
@@ -60,12 +63,12 @@
   pointer-events: none;
 }
 .simplecolourhue {
+  display: inline-block;
   height: 100px;
   width: 10px;
   margin-left: 5px;
 }
 .simplecolourhueknob {
-  position: absolute;
   border-radius: 3px;
   background-color: rgba(0,0,0,0.5);
   height: 6px;

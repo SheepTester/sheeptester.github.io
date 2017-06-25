@@ -53,6 +53,14 @@ var simpleConvert={
 class ColourPicker {
   constructor(radio) {
     this.radio=radio;
+    ColourPicker.applyStyles(this.radio,{
+      webkitAppearance:'none',
+      WebkitAppearance:'none',
+      MozAppearance:'none',
+      appearance:'none',
+      verticalAlign:'top',
+      cursor:'pointer'
+    });
     this.wrapper=document.createElement("div");
     this.wrapper.classList.add('simplecolourwrapper');
     this.hex=document.createElement("input");
@@ -61,9 +69,6 @@ class ColourPicker {
     this.square=document.createElement("div");
     this.square.classList.add('simplecoloursquare');
     ColourPicker.applyStyles(this.square,{
-      display:'inline-block',
-      minWidth:'100px',
-      minHeight:'100px',
       backgroundImage:'linear-gradient(0deg,black,transparent),linear-gradient(90deg,white,transparent)',
       backgroundColor:'red',
       position:'relative',
@@ -71,20 +76,23 @@ class ColourPicker {
     });
     this.squaredot=document.createElement("div");
     this.squaredot.classList.add('simplecoloursquareknob');
+    ColourPicker.applyStyles(this.squaredot,{
+      position:'absolute'
+    });
     this.square.appendChild(this.squaredot);
     this.wrapper.appendChild(this.square);
     this.hue=document.createElement("div");
     this.hue.classList.add('simplecolourhue');
     ColourPicker.applyStyles(this.hue,{
-      display:'inline-block',
       backgroundImage:'linear-gradient(180deg,red,yellow,lime,cyan,blue,magenta,red)',
       position:'relative',
-      cursor:'crosshair',
-      minWidth:'10px',
-      minHeight:'100px'
+      cursor:'crosshair'
     });
     this.huebar=document.createElement("div");
     this.huebar.classList.add('simplecolourhueknob');
+    ColourPicker.applyStyles(this.huebar,{
+      position:'absolute'
+    });
     this.hue.appendChild(this.huebar);
     this.wrapper.appendChild(this.hue);
     this.radio.parentNode.insertBefore(this.wrapper,this.radio.nextSibling);
@@ -114,7 +122,7 @@ class ColourPicker {
         this.hsv=[t[0],...simpleConvert.SLtoSV(...t.slice(1))];
       }
       if (val[0]==='#'&&val.length===4) val=val.slice(1);
-      if (val.length===3) val+=val;
+      if (val.length===3) val=val[0]+val[0]+val[1]+val[1]+val[2]+val[2];
       if (val[0]==='#'&&val.length===7||val.length===6) {
         if (val[0]==='#') val=val.slice(1);
         t=this.hsv.slice();
@@ -126,7 +134,8 @@ class ColourPicker {
     this.hsv=[0,0,100];
     (this.update=()=>{
       var t,pos;
-      this.hex.value=this.radio.value=this.radio.style.backgroundColor='#'+simpleConvert.RGBtoHEX(...simpleConvert.HSVtoRGB(...this.hsv));
+      this.colour=this.hex.value=this.radio.value=this.radio.style.backgroundColor='#'+simpleConvert.RGBtoHEX(...simpleConvert.HSVtoRGB(...this.hsv));
+      this.radio.style.boxShadow=`inset 0 0 0 100vw ${this.colour}`;
       this.square.style.backgroundColor=`hsl(${this.hsv[0]},100%,50%)`;
       t=simpleConvert.SVtoSL(...this.hsv.slice(1)),t=`,${t[0]}%,${t[1]}%`;
       this.hue.style.backgroundImage=`linear-gradient(180deg,hsl(0${t}),hsl(60${t}),hsl(120${t}),hsl(180${t}),hsl(240${t}),hsl(300${t}),hsl(0${t}))`;
@@ -184,6 +193,19 @@ class ColourPicker {
     this.square.addEventListener("touchstart",e=>down(e,true,updateSquare),{passive:false});
     this.hue.addEventListener("mousedown",e=>down(e,false,updateHue),false);
     this.hue.addEventListener("touchstart",e=>down(e,true,updateHue),{passive:false});
+    this.radio.addEventListener("click",e=>{
+      this.radio.focus();
+    },false);
+    this.setColour=this.radio.setColour=newColour=>{
+      this.hex.value=newColour;
+      if (window.Event) this.hex.dispatchEvent(new Event('change'));
+      else if ("createEvent" in document) {
+        var e=document.createEvent("HTMLEvents");
+        e.initEvent("change",false,true);
+        this.hex.dispatchEvent(e);
+      }
+      else this.hex.fireEvent("onchange");
+    };
   }
   static applyStyles(elem,styles) {
     for (var prop in styles) elem.style[prop]=styles[prop];
