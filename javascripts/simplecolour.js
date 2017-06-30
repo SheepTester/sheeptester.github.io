@@ -41,7 +41,9 @@ var simpleConvert={
     /* sv 0-100; sl 0-100 */
     s/=100,v/=100;
     var _l=(2-s)*v;
-    return [Math.round((s*v)/(_l<=1?_l:2-_l)*100),Math.round(_l*50)];
+    _l=[Math.round((s*v)/(_l<=1?_l:2-_l)*100),Math.round(_l*50)];
+    if (isNaN(_l[0])) _l[0]=0;
+    return _l;
   },
   SLtoSV(s,l) {
     /* sl 0-100; sv 0-100 */
@@ -53,6 +55,8 @@ var simpleConvert={
 class ColourPicker {
   constructor(radio) {
     this.radio=radio;
+    this.radio.checked=true;
+    this.radio.type='radio';
     ColourPicker.applyStyles(this.radio,{
       webkitAppearance:'none',
       WebkitAppearance:'none',
@@ -98,11 +102,10 @@ class ColourPicker {
     this.radio.parentNode.insertBefore(this.wrapper,this.radio.nextSibling);
     this.radio.addEventListener("focus",e=>{
       this.wrapper.classList.add('active');
-      var pos=this.radio.getBoundingClientRect(),
-      wrapperpos=this.wrapper.getBoundingClientRect();
-      if (pos.left+wrapperpos.width>window.innerWidth) this.wrapper.style.left=pos.left-wrapperpos.width+pos.width+'px';
+      var pos=this.radio.getBoundingClientRect();
+      if (pos.left+this.wrapper.offsetWidth>window.innerWidth) this.wrapper.style.left=pos.left-this.wrapper.offsetWidth+pos.width+'px';
       else this.wrapper.style.left=pos.left+'px';
-      if (pos.top>window.innerHeight/2) this.wrapper.style.top=(pos.top-wrapperpos.height-2)+'px';
+      if (pos.top+this.wrapper.offsetHeight>window.innerHeight) this.wrapper.style.top=(pos.top-this.wrapper.offsetHeight-2)+'px';
       else this.wrapper.style.top=(pos.top+pos.height+2)+'px';
     },false);
     this.radio.addEventListener("blur",e=>{
@@ -134,6 +137,7 @@ class ColourPicker {
     this.hsv=[0,0,100];
     (this.update=()=>{
       var t,pos;
+      this.wrapper.style.transform="initial";
       this.colour=this.hex.value=this.radio.value=this.radio.style.backgroundColor='#'+simpleConvert.RGBtoHEX(...simpleConvert.HSVtoRGB(...this.hsv));
       this.radio.style.boxShadow=`inset 0 0 0 100vw ${this.colour}`;
       this.square.style.backgroundColor=`hsl(${this.hsv[0]},100%,50%)`;
@@ -144,6 +148,7 @@ class ColourPicker {
       this.squaredot.style.top=(pos.height-this.hsv[2]/100*pos.height)+'px';
       pos=this.hue.getBoundingClientRect();
       this.huebar.style.top=(this.hsv[0]/359*pos.height)+'px';
+      this.wrapper.style.transform="";
     })();
     var mousedown=false,
     updateSquare=(x,y)=>{
@@ -193,6 +198,11 @@ class ColourPicker {
     this.square.addEventListener("touchstart",e=>down(e,true,updateSquare),{passive:false});
     this.hue.addEventListener("mousedown",e=>down(e,false,updateHue),false);
     this.hue.addEventListener("touchstart",e=>down(e,true,updateHue),{passive:false});
+    this.hue.addEventListener("wheel",e=>{
+      this.hsv[0]+=Math.round(e.deltaY/25);
+      this.hsv[0]=Math.min(Math.max(this.hsv[0],0),359);
+      this.update();
+    },false);
     this.radio.addEventListener("click",e=>{
       this.radio.focus();
     },false);

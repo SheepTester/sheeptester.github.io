@@ -11,6 +11,7 @@ sheepmenu {
   transition: all .2s;
   user-select: none;
   cursor: pointer;
+  font-size: 15px;
 }
 sheepmenu:hover {
   box-shadow: 0 0 4px rgba(0,0,0,0.5);

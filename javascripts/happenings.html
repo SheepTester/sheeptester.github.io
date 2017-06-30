@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>What's Happening?</title>
+    <meta charset="UTF-8">
+    <meta name="description" content="A better designed What's Happening section."/>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+      body {
+        background-color: #F2F2F2;
+        line-height: 1;
+        font-family: Helvetica Neue,Helvetica,Arial,sans-serif;
+        margin: 0;
+      }
+      #user {
+        background-color: white;
+        box-shadow: 0 0 1px rgba(0,0,0,.25);
+        width: 100%;
+        text-align: center;
+        box-sizing: border-box;
+        padding: 10px;
+        font-size: .8rem;
+      }
+      label {
+        margin: 0 20px;
+        margin-bottom: 10px;
+        display: inline-block;
+        color: #6b6b6b;
+        font-size: 16px;
+      }
+      input {
+        border: 1px solid rgba(0,0,0,.1);
+        border-radius: 5px;
+        background-color: #fafafa;
+        padding: 0 1rem;
+        height: 3rem;
+        color: #6b6b6b;
+        font-size: .875rem;
+        cursor: pointer;
+        transition: all .5s ease;
+      }
+      input:focus {
+        cursor: auto;
+        border: 1px solid #25aff4;
+      }
+      ul {
+        width: 220px;
+        position: absolute;
+        margin: 0 auto;
+        left: 0;
+        right: 0;
+        padding: 0;
+        list-style: none;
+        margin-top: 16px;
+      }
+      li {
+        width: 100%;
+        border-radius: 4px;
+        box-shadow: 0 0 3px rgba(0,0,0,.25);
+        background-color: #fff;
+        box-sizing: border-box;
+        padding: 8px;
+        position: relative;
+        margin-top: 20px;
+        margin-bottom: 75px; /* 60px for line + 15px for label since margins collapse horizontally */
+      }
+      li > a {
+        color: #25aff4;
+        text-decoration: none;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        width: 100%;
+      }
+      li::after {
+        content: '';
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        margin: 10px auto;
+        width: 2px;
+        height: 40px;
+        background-color: #d9d9d9;
+      }
+      img {
+        width: 100%;
+        border-radius: 4px;
+      }
+      .project > a {
+        font-size: .923em;
+        display: inline-block;
+        overflow: hidden;
+      }
+      span.doneby {
+        position: absolute;
+        bottom: 100%;
+        left: 0;
+        color: #999999;
+        font-size: .8em;
+        margin-bottom: 5px;
+      }
+      span.doneby a {
+        color: #25aff4;
+        text-decoration: none;
+      }
+      .load {
+        display: table;
+        width: auto;
+        margin: 0 auto;
+        border-top: 1px inset rgba(0,0,0,.1);
+        border-radius: 5px;
+        box-shadow: 0 1px 1px rgba(0,0,0,.25);
+        font-size: .8rem;
+        font-weight: 700;
+        padding: 0;
+        margin-top: -15px;
+        margin-bottom: 15px;
+      }
+      .load button {
+        border: none;
+        background-color: transparent;
+        color: #25aff4;
+        cursor: pointer;
+        width: 100%;
+        height: 100%;
+        padding: .75em 1em;
+      }
+      .load::after {
+        display: none;
+      }
+      .load:hover {
+        box-shadow: 0 2px 2px rgba(0,0,0,.25);
+      }
+      .load:active {
+        box-shadow: inset 0 1px 2px rgba(0,0,0,.25);
+      }
+      .follow {
+        font-size: 0;
+      }
+      .follow .doneby {
+        font-size: 12.8px;
+      }
+      .follow > a {
+        vertical-align: top;
+        line-height: 32px;
+        font-size: 16px;
+      }
+      .follow img {
+        height: 32px;
+        width: 32px;
+        margin-right: 8px;
+        border-radius: 4px;
+      }
+      .project::before {
+        content: '';
+        position: absolute;
+        top: 8px;
+        left: 8px;
+        background-image: url('https://scratch.mit.edu/svgs/tabs/projects-active.svg');
+        height: 24px;
+        width: 24px;
+        background-size: 24px;
+        background-position: center;
+        background-repeat: no-repeat;
+        pointer-events: none;
+      }
+      .studio::before {
+        background-image: url('https://scratch.mit.edu/svgs/tabs/studios-active.svg');
+      }
+      .doneby::before {
+        display: inline-block;
+        height: 1em;
+        width: 1em;
+        background-size: 1em;
+        background-position: center;
+        background-repeat: no-repeat;
+        vertical-align: top;
+        margin-right: 2px;
+      }
+      .doneby.love::before {
+        content: '';
+        background-image: url('https://scratch.mit.edu/svgs/love/love_type-gray.svg');
+      }
+      .doneby.star::before {
+        content: '';
+        background-image: url('https://scratch.mit.edu/svgs/favorite/favorite_type-gray.svg');
+      }
+      .doneby.remix::before {
+        content: '';
+        background-image: url('https://scratch.mit.edu/svgs/remix/remix_type-gray.svg');
+      }
+      .doneby.share::before {
+        content: '';
+        background-image: url('https://scratch.mit.edu/svgs/tabs/projects-inactive.svg');
+      }
+      .doneby.curate::before {
+        content: '';
+        background-image: url('https://scratch.mit.edu/svgs/tabs/studios-inactive.svg');
+      }
+      .project img {
+        margin-bottom: 8px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id='user'><label>Discover what's happening for</label><input type="text" placeholder='username' value='griffpatch'></div>
+    <ul>
+      <li class='load'><button type="button">Load More</button></li>
+    </ul>
+
+    <script src="../sheep.js"></script>
+    <script>
+var ul=document.querySelector('ul'),
+load=document.querySelector('.load'),
+username=document.querySelector('input'),
+activities=0,
+lasttextnode,
+activity;
+function getActivityFor(user) {
+  SHEEP.ajax(`https://api.scratch.mit.edu/proxy/users/${user}/activity?limit=${activities+5}`,e=>{
+    activity=JSON.parse(e);
+    var t=document.createDocumentFragment();
+    for (var i=activities;i<activity.length;i++) {
+      if (i>0&&(activity[i].type===2&&activity[i-1].type===3||activity[i].type===3&&activity[i-1].type===2)&&activity[i].obj_id===activity[i-1].obj_id&&activity[i].actor.username===activity[i-1].actor.username) {
+        lasttextnode.nodeValue+=` & ${activity[i].type===2?'loved':'favourited'}`;
+      } else {
+        var li=document.createElement("li"),
+        doneby=document.createElement("span"),
+        donebylink=document.createElement("a"),
+        link=document.createElement("a"),
+        img=document.createElement("img");
+        doneby.classList.add('doneby');
+        if (activity[i].type===2||activity[i].type===3||activity[i].type===10||activity[i].type===11) {
+          li.classList.add('project');
+          donebylink.appendChild(document.createTextNode(activity[i].actor.username));
+          donebylink.href=`https://scratch.mit.edu/users/${activity[i].actor.username}/`;
+          doneby.appendChild(donebylink);
+          switch (activity[i].type) {
+            case 2:
+              lasttextnode=document.createTextNode(' loved');
+              doneby.appendChild(lasttextnode);
+              doneby.classList.add('love');
+              break;
+            case 3:
+              lasttextnode=document.createTextNode(' favourited');
+              doneby.appendChild(lasttextnode);
+              doneby.classList.add('star');
+              break;
+            case 10:
+              doneby.appendChild(document.createTextNode(' shared'));
+              doneby.classList.add('share');
+              break;
+            case 11:
+              doneby.appendChild(document.createTextNode(' remixed '));
+              doneby.classList.add('remix');
+              var originallink=document.createElement("a");
+              originallink.appendChild(document.createTextNode(activity[i].extra_data.parent_title));
+              originallink.href=`https://scratch.mit.edu/projects/${activity[i].extra_data.parent_id}/`;
+              doneby.appendChild(originallink);
+              break;
+          }
+          link.href=`https://scratch.mit.edu/projects/${activity[i].obj_id}/`;
+          img.src=`https://uploads.scratch.mit.edu/projects/thumbnails/${activity[i].obj_id}.png`;
+          link.appendChild(img);
+          link.appendChild(document.createElement("br"));
+          link.appendChild(document.createTextNode(activity[i].extra_data.project_title));
+        } else if (activity[i].type===9||activity[i].type===1||activity[i].type===22) {
+          li.classList.add('project');
+          li.classList.add('studio');
+          donebylink.appendChild(document.createTextNode(activity[i].actor.username));
+          donebylink.href=`https://scratch.mit.edu/users/${activity[i].actor.username}/`;
+          doneby.appendChild(donebylink);
+          switch (activity[i].type) {
+            case 1:
+              doneby.appendChild(document.createTextNode(' is now following'));
+              break;
+            case 9:
+              doneby.appendChild(document.createTextNode(' is now curating'));
+              doneby.classList.add('curate');
+              break;
+            case 22:
+              doneby.appendChild(document.createTextNode(' is now a manager of'));
+              break;
+          }
+          link.href=`https://scratch.mit.edu/studios/${activity[i].obj_id}/`;
+          img.src=`https://cdn2.scratch.mit.edu/get_image/gallery/${activity[i].obj_id}_170x100.png`;
+          link.appendChild(img);
+          link.appendChild(document.createElement("br"));
+          link.appendChild(document.createTextNode(activity[i].extra_data.studio_title));
+        } else if (activity[i].type===0) {
+          li.classList.add('follow');
+          donebylink.appendChild(document.createTextNode(activity[i].actor.username));
+          donebylink.href=`https://scratch.mit.edu/users/${activity[i].actor.username}/`;
+          doneby.appendChild(donebylink);
+          doneby.appendChild(document.createTextNode(' is now following'));
+          link.href=`https://scratch.mit.edu/users/${activity[i].extra_data.followee_username}/`;
+          img.src=`https://cdn2.scratch.mit.edu/get_image/user/${activity[i].obj_id}_32x32.png`;
+          link.appendChild(img);
+          link.appendChild(document.createTextNode(activity[i].extra_data.followee_username));
+        }
+        if (activity[i].type!==12) {
+          li.appendChild(doneby);
+          li.appendChild(link);
+          t.appendChild(li);
+        }
+      }
+    }
+    ul.insertBefore(t,load);
+    activities=activity.length;
+  },e=>{
+    if (activities>0) alert('That is all.');
+    else alert('User never existed and won\'t exist until it exists.')
+  });
+}
+username.value=window.localStorage.scratchusername||'griffpatch';
+getActivityFor(username.value);
+username.onchange=e=>{
+  activities=0;
+  while (ul.children.length>1) ul.removeChild(ul.firstChild);
+  getActivityFor(username.value);
+  window.localStorage.scratchusername=username.value;
+};
+load.onclick=e=>{
+  getActivityFor(username.value);
+};
+    </script>
+  </body>
+  <!-- MADE BY SEAN -->
+</html>
