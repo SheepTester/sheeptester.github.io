@@ -1,0 +1,124 @@
+html, body {
+  height: 100%;
+  width: 100%;
+  background-color: #1D1F21;
+}
+body {
+  margin: 0;
+  font-family: 'Inconsolata', monospace;
+  line-height: 1.5;
+  font-size: 12px;
+  color: white;
+  margin-top: 5px;
+}
+button {
+  border: none;
+  background: none;
+  background-color: rgba(255,255,255,0.1);
+  height: 1em;
+  color: inherit;
+  padding: 0;
+  text-align: center;
+  cursor: pointer;
+  vertical-align: text-bottom;
+}
+input {
+  border: none;
+  background-color: transparent;
+  padding: 0;
+  color: inherit;
+}
+::-webkit-scrollbar {
+	background-color: #1D1F21;
+}
+::-webkit-scrollbar-track {
+	background-color: #1D1F21;
+}
+::-webkit-scrollbar:vertical {
+	width: 5px;
+}
+::-webkit-scrollbar:horizontal {
+	height: 5px;
+}
+::-webkit-scrollbar-thumb {
+	background-color: #ccc !important;
+	border-radius: 0 !important;
+}
+#spaneditor {
+  position: fixed;
+  display: none;
+  height: 1em;
+}
+#resize {
+  position: fixed;
+  top: 0;
+  left: 0;
+  cursor: ns-resize;
+  width: 100%;
+  height: 5px;
+  background-color: #333;
+}
+button:hover, button:focus {
+  background-color: rgba(255,255,255,0.2);
+}
+button::after {
+  vertical-align: top;
+  line-height: 1;
+}
+div.element-children {
+  margin-left: 10px;
+}
+div.element-wrapper {
+  white-space: nowrap;
+}
+div.element-wrapper > button {
+  width: 1em;
+}
+div.element-wrapper > button::after {
+  content: '-';
+}
+div.element-wrapper.collapsed > button::after {
+  content: '+';
+}
+div.element-wrapper.collapsed > div.element-children {
+  display: inline;
+  margin-left: 0;
+}
+div.element-wrapper.collapsed > div.element-children::before {
+  content: '...';
+}
+div.element-wrapper.collapsed > div.element-children > * {
+  display: none;
+}
+div.element-wrapper.nochildren > button {
+  opacity: 0;
+  pointer-events: none;
+}
+div.element-wrapper.nochildren > div.element-children {
+  display: none;
+}
+span.syntax {
+  white-space: pre;
+}
+span.syntax.red {color: #CC6666;}
+span.syntax.orange {color: #DE935F;}
+span.syntax.cream {color: #F0C674;}
+span.syntax.yellow {color: #B5BD68;}
+span.syntax.aqua {color: #8ABEB7;}
+span.syntax.blue {color: #81A2BE;}
+span.syntax.purple {color: #B294BB;}
+span.syntax.grey {color: #969896;}
+span.syntax.white {color: #C5C8C6;}
+span.editting {
+  opacity: 0;
+  pointer-events: none;
+}
+span.textNode::before, span.textNode::after {
+  content: "\"";
+}
+span.commentNode::before {
+  content: "<!--";
+}
+span.commentNode::after {
+  content: "-->";
+}
