@@ -72,8 +72,18 @@
   frame.onload=e=>{
     frame.contentWindow.postMessage(getDOM(document),"*");
   };
-  window.addEventListener("message",e=>{
-    if (e.data.type) switch (e.data.type) {}
+  function whenIreceive(e) {
+    if (e.data.type) switch (e.data.type) {
+      case "COMPUTED STYLES":
+        var styles={},computed=window.getComputedStyle(document.querySelector(e.data.path));
+        for (var property of computed) styles[property]=computed[property];
+        frame.contentWindow.postMessage({
+          type:"RE: COMPUTED STYLES",
+          id:e.data.id,
+          styles:styles
+        },"*");
+        break;
+    }
     else {
       switch (e.data) {
         case "RESIZE":
@@ -96,7 +106,13 @@
           document.addEventListener("mousemove",resizeFrame,false);
           document.addEventListener("mouseup",stop,false);
           break;
+        case "QUIT":
+          document.body.removeChild(frame);
+          frame=null;
+          window.removeEventListener("message",whenIreceive,false);
+          break;
       }
     }
-  },false);
+  }
+  window.addEventListener("message",whenIreceive,false);
 }());

@@ -1,4 +1,45 @@
-var dom,spaneditor;
+var dom,spaneditor,elements,languageChange=new Event('language'),language="EN",focusedElement,
+translations={
+  EN:{
+    ELEMENTS_AND_STYLES:"Elements and Styles",
+    CONSOLE:"Console",
+    DECLARATIONS:"Declarations",
+    COMPUTED:"Computed",
+    PROPERTIES:"Properties"
+  }
+};
+class Tabs {
+  constructor(ul,tabs,current) {
+    this.ul=ul;
+    this.ul.classList.add('tabs');
+    this.tabs=tabs;
+    this.id=ul.id;
+    var t=document.createDocumentFragment();
+    for (var tab in tabs) {
+      var s=document.createElement("li");
+      s.textContent=translations[language][tabs[tab]];
+      ((s,w)=>{
+        s.addEventListener("language",e=>{
+          s.textContent=translations[language][w];
+        },false);
+      })(s,tabs[tab])
+      s.dataset.tab=tab;
+      if (tab===current) s.classList.add('active');
+      t.appendChild(s);
+    }
+    this.ul.appendChild(t);
+    document.body.classList.add(this.id+'-'+current);
+    this.ul.addEventListener("click",e=>{
+      if (e.target.tagName==="LI") {
+        var c=this.ul.querySelector('.active');
+        c.classList.remove('active');
+        document.body.classList.remove(this.id+'-'+c.dataset.tab);
+        e.target.classList.add('active');
+        document.body.classList.add(this.id+'-'+e.target.dataset.tab);
+      }
+    },false);
+  }
+}
 class Element {
   constructor(fakeDOMobj) {
     this.elem=fakeDOMobj;
@@ -24,6 +65,7 @@ class Element {
       }));
     }
     this.openTag.appendChild(Element.spanClasses({'>':'grey'}));
+    this.openTag.classList.add('element-openTag');
     this.children=document.createElement("div");
     this.children.classList.add('element-children');
     this.closeTag=document.createElement("span");
@@ -32,11 +74,53 @@ class Element {
       [this.elem.tagName]:'red',
       '>':'grey'
     }));
+    this.closeTag.classList.add('element-closeTag');
     this.wrapper.appendChild(this.openBtn);
     this.wrapper.appendChild(this.openTag);
     this.wrapper.appendChild(this.children);
     this.wrapper.appendChild(this.closeTag);
+    this.wrapper.addEventListener("click",e=>{
+      if (e.target!==this.openBtn&&!this.children.contains(e.target)) {
+        if (focusedElement) focusedElement.wrapper.classList.remove('active');
+        this.wrapper.classList.add('active');
+        focusedElement=this;
+        parent.postMessage({
+          type:"COMPUTED STYLES",
+          path:this.elem.path,
+          id:dom.indexOf(this.elem)
+        },"*");
+      }
+    },false);
     if (!fakeDOMobj.children.length) this.wrapper.classList.add('nochildren');
+  }
+  computedStyles(styles) {
+    while (computed.hasChildNodes()) computed.removeChild(computed.lastChild);
+    var t=document.createDocumentFragment();
+    for (var prop in styles) {
+      var row=document.createElement("div"),
+      propelem=document.createElement("span"),
+      colon=document.createElement("span"),
+      scolon=document.createElement("span"),
+      value=document.createElement("span");
+      propelem.classList.add('syntax');
+      propelem.classList.add('cream');
+      propelem.textContent=prop;
+      colon.classList.add('syntax');
+      colon.classList.add('white');
+      colon.textContent=": ";
+      scolon.classList.add('syntax');
+      scolon.classList.add('white');
+      scolon.textContent=";";
+      value.classList.add('syntax');
+      value.classList.add('orange');
+      value.textContent=styles[prop];
+      row.appendChild(propelem);
+      row.appendChild(colon);
+      row.appendChild(value);
+      row.appendChild(scolon);
+      t.appendChild(row);
+    }
+    computed.appendChild(t);
   }
   static spanClasses(obj) {
     var t=document.createDocumentFragment();
@@ -47,64 +131,141 @@ class Element {
       s.classList.add(obj[text]);
       if (obj[text]!=='grey')
         (s=>{
-          s.addEventListener("click",e=>{
-            editSpan(s);
-          },false);
+          // s.addEventListener("click",e=>{
+          //   editSpan(s);
+          // },false);
         })(s);
       t.appendChild(s);
     }
     return t;
   }
 }
-class Text {
+class PlainText {
   constructor(content) {
+    this.content=content;
     this.wrapper=document.createDocumentFragment();
     this.text=document.createElement("span");
     this.text.classList.add('syntax');
-    this.text.classList.add('white');
-    this.text.classList.add('textNode');
     this.text.textContent=content;
     this.wrapper.appendChild(this.text);
   }
 }
-class Comment extends Text {
+class Text extends PlainText {
   constructor(content) {
     super(content);
-    this.text.classList.remove('white');
+    this.text.classList.add('white');
+    this.text.classList.add('textNode');
+    this.text.innerHTML=Text.showWhiteSpace(this.content);
+  }
+  static showWhiteSpace(text) {
+    var whitespace=false,html='<span class="syntax white">';
+    for (var i=0;i<text.length;i++) {
+      if (whitespace) {
+        if (/\S/.test(text[i])) html+='</span><span class="syntax white">',whitespace=false;
+      } else {
+        if (/\s/.test(text[i])) html+='</span><span class="syntax grey">',whitespace=true;
+      }
+      if (whitespace) switch (text[i]) {
+        case "\r": html+="¤\n"; break;
+        case "\n": html+="¬\n"; break;
+        case " ": case "\u00A0": html+="·"; break;
+        case "\t": html+="»   "; break;
+        default:
+          html+=text[i];
+      }
+      else switch (text[i]) {
+        case "<": html+="&lt;"; break;
+        case ">": html+="&gt;"; break;
+        default:
+          html+=text[i];
+      }
+    }
+    html+='</span>';
+    return html;
+  }
+}
+class Comment extends PlainText {
+  constructor(content) {
+    super(content);
     this.text.classList.add('grey');
-    this.text.classList.remove('textNode');
     this.text.classList.add('commentNode');
   }
 }
+class Doctype extends PlainText {
+  constructor(content) {
+    super(content);
+    this.text.classList.add('grey');
+    this.text.classList.add('doctypeNode');
+  }
+}
 function editSpan(span) {
-  var boundingrect=span.getBoundingClientRect(),
-  styles=window.getComputedStyle(span);
+  var styles=window.getComputedStyle(span);
   span.classList.add('editting');
   spaneditor.style.display='inline-block';
-  spaneditor.style.left=boundingrect.left+'px';
-  spaneditor.style.top=boundingrect.top+'px';
-  spaneditor.style.width=(span.offsetWidth+3)+'px';
   spaneditor.style.color=styles.color;
+  spaneditor.style.font=styles.font;
   spaneditor.value=span.textContent;
+  updatePos();
+  updateWidth();
   spaneditor.focus();
+  function updatePos() {
+    var boundingrect=span.getBoundingClientRect();
+    spaneditor.style.left=boundingrect.left+'px';
+    spaneditor.style.top=boundingrect.top+'px';
+  }
   function updateWidth() {
     span.textContent=spaneditor.value;
     spaneditor.style.width=(span.offsetWidth+3)+'px';
   }
   function removeEvents() {
+    elements.removeEventListener("scroll",updatePos,false);
     spaneditor.removeEventListener("input",updateWidth,false);
     spaneditor.removeEventListener("blur",removeEvents,false);
     spaneditor.style.display='none';
     span.classList.remove('editting');
   }
+  elements.addEventListener("scroll",updatePos,false);
   spaneditor.addEventListener("input",updateWidth,false);
   spaneditor.addEventListener("blur",removeEvents,false);
 }
 window.onload=e=>{
-  spaneditor=document.querySelector('#spaneditor');
-  resizer=document.querySelector('#resize');
+  spaneditor=document.querySelector('#spaneditor'),
+  resizer=document.querySelector('#resize'),
+  styleresizer=document.querySelector('#resizestyles'),
+  styles=document.querySelector('#styles'),
+  elements=document.querySelector('#elements'),
+  quit=document.querySelector('#quit'),
+  computed=document.querySelector('#compstyles'),
+  maintabs=new Tabs(document.querySelector('#main'),{
+    htmlcss:'ELEMENTS_AND_STYLES',
+    console:'CONSOLE'
+  },'htmlcss'),
+  styletabs=new Tabs(document.querySelector('#styletabs'),{
+    declare:'DECLARATIONS',
+    compstyles:'COMPUTED',
+    props:'PROPERTIES'
+  },'compstyles');
   resizer.addEventListener("mousedown",e=>{
     parent.postMessage("RESIZE","*");
+    e.preventDefault();
+    return false;
+  },false);
+  styleresizer.addEventListener("mousedown",e=>{
+    document.body.style.pointerEvents='none';
+    function updateWidth(e) {
+      styles.style.width=(window.innerWidth-e.clientX)+'px';
+      e.preventDefault();
+      return false;
+    }
+    function stop() {
+      document.body.style.pointerEvents='all';
+      document.removeEventListener("mousemove",updateWidth,false);
+      document.removeEventListener("mouseup",stop,false);
+      e.preventDefault();
+      return false;
+    }
+    document.addEventListener("mousemove",updateWidth,false);
+    document.addEventListener("mouseup",stop,false);
     e.preventDefault();
     return false;
   },false);
@@ -112,21 +273,28 @@ window.onload=e=>{
     if (e.data.type) switch (e.data.type) {
       case 'DOM':
         dom=e.data;
-        console.log(dom);
         var i=dom.length;
         while (i--) {
           switch (dom[i].type) {
             case 'element':dom[i].representative=new Element(dom[i]);break;
             case 'text':dom[i].representative=new Text(dom[i].text);break;
             case 'comment':dom[i].representative=new Comment(dom[i].text);break;
+            case 'doctype':dom[i].representative=new Doctype(dom[i].text);break;
           }
           if (dom[i].children)
             for (var child of dom[i].children)
               if (dom[child].representative)
                 dom[i].representative.children.appendChild(dom[child].representative.wrapper);
         }
-        document.body.appendChild(dom[1].representative.wrapper);
+        elements.appendChild(dom[0].representative.wrapper); // TODO: THIS IS A BAD WAY OF DISPLAYING TOP LEVEL ELEMENTS
+        elements.appendChild(dom[1].representative.wrapper);
+        break;
+      case "RE: COMPUTED STYLES":
+        dom[e.data.id].representative.computedStyles(e.data.styles);
         break;
     }
+  },false);
+  quit.addEventListener("click",e=>{
+    parent.postMessage("QUIT","*");
   },false);
 };
