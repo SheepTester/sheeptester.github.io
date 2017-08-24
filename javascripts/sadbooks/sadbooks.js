@@ -75,7 +75,10 @@
   function whenIreceive(e) {
     if (e.data.type) switch (e.data.type) {
       case "COMPUTED STYLES":
-        var styles={},computed=window.getComputedStyle(document.querySelector(e.data.path));
+        var elem=document.querySelector(e.data.path),styles={},computed=window.getComputedStyle(elem);
+        if (e.data.set) {
+          elem.style[e.data.set.prop]=e.data.set.val;
+        }
         for (var property of computed) styles[property]=computed[property];
         frame.contentWindow.postMessage({
           type:"RE: COMPUTED STYLES",

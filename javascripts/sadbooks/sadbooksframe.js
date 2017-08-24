@@ -86,6 +86,7 @@ class Element {
         focusedElement=this;
         parent.postMessage({
           type:"COMPUTED STYLES",
+          set:null,
           path:this.elem.path,
           id:dom.indexOf(this.elem)
         },"*");
@@ -114,6 +115,23 @@ class Element {
       value.classList.add('syntax');
       value.classList.add('orange');
       value.textContent=styles[prop];
+      ((prop,val,fakedom)=>{
+        val.addEventListener("click",e=>{
+          editSpan(val,{
+            ondone(e) {
+              parent.postMessage({
+                type:"COMPUTED STYLES",
+                set:{
+                  prop:prop,
+                  val:e
+                },
+                path:fakedom.path,
+                id:dom.indexOf(fakedom)
+              },"*");
+            }
+          });
+        },false);
+      })(prop,value,this.elem)
       row.appendChild(propelem);
       row.appendChild(colon);
       row.appendChild(value);
@@ -198,7 +216,7 @@ class Doctype extends PlainText {
     this.text.classList.add('doctypeNode');
   }
 }
-function editSpan(span) {
+function editSpan(span,options={}) {
   var styles=window.getComputedStyle(span);
   span.classList.add('editting');
   spaneditor.style.display='inline-block';
@@ -223,10 +241,65 @@ function editSpan(span) {
     spaneditor.removeEventListener("blur",removeEvents,false);
     spaneditor.style.display='none';
     span.classList.remove('editting');
+    if (options.ondone) options.ondone(spaneditor.value);
   }
   elements.addEventListener("scroll",updatePos,false);
   spaneditor.addEventListener("input",updateWidth,false);
   spaneditor.addEventListener("blur",removeEvents,false);
+}
+function rightClick(items,x,y) {
+  var wrapper=document.createElement("ul");
+  wrapper.classList.add("context-back");
+  function createMenu(parent,array) {
+    for (var item of array) {
+      if (typeof item==="object") {
+        var option=document.createElement("li"),submenu;
+        option.classList.add('context-option');
+        if (item.disabled) option.classList.add('context-disabled');
+        if (item.istoggle) {
+          parent.classList.add('context-hastoggles');
+          if (item.checked) option.classList.add('context-checked');
+          option.addEventListener("click",e=>{
+            option.classList.contains('context-checked')?option.classList.remove('context-checked'):option.classList.add('context-checked');
+          },false);
+        }
+        if (item.img) {
+          var img=document.createElement("img");
+          img.src=item.img;
+          img.classList.add('context-image');
+          option.appendChild(img);
+        }
+        if (item.label) option.appendChild(document.createTextNode(translations[language][item.label]));
+        if (item.onclick) option.addEventListener("click",e=>{
+          if (!submenu.contains(e.target)) item.onclick(e);
+        },false);
+        if (item.subitems) {
+          option.classList.add('context-hassubmenu');
+          submenu=document.createElement("ul");
+          submenu.classList.add("context-submenu");
+          createMenu(submenu,item.subitems);
+          option.appendChild(submenu);
+        }
+        parent.appendChild(option);
+      } else {
+        var line=document.createElement("li");
+        line.classList.add('context-hr');
+        parent.appendChild(line);
+      }
+    }
+  }
+  createMenu(wrapper,items);
+  wrapper.style.left=x+'px';
+  wrapper.style.top=y+'px';
+  document.body.appendChild(wrapper);
+  function stop(e) {
+    document.body.removeChild(wrapper);
+    wrapper=null;
+    document.removeEventListener("click",stop,false);
+    document.removeEventListener("contextmenu",stop,false);
+  }
+  document.addEventListener("click",stop,false);
+  document.addEventListener("contextmenu",stop,false);
 }
 window.onload=e=>{
   spaneditor=document.querySelector('#spaneditor'),
@@ -245,6 +318,15 @@ window.onload=e=>{
     compstyles:'COMPUTED',
     props:'PROPERTIES'
   },'compstyles');
+  document.addEventListener("contextmenu",e=>{
+    rightClick([
+      {label:"props"},
+      {label:"compstyles",onclick:e=>console.log('hi'),subitems:[
+        {label:"declare"}
+      ]}
+    ],e.clientX,e.clientY);
+    e.preventDefault();
+  },false);
   resizer.addEventListener("mousedown",e=>{
     parent.postMessage("RESIZE","*");
     e.preventDefault();
