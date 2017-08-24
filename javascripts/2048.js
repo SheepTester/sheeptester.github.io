@@ -17,11 +17,11 @@ var SHEEP_2048;
       position:'absolute',
       top:'-151.5px',
       left:'-27px',
-      zIndex:2147483647,
       border:"none"
     });
     applyStyles(wrapper,{
       position:"fixed",
+      zIndex:2147483647,
       display:"block",
       bottom:"10px",
       left:"10px",
