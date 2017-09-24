@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>"Minecraft" Command Maker</title>
+    <meta charset="UTF-8">
+    <meta name="description" content="A command creator for small screens."/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+    <link rel="stylesheet" href="../ripple.css">
+    <style>
+      body{max-width:1000px;margin:20px auto;padding:0 20px;font-family:sans-serif;}input,button,select,textarea{font:inherit;}a {text-decoration:none;}
+      body {
+        font-family: 'Roboto',sans-serif;
+        background: #eee;
+      }
+      textarea {
+        display: block;
+        width: 100%;
+        height: 100px;
+        margin: 5px 0;
+        border-radius: 5px;
+      }
+      button.material.raised {
+        background-color: #607D8B;
+        color: white;
+        margin: 5px;
+      }
+      #controls, .editor {
+        background-color: #f7f7f7;
+        box-shadow: 0 0 3px rgba(0,0,0,0.3);
+        padding: 20px;
+        margin: 5px 0;
+        border-radius: 2px;
+      }
+      .editor:not(.active) {
+        display: none;
+      }
+      .command, button.material.raised.command {
+        background-color: #f44336;
+      }
+      .coords, button.material.raised.coords {
+        background-color: #3F51B5;
+      }
+      .player, button.material.raised.player {
+        background-color: #9C27B0;
+      }
+      .selector, button.material.raised.selector {
+        background-color: #FF9800;
+      }
+      .num, button.material.raised.num {
+        background-color: #4CAF50;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Command Creator</h1>
+    <textarea id="output"></textarea>
+    <button class="material raised ripple-light" id="copy" data-clipboard-target="#output">Copy</button><button class="material raised ripple-light" id="clear">Clear</button><span id="copyoutput"></span>
+    <div id="reps">
+
+    </div>
+    <div id="controls"></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js"></script>
+    <script src="../../sheep.js" charset="utf-8"></script>
+    <script src="../ripple.js" charset="utf-8"></script>
+    <script type="text/javascript">
+      var commands='? alwaysday clear clone connect daylock deop difficulty effect enchant execute fill gamemode gamerule give help kill list locate me msg op playsound replaceitem say setblock setmaxplayers setworldspawn spawnpoint spreadplayers stopsound summon teleport tell testfor testforblock testforblocks tickingarea time title toggledownfall tp w weather wsserver xp'.split(' '),
+      keywords='replace masked normal force move filtered true false clear detect outline hollow replace destroy keep block entity facing all add circle remove remove_all list set query clear reset title subtitle actionbar times rain thunder'.split(' ').sort();
+      window.onload=e=>{
+        function getChildIndex(c) {
+          // https://stackoverflow.com/questions/5913927/get-child-node-index
+          for (var i=0;(c=c.previousSibling);i++);
+          return i-1;
+        }
+        var clipboard=new Clipboard('#copy'),
+        copyoutput=document.querySelector('#copyoutput'),
+        controls=document.querySelector('#controls'),
+        reps=document.querySelector('#reps'),
+        output=document.querySelector('#output');
+        clipboard.on('success',e=>{
+          copyoutput.innerHTML=`Copied!`;
+        });
+        clipboard.on('error',e=>{
+          copyoutput.innerHTML=`Uh-oh, your browser doesn't like the copy thing I'm using. You'll have to copy the text manually`;
+        });
+        function button(label,onclick,extraclasses='') {
+          var btn=document.createElement("button");
+          btn.className='material raised ripple-light '+extraclasses;
+          btn.innerHTML=label;
+          ripple(btn);
+          btn.addEventListener("click",onclick,false);
+          return btn;
+        }
+        function command() {
+          var rep=button('execute',e=>{
+            var t=document.querySelector('.editor.active');
+            if (t) t.classList.remove('active');
+            editor.classList.add('active');
+          },'command');
+          reps.appendChild(rep);
+          var editor=document.createElement("div");
+          editor.classList.add('editor');
+          var select=document.createElement("select");
+          for (var cmd of commands) {
+            var t=document.createElement("option");
+            t.innerHTML=cmd;
+            select.appendChild(t);
+          }
+          select.value='execute';
+          select.addEventListener("change",e=>{
+            rep.innerHTML=select.value;
+          },false);
+          editor.appendChild(select);
+          editor.appendChild(button('Remove',e=>{
+            reps.removeChild(rep);
+            document.body.removeChild(editor);
+            rep=editor=null;
+          }));
+          editor.appendChild(button('move left',e=>{
+            var t=getChildIndex(rep);
+            if (t!==0) {
+              reps.removeChild(rep);
+              reps.insertBefore(rep,reps.children[t-1]);
+            }
+          }));
+          editor.appendChild(button('move right',e=>{
+            var t=getChildIndex(rep);
+            if (t!==reps.children.length-1) {
+              reps.removeChild(rep);
+              reps.insertBefore(rep,reps.children[t+1]);
+            }
+          }));
+          document.body.insertBefore(editor,controls);
+        }
+        function updateOutput() {
+          var t='';
+          for (var r of reps.children) t+=r.innerHTML;
+          output.value=t;
+        }
+        function numberInput(val,onchange,label='',relative=false,checked=false) {
+          var wrapper=document.createElement("div"),
+          input=document.createElement("input"),
+          checkbox,label,h;
+          if (label) {
+            h=document.createElement("h3");
+            h.innerHTML=label;
+            wrapper.appendChild(h);
+          }
+          input.type='number';
+          input.value=val;
+          input.addEventListener("change",e=>{
+            input.value=+input.value;
+            onchange(tonum(input.value),checkbox?checkbox.value:undefined);
+          },false);
+          function tonum(str) {
+            return +str;
+          }
+          wrapper.appendChild(input);
+          /*for (var i of '-.0123456789') {
+            (i=>{
+              wrapper.appendChild(button(i,e=>{
+                if (i==='-'&&input.value.length!==0);
+                else if (i==='.'&&~input.value.indexOf('.'));
+                else {
+                  input.value+=i;
+                }
+                onchange(tonum(input.value),checkbox?checkbox.value:undefined);
+              }));
+            })(i);
+          }*/
+          if (relative) {
+            checkbox=document.createElement("input"),
+            label=document.createElement("label");
+            checkbox.type='checkbox';
+            checkbox.checked=checked;
+            checkbox.addEventListener("change",e=>{
+              onchange(tonum(input.value),checkbox?checkbox.checked:undefined);
+            },false);
+            label.innerHTML='is relative';
+            wrapper.appendChild(checkbox);
+            wrapper.appendChild(label);
+          }
+          return wrapper;
+        }
+        function coordinates() {
+          var rep=button('~ ~ ~',e=>{
+            var t=document.querySelector('.editor.active');
+            if (t) t.classList.remove('active');
+            editor.classList.add('active');
+          },'coords');
+          reps.appendChild(rep);
+          var editor=document.createElement("div");
+          editor.classList.add('editor');
+          var coords=[0,1,0,1,0,1];
+          function update() {
+            rep.innerHTML=`${coords[1]?'~':''}${coords[1]?(coords[0]?coords[0]:''):coords[0]} ${coords[3]?'~':''}${coords[3]?(coords[2]?coords[2]:''):coords[2]} ${coords[5]?'~':''}${coords[5]?(coords[4]?coords[4]:''):coords[4]}`;
+          }
+          editor.appendChild(numberInput(0,(n,rel)=>{
+            coords[0]=n;
+            coords[1]=rel;
+            update();
+          },'X',true,true));
+          editor.appendChild(numberInput(0,(n,rel)=>{
+            coords[2]=n;
+            coords[3]=rel;
+            update();
+          },'Y',true,true));
+          editor.appendChild(numberInput(0,(n,rel)=>{
+            coords[4]=n;
+            coords[5]=rel;
+            update();
+          },'Z',true,true));
+          editor.appendChild(button('Remove',e=>{
+            reps.removeChild(rep);
+            document.body.removeChild(editor);
+            rep=editor=null;
+          }));
+          editor.appendChild(button('move left',e=>{
+            var t=getChildIndex(rep);
+            if (t!==0) {
+              reps.removeChild(rep);
+              reps.insertBefore(rep,reps.children[t-1]);
+            }
+          }));
+          editor.appendChild(button('move right',e=>{
+            var t=getChildIndex(rep);
+            if (t!==reps.children.length-1) {
+              reps.removeChild(rep);
+              reps.insertBefore(rep,reps.children[t+1]);
+            }
+          }));
+          document.body.insertBefore(editor,controls);
+        }
+        function keyword() {
+          var rep=button('false',e=>{
+            var t=document.querySelector('.editor.active');
+            if (t) t.classList.remove('active');
+            editor.classList.add('active');
+          },'player');
+          reps.appendChild(rep);
+          var editor=document.createElement("div");
+          editor.classList.add('editor');
+          var input=document.createElement("input"),
+          select=document.createElement("select");
+          input.type='text';
+          input.value='false';
+          input.addEventListener("change",e=>{
+            select.value=input.value;
+            rep.innerHTML=input.value;
+          },false);
+          editor.appendChild(input);
+          for (var cmd of keywords) {
+            var t=document.createElement("option");
+            t.innerHTML=cmd;
+            select.appendChild(t);
+          }
+          select.value='false';
+          select.addEventListener("change",e=>{
+            input.value=select.value;
+            rep.innerHTML=input.value;
+          },false);
+          editor.appendChild(select);
+          editor.appendChild(button('Remove',e=>{
+            reps.removeChild(rep);
+            document.body.removeChild(editor);
+            rep=editor=null;
+          }));
+          editor.appendChild(button('move left',e=>{
+            var t=getChildIndex(rep);
+            if (t!==0) {
+              reps.removeChild(rep);
+              reps.insertBefore(rep,reps.children[t-1]);
+            }
+          }));
+          editor.appendChild(button('move right',e=>{
+            var t=getChildIndex(rep);
+            if (t!==reps.children.length-1) {
+              reps.removeChild(rep);
+              reps.insertBefore(rep,reps.children[t+1]);
+            }
+          }));
+          document.body.insertBefore(editor,controls);
+        }
+        function selector() {
+          var rep=button('@a',e=>{
+            var t=document.querySelector('.editor.active');
+            if (t) t.classList.remove('active');
+            editor.classList.add('active');
+          },'selector');
+          reps.appendChild(rep);
+          var editor=document.createElement("div");
+          editor.classList.add('editor');
+          editor.appendChild(button('Remove',e=>{
+            reps.removeChild(rep);
+            document.body.removeChild(editor);
+            rep=editor=null;
+          }));
+          editor.appendChild(button('move left',e=>{
+            var t=getChildIndex(rep);
+            if (t!==0) {
+              reps.removeChild(rep);
+              reps.insertBefore(rep,reps.children[t-1]);
+            }
+          }));
+          editor.appendChild(button('move right',e=>{
+            var t=getChildIndex(rep);
+            if (t!==reps.children.length-1) {
+              reps.removeChild(rep);
+              reps.insertBefore(rep,reps.children[t+1]);
+            }
+          }));
+          document.body.insertBefore(editor,controls);
+        }
+        function num() {
+          var rep=button('0',e=>{
+            var t=document.querySelector('.editor.active');
+            if (t) t.classList.remove('active');
+            editor.classList.add('active');
+          },'num');
+          reps.appendChild(rep);
+          var editor=document.createElement("div");
+          editor.classList.add('editor');
+          editor.appendChild(numberInput(0,n=>{
+            rep.innerHTML=n;
+          }));
+          editor.appendChild(button('Remove',e=>{
+            reps.removeChild(rep);
+            document.body.removeChild(editor);
+            rep=editor=null;
+          }));
+          editor.appendChild(button('move left',e=>{
+            var t=getChildIndex(rep);
+            if (t!==0) {
+              reps.removeChild(rep);
+              reps.insertBefore(rep,reps.children[t-1]);
+            }
+          }));
+          editor.appendChild(button('move right',e=>{
+            var t=getChildIndex(rep);
+            if (t!==reps.children.length-1) {
+              reps.removeChild(rep);
+              reps.insertBefore(rep,reps.children[t+1]);
+            }
+          }));
+          document.body.insertBefore(editor,controls);
+        }
+        controls.innerHTML=`<p>Add:</p>`;
+        controls.appendChild(button('command',e=>{
+          command();
+        },'command'));
+        controls.appendChild(button('coordinates',e=>{
+          coordinates();
+        },'coords'));
+        controls.appendChild(button('player name/keyword',e=>{
+          keyword();
+        },'player'));
+        controls.appendChild(button('entity selector',e=>{
+          selector();
+        },'selector'));
+        controls.appendChild(button('number',e=>{
+          num();
+        },'num'));
+        document.querySelector('#clear').addEventListener("click",e=>{
+          output.value='';
+        },false);
+      };
+    </script>
+  </body>
+  <!-- MADE BY SEAN -->
+</html>

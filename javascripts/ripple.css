@@ -1,0 +1,55 @@
+/* stolen from UGWA (Orbiit/gunn-web-app) */
+div.ripple {
+  position: absolute;
+  height: 20px;
+  width: 20px;
+  margin-left: -10px;
+  margin-top: -10px;
+  transform: scale(0);
+  pointer-events: none;
+  border-radius: 50%;
+}
+body.light div.ripple:not(.ripple-light), body div.ripple.ripple-dark {
+  background-color: rgba(0,0,0,0.2);
+}
+body.dark div.ripple:not(.ripple-dark), body div.ripple.ripple-light {
+  background-color: rgba(255,255,255,0.3);
+}
+body.light div.ripple.ripple-focus:not(.ripple-light), body div.ripple.ripple-dark.ripple-focus {
+  background-color: rgba(0,0,0,0.05);
+}
+body.dark div.ripple.ripple-focus:not(.ripple-dark), body div.ripple.ripple-light.ripple-focus {
+  background-color: rgba(255,255,255,0.05);
+}
+button.material {
+  text-transform: uppercase;
+  font-size: 14px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  overflow: hidden;
+  display: inline-block;
+  position: relative;
+  height: 36px;
+  border-radius: 2px;
+  font-weight: bold;
+  padding: 0 16px;
+  vertical-align: bottom;
+  font: inherit;
+}
+button.material.icon {
+  width: 36px;
+  padding: 0;
+  border-radius: 50%;
+  text-align: center;
+  font-size: 0;
+}
+button.material.raised {
+  box-shadow: 0 1px 3px 0 rgba(0,0,0,0.3);
+}
+body.light button.material:not(.colouredtext) {
+  color: rgba(0,0,0,0.87);
+}
+body.dark button.material:not(.colouredtext) {
+  color: white;
+}
