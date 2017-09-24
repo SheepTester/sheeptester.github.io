@@ -56,34 +56,45 @@
     <h1>Command Creator</h1>
     <textarea id="output"></textarea>
     <button class="material raised ripple-light" id="copy" data-clipboard-target="#output">Copy</button><button class="material raised ripple-light" id="clear">Clear</button><span id="copyoutput"></span>
-    <div id="reps">
-
-    </div>
+    <div id="reps"></div>
     <div id="controls"></div>
+    <h2>Entities (not all are /summon-able)</h2>
+    <ul id="entities"></ul>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js"></script>
     <script src="../../sheep.js" charset="utf-8"></script>
     <script src="../ripple.js" charset="utf-8"></script>
     <script type="text/javascript">
       var commands='? alwaysday clear clone connect daylock deop difficulty effect enchant execute fill gamemode gamerule give help kill list locate me msg op playsound replaceitem say setblock setmaxplayers setworldspawn spawnpoint spreadplayers stopsound summon teleport tell testfor testforblock testforblocks tickingarea time title toggledownfall tp w weather wsserver xp'.split(' '),
-      keywords='replace masked normal force move filtered true false clear detect outline hollow replace destroy keep block entity facing all add circle remove remove_all list set query clear reset title subtitle actionbar times rain thunder'.split(' ').sort();
+      keywords='replace masked normal force move filtered true false clear detect outline hollow replace destroy keep block entity facing all add circle remove remove_all list set query clear reset title subtitle actionbar times rain thunder'.split(' ').sort(),
+      targetargs='x y z r rm dx dy dz c l lm m name rx rxm ry rym type'.split(' ').sort(),
+      targetsels='sprae',
+      entities='xp_orb tnt armor_stand xp_bottle eye_of_ender_signal ender_crystal fireworks_rocket shulker_bullet fishing_hook dragon_fireball arrow snowball egg painting minecart large_fireball splash_potion ender_pearl leash_knot wither_skull boat wither_skull_dangerous lightning_bolt small_fireball area_effect_cloud hopper_minecart tnt_minecart chest_minecart command_block_minecart lingering_potion evocation_fang zombie creeper skeleton spider zombie_pigman slime enderman silverfish cave_spider ghast magma_cube blaze zombie_villager witch stray husk wither_skeleton guardian elder_guardian wither ender_dragon shulker endermite vindicator evocation_illager vex chicken cow pig sheep wolf villager mooshroom squid rabbit bat iron_golem snow_golem ocelot horse donkey mule skeleton_horse zombie_horse polar_bear llama parrot'.split(' ').sort();
       window.onload=e=>{
         function getChildIndex(c) {
           // https://stackoverflow.com/questions/5913927/get-child-node-index
           for (var i=0;(c=c.previousSibling);i++);
-          return i-1;
+          return i;
         }
         var clipboard=new Clipboard('#copy'),
         copyoutput=document.querySelector('#copyoutput'),
         controls=document.querySelector('#controls'),
         reps=document.querySelector('#reps'),
-        output=document.querySelector('#output');
+        output=document.querySelector('#output'),
+        entityul=document.querySelector('#entities');
         clipboard.on('success',e=>{
           copyoutput.innerHTML=`Copied!`;
         });
         clipboard.on('error',e=>{
           copyoutput.innerHTML=`Uh-oh, your browser doesn't like the copy thing I'm using. You'll have to copy the text manually`;
         });
+        var t=document.createDocumentFragment();
+        for (var e of entities) {
+          var s=document.createElement("li");
+          s.innerHTML=e;
+          t.appendChild(s);
+        }
+        entityul.appendChild(t);
         function button(label,onclick,extraclasses='') {
           var btn=document.createElement("button");
           btn.className='material raised ripple-light '+extraclasses;
@@ -108,21 +119,25 @@
             select.appendChild(t);
           }
           select.value='execute';
+          updateOutput();
           select.addEventListener("change",e=>{
-            rep.innerHTML=select.value;
+            rep.textContent=select.value;
+            updateOutput();
           },false);
           editor.appendChild(select);
           editor.appendChild(button('Remove',e=>{
             reps.removeChild(rep);
             document.body.removeChild(editor);
             rep=editor=null;
-          }));
+            updateOutput();
+          },'remove'));
           editor.appendChild(button('move left',e=>{
             var t=getChildIndex(rep);
             if (t!==0) {
               reps.removeChild(rep);
               reps.insertBefore(rep,reps.children[t-1]);
             }
+            updateOutput();
           }));
           editor.appendChild(button('move right',e=>{
             var t=getChildIndex(rep);
@@ -130,13 +145,14 @@
               reps.removeChild(rep);
               reps.insertBefore(rep,reps.children[t+1]);
             }
+            updateOutput();
           }));
           document.body.insertBefore(editor,controls);
         }
         function updateOutput() {
-          var t='';
-          for (var r of reps.children) t+=r.innerHTML;
-          output.value=t;
+          var t=[];
+          for (var r of reps.children) t.push(r.textContent);
+          output.value=t.join(' ');
         }
         function numberInput(val,onchange,label='',relative=false,checked=false) {
           var wrapper=document.createElement("div"),
@@ -194,8 +210,10 @@
           editor.classList.add('editor');
           var coords=[0,1,0,1,0,1];
           function update() {
-            rep.innerHTML=`${coords[1]?'~':''}${coords[1]?(coords[0]?coords[0]:''):coords[0]} ${coords[3]?'~':''}${coords[3]?(coords[2]?coords[2]:''):coords[2]} ${coords[5]?'~':''}${coords[5]?(coords[4]?coords[4]:''):coords[4]}`;
+            rep.textContent=`${coords[1]?'~':''}${coords[1]?(coords[0]?coords[0]:''):coords[0]} ${coords[3]?'~':''}${coords[3]?(coords[2]?coords[2]:''):coords[2]} ${coords[5]?'~':''}${coords[5]?(coords[4]?coords[4]:''):coords[4]}`;
+            updateOutput();
           }
+          update();
           editor.appendChild(numberInput(0,(n,rel)=>{
             coords[0]=n;
             coords[1]=rel;
@@ -215,13 +233,15 @@
             reps.removeChild(rep);
             document.body.removeChild(editor);
             rep=editor=null;
-          }));
+            updateOutput();
+          },'remove'));
           editor.appendChild(button('move left',e=>{
             var t=getChildIndex(rep);
             if (t!==0) {
               reps.removeChild(rep);
               reps.insertBefore(rep,reps.children[t-1]);
             }
+            updateOutput();
           }));
           editor.appendChild(button('move right',e=>{
             var t=getChildIndex(rep);
@@ -229,6 +249,7 @@
               reps.removeChild(rep);
               reps.insertBefore(rep,reps.children[t+1]);
             }
+            updateOutput();
           }));
           document.body.insertBefore(editor,controls);
         }
@@ -245,9 +266,11 @@
           select=document.createElement("select");
           input.type='text';
           input.value='false';
+          updateOutput();
           input.addEventListener("change",e=>{
             select.value=input.value;
-            rep.innerHTML=input.value;
+            rep.textContent=input.value;
+            updateOutput();
           },false);
           editor.appendChild(input);
           for (var cmd of keywords) {
@@ -258,20 +281,23 @@
           select.value='false';
           select.addEventListener("change",e=>{
             input.value=select.value;
-            rep.innerHTML=input.value;
+            rep.textContent=input.value;
+            updateOutput();
           },false);
           editor.appendChild(select);
           editor.appendChild(button('Remove',e=>{
             reps.removeChild(rep);
             document.body.removeChild(editor);
             rep=editor=null;
-          }));
+            updateOutput();
+          },'remove'));
           editor.appendChild(button('move left',e=>{
             var t=getChildIndex(rep);
             if (t!==0) {
               reps.removeChild(rep);
               reps.insertBefore(rep,reps.children[t-1]);
             }
+            updateOutput();
           }));
           editor.appendChild(button('move right',e=>{
             var t=getChildIndex(rep);
@@ -279,11 +305,12 @@
               reps.removeChild(rep);
               reps.insertBefore(rep,reps.children[t+1]);
             }
+            updateOutput();
           }));
           document.body.insertBefore(editor,controls);
         }
         function selector() {
-          var rep=button('@a',e=>{
+          var rep=button('@e',e=>{
             var t=document.querySelector('.editor.active');
             if (t) t.classList.remove('active');
             editor.classList.add('active');
@@ -291,17 +318,82 @@
           reps.appendChild(rep);
           var editor=document.createElement("div");
           editor.classList.add('editor');
+          var sel=['e'];
+          function update() {
+            var t='@'+sel[0];
+            if (sel.length>1) t+=`[${sel.slice(1).join(',')}]`;
+            rep.textContent=t;
+            updateOutput();
+          }
+          update();
+          var select=document.createElement("select");
+          for (var cmd of targetsels) {
+            var t=document.createElement("option");
+            t.innerHTML=cmd;
+            select.appendChild(t);
+          }
+          select.value='e';
+          select.addEventListener("change",e=>{
+            sel[0]=select.value;
+            update();
+          },false);
+          editor.appendChild(select);
+          var div=document.createElement("div");
+          editor.appendChild(div);
+          editor.appendChild(button('add argument',e=>{
+            var wrapper=document.createElement("div"),
+            args=document.createElement("select"),
+            not=document.createElement("input"),
+            notl=document.createElement("label"),
+            val=document.createElement("input");
+            not.type='checkbox';
+            notl.innerHTML='not?';
+            val.type='text';
+            function miniupdate() {
+              sel[getChildIndex(wrapper)+1]=`${args.value}${not.checked?'!':''}=${val.value}`;
+              update();
+            }
+            for (var cmd of targetargs) {
+              var t=document.createElement("option");
+              t.innerHTML=cmd;
+              args.appendChild(t);
+            }
+            args.value='type';
+            args.addEventListener("change",e=>{
+              miniupdate();
+            },false);
+            wrapper.appendChild(args);
+            wrapper.appendChild(not);
+            not.addEventListener("change",e=>{
+              miniupdate();
+            },false);
+            wrapper.appendChild(notl);
+            wrapper.appendChild(val);
+            val.addEventListener("change",e=>{
+              miniupdate();
+            },false);
+            wrapper.appendChild(button('Remove',e=>{
+              sel.splice(getChildIndex(wrapper)+1,1);
+              update();
+              div.removeChild(wrapper);
+              wrapper=args=not=notl=val=null;
+            }));
+            div.appendChild(wrapper);
+            miniupdate();
+          }));
           editor.appendChild(button('Remove',e=>{
             reps.removeChild(rep);
             document.body.removeChild(editor);
             rep=editor=null;
-          }));
+            updateOutput();
+          },'remove'));
           editor.appendChild(button('move left',e=>{
             var t=getChildIndex(rep);
             if (t!==0) {
               reps.removeChild(rep);
               reps.insertBefore(rep,reps.children[t-1]);
             }
+            updateOutput();
           }));
           editor.appendChild(button('move right',e=>{
             var t=getChildIndex(rep);
@@ -309,6 +401,7 @@
               reps.removeChild(rep);
               reps.insertBefore(rep,reps.children[t+1]);
             }
+            updateOutput();
           }));
           document.body.insertBefore(editor,controls);
         }
@@ -322,19 +415,21 @@
           var editor=document.createElement("div");
           editor.classList.add('editor');
           editor.appendChild(numberInput(0,n=>{
-            rep.innerHTML=n;
+            rep.textContent=n;
           }));
           editor.appendChild(button('Remove',e=>{
             reps.removeChild(rep);
             document.body.removeChild(editor);
             rep=editor=null;
-          }));
+            updateOutput();
+          },'remove'));
           editor.appendChild(button('move left',e=>{
             var t=getChildIndex(rep);
             if (t!==0) {
               reps.removeChild(rep);
               reps.insertBefore(rep,reps.children[t-1]);
             }
+            updateOutput();
           }));
           editor.appendChild(button('move right',e=>{
             var t=getChildIndex(rep);
@@ -342,6 +437,7 @@
               reps.removeChild(rep);
               reps.insertBefore(rep,reps.children[t+1]);
             }
+            updateOutput();
           }));
           document.body.insertBefore(editor,controls);
         }
@@ -362,7 +458,10 @@
           num();
         },'num'));
         document.querySelector('#clear').addEventListener("click",e=>{
-          output.value='';
+          if (confirm('Clear?')) {
+            for (var r of document.querySelectorAll('.editor')) r.querySelector('button.remove').click();
+            updateOutput();
+          }
         },false);
       };
     </script>
