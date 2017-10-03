@@ -458,6 +458,10 @@ var SHEEP={
         SHEEP.dismiss('gaffachris');
         SHEEP.notify('Watch quality trash!','/?gaffasaurus');
         break;
+      case !SHEEP.dismissed.ugwa:
+        SHEEP.dismiss('ugwa');
+        SHEEP.notify('See our Gunn Web App if you go to Gunn :)','https://orbiit.github.io/gunn-web-app/');
+        break;
     }
   }
 })();
