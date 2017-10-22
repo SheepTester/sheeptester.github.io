@@ -10,14 +10,18 @@ body {
   background-color: #222;
   line-height: 1;
 }
+a {
+  color: inherit;
+  text-decoration: inherit;
+}
 @media (max-width: 800px) {
   body {
     font-size: 20px;
   }
 }
 #background {
-  background-image: url('img/blorrest.jpg');
-  background-size: cover;
+  background-image: url('img/blur.png');
+  background-size: 100vw 100vh;
   background-position: center;
   position: fixed;
   z-index: -1;
@@ -27,6 +31,7 @@ body {
   padding-bottom: 40px;
   box-sizing: border-box;
   display: none;
+  overflow: auto;
 }
 .page.active {
   display: block;
@@ -89,87 +94,79 @@ nav .btn:hover {
   overflow-x: hidden;
   padding: 5px 0 40px 5px;
 }
-place {
+.place {
   width: calc(16.5% - 20px);
   margin: 10px;
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
   position: relative;
   cursor: pointer;
   z-index: 0;
   background-color: #4FA1A7;
   vertical-align: top;
+  border-radius: 2px;
+  overflow: hidden;
   transition: transform .2s, z-index .2s;
 }
-place#more {
-  padding-bottom: calc(16.5% - 20px);
+.place::before {
+  margin-top: 100%;
+  content: '';
+  display: block;
+  float: left;
 }
 @media (max-width: 2550px) {
-  place {
+  .place {
     width: calc(20% - 20px);
-  }
-  place#more {
-    padding-bottom: calc(20% - 20px);
   }
 }
 @media (max-width: 1600px) {
-  place {
+  .place {
     width: calc(25% - 20px);
-  }
-  place#more {
-    padding-bottom: calc(25% - 20px);
   }
 }
 @media (max-width: 800px) {
-  place {
+  .place {
     width: calc(33% - 20px);
-  }
-  place#more {
-    padding-bottom: calc(33% - 20px);
   }
 }
 @media (max-width: 600px) {
-  place {
+  .place {
     width: calc(50% - 20px);
-  }
-  place#more {
-    padding-bottom: calc(50% - 20px);
   }
 }
 @media (max-width: 400px) {
-  place {
-    width: calc(100% - 20px);
-  }
-  place#more {
-    padding-bottom: calc(100% - 20px)
+  .place {
+    width: calc(75% - 20px);
+    margin: 5px 16%;
   }
 }
-place:hover {
+.place:hover {
   transform: scale(1.05);
   z-index: 10;
 }
-place img {
+.place img {
   width: 100%;
+  height: 100%;
   opacity: 0.5;
   -webkit-filter: grayscale(100%);
   filter: grayscale(100%);
+  position: absolute;
+  top: 0;
   transition: all .2s;
 }
-place:hover img {
+.place:hover img {
   opacity: 1;
   filter: grayscale(0%);
 }
-place p {
+.place p {
   font-size: 30px;
-  margin: auto 0;
+  margin: 0;
   width: 100%;
-  position: absolute;
-  top: 0;
-  bottom: 0;
+  position: relative;
   text-align: center;
   text-shadow: 0 0 20px black;
-  height: 30px;
 }
-placelist {
+.placelist {
   width: 100%;
   display: block;
   font-size: 60px;
@@ -177,13 +174,13 @@ placelist {
   cursor: pointer;
   transition: background .2s;
 }
-placelist:nth-child(even) {
+.placelist:nth-child(even) {
   background-color: rgba(255,255,255,0.1);
 }
-placelist#more {
+.placelist#more {
   background-color: rgba(255,255,255,0.2);
 }
-placelist:hover, placelist#more:hover {
+.placelist:hover, .placelist#more:hover {
   background-color: rgba(79,161,167,0.8);
 }
 #stalking {
@@ -210,7 +207,7 @@ placelist:hover, placelist#more:hover {
 #stalking ul li:before {
   content: '- ';
 }
-list {
+.list {
   background-color: rgba(255,255,255,0.1);
   display: block;
   padding: 0 5px;
@@ -218,7 +215,7 @@ list {
   overflow-x: auto;
   overflow-y: hidden;
 }
-list social {
+.list .social {
   display: inline-block;
   height: 100px;
   width: 100px;
@@ -228,10 +225,10 @@ list social {
   cursor: pointer;
   transition: transform .2s;
 }
-list social:hover {
+.list .social:hover {
   transform: scale(1.1);
 }
-list social ball {
+.list .social .ball {
   display: block;
   height: 50px;
   width: 50px;
@@ -245,13 +242,15 @@ list social ball {
   right: 0;
 }
 #scratch {background-color: #25AFF4;}
-#scratch ball {border: 5px solid white; background-color: #F8A839;}
+#scratch .ball {border: 5px solid white; background-color: #F8A839;}
 #instagram {background-image: url('img/instagram_gradient.png'); background-size: 100px 100px;}
-#github {background-color: #333333;}
-#google {background-color: #DB4437;}
-#youtube {background-color: #E62117;}
+#github {background-color: #181717;}
+#google {background-color: #DC4E41;}
+#youtube {background-color: #FF0000;}
 #tumblr {background-color: #36465D;}
-#blogger {background-color: #FF5621;}
+#blogger {background-color: #FF5722;}
+#twitter {background-color: white;}
+#twitter .ball {background-color: #1DA1F2;}
 #users h1 {
   margin: 0;
   font-weight: normal;
@@ -325,7 +324,7 @@ list social ball {
 #signedin button:hover {
   background-color: rgba(255,255,255,0.4);
 }
-placelist badge {
+.placelist .badge {
   display: inline-block;
   font-size: 30px;
   padding: 0 5px;
@@ -337,10 +336,10 @@ placelist badge {
   margin-right: 5px;
   margin-bottom: 5px;
 }
-placelist badge:hover {
+.placelist .badge:hover {
   max-width: 25%;
 }
-placelist badge:before {
+.placelist .badge:before {
   content: '';
   display: inline-block;
   height: 20px;
@@ -363,7 +362,7 @@ placelist badge:before {
 .new:before {
   background-image: url('img/material_new_releases.svg');
 }
-place badge {
+.place .badge {
   display: block;
   position: absolute;
   bottom: 0;
@@ -377,10 +376,10 @@ place badge {
   transition: max-width .5s;
   white-space: nowrap;
 }
-place badge:hover {
+.place .badge:hover {
   max-width: 100%;
 }
-place badge:before {
+.place .badge:before {
   content: '';
   display: inline-block;
   height: 20px;
@@ -495,7 +494,7 @@ body.blank noscript {
   left: 0;
   bottom: 0;
 }
-menuicon {
+.menuicon {
   display: none;
   height: 20px;
   width: 20px;
@@ -509,18 +508,21 @@ menuicon {
   border-radius: 2px;
   cursor: pointer;
 }
-menuicon:hover {
+.menuicon:hover {
   background-color: rgba(0,0,0,0.1);
 }
-menuicon:active {
+.menuicon:active {
   background-color: transparent;
   transition: background-color .5s cubic-bezier(0,0,0,1);
+}
+nav .btncontainer {
+  display: inline-block;
 }
 @media (max-width:430px) {
   nav .clickable {
     display: none;
   }
-  nav btncontainer {
+  nav .btncontainer {
     background-color: rgba(79,161,167,0.7);
     position: absolute;
     bottom: 100%;
@@ -528,20 +530,20 @@ menuicon:active {
     width: 100%;
     display: block;
   }
-  menuicon {
+  .menuicon {
     display: inline-block;
   }
   nav.open .clickable {
     display: block;
   }
-  nav.open btncontainer {
+  nav.open .btncontainer {
     height: auto;
   }
-  nav.open menuicon {
+  nav.open .menuicon {
     background-image: url('img/down.svg');
   }
 }
-more {
+.more {
   display: none;
   position: fixed;
   background-color: rgba(0,0,0,0.5);
@@ -552,7 +554,7 @@ more {
   z-index: 101;
   cursor: pointer;
 }
-more morecontainer {
+.more .morecontainer {
   display: block;
   position: absolute;
   background-color: rgba(0,0,0,0.5);
@@ -567,7 +569,7 @@ more morecontainer {
   overflow-y: auto;
   cursor: default;
 }
-more morecontainer a, more morecontainer closemore {
+.more .morecontainer a, .more .morecontainer .closemore {
   display: inline-block;
   background-color: #4FA1A7;
   color: white;
@@ -576,21 +578,21 @@ more morecontainer a, more morecontainer closemore {
   padding: 5px;
   transition: all .2s;
 }
-more morecontainer closemore {
+.more .morecontainer .closemore {
   background-color: #d24b4b;
   cursor: pointer;
 }
-more morecontainer a:hover, more morecontainer closemore:hover {
+.more .morecontainer a:hover, .more .morecontainer .closemore:hover {
   background-color: white;
   color: #4FA1A7;
 }
-more morecontainer closemore:hover {
+.more .morecontainer .closemore:hover {
   color: #d24b4b;
 }
-more morecontainer a:active, more morecontainer closemore:active {
+.more .morecontainer a:active, .more .morecontainer .closemore:active {
   box-shadow: inset 0 0 0 3px rgba(0,0,0,0.2);
 }
-more disclaimer {
+.more disclaimer {
   display: block;
   font-size: 10px;
   position: absolute;

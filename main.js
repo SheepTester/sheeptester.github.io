@@ -108,37 +108,38 @@ var sheeptest=(function(){
   ];
   if (preferences.view==='grid') {
     document.querySelector('#view').innerHTML='list view';
-    var inner='<place id="more"><p>More links</p></place>';
+    var inner='<a class="place" id="more"><p>More links</p></a>';
     for (var i=0;i<places2go.length;i++) {
       var badge='';
-      if (places2go[i].featured) badge='<badge class="featured">featured</badge>';
-      else if (places2go[i].new) badge='<badge class="new">new</badge>';
-      inner+='<place data-href="'+places2go[i].url+'"><img src="'+places2go[i].img+'" alt="A picture."/>'+badge+'<p>'+places2go[i].name+'</p></place>';
+      if (places2go[i].featured) badge='<span class="badge featured">featured</span>';
+      else if (places2go[i].new) badge='<span class="badge new">new</span>';
+      inner+='<a class="place" href="'+places2go[i].url+'"><img src="'+places2go[i].img+'" alt="A picture."/>'+badge+'<p>'+places2go[i].name+'</p></a>';
     }
     document.querySelector('#places').innerHTML=inner;
   } else {
     document.querySelector('#view').innerHTML='grid view';
-    var inner='<placelist id="more">More links</placelist>';
+    var inner='<a class="placelist" id="more">More links</a>';
     for (var i=0;i<places2go.length;i++) {
       var badge='';
-      if (places2go[i].featured) badge='<badge class="featured">featured</badge>';
-      else if (places2go[i].new) badge='<badge class="new">new</badge>';
-      inner+='<placelist data-href="'+places2go[i].url+'">'+badge+places2go[i].name+'</placelist>';
+      if (places2go[i].featured) badge='<span class="badge featured">featured</span>';
+      else if (places2go[i].new) badge='<span class="badge new">new</span>';
+      inner+='<a class="placelist" href="'+places2go[i].url+'">'+badge+places2go[i].name+'</a>';
     }
     document.querySelector('#places').innerHTML=inner;
   }
   var sites;
   document.querySelector('#places').onclick=function(e){
-    if (e.target.dataset.href) window.location.href=e.target.dataset.href;
+    /*if (e.target.dataset.href) window.location.href=e.target.dataset.href;
     else if (e.target.parentNode.dataset.href) window.location.href=e.target.parentNode.dataset.href;
-    else if (e.target.id==='more'||e.target.parentNode.id==='more') {
-      document.querySelector('more').style.display='block';
+    else */if (e.target.id==='more'||e.target.parentNode.id==='more') {
+      document.querySelector('.more').style.display='block';
       function render() {
-        var el=document.querySelector('morecontainer');
+        var el=document.querySelector('.morecontainer');
         while (el.hasChildNodes()) el.removeChild(el.lastChild);
-        var s=document.createElement("closemore");
+        var s=document.createElement("span");
+        s.className='closemore';
         s.innerHTML='close';
-        s.onclick=e=>document.querySelector('more').style.display='none';
+        s.onclick=e=>document.querySelector('.more').style.display='none';
         el.appendChild(s);
         for (var i=0;i<sites.length;i+=2) {
           var s=document.createElement("a");
@@ -157,8 +158,8 @@ var sheeptest=(function(){
       );
     }
   };
-  document.querySelector('more').onclick=e=>{
-    if (e.target.tagName==='MORE') document.querySelector('more').style.display='none';
+  document.querySelector('.more').onclick=e=>{
+    if (e.target.className==='more') document.querySelector('.more').style.display='none';
   };
   document.querySelector("nav").ontouchstart=document.querySelector("nav").onclick=function(e){
     if (e.target.className=="clickable") {
@@ -173,26 +174,6 @@ var sheeptest=(function(){
         window.location.hash=e.target.innerHTML;
       }
     }
-  };
-  var sociallinks={
-    scratch:'https://scratch.mit.edu/users/Sheep_maker/',
-    google:'https://plus.google.com/u/0/+SeanYentheHumansperson',
-    github:'https://github.com/SheepTester',
-    instagram:'https://www.instagram.com/sheeptester/',
-    tumblr:'https://sheep-tester.tumblr.com/',
-    youtube:'https://www.youtube.com/channel/UCI8DtrWZvGNsXxUNkW53FAg',
-    blogger:'http://boxofsean.blogspot.com/',
-  };
-  (function(){
-    var inner='';
-    for (var i in sociallinks) {
-      inner+='<social id="'+i+'" data-href="'+sociallinks[i]+'"><ball></ball></social>';
-    }
-    document.querySelector('list').innerHTML=inner;
-  })();
-  document.querySelector('list').onclick=function(e){
-    if (e.target.dataset.href) window.location.href=e.target.dataset.href;
-    else if (e.target.parentNode.dataset.href) window.location.href=e.target.parentNode.dataset.href;
   };
   document.querySelector('#view').onclick=function(e){
     preferences.view=preferences.view==='grid'?'list':'grid';
@@ -279,7 +260,7 @@ var sheeptest=(function(){
     window.localStorage.removeItem('userid');
     window.location.replace('https://web300.secure-secure.co.uk/thingkingland.com/sheeptester/signout.php');
   };*/
-  document.querySelector('menuicon').onclick=e=>{
+  document.querySelector('.menuicon').onclick=e=>{
     if (document.querySelector('nav').classList.contains('open')) document.querySelector('nav').classList.remove('open');
     else document.querySelector('nav').classList.add('open');
   };
