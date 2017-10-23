@@ -35,7 +35,7 @@ var sheeptest=(function(){
       document.querySelector("#loginform .error").innerHTML='Wrong password.';
     }
     else if (redirect.slice(0,6)=="userid") {
-      window.localStorage.setItem('userid',Number(redirect.slice(7)));
+      window.cookie.setItem('userid',Number(redirect.slice(7)));
       window.location.search='';
     }
     else if (redirect.slice(0,6)=="signin") {
@@ -81,10 +81,10 @@ var sheeptest=(function(){
     SHEEP.notify('The index page has been updated!','/');
     SHEEP.dismiss('redesign');
   }
-  if (!localStorage.preferences) {
-    localStorage.preferences='{"view":"grid"}';
+  if (!cookie.preferences) {
+    cookie.preferences='{"view":"grid"}';
   }
-  var preferences=JSON.parse(localStorage.preferences);
+  var preferences=JSON.parse(cookie.preferences);
   var places2go=[
     {url:'all.html',img:'img/all.png',name:'Almost Everything',featured:1},
     {url:'platformre',img:'img/plat.svg',name:'Platformre'},
@@ -108,12 +108,12 @@ var sheeptest=(function(){
   ];
   if (preferences.view==='grid') {
     document.querySelector('#view').innerHTML='list view';
-    var inner='<a class="place" id="more"><p>More links</p></a>';
+    var inner='<a class="place" id="more"><div class="squarifier"><div></div></div><p>More links</p></a>';
     for (var i=0;i<places2go.length;i++) {
       var badge='';
       if (places2go[i].featured) badge='<span class="badge featured">featured</span>';
       else if (places2go[i].new) badge='<span class="badge new">new</span>';
-      inner+='<a class="place" href="'+places2go[i].url+'"><img src="'+places2go[i].img+'" alt="A picture."/>'+badge+'<p>'+places2go[i].name+'</p></a>';
+      inner+='<a class="place" href="'+places2go[i].url+'"><div class="squarifier"><div></div></div><img src="'+places2go[i].img+'" alt="A picture."/>'+badge+'<p>'+places2go[i].name+'</p></a>';
     }
     document.querySelector('#places').innerHTML=inner;
   } else {
@@ -177,7 +177,7 @@ var sheeptest=(function(){
   };
   document.querySelector('#view').onclick=function(e){
     preferences.view=preferences.view==='grid'?'list':'grid';
-    localStorage.preferences=JSON.stringify(preferences);
+    cookie.preferences=JSON.stringify(preferences);
     window.location.reload();
   };
   console.log(setInterval(function(){
@@ -197,8 +197,8 @@ var sheeptest=(function(){
     xmlHttp.send(null);
   }
   /*var data={};
-  if (window.localStorage.getItem('userid')) {
-    httpGetAsync('https://web300.secure-secure.co.uk/thingkingland.com/sheeptester/getstuff.php?userid='+window.localStorage.getItem('userid'),function(e){
+  if (window.cookie.getItem('userid')) {
+    httpGetAsync('https://web300.secure-secure.co.uk/thingkingland.com/sheeptester/getstuff.php?userid='+window.cookie.getItem('userid'),function(e){
       data=JSON.parse(e);
       document.querySelector("#signedout").style.display='none';
       document.querySelector("#signedin").style.display='block';
@@ -257,7 +257,7 @@ var sheeptest=(function(){
     }
   };
   document.querySelector('#signedin button').onclick=function(){
-    window.localStorage.removeItem('userid');
+    window.cookie.removeItem('userid');
     window.location.replace('https://web300.secure-secure.co.uk/thingkingland.com/sheeptester/signout.php');
   };*/
   document.querySelector('.menuicon').onclick=e=>{

@@ -108,11 +108,12 @@ nav .btn:hover {
   overflow: hidden;
   transition: transform .2s, z-index .2s;
 }
-.place::before {
+.squarifier {
+  width: 100%;
+  margin-left: -100%;
+}
+.squarifier div {
   margin-top: 100%;
-  content: '';
-  display: block;
-  float: left;
 }
 @media (max-width: 2550px) {
   .place {

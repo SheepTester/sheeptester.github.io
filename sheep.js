@@ -1,5 +1,17 @@
 /* reference me and all of your worries about making everything perfect goes away! ;) */
-var localStorage=window.localStorage||{setItem(prop,val){localStorage[prop]=val;},getItem(prop){return localStorage[prop]}};
+try {
+  window.cookie=localStorage;
+} catch (o) {
+  window.cookie={
+    getItem(o){
+      return cookie[o];
+    },setItem (o,e) {
+      cookie[o]=e;
+    },removeItem (o) {
+      delete cookie[o];
+    }
+  };
+}
 (function(){
   var thisscript=document.querySelector('script[src$="sheep.js"]'),
   style=document.createElement("link");
@@ -11,9 +23,9 @@ var localStorage=window.localStorage||{setItem(prop,val){localStorage[prop]=val;
   var el=document.createElement("sheepmenu");
   el.style.display='none';
   style.onload=e=>el.style.display='block';
-  if (!localStorage.sheepmenuposition) localStorage.sheepmenuposition='10-10';
-  el.style.right=localStorage.sheepmenuposition.slice(0,localStorage.sheepmenuposition.indexOf(','))+'px';
-  el.style.bottom=localStorage.sheepmenuposition.slice(localStorage.sheepmenuposition.indexOf(',')+1)+'px';
+  if (!cookie.sheepmenuposition) cookie.sheepmenuposition='10-10';
+  el.style.right=cookie.sheepmenuposition.slice(0,cookie.sheepmenuposition.indexOf(','))+'px';
+  el.style.bottom=cookie.sheepmenuposition.slice(cookie.sheepmenuposition.indexOf(',')+1)+'px';
   var svg=document.createElementNS("http://www.w3.org/2000/svg","svg"); // http://stackoverflow.com/questions/8215021/create-svg-tag-with-javascript
   svg.setAttributeNS("http://www.w3.org/2000/xmlns/","xmlns:xlink","http://www.w3.org/1999/xlink");
   svg.setAttributeNS(null,'viewBox','0 0 480 480');
@@ -48,7 +60,7 @@ var localStorage=window.localStorage||{setItem(prop,val){localStorage[prop]=val;
       document.removeEventListener("mouseup",mouseup,false);
       document.body.classList.remove('SHEEPDRAGGING');
       setTimeout(_=>document.body.removeChild(merp),200);
-      if (mousemoved) localStorage.sheepmenuposition=el.style.right.slice(0,-2)+','+el.style.bottom.slice(0,-2);
+      if (mousemoved) cookie.sheepmenuposition=el.style.right.slice(0,-2)+','+el.style.bottom.slice(0,-2);
       else if (el.classList.contains('SHEEPGLARE')) {
         alert('Do you like the red room?');
         window.location='/?js';
@@ -90,7 +102,7 @@ var localStorage=window.localStorage||{setItem(prop,val){localStorage[prop]=val;
       touchedAlready=false;
       clearTimeout(timeout);
       if (el.classList.contains('SHEEPREADYFORMENU')) el.classList.remove('SHEEPREADYFORMENU');
-      if (mousemoved) localStorage.sheepmenuposition=el.style.right.slice(0,-2)+','+el.style.bottom.slice(0,-2);
+      if (mousemoved) cookie.sheepmenuposition=el.style.right.slice(0,-2)+','+el.style.bottom.slice(0,-2);
       else if (+new Date()-pressstart<700) {
         el.id="SHEEPANIMATING";
         window.setTimeout(_=>window.location="https://sheeptester.github.io/",300);
@@ -143,8 +155,8 @@ var localStorage=window.localStorage||{setItem(prop,val){localStorage[prop]=val;
     e.preventDefault();
     return false;
   },{passive:false});
-  if (!window.localStorage.dismissed) {
-    window.localStorage.dismissed='{}';
+  if (!window.cookie.dismissed) {
+    window.cookie.dismissed='{}';
   }
 })();
 var SHEEP={
@@ -173,14 +185,14 @@ var SHEEP={
     }
     document.body.appendChild(s);
   },
-  dismissed:JSON.parse(window.localStorage.dismissed),
+  dismissed:JSON.parse(window.cookie.dismissed),
   dismiss(name) {
     SHEEP.dismissed[name]=1;
-    window.localStorage.dismissed=JSON.stringify(SHEEP.dismissed);
+    window.cookie.dismissed=JSON.stringify(SHEEP.dismissed);
   },
   undismiss(name) {
     SHEEP.dismissed[name]=0;
-    window.localStorage.dismissed=JSON.stringify(SHEEP.dismissed);
+    window.cookie.dismissed=JSON.stringify(SHEEP.dismissed);
   },
   textwidth(elem,text) {
     /*
@@ -371,7 +383,7 @@ var SHEEP={
   menu:{
     'go to index page':_=>window.location='https://sheeptester.github.io/',
     'reset little sheep position':_=>{
-      localStorage.sheepmenuposition='10-10';
+      cookie.sheepmenuposition='10-10';
       var t=document.querySelector('sheepmenu');
       t.style.right='10px';
       t.style.bottom='10px';
