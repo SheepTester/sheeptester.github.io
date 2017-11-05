@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>generate textures - loneli</title>
+    <meta charset="UTF-8">
+    <meta name="description" content="generate png with all tiles"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <style media="screen">
+      canvas {
+        -ms-interpolation-mode: bicubic;
+        image-rendering: -moz-crisp-edges;
+        image-rendering: -webkit-optimize-contrast;
+        image-rendering: crisp-edges;
+        image-rendering: pixelated;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="output"></canvas>
+    <script src="../../../../sheep.js" charset="utf-8"></script>
+    <script type="text/javascript">
+      var TILE_SIZE=32,
+      TEXTURE_PATH=['','.png'], // [prefix,suffix]
+      ITEMS_PER_ROW=10,
+      textures='ground1 ground2 ground3 shrub rock playerleft playerleftwalk playerright playerrightwalk'.split(' '),
+      canvas=document.querySelector('#output'),
+      c=canvas.getContext('2d');
+      if (textures[0]==='') textures.splice(0,1);
+      canvas.width=ITEMS_PER_ROW*TILE_SIZE;
+      canvas.height=Math.ceil(textures.length/ITEMS_PER_ROW)*TILE_SIZE;
+      for (var i=0;i<textures.length;i++) (i=>{
+        var img=new Image();
+        img.onload=e=>{
+          c.drawImage(img,(i%ITEMS_PER_ROW)*TILE_SIZE,Math.floor(i/ITEMS_PER_ROW)*TILE_SIZE,TILE_SIZE,TILE_SIZE);
+        };
+        img.src=TEXTURE_PATH[0]+textures[i]+TEXTURE_PATH[1];
+      })(i);
+    </script>
+  </body>
+</html>

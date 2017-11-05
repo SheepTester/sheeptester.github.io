@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Turkeys</title>
+    <meta charset="UTF-8">
+    <meta name="description" content="turkey shoot shoot game"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link rel="stylesheet" href="../../../javascripts/canvasfullscreen.css">
+    <style media="screen">
+      #vignette {
+        display: block;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: radial-gradient(transparent,black);
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="canvas" class="pixelated"></canvas>
+    <img src="images/all.png" alt=":(">
+    <div id="vignette"></div>
+
+    <script src="../../../sheep.js" charset="utf-8"></script>
+    <script src="../../../javascripts/canvasfullscreen.js" charset="utf-8"></script>
+    <script>
+var canvas=document.querySelector('#canvas'),
+c=canvas.getContext('2d'),
+images=document.querySelector('img'),
+config={
+  BLOCK_SIZE:32,
+  TILE_SIZE:128,
+  CHUNK_SIZE:16,
+  player:{
+    LEFT_X:5,
+    LEFT_Y:0,
+    LEFT_MOVE_X:6,
+    LEFT_MOVE_Y:0,
+    RIGHT_X:7,
+    RIGHT_Y:0,
+    RIGHT_MOVE_X:8,
+    RIGHT_MOVE_Y:0
+  }
+},
+scroll={x:0,y:0}, // in render units (pixels)
+player={x:1,y:1,right:0}, // in blocks/tiles
+tiles={
+  ground1:{x:0,y:0},
+  ground2:{x:1,y:0},
+  ground3:{x:2,y:0},
+  shrub:{x:3,y:0},
+  rock:{x:4,y:0,solid:1,hitbox:[0.2,0.25,0.8,0.8]}
+},
+chunks={},
+keys={};
+window.addEventListener("keydown",e=>{keys[e.keyCode]=true;},false);
+window.addEventListener("keyup",e=>{keys[e.keyCode]=false;},false);
+function generateChunk(chx,chy) {
+  var blocks=[],
+  grounds=['ground1','ground2','ground3','shrub'];
+  for (var i=0,square=config.CHUNK_SIZE*config.CHUNK_SIZE;i<square;i++) blocks.push(grounds[Math.floor(Math.random()*grounds.length)]);
+  for (var i=0;i<5;i++) blocks[Math.floor(Math.random()*blocks.length)]='rock'; // 1-5 rocks, but usually 5
+  chunks[`${chx},${chy}`]=blocks;
+}
+function mod(a,b) {
+  return a-Math.floor(a/b)*b;
+}
+function getBlock(x,y) {
+  return (chunks[`${Math.floor(x/config.CHUNK_SIZE)},${Math.floor(y/config.CHUNK_SIZE)}`]||{})[mod(x,config.CHUNK_SIZE)*config.CHUNK_SIZE+mod(y,config.CHUNK_SIZE)]||null;
+}
+generateChunk(0,0);
+function draw() {
+  var now=new Date().getTime(),t,
+  lastPos={x:player.x,y:player.y};
+  if (keys[37]) player.x-=0.05,player.right=false,player.lastMovement=now;
+  if (keys[38]) player.y-=0.05,player.lastMovement=now;
+  if (keys[39]) player.x+=0.05,player.right=true,player.lastMovement=now;
+  if (keys[40]) player.y+=0.05,player.lastMovement=now;
+  t=tiles[getBlock(Math.floor(player.x),Math.floor(player.y))];
+  if (t&&t.solid) {
+    var resetPos=true;
+    if (t.hitbox) {
+      var subx=mod(player.x,1),
+      suby=mod(player.y,1);
+      resetPos=subx>t.hitbox[0]&&subx<t.hitbox[2]&&suby>t.hitbox[1]&&suby<t.hitbox[3];
+    }
+    if (resetPos) player.x=lastPos.x,player.y=lastPos.y;
+  }
+  c.clearRect(0,0,innerWidth,innerHeight);
+  var blockoffsetx=Math.floor(scroll.x/config.TILE_SIZE),
+  blockoffsety=Math.floor(scroll.y/config.TILE_SIZE),
+  renderoffsetx=mod(scroll.x,config.TILE_SIZE),
+  renderoffsety=mod(scroll.y,config.TILE_SIZE);
+  for (var x=-1,xstop=innerWidth/config.TILE_SIZE;x<xstop;x++) for (var y=-1,ystop=innerHeight/config.TILE_SIZE;y<ystop;y++) {
+    t=tiles[getBlock(x-blockoffsetx,y-blockoffsety)];
+    if (t) c.drawImage(
+      images,
+      t.x*config.BLOCK_SIZE,
+      t.y*config.BLOCK_SIZE,
+      config.BLOCK_SIZE,
+      config.BLOCK_SIZE,
+      x*config.TILE_SIZE+renderoffsetx,
+      y*config.TILE_SIZE+renderoffsety,
+      config.TILE_SIZE,
+      config.TILE_SIZE
+    );
+  }
+  var useWalking=now-player.lastMovement<10?now%200<100:false;
+  c.drawImage(
+    images,
+    (player.right?(useWalking?config.player.RIGHT_MOVE_X:config.player.RIGHT_X):(useWalking?config.player.LEFT_MOVE_X:config.player.LEFT_X))*config.BLOCK_SIZE,
+    (player.right?(useWalking?config.player.RIGHT_MOVE_Y:config.player.RIGHT_Y):(useWalking?config.player.LEFT_MOVE_Y:config.player.LEFT_Y))*config.BLOCK_SIZE,
+    config.BLOCK_SIZE,
+    config.BLOCK_SIZE,
+    (player.x+blockoffsetx)*config.TILE_SIZE+renderoffsetx-config.TILE_SIZE/2,
+    (player.y+blockoffsety)*config.TILE_SIZE+renderoffsety-config.TILE_SIZE,
+    config.TILE_SIZE,
+    config.TILE_SIZE
+  );
+  scroll.x+=(innerWidth/2-player.x*config.TILE_SIZE-scroll.x)/5;
+  scroll.y+=(innerHeight/2-(player.y-0.5)*config.TILE_SIZE-scroll.y)/5;
+  window.requestAnimationFrame(draw);
+}
+images.addEventListener("load",e=>{
+  draw();
+},false);
+    </script>
+  </body>
+  <!-- MADE BY SEAN -->
+</html>

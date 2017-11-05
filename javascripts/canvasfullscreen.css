@@ -1,0 +1,19 @@
+html, body, canvas {
+  height: 100%;
+  width: 100%;
+}
+body {
+  margin: 0;
+  background-color: black;
+  font-size: 0;
+}
+.pixelated {
+  -ms-interpolation-mode: bicubic;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+  image-rendering: pixelated;
+}
+body>:not(canvas) {
+  display: none;
+}
