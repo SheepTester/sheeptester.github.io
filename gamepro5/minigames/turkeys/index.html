@@ -42,6 +42,15 @@ config={
     RIGHT_Y:0,
     RIGHT_MOVE_X:8,
     RIGHT_MOVE_Y:0
+  },turkey:{
+    LEFT_X:9,
+    LEFT_Y:0,
+    LEFT_MOVE_X:1,
+    LEFT_MOVE_Y:1,
+    RIGHT_X:0,
+    RIGHT_Y:1,
+    RIGHT_MOVE_X:2,
+    RIGHT_MOVE_Y:1
   }
 },
 scroll={x:0,y:0}, // in render units (pixels)
@@ -71,6 +80,52 @@ function getBlock(x,y) {
   return (chunks[`${Math.floor(x/config.CHUNK_SIZE)},${Math.floor(y/config.CHUNK_SIZE)}`]||{})[mod(x,config.CHUNK_SIZE)*config.CHUNK_SIZE+mod(y,config.CHUNK_SIZE)]||null;
 }
 generateChunk(0,0);
+var turkeys=[player];
+class Turkey {
+  constructor(x,y,now) {
+    this.x=x;
+    this.y=y;
+    this.right=!Math.floor(Math.random()*2);
+    this.lastMovement=now||new Date().getTime();
+    this.turkey=true;
+    this.direction=3; // 3: nowhere
+    this.moveTimeout=this.lastMovement+Math.floor(Math.random()*3000+500);
+  }
+  draw(blockoffsetx,blockoffsety,renderoffsetx,renderoffsety,now) {
+    var useWalking=now-this.lastMovement<100?now%200<100:false;
+    c.drawImage(
+      images,
+      (this.right?(useWalking?config.turkey.RIGHT_MOVE_X:config.turkey.RIGHT_X):(useWalking?config.turkey.LEFT_MOVE_X:config.turkey.LEFT_X))*config.BLOCK_SIZE,
+      (this.right?(useWalking?config.turkey.RIGHT_MOVE_Y:config.turkey.RIGHT_Y):(useWalking?config.turkey.LEFT_MOVE_Y:config.turkey.LEFT_Y))*config.BLOCK_SIZE,
+      config.BLOCK_SIZE,
+      config.BLOCK_SIZE,
+      (this.x+blockoffsetx)*config.TILE_SIZE+renderoffsetx-config.TILE_SIZE/2,
+      (this.y+blockoffsety)*config.TILE_SIZE+renderoffsety-config.TILE_SIZE,
+      config.TILE_SIZE,
+      config.TILE_SIZE
+    );
+    switch (this.direction) {
+      case 3:break;
+      default:
+        this.x+=(this.direction%3-1)*0.02;
+        this.y+=(Math.floor(this.direction/3)-1)*0.02;
+        this.lastMovement=now;
+    }
+    if (this.moveTimeout<now) {
+      this.direction=Math.floor(Math.random()*9);
+      this.moveTimeout=now+Math.floor(Math.random()*2000+500);
+      if (this.direction%3===0) this.right=false;
+      else if (this.direction%3===2) this.right=true;
+    }
+  }
+}
+turkeys.push(new Turkey(1,1));
+turkeys.push(new Turkey(1,1));
+turkeys.push(new Turkey(1,1));
+turkeys.push(new Turkey(1,1));
+turkeys.push(new Turkey(1,1));
+turkeys.push(new Turkey(1,1));
+turkeys.push(new Turkey(1,1));
 function draw() {
   var now=new Date().getTime(),t,
   lastPos={x:player.x,y:player.y};
@@ -107,18 +162,24 @@ function draw() {
       config.TILE_SIZE
     );
   }
-  var useWalking=now-player.lastMovement<10?now%200<100:false;
-  c.drawImage(
-    images,
-    (player.right?(useWalking?config.player.RIGHT_MOVE_X:config.player.RIGHT_X):(useWalking?config.player.LEFT_MOVE_X:config.player.LEFT_X))*config.BLOCK_SIZE,
-    (player.right?(useWalking?config.player.RIGHT_MOVE_Y:config.player.RIGHT_Y):(useWalking?config.player.LEFT_MOVE_Y:config.player.LEFT_Y))*config.BLOCK_SIZE,
-    config.BLOCK_SIZE,
-    config.BLOCK_SIZE,
-    (player.x+blockoffsetx)*config.TILE_SIZE+renderoffsetx-config.TILE_SIZE/2,
-    (player.y+blockoffsety)*config.TILE_SIZE+renderoffsety-config.TILE_SIZE,
-    config.TILE_SIZE,
-    config.TILE_SIZE
-  );
+  turkeys.sort((a,b)=>a.y-b.y);
+  for (var i=0;i<turkeys.length;i++) {
+    if (turkeys[i].turkey) turkeys[i].draw(blockoffsetx,blockoffsety,renderoffsetx,renderoffsety,now);
+    else {
+      var useWalking=now-player.lastMovement<100?now%200<100:false;
+      c.drawImage(
+        images,
+        (player.right?(useWalking?config.player.RIGHT_MOVE_X:config.player.RIGHT_X):(useWalking?config.player.LEFT_MOVE_X:config.player.LEFT_X))*config.BLOCK_SIZE,
+        (player.right?(useWalking?config.player.RIGHT_MOVE_Y:config.player.RIGHT_Y):(useWalking?config.player.LEFT_MOVE_Y:config.player.LEFT_Y))*config.BLOCK_SIZE,
+        config.BLOCK_SIZE,
+        config.BLOCK_SIZE,
+        (player.x+blockoffsetx)*config.TILE_SIZE+renderoffsetx-config.TILE_SIZE/2,
+        (player.y+blockoffsety)*config.TILE_SIZE+renderoffsety-config.TILE_SIZE,
+        config.TILE_SIZE,
+        config.TILE_SIZE
+      );
+    }
+  }
   scroll.x+=(innerWidth/2-player.x*config.TILE_SIZE-scroll.x)/5;
   scroll.y+=(innerHeight/2-(player.y-0.5)*config.TILE_SIZE-scroll.y)/5;
   window.requestAnimationFrame(draw);
