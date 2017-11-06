@@ -58,7 +58,11 @@ config={
   BULLET_LIFESPAN:3000,
   BULLET_COOLDOWN:500,
   SHAKINESS:10,
-  BULLET_SHAKE_TIME:200
+  BULLET_SHAKE_TIME:200,
+  EXPLOSION_ANIMATION:[[6,1],[7,1],[8,1]],
+  ITEM_BOBBLE_RADIUS:0.1,
+  ITEM_BOBBLE_SPEED:150,
+  ITEM_PICKUP_RADIUS:0.5
 },
 scroll={x:0,y:0,actualx:0,actualy:0,shakex:0,shakey:0,shaking:false}, // in render units (pixels)
 player={x:1,y:1,right:0}, // in blocks/tiles
@@ -88,17 +92,12 @@ function getBlock(x,y) {
 }
 generateChunk(0,0);
 var entities=[player];
-class Turkey {
-  constructor(x,y,now) {
+class Entity {
+  constructor(x,y) {
     this.x=x;
     this.y=y;
-    this.right=!Math.floor(Math.random()*2);
-    this.lastMovement=now||new Date().getTime();
-    this.direction=Math.floor(Math.random()*9); // 4: nowhere
-    this.moveTimeout=this.lastMovement+Math.floor(Math.random()*3000+500);
-    this.turkey=true;
   }
-  draw(blockoffsetx,blockoffsety,renderoffsetx,renderoffsety,now) {
+  render(blockoffsetx,blockoffsety,renderoffsetx,renderoffsety,now) {
     var renderPos=[
       (this.x+blockoffsetx)*config.TILE_SIZE+renderoffsetx-config.TILE_SIZE/2,
       (this.y+blockoffsety)*config.TILE_SIZE+renderoffsety-config.TILE_SIZE
@@ -107,8 +106,8 @@ class Turkey {
       var useWalking=now-this.lastMovement<100?now%200<100:false;
       c.drawImage(
         images,
-        (this.right?(useWalking?config.turkey.RIGHT_MOVE_X:config.turkey.RIGHT_X):(useWalking?config.turkey.LEFT_MOVE_X:config.turkey.LEFT_X))*config.BLOCK_SIZE,
-        (this.right?(useWalking?config.turkey.RIGHT_MOVE_Y:config.turkey.RIGHT_Y):(useWalking?config.turkey.LEFT_MOVE_Y:config.turkey.LEFT_Y))*config.BLOCK_SIZE,
+        (this.texturex)*config.BLOCK_SIZE,
+        (this.texturey)*config.BLOCK_SIZE,
         config.BLOCK_SIZE,
         config.BLOCK_SIZE,
         (this.x+blockoffsetx)*config.TILE_SIZE+renderoffsetx-config.TILE_SIZE/2,
@@ -117,6 +116,22 @@ class Turkey {
         config.TILE_SIZE
       );
     }
+  }
+}
+class Turkey extends Entity {
+  constructor(x,y,now) {
+    super(x,y);
+    this.right=!Math.floor(Math.random()*2);
+    this.lastMovement=now||new Date().getTime();
+    this.direction=Math.floor(Math.random()*9); // 4: nowhere
+    this.moveTimeout=this.lastMovement+Math.floor(Math.random()*3000+500);
+    this.turkey=true;
+  }
+  draw(renderInfo,now) {
+    var useWalking=now-this.lastMovement<100?now%200<100:false;
+    this.texturex=this.right?(useWalking?config.turkey.RIGHT_MOVE_X:config.turkey.RIGHT_X):(useWalking?config.turkey.LEFT_MOVE_X:config.turkey.LEFT_X);
+    this.texturey=this.right?(useWalking?config.turkey.RIGHT_MOVE_Y:config.turkey.RIGHT_Y):(useWalking?config.turkey.LEFT_MOVE_Y:config.turkey.LEFT_Y);
+    this.render(...renderInfo);
     switch (this.direction) {
       case 4:break;
       default:
@@ -143,35 +158,25 @@ class Turkey {
     }
   }
 }
-class Bullet {
+class Bullet extends Entity {
   constructor(x,y,direction,now) {
-    this.x=x;
-    this.y=y;
+    super(x,y);
     this.direction=direction;
     this.startTime=now||new Date().getTime();
     this.bullet=true;
   }
-  draw(blockoffsetx,blockoffsety,renderoffsetx,renderoffsety,now) {
-    var renderPos=[
-      (this.x+blockoffsetx)*config.TILE_SIZE+renderoffsetx-config.TILE_SIZE/2,
-      (this.y+blockoffsety)*config.TILE_SIZE+renderoffsety-config.TILE_SIZE
-    ];
-    if (renderPos[0]>=-config.TILE_SIZE&&renderPos[1]>=-config.TILE_SIZE&&renderPos[0]<=innerWidth&&renderPos[1]<=innerHeight) {
-      var frame=Math.floor(mod(now-this.startTime,300)/100);
-      c.drawImage(
-        images,
-        config.BULLET_ANIMATION[frame][0]*config.BLOCK_SIZE,
-        config.BULLET_ANIMATION[frame][1]*config.BLOCK_SIZE,
-        config.BLOCK_SIZE,
-        config.BLOCK_SIZE,
-        ...renderPos,
-        config.TILE_SIZE,
-        config.TILE_SIZE
-      );
-    }
+  draw(renderInfo,now) {
+    var frame=Math.floor(mod(now-this.startTime,300)/100);
+    this.texturex=config.BULLET_ANIMATION[frame][0];
+    this.texturey=config.BULLET_ANIMATION[frame][1];
+    this.render(...renderInfo);
     for (var i=0;i<entities.length;i++) {
-      if (entities[i].turkey&&this.isCloseEnough(this.x-entities[i].x,this.y-entities[i].y,config.BULLET_RADIUS)) {
+      if (entities[i].turkey&&isCloseEnough(this.x-entities[i].x,this.y-entities[i].y,config.BULLET_RADIUS)) {
+        entities.push(new DeadTurkey(entities[i].x,entities[i].y));
+        entities.push(new Explosion(entities[i].x,entities[i].y));
         entities[i].dead=true;
+        scroll.shaking=true;
+        player.stopShaking=now+config.BULLET_SHAKE_TIME;
       }
     }
     if (now-this.startTime>config.BULLET_LIFESPAN) {
@@ -181,8 +186,42 @@ class Bullet {
       this.y-=Math.cos(this.direction)*config.BULLET_SPEED;
     }
   }
-  isCloseEnough(xdif,ydif,radius) {
-    return xdif*xdif+ydif*ydif<=radius*radius;
+}
+function isCloseEnough(xdif,ydif,radius) {
+  return xdif*xdif+ydif*ydif<=radius*radius;
+}
+class Explosion extends Entity {
+  constructor(x,y,now) {
+    super(x,y);
+    this.startTime=now||new Date().getTime();
+  }
+  draw(renderInfo,now) {
+    var frame=Math.floor((now-this.startTime)/100);
+    if (frame<0) frame=0;
+    if (frame>2) {
+      this.dead=true;
+    } else {
+      this.texturex=config.EXPLOSION_ANIMATION[frame][0];
+      this.texturey=config.EXPLOSION_ANIMATION[frame][1];
+      this.render(...renderInfo);
+    }
+  }
+}
+class DeadTurkey extends Entity {
+  constructor(x,y,now) {
+    super(x,y);
+    this.basey=y+config.ITEM_BOBBLE_RADIUS;
+    this.startTime=now||new Date().getTime();
+    this.texturex=9;
+    this.texturey=1;
+  }
+  draw(renderInfo,now) {
+    this.y=Math.sin((now-this.startTime)/config.ITEM_BOBBLE_SPEED)*config.ITEM_BOBBLE_RADIUS+this.basey
+    this.render(...renderInfo);
+    if (isCloseEnough(player.x-this.x,player.y-this.y,config.ITEM_PICKUP_RADIUS)) {
+      console.log("+1 turkey");
+      this.dead=true;
+    }
   }
 }
 
@@ -250,7 +289,7 @@ function draw() {
   entities.sort((a,b)=>a.y-b.y);
   for (var i=0;i<entities.length;i++) {
     if (entities[i].dead) entities.splice(i--,1);
-    else if (entities[i].draw) entities[i].draw(blockoffsetx,blockoffsety,renderoffsetx,renderoffsety,now);
+    else if (entities[i].draw) entities[i].draw([blockoffsetx,blockoffsety,renderoffsetx,renderoffsety],now);
     else {
       var useWalking=now-player.lastMovement<100?now%200<100:false;
       c.drawImage(
