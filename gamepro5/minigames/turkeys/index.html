@@ -19,14 +19,14 @@
     </style>
   </head>
   <body>
-    <canvas id="canvas" class="pixelated"></canvas>
+    <canvas id="game" class="pixelated"></canvas>
     <img src="images/all.png" alt=":(">
     <div id="vignette"></div>
 
     <script src="../../../sheep.js" charset="utf-8"></script>
     <script src="../../../javascripts/canvasfullscreen.js" charset="utf-8"></script>
     <script>
-var canvas=document.querySelector('#canvas'),
+var canvas=document.querySelector('#game'),
 c=canvas.getContext('2d'),
 images=document.querySelector('img'),
 config={
@@ -78,7 +78,9 @@ tiles={
   ground2:{x:1,y:0},
   ground3:{x:2,y:0},
   shrub:{x:3,y:0},
-  rock:{x:4,y:0,solid:1,hitbox:[0.2,0.25,0.8,0.8]}
+  rock:{x:4,y:0,solid:1,hitbox:[0.2,0.25,0.8,0.8]},
+  trump:{x:5,y:2,solid:1},
+  flag:{x:6,y:2,solid:1}
 },
 chunks={},
 keys={};
@@ -89,6 +91,7 @@ function generateChunk(chx,chy) {
   grounds=['ground1','ground2','ground3','shrub'];
   for (var i=0,square=config.CHUNK_SIZE*config.CHUNK_SIZE;i<square;i++) blocks.push(grounds[Math.floor(Math.random()*grounds.length)]);
   for (var i=0;i<5;i++) blocks[Math.floor(Math.random()*blocks.length)]='rock'; // 1-5 rocks, but usually 5
+  if (chx===0&&chy===0) blocks[0]='trump',blocks[1]='flag';
   chunks[`${chx},${chy}`]=blocks;
 }
 function mod(a,b) {
@@ -117,16 +120,11 @@ class Entity {
     ];
     if (renderPos[0]>=-config.TILE_SIZE&&renderPos[1]>=-config.TILE_SIZE&&renderPos[0]<=innerWidth&&renderPos[1]<=innerHeight) {
       var useWalking=now-this.lastMovement<100?now%200<100:false;
-      c.drawImage(
-        images,
-        (this.texturex)*config.BLOCK_SIZE,
-        (this.texturey)*config.BLOCK_SIZE,
-        config.BLOCK_SIZE,
-        config.BLOCK_SIZE,
+      drawImage(
+        this.texturex,
+        this.texturey,
         (this.x+blockoffsetx)*config.TILE_SIZE+renderoffsetx-config.TILE_SIZE/2,
-        (this.y+blockoffsety)*config.TILE_SIZE+renderoffsety-config.TILE_SIZE,
-        config.TILE_SIZE,
-        config.TILE_SIZE
+        (this.y+blockoffsety)*config.TILE_SIZE+renderoffsety-config.TILE_SIZE
       );
     }
   }
@@ -311,6 +309,19 @@ entities.push(new Turkey(1,1));
 entities.push(new Turkey(1,1));
 entities.push(new Turkey(1,1));
 entities.push(new Turkey(1,1));
+function drawImage(texturex,texturey,x,y) {
+  c.drawImage(
+    images,
+    texturex*config.BLOCK_SIZE,
+    texturey*config.BLOCK_SIZE,
+    config.BLOCK_SIZE,
+    config.BLOCK_SIZE,
+    x,
+    y,
+    config.TILE_SIZE,
+    config.TILE_SIZE
+  );
+}
 function draw() {
   var now=new Date().getTime(),t,
   lastPos={x:player.x,y:player.y};
@@ -338,24 +349,19 @@ function draw() {
     if (resetPos) player.x=lastPos.x,player.y=lastPos.y;
   }
   c.clearRect(0,0,innerWidth,innerHeight);
-  scroll.x=scroll.actualx+scroll.shakex;
-  scroll.y=scroll.actualy+scroll.shakey;
+  scroll.x=Math.round(scroll.actualx+scroll.shakex);
+  scroll.y=Math.round(scroll.actualy+scroll.shakey);
   var blockoffsetx=Math.floor(scroll.x/config.TILE_SIZE),
   blockoffsety=Math.floor(scroll.y/config.TILE_SIZE),
   renderoffsetx=mod(scroll.x,config.TILE_SIZE),
   renderoffsety=mod(scroll.y,config.TILE_SIZE);
   for (var x=-1,xstop=innerWidth/config.TILE_SIZE;x<xstop;x++) for (var y=-1,ystop=innerHeight/config.TILE_SIZE;y<ystop;y++) {
     t=tiles[getBlock(x-blockoffsetx,y-blockoffsety)];
-    if (t) c.drawImage(
-      images,
-      t.x*config.BLOCK_SIZE,
-      t.y*config.BLOCK_SIZE,
-      config.BLOCK_SIZE,
-      config.BLOCK_SIZE,
+    if (t) drawImage(
+      t.x,
+      t.y,
       x*config.TILE_SIZE+renderoffsetx,
-      y*config.TILE_SIZE+renderoffsety,
-      config.TILE_SIZE,
-      config.TILE_SIZE
+      y*config.TILE_SIZE+renderoffsety
     );
     else {
       t=[Math.floor((x-blockoffsetx)/config.CHUNK_SIZE),Math.floor((y-blockoffsety)/config.CHUNK_SIZE)];
@@ -371,16 +377,11 @@ function draw() {
     else if (entities[i].draw) entities[i].draw([blockoffsetx,blockoffsety,renderoffsetx,renderoffsety],now);
     else {
       var useWalking=now-player.lastMovement<100?now%200<100:false;
-      c.drawImage(
-        images,
-        (player.right?(useWalking?config.player.RIGHT_MOVE_X:config.player.RIGHT_X):(useWalking?config.player.LEFT_MOVE_X:config.player.LEFT_X))*config.BLOCK_SIZE,
-        (player.right?(useWalking?config.player.RIGHT_MOVE_Y:config.player.RIGHT_Y):(useWalking?config.player.LEFT_MOVE_Y:config.player.LEFT_Y))*config.BLOCK_SIZE,
-        config.BLOCK_SIZE,
-        config.BLOCK_SIZE,
+      drawImage(
+        (player.right?(useWalking?config.player.RIGHT_MOVE_X:config.player.RIGHT_X):(useWalking?config.player.LEFT_MOVE_X:config.player.LEFT_X)),
+        (player.right?(useWalking?config.player.RIGHT_MOVE_Y:config.player.RIGHT_Y):(useWalking?config.player.LEFT_MOVE_Y:config.player.LEFT_Y)),
         (player.x+blockoffsetx)*config.TILE_SIZE+renderoffsetx-config.TILE_SIZE/2,
-        (player.y+blockoffsety)*config.TILE_SIZE+renderoffsety-config.TILE_SIZE,
-        config.TILE_SIZE,
-        config.TILE_SIZE
+        (player.y+blockoffsety)*config.TILE_SIZE+renderoffsety-config.TILE_SIZE
       );
     }
   }
