@@ -62,7 +62,14 @@ config={
   EXPLOSION_ANIMATION:[[6,1],[7,1],[8,1]],
   ITEM_BOBBLE_RADIUS:0.1,
   ITEM_BOBBLE_SPEED:150,
-  ITEM_PICKUP_RADIUS:0.5
+  ITEM_PICKUP_RADIUS:0.5,
+  SPIT_ANIMATION:[[1,2],[2,2],[3,2]],
+  TURKEY_HEALTH:4,
+  TURKEY_LOW_HEALTH:1,
+  REGEN_SPEED:3000,
+  SPIT_SPEED:500,
+  TURKEY_STOP_DISTANCE:1.5,
+  TURKEY_SPEED:0.02
 },
 scroll={x:0,y:0,actualx:0,actualy:0,shakex:0,shakey:0,shaking:false}, // in render units (pixels)
 player={x:1,y:1,right:0}, // in blocks/tiles
@@ -91,6 +98,12 @@ function getBlock(x,y) {
   return (chunks[`${Math.floor(x/config.CHUNK_SIZE)},${Math.floor(y/config.CHUNK_SIZE)}`]||{})[mod(x,config.CHUNK_SIZE)*config.CHUNK_SIZE+mod(y,config.CHUNK_SIZE)]||null;
 }
 generateChunk(0,0);
+function getDirection(ox,oy,dx,dy) {
+  return Math.atan((dx-ox)/(oy-dy))+Math.PI*(dy>oy);
+}
+function isCloseEnough(xdif,ydif,radius) {
+  return xdif*xdif+ydif*ydif<=radius*radius;
+}
 var entities=[player];
 class Entity {
   constructor(x,y) {
@@ -122,39 +135,89 @@ class Turkey extends Entity {
   constructor(x,y,now) {
     super(x,y);
     this.right=!Math.floor(Math.random()*2);
-    this.lastMovement=now||new Date().getTime();
+    this.spitTimeout=this.lastMovement=now||new Date().getTime();
     this.direction=Math.floor(Math.random()*9); // 4: nowhere
     this.moveTimeout=this.lastMovement+Math.floor(Math.random()*3000+500);
     this.turkey=true;
+    this.health=config.TURKEY_HEALTH;
+    this.mode='idc';
+    this.nextRegen=this.lastMovement+config.REGEN_SPEED;
   }
   draw(renderInfo,now) {
     var useWalking=now-this.lastMovement<100?now%200<100:false;
     this.texturex=this.right?(useWalking?config.turkey.RIGHT_MOVE_X:config.turkey.RIGHT_X):(useWalking?config.turkey.LEFT_MOVE_X:config.turkey.LEFT_X);
     this.texturey=this.right?(useWalking?config.turkey.RIGHT_MOVE_Y:config.turkey.RIGHT_Y):(useWalking?config.turkey.LEFT_MOVE_Y:config.turkey.LEFT_Y);
     this.render(...renderInfo);
-    switch (this.direction) {
-      case 4:break;
-      default:
-        var lastPos={x:this.x,y:this.y},t;
-        this.x+=(this.direction%3-1)*0.02;
-        this.y+=(Math.floor(this.direction/3)-1)*0.02;
-        this.lastMovement=now;
-        t=tiles[getBlock(Math.floor(this.x),Math.floor(this.y))];
-        if (t&&t.solid) {
-          var resetPos=true;
-          if (t.hitbox) {
-            var subx=mod(this.x,1),
-            suby=mod(this.y,1);
-            resetPos=subx>t.hitbox[0]&&subx<t.hitbox[2]&&suby>t.hitbox[1]&&suby<t.hitbox[3];
-          }
-          if (resetPos) this.x=lastPos.x,this.y=lastPos.y;
+    switch (this.mode) {
+      case 'idc':
+        switch (this.direction) {
+          case 4:break;
+          default:
+            var lastPos={x:this.x,y:this.y},t;
+            this.x+=(this.direction%3-1)*config.TURKEY_SPEED;
+            this.y+=(Math.floor(this.direction/3)-1)*config.TURKEY_SPEED;
+            this.lastMovement=now;
+            t=tiles[getBlock(Math.floor(this.x),Math.floor(this.y))];
+            if (t&&t.solid) {
+              var resetPos=true;
+              if (t.hitbox) {
+                var subx=mod(this.x,1),
+                suby=mod(this.y,1);
+                resetPos=subx>t.hitbox[0]&&subx<t.hitbox[2]&&suby>t.hitbox[1]&&suby<t.hitbox[3];
+              }
+              if (resetPos) this.x=lastPos.x,this.y=lastPos.y;
+            }
         }
+        if (this.moveTimeout<now) {
+          this.direction=Math.floor(Math.random()*9);
+          this.moveTimeout=now+Math.floor(Math.random()*2000+500);
+          if (this.direction%3===0) this.right=false;
+          else if (this.direction%3===2) this.right=true;
+        }
+        break;
+      case 'aggravate':
+        if (!isCloseEnough(player.x-this.x,player.y-this.y,config.TURKEY_STOP_DISTANCE)) {
+          if (this.x<player.x) this.x+=config.TURKEY_SPEED;
+          else if (this.x>player.x) this.x-=config.TURKEY_SPEED;
+          if (this.y<player.y) this.y+=config.TURKEY_SPEED;
+          else if (this.y>player.y) this.y-=config.TURKEY_SPEED;
+        }
+        if (this.x<player.x) this.right=true;
+        else if (this.x>player.x) this.right=false;
+        if (this.spitTimeout<now) {
+          entities.push(new Spit(this.x,this.y,getDirection(this.x,this.y,player.x,player.y)));
+          this.spitTimeout=now+config.SPIT_SPEED;
+        }
+        break;
+      case 'flee':
+        if (this.x<player.x) this.x-=config.TURKEY_SPEED,this.right=false;
+        else if (this.x>player.x) this.x+=config.TURKEY_SPEED,this.right=true;
+        if (this.y<player.y) this.y-=config.TURKEY_SPEED;
+        else if (this.y>player.y) this.y+=config.TURKEY_SPEED;
+        break;
     }
-    if (this.moveTimeout<now) {
-      this.direction=Math.floor(Math.random()*9);
-      this.moveTimeout=now+Math.floor(Math.random()*2000+500);
-      if (this.direction%3===0) this.right=false;
-      else if (this.direction%3===2) this.right=true;
+    if (this.nextRegen<now) {
+      this.nextRegen=now+config.REGEN_SPEED;
+      if (this.health<config.TURKEY_HEALTH) this.health++;
+    }
+  }
+  get health() {
+    return this._health;
+  }
+  set health(x) {
+    this._health=x;
+    if (x<=0) {
+      entities.push(new Item(this.x,this.y,[9,1],now=>{
+        console.log("+1 turkey");
+      }));
+      entities.push(new Explosion(this.x,this.y));
+      this.dead=true;
+    } else if (x<=config.TURKEY_LOW_HEALTH) {
+      this.mode='flee';
+    } else if (x<config.TURKEY_HEALTH) {
+      this.mode='aggravate';
+    } else {
+      this.mode='idc';
     }
   }
 }
@@ -164,21 +227,14 @@ class Bullet extends Entity {
     this.direction=direction;
     this.startTime=now||new Date().getTime();
     this.bullet=true;
+    this.textures=config.BULLET_ANIMATION;
   }
   draw(renderInfo,now) {
     var frame=Math.floor(mod(now-this.startTime,300)/100);
-    this.texturex=config.BULLET_ANIMATION[frame][0];
-    this.texturey=config.BULLET_ANIMATION[frame][1];
+    this.texturex=this.textures[frame][0];
+    this.texturey=this.textures[frame][1];
     this.render(...renderInfo);
-    for (var i=0;i<entities.length;i++) {
-      if (entities[i].turkey&&isCloseEnough(this.x-entities[i].x,this.y-entities[i].y,config.BULLET_RADIUS)) {
-        entities.push(new DeadTurkey(entities[i].x,entities[i].y));
-        entities.push(new Explosion(entities[i].x,entities[i].y));
-        entities[i].dead=true;
-        scroll.shaking=true;
-        player.stopShaking=now+config.BULLET_SHAKE_TIME;
-      }
-    }
+    this.check(now);
     if (now-this.startTime>config.BULLET_LIFESPAN) {
       this.dead=true;
     } else {
@@ -186,9 +242,31 @@ class Bullet extends Entity {
       this.y-=Math.cos(this.direction)*config.BULLET_SPEED;
     }
   }
+  check(now) {
+    for (var i=0;i<entities.length;i++) {
+      if (entities[i].turkey&&isCloseEnough(this.x-entities[i].x,this.y-entities[i].y,config.BULLET_RADIUS)) {
+        entities[i].health--;
+        this.dead=true;
+        scroll.shaking=true;
+        player.stopShaking=now+config.BULLET_SHAKE_TIME;
+      }
+    }
+  }
 }
-function isCloseEnough(xdif,ydif,radius) {
-  return xdif*xdif+ydif*ydif<=radius*radius;
+class Spit extends Bullet {
+  constructor(x,y,direction,now) {
+    super(x,y,direction,now);
+    this.textures=config.SPIT_ANIMATION;
+  }
+  check(now) {
+    if (isCloseEnough(this.x-player.x,this.y-player.y,config.BULLET_RADIUS)) {
+      console.log("-1 health");
+      entities.push(new Explosion(player.x,player.y));
+      this.dead=true;
+      scroll.shaking=true;
+      player.stopShaking=now+config.BULLET_SHAKE_TIME;
+    }
+  }
 }
 class Explosion extends Entity {
   constructor(x,y,now) {
@@ -207,19 +285,20 @@ class Explosion extends Entity {
     }
   }
 }
-class DeadTurkey extends Entity {
-  constructor(x,y,now) {
+class Item extends Entity {
+  constructor(x,y,texturePos,onPickup,now) {
     super(x,y);
     this.basey=y+config.ITEM_BOBBLE_RADIUS;
     this.startTime=now||new Date().getTime();
-    this.texturex=9;
-    this.texturey=1;
+    this.texturex=texturePos[0];
+    this.texturey=texturePos[1];
+    this.onpickup=onPickup;
   }
   draw(renderInfo,now) {
     this.y=Math.sin((now-this.startTime)/config.ITEM_BOBBLE_SPEED)*config.ITEM_BOBBLE_RADIUS+this.basey
     this.render(...renderInfo);
     if (isCloseEnough(player.x-this.x,player.y-this.y,config.ITEM_PICKUP_RADIUS)) {
-      console.log("+1 turkey");
+      if (this.onpickup) this.onpickup(now);
       this.dead=true;
     }
   }
