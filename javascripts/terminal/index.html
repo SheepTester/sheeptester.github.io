@@ -27,6 +27,9 @@
         padding: 0;
         list-style: none;
       }
+      .everything > li {
+        min-height: 1.5em;
+      }
       #input {
         position: fixed;
         top: 100%;
@@ -228,9 +231,39 @@ function fromPath(directory,path) {
     directory:directory
   }
 }
-function evaluate(string) {
+function evaluate(inputstring) {
   try {
-    string=string.trim().split(/\s+/);
+    // string=string.trim().split(/\s+/);
+    inputstring=inputstring.trim();
+    var string=[''],
+    inString=false,
+    backslashes=0;
+    for (var i=0;i<inputstring.length;i++) {
+      if (inString) {
+        if (inputstring[i]==='\\') backslashes++;
+        else {
+          var doContinue=true;
+          if (backslashes>0) {
+            string[string.length-1]+='\\'.repeat(Math.floor(backslashes/2));
+            if (backslashes%2===0) {
+              if (inputstring[i]==='"') inString=false,doContinue=false;
+            } else {
+              if (inputstring[i]==='n') string[string.length-1]+='\n',doContinue=false;
+              else if (inputstring[i]==='t') string[string.length-1]+='\t',doContinue=false;
+            }
+            backslashes=0;
+          }
+          if (doContinue) string[string.length-1]+=inputstring[i];
+        }
+      } else {
+        if (/\s/.test(inputstring[i])) {
+          if (string[string.length-1]!=='') string.push('');
+        } else if (inputstring[i]==='"'&&string[string.length-1]==='') {
+          inString=true;
+        } else string[string.length-1]+=inputstring[i];
+      }
+    }
+    console.log(string);
     switch (string[0]) {
       case 'list':
         for (var i=0;i<currentFile.length;i++) {
@@ -282,12 +315,15 @@ function evaluate(string) {
         newLine(`<strong>list</strong> - lists files and directories in current directory`);
         newLine(`<strong>go [path]</strong> - goes to specified path; .. goes to the parent directory`);
         newLine(`<strong>loc</strong> - prints current directory`);
-        newLine(`<strong>create [name]</strong> - creates file`);
+        newLine(`<strong>cre [name]</strong> - creates file`);
+        newLine(`<strong>see [name]</strong> - outputs file contents`);
+        newLine(`<strong>del [name]</strong> - deletes file`);
+        newLine(`<strong>line [name] [line-number] (content)</strong> - sets line of file (zero-indexed)`);
         break;
       case 'loc':
         newLine(pathname);
         break;
-      case 'create':
+      case 'cre':
         if (string[1]) currentFile.add(new File(string[1]));
         else newLine(`<span class="error">What to call the file?</span>`);
         break;
@@ -300,6 +336,31 @@ function evaluate(string) {
           } else newLine(`<span class="error">File doesn't exist.</span>`);
         }
         else newLine(`<span class="error">Which file to see?</span>`);
+        break;
+      case 'del':
+        if (string[1]) {
+          var file=fromPath(currentFile,string[1]);
+          if (file.directory.files[file.file]) {
+            file.directory.remove(file.directory.files[file.file]);
+          } else newLine(`<span class="error">File doesn't exist.</span>`);
+        }
+        else newLine(`<span class="error">Which file to delete?</span>`);
+        break;
+      case 'line':
+        if (string[1]) {
+          var file=fromPath(currentFile,string[1]);
+          if (!file.directory.files[file.file]) newLine(`<span class="error">File doesn't exist.</span>`);
+          else if (string[2]) {
+            string[2]=+string[2];
+            var lines=file.directory.files[file.file].content.split(/\r?\n/);
+            if (string[2]<0) newLine(`<span class="error">Line out of range</span>`);
+            else {
+              if (string[2]>=lines.length) for (var i=lines.length;i<string[2];i++) lines[i]='';
+              lines[string[2]]=string[3]||'';
+              file.directory.files[file.file].content=lines.join('\n');
+            }
+          } else newLine(`<span class="error">Which line?</span>`);
+        } else newLine(`<span class="error">Which file?</span>`);
         break;
       default:
         newLine(`<span class="error">Unknown command <strong>${string[0]}</strong>.</span>`);
