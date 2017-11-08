@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Terminal</title>
+    <meta charset="UTF-8">
+    <meta name="description" content="I don't know how to terminal"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link href="https://fonts.googleapis.com/css?family=Inconsolata" rel="stylesheet">
+    <style>
+      html, body {
+        height: 100%;
+        width: 100%;
+      }
+      body {
+        margin: 0;
+        background-color: #41444d;
+        font-family: 'Inconsolata', monospace;
+        line-height: 1.5;
+        font-size: 15px;
+        color: white;
+        word-break: break-all;
+      }
+      .everything {
+        white-space: pre-wrap;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+      #input {
+        position: fixed;
+        top: 100%;
+      }
+      .leftinput::after {
+        content: '';
+        width: 1ch;
+        height: 1em;
+        display: inline-block;
+        vertical-align: text-top;
+        background-color: rgba(255,255,255,0.5);
+        border-left: 1px solid white;
+        box-sizing: border-box;
+        animation: blink .53s cubic-bezier(1,0,0,1) infinite alternate;
+      }
+      .leftinput.typing::after {
+        animation: none;
+      }
+      @keyframes blink {
+        from {opacity:1;}
+        to {opacity:0;}
+      }
+      .rightinput {
+        margin-left: -1ch;
+      }
+      .error {
+        background-color: rgba(0,0,0,0.3);
+        color: #fd4e4e;
+      }
+    </style>
+  </head>
+  <body>
+    <input type="text" id="input" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+    <ul class="everything"></ul>
+
+    <script src="../../sheep.js" charset="utf-8"></script>
+    <script>
+class Directory extends Array {
+  constructor(name,...files) {
+    super(...files);
+    this.name=name;
+    this.isDirectory=true;
+    this.directories={};
+    this.files={};
+    for (var i=0;i<this.length;i++) if (typeof this[i]==='object') {
+      this[i].parent=this;
+      if (this[i].isDirectory) this.directories[this[i].name]=this[i];
+      if (this[i].isFile) this.files[this[i].name]=this[i];
+    }
+  }
+  add(file) {
+    this.push(file);
+    if (typeof file==='object') {
+      file.parent=this;
+      if (file.isDirectory) this.directories[file.name]=file;
+      if (file.isFile) this.files[file.name]=file;
+    }
+  }
+  remove(file) {
+    if (~this.indexOf(file)) {
+      this.splice(this.indexOf(file),1);
+      if (typeof file==='object') {
+        file.parent=null;
+        if (file.isDirectory) delete this.directories[file.name];
+        if (file.isFile) delete this.files[file.name];
+      }
+    }
+  }
+}
+class File {
+  constructor(name,content='') {
+    this.name=name;
+    this.content=content;
+    this.isFile=true;
+  }
+}
+var input=document.querySelector('#input'),
+fakeinput=document.createElement("span"),
+rightinput=document.createElement("span"),
+terminal=document.querySelector('.everything'),
+pathname='root/',
+files=new Directory(
+  'root',
+  new Directory(
+    'test',
+    new File('test.txt','hi')
+  ),
+  new Directory(
+    'oled_screens',
+    new File('wow.txt','good'),
+    new File('lol.txt','happiness')
+  ),
+  new File('wee.txt','wat')
+),
+currentFile=files,
+cmdHistory=[],
+temporaryHistoryPos;
+newLine(`Welcome to SheepTester Generic Terminal! Type <strong>help</strong> to see a list of commands.`);
+newLine(pathname+': ',true);
+fakeinput.classList.add('leftinput');
+rightinput.classList.add('rightinput');
+input.value=' ';
+input.focus();
+input.addEventListener("input",e=>{
+  if (input.value.length<1) fakeinput.textContent=fakeinput.textContent.slice(0,-1);
+  else fakeinput.textContent+=input.value.slice(1);
+  input.value=' ';
+},false);
+input.addEventListener("keydown",e=>{
+  var cancel=true;
+  fakeinput.classList.add('typing');
+  switch (e.keyCode) {
+    case 9:
+      break;
+    case 37:
+      if (fakeinput.textContent.length>0) {
+        rightinput.textContent=fakeinput.textContent[fakeinput.textContent.length-1]+rightinput.textContent;
+        fakeinput.textContent=fakeinput.textContent.slice(0,-1);
+      }
+      break;
+    case 39:
+      if (rightinput.textContent.length>0) {
+        fakeinput.textContent+=rightinput.textContent[0];
+        rightinput.textContent=rightinput.textContent.slice(1);
+      }
+      break;
+    case 38:
+      if (temporaryHistoryPos>0) {
+        temporaryHistoryPos--;
+        fakeinput.innerHTML=cmdHistory[temporaryHistoryPos];
+        rightinput.innerHTML='';
+      }
+      break;
+    case 40:
+      if (temporaryHistoryPos<cmdHistory.length-1) {
+        temporaryHistoryPos++;
+        fakeinput.innerHTML=cmdHistory[temporaryHistoryPos];
+        rightinput.innerHTML='';
+      }
+      break;
+    case 13:
+      cmdHistory.push(fakeinput.innerHTML+rightinput.innerHTML);
+      evaluate(fakeinput.innerHTML+rightinput.innerHTML);
+      newLine(pathname+': ',true);
+      break;
+    default:
+      cancel=false;
+  }
+  if (cancel) {
+    e.preventDefault();
+    return false;
+  }
+},false);
+input.addEventListener("keyup",e=>{
+  fakeinput.classList.remove('typing');
+},false);
+input.addEventListener("blur",e=>{
+  input.focus();
+},false);
+function newLine(content,isPrompt) {
+  var li=document.createElement("li");
+  li.innerHTML=content;
+  if (isPrompt) {
+    if (terminal.contains(fakeinput)) {
+      var parent=fakeinput.parentNode;
+      parent.removeChild(fakeinput);
+      parent.removeChild(rightinput);
+      parent.innerHTML+=fakeinput.innerHTML+rightinput.innerHTML;
+      fakeinput.innerHTML=rightinput.innerHTML='';
+    }
+    li.appendChild(fakeinput);
+    li.appendChild(rightinput);
+    temporaryHistoryPos=cmdHistory.length;
+  }
+  terminal.appendChild(li);
+  li.scrollIntoView();
+}
+function fromPath(directory,path) {
+  path=path.split('/');
+  for (var i=0;i<path.length-1;i++) {
+    if (i===0) {
+      switch (path[i]) {
+        case '':
+          directory=files;
+          break;
+        case '.': break;
+        case '..':
+          if (directory.parent) {
+            directory=directory.parent;
+          }
+          break;
+        default:
+          if (directory.directories[path[i]]) directory=directory.directories[path[i]];
+      }
+    } else if (directory.directories[path[i]]) directory=directory.directories[path[i]];
+  }
+  return {
+    file:path[path.length-1],
+    directory:directory
+  }
+}
+function evaluate(string) {
+  try {
+    string=string.trim().split(/\s+/);
+    switch (string[0]) {
+      case 'list':
+        for (var i=0;i<currentFile.length;i++) {
+          if (currentFile[i].isDirectory) newLine(currentFile[i].name+'/');
+          else newLine(currentFile[i].name);
+        }
+        break;
+      case 'go':
+        if (string[1]) {
+          var directories=string[1].split('/');
+          loop:
+          for (var i=0;i<directories.length;i++) {
+            if (i===0) {
+              switch (directories[i]) {
+                case '':
+                  currentFile=files,pathname='root/';
+                  break;
+                case '.': break;
+                case '..':
+                  if (currentFile.parent) {
+                    currentFile=currentFile.parent;
+                    pathname=pathname.slice(0,pathname.slice(0,-1).lastIndexOf('/')+1);
+                  } else {
+                    newLine(`<span class="error">Can't go outside of root.</span>`);
+                    break loop;
+                  }
+                  break;
+                default:
+                  if (currentFile.directories[directories[i]]) currentFile=currentFile.directories[directories[i]],pathname+=currentFile.name+'/';
+                  else {
+                    newLine(`<span class="error">Directory doesn't exist</span>`);
+                    break loop;
+                  }
+              }
+            }
+            else if (currentFile.directories[directories[i]]) currentFile=currentFile.directories[directories[i]],pathname+=currentFile.name+'/';
+            else {
+              newLine(`<span class="error">Directory doesn't exist</span>`);
+              break loop;
+            }
+          }
+        } else {
+          newLine(`<span class="error">Go where?</span>`);
+        }
+        break;
+      case 'help':
+        newLine(`Implemented commands:`);
+        newLine(`<strong>help</strong> - lists implemented commands`);
+        newLine(`<strong>list</strong> - lists files and directories in current directory`);
+        newLine(`<strong>go [path]</strong> - goes to specified path; .. goes to the parent directory`);
+        newLine(`<strong>loc</strong> - prints current directory`);
+        newLine(`<strong>create [name]</strong> - creates file`);
+        break;
+      case 'loc':
+        newLine(pathname);
+        break;
+      case 'create':
+        if (string[1]) currentFile.add(new File(string[1]));
+        else newLine(`<span class="error">What to call the file?</span>`);
+        break;
+      case 'see':
+        if (string[1]) {
+          var file=fromPath(currentFile,string[1]);
+          if (file.directory.files[file.file]) {
+            var lines=file.directory.files[file.file].content.split(/\r?\n/);
+            for (var i=0;i<lines.length;i++) newLine(lines[i].replace(/</g,'&lt;').replace(/>/g,'&gt;'));
+          } else newLine(`<span class="error">File doesn't exist.</span>`);
+        }
+        else newLine(`<span class="error">Which file to see?</span>`);
+        break;
+      default:
+        newLine(`<span class="error">Unknown command <strong>${string[0]}</strong>.</span>`);
+    }
+  } catch (e) {
+    newLine(`<span class="error">System error: ${e}</span>`);
+  }
+}
+    </script>
+  </body>
+  <!-- MADE BY SEAN -->
+</html>
