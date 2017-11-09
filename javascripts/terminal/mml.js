@@ -1,5 +1,10 @@
 function mml(mml,width=80,outputs={}) {
   mml=mml.split(/\r?\n/);
+  mml.meta={
+    scripts:[],
+    inits:[],
+    title:'Untitled'
+  };
   function entify(text) {
     return text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
   }
@@ -36,6 +41,18 @@ function mml(mml,width=80,outputs={}) {
           case 'flex':
             tagPositions.flexes.push(nodes.length-1);
             nodes[nodes.length-1]=value;
+            break;
+          case 'meta-script':
+            mml.meta.scripts.push(value);
+            nodes.splice(-1,1);
+            break;
+          case 'meta-init':
+            mml.meta.inits.push(value);
+            nodes.splice(-1,1);
+            break;
+          case 'meta-title':
+            mml.meta.title=value;
+            nodes.splice(-1,1);
             break;
           default:
             nodes.splice(-1,1);

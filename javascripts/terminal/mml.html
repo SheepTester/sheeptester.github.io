@@ -76,7 +76,8 @@
     <script src="mml.js" charset="utf-8"></script>
     <script>
 var terminal=document.querySelector('.everything'),
-ch=document.querySelector('#ch');
+ch=document.querySelector('#ch'),
+title=document.querySelector('title');
 function newLine(content) {
   var li=document.createElement("li");
   li.innerHTML=content;
@@ -91,11 +92,17 @@ function resize() {
 |<flex: >Welcome to our website!<flex: >|
 |<flex: >See a list of pages <style:1#00F><tags:link1>here<tags:><style:reset>.<flex: >|
 |<flex: ><style:1#00F><tags:calc>Add numbers!<tags:><style:reset> Sum: <style:--1><output:sum><style:reset><flex: >|
-+<flex:->+`,Math.floor(document.body.clientWidth/ch.getBoundingClientRect().width));
++<flex:->+`,Math.floor(document.body.clientWidth/ch.getBoundingClientRect().width)-1);
+  console.log(result.meta);
+  title.textContent=result.meta.title;
+  terminal.innerHTML='';
   for (var i=0;i<result.length;i++) newLine(result[i]);
 }
 resize();
 window.addEventListener("resize",resize,false);
+terminal.addEventListener("click",e=>{
+  if (e.target.classList.length) console.log(e.target.classList);
+},false);
     </script>
   </body>
   <!-- MADE BY SEAN -->

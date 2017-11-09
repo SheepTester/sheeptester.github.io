@@ -1,0 +1,8 @@
+<meta-title:Hello world!><meta-script:helloworld.ms><meta-init:init>
++<flex:->+
+|<flex: ><style:--1>Hello world!<style:reset><flex: >|
++<flex:->+
+|<flex: >Welcome to our website!<flex: >|
+|<flex: >See a list of pages <style:1#00F><tags:link1>here<tags:><style:reset>.<flex: >|
+|<flex: ><style:1#00F><tags:calc>Add numbers!<tags:><style:reset> Sum: <style:--1><output:sum><style:reset><flex: >|
++<flex:->+

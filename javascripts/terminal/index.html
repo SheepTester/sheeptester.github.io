@@ -323,6 +323,7 @@ function evaluate(inputstring) {
         newLine(`<strong>see [name]</strong> - outputs file contents`);
         newLine(`<strong>del [name] (-d)</strong> - deletes file (or directory)`);
         newLine(`<strong>line [name] [line-number] (content)</strong> - sets line of file (zero-indexed)`);
+        newLine(`<strong>ajax [url] (file)</strong> - gets content of webpage and appends it to the file if given`);
         break;
       case 'loc':
         newLine(pathname);
@@ -378,11 +379,28 @@ function evaluate(inputstring) {
           } else newLine(`<span class="error">Which line?</span>`);
         } else newLine(`<span class="error">Which file?</span>`);
         break;
+      case 'ajax':
+        if (string[1]) {
+          SHEEP.ajax(string[1],e=>{
+            if (string[2]) {
+              var file=fromPath(currentFile,string[2]);
+              if (file.directory.files[file.file]) {
+                file.directory.files[file.file].content+=e;
+              } else newLine(`<span class="error">File doesn't exist.</span>`);
+            } else {
+              var lines=e.split(/\r?\n/);
+              for (var i=0;i<lines.length;i++) newLine(lines[i].replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'));
+            }
+          },e=>{
+            newLine(`<span class="error">AJAX error: ${e}</span>`);
+          });
+        } else newLine(`<span class="error">Please specify a URL.</span>`);
+        break;
       default:
         newLine(`<span class="error">Unknown command <strong>${string[0]}</strong>.</span>`);
     }
   } catch (e) {
-    newLine(`<span class="error">System error: ${e}</span>`);
+    newLine(`<span class="error">JavaScript error: ${e}</span>`);
   }
 }
     </script>
