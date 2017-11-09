@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>MML</title>
+    <meta charset="UTF-8">
+    <meta name="description" content="MML renderer"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <style>
+      html, body {
+        height: 100%;
+        width: 100%;
+      }
+      body {
+        margin: 0;
+        background-color: #2e241a;
+        font-family: 'Inconsolata', monospace;
+        line-height: 1.5;
+        font-size: 15px;
+        color: #cab7a0;
+        word-break: break-all;
+      }
+      .everything {
+        white-space: pre-wrap;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+      .everything > li {
+        min-height: 1.5em;
+      }
+      #input {
+        position: fixed;
+        top: 100%;
+      }
+      .leftinput::after {
+        content: '';
+        width: 1ch;
+        height: 1em;
+        display: inline-block;
+        vertical-align: text-top;
+        background-color: rgba(255,255,255,0.5);
+        border-left: 1px solid white;
+        box-sizing: border-box;
+        animation: blink .53s cubic-bezier(1,0,0,1) infinite alternate;
+      }
+      .leftinput.typing::after {
+        animation: none;
+      }
+      @keyframes blink {
+        from {opacity:1;}
+        to {opacity:0;}
+      }
+      .rightinput {
+        margin-left: -1ch;
+      }
+      .error {
+        background-color: rgba(0,0,0,0.3);
+        color: #fd4e4e;
+      }
+      #ch {
+        position: fixed;
+        top: 100%;
+        width: 1ch;
+      }
+      :focus {
+        background-color: rgba(255,255,255,0.3);
+      }
+    </style>
+  </head>
+  <body>
+    <ul class="everything"></ul>
+    <span id="ch"></span>
+
+    <script src="../../sheep.js" charset="utf-8"></script>
+    <script src="mml.js" charset="utf-8"></script>
+    <script>
+var terminal=document.querySelector('.everything'),
+ch=document.querySelector('#ch');
+function newLine(content) {
+  var li=document.createElement("li");
+  li.innerHTML=content;
+  terminal.appendChild(li);
+  li.scrollIntoView();
+}
+function resize() {
+  var result=mml(`<meta-title:Hello world!><meta-script:helloworld.ms><meta-init:init>
++<flex:->+
+|<flex: ><style:--1>Hello world!<style:reset><flex: >|
++<flex:->+
+|<flex: >Welcome to our website!<flex: >|
+|<flex: >See a list of pages <style:1#00F><tags:link1>here<tags:><style:reset>.<flex: >|
+|<flex: ><style:1#00F><tags:calc>Add numbers!<tags:><style:reset> Sum: <style:--1><output:sum><style:reset><flex: >|
++<flex:->+`,Math.floor(document.body.clientWidth/ch.getBoundingClientRect().width));
+  for (var i=0;i<result.length;i++) newLine(result[i]);
+}
+resize();
+window.addEventListener("resize",resize,false);
+    </script>
+  </body>
+  <!-- MADE BY SEAN -->
+</html>

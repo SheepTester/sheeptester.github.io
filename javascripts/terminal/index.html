@@ -13,11 +13,11 @@
       }
       body {
         margin: 0;
-        background-color: #41444d;
+        background-color: #2e241a;
         font-family: 'Inconsolata', monospace;
         line-height: 1.5;
         font-size: 15px;
-        color: white;
+        color: #cab7a0;
         word-break: break-all;
       }
       .everything {
@@ -127,7 +127,7 @@ files=new Directory(
 currentFile=files,
 cmdHistory=[],
 temporaryHistoryPos;
-newLine(`Welcome to SheepTester Generic Terminal! Type <strong>help</strong> to see a list of commands.`);
+newLine(`<span style="color:#6582b3;">Welcome to SheepTester Generic Terminal! Type <strong>help</strong> to see a list of commands.</span>`);
 newLine(pathname+': ',true);
 fakeinput.classList.add('leftinput');
 rightinput.classList.add('rightinput');
@@ -172,7 +172,7 @@ input.addEventListener("keydown",e=>{
       break;
     case 13:
       cmdHistory.push(fakeinput.innerHTML+rightinput.innerHTML);
-      evaluate(fakeinput.innerHTML+rightinput.innerHTML);
+      evaluate(fakeinput.textContent+rightinput.textContent);
       newLine(pathname+': ',true);
       break;
     default:
@@ -193,15 +193,17 @@ function newLine(content,isPrompt) {
   var li=document.createElement("li");
   li.innerHTML=content;
   if (isPrompt) {
+    var span=document.createElement("span");
+    span.style.color='#d0c553';
     if (terminal.contains(fakeinput)) {
       var parent=fakeinput.parentNode;
-      parent.removeChild(fakeinput);
-      parent.removeChild(rightinput);
-      parent.innerHTML+=fakeinput.innerHTML+rightinput.innerHTML;
+      parent.replaceChild(document.createTextNode(fakeinput.textContent),fakeinput);
+      parent.replaceChild(document.createTextNode(rightinput.textContent),rightinput);
       fakeinput.innerHTML=rightinput.innerHTML='';
     }
-    li.appendChild(fakeinput);
-    li.appendChild(rightinput);
+    span.appendChild(fakeinput);
+    span.appendChild(rightinput);
+    li.appendChild(span);
     temporaryHistoryPos=cmdHistory.length;
   }
   terminal.appendChild(li);
@@ -246,24 +248,26 @@ function evaluate(inputstring) {
           if (backslashes>0) {
             string[string.length-1]+='\\'.repeat(Math.floor(backslashes/2));
             if (backslashes%2===0) {
-              if (inputstring[i]==='"') inString=false,doContinue=false;
+              if (inputstring[i]===inString) inString=false,doContinue=false;
             } else {
               if (inputstring[i]==='n') string[string.length-1]+='\n',doContinue=false;
               else if (inputstring[i]==='t') string[string.length-1]+='\t',doContinue=false;
             }
             backslashes=0;
           }
-          if (doContinue) string[string.length-1]+=inputstring[i];
+          if (doContinue) {
+            if (inputstring[i]===inString) inString=false;
+            else string[string.length-1]+=inputstring[i];
+          }
         }
       } else {
         if (/\s/.test(inputstring[i])) {
           if (string[string.length-1]!=='') string.push('');
-        } else if (inputstring[i]==='"'&&string[string.length-1]==='') {
-          inString=true;
+        } else if ((inputstring[i]==='"'||inputstring[i]==="'")&&string[string.length-1]==='') {
+          inString=inputstring[i];
         } else string[string.length-1]+=inputstring[i];
       }
     }
-    console.log(string);
     switch (string[0]) {
       case 'list':
         for (var i=0;i<currentFile.length;i++) {
@@ -315,16 +319,19 @@ function evaluate(inputstring) {
         newLine(`<strong>list</strong> - lists files and directories in current directory`);
         newLine(`<strong>go [path]</strong> - goes to specified path; .. goes to the parent directory`);
         newLine(`<strong>loc</strong> - prints current directory`);
-        newLine(`<strong>cre [name]</strong> - creates file`);
+        newLine(`<strong>cre [name] (-d)</strong> - creates file (or directory)`);
         newLine(`<strong>see [name]</strong> - outputs file contents`);
-        newLine(`<strong>del [name]</strong> - deletes file`);
+        newLine(`<strong>del [name] (-d)</strong> - deletes file (or directory)`);
         newLine(`<strong>line [name] [line-number] (content)</strong> - sets line of file (zero-indexed)`);
         break;
       case 'loc':
         newLine(pathname);
         break;
       case 'cre':
-        if (string[1]) currentFile.add(new File(string[1]));
+        if (string[1]) {
+          if (string[2]&&~string[2].slice(1).indexOf('d')) currentFile.add(new Directory(string[1]));
+          else currentFile.add(new File(string[1]));
+        }
         else newLine(`<span class="error">What to call the file?</span>`);
         break;
       case 'see':
@@ -332,17 +339,26 @@ function evaluate(inputstring) {
           var file=fromPath(currentFile,string[1]);
           if (file.directory.files[file.file]) {
             var lines=file.directory.files[file.file].content.split(/\r?\n/);
-            for (var i=0;i<lines.length;i++) newLine(lines[i].replace(/</g,'&lt;').replace(/>/g,'&gt;'));
+            for (var i=0;i<lines.length;i++) newLine(lines[i].replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'));
           } else newLine(`<span class="error">File doesn't exist.</span>`);
         }
         else newLine(`<span class="error">Which file to see?</span>`);
         break;
       case 'del':
         if (string[1]) {
-          var file=fromPath(currentFile,string[1]);
-          if (file.directory.files[file.file]) {
-            file.directory.remove(file.directory.files[file.file]);
-          } else newLine(`<span class="error">File doesn't exist.</span>`);
+          if (string[2]&&~string[2].slice(1).indexOf('d')) {
+            newLine(`<span class="error">You can't delete directories for now.</span>`);
+            // if (string[1][string[1].length-1]!=='/') string[1]+='/';
+            // var file=fromPath(currentFile,string[1]);
+            // if (file.directory.files[file.file]) {
+            //   file.directory.parent.remove(file.directory);
+            // } else newLine(`<span class="error">Directory doesn't exist.</span>`);
+          } else {
+            var file=fromPath(currentFile,string[1]);
+            if (file.directory.files[file.file]) {
+              file.directory.remove(file.directory.files[file.file]);
+            } else newLine(`<span class="error">File doesn't exist.</span>`);
+          }
         }
         else newLine(`<span class="error">Which file to delete?</span>`);
         break;
