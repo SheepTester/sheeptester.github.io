@@ -86,7 +86,7 @@ var sheeptest=(function(){
   }
   var preferences=JSON.parse(cookie.preferences);
   var places2go=[
-    {url:'all.html',img:'img/all.png',name:'Almost Everything',featured:1},
+    {url:'all',img:'img/all2.png',name:'Almost Everything',featured:1},
     {url:'platformre',img:'img/plat.svg',name:'Platformre'},
     {url:'platformre/maker',img:'img/platmakre.png',name:'Level editor'},
     {url:'?penland',img:'img/penland.png',name:'Penland'},

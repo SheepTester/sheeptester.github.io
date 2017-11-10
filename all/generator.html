@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>sitemap html maker</title>
+    <meta charset="UTF-8">
+    <meta name="description" content="not for human use"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <style>
+
+    </style>
+  </head>
+  <body>
+    <p>you put yo json in here:</p>
+    <textarea id="name" rows="8" cols="80"></textarea>
+
+    <script src="../sheep.js" charset="utf-8"></script>
+    <script>
+document.querySelector('#name').addEventListener("change",e=>{
+  try {
+    var json=JSON.parse(document.querySelector('#name').value);
+    function loop(path,json) {
+      var part0='',
+      dirs=[];
+      for (var dir in json) {
+        if (dir!=='') {
+          dirs.push(dir);
+        }
+      }
+      dirs.sort();
+      for (var i=0;i<dirs.length;i++) {
+        part0+=`<div class="dir"><div class="head" tabindex="0">${dirs[i]}</div><div class="body">${loop(path+dirs[i]+'/',json[dirs[i]])}</div></div>`;
+      }
+      var files=json[''],
+      part1='';
+      for (var i=0;i<files.length;i++) {
+        var classes=[];
+        switch (files[i].slice(files[i].lastIndexOf('.')+1)) {
+          case 'html':
+            classes.push('html');
+            if (files[i]==='index.html') classes.push('index');
+            break;
+          case 'css':
+            classes.push('css');
+            break;
+          case 'js':
+            classes.push('js');
+            break;
+          case 'svg': // in order from best -> worst
+          case 'png':
+          case 'gif':
+          case 'jpg':
+            classes.push('img');
+            break;
+        }
+        part1+=`<a href="${path+files[i]}"${classes.length?' class="'+classes.join(' ')+'"':''}>${files[i]}</a>`;
+      }
+      return part0+part1; // oh I could've simplified this. nahhh
+    }
+    document.querySelector('#name').value=`<div class="dir">${loop('/',json)}</div>`;
+  } catch (e) {}
+},false);
+    </script>
+  </body>
+  <!-- MADE BY SEAN -->
+</html>
