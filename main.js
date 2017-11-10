@@ -90,6 +90,8 @@ var sheeptest=(function(){
     {url:'platformre',img:'img/plat.svg',name:'Platformre'},
     {url:'platformre/maker',img:'img/platmakre.png',name:'Level editor'},
     {url:'?penland',img:'img/penland.png',name:'Penland'},
+    {url:'platformre/nova/penland/',img:'img/newpenland.png',name:'Penland Nova',new:1},
+    {url:'gamepro5/minigames/turkeys/',img:'img/turkeys.png',name:'Turkeys',new:1},
     {url:'telegraph',img:'img/tele.png',name:'Telegraph'},
     {url:'javascripts/shepform',img:'img/colorpicker.png',name:'Color input'},
     {url:'javascripts/clicker',img:'img/click.png',name:'Clicker Game'},
@@ -105,6 +107,7 @@ var sheeptest=(function(){
     {url:'eyo-dictionary',img:'img/eyo.png',name:'Eyo Dictionary'},
     {url:'contextmenutest.html',img:'img/rightclick.png',name:'Context Menu Test'},
     {url:'blog',img:'img/blog..png',name:'Blog'},
+    {url:'words-go-here/misc/',img:'img/misc.png',name:'Miscellaneous',new:1}
   ];
   if (preferences.view==='grid') {
     document.querySelector('#view').innerHTML='list view';

@@ -613,6 +613,13 @@ nav .btncontainer {
   background-color: #4fa1a7 !important;
   border-radius: 0 !important;
 }
+#stalking p > a {
+  background-color: rgba(0,0,0,0.3);
+  border-bottom: 1px solid transparent;
+}
+#stalking p > a:hover, #stalking p > a:focus {
+  border-bottom-color: rgba(255,255,255,0.8);
+}
 
 sarcasm {
   display: none; /* sarcasm is not needed here */
