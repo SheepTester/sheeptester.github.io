@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>penworld - three.js</title>
+    <meta charset="UTF-8">
+    <meta name="description" content="boof da doof"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <style>
+      body {
+        margin: 0;
+        overflow: hidden;
+      }
+      canvas {
+        width: 100%;
+        height: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <script src="three.min.js"></script>
+    <script src="PointerLockControls.js"></script>
+    <script src="../../sheep.js" charset="utf-8"></script>
+    <script>
+/* MY STUFF */
+var keys={},
+cameravels={
+  xv:0,
+  yv:0,
+  zv:0
+};
+document.addEventListener("keydown",e=>{
+  keys[e.keyCode]=true;
+},false);
+document.addEventListener("keyup",e=>{
+  keys[e.keyCode]=false;
+},false);
+document.addEventListener("mousedown",e=>{
+  switch (e.which) {
+    case 1:keys.left=true;break;
+    case 2:keys.middle=true;break;
+    case 3:keys.right=true;break;
+    default: console.log(e.which);
+  }
+  e.preventDefault();
+  return false;
+},false);
+document.addEventListener("mouseup",e=>{
+  switch (e.which) {
+    case 1:keys.left=false;break;
+    case 2:keys.middle=false;break;
+    case 3:keys.right=false;break;
+  }
+  e.preventDefault();
+  return false;
+},false);
+
+/* THREE.JS MESS */
+var scene=new THREE.Scene(),
+camera=new THREE.PerspectiveCamera(
+  75, // FOV
+  window.innerWidth/window.innerHeight, // aspect ratio
+  0.1, // min Z
+  1000 // max Z
+),
+renderer=new THREE.WebGLRenderer();
+camera.position.y=150;
+camera.position.z=500;
+renderer.setSize(window.innerWidth,window.innerHeight);
+document.body.appendChild(renderer.domElement);
+
+var geometry=new THREE.BoxGeometry(200,200,200),
+colours=["3F51B5",'2196F3','03A9F4','00BCD4','009688','673AB7'];
+for (var i=0;i<geometry.faces.length;i+=2) {
+  var hex=+("0x"+colours[i/2]);
+	geometry.faces[i].color.setHex(hex);
+	geometry.faces[i+1].color.setHex(hex);
+}
+var material=new THREE.MeshBasicMaterial({vertexColors:THREE.FaceColors,overdraw:0.5}),
+cube=new THREE.Mesh(geometry,material);
+cube.position.y=150;
+scene.add(cube);
+
+var prevTime = performance.now();
+// https://github.com/mrdoob/three.js/blob/master/examples/misc_controls_pointerlock.html
+function animate() {
+  if (controlsEnabled) {
+    if (keys[65]) velocity.x-=1;
+    if (keys[68]) velocity.x+=1;
+    if (keys[16]) velocity.y-=1;
+    if (keys[32]) velocity.y+=1;
+    if (keys[87]) velocity.z-=1;
+    if (keys[83]) velocity.z+=1;
+    var time = performance.now();
+		var delta = ( time - prevTime ) / 1000;
+		velocity.x -= velocity.x * 1.0 * delta;
+		velocity.z -= velocity.z * 1.0 * delta;
+		velocity.y -= velocity.y * 1.0 * delta;
+		direction.z = Number( keys[87] ) - Number( keys[83] );
+		direction.x = Number( keys[65] ) - Number( keys[68] );
+		direction.y = Number( keys[16] ) - Number( keys[32] );
+		direction.normalize(); // this ensures consistent movements in all directions
+		if ( keys[87] || keys[83] ) velocity.z -= direction.z * 1 * delta;
+		if ( keys[65] || keys[68] ) velocity.x -= direction.x * 1 * delta;
+		if ( keys[16] || keys[32] ) velocity.y -= direction.y * 1 * delta;
+		controls.getObject().translateX( velocity.x * delta );
+		controls.getObject().translateY( velocity.y * delta );
+		controls.getObject().translateZ( velocity.z * delta );
+    prevTime = time;
+  }
+	renderer.render(scene,camera);
+	requestAnimationFrame(animate);
+}
+
+window.addEventListener("resize",e=>{
+  camera.aspect=window.innerWidth/window.innerHeight;
+	camera.updateProjectionMatrix();
+	renderer.setSize(window.innerWidth,window.innerHeight);
+},false);
+
+var velocity = new THREE.Vector3();
+var direction = new THREE.Vector3();
+var havePointerLock = 'pointerLockElement' in document || 'mozPointerLockElement' in document || 'webkitPointerLockElement' in document;
+var controlsEnabled = false;
+if ( havePointerLock ) {
+	var element = document.body;
+	var pointerlockchange = function ( event ) {
+		if ( document.pointerLockElement === element || document.mozPointerLockElement === element || document.webkitPointerLockElement === element ) {
+			controlsEnabled = true;
+			controls.enabled = true;
+		} else {
+			controls.enabled = false;
+		}
+	};
+	var pointerlockerror = function ( event ) {
+		instructions.style.display = '';
+	};
+	// Hook pointer lock state change events
+	document.addEventListener( 'pointerlockchange', pointerlockchange, false );
+	document.addEventListener( 'mozpointerlockchange', pointerlockchange, false );
+	document.addEventListener( 'webkitpointerlockchange', pointerlockchange, false );
+	document.addEventListener( 'pointerlockerror', pointerlockerror, false );
+	document.addEventListener( 'mozpointerlockerror', pointerlockerror, false );
+	document.addEventListener( 'webkitpointerlockerror', pointerlockerror, false );
+	renderer.domElement.addEventListener( 'click', function ( event ) {
+		element.requestPointerLock = element.requestPointerLock || element.mozRequestPointerLock || element.webkitRequestPointerLock;
+		element.requestPointerLock();
+	}, false );
+}
+var controls = new THREE.PointerLockControls( camera );
+scene.add( controls.getObject() );
+
+/* MORE OF MY STUFF */
+/* renderer.domElement.requestPointerLock=renderer.domElement.requestPointerLock||renderer.domElement.mozRequestPointerLock;
+document.exitPointerLock=document.exitPointerLock||document.mozExitPointerLock;
+renderer.domElement.addEventListener("click",e=>{
+  renderer.domElement.requestPointerLock();
+},false);
+function lockChange() {
+  if (document.pointerLockElement===renderer.domElement) keys.usingmouse=true;
+  else keys.usingmouse=false;
+}
+if ("onpointerlockchange" in document) document.addEventListener('pointerlockchange',lockChange,false);
+else if ("onmozpointerlockchange" in document) document.addEventListener('mozpointerlockchange',lockChange,false);
+renderer.domElement.addEventListener("mousemove",e=>{
+  if (keys.usingmouse) {
+    camera.rotation.y-=e.movementX/500;
+    camera.rotation.x-=e.movementY/500;
+  }
+  e.preventDefault();
+  return false;
+},false);*/
+animate();
+    </script>
+  </body>
+  <!-- MADE BY SEAN -->
+</html>

@@ -41,8 +41,10 @@ config={
     RIGHT_X:7,
     RIGHT_Y:0,
     RIGHT_MOVE_X:8,
-    RIGHT_MOVE_Y:0
-  },turkey:{
+    RIGHT_MOVE_Y:0,
+    MAX_HEALTH:20
+  },
+  turkey:{
     LEFT_X:9,
     LEFT_Y:0,
     LEFT_MOVE_X:1,
@@ -69,10 +71,16 @@ config={
   REGEN_SPEED:3000,
   SPIT_SPEED:500,
   TURKEY_STOP_DISTANCE:1.5,
-  TURKEY_SPEED:0.02
+  TURKEY_SPEED:0.02,
+  health:{
+    WIDTH:50,
+    HEIGHT:5,
+    GOOD:'#568631',
+    BAD:'#be5d4c'
+  }
 },
 scroll={x:0,y:0,actualx:0,actualy:0,shakex:0,shakey:0,shaking:false}, // in render units (pixels)
-player={x:1,y:1,right:0}, // in blocks/tiles
+player={x:1,y:1,right:0,health:config.player.MAX_HEALTH}, // in blocks/tiles
 tiles={
   ground1:{x:0,y:0},
   ground2:{x:1,y:0},
@@ -146,6 +154,11 @@ class Turkey extends Entity {
     this.texturex=this.right?(useWalking?config.turkey.RIGHT_MOVE_X:config.turkey.RIGHT_X):(useWalking?config.turkey.LEFT_MOVE_X:config.turkey.LEFT_X);
     this.texturey=this.right?(useWalking?config.turkey.RIGHT_MOVE_Y:config.turkey.RIGHT_Y):(useWalking?config.turkey.LEFT_MOVE_Y:config.turkey.LEFT_Y);
     this.render(...renderInfo);
+    drawHealth(
+      this.health/config.TURKEY_HEALTH,
+      (this.x+renderInfo[0])*config.TILE_SIZE+renderInfo[2],
+      (this.y+renderInfo[1])*config.TILE_SIZE+renderInfo[3]-config.TILE_SIZE
+    );
     switch (this.mode) {
       case 'idc':
         switch (this.direction) {
@@ -258,7 +271,7 @@ class Spit extends Bullet {
   }
   check(now) {
     if (isCloseEnough(this.x-player.x,this.y-player.y,config.BULLET_RADIUS)) {
-      console.log("-1 health");
+      player.health--;
       entities.push(new Explosion(player.x,player.y));
       this.dead=true;
       scroll.shaking=true;
@@ -322,6 +335,25 @@ function drawImage(texturex,texturey,x,y) {
     config.TILE_SIZE
   );
 }
+function drawHealth(percent,x,y) {
+  if (percent<1) {
+    if (percent<0) percent=0;
+    c.fillStyle=config.health.BAD;
+    c.fillRect(
+      x-config.health.WIDTH/2,
+      y,
+      config.health.WIDTH,
+      config.health.HEIGHT
+    );
+    c.fillStyle=config.health.GOOD;
+    c.fillRect(
+      x-config.health.WIDTH/2,
+      y,
+      config.health.WIDTH*percent,
+      config.health.HEIGHT
+    );
+  }
+}
 function draw() {
   var now=new Date().getTime(),t,
   lastPos={x:player.x,y:player.y};
@@ -383,6 +415,13 @@ function draw() {
         (player.x+blockoffsetx)*config.TILE_SIZE+renderoffsetx-config.TILE_SIZE/2,
         (player.y+blockoffsety)*config.TILE_SIZE+renderoffsety-config.TILE_SIZE
       );
+      if (player.health<config.player.MAX_HEALTH) {
+        drawHealth(
+          player.health/config.player.MAX_HEALTH,
+          (player.x+blockoffsetx)*config.TILE_SIZE+renderoffsetx,
+          (player.y+blockoffsety)*config.TILE_SIZE+renderoffsety-config.TILE_SIZE
+        );
+      }
     }
   }
   scroll.actualx+=(innerWidth/2-player.x*config.TILE_SIZE-scroll.actualx)/5;
