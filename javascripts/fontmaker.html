@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Scratch Text Engine Maker</title>
+    <meta charset="UTF-8">
+    <meta name="description" content="For cloning/stamping use; not a PTE maker."/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <style>
+      body{max-width:1000px;margin:20px auto;padding:0 20px;font-family:sans-serif;}input,button,select,textarea{font:inherit;}a {text-decoration:none;}a:hover{text-decoration:underline;}h1,h2,h3,h4,h5,h6{font-weight:normal;}
+      #error {
+        color: red;
+      }
+      .light {
+        font-style: italic;
+        color: rgba(0,0,0,0.5);
+      }
+      input[type=file] {
+        border: 1px solid rgba(0,0,0,0.1);
+      }
+      #colour {
+        color: white;
+        text-shadow: 0 0 5px black;
+        border: 1px solid rgba(0,0,0,0.1);
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Text Engine Generator (for Scratch)</h1>
+    <p>Type in the characters you would like to support: <input type="text" id="chars" value=" !&quot;#$%&amp;'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~"></p>
+    <p>Colour of text: <input type="text" id="colour" value="#FFFFFF"> Font size of text: <input type="number" value="100" id="size"></p>
+    <p>Upload a font file (WOFF, OTF, TTF): <input type="file" id="input" accept=".woff,.otf,.tff"></p>
+    <p id="error"></p>
+    <p>Output: <a id="output" target="_blank">upload a font first</a></p>
+    <textarea id="widths" rows="8" cols="80" readonly>Your widths will go here</textarea>
+    <p>Copy the above text into a TXT file to import into a list; make sure your fancy text editor doesn't remove any spaces from the first 2 lines!</p>
+    <p class="light">Uses <a href="https://stuk.github.io/jszip/">JSZip</a> and <a href="https://opentype.js.org/">opentype.js</a>.</p>
+    <!-- <div id="test"></div> -->
+
+    <script src="../sheep.js" charset="utf-8"></script>
+    <script src="https://cdn.jsdelivr.net/npm/opentype.js@latest/dist/opentype.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.5/jszip.min.js" charset="utf-8"></script>
+    <script>
+var input=document.querySelector('#input'),
+chars=document.querySelector('#chars')
+error=document.querySelector('#error'),
+output=document.querySelector('#output'),
+widths=document.querySelector('#widths'),
+colour=document.querySelector('#colour'),
+size=document.querySelector('#size');
+//test=document.querySelector('#test')*/;
+colour.addEventListener("input",e=>{
+  colour.style.backgroundColor=colour.value;
+},false);
+function getSVG(fontsize,font,char,colour) {
+  var path=font.getPath(char,240,180,fontsize,{kerning:false}).commands,
+  str='';
+  for (var cmd of path) {
+    str+=cmd.type;
+    if (cmd.x1) str+=' '+cmd.x1;
+    if (cmd.y1) str+=' '+cmd.y1;
+    if (cmd.x2) str+=' '+cmd.x2;
+    if (cmd.y2) str+=' '+cmd.y2;
+    if (cmd.x) str+=' '+cmd.x;
+    if (cmd.y) str+=' '+cmd.y;
+  }
+  return `<svg xmlns="http://www.w3.org/2000/svg" height="360" width="480"><path d="${str}" fill="${colour}"/></svg>`;
+}
+input.addEventListener("change",e=>{
+  if (input.files[0]) {
+    var url=window.URL.createObjectURL(input.files[0]);
+    opentype.load(url,(err,font)=>{
+      window.URL.revokeObjectURL(url);
+      window.font=font;
+      if (err) error.textContent=err;
+      else {
+        var zip=new JSZip(),
+        upperWidths=[],
+        otherWidths=[],
+        fontsize=+size.value,
+        fill=colour.value,
+        notuppercases=1,
+        upperletters='',
+        otherletters='';
+        for (var i=0;i<chars.value.length;i++) {
+          var char=chars.value[i],
+          svg=getSVG(fontsize,font,char,fill);
+          if (char===char.toLowerCase()) {
+            zip.file(notuppercases+'c.svg',svg);
+            otherWidths.push(font.getAdvanceWidth(char,100));
+            otherletters+=char;
+            notuppercases++;
+          } else {
+            zip.file(char+'u.svg',svg);
+            upperWidths.push(font.getAdvanceWidth(char,100));
+            upperletters+=char;
+          }
+          /*test.innerHTML=svg;
+          charWidths.push(test.querySelector('path').getBoundingClientRect().width);*/
+          // glyph.advanceWidth*(100/(font.tables.head.yMax-font.tables.head.yMin))
+        }
+        zip.generateAsync({type:"base64"}).then(base64=>{
+          output.href="data:application/zip;base64,"+base64;
+          output.textContent='Click me to download a ZIP with the vector costumes!';
+        });
+        widths.value=[otherletters,upperletters,...otherWidths,...upperWidths].join('\n');
+        // test.innerHTML='';
+      }
+    });
+  }
+},false);
+    </script>
+  </body>
+  <!-- MADE BY SEAN -->
+</html>
