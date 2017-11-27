@@ -1,0 +1,141 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto:400%7CMaterial+Icons');
+
+* { /* gets rid of black flash on iOS safari */
+  -webkit-tap-highlight-color: transparent;
+}
+html, body {
+  height: 100%;
+  width: 100%;
+}
+body {
+  margin: 0;
+  font-family: 'Roboto', sans-serif;
+  font-size: 0;
+  --theme: #FF594C;
+}
+body.light {
+  background-color: #fafafa;
+  color: rgba(0,0,0,0.87);
+}
+body.dark {
+  background-color: #303030;
+  color: white;
+}
+.center {
+  text-align: center;
+}
+a {
+  color: var(--theme);
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
+button, select, textarea, input { /* gets rid of the default input styles kind of */
+  font: inherit;
+  -webkit-appearance: none;
+}
+input[type="search"]::-webkit-search-decoration,
+input[type="search"]::-webkit-search-cancel-button,
+input[type="search"]::-webkit-search-results-button,
+input[type="search"]::-webkit-search-results-decoration {
+  display: none;
+}
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+body > .section {
+  display: none;
+  max-width: 1000px;
+  margin: 0 auto;
+  margin-bottom: 56px;
+  padding: 20px;
+  box-sizing: border-box;
+  min-height: calc(100% - 56px);
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+#footer {
+  box-shadow: 0 0 4px rgba(0,0,0,0.3);
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  transition: all .2s;
+}
+body.light #footer {
+  background-color: #f5f5f5;
+}
+body.dark #footer {
+  background-color: #212121;
+}
+#footer ul {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  height: 56px;
+}
+#footer ul li {
+  display: inline-block;
+  height: 100%;
+  cursor: pointer;
+  flex: 1 0 0;
+  text-align: center;
+  padding-top: 8px;
+  position: relative;
+  box-sizing: border-box;
+  overflow: hidden;
+  transition: all .2s;
+  -webkit-user-select: none;
+  user-select: none;
+}
+body.light #footer ul li {
+  color: rgba(0,0,0,0.54);
+}
+body.dark #footer ul li {
+  color: rgba(255,255,255,0.7);
+}
+body #footer ul li.active {
+  color: var(--theme);
+  padding-top: 6px;
+}
+#footer ul li i {
+  font-size: 24px;
+}
+#footer ul li span {
+  display: block;
+  text-align: center;
+  font-size: 12px;
+  position: absolute;
+  bottom: 10px;
+  left: 0;
+  right: 0;
+  white-space: nowrap;
+  transition: font-size .2s;
+}
+#footer ul li.active span {
+  font-size: 14px;
+}
+
+div.ripple {
+  position: absolute;
+  height: 10px;
+  width: 10px;
+  margin-left: -5px;
+  margin-top: -5px;
+  transform: scale(0);
+  pointer-events: none;
+  border-radius: 50%;
+}
+body.light div.ripple {
+  background-color: rgba(0,0,0,0.2);
+}
+body.dark div.ripple {
+  background-color: rgba(255,255,255,0.3);
+}
