@@ -12,7 +12,7 @@ try {
     }
   };
 }
-(function(){
+(function() {
   var thisscript=document.querySelector('script[src$="sheep.js"]'),
   style=document.createElement("link");
   style.type="text/css";

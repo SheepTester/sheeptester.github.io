@@ -1,0 +1,146 @@
+/* SITE-WIDE STYLES */
+::selection {
+  background: rgba(0, 188, 212, 0.4);
+}
+input, textarea, select, button {
+  font: inherit;
+}
+button, input[type=submit] {
+  cursor: pointer;
+}
+
+/* SHEEP-BTN */
+sheep-btn {
+  display: block;
+  position: fixed;
+  z-index: 1000;
+  height: 50px;
+  width: 50px;
+  border-radius: 50%;
+  background-color: rgba(0,0,0,0.4);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 480 480' stroke='white' stroke-opacity='0.7' stroke-width='20' fill='none'%3E%3Cpath d='M90 90a50 50 0 0 0 0 100H98.579A150 150 0 1 0 381.421 190H390a50 50 0 0 0 0 -100a50 50 0 1 1 -100 0a50 50 0 1 1 -100 0a50 50 0 1 1 -100 0z'/%3E%3C/svg%3E");
+  background-size: 45px;
+  background-repeat: no-repeat;
+  background-position: 2.5px 4px;
+  box-shadow: 0 0 2px rgba(0,0,0,0.5);
+  cursor: pointer;
+  transition: all .2s, top 0s, left 0s;
+}
+sheep-btn:hover, body.sheep-dragging sheep-btn {
+  background-color: rgba(255,255,255,0.8);
+  box-shadow: 0 0 4px rgba(0,0,0,0.5);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 480 480' stroke='black' stroke-opacity='0.7' stroke-width='20' fill='none'%3E%3Cpath d='M90 90a50 50 0 0 0 0 100H98.579A150 150 0 1 0 381.421 190H390a50 50 0 0 0 0 -100a50 50 0 1 1 -100 0a50 50 0 1 1 -100 0a50 50 0 1 1 -100 0z'/%3E%3C/svg%3E");
+}
+sheep-btn:active {
+  box-shadow: 0 0 2px rgba(0,0,0,0.5);
+  transform: scale(0.9);
+}
+sheep-btn:focus {
+  outline: none;
+  box-shadow: 0 0 4px rgba(0,0,0,0.5), 0 0 0 5px rgba(79,161,167,0.3);
+}
+body.sheep-dragging sheep-btn {
+  pointer-events: none;
+  transform: scale(1);
+}
+body.sheep-will-open-context-menu sheep-btn {
+  transform: scale(1.1);
+}
+body.no-sheep sheep-btn {
+  display: none;
+}
+
+/* OTHER SHEEP STUFF */
+body sheep-shadow {
+  display: block;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 995;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.5);
+  opacity: 0;
+  transition: opacity .2s;
+}
+body.sheep-dragging sheep-shadow {
+  opacity: 1;
+  animation: fadein .2s;
+}
+sheep-notif-wrapper {
+  display: block;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 200px;
+}
+sheep-notification {
+  display: block;
+  margin: 10px;
+  padding: 0 10px;
+  max-height: 0;
+  overflow: hidden;
+  background-color: rgba(0,0,0,0.8);
+  color: white;
+  box-shadow: 0 0 3px rgba(0,0,0,0.2);
+  border-radius: 2px;
+  font-size: 18px;
+  line-height: 1.15;
+  cursor: pointer;
+  word-wrap: break-word;
+  transition: all .2s;
+}
+sheep-notification:hover {
+  transform: scale(0.95);
+}
+sheep-notification:focus {
+  outline: none;
+  box-shadow: 0 0 3px rgba(0,0,0,0.2), 0 0 0 5px rgba(79,161,167,0.3);
+}
+sheep-notification::after {
+  content: attr(data-close-message);
+  display: block;
+  font-size: 12px;
+  opacity: 0.75;
+  line-height: 1;
+}
+sheep-notification.dismissing {
+  pointer-events: none;
+  max-height: 0;
+  padding: 0 10px;
+  margin: -5px 10px;
+  box-shadow: 0 0 3px rgba(0,0,0,0.2);
+  transition: max-height .2s, padding .2s, margin .2s;
+}
+sheep-contextmenu {
+  display: table;
+  position: fixed;
+  background-color: rgba(0,0,0,0.8);
+  font-family: sans-serif;
+  color: white;
+  z-index: 1005;
+  font-size: 16px;
+  line-height: 1;
+}
+sheep-contextmenu > sheep-context-item {
+  display: block;
+  margin: 5px;
+  cursor: pointer;
+  opacity: 0.75;
+}
+sheep-contextmenu.sheep-touch > sheep-context-item {
+  margin: 10px;
+}
+sheep-contextmenu > sheep-context-item:hover {
+  opacity: 1;
+}
+
+/* ANIMATIONS */
+@keyframes fadein {
+  from {opacity: 0;}
+  to {opacity: 1;}
+}
+@keyframes fadeout {
+  from {opacity: 1;}
+  to {opacity: 0;}
+}
