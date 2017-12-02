@@ -1,0 +1,41 @@
+html, body {
+  width: 100%;
+  height: 100%;
+}
+body {
+  margin: 0;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0;
+  background-color: #19191e;
+}
+
+body.enter-animation sheep-btn {
+  background-position: center;
+  transition: all .5s;
+}
+noscript {
+  display: flex;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  width: 100%;
+  height: 100%;
+  background-color: white;
+  color: black;
+  line-height: 18px;
+  justify-content: center;
+  align-items: center;
+}
+
+.header {
+  text-align: center;
+}
+.header span {
+  font-size: 30px;
+  color: rgba(255,255,255,0.7);
+}
+.header .large {
+  font-size: 1.5em;
+  color: white;
+}

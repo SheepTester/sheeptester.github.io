@@ -57,18 +57,28 @@ document.addEventListener("DOMContentLoaded", e => {
   let homeButton = document.createElement("sheep-btn"),
   notifications = document.createElement("sheep-notif-wrapper"),
   contextMenu = document.createElement("sheep-contextmenu"),
-  allowRightClick = false;
+  shadow = document.createElement("sheep-shadow"),
+  blockRightClick = false;
 
   homeButton.style.right = SHEEP.getPref('sheepBtnX', 10) + 'px';
   homeButton.style.bottom = SHEEP.getPref('sheepBtnY', 10) + 'px';
   homeButton.setAttribute('tabindex', 0);
 
+  function leave() {
+    document.body.appendChild(shadow);
+    document.body.classList.add('sheep-blockscreen');
+    setTimeout(() => {
+      // window.location = 'https://sheeptester.github.io/#delsxafet';
+      location.reload(); // TEMP
+    },500);
+  }
+
   function displayContextMenu(x, y, touch) {
     let clientRect,
     outsideClick = e => {
-      if (!contextMenu.contains(e.target)) {
-        allowRightClick = false;
-        document.removeEventListener("click", outsideClick, false);
+      if (document.body.contains(contextMenu) && !contextMenu.contains(e.target)) {
+        blockRightClick = false;
+        document.removeEventListener("mousedown", outsideClick, false);
         document.body.removeChild(contextMenu);
       }
     };
@@ -81,7 +91,7 @@ document.addEventListener("DOMContentLoaded", e => {
       menuItem.setAttribute('tabindex', 0);
       menuItem.addEventListener("click", e => {
         SHEEP.menuActions[i]();
-        allowRightClick = false;
+        blockRightClick = false;
         document.removeEventListener("click", outsideClick, false);
         document.body.removeChild(contextMenu);
       }, false);
@@ -93,18 +103,17 @@ document.addEventListener("DOMContentLoaded", e => {
     else contextMenu.style.left = x + 'px';
     if (y > window.innerHeight / 2) contextMenu.style.top = (y - clientRect.height) + 'px';
     else contextMenu.style.top = y + 'px';
-    allowRightClick = true;
-    document.addEventListener("click", outsideClick, false);
+    blockRightClick = true;
+    document.addEventListener("mousedown", outsideClick, false);
   }
   homeButton.addEventListener("contextmenu", e=>{
-    if (allowRightClick) allowRightClick=false;
-    else {
-      displayContextMenu(e.clientX, e.clientY, false);
-      e.preventDefault();
-    }
+    if (blockRightClick) e.preventDefault();
+  }, false);
+  contextMenu.addEventListener("contextmenu", e=>{
+    e.preventDefault();
   }, false);
   if (window.location.pathname !== '/') {
-    SHEEP.registerMenuItem('go to index page', () => window.location = 'https://sheeptester.github.io/');
+    SHEEP.registerMenuItem('go to index page', () => leave());
   }
   SHEEP.registerMenuItem("reset l' ŝafeto position", () => {
     SHEEP.setPref('sheepBtnX', SHEEP.setPref('sheepBtnY', 10));
@@ -118,6 +127,22 @@ document.addEventListener("DOMContentLoaded", e => {
 
   function drag(mouseDownName, mouseMoveName, mouseUpName, eventOptions, isTouch) {
     homeButton.addEventListener(mouseDownName, e => {
+      if (!isTouch) {
+        if (e.which === 3) {
+          if (blockRightClick) blockRightClick = false;
+          else {
+            let up = e => {
+              displayContextMenu(e.clientX, e.clientY, false);
+              document.removeEventListener(mouseUpName, up, eventOptions);
+              e.preventDefault();
+            };
+            document.addEventListener(mouseUpName, up, eventOptions);
+          }
+          return;
+        } else if (e.touches) {
+          return;
+        }
+      }
       let cursorPos = isTouch ? e.touches[0] : e,
       clientRect = homeButton.getBoundingClientRect(),
       originalX = cursorPos.clientX,
@@ -125,7 +150,6 @@ document.addEventListener("DOMContentLoaded", e => {
       xOffset = originalX - clientRect.left,
       yOffset = originalY - clientRect.top,
       dragging = false,
-      shadow = document.createElement("sheep-shadow"),
       menuTimeout,
       openMenu,
       move = e => {
@@ -154,7 +178,7 @@ document.addEventListener("DOMContentLoaded", e => {
           displayContextMenu(originalX, originalY, true);
           document.body.classList.remove('sheep-will-open-context-menu');
         } else {
-          //
+          leave();
         }
         if (isTouch) clearTimeout(menuTimeout);
         document.removeEventListener(mouseMoveName, move, eventOptions);

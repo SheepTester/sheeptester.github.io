@@ -16,7 +16,7 @@ sheep-btn {
   z-index: 1000;
   height: 50px;
   width: 50px;
-  border-radius: 50%;
+  border-radius: 25px; /* to make animation less awkward */
   background-color: rgba(0,0,0,0.4);
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 480 480' stroke='white' stroke-opacity='0.7' stroke-width='20' fill='none'%3E%3Cpath d='M90 90a50 50 0 0 0 0 100H98.579A150 150 0 1 0 381.421 190H390a50 50 0 0 0 0 -100a50 50 0 1 1 -100 0a50 50 0 1 1 -100 0a50 50 0 1 1 -100 0z'/%3E%3C/svg%3E");
   background-size: 45px;
@@ -24,11 +24,14 @@ sheep-btn {
   background-position: 2.5px 4px;
   box-shadow: 0 0 2px rgba(0,0,0,0.5);
   cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
   transition: all .2s, top 0s, left 0s;
 }
 sheep-btn:hover, body.sheep-dragging sheep-btn {
   background-color: rgba(255,255,255,0.8);
   box-shadow: 0 0 4px rgba(0,0,0,0.5);
+}
+sheep-btn:hover, body.sheep-dragging sheep-btn, body.sheep-blockscreen sheep-btn {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 480 480' stroke='black' stroke-opacity='0.7' stroke-width='20' fill='none'%3E%3Cpath d='M90 90a50 50 0 0 0 0 100H98.579A150 150 0 1 0 381.421 190H390a50 50 0 0 0 0 -100a50 50 0 1 1 -100 0a50 50 0 1 1 -100 0a50 50 0 1 1 -100 0z'/%3E%3C/svg%3E");
 }
 sheep-btn:active {
@@ -49,6 +52,19 @@ body.sheep-will-open-context-menu sheep-btn {
 body.no-sheep sheep-btn {
   display: none;
 }
+body.sheep-blockscreen sheep-btn {
+  right: 0 !important;
+  bottom: 0 !important;
+  border-radius: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: white;
+  background-size: 70px;
+  background-position: 50% 50%;
+  box-shadow: none;
+  pointer-events: none;
+  transition: all .5s, background-position 0s;
+}
 
 /* OTHER SHEEP STUFF */
 body sheep-shadow {
@@ -61,6 +77,7 @@ body sheep-shadow {
   height: 100%;
   background-color: rgba(0,0,0,0.5);
   opacity: 0;
+  -webkit-tap-highlight-color: transparent;
   transition: opacity .2s;
 }
 body.sheep-dragging sheep-shadow {
@@ -73,6 +90,7 @@ sheep-notif-wrapper {
   bottom: 0;
   left: 0;
   width: 200px;
+  -webkit-tap-highlight-color: transparent;
 }
 sheep-notification {
   display: block;
@@ -88,6 +106,7 @@ sheep-notification {
   line-height: 1.15;
   cursor: pointer;
   word-wrap: break-word;
+  -webkit-tap-highlight-color: transparent;
   transition: all .2s;
 }
 sheep-notification:hover {
@@ -115,24 +134,32 @@ sheep-notification.dismissing {
 sheep-contextmenu {
   display: table;
   position: fixed;
-  background-color: rgba(0,0,0,0.8);
+  background-color: #222;
+  border: 1px solid #aaa;
   font-family: sans-serif;
   color: white;
   z-index: 1005;
   font-size: 16px;
   line-height: 1;
+  -webkit-tap-highlight-color: transparent;
 }
 sheep-contextmenu > sheep-context-item {
   display: block;
   margin: 5px;
   cursor: pointer;
   opacity: 0.75;
+  -webkit-tap-highlight-color: transparent;
 }
 sheep-contextmenu.sheep-touch > sheep-context-item {
   margin: 10px;
 }
 sheep-contextmenu > sheep-context-item:hover {
   opacity: 1;
+}
+sheep-contextmenu > sheep-context-item:focus {
+  outline: none;
+  opacity: 1;
+  box-shadow: 0 0 0 2px rgba(79,161,167,0.3);
 }
 
 /* ANIMATIONS */
