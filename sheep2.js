@@ -58,7 +58,11 @@ document.addEventListener("DOMContentLoaded", e => {
   notifications = document.createElement("sheep-notif-wrapper"),
   contextMenu = document.createElement("sheep-contextmenu"),
   shadow = document.createElement("sheep-shadow"),
-  blockRightClick = false;
+  rightClick = {
+    blockNext: true,
+    contextMenuReceived: false,
+    mouseUpReceived: false
+  };
 
   homeButton.style.right = SHEEP.getPref('sheepBtnX', 10) + 'px';
   homeButton.style.bottom = SHEEP.getPref('sheepBtnY', 10) + 'px';
@@ -77,7 +81,6 @@ document.addEventListener("DOMContentLoaded", e => {
     let clientRect,
     outsideClick = e => {
       if (document.body.contains(contextMenu) && !contextMenu.contains(e.target)) {
-        blockRightClick = false;
         document.removeEventListener("mousedown", outsideClick, false);
         document.body.removeChild(contextMenu);
       }
@@ -91,7 +94,6 @@ document.addEventListener("DOMContentLoaded", e => {
       menuItem.setAttribute('tabindex', 0);
       menuItem.addEventListener("click", e => {
         SHEEP.menuActions[i]();
-        blockRightClick = false;
         document.removeEventListener("click", outsideClick, false);
         document.body.removeChild(contextMenu);
       }, false);
@@ -103,11 +105,20 @@ document.addEventListener("DOMContentLoaded", e => {
     else contextMenu.style.left = x + 'px';
     if (y > window.innerHeight / 2) contextMenu.style.top = (y - clientRect.height) + 'px';
     else contextMenu.style.top = y + 'px';
-    blockRightClick = true;
     document.addEventListener("mousedown", outsideClick, false);
   }
   homeButton.addEventListener("contextmenu", e=>{
-    if (blockRightClick) e.preventDefault();
+    if (rightClick.blockNext) {
+      e.preventDefault();
+      if (rightClick.mouseUpReceived) {
+        rightClick.mouseUpReceived = rightClick.blockNext = false;
+      } else rightClick.contextMenuReceived = true;
+    } else {
+      if (rightClick.mouseUpReceived) {
+        rightClick.mouseUpReceived = false,
+        rightClick.blockNext = true;
+      } else rightClick.contextMenuReceived = true;
+    }
   }, false);
   contextMenu.addEventListener("contextmenu", e=>{
     e.preventDefault();
@@ -129,14 +140,22 @@ document.addEventListener("DOMContentLoaded", e => {
     homeButton.addEventListener(mouseDownName, e => {
       if (!isTouch) {
         if (e.which === 3) {
-          if (blockRightClick) blockRightClick = false;
-          else {
+          if (rightClick.blockNext) {
             let up = e => {
               displayContextMenu(e.clientX, e.clientY, false);
-              document.removeEventListener(mouseUpName, up, eventOptions);
               e.preventDefault();
+              if (rightClick.contextMenuReceived) {
+                rightClick.contextMenuReceived = rightClick.blockNext = false;
+              } else rightClick.mouseUpReceived = true;
+              document.removeEventListener(mouseUpName, up, eventOptions);
             };
             document.addEventListener(mouseUpName, up, eventOptions);
+            e.preventDefault();
+          } else {
+            if (rightClick.contextMenuReceived) {
+              rightClick.contextMenuReceived = false,
+              rightClick.blockNext = true;
+            } else rightClick.mouseUpReceived = true;
           }
           return;
         } else if (e.touches) {
@@ -158,11 +177,16 @@ document.addEventListener("DOMContentLoaded", e => {
           dragging = true;
           homeButton.style.right = homeButton.style.bottom = null;
           document.body.classList.add('sheep-dragging');
+          document.body.classList.remove('sheep-will-open-context-menu');
           document.body.appendChild(shadow);
         }
         if (dragging) {
-          homeButton.style.left = (cursorPos.clientX - xOffset) + 'px';
-          homeButton.style.top = (cursorPos.clientY - yOffset) + 'px';
+          let x = cursorPos.clientX - xOffset,
+          y = cursorPos.clientY - yOffset;
+          x = x < 0 ? 0 : x > document.body.clientWidth - 50 ? document.body.clientWidth - 50 : x;
+          y = y < 0 ? 0 : y > document.body.clientHeight - 50 ? document.body.clientHeight - 50 : y;
+          homeButton.style.left = x + 'px';
+          homeButton.style.top = y + 'px';
         }
         e.preventDefault();
       },
@@ -170,8 +194,8 @@ document.addEventListener("DOMContentLoaded", e => {
         if (dragging) {
           let newClientRect = homeButton.getBoundingClientRect();
           homeButton.style.top = homeButton.style.left = null;
-          homeButton.style.right = SHEEP.setPref('sheepBtnX', window.innerWidth - newClientRect.right) + 'px';
-          homeButton.style.bottom = SHEEP.setPref('sheepBtnY', window.innerHeight - newClientRect.bottom) + 'px';
+          homeButton.style.right = SHEEP.setPref('sheepBtnX', document.body.clientWidth - newClientRect.right) + 'px';
+          homeButton.style.bottom = SHEEP.setPref('sheepBtnY', document.body.clientHeight - newClientRect.bottom) + 'px';
           document.body.classList.remove('sheep-dragging');
           document.body.removeChild(shadow);
         } else if (isTouch&&openMenu) {

@@ -39,9 +39,9 @@ document.addEventListener("DOMContentLoaded", e => {
   }, false);
 
   aboutBtn.addEventListener("click", e => {
+  document.body.scrollTop = document.documentElement.scrollTop = 0; // https://stackoverflow.com/questions/4210798/how-to-scroll-to-top-of-page-with-javascript-jquery
     if (document.body.classList.contains('show-about')) {
       aboutBtn.innerHTML = 'about me';
-      document.body.scrollTop = document.documentElement.scrollTop = 0; // https://stackoverflow.com/questions/4210798/how-to-scroll-to-top-of-page-with-javascript-jquery
       header.style.maxHeight = null;
       document.body.classList.remove('show-about');
     } else {

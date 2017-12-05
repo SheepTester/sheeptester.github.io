@@ -25,7 +25,7 @@ sheep-btn {
   box-shadow: 0 0 2px rgba(0,0,0,0.5);
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
-  transition: all .2s, top 0s, left 0s;
+  transition: all .2s;
 }
 sheep-btn:hover, body.sheep-dragging sheep-btn {
   background-color: rgba(255,255,255,0.8);
@@ -45,6 +45,7 @@ sheep-btn:focus {
 body.sheep-dragging sheep-btn {
   pointer-events: none;
   transform: scale(1);
+  transition: transform .2s, box-shadow .2s, background-color .2s, background-image .2s;
 }
 body.sheep-will-open-context-menu sheep-btn {
   transform: scale(1.1);

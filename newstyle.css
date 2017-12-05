@@ -46,15 +46,17 @@ noscript {
 
 .header {
   padding: 30px;
+  min-height: 0;
   max-height: 45px;
   background-color: #4fa1a7;
   text-align: center;
   overflow: hidden;
   transition: all .5s, margin-bottom 0s;
 }
-.header span {
+.header > span {
   font-size: 30px;
   color: rgba(255,255,255,0.7);
+  line-height: 1;
 }
 .header .large {
   font-size: 1.5em;
@@ -67,9 +69,8 @@ body.show-about .header {
 }
 .about-content {
   margin: 0 auto;
-  margin-top: 30px;
+  margin-top: 35px;
   padding: 20px;
-  height: 90vh; /* TEMP */
   max-width: 500px;
   border-radius: 2px;
   background-color: #4b5555;
@@ -96,6 +97,7 @@ body.show-about #aboutbtn {
 body.show-about .notheader {
   position: fixed;
   top: 90vh;
+  box-shadow: 0 -1px 5px rgba(0,0,0,0.2);
 }
 
 .center {
