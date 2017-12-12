@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>How much should I care about my final? calculator</title>
+    <meta charset="UTF-8">
+    <meta name="description" content="Uses extremely sophisticated and modern algorithms to determine the minimum score you should get on your final to get you to your minimum desired score. Useful for prioritising studying for one subject over another."/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link rel="stylesheet" type="text/css" href="../sheep2.css">
+    <script src="../sheep2.js" charset="utf-8"></script>
+    <style>
+      html, body {
+        width: 100%;
+        height: 100%;
+      }
+      body {
+        margin: 0;
+        background-image: url('https://images.unsplash.com/photo-1496482475496-a91f31e0386c?w=1600&h=900&fit=crop');
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        color: rgba(255,255,255,0.8);
+        font-family: 'Open Sans', sans-serif;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        line-height: 1;
+      }
+      .container {
+        background-color: rgba(0,0,0,0.6);
+        padding: 20px;
+        border-radius: 2px;
+        box-shadow: 0 0 3px rgba(0,0,0,0.3);
+        margin: 10px;
+      }
+      p {
+        margin: 0;
+      }
+      input {
+        background: none;
+        border: none;
+        color: rgba(255,255,255,0.7);
+        background-color: rgba(255,255,255,0.1);
+        padding: 5px;
+        margin: 5px;
+        border-radius: 2px;
+        cursor: pointer;
+        width: 55px;
+        text-align: right;
+      }
+      input:focus {
+        text-shadow: 0 0 3px rgba(255,255,255,0.5);
+        color: white;
+      }
+      input:focus {
+        cursor: auto;
+      }
+      :focus {
+        outline: none;
+      }
+      #outputwrapper {
+        margin-top: 10px;
+      }
+      #output {
+        font-weight: bold;
+      }
+      input[type=number]::-webkit-inner-spin-button,
+      input[type=number]::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+      }
+      h1 {
+        font-weight: normal;
+        margin: 0;
+        margin-bottom: 10px;
+        font-size: 24px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>How much should I care about my finals?</h1>
+      <p><label>Current grade</label><input type="text" id="grade" value="95.00%"></p>
+      <p><label>Portion of grade the final determines</label><input type="text" id="final" value="15.00%"></p>
+      <p><label>Minimum OK grade</label><input type="text" id="min" value="90.00%"></p>
+      <p id="outputwrapper">You'll need to score at least <span id="output">50%</span> to keep your parents happy.</p>
+    </div>
+
+    <script>
+let currentGrade = document.querySelector('#grade'),
+finalPortion = document.querySelector('#final'),
+minGrade = document.querySelector('#min'),
+output = document.querySelector('#output');
+function isPercentInput(input) {
+  input.addEventListener("keypress", e=>{
+    let char = String.fromCharCode(e.charCode);
+    if (!~'0123456789.'.indexOf(char)) {
+      e.preventDefault();
+      return false;
+    }
+  }, false);
+  input.addEventListener("input", e=>{
+    input.value = input.value.replace(/[^0-9.]/g, '').replace(/\.+/g,'.') + '%';
+    calculate();
+  }, false);
+}
+function calculate() {
+  let portionPercent = +finalPortion.value.slice(0, -1) / 100;
+  output.textContent = (Math.ceil(((+minGrade.value.slice(0, -1) - (+currentGrade.value.slice(0, -1) * (1 - portionPercent))) / portionPercent) * 100) / 100) + '%';
+}
+for (let inputs = document.querySelectorAll('input'), i = inputs.length; i--;) isPercentInput(inputs[i]);
+calculate();
+    </script>
+  </body>
+  <!-- MADE BY SEAN -->
+</html>
