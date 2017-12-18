@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Particles are cool</title>
+    <meta charset="UTF-8">
+    <meta name="description" content="Particles are cool, so I want to make some happen."/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link rel="stylesheet" type="text/css" href="../../sheep2.css">
+    <link rel="stylesheet" href="template.css">
+    <script src="../../sheep2.js" charset="utf-8"></script>
+    <script src="template.js" charset="utf-8"></script>
+  </head>
+  <body data-size="300">
+    <canvas id="canvas"></canvas>
+
+    <script>
+const particles = [],
+gravity = 0.0000098, // m/ms^2
+scale = 300, // px/m
+dotRadius = 5,
+canvasSize = 300,
+c = document.querySelector('#canvas').getContext("2d");
+let lastFrame = new Date().getTime();
+function draw() {
+  let now = new Date().getTime(),
+  time = now - lastFrame;
+  c.clearRect(0, 0, 300, 300);
+
+  for (let i = particles.length; i--;) {
+    let particle = particles[i];
+    particle.x += particle.xv * time * scale;
+    particle.y += particle.yv * time * scale;
+    particle.yv += gravity * time;
+
+    if (particle.x < dotRadius) particle.x = dotRadius, particle.xv *= -0.5;
+    else if (particle.x > canvasSize - dotRadius) particle.x = canvasSize - dotRadius, particle.xv *= -0.5;
+    if (particle.y < dotRadius) particle.y = dotRadius, particle.yv *= -0.5;
+    else if (particle.y > canvasSize - dotRadius) particle.y = canvasSize - dotRadius, particle.yv *= -0.5;
+
+    drawDot(c, particle.x, particle.y, dotRadius, 'white');
+  }
+
+  lastFrame = now;
+  window.requestAnimationFrame(draw);
+}
+function addParticle(x, y) {
+  particles.push({
+    x: x,
+    y: y,
+    xv: Math.random() * 0.002 - 0.001,
+    yv: Math.random() * -0.004
+  });
+}
+draw();
+    </script>
+  </body>
+  <!-- MADE BY SEAN -->
+</html>
