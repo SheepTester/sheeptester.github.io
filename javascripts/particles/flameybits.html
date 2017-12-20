@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Flamey bits</title>
+    <meta charset="UTF-8">
+    <meta name="description" content="Particles are cool, so I want to make some happen."/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link rel="stylesheet" type="text/css" href="../../sheep2.css">
+    <link rel="stylesheet" href="template.css">
+    <script src="../../sheep2.js" charset="utf-8"></script>
+    <script src="template.js" charset="utf-8"></script>
+  </head>
+  <body data-size="300">
+    <canvas id="canvas"></canvas>
+
+    <script>
+const PARTICLE_BOOM_SIZE = 10,
+FLOOR_FRICTION = 0.9,
+GRAVITY = 0.00272222222, // m/frame^2
+SCALE = 300, // px/m
+particles = [],
+dotRadius = 5,
+canvasSize = 300,
+c = document.querySelector('#canvas').getContext("2d");
+function draw() {
+  c.clearRect(0, 0, 300, 300);
+  let now = new Date().getTime();
+
+  for (let i = particles.length; i--;) {
+    let particle = particles[i];
+    particle.x += particle.xv * SCALE;
+    particle.y += particle.yv * SCALE;
+
+    switch (particle.type) {
+      case 'coal':
+        if (particle.x < -dotRadius || particle.x > canvasSize + dotRadius) {
+          particles.splice(i, 1);
+          continue;
+        }
+        if (particle.y > canvasSize - dotRadius) particle.y = canvasSize - dotRadius, particle.yv *= -0.2;
+
+        if (particle.y === canvasSize - dotRadius) {
+          if (Math.abs(particle.yv) > 1) {
+            particle.yv = 0;
+          }
+          if (now - particle.age > particle.lifeSpan) {
+            if (!particle.cooling) particle.cooling = true;
+            else if (particle.coolingProgress <= 0) {
+              particles.splice(i, 1);
+              continue;
+            }
+            else particle.coolingProgress -= 0.01;
+          }
+          particle.xv *= FLOOR_FRICTION;
+        }
+        else particle.yv += GRAVITY;
+
+        if (!particle.cooling || Math.random() < particle.coolingProgress) particles.push({
+          x: particle.x,
+          y: particle.y,
+          xv: 0,
+          yv: Math.random() * -0.02 - 0.01,
+          age: new Date().getTime(),
+          fading: false,
+          fadingProgress: 0.3,
+          size: Math.random() * 10 + 3,
+          type: 'smoke'
+        });
+
+        let colour = {r: 255, g: 173, b: 0};
+        if (particle.cooling) {
+          colour.r = 67 + Math.round(particle.coolingProgress * 188);
+          colour.g = 67 + Math.round(particle.coolingProgress * 106);
+          colour.b = 67 - Math.round(particle.coolingProgress * 67);
+        }
+        drawDot(c, particle.x, particle.y, dotRadius, `rgb(${colour.r}, ${colour.g}, ${colour.b})`);
+        break;
+
+      case 'smoke':
+        if (particle.fadingProgress <= 0) {
+          particles.splice(i, 1);
+          continue;
+        }
+        else particle.fadingProgress -= 0.01;
+
+        drawDot(c, particle.x, particle.y, particle.size, `rgba(180, 180, 180, ${particle.fadingProgress})`);
+        break;
+
+      default:
+        particles.splice(i, 1);
+    }
+  }
+
+  window.requestAnimationFrame(draw);
+}
+function addParticle(x, y) {
+  for (let i = PARTICLE_BOOM_SIZE; i--;) particles.push({
+    x: x,
+    y: y,
+    xv: Math.random() * 0.03 - 0.015,
+    yv: Math.random() * -0.04,
+    age: new Date().getTime(),
+    cooling: false,
+    coolingProgress: 1,
+    lifeSpan: Math.random() * 1400 + 200,
+    type: 'coal'
+  });
+}
+draw();
+    </script>
+  </body>
+  <!-- MADE BY SEAN -->
+</html>
