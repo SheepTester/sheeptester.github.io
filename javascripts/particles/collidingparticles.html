@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Particles are cool</title>
+    <meta charset="UTF-8">
+    <meta name="description" content="Particles are cool, so I want to make some happen."/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link rel="stylesheet" type="text/css" href="../../sheep2.css">
+    <link rel="stylesheet" href="template.css">
+    <script src="../../sheep2.js" charset="utf-8"></script>
+    <script src="template.js" charset="utf-8"></script>
+  </head>
+  <body data-size="300">
+    <canvas id="canvas"></canvas>
+
+    <script>
+const PARTICLE_BOOM_SIZE = 10,
+FLOOR_FRICTION = 0.9,
+GRAVITY = 0.00272222222, // m/frame^2
+SCALE = 300, // px/m
+particles = [],
+dotRadius = 5,
+canvasSize = 300,
+c = document.querySelector('#canvas').getContext("2d");
+
+let SINGLE = true;
+
+function isClose(dx, dy, radius) {
+  return dx * dx + dy * dy < radius * radius;
+}
+function angle(dx, dy) {
+  return Math.atan(dx / dy) + Math.PI * (dy < 0);
+}
+
+function draw() {
+  c.clearRect(0, 0, 300, 300);
+
+  for (let i = particles.length; i--;) {
+    let particle = particles[i];
+    particle.x += particle.xv * SCALE;
+    particle.y += particle.yv * SCALE;
+    
+    let lastPos = {x: particle.x, y: particle.y, xv: particle.xv, yv: particle.yv};
+    
+    if (particle.x < dotRadius) particle.x = dotRadius, particle.xv *= -0.5;
+    else if (particle.x > canvasSize - dotRadius) particle.x = canvasSize - dotRadius, particle.xv *= -0.5;
+    if (particle.y < dotRadius) particle.y = dotRadius, particle.yv *= -0.5;
+    else if (particle.y > canvasSize - dotRadius) particle.y = canvasSize - dotRadius, particle.yv *= -0.5;
+    
+    for (let j = particles.length; j--;) if (j !== i) {
+      if (isClose(particles[j].x - particle.x, particles[j].y - particle.y, dotRadius * 2)) {
+        let distance = Math.hypot(particles[j].x - particle.x, particles[j].y - particle.y),
+        direction = angle(particles[j].x - particle.x, particles[j].y - particle.y);
+        
+        // particle.xv += ((dotRadius * 2 - particle.x + particles[j].x) / 2000 - particle.xv) / 3;
+        // particle.yv += ((dotRadius * 2 - particle.y + particles[j].y) / 2000 - particle.yv) / 3;
+        particle.xv += Math.cos(direction) * (dotRadius - distance / 2 + 2) ** 3 / 20000;
+        particle.yv += Math.sin(direction) * (dotRadius - distance / 2 + 2) ** 3 / 20000;
+        break;
+      }
+    }
+
+    if (particle.y === canvasSize - dotRadius) {
+      if (Math.abs(particle.yv) > 1) {
+        particle.yv = 0;
+      }
+      if (Math.abs(particle.xv) < 0.0001) {
+        if (!particle.fading) particle.fading = true;
+        else if (particle.fadeProgress <= 0) {
+          particles.splice(i, 1);
+          continue;
+        }
+        else particle.fadeProgress -= 0.1;
+      }
+      particle.xv *= FLOOR_FRICTION;
+    }
+    else particle.yv += GRAVITY;
+    
+    if (isNaN(particle.x)) particle.x = lastPos.x;
+    if (isNaN(particle.y)) particle.y = lastPos.y;
+    if (isNaN(particle.xv)) particle.xv = lastPos.xv;
+    if (isNaN(particle.yv)) particle.yv = lastPos.yv;
+
+    if (i === 0) particle.tracking = true;
+    drawDot(c, particle.x, particle.y, dotRadius, `rgba(255,${particle.tracking?'0,0':'255,255'},${particle.fadeProgress})`);
+  }
+
+  window.requestAnimationFrame(draw);
+}
+function addParticle(x, y) {
+  if (SINGLE) {
+    particles.push({
+      x: x,
+      y: y,
+      xv: 0,
+      yv: 0,
+      fading: false,
+      fadeProgress: 1
+    });
+    return;
+  }
+  
+  for (let i = PARTICLE_BOOM_SIZE; i--;) particles.push({
+    x: x,
+    y: y,
+    xv: Math.random() * 0.03 - 0.015,
+    yv: Math.random() * -0.04,
+    fading: false,
+    fadeProgress: 1
+  });
+}
+draw();
+    </script>
+  </body>
+  <!-- MADE BY SEAN -->
+</html>
