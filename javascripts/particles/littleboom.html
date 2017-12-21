@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Little boom</title>
+    <meta charset="UTF-8">
+    <meta name="description" content="A little explosion of particle effects upon click."/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link rel="stylesheet" type="text/css" href="../../sheep2.css">
+    <link rel="stylesheet" href="template.css">
+    <script src="../../sheep2.js" charset="utf-8"></script>
+    <script src="template.js" charset="utf-8"></script>
+  </head>
+  <body data-size="300">
+    <canvas id="canvas"></canvas>
+
+    <script>
+const SPARK_BOOM_SIZE = 20,
+SPARK_SIZE = 1,
+FLOOR_FRICTION = 0.9,
+GRAVITY = 0.00272222222, // m/frame^2
+SCALE = 300, // px/m
+particles = [],
+dotRadius = 5,
+canvasSize = 300,
+c = document.querySelector('#canvas').getContext("2d");
+
+function draw() {
+  c.clearRect(0, 0, 300, 300);
+  let now = new Date().getTime();
+
+  for (let i = particles.length; i--;) {
+    let particle = particles[i];
+
+    switch (particle.type) {
+      case 'explosion':
+        for (let i = SPARK_BOOM_SIZE; i--;) {
+          let direction = Math.random() * Math.PI * 2;
+          particles.push({
+            x: particle.x,
+            y: particle.y,
+            dx: Math.sin(direction),
+            dy: Math.cos(direction),
+            dist: 0,
+            distVel: Math.random() * 0.08,
+            fadingProgress: 1,
+            type: 'spark'
+          });
+        }
+
+        particles.splice(i, 1);
+        break;
+
+      case 'spark':
+        particle.dist += particle.distVel * SCALE;
+        particle.distVel *= 0.85;
+
+        particle.fadingProgress -= 0.02;
+        if (particle.fadingProgress <= 0) {
+          particles.splice(i, 1);
+          continue;
+        }
+
+        c.strokeStyle = `rgba(255, 255, 255, ${particle.fadingProgress})`;
+        c.lineWidth = SPARK_SIZE;
+        c.lineCap = 'round';
+        c.beginPath();
+        c.moveTo(
+          particle.x + particle.dist * particle.dx,
+          particle.y + particle.dist * particle.dy
+        );
+        c.lineTo(
+          particle.x + (particle.dist + particle.distVel * 500) * particle.dx,
+          particle.y + (particle.dist + particle.distVel * 500) * particle.dy
+        );
+        c.stroke();
+
+        break;
+
+      default:
+        particles.splice(i, 1);
+    }
+  }
+
+  window.requestAnimationFrame(draw);
+}
+
+function addParticle(x, y) {
+  particles.push({
+    x: x,
+    y: y,
+    xv: 0,
+    yv: 0,
+    type: 'explosion'
+  });
+}
+
+draw();
+    </script>
+  </body>
+  <!-- MADE BY SEAN -->
+</html>
