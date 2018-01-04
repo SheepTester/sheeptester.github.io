@@ -51,6 +51,18 @@ window.SHEEP = {
   },
   escapeHTML(str) {
     return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  },
+  textWidth(text, fontStyle) {
+    let dummyText = document.createElement("sheep-text-width"),
+    width;
+    if (typeof fontStyle === "string") dummyText.style.font = font;
+    else dummyText.style.font = document.defaultView.getComputedStyle(fontStyle).font;
+
+    dummyText.appendChild(document.createTextNode(text));
+    document.body.appendChild(dummyText);
+    width = dummyText.getBoundingClientRect().width;
+    document.body.removeChild(dummyText);
+    return width;
   }
 };
 document.addEventListener("DOMContentLoaded", e => {

@@ -162,6 +162,11 @@ sheep-contextmenu > sheep-context-item:focus {
   opacity: 1;
   box-shadow: 0 0 0 2px rgba(79,161,167,0.3);
 }
+sheep-text-width {
+  white-space: pre;
+  display: inline;
+  position: fixed;
+}
 
 /* ANIMATIONS */
 @keyframes fadein {
