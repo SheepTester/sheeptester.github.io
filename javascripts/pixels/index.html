@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Pixel manipulator</title>
+    <meta charset="UTF-8">
+    <meta name="description" content="Manipulate pixels using modern web technologies!"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="../../sheep2.css">
+    <link rel="stylesheet" href="styles.css">
+    <script src="../../sheep2.js" charset="utf-8"></script>
+    <script src="colours.js" charset="utf-8"></script>
+    <script src="main.js" charset="utf-8"></script>
+  </head>
+  <body>
+    <ul id="taskbar" class="toolbar">
+      <li class="handle"></li>
+      <li class="text" tabindex="0">file</li>
+      <li class="text" tabindex="0">edit</li>
+      <li class="text" tabindex="0">help</li>
+    </ul>
+    <ul id="toolbar" class="toolbar">
+      <li class="handle"></li>
+      <li class="icon" tabindex="0" id="select"></li>
+      <li class="icon" tabindex="0" id="pen"></li>
+      <li class="icon" tabindex="0" id="fill"></li>
+      <li class="separator"></li>
+      <li class="icon" tabindex="0" id="undo"></li>
+      <li class="icon" tabindex="0" id="redo"></li>
+    </ul>
+    <div id="colourbar">
+      <h3>select colour</h3>
+      <div id="colourrect"><span></span></div>
+      <div class="slider" id="hue"><span></span></div>
+      <div class="slider transparent" id="opacity"><div class="slider"><span></span></div></div>
+      <div class="input-wrapper" id="hex"><input type="text" value="00BCD4"></div>
+      <div class="input-wrapper" id="opacityinput"><input type="text" value="100"></div>
+      <button type="button" id="pickcolour"></button>
+      <canvas id="colourhistory" width="200" height="100" class="transparent"></canvas>
+      <h3>palettes</h3>
+    </div>
+  </body>
+  <!-- MADE BY SEAN -->
+</html>
