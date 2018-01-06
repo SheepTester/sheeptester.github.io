@@ -40,7 +40,7 @@ function HSVtohex(h,s,v) {
   return [r,g,b].map(a=>('0'+Math.round(a*255).toString(16)).slice(-2)).join('');
 }
 
-function isSlider(elem, moveFn) {
+function isSlider(elem, moveFn, doneFn) {
   let move = e => {
     let boundingRect = elem.getBoundingClientRect();
     if (e.type === "mousemove") {
@@ -59,6 +59,7 @@ function isSlider(elem, moveFn) {
       document.removeEventListener("touchmove", move, {passive: false});
       document.removeEventListener("touchend", up, {passive: false});
     }
+    if (doneFn) doneFn();
     e.preventDefault();
   };
   elem.addEventListener("mousedown", e => {
@@ -75,7 +76,7 @@ function isSlider(elem, moveFn) {
   }, false);
 }
 
-const currentColour = {h: 174, s: 100, v: 59, a: 1};
+const currentColour = {h: 174, s: 100, v: 59, a: 1, str: "hsla(174, 100%, 30%, 1)"};
 function loadColours() {
   const hsvRect = document.querySelector("#colourrect"),
   hsvRectKnob = document.querySelector("#colourrect span"),
@@ -118,9 +119,10 @@ function loadColours() {
 
     opacitySlider.style.backgroundImage = `linear-gradient(270deg, ${hsl}, transparent), linear-gradient(${hsl}, ${hsl})`;
     opacitySliderKnob.style.left = (sliderWidth * currentColour.a + sliderSidePadding) + "px";
-    opacityInput.value = currentColour.a * 100;
+    opacityInput.value = Math.round(currentColour.a * 100);
 
     hexInput.value = HSVtohex(currentColour.h, currentColour.s, currentColour.v);
+    currentColour.str = `hsla(${currentColour.h}, ${saturation}%, ${lightness}%, ${currentColour.a})`;
   }
   updateElements();
 
@@ -132,12 +134,62 @@ function loadColours() {
     else if (y > hsvRectHeight) y = hsvRectHeight;
     currentColour.v = (1 - y / hsvRectHeight) * 100;
     updateElements();
-  });
+  }, addToHistory);
   isSlider(hueSlider, x => {
     x -= sliderSidePadding;
     if (x < 0) x = 0;
     else if (x > sliderWidth) x = sliderWidth;
     currentColour.h = x / sliderWidth * 360;
     updateElements();
-  });
+  }, addToHistory);
+  isSlider(opacitySlider, x => {
+    x -= sliderSidePadding;
+    if (x < 0) x = 0;
+    else if (x > sliderWidth) x = sliderWidth;
+    currentColour.a = x / sliderWidth;
+    updateElements();
+  }, addToHistory);
+
+  opacityInput.addEventListener("change", e => {
+    let value = +opacityInput.value.replace(/[^0-9.-]/g, "");
+    if (!isNaN(value) && value >= 0 && value <= 100) currentColour.a = value / 100;
+    updateElements();
+    addToHistory();
+  }, false);
+  hexInput.addEventListener("change", e => {
+    let value = hexInput.value.replace(/[^0-9a-f]/gi, "");
+    if (value.length < 5) value = value.split("").map(a => a.repeat(2)).join("");
+    if (value.length > 6) value = value.slice(0, 6);
+    if (value.length === 6) [currentColour.h, currentColour.s, currentColour.v] = hextoHSV(value);
+    updateElements();
+    addToHistory();
+  }, false);
+
+  const MAX_ROW_ITEMS = 8,
+  MAX_ROWS = 4,
+  historyCanvas = document.querySelector("#colourhistory"),
+  c = historyCanvas.getContext("2d");
+  pixelateCanvas(c);
+
+  let history = [];
+  function addToHistory() {
+    c.clearRect(0, 0, historyCanvas.width, historyCanvas.height);
+    if (currentColour.str !== history[0]) history.splice(0, 0, currentColour.str);
+    if (history.length > MAX_ROW_ITEMS * MAX_ROWS) history = history.slice(0, MAX_ROW_ITEMS * MAX_ROWS);
+    let rows = Math.ceil(history.length / MAX_ROW_ITEMS),
+    firstRowItems = history.length % MAX_ROW_ITEMS,
+    globalItemWidth = historyCanvas.width / MAX_ROW_ITEMS,
+    itemHeight = historyCanvas.height / rows;
+    if (firstRowItems === 0) firstRowItems = MAX_ROW_ITEMS;
+    for (let i = 0, itemWidth = historyCanvas.width / firstRowItems; i < firstRowItems; i++) {
+      c.fillStyle = history[i];
+      c.fillRect(i * itemWidth, 0, itemWidth, itemHeight);
+    }
+    for (let i = 0, row = 0; i < history.length - firstRowItems; i++) {
+      if (i % MAX_ROW_ITEMS === 0) row++;
+      c.fillStyle = history[i + firstRowItems];
+      c.fillRect((i % MAX_ROW_ITEMS) * globalItemWidth, row * itemHeight, globalItemWidth, itemHeight);
+    }
+  }
+  addToHistory();
 }

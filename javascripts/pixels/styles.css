@@ -242,3 +242,12 @@ canvas {
   outline: none;
   opacity: 0.8;
 }
+
+#canvases {
+  position: fixed;
+  top: 100px;
+  left: 100px;
+}
+#canvases canvas {
+  position: absolute;
+}
