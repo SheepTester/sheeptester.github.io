@@ -12,4 +12,5 @@ function getPixelAt(context, x, y, toString = false) {
 
 document.addEventListener("DOMContentLoaded", e => {
   loadColours();
+  loadTools();
 }, false);
