@@ -30,22 +30,46 @@ class PixelPen {
     if (!this.alreadyDrawn.includes(x + "," + y)) {
       if (overwrite) c.clearRect(x, y, 1, 1);
       c.fillRect(x, y, 1, 1);
+      this.alreadyDrawn.push(x + "," + y);
     }
   }
-  penMove(x, y, mainContext, previewContext, options) {
-    if (this.alreadyDrawn.includes(x + "," + y)) return;
-    if (options.overwrite) {
-      mainContext.clearRect(x, y, 1, 1);
-      mainContext.fillRect(x, y, 1, 1);
+  penMove(mouseX, mouseY, mainContext, previewContext, options) { // https://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm
+    let context = options.overwrite ? mainContext : previewContext,
+    deltaX = mouseX - this.lastX,
+    deltaY = mouseY - this.lastY,
+    signX = deltaX < 0 ? -1 : 1,
+    signY = deltaY < 0 ? -1 : 1,
+    error = 0;
+    if (Math.abs(deltaY) > Math.abs(deltaX)) {
+      let deltaErr = Math.abs(deltaX / deltaY),
+      x = this.lastX;
+      for (let y = this.lastY; signY <= 0 ? y >= mouseY : y <= mouseY; y += signY) {
+        this.plot(x, y, context, options.overwrite);
+        error += deltaErr;
+        while (error >= 0.5) {
+          x += signX;
+          error--;
+        }
+      }
     } else {
-      previewContext.fillRect(x, y, 1, 1);
+      let deltaErr = Math.abs(deltaY / deltaX),
+      y = this.lastY;
+      for (let x = this.lastX; signX <= 0 ? x >= mouseX : x <= mouseX; x += signX) {
+        this.plot(x, y, context, options.overwrite);
+        error += deltaErr;
+        while (error >= 0.5) {
+          y += signY;
+          error--;
+        }
+      }
     }
-    this.alreadyDrawn.push(x + "," + y);
+    this.lastX = mouseX;
+    this.lastY = mouseY;
   }
   drawEnd(mainContext, previewContext, options) {
     if (!options.overwrite) {
       mainContext.drawImage(previewContext.canvas, 0, 0);
-      previewContext.clearRect(0, 0, options.width, options.height);
+      previewContext.clearRect(0, 0, options._width_, options._height_);
     }
   }
 }
@@ -54,16 +78,17 @@ function loadTools() {
   const mainCanvas = document.querySelector("#output"),
   mainContext = mainCanvas.getContext("2d"),
   previewCanvas = document.querySelector("#preview"),
-  previewContext = mainCanvas.getContext("2d"),
-  elementInsertMark = document.querySelector("#aftertools");
+  previewContext = previewCanvas.getContext("2d"),
+  elementInsertMark = document.querySelector("#aftertools"),
+  selectTool = document.querySelector("#select");
 
   let tools = [],
   currentTool = null,
-  canvasWidth = 300,
-  canvasHeight = 300;
+  canvasWidth = 50,
+  canvasHeight = 50;
 
   function mouseMove(e) {
-    tools[currentTool].penMove(...getXY(e.clientX, e.clientY), mainContext, previewContext, {
+    tools[currentTool].penMove(...getXY(e.clientX, e.clientY, true), mainContext, previewContext, {
       _width_: canvasWidth,
       _height_: canvasHeight
     });
@@ -78,7 +103,7 @@ function loadTools() {
   }
   mainCanvas.addEventListener("mousedown", e => {
     if (currentTool !== null) {
-      let params = [...getXY(e.clientX, e.clientY), mainContext, previewContext, {
+      let params = [...getXY(e.clientX, e.clientY, true), mainContext, previewContext, {
         _width_: canvasWidth,
         _height_: canvasHeight
       }];
@@ -96,20 +121,30 @@ function loadTools() {
       (mouseX - rect.left) / rect.width * canvasWidth,
       (mouseY - rect.top) / rect.height * canvasHeight
     ];
-    if (round) position = position.map(Math.round);
+    if (round) return position.map(Math.round);
     return position;
   }
 
+  selectTool.addEventListener("click", e => {
+    if (currentTool !== null) tools[currentTool].icon.classList.remove("active");
+    currentTool = null;
+    selectTool.classList.add("active");
+  }, false);
+  selectTool.classList.add("active");
+  
   function registerTool(tool) {
-    let id = tools.length,
-    icon = document.createElement("li");
-    icon.style.backgroundImage = `url("${tool.iconURI}")`;
-    icon.classList.add("icon");
-    icon.setAttribute("tabindex", "0");
-    icon.addEventListener("click", e => {
+    let id = tools.length;
+    tool.icon = document.createElement("li");
+    tool.icon.style.backgroundImage = `url("${tool.iconURI}")`;
+    tool.icon.classList.add("icon");
+    tool.icon.setAttribute("tabindex", "0");
+    tool.icon.addEventListener("click", e => {
+      if (currentTool !== null) tools[currentTool].icon.classList.remove("active");
+      else selectTool.classList.remove("active");
       currentTool = id;
+      tool.icon.classList.add("active");
     }, false);
-    elementInsertMark.parentNode.insertBefore(icon, elementInsertMark);
+    elementInsertMark.parentNode.insertBefore(tool.icon, elementInsertMark);
     tools.push(tool);
   }
 
