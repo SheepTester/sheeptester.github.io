@@ -6,44 +6,74 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" href="simplecolour.css">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://fonts.googleapis.com/css?family=Inconsolata" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="../sheep2.css">
+    <script src="../sheep2.js" charset="utf-8"></script>
+    <script src="pen.js"></script>
     <style>
       body {
-        font-family: monospace;
+        font-family: 'Inconsolata', monospace;
+        font-size: 14px;
       }
       code {
         background-color: #eee;
         color: #666;
+        font-family: 'Inconsolata', monospace;
+      }
+      .bookmarklet::before, .red {
+        content: "*";
+        color: #c4172a;
+      }
+      a:link {
+        border-radius: 2px;
+        color: #0086dd;
+      }
+      a:visited {
+        color: #9a4fd7;
+      }
+      a:active {
+        color: #c4172a;
+      }
+      :focus {
+        outline: none;
+        box-shadow: 0 0 0 2px rgba(0,134,221,0.3);
       }
     </style>
   </head>
   <body>
-    <p>Drag the links into your bookmark bar and you probably might be able to use these on any webpage.</p>
-    <p><a href="javascript:var s=document.createElement('script');s.type='text/javascript';s.src='https://sheeptester.github.io/javascripts/twirlie.js';document.body.appendChild(s);void(0);">twirlie.js</a> - Click on elements to make them spin in circles or shake violently.</p>
-    <p><a href="clicker">clicker</a> - A generic clicker game.</p>
+    <p><span class="red">*</span> = a bookmarklet; drag the links into your browser's bookmarks/favourites bar to use these on most webpages.</p>
+    <p>You really should also check out <a href="https://sheeptester.github.io/words-go-here/misc/">Cramland</a>, which supposedly has less-perfect but admittedly cooler JavaScripts. I arbitrarily put things in the two places based on how I feel like they'll turn out.</p>
+    <p><a href="javascript:var s=document.createElement('script');s.type='text/javascript';s.src='https://sheeptester.github.io/javascripts/twirlie.js';document.body.appendChild(s);void(0);" class="bookmarklet">twirlie.js</a> - Click on elements to make them spin in circles or shake violently.</p>
+    <p><a href="clicker">clicker/</a> - A generic clicker game.</p>
     <p><a href="searchparser.html">searchparser.html</a> - Parses the stuff in the URL after ? into a JS object.</p>
     <p><a href="mutate.html">mutate.html</a> - Simulates cells mutating and dying.</p>
     <p><a href="events.html">events.html</a> - Demonstrates a lot of JavaScript events.</p>
     <p><a href="points.html">points.html</a> - Edit a path by dragging its vertices.</p>
-    <p><a href="shepform">shepform</a> - An attempt to make better form elements. Color inputs included.</p>
+    <p><a href="shepform">shepform/</a> - An attempt to make better form elements. Color inputs included.</p>
+    <p><a href="shepform/colour.html">shepform/colour.html</a> - A glorious colour picker.</p>
     <p><a href="clickanywhere.html">clickanywhere.html</a> - Something that detects when you click outside an element.</p>
     <p><a href="responsivenavbar.html">responsivenavbar.html</a> - Responsive design test.</p>
-    <p><a href="javascript:var s=document.createElement('script');s.type='text/javascript';s.src='https://sheeptester.github.io/javascripts/eval.js';document.body.appendChild(s);void(0);">eval.js</a> - Runs JavaScript; for people who have developer tools disabled by their school.</p>
+    <p><a href="javascript:var s=document.createElement('script');s.type='text/javascript';s.src='https://sheeptester.github.io/javascripts/eval.js';document.body.appendChild(s);void(0);" class="bookmarklet">eval.js</a> - Runs JavaScript; for people who have developer tools disabled by their school.</p>
     <p><a href="shortcuts.html">shortcuts.html</a> - Keyboard shortcut guide.</p>
     <p><a href="pen.js">pen.js</a> - Scratch pen blocks but in JavaScript! This page has it so you can try it out in the console.</p>
     <p><a href="simplecolour.js">simplecolour.js</a> - A simpler colour picker; try it here: <input type="radio" class="simplecolourpicker" checked>; <code>&lt;input type="radio" class="simplecolourpicker" checked&gt;</code> will create the colour picker, the styles I've used are at <a href="simplecolour.css">simplecolour.css</a></p>
     <p><a href="happenings.html">happenings.html</a> - A better-designed What's happening section for Scratch.</p>
     <p><a href="javascript:var s=document.createElement('script');s.src='https://jsfiddle.net/SheepTester/wev54foL/embed/result/dark/';s.async=true;document.body.appendChild(s);">The House</a> - One of my first games; the link opens a JSFiddle embed at the bottom of the page because unfortunately it requires jQuery. <a href="/?hotel">The Hotel</a> is its sequel.</p>
-    <p><a href="javascript:(t=>{var s=document.createElement(t);s.type='text/java'+t;s.src='sadbooks/sadbooks.js';document.body.appendChild(s);})('script')">sadbooks.js</a> - Inspect Element clone attempt for people who have developer tools disabled by their school. (WARNING: currently only works on this page)</p>
-    <p><a href="javascript:(t=>{var s=document.createElement(t);s.type='text/java'+t;s.src='https://sheeptester.github.io/javascripts/2048.js';document.body.appendChild(s);})('script')">2048.js</a> - bookmarklet that opens <a href="https://gabrielecirulli.github.io/2048/">2048 by Gabriele Cirulli</a> in a small frame that only is visible when your cursor is on it, so it's easy to hide when necessary. Launch again to close.</p>
-    <p><a href="mccommands">mccommands</a> - A thing that might make typing commands in "Minecraft" a bit easier on touchscreens.</p>
+    <p><a href="javascript:(t=>{var s=document.createElement(t);s.type='text/java'+t;s.src='sadbooks/sadbooks.js';document.body.appendChild(s);})('script')" class="bookmarklet">sadbooks.js</a> - Inspect Element clone attempt for people who have developer tools disabled by their school. (WARNING: currently only works on this page)</p>
+    <p><a href="javascript:(t=>{var s=document.createElement(t);s.type='text/java'+t;s.src='https://sheeptester.github.io/javascripts/2048.js';document.body.appendChild(s);})('script')" class="bookmarklet">2048.js</a> - bookmarklet that opens <a href="https://gabrielecirulli.github.io/2048/">2048 by Gabriele Cirulli</a> in a small frame that only is visible when your cursor is on it, so it's easy to hide when necessary. Launch again to close.</p>
+    <p><a href="mccommands">mccommands/</a> - A thing that might make typing commands in "Minecraft" a bit easier on touchscreens.</p>
     <p><a href="imagetoscheme.html">imagetoscheme.html</a> - Converts image to ASCII art. Made for a Scheme class.</p>
     <p><a href="fontmaker.html">fontmaker.html</a> - Takes a font file and outputs some costumes and a list. For Scratch costume-based text engines.</p>
     <p><a href="written_book.html">written_book.html</a> - Minecraft written book text editor.</p>
+    <p><a href="terminal">terminal/</a> - Unixesque terminal simulator</p>
+    <p><a href="terminal/mml.html">terminal/mml.html</a> - MML renderer attempt</p>
+    <p><a href="three">three/</a> - Directory of three.js attempts</p>
     <p><a href="footer.html">footer.html</a> - Material design footer.</p>
     <p><a href="carecalc.html">carecalc.html</a> - It's almost finals week and you need to study! Fortunately, your grades are pretty good, so you don't have to try too hard on the finals. This calculator tells you the minimum score you need to get on your finals to prevent turning on your parents' scold speakers.</p>
+    <p><a href="particles">particles/</a> - Directory of canvas-rendered particle attempts</p>
+    <p><a href="pixels">pixels/</a> - Pixel art editor</p>
+    <p><a href="caretdemo.html">caretdemo.html</a> - I decided to adventure into the world of caret selection ranges, expecting an extremely complicated system as a byproduct of bad browser support, but as it turns out, at least for inputs and textareas, it isn't too hard!</p>
 
-    <script src="../sheep.js"></script>
-    <script src="pen.js"></script>
     <script src="simplecolour.js"></script>
     <script>
       var picker=document.querySelector('.simplecolourpicker');

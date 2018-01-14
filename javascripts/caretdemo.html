@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>brackets and x-sistemo</title>
+    <meta charset="UTF-8">
+    <meta name="description" content="autoclose brackets and add the circumflex/breve to your esperanto"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link rel="stylesheet" type="text/css" href="../sheep2.css">
+    <script src="../sheep2.js" charset="utf-8"></script>
+  </head>
+  <body>
+    <textarea id="textarea" rows="8" cols="80"></textarea>
+
+    <script>
+let textarea = document.querySelector("#textarea"),
+brackets = {"(": ")", "[": "]", "{": "}"},
+letters = {"C": "Ĉ", "c": "ĉ", "G": "Ĝ", "g": "ĝ", "H": "Ĥ", "h": "ĥ", "J": "Ĵ", "j": "ĵ", "S": "Ŝ", "s": "ŝ", "U": "Ŭ", "u": "ŭ"};
+textarea.addEventListener("keydown", e => {
+  if (brackets[e.key]) {
+    let originalStart = textarea.selectionStart,
+    originalEnd = textarea.selectionEnd;
+    textarea.value = textarea.value.slice(0, originalStart)
+      + e.key
+      + textarea.value.slice(originalStart, originalEnd)
+      + brackets[e.key]
+      + textarea.value.slice(originalEnd);
+    textarea.setSelectionRange(originalStart + 1, originalEnd + 1);
+    e.preventDefault();
+  } else if (e.key === "x") {
+    if (textarea.selectionStart === textarea.selectionEnd && textarea.selectionStart > 0) {
+      if (letters[textarea.value[textarea.selectionStart - 1]]) {
+        textarea.value = textarea.value.slice(0, textarea.selectionStart - 1)
+          + letters[textarea.value[textarea.selectionStart - 1]]
+          + textarea.value.slice(textarea.selectionStart);
+        e.preventDefault();
+      }
+    }
+  }
+}, false);
+    </script>
+  </body>
+  <!-- MADE BY SEAN -->
+</html>
