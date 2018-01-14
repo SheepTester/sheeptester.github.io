@@ -1,44 +1,5 @@
-function SVtoSL(s, v) {
-  s /= 100, v /= 100;
-  var _l = (2 - s) * v;
-  _l = [Math.round((s * v) / (_l <= 1 ? _l : 2 - _l) * 100), Math.round(_l * 50)];
-  if (isNaN(_l[0])) _l[0] = 0;
-  return _l;
-}
-function hextoHSV(hex) { // is mess.
-  let [r,g,b]=hex.match(/.{2}/g).map(a=>parseInt(a,16)),
-  max=Math.max(r,g,b),
-  min=Math.min(r,g,b),
-  d=max-min,
-  h,
-  s=(max!==0?d/max:0),
-  v=max/255;
-  switch (max) {
-    case min:h=0;break;
-    case r:h=(g-b)+d*(g<b?6:0);h/=6*d;break;
-    case g:h=(b-r)+d*2;h/=6*d;break;
-    case b:h=(r-g)+d*4;h/=6*d;break;
-  }
-  return [h*360,s*100,v*100].map(Math.round);
-}
-function HSVtohex(h,s,v) {
-  var r,g,b,i,f,p,q,t;
-  h/=360,s/=100,v/=100,
-  i=Math.floor(h*6),
-  f=h*6-i,
-  p=v*(1-s),
-  q=v*(1-f*s),
-  t=v*(1-(1-f)*s);
-  switch (i%6) {
-    case 0:r=v,g=t,b=p;break;
-    case 1:r=q,g=v,b=p;break;
-    case 2:r=p,g=v,b=t;break;
-    case 3:r=p,g=q,b=v;break;
-    case 4:r=t,g=p,b=v;break;
-    case 5:r=v,g=p,b=q;break;
-  }
-  return [r,g,b].map(a=>('0'+Math.round(a*255).toString(16)).slice(-2)).join('');
-}
+const RGBtoHSV = (rgb,r,g,b,a,h,s,d)=>([r,g,b]=rgb.map(a=>a/255),a=Math.max(r,g,b),d=a-Math.min(r,g,b),a!==0?s=d/a:s=0,h=-1,h=a===r?(g-b)/d:a===g?2+(b-r)/d:4+(r-g)/d,[(h<0?h+6:h)*60||0,s*100,a*100].map(Math.round)),
+SVtoSL = (s,v,l)=>(s/=100,v/=100,l=(2-s)*v/2,[l&&l<1?s*v/(l<0.5?l*2:2-l*2)*100:0,l*100].map(Math.round));
 
 function isSlider(elem, moveFn, doneFn) {
   let move = e => {
@@ -92,7 +53,23 @@ function loadColours() {
   opacitySliderKnob = document.querySelector("#opacity span"),
   opacityInput = document.querySelector("#opacityinput input"),
 
+  rgbConverterCanvas = document.createElement("canvas"),
+  rgbConverterContext = rgbConverterCanvas.getContext("2d"),
   hexInput = document.querySelector("#hex input");
+
+  rgbConverterCanvas.width = rgbConverterCanvas.height = 1;
+  function getRGBA(hsla) {
+    rgbConverterContext.clearRect(0, 0, 1, 1);
+    rgbConverterContext.fillStyle = hsla;
+    rgbConverterContext.fillRect(0, 0, 1, 1);
+    return getPixelAt(rgbConverterContext, 0, 0);
+  }
+  currentColour.setColour = (r, g, b, a) => {
+    [currentColour.h, currentColour.s, currentColour.v] = RGBtoHSV([r, g, b]);
+    currentColour.a = a;
+    updateElements();
+    addToHistory();
+  };
 
   function updateElements() {
     let hslConversion = SVtoSL(currentColour.s, currentColour.v),
@@ -121,8 +98,12 @@ function loadColours() {
     opacitySliderKnob.style.left = (sliderWidth * currentColour.a + sliderSidePadding) + "px";
     opacityInput.value = Math.round(currentColour.a * 100);
 
-    hexInput.value = HSVtohex(currentColour.h, currentColour.s, currentColour.v);
     currentColour.str = `hsla(${currentColour.h}, ${saturation}%, ${lightness}%, ${currentColour.a})`;
+    let rgba = getRGBA(currentColour.str);
+    hexInput.value = [rgba.r, rgba.g, rgba.b].map(a => ("0" + a.toString(16)).slice(-2)).join("");
+    currentColour.r = rgba.r;
+    currentColour.g = rgba.g;
+    currentColour.b = rgba.b;
   }
   updateElements();
 
@@ -160,7 +141,7 @@ function loadColours() {
     let value = hexInput.value.replace(/[^0-9a-f]/gi, "");
     if (value.length < 5) value = value.split("").map(a => a.repeat(2)).join("");
     if (value.length > 6) value = value.slice(0, 6);
-    if (value.length === 6) [currentColour.h, currentColour.s, currentColour.v] = hextoHSV(value);
+    if (value.length === 6) [currentColour.h, currentColour.s, currentColour.v] = RGBtoHSV(value.match(/.{2}/g).map(a=>parseInt(a,16)));
     updateElements();
     addToHistory();
   }, false);

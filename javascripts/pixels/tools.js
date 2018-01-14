@@ -21,7 +21,7 @@ class PixelPen {
     // (there are none D:)
   }
   drawBegin(x, y, mainContext, previewContext, options) {
-    previewContext.fillStyle = mainContext.fillStyle = currentColour.str;
+    previewContext.fillStyle = mainContext.fillStyle = options._colour_.str;
     this.alreadyDrawn = [];
     this.lastX = x;
     this.lastY = y;
@@ -73,6 +73,44 @@ class PixelPen {
     }
   }
 }
+class Fill {
+  constructor() {
+    // meta stuff
+    this.id = "fill";
+    this.name = "fill tool";
+    this.iconURI = "./icon_fill.svg";
+    this.translations = {};
+    this.options = [];
+  }
+  drawBegin(x, y, c, previewContext, options) {
+    c.fillStyle = options._colour_.str;
+    this.alreadyDrawn = [];
+    this.canvasWidth = options._width_;
+    this.canvasHeight = options._height_;
+    this.targetColour = getPixelAt(c, x, y);
+    this.c = c;
+    this.check(x, y);
+  }
+  sameColours(colour1, colour2) {
+    return colour1.r === colour2.r
+        && colour1.g === colour2.g
+        && colour1.b === colour2.b
+        && colour1.a === colour2.a;
+  }
+  check(x, y) {
+    if (this.alreadyDrawn.includes(x + "," + y)) return;
+    this.plot(x, y);
+    if (x > 0 && this.sameColours(this.targetColour, getPixelAt(this.c, x - 1, y))) this.check(x - 1, y);
+    if (y > 0 && this.sameColours(this.targetColour, getPixelAt(this.c, x, y - 1))) this.check(x, y - 1);
+    if (x < this.canvasWidth - 1 && this.sameColours(this.targetColour, getPixelAt(this.c, x + 1, y))) this.check(x + 1, y);
+    if (y < this.canvasHeight - 1 && this.sameColours(this.targetColour, getPixelAt(this.c, x, y + 1))) this.check(x, y + 1);
+  }
+  plot(x, y) {
+    this.c.clearRect(x, y, 1, 1);
+    this.c.fillRect(x, y, 1, 1);
+    this.alreadyDrawn.push(x + "," + y);
+  }
+}
 
 function loadTools() {
   const mainCanvas = document.querySelector("#output"),
@@ -88,27 +126,35 @@ function loadTools() {
   canvasHeight = 50;
 
   function mouseMove(e) {
-    tools[currentTool].penMove(...getXY(e.clientX, e.clientY, true), mainContext, previewContext, {
+    if (tools[currentTool].penMove) tools[currentTool].penMove(...getXY(e.clientX, e.clientY, true), mainContext, previewContext, {
       _width_: canvasWidth,
-      _height_: canvasHeight
+      _height_: canvasHeight,
+      _colour_: currentColour
     });
   }
   function mouseUp() {
-    tools[currentTool].drawEnd(mainContext, previewContext, {
+    if (tools[currentTool].drawEnd) tools[currentTool].drawEnd(mainContext, previewContext, {
       _width_: canvasWidth,
-      _height_: canvasHeight
+      _height_: canvasHeight,
+      _colour_: currentColour,
+      _rgb_: currentColour
     });
     document.removeEventListener("mousemove", mouseMove, false);
     document.removeEventListener("mouseup", mouseUp, false);
   }
   mainCanvas.addEventListener("mousedown", e => {
-    if (currentTool !== null) {
-      let params = [...getXY(e.clientX, e.clientY, true), mainContext, previewContext, {
+    let [x, y] = getXY(e.clientX, e.clientY, true);
+    if (e.which === 2) {
+      let colour = getPixelAt(mainContext, x, y);
+      currentColour.setColour(colour.r, colour.g, colour.b, colour.a);
+    } else if (currentTool !== null) {
+      let params = [x, y, mainContext, previewContext, {
         _width_: canvasWidth,
-        _height_: canvasHeight
+        _height_: canvasHeight,
+        _colour_: currentColour
       }];
-      tools[currentTool].drawBegin(...params);
-      tools[currentTool].penMove(...params);
+      if (tools[currentTool].drawBegin) tools[currentTool].drawBegin(...params);
+      if (tools[currentTool].penMove) tools[currentTool].penMove(...params);
       drawing = true;
       document.addEventListener("mousemove", mouseMove, false);
       document.addEventListener("mouseup", mouseUp, false);
@@ -131,7 +177,7 @@ function loadTools() {
     selectTool.classList.add("active");
   }, false);
   selectTool.classList.add("active");
-  
+
   function registerTool(tool) {
     let id = tools.length;
     tool.icon = document.createElement("li");
@@ -149,4 +195,5 @@ function loadTools() {
   }
 
   registerTool(new PixelPen());
+  registerTool(new Fill());
 }
