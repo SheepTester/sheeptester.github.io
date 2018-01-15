@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Scratch API Explorer</title>
+    <meta charset="UTF-8">
+    <meta name="description" content="Explore the Scratch APIs with this hard-to-use API explorer."/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link rel="stylesheet" type="text/css" href="../sheep2.css">
+    <script src="../sheep2.js" charset="utf-8"></script>
+    <script src="scratchapi.js" charset="utf-8"></script>
+    <style>
+      body {
+        font-family: sans-serif;
+      }
+      #list {
+        display: table;
+        border: 1px solid grey;
+      }
+      #list a {
+        text-decoration: none;
+        color: inherit;
+        display: table-row;
+      }
+      #list a:last-child {
+        border-bottom: none;
+      }
+      #list a:hover {
+        background-color: rgba(0,0,0,0.1);
+      }
+      #list span {
+        display: table-cell;
+        padding: 10px;
+        border-bottom: 1px solid rgba(0,0,0,0.1);
+      }
+      h1 {
+        font-size: 2em;
+        margin: 0;
+        font-weight: normal;
+      }
+      pre {
+        border: 1px solid rgba(0,0,0,0.3);
+        background-color: rgba(0,0,0,0.05);
+        padding: 10px;
+        word-break: break-all;
+        white-space: pre-wrap;
+      }
+      table td:first-child {
+        text-align: right;
+      }
+      .ellipsis {
+        display: none;
+      }
+      .object.collapsed > * {
+        display: none;
+      }
+      .object.collapsed > .ellipsis, .object.collapsed > .bracket, .object.collapsed > button {
+        display: inline;
+      }
+      .line {
+        display: block;
+        margin-left: 2ch;
+      }
+      .property {
+        color: #319a24;
+      }
+      .string {
+        color: #00a4ff;
+      }
+      .number {
+        color: #c1283e;
+      }
+      .boolean {
+        color: #9f00a1;
+      }
+      .object > button {
+        -webkit-appearance: none;
+        height: 1em;
+        width: 2ch;
+        padding: 0;
+        line-height: 0;
+      }
+      .status {
+        display: block;
+        font-size: 0.8em;
+      }
+      #executor a {
+        text-decoration: none;
+        color: inherit;
+        padding: 5px;
+        line-height: 1;
+        border: 1px solid rgba(0,0,0,0.1);
+        display: inline-block;
+      }
+      :focus {
+        outline: none;
+        box-shadow: 0 0 0 2px rgba(79,161,167,0.3);
+      }
+    </style>
+  </head>
+  <body>
+    <div id="list"></div>
+    <div id="executor">
+      <a href="?" id="return">return to list</a>
+      <h1 id="name"></h1>
+      <p id="desc"></p>
+      <table id="options"></table>
+      <button type="button" id="execute">Execute</button>
+      <h1>Request</h1>
+      <pre id="req"></pre>
+      <h1>Response</h1>
+      <pre id="res"></pre>
+    </div>
+    <hr>
+    <p>Sources: <a href="https://github.com/towerofnix/scratch-api-unofficial-docs">_nix's unofficial API docs</a>, <a href="https://wiki.scratch.mit.edu/wiki/Scratch_API_(2.0)">Scratch Wiki</a></p>
+    <p>Default username: <input type="text" id="username"></p>
+    <p>Default project ID: <input type="number" id="project"></p>
+  </body>
+  <!-- MADE BY SEAN -->
+</html>

@@ -224,6 +224,7 @@ nav .btn:hover {
   margin: 15px 10px;
   position: relative;
   cursor: pointer;
+  background-color: white;
   transition: transform .2s;
 }
 .list .social:hover {
@@ -241,17 +242,19 @@ nav .btn:hover {
   bottom: 0;
   left: 0;
   right: 0;
+  box-sizing: border-box;
 }
 #scratch {background-color: #25AFF4;}
 #scratch .ball {border: 5px solid white; background-color: #F8A839;}
 #instagram {background-image: url('img/instagram_gradient.png'); background-size: 100px 100px;}
+#instagram .ball {border: 5px solid white; background-color: transparent;}
 #github {background-color: #181717;}
 #google {background-color: #DC4E41;}
-#youtube {background-color: #FF0000;}
+#youtube .ball {background-color: #FF0000;}
 #tumblr {background-color: #36465D;}
 #blogger {background-color: #FF5722;}
-#twitter {background-color: white;}
 #twitter .ball {background-color: #1DA1F2;}
+#reddit {background-color: #FF4500;}
 #users h1 {
   margin: 0;
   font-weight: normal;
