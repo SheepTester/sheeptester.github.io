@@ -96,7 +96,7 @@
       t.className='EVALLOG';
       output.appendChild(t);
     }
-    createOutputEntry('To close this window, do document.body.removeChild(evaljs.window);');
+    createOutputEntry('To close this window, do evaljs.close();');
     createOutputEntry('To clear, do evaljs.clear();');
     s.appendChild(output);
     var textarea=document.createElement("textarea");
@@ -106,7 +106,7 @@
       if (e.keyCode===13&&!e.shiftKey) {
         var t=document.createElement("evaloutputentry"),
         evaloutput;
-        t.textContent=textarea.value.replace(/\s/g,'\\u00a0');
+        t.textContent=textarea.value;
         output.appendChild(t);
         t=document.createElement("evaloutputentry");
         t.classList.add('EVALRESULT');
@@ -141,7 +141,7 @@
           evaloutput=e;
           t.classList.add('EVALERROR');
         }
-        t.textContent=(evaloutput+'').replace(/\s/g,'\\u00a0');
+        t.textContent=evaloutput+'';
         output.appendChild(t);
         output.scrollTop=output.scrollHeight;
         textarea.value='';
@@ -155,6 +155,9 @@
       window:s,
       clear() {
         while (output.hasChildNodes()) output.removeChild(output.lastChild);
+      },
+      close() {
+        document.body.removeChild(this.window);
       }
     };
     function merp(u,t) {
