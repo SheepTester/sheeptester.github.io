@@ -125,25 +125,8 @@ function loadTools() {
   canvasWidth = 50,
   canvasHeight = 50;
 
-  function mouseMove(e) {
-    if (tools[currentTool].penMove) tools[currentTool].penMove(...getXY(e.clientX, e.clientY, true), mainContext, previewContext, {
-      _width_: canvasWidth,
-      _height_: canvasHeight,
-      _colour_: currentColour
-    });
-  }
-  function mouseUp() {
-    if (tools[currentTool].drawEnd) tools[currentTool].drawEnd(mainContext, previewContext, {
-      _width_: canvasWidth,
-      _height_: canvasHeight,
-      _colour_: currentColour,
-      _rgb_: currentColour
-    });
-    document.removeEventListener("mousemove", mouseMove, false);
-    document.removeEventListener("mouseup", mouseUp, false);
-  }
-  mainCanvas.addEventListener("mousedown", e => {
-    let [x, y] = getXY(e.clientX, e.clientY, true);
+  function mouseDown(e) {
+    let [x, y] = getXY(e, null, true, true);
     if (e.which === 2) {
       let colour = getPixelAt(mainContext, x, y);
       currentColour.setColour(colour.r, colour.g, colour.b, colour.a);
@@ -158,10 +141,40 @@ function loadTools() {
       drawing = true;
       document.addEventListener("mousemove", mouseMove, false);
       document.addEventListener("mouseup", mouseUp, false);
+      document.addEventListener("touchmove", mouseMove, {passive: false});
+      document.addEventListener("touchend", mouseUp, {passive: false});
     }
-  }, false);
+    e.preventDefault();
+  }
+  function mouseMove(e) {
+    if (tools[currentTool].penMove) tools[currentTool].penMove(...getXY(e, null, true, true), mainContext, previewContext, {
+      _width_: canvasWidth,
+      _height_: canvasHeight,
+      _colour_: currentColour
+    });
+    e.preventDefault();
+  }
+  function mouseUp(e) {
+    if (tools[currentTool].drawEnd) tools[currentTool].drawEnd(mainContext, previewContext, {
+      _width_: canvasWidth,
+      _height_: canvasHeight,
+      _colour_: currentColour,
+      _rgb_: currentColour
+    });
+    document.removeEventListener("mousemove", mouseMove, false);
+    document.removeEventListener("mouseup", mouseUp, false);
+    document.removeEventListener("touchmove", mouseMove, {passive: false});
+    document.removeEventListener("touchend", mouseUp, {passive: false});
+    e.preventDefault();
+  }
+  mainCanvas.addEventListener("mousedown", mouseDown, false);
+  mainCanvas.addEventListener("touchstart", mouseDown, {passive: false});
 
-  function getXY(mouseX, mouseY, round = false) {
+  function getXY(mouseX, mouseY, round = false, isEventObj = false) {
+    if (isEventObj) {
+      mouseY = mouseX.type.includes("touch") ? mouseX.touches[0].clientY : mouseX.clientY;
+      mouseX = mouseX.type.includes("touch") ? mouseX.touches[0].clientX : mouseX.clientX;
+    }
     let rect = mainCanvas.getBoundingClientRect(),
     position = [
       (mouseX - rect.left) / rect.width * canvasWidth,
