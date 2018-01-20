@@ -10,3 +10,26 @@ if (window.location.search) {
     }
   }
 }
+document.addEventListener("DOMContentLoaded", e => {
+  if (urlParams.prop) {
+    //
+  } else {
+    document.body.classList.add("list-view");
+    const list = document.querySelector("#list");
+    for (let prop in localStorage) {
+      if (!localStorage.hasOwnProperty(prop)) continue;
+      let link = document.createElement("a"),
+      select = document.createElement("button"),
+      name = document.createElement("span"),
+      value = document.createElement("span");
+      link.href = "?prop=" + encodeURIComponent(prop);
+      select.className = "material-btn icon ripple-light";
+      name.textContent = prop;
+      value.textContent = localStorage[prop];
+      link.appendChild(select);
+      link.appendChild(name);
+      link.appendChild(value);
+      list.appendChild(link);
+    }
+  }
+}, false);

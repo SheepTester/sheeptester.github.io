@@ -1,0 +1,26 @@
+.material-btn {
+  overflow: hidden;
+  border-radius: 2px;
+}
+.material-btn.icon {
+  border-radius: 50%;
+}
+button.material-btn:not(:disabled) {
+  cursor: pointer;
+}
+div.ripple {
+  position: absolute;
+  height: 10px;
+  width: 10px;
+  margin-left: -5px;
+  margin-top: -5px;
+  transform: scale(0);
+  pointer-events: none;
+  border-radius: 50%;
+}
+div.ripple.dark, body.light div.ripple.use-theme {
+  background-color: rgba(0,0,0,0.2);
+}
+div.ripple.light, body.dark div.ripple.use-theme {
+  background-color: rgba(255,255,255,0.3);
+}
