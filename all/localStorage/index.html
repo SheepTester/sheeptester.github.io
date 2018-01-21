@@ -16,7 +16,7 @@
   <body>
     <div id="list">
       <div class="controls">
-        <a class="material-btn ripple-light" href="?prop=&new=yes" id="new">add</a>
+        <a class="material-btn ripple-light coloured" href="?prop=&new=yes" id="new">add</a>
         <div id="selection">
           <span id="selectcount"></span>
           <button type="button" class="material-btn icon ripple-light" id="remove"></button>
@@ -33,9 +33,17 @@
         <a class="material-btn icon ripple-light" href="?"></a>
         <span>localStorage property editor</span>
       </div>
-      <div class="input-wrapper" id="name">
-        <label>Property name</label>
-        <input type="text">
+      <div class="container">
+        <div class="input-wrapper">
+          <label>Property name</label>
+          <input type="text" id="name" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false">
+        </div>
+        <div class="textarea-wrapper">
+          <label>Property value</label>
+          <textarea id="value" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false"></textarea>
+        </div>
+        <button type="button" class="material-btn raised ripple-dark" id="save">save</button>
+        <button type="button" class="material-btn ripple-light" id="usejson" disabled>use json editor</button>
       </div>
     </div>
   </body>

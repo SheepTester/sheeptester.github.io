@@ -11,11 +11,19 @@ body {
   border: none;
   background: none;
   text-transform: uppercase;
-  color: #00BCD4;
+  color: white;
   font-size: 14px;
   font-weight: 500;
   padding: 11px 16px;
   text-decoration: none;
+}
+.material-btn.coloured {
+  color: #00BCD4;
+}
+.material-btn.raised {
+  background-color: #00BCD4;
+  color: white;
+  box-shadow: 0 1px 5px rgba(0,0,0,0.3);
 }
 .material-btn:focus {
   outline: none;
@@ -27,6 +35,9 @@ body {
   background-position: center;
   background-repeat: no-repeat;
   padding: 0;
+}
+.material-btn:disabled {
+  color: rgba(255,255,255,0.3);
 }
 
 #list {
@@ -169,10 +180,24 @@ body.list-view #editor {
   left: 72px;
   bottom: 18px;
 }
+#editor .container {
+  max-width: 1000px;
+  margin: 0 auto;
+  box-sizing: border-box;
+  padding: 0 20px;
+}
 .input-wrapper {
   height: 60px;
   width: 234px;
   position: relative;
+  box-shadow: 0 1px 0 rgba(255,255,255,0.7);
+  transition: box-shadow .2s;
+}
+.input-wrapper:hover {
+  box-shadow: 0 2px 0 white;
+}
+.input-wrapper.focus {
+  box-shadow: 0 2px 0 #00BCD4;
 }
 .input-wrapper input {
   width: 100%;
@@ -185,14 +210,74 @@ body.list-view #editor {
   left: 0;
   position: absolute;
   padding: 0;
+  cursor: pointer;
+  -webkit-appearance: none;
+  border-radius: 0;
 }
 .input-wrapper input:focus {
   outline: none;
+  cursor: auto;
 }
-.input-wrapper label {
+.input-wrapper label, .textarea-wrapper label {
   font-size: 16px;
   color: rgba(255,255,255,0.7);
   position: absolute;
   bottom: 8px;
   left: 0;
+  transition: font-size .2s, bottom .2s, color .2s;
+}
+.input-wrapper.filled label, .input-wrapper.focus label {
+  font-size: 12px;
+  bottom: 32px;
+}
+.input-wrapper.focus label, .textarea-wrapper.focus label {
+  color: #00BCD4;
+}
+.textarea-wrapper {
+  border-radius: 2px;
+  box-shadow: 0 0 0 1px rgba(255,255,255,0.7);
+  position: relative;
+  transition: box-shadow .2s;
+  margin: 40px 0;
+}
+.textarea-wrapper:hover {
+  box-shadow: 0 0 0 2px white;
+}
+.textarea-wrapper.focus {
+  box-shadow: 0 0 0 2px #00BCD4;
+}
+.textarea-wrapper textarea {
+  width: 100%;
+  border: none;
+  -webkit-appearance: none;
+  border-radius: 0;
+  background: none;
+  resize: none;
+  box-sizing: border-box;
+  padding: 20px 16px;
+  padding-top: 32px;
+  font-size: 16px;
+  color: white;
+  cursor: pointer;
+  min-height: 100px;
+}
+.textarea-wrapper textarea:focus {
+  outline: none;
+  cursor: auto;
+}
+.textarea-wrapper label {
+  top: 20px;
+  bottom: auto;
+  left: 16px;
+  transition: all .2s;
+}
+.textarea-wrapper.focus label, .textarea-wrapper.filled label {
+  font-size: 12px;
+  top: 8px;
+}
+#value {
+  font-family: "Inconsolata", monospace;
+}
+#usejson {
+  margin-left: 16px;
 }

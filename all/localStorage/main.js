@@ -4,7 +4,7 @@ if (window.location.search) {
   for (let i = params.length; i--;) {
     let equalPos = params[i].indexOf("=");
     if (~equalPos) {
-      urlParams[params[i].slice(0, equalPos)] = params[i].slice(equalPos + 1);
+      urlParams[params[i].slice(0, equalPos)] = decodeURIComponent(params[i].slice(equalPos + 1));
     } else {
       urlParams[params[i]] = null;
     }
@@ -12,7 +12,52 @@ if (window.location.search) {
 }
 document.addEventListener("DOMContentLoaded", e => {
   if (urlParams.prop || urlParams.new) {
-    //
+    const inputs = document.querySelectorAll(".input-wrapper input, .textarea-wrapper textarea");
+    for (let i = inputs.length; i--;) {
+      inputs[i].addEventListener("focus", e => {
+        inputs[i].parentNode.classList.add("focus");
+      }, false);
+      inputs[i].addEventListener("blur", e => {
+        inputs[i].parentNode.classList.remove("focus");
+      }, false);
+      inputs[i].addEventListener("change", e => {
+        if (inputs[i].value) {
+          inputs[i].parentNode.classList.add("filled");
+        } else {
+          inputs[i].parentNode.classList.remove("filled");
+        }
+      }, false);
+      if (inputs[i].tagName === "TEXTAREA") {
+        inputs[i].addEventListener("input", e => {
+          valueInput.style.height = 0;
+          inputs[i].style.height = inputs[i].scrollHeight + "px";
+        }, false);
+        window.addEventListener("resize", e => {
+          valueInput.style.height = 0;
+          inputs[i].style.height = inputs[i].scrollHeight + "px";
+        }, false);
+      }
+    }
+
+    const nameInput = document.querySelector("#name"),
+    valueInput = document.querySelector("#value"),
+    saveBtn = document.querySelector("#save"),
+    useJSONBtn = document.querySelector("#usejson");
+    if (urlParams.prop && !urlParams.new) {
+      nameInput.value = urlParams.prop;
+      nameInput.parentNode.classList.add("filled");
+      valueInput.value = localStorage.getItem(urlParams.prop) || "";
+      if (valueInput.value) {
+        valueInput.parentNode.classList.add("filled");
+        valueInput.style.height = 0;
+        valueInput.style.height = valueInput.scrollHeight + "px";
+      }
+    }
+    saveBtn.addEventListener("click", e => {
+      localStorage.removeItem(urlParams.prop);
+      localStorage.setItem(nameInput.value, valueInput.value);
+      if (urlParams.prop !== nameInput.value) window.location.replace("?prop=" + encodeURIComponent(nameInput.value));
+    }, false);
   } else {
     document.body.classList.add("list-view");
 
