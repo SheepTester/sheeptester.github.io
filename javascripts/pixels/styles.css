@@ -93,6 +93,29 @@ canvas {
   left: 0;
   bottom: 0;
 }
+
+.tabs {
+  display: flex;
+  border-bottom: 1px solid #E3006E;
+}
+.tabs span {
+  flex: 1 0 0;
+  font-size: 12px;
+  text-transform: uppercase;
+  text-align: center;
+  padding: 6px 0;
+  color: rgba(255,255,255,0.7);
+  cursor: pointer;
+}
+.tabs span:hover {
+  color: white;
+}
+.tabs span.active {
+  color: white;
+  background-color: #E3006E;
+  cursor: default;
+}
+
 #colourbar {
   background-color: #3D2D53;
   width: 200px;
