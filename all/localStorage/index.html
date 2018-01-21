@@ -16,14 +16,27 @@
   <body>
     <div id="list">
       <div class="controls">
-        <button type="button" class="material-btn ripple-light" id="new">add</button>
-        <button type="button" class="material-btn icon ripple-light" id="remove"></button>
+        <a class="material-btn ripple-light" href="?prop=&new=yes" id="new">add</a>
+        <div id="selection">
+          <span id="selectcount"></span>
+          <button type="button" class="material-btn icon ripple-light" id="remove"></button>
+        </div>
       </div>
       <a class="heading">
         <button type="button" id="selectall" class="material-btn icon ripple-light"></button>
         <span>Property</span>
         <span>Value</span>
       </a>
+    </div>
+    <div id="editor">
+      <div class="navbar">
+        <a class="material-btn icon ripple-light" href="?"></a>
+        <span>localStorage property editor</span>
+      </div>
+      <div class="input-wrapper" id="name">
+        <label>Property name</label>
+        <input type="text">
+      </div>
     </div>
   </body>
   <!-- MADE BY SEAN -->

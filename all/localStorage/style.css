@@ -15,9 +15,18 @@ body {
   font-size: 14px;
   font-weight: 500;
   padding: 11px 16px;
+  text-decoration: none;
 }
 .material-btn:focus {
   outline: none;
+}
+.material-btn.icon {
+  width: 48px;
+  height: 48px;
+  background-size: 24px;
+  background-position: center;
+  background-repeat: no-repeat;
+  padding: 0;
 }
 
 #list {
@@ -35,24 +44,45 @@ body.list-view #list {
   height: 64px;
   border-bottom: 1px solid rgba(255,255,255,0.12);
   position: relative;
+  transition: background-color .2s;
+}
+body.selection .controls {
+  background-color: #006064;
 }
 .controls .material-btn {
   margin: 14px 8px;
 }
+#new {
+  transition: opacity .2s;
+}
+body.selection #new {
+  pointer-events: none;
+  opacity: 0;
+}
+#selection {
+  position: absolute;
+  top: -64px;
+  left: 0;
+  width: 100%;
+  opacity: 0;
+  transition: top .2s, opacity .2s;
+}
+body.selection #selection {
+  top: 0;
+  opacity: 1;
+}
+#selectcount {
+  color: #00BCD4;
+  font-size: 14px;
+  margin: 25px 24px;
+  display: inline-block;
+}
 #remove {
-  width: 48px;
-  height: 48px;
   background-image: url("material_delete.svg");
-  background-size: 24px;
-  background-position: center;
-  background-repeat: no-repeat;
-  position: fixed;
-  right: -64px;
+  position: absolute;
+  right: 0;
   margin: 8px;
   transition: right .2s;
-}
-body.has-selected #remove {
-  right: 0;
 }
 #list > a {
   display: flex;
@@ -65,6 +95,9 @@ body.has-selected #remove {
 #list > a:not(.heading):hover, #list > a:not(.heading):focus {
   outline: none;
   background-color: #424242;
+}
+#list > a.selected {
+  background-color: #393939;
 }
 #list > a > span {
   display: inline-block;
@@ -85,20 +118,17 @@ body.has-selected #remove {
   padding-bottom: 22px;
 }
 #list > a > button {
-  width: 48px;
-  height: 48px;
   margin: 0 9px;
-  background-image: url("material_uncheckbox.svg");
-  background-size: 24px;
-  background-position: center;
-  background-repeat: no-repeat;
+  background-image: url("material_checkbox.svg"), url("material_uncheckbox.svg");
+  background-size: 0, 24px;
   opacity: 0.7;
 }
-#list > a > button.checked {
-  background-image: url("material_checkbox.svg");
+#list > a.selected > button, #list > a > button.checked {
+  background-size: 24px, 24px;
   opacity: 1;
+  transition: background-size .2s; /* intentional */
 }
-#list > a > button.checked > div.ripple {
+#list > a.selected > button > div.ripple, #list > a > button.checked > div.ripple {
   background-color: rgba(0, 188, 212, 0.3);
 }
 #list > a > button:focus {
@@ -112,4 +142,57 @@ body.has-selected #remove {
 }
 #list > a > span:last-of-type {
   flex: 7 0 0;
+}
+#list > a:not(.heading) > span:last-of-type {
+  font-family: "Inconsolata", monospace;
+}
+
+body.list-view #editor {
+  display: none;
+}
+#editor .navbar {
+  background-color: #212121;
+  height: 56px;
+  position: relative;
+}
+#editor .navbar a {
+  background-image: url("material_back.svg");
+  display: inline-block;
+  margin: 4px;
+}
+#editor .navbar span {
+  font-size: 20px;
+  font-weight: 500;
+  color: white;
+  display: inline-block;
+  position: absolute;
+  left: 72px;
+  bottom: 18px;
+}
+.input-wrapper {
+  height: 60px;
+  width: 234px;
+  position: relative;
+}
+.input-wrapper input {
+  width: 100%;
+  height: 32px;
+  font-size: 16px;
+  border: none;
+  background: none;
+  bottom: 0;
+  color: white;
+  left: 0;
+  position: absolute;
+  padding: 0;
+}
+.input-wrapper input:focus {
+  outline: none;
+}
+.input-wrapper label {
+  font-size: 16px;
+  color: rgba(255,255,255,0.7);
+  position: absolute;
+  bottom: 8px;
+  left: 0;
 }
