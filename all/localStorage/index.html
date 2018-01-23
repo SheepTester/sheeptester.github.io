@@ -33,23 +33,29 @@
       </div>
       <a class="heading">
         <button type="button" id="selectall" class="material-btn icon ripple-light"></button>
-        <span>Property</span>
+        <span>Item name</span>
         <span>Value</span>
       </a>
     </div>
     <div id="editor">
       <div class="navbar">
         <a class="material-btn icon ripple-light" href="?"></a>
-        <span>localStorage property editor</span>
+        <span>localStorage manager</span>
       </div>
       <div class="container">
         <div class="input-wrapper">
-          <label>Property name</label>
+          <label>Item name</label>
           <input type="text" id="name" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false">
         </div>
-        <div class="textarea-wrapper">
-          <label>Property value</label>
-          <textarea id="value" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false"></textarea>
+        <div class="textarea-wrapper" id="value">
+          <label>Item value</label>
+          <textarea autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false"></textarea>
+        </div>
+        <div class="textarea-wrapper filled" id="jsoneditor">
+          <label>Item JSON</label>
+          <div class="editor">
+            sdfsd
+          </div>
         </div>
         <button type="button" class="material-btn raised ripple-dark" id="save">save</button>
         <button type="button" class="material-btn ripple-light" id="usejson" disabled>use json editor</button>

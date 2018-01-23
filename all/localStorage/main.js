@@ -10,6 +10,46 @@ if (window.location.search) {
     }
   }
 }
+function looksLikeJSON(string) {
+  return false; // TEMP
+  try {
+    return typeof JSON.parse(string) === "object" ? true : false;
+  } catch (e) {
+    return false;
+  }
+}
+function editContent(e) {
+  //
+}
+function JSONeditor(obj) {
+  const wrapper = document.createElement("span");
+  if (typeof obj === "object" && obj !== null) {
+    if (Array.isArray(obj)) {
+      //
+    } else {
+      //
+    }
+  } else {
+    wrapper.textContent = obj;
+    wrapper.addEventListener("click", editContent, false);
+    switch (typeof obj) {
+      case "string":
+        wrapper.classList.add("string");
+        break;
+      case "number":
+        wrapper.classList.add("number");
+        break;
+      case "boolean":
+        wrapper.classList.add("boolean");
+        break;
+      case "object":
+      case "undefined":
+        wrapper.classList.add("null");
+        break;
+    }
+  }
+  return wrapper;
+}
 document.addEventListener("DOMContentLoaded", e => {
   if (urlParams.prop || urlParams.new) {
     const inputs = document.querySelectorAll(".input-wrapper input, .textarea-wrapper textarea");
@@ -40,9 +80,12 @@ document.addEventListener("DOMContentLoaded", e => {
     }
 
     const nameInput = document.querySelector("#name"),
-    valueInput = document.querySelector("#value"),
+    valueInput = document.querySelector("#value textarea"),
     saveBtn = document.querySelector("#save"),
-    useJSONBtn = document.querySelector("#usejson");
+    useJSONBtn = document.querySelector("#usejson"),
+    JSONBtnTextNode = Array.from(useJSONBtn.childNodes).filter(a => a.nodeType === Node.TEXT_NODE)[0],
+    jsonEditor = document.querySelector("#jsoneditor .editor");
+    let usingJSON = false;
     if (urlParams.prop && !urlParams.new) {
       nameInput.value = urlParams.prop;
       nameInput.parentNode.classList.add("filled");
@@ -51,12 +94,37 @@ document.addEventListener("DOMContentLoaded", e => {
         valueInput.parentNode.classList.add("filled");
         valueInput.style.height = 0;
         valueInput.style.height = valueInput.scrollHeight + "px";
+        function validateJSON() {
+          if (looksLikeJSON(valueInput.value)) {
+            useJSONBtn.disabled = false;
+            return true;
+          } else {
+            useJSONBtn.disabled = true;
+            return false;
+          }
+        }
+        usingJSON = validateJSON();
+        if (usingJSON) {
+          JSONBtnTextNode.textContent = "use plain text editor";
+          document.body.classList.add("json-editor");
+        }
+        valueInput.addEventListener("input", validateJSON, false);
       }
     }
     saveBtn.addEventListener("click", e => {
       localStorage.removeItem(urlParams.prop);
       localStorage.setItem(nameInput.value, valueInput.value);
       if (urlParams.prop !== nameInput.value) window.location.replace("?prop=" + encodeURIComponent(nameInput.value));
+    }, false);
+    useJSONBtn.addEventListener("click", e => {
+      usingJSON = !usingJSON;
+      if (usingJSON) {
+        JSONBtnTextNode.textContent = "use plain text editor";
+        document.body.classList.add("json-editor");
+      } else {
+        JSONBtnTextNode.textContent = "use JSON editor";
+        document.body.classList.remove("json-editor");
+      }
     }, false);
   } else {
     document.body.classList.add("list-view");

@@ -40,6 +40,7 @@ body {
   padding: 0;
 }
 .material-btn:disabled {
+  cursor: default;
   color: rgba(255,255,255,0.3);
 }
 
@@ -278,8 +279,21 @@ body.list-view #editor {
   font-size: 12px;
   top: 8px;
 }
-#value {
+#value textarea {
   font-family: "Inconsolata", monospace;
+}
+body.json-editor #value {
+  display: none;
+}
+#jsoneditor {
+  display: none;
+}
+body.json-editor #jsoneditor {
+  display: block;
+}
+#jsoneditor .editor {
+  padding: 20px 16px;
+  padding-top: 32px;
 }
 #usejson {
   margin-left: 16px;
