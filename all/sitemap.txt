@@ -12,7 +12,7 @@ https://sheeptester.github.io/calculator/base/
 https://sheeptester.github.io/calculator/calc/
 https://sheeptester.github.io/calculator/leapday/
 https://sheeptester.github.io/calculator/
-https://sheeptester.github.io/calculator/old
+https://sheeptester.github.io/calculator/oldindex.html
 https://sheeptester.github.io/colour/
 https://sheeptester.github.io/eyo-dictionary/
 https://sheeptester.github.io/eyo-dictionary/validator.html
