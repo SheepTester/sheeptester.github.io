@@ -167,6 +167,9 @@ sheep-text-width {
   display: inline;
   position: fixed;
 }
+sheep-text-width::after {
+  content: "\a";
+}
 
 /* ANIMATIONS */
 @keyframes fadein {

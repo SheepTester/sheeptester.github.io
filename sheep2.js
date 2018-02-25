@@ -52,7 +52,7 @@ window.SHEEP = {
   escapeHTML(str) {
     return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
   },
-  textWidth(text, fontStyle) {
+  textWidth(text, fontStyle, getHeightToo) {
     let dummyText = document.createElement("sheep-text-width"),
     width;
     if (typeof fontStyle === "string") dummyText.style.font = font;
@@ -60,7 +60,13 @@ window.SHEEP = {
 
     dummyText.appendChild(document.createTextNode(text));
     document.body.appendChild(dummyText);
-    width = dummyText.getBoundingClientRect().width;
+    if (getHeightToo) {
+      width = {
+        width: dummyText.getBoundingClientRect().width,
+        height: dummyText.getBoundingClientRect().height
+      };
+    }
+    else width = dummyText.getBoundingClientRect().width;
     document.body.removeChild(dummyText);
     return width;
   }

@@ -10,6 +10,21 @@ if (window.location.search) {
     }
   }
 }
+function textSize(text, fontStyle) {
+  let dummyText = document.createElement("span"),
+  width;
+  dummyText.classList.add("text-width");
+  if (typeof fontStyle === "string") dummyText.style.font = font;
+  else dummyText.style.font = document.defaultView.getComputedStyle(fontStyle).font;
+  dummyText.appendChild(document.createTextNode(text));
+  document.body.appendChild(dummyText);
+  width = {
+    width: dummyText.getBoundingClientRect().width,
+    height: dummyText.getBoundingClientRect().height
+  };
+  document.body.removeChild(dummyText);
+  return width;
+}
 function looksLikeJSON(string) {
   return false; // TEMP
   try {
@@ -21,34 +36,66 @@ function looksLikeJSON(string) {
 function editContent(e) {
   //
 }
-function JSONeditor(obj) {
-  const wrapper = document.createElement("span");
-  if (typeof obj === "object" && obj !== null) {
-    if (Array.isArray(obj)) {
-      //
+class EditableProperty {
+  constructor() {
+    this.elem = document.createElement("span");
+    this.textarea = document.createElement("textarea");
+    this.elem.addEventListener("click", e => {
+      this.textarea.value = this.name;
+      this.textarea.style.display = "block";
+      this.updateTextareaSize();
+      this.textarea.focus();
+    }, false);
+    this.textarea.addEventListener("blur", e => {
+      this.textarea.style.display = "none";
+      this.name = this.textarea.value;
+    }, false);
+    this.textarea.style.display = "none";
+    this.name = "";
+    this.elem.appendChild(textarea);
+  }
+  get name() {
+    return this._name;
+  }
+  set name(name) {
+    this._name = name;
+    this.elem.textContent = JSON.stringify(name).slice(1, -1);
+  }
+  updateTextareaSize() {
+    let box = textSize(this.textarea.value, this.textarea);
+    this.textarea.style.width = box.width + "px";
+    this.textarea.style.height = box.height + "px";
+  }
+}
+class JSONEditor {
+  constructor(obj) {
+    this.wrapper = document.createElement("span");
+    if (typeof obj === "object" && obj !== null) {
+      if (Array.isArray(obj)) {
+        //
+      } else {
+        //
+      }
     } else {
-      //
-    }
-  } else {
-    wrapper.textContent = obj;
-    wrapper.addEventListener("click", editContent, false);
-    switch (typeof obj) {
-      case "string":
-        wrapper.classList.add("string");
-        break;
-      case "number":
-        wrapper.classList.add("number");
-        break;
-      case "boolean":
-        wrapper.classList.add("boolean");
-        break;
-      case "object":
-      case "undefined":
-        wrapper.classList.add("null");
-        break;
+      this.wrapper.textContent = obj;
+      this.wrapper.addEventListener("click", editContent, false);
+      switch (typeof obj) {
+        case "string":
+          this.wrapper.classList.add("string");
+          break;
+        case "number":
+          this.wrapper.classList.add("number");
+          break;
+        case "boolean":
+          this.wrapper.classList.add("boolean");
+          break;
+        case "object":
+        case "undefined":
+          this.wrapper.classList.add("null");
+          break;
+      }
     }
   }
-  return wrapper;
 }
 document.addEventListener("DOMContentLoaded", e => {
   if (urlParams.prop || urlParams.new) {
@@ -86,6 +133,20 @@ document.addEventListener("DOMContentLoaded", e => {
     JSONBtnTextNode = Array.from(useJSONBtn.childNodes).filter(a => a.nodeType === Node.TEXT_NODE)[0],
     jsonEditor = document.querySelector("#jsoneditor .editor");
     let usingJSON = false;
+    function turnJSONMode(on) {
+      usingJSON = on;
+      if (on) {
+        JSONBtnTextNode.textContent = "use plain text editor";
+        document.body.classList.add("json-editor");
+        while (jsonEditor.firstChild) jsonEditor.removeChild(jsonEditor.firstChild);
+        let po = new JSONEditor(JSON.parse(valueInput.value));
+        console.log(po);
+        jsonEditor.appendChild(po.wrapper);
+      } else {
+        JSONBtnTextNode.textContent = "use JSON editor";
+        document.body.classList.remove("json-editor");
+      }
+    }
     if (urlParams.prop && !urlParams.new) {
       nameInput.value = urlParams.prop;
       nameInput.parentNode.classList.add("filled");
@@ -103,10 +164,8 @@ document.addEventListener("DOMContentLoaded", e => {
             return false;
           }
         }
-        usingJSON = validateJSON();
-        if (usingJSON) {
-          JSONBtnTextNode.textContent = "use plain text editor";
-          document.body.classList.add("json-editor");
+        if (validateJSON()) {
+          turnJSONMode(true);
         }
         valueInput.addEventListener("input", validateJSON, false);
       }
@@ -117,14 +176,7 @@ document.addEventListener("DOMContentLoaded", e => {
       if (urlParams.prop !== nameInput.value) window.location.replace("?prop=" + encodeURIComponent(nameInput.value));
     }, false);
     useJSONBtn.addEventListener("click", e => {
-      usingJSON = !usingJSON;
-      if (usingJSON) {
-        JSONBtnTextNode.textContent = "use plain text editor";
-        document.body.classList.add("json-editor");
-      } else {
-        JSONBtnTextNode.textContent = "use JSON editor";
-        document.body.classList.remove("json-editor");
-      }
+      turnJSONMode(!usingJSON);
     }, false);
   } else {
     document.body.classList.add("list-view");

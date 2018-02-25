@@ -297,4 +297,13 @@ body.json-editor #jsoneditor {
 }
 #usejson {
   margin-left: 16px;
+  margin-bottom: 40px;
+}
+.text-width {
+  white-space: pre;
+  display: inline;
+  position: fixed;
+}
+.text-width::after {
+  content: "\a";
 }
