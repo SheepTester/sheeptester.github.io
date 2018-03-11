@@ -19,7 +19,7 @@
         font-weight: bold;
       }
       .me::after {
-        content: " (me)"
+        content: " (me)";
         font-weight: normal;
         color: black;
       }
@@ -76,11 +76,12 @@ function updatePlayerList() {
   list.appendChild(item);
   onlineListElem.appendChild(list);
 }
+updatePlayerList();
 
 channel.onopen = userid => {
     online[userid] = {username: null};
-    channel.send(myUsername);
     updatePlayerList();
+    if (myUsername !== null) channel.send(myUsername);
 };
 
 channel.onmessage = function (message, userid) {
