@@ -132,7 +132,7 @@ function addOfficialMessage(message) {
   messagesElem.appendChild(item);
 }
 function newMessageSound() {
-  if (shouldPlaySound.checked) notifSound.play();
+  if (shouldPlaySound.checked && document.hidden) notifSound.play();
 }
 updatePlayerList();
 
