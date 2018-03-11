@@ -15,6 +15,14 @@
       .red {
         color: red;
       }
+      .me {
+        font-weight: bold;
+      }
+      .me::after {
+        content: " (me)"
+        font-weight: normal;
+        color: black;
+      }
     </style>
   </head>
   <body>
@@ -27,8 +35,13 @@ usernameChanger = document.querySelector("#username");
 let myUsername = null;
 
 usernameChanger.addEventListener("click", e => {
-  let newUsername = prompt("enter new username:");
-  if (online[newUsername]) alert("username already taken.");
+  let newUsername = prompt("enter new username:"),
+  usernameFound = false;
+  for (let player in online) if (online[player].username === newUsername) {
+    usernameFound = true;
+    break;
+  }
+  if (usernameFound) alert("username already taken.");
   else {
     myUsername = newUsername;
     channel.send(myUsername);
@@ -54,13 +67,19 @@ function updatePlayerList() {
     list.appendChild(item);
   }
   let item = document.createElement("li");
-  item.textContent = myUsername;
+  item.classList.add("me");
+  if (myUsername !== null) item.textContent = myUsername;
+  else {
+    item.textContent = "[no username]";
+    item.classList.add("red");
+  }
   list.appendChild(item);
   onlineListElem.appendChild(list);
 }
 
 channel.onopen = userid => {
     online[userid] = {username: null};
+    channel.send(myUsername);
     updatePlayerList();
 };
 
