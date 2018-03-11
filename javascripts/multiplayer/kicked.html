@@ -7,11 +7,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <link rel="stylesheet" type="text/css" href="../../sheep2.css">
     <script src="../../sheep2.js" charset="utf-8"></script>
+    <style media="screen">
+      #reason.bad::before {
+        content: "reason: ";
+        font-weight: bold;
+      }
+    </style>
   </head>
   <body>
     <h1>you were kicked</h1>
     <p>someone kicked you. don't worry, you can still return</p>
-    <p><a href="javascript:history.back()">go back</a> </p>
+    <p id="reason"></p>
+    <p><a href="javascript:history.back()">go back</a></p>
+    <script type="text/javascript">
+      !window.location.search||(a=>(a.textContent=decodeURIComponent(window.location.search.slice(1)),a.classList.add("bad")))(document.querySelector("#reason"));
+    </script>
   </body>
   <!-- MADE BY SEAN -->
 </html>

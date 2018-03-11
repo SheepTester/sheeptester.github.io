@@ -165,8 +165,7 @@ channel.onmessage = (msg, userid) => {
       break;
     case "kick-user":
       if (channel.userid === msg.content) {
-        alert("you were kicked." + (msg.reason ? ` reason: ${msg.reason}` : ""));
-        window.location = "kicked.html";
+        window.location = `kicked.html?${encodeURIComponent(msg.reason)}`;
       }
       break;
     default:
