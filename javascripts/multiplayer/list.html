@@ -12,6 +12,9 @@
       #online {
         border: 1px solid black;
       }
+      .red {
+        color: red;
+      }
     </style>
   </head>
   <body>
@@ -28,6 +31,7 @@ usernameChanger.addEventListener("click", e => {
   if (online[newUsername]) alert("username already taken.");
   else {
     myUsername = newUsername;
+    channel.send(myUsername);
     updatePlayerList();
   }
 }, false);
@@ -36,11 +40,17 @@ var channel = new DataChannel("sheep-multiplayer-test"),
 online = {};
 
 function updatePlayerList() {
+  while (onlineListElem.firstChild) onlineListElem.removeChild(onlineListElem.firstChild);
+
   let list = document.createDocumentFragment();
   for (let player in online) {
     if (!online.hasOwnProperty(player)) continue;
     let item = document.createElement("li");
-    item.textContent = online[player].username;
+    if (online[player].username !== null) item.textContent = online[player].username;
+    else {
+      item.textContent = "[no username]";
+      item.classList.add("red");
+    }
     list.appendChild(item);
   }
   let item = document.createElement("li");
@@ -50,7 +60,7 @@ function updatePlayerList() {
 }
 
 channel.onopen = userid => {
-    online[userid] = {username: userid};
+    online[userid] = {username: null};
     updatePlayerList();
 };
 
