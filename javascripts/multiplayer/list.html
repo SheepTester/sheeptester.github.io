@@ -106,10 +106,11 @@ function updatePlayerList() {
   list.appendChild(item);
   onlineListElem.appendChild(list);
 }
-function tellEveryoneMyUsername() {
+function tellEveryoneMyUsername(isIntroduction = false) {
   if (myUsername !== null) channel.send(JSON.stringify({
     type: "username-change",
-    content: myUsername
+    content: myUsername,
+    isIntroduction: isIntroduction
   }));
 }
 function addMessageItem(from, message) {
@@ -132,14 +133,15 @@ channel.onopen = userid => {
   online[userid] = {username: null};
   addOfficialMessage(`person with userID of ${userid} joined`);
   updatePlayerList();
-  tellEveryoneMyUsername();
+  tellEveryoneMyUsername(true);
 };
 
 channel.onmessage = (msg, userid) => {
   msg = JSON.parse(msg);
   switch (msg.type) {
     case "username-change":
-      addOfficialMessage(`${online[userid].username || "[no username]"} is now known officially as ${msg.content}`);
+      if (!msg.isIntroduction)
+        addOfficialMessage(`${online[userid].username || "[no username]"} is now known officially as ${msg.content}`);
       online[userid].username = msg.content;
       updatePlayerList();
       break;
