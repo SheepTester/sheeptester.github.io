@@ -43,16 +43,20 @@
     <ul id="messages"></ul>
     <button type="button" id="username">set username</button>
     <button type="button" id="message">send message</button>
+    <input type="checkbox" name="sound" id="playsound"><label for="sound">play notification sound?</label>
+    <audio src="notification_sound.mp3" id="sound"></audio>
 
     <script>
 const onlineListElem = document.querySelector("#online"),
 messagesElem = document.querySelector("#messages"),
 usernameChanger = document.querySelector("#username"),
-messageSender = document.querySelector("#message");
+messageSender = document.querySelector("#message"),
+shouldPlaySound = document.querySelector("#playsound"),
+notifSound = document.querySelector("#sound");
 let myUsername = null;
 
 usernameChanger.addEventListener("click", e => {
-  let newUsername = prompt("enter new username:"),
+  let newUsername = prompt("enter new username:").trim(),
   usernameFound = false;
   if (newUsername === "") alert("NO EMPTY USERNAMES.");
   else {
@@ -127,6 +131,9 @@ function addOfficialMessage(message) {
   item.textContent = message;
   messagesElem.appendChild(item);
 }
+function newMessageSound() {
+  if (shouldPlaySound.checked) notifSound.play();
+}
 updatePlayerList();
 
 channel.onopen = userid => {
@@ -134,6 +141,7 @@ channel.onopen = userid => {
   addOfficialMessage(`person with userID of ${userid} joined`);
   updatePlayerList();
   tellEveryoneMyUsername(true);
+  newMessageSound();
 };
 
 channel.onmessage = (msg, userid) => {
@@ -144,12 +152,16 @@ channel.onmessage = (msg, userid) => {
         addOfficialMessage(`${online[userid].username || "[no username]"} is now known officially as ${msg.content}`);
       online[userid].username = msg.content;
       updatePlayerList();
+      newMessageSound();
       break;
     case "new-update-probably":
       addOfficialMessage("there appears to be a new update! please reload");
+      addOfficialMessage(`new things: ${msg.content}`);
+      newMessageSound();
       break;
     case "message":
       addMessageItem(online[userid].username, msg.content);
+      newMessageSound();
       break;
     default:
       throw new Error("Not sure what to do with this message: " + msg.type);
@@ -160,6 +172,7 @@ channel.onleave = userid => {
   addOfficialMessage(`${online[userid].username || "[no username]"} left`);
   delete online[userid];
   updatePlayerList();
+  newMessageSound();
 };
     </script>
   </body>
