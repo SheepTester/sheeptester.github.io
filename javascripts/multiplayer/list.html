@@ -163,6 +163,12 @@ channel.onmessage = (msg, userid) => {
       addMessageItem(online[userid].username, msg.content);
       newMessageSound();
       break;
+    case "kick-user":
+      if (channel.userid === msg.content) {
+        alert("you were kicked." + (msg.reason ? ` reason: ${msg.reason}` : ""));
+        window.location = "kicked.html";
+      }
+      break;
     default:
       throw new Error("Not sure what to do with this message: " + msg.type);
   }
