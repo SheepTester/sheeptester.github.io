@@ -23,35 +23,73 @@
         font-weight: normal;
         color: black;
       }
+      .user {
+        font-weight: bold;
+      }
+      .user::after {
+        content: ": ";
+        color: black;
+      }
+      .official {
+        font-weight: bold;
+        color: green;
+      }
     </style>
   </head>
   <body>
+    <h2>list of people</h2>
     <ul id="online"></ul>
+    <h2>list of what they said</h2>
+    <ul id="messages"></ul>
     <button type="button" id="username">set username</button>
+    <button type="button" id="message">send message</button>
 
     <script>
 const onlineListElem = document.querySelector("#online"),
-usernameChanger = document.querySelector("#username");
+messagesElem = document.querySelector("#messages"),
+usernameChanger = document.querySelector("#username"),
+messageSender = document.querySelector("#message");
 let myUsername = null;
 
 usernameChanger.addEventListener("click", e => {
   let newUsername = prompt("enter new username:"),
   usernameFound = false;
-  for (let player in online) if (online[player].username === newUsername) {
-    usernameFound = true;
-    break;
-  }
-  if (usernameFound) alert("username already taken.");
+  if (newUsername === "") alert("NO EMPTY USERNAMES.");
   else {
-    myUsername = newUsername;
-    channel.send(myUsername);
-    updatePlayerList();
+    for (let player in online) if (online[player].username === newUsername) {
+      usernameFound = true;
+      break;
+    }
+    if (usernameFound) alert("username already taken.");
+    else {
+      addOfficialMessage(`${myUsername || "[no username]"} is now known officially as ${newUsername}`);
+      myUsername = newUsername;
+      updatePlayerList();
+      tellEveryoneMyUsername();
+    }
   }
+}, false);
+messageSender.addEventListener("click", e => {
+  let message = prompt("message:");
+  addMessageItem(myUsername, message);
+  channel.send(JSON.stringify({
+    type: "message",
+    content: message
+  }));
 }, false);
 
 var channel = new DataChannel("sheep-multiplayer-test"),
 online = {};
 
+function getUsernameSpan(username) {
+  let span = document.createElement("span");
+  if (username !== null) span.textContent = username;
+  else {
+    span.textContent = "[no username]";
+    span.classList.add("red");
+  }
+  return span;
+}
 function updatePlayerList() {
   while (onlineListElem.firstChild) onlineListElem.removeChild(onlineListElem.firstChild);
 
@@ -59,39 +97,67 @@ function updatePlayerList() {
   for (let player in online) {
     if (!online.hasOwnProperty(player)) continue;
     let item = document.createElement("li");
-    if (online[player].username !== null) item.textContent = online[player].username;
-    else {
-      item.textContent = "[no username]";
-      item.classList.add("red");
-    }
+    item.appendChild(getUsernameSpan(online[player].username));
     list.appendChild(item);
   }
   let item = document.createElement("li");
   item.classList.add("me");
-  if (myUsername !== null) item.textContent = myUsername;
-  else {
-    item.textContent = "[no username]";
-    item.classList.add("red");
-  }
+  item.appendChild(getUsernameSpan(myUsername));
   list.appendChild(item);
   onlineListElem.appendChild(list);
+}
+function tellEveryoneMyUsername() {
+  if (myUsername !== null) channel.send(JSON.stringify({
+    type: "username-change",
+    content: myUsername
+  }));
+}
+function addMessageItem(from, message) {
+  let item = document.createElement("li"),
+  user = getUsernameSpan(from);
+  user.classList.add("user");
+  item.textContent = message;
+  item.insertBefore(user, item.firstChild);
+  messagesElem.appendChild(item);
+}
+function addOfficialMessage(message) {
+  let item = document.createElement("li");
+  item.classList.add("official");
+  item.textContent = message;
+  messagesElem.appendChild(item);
 }
 updatePlayerList();
 
 channel.onopen = userid => {
-    online[userid] = {username: null};
-    updatePlayerList();
-    if (myUsername !== null) channel.send(myUsername);
+  online[userid] = {username: null};
+  addOfficialMessage(`person with userID of ${userid} joined`);
+  updatePlayerList();
+  tellEveryoneMyUsername();
 };
 
-channel.onmessage = function (message, userid) {
-    online[userid].username = message;
-    updatePlayerList();
+channel.onmessage = (msg, userid) => {
+  msg = JSON.parse(msg);
+  switch (msg.type) {
+    case "username-change":
+      addOfficialMessage(`${online[userid].username || "[no username]"} is now known officially as ${msg.content}`);
+      online[userid].username = msg.content;
+      updatePlayerList();
+      break;
+    case "new-update-probably":
+      addOfficialMessage("there appears to be a new update! please reload");
+      break;
+    case "message":
+      addMessageItem(online[userid].username, msg.content);
+      break;
+    default:
+      throw new Error("Not sure what to do with this message: " + msg.type);
+  }
 };
 
-channel.onleave = function (userid) {
-    delete online[userid];
-    updatePlayerList();
+channel.onleave = userid => {
+  addOfficialMessage(`${online[userid].username || "[no username]"} left`);
+  delete online[userid];
+  updatePlayerList();
 };
     </script>
   </body>
