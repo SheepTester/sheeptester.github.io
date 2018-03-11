@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Online list</title>
+    <meta charset="UTF-8">
+    <meta name="description" content="Lists the people who are online."/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link rel="stylesheet" type="text/css" href="../../sheep2.css">
+    <script src="../../sheep2.js" charset="utf-8"></script>
+    <script src="https://cdn.webrtc-experiment.com/DataChannel.js"></script>
+    <style>
+      #online {
+        border: 1px solid black;
+      }
+    </style>
+  </head>
+  <body>
+    <ul id="online"></ul>
+    <button type="button" id="username">set username</button>
+
+    <script>
+const onlineListElem = document.querySelector("#online"),
+usernameChanger = document.querySelector("#username");
+let myUsername = null;
+
+usernameChanger.addEventListener("click", e => {
+  let newUsername = prompt("enter new username:");
+  if (online[newUsername]) alert("username already taken.");
+  else {
+    myUsername = newUsername;
+    updatePlayerList();
+  }
+}, false);
+
+var channel = new DataChannel("sheep-multiplayer-test"),
+online = {};
+
+function updatePlayerList() {
+  let list = document.createDocumentFragment();
+  for (let player in online) {
+    if (!online.hasOwnProperty(player)) continue;
+    let item = document.createElement("li");
+    item.textContent = online[player].username;
+    list.appendChild(item);
+  }
+  let item = document.createElement("li");
+  item.textContent = myUsername;
+  list.appendChild(item);
+  onlineListElem.appendChild(list);
+}
+
+channel.onopen = userid => {
+    online[userid] = {username: userid};
+    updatePlayerList();
+};
+
+channel.onmessage = function (message, userid) {
+    online[userid].username = message;
+    updatePlayerList();
+};
+
+channel.onleave = function (userid) {
+    delete online[userid];
+    updatePlayerList();
+};
+    </script>
+  </body>
+  <!-- MADE BY SEAN -->
+</html>
