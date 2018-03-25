@@ -1,185 +1,20 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Online list</title>
+    <title>moved to index.html</title>
     <meta charset="UTF-8">
-    <meta name="description" content="Lists the people who are online."/>
+    <meta name="description" content="moved"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <meta http-equiv="refresh" content="0;url=index.html"/>
+
     <link rel="stylesheet" type="text/css" href="../../sheep2.css">
     <script src="../../sheep2.js" charset="utf-8"></script>
-    <script src="https://cdn.webrtc-experiment.com/DataChannel.js"></script>
-    <style>
-      #online {
-        border: 1px solid black;
-      }
-      .red {
-        color: red;
-      }
-      .me {
-        font-weight: bold;
-      }
-      .me::after {
-        content: " (me)";
-        font-weight: normal;
-        color: black;
-      }
-      .user {
-        font-weight: bold;
-      }
-      .user::after {
-        content: ": ";
-        color: black;
-      }
-      .official {
-        font-weight: bold;
-        color: green;
-      }
-    </style>
+    <script type="text/javascript">
+      window.location = "./";
+    </script>
   </head>
   <body>
-    <h2>list of people</h2>
-    <ul id="online"></ul>
-    <h2>list of what they said</h2>
-    <ul id="messages"></ul>
-    <button type="button" id="username">set username</button>
-    <button type="button" id="message">send message</button>
-    <input type="checkbox" name="sound" id="playsound"><label for="sound">play notification sound?</label>
-    <audio src="notification_sound.mp3" id="sound"></audio>
-
-    <script>
-const onlineListElem = document.querySelector("#online"),
-messagesElem = document.querySelector("#messages"),
-usernameChanger = document.querySelector("#username"),
-messageSender = document.querySelector("#message"),
-shouldPlaySound = document.querySelector("#playsound"),
-notifSound = document.querySelector("#sound");
-let myUsername = null;
-
-usernameChanger.addEventListener("click", e => {
-  let newUsername = prompt("enter new username:").trim(),
-  usernameFound = false;
-  if (newUsername === "") alert("NO EMPTY USERNAMES.");
-  else {
-    for (let player in online) if (online[player].username === newUsername) {
-      usernameFound = true;
-      break;
-    }
-    if (usernameFound) alert("username already taken.");
-    else {
-      addOfficialMessage(`${myUsername || "[no username]"} is now known officially as ${newUsername}`);
-      myUsername = newUsername;
-      updatePlayerList();
-      tellEveryoneMyUsername();
-    }
-  }
-}, false);
-messageSender.addEventListener("click", e => {
-  let message = prompt("message:");
-  addMessageItem(myUsername, message);
-  channel.send(JSON.stringify({
-    type: "message",
-    content: message
-  }));
-}, false);
-
-var channel = new DataChannel("sheep-multiplayer-test"),
-online = {};
-
-function getUsernameSpan(username) {
-  let span = document.createElement("span");
-  if (username !== null) span.textContent = username;
-  else {
-    span.textContent = "[no username]";
-    span.classList.add("red");
-  }
-  return span;
-}
-function updatePlayerList() {
-  while (onlineListElem.firstChild) onlineListElem.removeChild(onlineListElem.firstChild);
-
-  let list = document.createDocumentFragment();
-  for (let player in online) {
-    if (!online.hasOwnProperty(player)) continue;
-    let item = document.createElement("li");
-    item.appendChild(getUsernameSpan(online[player].username));
-    list.appendChild(item);
-  }
-  let item = document.createElement("li");
-  item.classList.add("me");
-  item.appendChild(getUsernameSpan(myUsername));
-  list.appendChild(item);
-  onlineListElem.appendChild(list);
-}
-function tellEveryoneMyUsername(isIntroduction = false) {
-  if (myUsername !== null) channel.send(JSON.stringify({
-    type: "username-change",
-    content: myUsername,
-    isIntroduction: isIntroduction
-  }));
-}
-function addMessageItem(from, message) {
-  let item = document.createElement("li"),
-  user = getUsernameSpan(from);
-  user.classList.add("user");
-  item.textContent = message;
-  item.insertBefore(user, item.firstChild);
-  messagesElem.appendChild(item);
-}
-function addOfficialMessage(message) {
-  let item = document.createElement("li");
-  item.classList.add("official");
-  item.textContent = message;
-  messagesElem.appendChild(item);
-}
-function newMessageSound() {
-  if (shouldPlaySound.checked && document.hidden) notifSound.play();
-}
-updatePlayerList();
-
-channel.onopen = userid => {
-  online[userid] = {username: null};
-  addOfficialMessage(`person with userID of ${userid} joined`);
-  updatePlayerList();
-  tellEveryoneMyUsername(true);
-  newMessageSound();
-};
-
-channel.onmessage = (msg, userid) => {
-  msg = JSON.parse(msg);
-  switch (msg.type) {
-    case "username-change":
-      if (!msg.isIntroduction)
-        addOfficialMessage(`${online[userid].username || "[no username]"} is now known officially as ${msg.content}`);
-      online[userid].username = msg.content;
-      updatePlayerList();
-      newMessageSound();
-      break;
-    case "new-update-probably":
-      addOfficialMessage("there appears to be a new update! please reload");
-      addOfficialMessage(`new things: ${msg.content}`);
-      newMessageSound();
-      break;
-    case "message":
-      addMessageItem(online[userid].username, msg.content);
-      newMessageSound();
-      break;
-    case "kick-user":
-      if (channel.userid === msg.content) {
-        window.location = `kicked.html?${encodeURIComponent(msg.reason)}`;
-      }
-      break;
-    default:
-      throw new Error("Not sure what to do with this message: " + msg.type);
-  }
-};
-
-channel.onleave = userid => {
-  addOfficialMessage(`${online[userid].username || "[no username]"} left`);
-  delete online[userid];
-  updatePlayerList();
-  newMessageSound();
-};
-    </script>
+    <a href="./">click here if you weren't redirected</a>
   </body>
   <!-- MADE BY SEAN -->
 </html>

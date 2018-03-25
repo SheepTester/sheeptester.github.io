@@ -1,0 +1,35 @@
+#online {
+  border: 1px solid black;
+}
+.red {
+  color: red;
+}
+.me {
+  font-weight: bold;
+}
+.me::after {
+  content: " (me)";
+  font-weight: normal;
+  color: black;
+}
+.user {
+  font-weight: bold;
+}
+.user::after {
+  content: ": ";
+  color: black;
+}
+.official {
+  font-weight: bold;
+  color: green;
+}
+#canvas {
+  height: 200px;
+  width: 200px;
+  border: 1px solid black;
+  -ms-interpolation-mode: bicubic;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+  image-rendering: pixelated;
+}
