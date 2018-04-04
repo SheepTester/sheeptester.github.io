@@ -26,75 +26,10 @@ function textSize(text, fontStyle) {
   return width;
 }
 function looksLikeJSON(string) {
-  return false; // TEMP
   try {
-    return typeof JSON.parse(string) === "object" ? true : false;
+    return string !== "null" && typeof JSON.parse(string) === "object" ? true : false;
   } catch (e) {
     return false;
-  }
-}
-function editContent(e) {
-  //
-}
-class EditableProperty {
-  constructor() {
-    this.elem = document.createElement("span");
-    this.textarea = document.createElement("textarea");
-    this.elem.addEventListener("click", e => {
-      this.textarea.value = this.name;
-      this.textarea.style.display = "block";
-      this.updateTextareaSize();
-      this.textarea.focus();
-    }, false);
-    this.textarea.addEventListener("blur", e => {
-      this.textarea.style.display = "none";
-      this.name = this.textarea.value;
-    }, false);
-    this.textarea.style.display = "none";
-    this.name = "";
-    this.elem.appendChild(textarea);
-  }
-  get name() {
-    return this._name;
-  }
-  set name(name) {
-    this._name = name;
-    this.elem.textContent = JSON.stringify(name).slice(1, -1);
-  }
-  updateTextareaSize() {
-    let box = textSize(this.textarea.value, this.textarea);
-    this.textarea.style.width = box.width + "px";
-    this.textarea.style.height = box.height + "px";
-  }
-}
-class JSONEditor {
-  constructor(obj) {
-    this.wrapper = document.createElement("span");
-    if (typeof obj === "object" && obj !== null) {
-      if (Array.isArray(obj)) {
-        //
-      } else {
-        //
-      }
-    } else {
-      this.wrapper.textContent = obj;
-      this.wrapper.addEventListener("click", editContent, false);
-      switch (typeof obj) {
-        case "string":
-          this.wrapper.classList.add("string");
-          break;
-        case "number":
-          this.wrapper.classList.add("number");
-          break;
-        case "boolean":
-          this.wrapper.classList.add("boolean");
-          break;
-        case "object":
-        case "undefined":
-          this.wrapper.classList.add("null");
-          break;
-      }
-    }
   }
 }
 document.addEventListener("DOMContentLoaded", e => {
@@ -132,19 +67,21 @@ document.addEventListener("DOMContentLoaded", e => {
     useJSONBtn = document.querySelector("#usejson"),
     JSONBtnTextNode = Array.from(useJSONBtn.childNodes).filter(a => a.nodeType === Node.TEXT_NODE)[0],
     jsonEditor = document.querySelector("#jsoneditor .editor");
-    let usingJSON = false;
+    let usingJSON = false,
+    editor;
     function turnJSONMode(on) {
       usingJSON = on;
       if (on) {
         JSONBtnTextNode.textContent = "use plain text editor";
-        document.body.classList.add("json-editor");
+        document.body.classList.add("json-editor-mode");
         while (jsonEditor.firstChild) jsonEditor.removeChild(jsonEditor.firstChild);
-        let po = new JSONEditor(JSON.parse(valueInput.value));
-        console.log(po);
-        jsonEditor.appendChild(po.wrapper);
+        editor = new JSONEditor(JSON.parse(valueInput.value), true);
+        console.log(editor);
+        jsonEditor.appendChild(editor.wrapper);
+        editor.updateInputWidths();
       } else {
         JSONBtnTextNode.textContent = "use JSON editor";
-        document.body.classList.remove("json-editor");
+        document.body.classList.remove("json-editor-mode");
       }
     }
     if (urlParams.prop && !urlParams.new) {
@@ -172,7 +109,11 @@ document.addEventListener("DOMContentLoaded", e => {
     }
     saveBtn.addEventListener("click", e => {
       localStorage.removeItem(urlParams.prop);
-      localStorage.setItem(nameInput.value, valueInput.value);
+      if (usingJSON) {
+        localStorage.setItem(nameInput.value, editor.toString());
+      } else {
+        localStorage.setItem(nameInput.value, valueInput.value);
+      }
       if (urlParams.prop !== nameInput.value) window.location.replace("?prop=" + encodeURIComponent(nameInput.value));
     }, false);
     useJSONBtn.addEventListener("click", e => {

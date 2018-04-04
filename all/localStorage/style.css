@@ -282,18 +282,19 @@ body.list-view #editor {
 #value textarea {
   font-family: "Inconsolata", monospace;
 }
-body.json-editor #value {
+body.json-editor-mode #value {
   display: none;
 }
 #jsoneditor {
   display: none;
 }
-body.json-editor #jsoneditor {
+body.json-editor-mode #jsoneditor {
   display: block;
 }
 #jsoneditor .editor {
   padding: 20px 16px;
   padding-top: 32px;
+  font-size: 12px;
 }
 #usejson {
   margin-left: 16px;

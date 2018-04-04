@@ -1,0 +1,111 @@
+.json-editor {
+  display: block;
+  color: white;
+  font-family: "Inconsolata", monospace;
+  font-size: 16px;
+  position: relative;
+  vertical-align: top;
+}
+.json-editor.collapsed > .items, .json-editor.collapsed > .new {
+  display: none;
+}
+.json-editor > .ellipsis {
+  display: none;
+}
+.json-editor.collapsed > .ellipsis {
+  display: inline;
+}
+.json-editor > .items {
+  display: block;
+  clear: left;
+}
+.json-editor > .items > .item {
+  display: block;
+  margin-left: 20px;
+  clear: left;
+}
+.json-editor input, .json-editor select {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: none;
+}
+.json-editor:not(.null) > select {
+  font-size: 12px;
+  position: absolute;
+  top: 0;
+  right: 0;
+  opacity: 0.3;
+}
+.json-editor option {
+  background-color: #424242;
+}
+.json-editor input {
+  border: 1px solid rgba(255,255,255,0.1);
+  padding: 0 2px;
+  max-width: 40%;
+}
+.json-editor.null > input {
+  display: none;
+}
+.json-editor.string {
+  color: #CDDC39;
+}
+.json-editor.number {
+  color: #FF9800;
+}
+.json-editor.boolean {
+  color: #2196F3;
+}
+.json-editor.null > select {
+  color: #E91E63;
+}
+.json-editor.array > select {
+  color: #f44336;
+}
+.json-editor:hover {
+  background-color: rgba(255,255,255,0.05);
+}
+.json-editor:hover >  select {
+  opacity: 1;
+}
+.json-editor .property, .json-editor .colon {
+  float: left;
+  position: relative;
+  z-index: 1;
+}
+.json-editor .collapse {
+  border: none;
+  background: none;
+  padding: 0;
+  color: inherit;
+  background-color: rgba(255,255,255,0.1);
+}
+.json-editor > .collapse::after {
+  content: "-";
+}
+.json-editor.collapsed > .collapse::after {
+  content: "+";
+}
+.json-editor .new {
+  display: table;
+  border: none;
+  background: none;
+  padding: 0;
+  color: inherit;
+  width: 30px;
+  margin-left: 20px;
+  background-color: rgba(255,255,255,0.1);
+}
+.json-editor input[type=checkbox] {
+  -webkit-appearance: none;
+  margin: 0;
+  cursor: pointer;
+}
+.json-editor input[type=checkbox]::after {
+  content: "false";
+  color: inherit;
+}
+.json-editor input[type=checkbox]:checked::after {
+  content: "true";
+}
