@@ -91,7 +91,12 @@ finalPortion = document.querySelector('#final'),
 minGrade = document.querySelector('#min'),
 output = document.querySelector('#output');
 function isPercentInput(input) {
+  function forceCursorBack() {
+    if (input.selectionStart === input.value.length)
+      input.setSelectionRange(input.value.length - 1, input.value.length - 1);
+  }
   input.addEventListener("keypress", e=>{
+    forceCursorBack();
     let char = String.fromCharCode(e.charCode);
     if (!~'0123456789.'.indexOf(char)) {
       e.preventDefault();
@@ -99,7 +104,7 @@ function isPercentInput(input) {
     }
   }, false);
   input.addEventListener("input", e=>{
-    // if (!~input.value.indexOf('%')) input.value = input.value.slice(0, -1);
+    forceCursorBack();
     input.value = input.value.replace(/[^0-9.]/g, '').replace(/\.+/g,'.') + '%';
     calculate();
   }, false);
