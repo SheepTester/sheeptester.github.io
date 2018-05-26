@@ -115,7 +115,7 @@ function isPercentInput(input) {
 }
 function calculate() {
   let portionPercent = +finalPortion.value.slice(0, -1) / 100;
-  output.textContent = (Math.ceil(((+minGrade.value.slice(0, -1) - (+currentGrade.value.slice(0, -1) * (1 - portionPercent))) / portionPercent) * 100) / 100) + '%';
+  output.textContent = Math.max(Math.ceil(((+minGrade.value.slice(0, -1) - (+currentGrade.value.slice(0, -1) * (1 - portionPercent))) / portionPercent) * 100) / 100, 0) + '%';
 }
 for (let inputs = document.querySelectorAll('input'), i = inputs.length; i--;) isPercentInput(inputs[i]);
 calculate();
