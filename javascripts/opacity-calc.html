@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Opacity calculator</title>
+    <meta charset="UTF-8">
+    <meta name="description" content="Calculates the opacity of a colour on top of another colour."/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link rel="stylesheet" type="text/css" href="../sheep2.css">
+    <script src="../sheep2.js" charset="utf-8"></script>
+    <style>
+      html, body {
+        width: 100%;
+        height: 100%;
+      }
+      body {
+        margin: 0;
+        background-image: url('https://images.unsplash.com/photo-1469212044023-0e55b4b9745a?w=1600&h=900&fit=crop');
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        color: rgba(255,255,255,0.8);
+        font-family: 'Open Sans', sans-serif;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        line-height: 1;
+      }
+      .container {
+        background-color: rgba(0,0,0,0.6);
+        padding: 20px;
+        border-radius: 2px;
+        box-shadow: 0 0 3px rgba(0,0,0,0.3);
+        margin: 10px;
+      }
+      p {
+        margin: 0;
+      }
+      input {
+        background: none;
+        border: none;
+        color: rgba(255,255,255,0.7);
+        background-color: rgba(255,255,255,0.1);
+        padding: 5px;
+        margin: 5px;
+        border-radius: 2px;
+        cursor: pointer;
+        width: 55px;
+        box-sizing: border-box;
+        text-align: right;
+        border-left: 5px solid var(--colour);
+      }
+      input:focus {
+        text-shadow: 0 0 3px rgba(255,255,255,0.5);
+        color: white;
+      }
+      input:focus {
+        cursor: auto;
+      }
+      :focus {
+        outline: none;
+      }
+      #outputwrapper {
+        margin-top: 10px;
+      }
+      #output {
+        font-weight: bold;
+      }
+      input[type=number]::-webkit-inner-spin-button,
+      input[type=number]::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+      }
+      h1 {
+        font-weight: normal;
+        margin: 0;
+        margin-bottom: 10px;
+        font-size: 24px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Opacity calculator</h1>
+      <p>I'm lazy, so this calculator is strictly #hhhhhh.</p>
+      <p><label>Background colour</label><input type="text" id="base" value="#ffffff"></p>
+      <p><label>Overlay colour</label><input type="text" id="layer" value="#000000"></p>
+      <p><label>Mixed colour</label><input type="text" id="final" value="#333333"></p>
+      <p id="outputwrapper">The overlay colour has an opacity of ~<span id="output">50%</span>.</p>
+    </div>
+
+    <script>
+const background = document.getElementById('base');
+const overlay = document.getElementById('layer');
+const mixed = document.getElementById('final');
+const output = document.getElementById('output');
+
+const colourRegex = /#[0-9a-f]{6}/i;
+
+function toFit({target}) {
+  target.style.width = '0';
+  target.style.width = target.scrollWidth + 5 + 'px';
+  target.style.setProperty('--colour', target.value);
+  calculate();
+}
+
+toFit({target: background});
+toFit({target: overlay});
+toFit({target: mixed});
+background.addEventListener('input', toFit);
+overlay.addEventListener('input', toFit);
+mixed.addEventListener('input', toFit);
+
+function getOpacity({base, layer, final}) {
+  return (final - base) / (layer - base);
+}
+function setRGB(reds, greens, blues, type, colour) {
+  reds[type] = parseInt(colour.slice(1, 3), 16);
+  greens[type] = parseInt(colour.slice(3, 5), 16);
+  blues[type] = parseInt(colour.slice(5, 7), 16);
+}
+function calculate() {
+  if (!colourRegex.test(background.value)
+      || !colourRegex.test(overlay.value)
+      || !colourRegex.test(mixed.value))
+    return;
+
+  let reds = {},
+  greens = {},
+  blues = {};
+  setRGB(reds, greens, blues, 'base', background.value);
+  setRGB(reds, greens, blues, 'layer', overlay.value);
+  setRGB(reds, greens, blues, 'final', mixed.value);
+
+  const avg = [reds, greens, blues].map(getOpacity).reduce((a, b) => a + b) / 3;
+  output.textContent = Math.round(avg * 10000) / 100 + '%';
+}
+    </script>
+  </body>
+  <!-- MADE BY SEAN -->
+</html>
