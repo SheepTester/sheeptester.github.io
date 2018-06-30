@@ -120,6 +120,7 @@
     <button id='open'>Open all</button><button id='close'>Close all</button>
     <script src="../sheep.js"></script>
     <script>
+if (!window.location.pathname.includes('html')) window.location.replace('./all/')
 var sites,
 heading=document.querySelector('h1');
 (document.body.onresize=e=>{
