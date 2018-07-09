@@ -148,7 +148,7 @@ class Utilities {
 
           blockType: Scratch.BlockType.REPORTER,
 
-          text: 'get [PATH] from [JSON_STRING]',
+          text: '[PATH] of [JSON_STRING]',
           arguments: {
             PATH: {
               type: Scratch.ArgumentType.STRING,
@@ -213,7 +213,6 @@ class Utilities {
 
   parseJSON({PATH, JSON_STRING}) {
     try {
-      console.log(PATH, JSON_STRING);
       const path = PATH.toString().split('/').map(prop => decodeURIComponent(prop));
       if (path[0] === '') path.splice(0, 1);
       if (path[path.length - 1] === '') path.splice(-1, 1);
