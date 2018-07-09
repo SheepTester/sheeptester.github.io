@@ -213,12 +213,13 @@ class Utilities {
 
   parseJSON({PATH, JSON_STRING}) {
     try {
-      const path = PATH.split('/').map(prop => decodeURIComponent(prop));
+      console.log(PATH, JSON_STRING);
+      const path = PATH.toString().split('/').map(prop => decodeURIComponent(prop));
       if (path[0] === '') path.splice(0, 1);
       if (path[path.length - 1] === '') path.splice(-1, 1);
       let json;
       try {
-        json = ' ' + JSON.parse(JSON_STRING);
+        json = JSON.parse(' ' + JSON_STRING);
       } catch (e) {
         return e.message;
       }
@@ -226,7 +227,7 @@ class Utilities {
       if (json === null) return 'null';
       else if (json === undefined) return '';
       else if (typeof json === 'object') return JSON.stringify(json);
-      else return json;
+      else return json.toString();
     } catch (err) {
       return '';
     }
