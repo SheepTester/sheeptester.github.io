@@ -16,11 +16,11 @@ class Utilities {
           arguments: {
             A: {
               type: Scratch.ArgumentType.STRING,
-              default: 'apple'
+              defaultValue: 'apple'
             },
             B: {
               type: Scratch.ArgumentType.STRING,
-              default: 'APPLE'
+              defaultValue: 'APPLE'
             }
           }
         },
@@ -80,6 +80,11 @@ class Utilities {
           }
         },
         {
+          opcode: 'pi',
+          blockType: Scratch.BlockType.BOOLEAN,
+          text: 'pi'
+        },
+        {
           opcode: 'ternaryOperator',
 
           blockType: Scratch.BlockType.REPORTER,
@@ -91,11 +96,67 @@ class Utilities {
             },
             B: {
               type: Scratch.ArgumentType.STRING,
-              default: 'dog'
+              defaultValue: 'dog'
             },
             C: {
               type: Scratch.ArgumentType.STRING,
-              default: 'cat'
+              defaultValue: 'cat'
+            }
+          }
+        },
+        {
+          opcode: 'letters',
+
+          blockType: Scratch.BlockType.REPORTER,
+
+          text: 'letters [START] to [END] of [STRING]',
+          arguments: {
+            START: {
+              type: Scratch.ArgumentType.NUMBER,
+              defaultValue: 3
+            },
+            END: {
+              type: Scratch.ArgumentType.NUMBER,
+              defaultValue: 5
+            },
+            STRING: {
+              type: Scratch.ArgumentType.STRING,
+              defaultValue: 'houses'
+            }
+          }
+        },
+        {
+          opcode: 'currentMillisecond',
+          blockType: Scratch.BlockType.REPORTER,
+          text: 'current millisecond'
+        },
+        {
+          opcode: 'fetchFrom',
+
+          blockType: Scratch.BlockType.REPORTER,
+
+          text: 'get content from [URL]',
+          arguments: {
+            URL: {
+              type: Scratch.ArgumentType.STRING,
+              defaultValue: 'https://api.scratch.mit.edu/users/griffpatch/messages/count'
+            }
+          }
+        },
+        {
+          opcode: 'parseJSON',
+
+          blockType: Scratch.BlockType.REPORTER,
+
+          text: 'get [PATH] from [JSON_STRING]',
+          arguments: {
+            PATH: {
+              type: Scratch.ArgumentType.STRING,
+              defaultValue: 'messages/joe'
+            },
+            JSON_STRING: {
+              type: Scratch.ArgumentType.STRING,
+              defaultValue: '{"messages": {"joe": "Hello", "mitch": "Good day!"}, "message_count": 2}'
             }
           }
         }
@@ -103,16 +164,16 @@ class Utilities {
     }
   }
 
-  isExactly(args) {
-    return args.A === args.B;
+  isExactly({A, B}) {
+    return A === B;
   }
 
-  isLessOrEqual(args) {
-    return args.A <= args.B;
+  isLessOrEqual({A, B}) {
+    return A <= B;
   }
 
-  isMoreOrEqual(args) {
-    return args.A >= args.B;
+  isMoreOrEqual({A, B}) {
+    return A >= B;
   }
 
   trueBlock() {
@@ -123,16 +184,52 @@ class Utilities {
     return false;
   }
 
-  exponent(args) {
-    return Math.pow(args.A, args.B);
+  exponent({A, B}) {
+    return Math.pow(A, B);
   }
 
-  pi(args) {
+  pi() {
     return Math.PI;
   }
 
-  ternaryOperator(args) {
-    return args.A ? args.B : args.C;
+  ternaryOperator({A, B, C}) {
+    return A ? B : C;
+  }
+
+  letters({STRING, START, END}) {
+    return STRING.slice(Math.max(1, START) - 1, Math.min(STRING.length, END) - 1);
+  }
+
+  currentMillisecond() {
+    return Date.now() % 1000;
+  }
+
+  fetchFrom({URL}) {
+    return new Promise(resolve => {
+      fetch(URL).then(res => res.text()).then(resolve)
+      .catch(err => resolve(''));
+    });
+  }
+
+  parseJSON({PATH, JSON_STRING}) {
+    try {
+      const path = PATH.split('/').map(prop => decodeURIComponent(prop));
+      if (path[0] === '') path.splice(0, 1);
+      if (path[path.length - 1] === '') path.splice(-1, 1);
+      let json;
+      try {
+        json = ' ' + JSON.parse(JSON_STRING);
+      } catch (e) {
+        return e.message;
+      }
+      path.forEach(prop => json = json[prop]);
+      if (json === null) return 'null';
+      else if (json === undefined) return '';
+      else if (typeof json === 'object') return JSON.stringify(json);
+      else return json;
+    } catch (err) {
+      return '';
+    }
   }
 
 }
