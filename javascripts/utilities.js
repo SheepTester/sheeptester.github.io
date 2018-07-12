@@ -6,6 +6,11 @@ class Utilities {
     return {
       id: 'utilities',
       name: 'Utlities',
+
+      colour: '#8BC34A',
+      colourSecondary: '#7CB342',
+      colourTertiary: '#689F38',
+
       blocks: [
         {
           opcode: 'isExactly',
@@ -35,7 +40,8 @@ class Utilities {
               type: Scratch.ArgumentType.NUMBER
             },
             B: {
-              type: Scratch.ArgumentType.NUMBER
+              type: Scratch.ArgumentType.NUMBER,
+              defaultValue: 50
             }
           }
         },
@@ -50,7 +56,8 @@ class Utilities {
               type: Scratch.ArgumentType.NUMBER
             },
             B: {
-              type: Scratch.ArgumentType.NUMBER
+              type: Scratch.ArgumentType.NUMBER,
+              defaultValue: 50
             }
           }
         },
@@ -81,7 +88,7 @@ class Utilities {
         },
         {
           opcode: 'pi',
-          blockType: Scratch.BlockType.BOOLEAN,
+          blockType: Scratch.BlockType.REPORTER,
           text: 'pi'
         },
         {
@@ -96,11 +103,11 @@ class Utilities {
             },
             B: {
               type: Scratch.ArgumentType.STRING,
-              defaultValue: 'dog'
+              defaultValue: 'banana'
             },
             C: {
               type: Scratch.ArgumentType.STRING,
-              defaultValue: 'cat'
+              defaultValue: 'apple'
             }
           }
         },
@@ -113,15 +120,15 @@ class Utilities {
           arguments: {
             START: {
               type: Scratch.ArgumentType.NUMBER,
-              defaultValue: 3
+              defaultValue: 5
             },
             END: {
               type: Scratch.ArgumentType.NUMBER,
-              defaultValue: 5
+              defaultValue: 7
             },
             STRING: {
               type: Scratch.ArgumentType.STRING,
-              defaultValue: 'houses'
+              defaultValue: 'red apple'
             }
           }
         },
@@ -152,11 +159,45 @@ class Utilities {
           arguments: {
             PATH: {
               type: Scratch.ArgumentType.STRING,
-              defaultValue: 'messages/joe'
+              defaultValue: 'fruit/apples'
             },
             JSON_STRING: {
               type: Scratch.ArgumentType.STRING,
-              defaultValue: '{"messages": {"joe": "Hello", "mitch": "Good day!"}, "message_count": 2}'
+              defaultValue: '{"fruit": {"apples": 2, "bananas": 3}, "total_fruit": 5}'
+            }
+          }
+        },
+        {
+          opcode: 'stringToBoolean',
+
+          blockType: Scratch.BlockType.BOOLEAN,
+
+          text: '[STRING]',
+          arguments: {
+            STRING: {
+              type: Scratch.ArgumentType.STRING,
+              defaultValue: 'true'
+            }
+          }
+        },
+        {
+          opcode: 'regexReplace',
+
+          blockType: Scratch.BlockType.REPORTER,
+
+          text: 'replace [STRING] using the rule [REGEX] with [NEWSTRING]',
+          arguments: {
+            STRING: {
+              type: Scratch.ArgumentType.STRING,
+              defaultValue: 'bananas are awesome. i like bananas.'
+            },
+            REGEX: {
+              type: Scratch.ArgumentType.STRING,
+              defaultValue: 'banana'
+            },
+            NEWSTRING: {
+              type: Scratch.ArgumentType.STRING,
+              defaultValue: 'apple'
             }
           }
         }
@@ -230,6 +271,14 @@ class Utilities {
     } catch (err) {
       return '';
     }
+  }
+
+  stringToBoolean({STRING}) {
+    return STRING;
+  }
+
+  regexReplace({STRING, REGEX, NEWSTRING}) {
+    return STRING.toString().replace(new RegExp(REGEX, 'gi'), NEWSTRING);
   }
 
 }
