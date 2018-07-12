@@ -241,7 +241,7 @@ class Utilities {
   }
 
   letters({STRING, START, END}) {
-    return STRING.slice(Math.max(1, START) - 1, Math.min(STRING.length, END) - 1);
+    return STRING.slice(Math.max(1, START) - 1, Math.min(STRING.length, END));
   }
 
   currentMillisecond() {
