@@ -5,7 +5,7 @@ class Utilities {
 
   getInfo() {
     return {
-      id: 'utilities',
+      id: 'https://sheeptester.github.io/javascripts/utilities.js',
       name: 'Utlities',
 
       colour: '#8BC34A',
