@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Gunn Schedule Mnemonic</title>
+    <meta charset="UTF-8">
+    <meta name="description" content="An animated mnemonic for the Gunn schedule."/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link rel="stylesheet" type="text/css" href="../sheep2.css">
+    <script src="../sheep2.js" charset="utf-8"></script>
+    <style>
+      /* */
+    </style>
+  </head>
+  <body>
+    <p>Voice: <select id="voices"><option value="SELECT" selected>Choose one</option></select></p>
+    <script>
+function fragmentify(nodes) {
+  const fragment = document.createDocumentFragment();
+  nodes.forEach(node => fragment.appendChild(node));
+  return fragment;
+}
+
+Promise.all([
+  new Promise(resolve => document.addEventListener('DOMContentLoaded', resolve)),
+  new Promise(resolve => window.speechSynthesis.onvoiceschanged = resolve)
+]).then(() => {
+  const voices = window.speechSynthesis.getVoices();
+
+  const voiceSelect = document.getElementById('voices');
+  voiceSelect.appendChild(fragmentify(voices.map((voice, index) => {
+    const option = document.createElement('option');
+    option.textContent = voice.name;
+    option.value = index;
+    return option;
+  })));
+  voiceSelect.addEventListener('change', e => {
+    const voice = voiceSelect.value;
+    window.speechSynthesis.cancel();
+    if (voice !== 'SELECT') {
+      const speak = new SpeechSynthesisUtterance('Down with SELF.');
+      speak.voice = voices[voice];
+      window.speechSynthesis.speak(speak);
+    }
+  });;
+});
+    </script>
+  </body>
+</html>
