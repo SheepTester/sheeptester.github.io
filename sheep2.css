@@ -5,7 +5,7 @@
 input, textarea, select, button {
   font: inherit;
 }
-button, input[type=submit] {
+button:not([disabled]), input[type=submit]:not([disabled]) {
   cursor: pointer;
 }
 
