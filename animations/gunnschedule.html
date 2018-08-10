@@ -8,11 +8,301 @@
     <link rel="stylesheet" type="text/css" href="../sheep2.css">
     <script src="../sheep2.js" charset="utf-8"></script>
     <style>
-      /* */
+      html {
+        width: 100%;
+        height: 100%;
+      }
+      body {
+        color: #333;
+        background-color: #eee;
+      }
+      body.not-playing > :not(.play-ui):not(sheep-btn) {
+        pointer-events: none;
+        opacity: 0;
+        position: absolute;
+      }
+      body:not(.not-playing) {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0;
+        width: 100%;
+        height: 100%;
+      }
+      body:not(.not-playing) .play-ui {
+        display: none;
+      }
+
+      #schedule-img {
+        position: absolute;
+        opacity: 0;
+        transform-origin: center;
+        transform: scale(0) rotate(-180deg);
+        transition: transform .5s;
+      }
+      .anim-stage0 #schedule-img {
+        opacity: 1;
+        transform: scale(1) rotate(0deg);
+      }
+      .anim-stage1 #schedule-img {
+        opacity: 1;
+        transform: scale(0) rotate(180deg);
+      }
+
+      .schedule {
+        display: block;
+        font-size: 0;
+      }
+      .schedule.copy {
+        position: absolute;
+        opacity: 0;
+      }
+      .schedule.copy .days {
+        width: 336px;
+      }
+      .schedule.copy .break {
+        opacity: 0;
+      }
+      r- {
+        display: block;
+        margin: 4px 0;
+      }
+      c- {
+        display: inline-block;
+      }
+      .schedule .periods c- {
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+        width: 80px;
+        height: 40px;
+        margin: 0 2px;
+        color: white;
+        font-size: 20px;
+        text-transform: uppercase;
+        font-family: sans-serif;
+        vertical-align: top;
+      }
+      .anim-stage1 .schedule .periods c-,
+      .anim-stage3 .schedule .periods.after-lunch c-,
+      .anim-stage4 .schedule .periods.after-lunch :last-child {
+        background-color: rgba(0, 0, 0, 0.15);
+        color: transparent;
+      }
+      .schedule .periods .a {background-color: #FF9800;}
+      .schedule .periods .b {background-color: #03A9F4;}
+      .schedule .periods .c {background-color: #f44336;}
+      .schedule .periods .d {background-color: #FFEB3B; color: rgba(0, 0, 0, 0.5);}
+      .schedule .periods .e {background-color: #9C27B0;}
+      .schedule .periods .f {background-color: #8BC34A;}
+      .schedule .periods .g {background-color: #E91E63;}
+      .schedule .periods .flex {background-color: #607D8B; font-size: 10px;}
+      .schedule .periods .staff {opacity: 0;}
+      .schedule .periods c-::after {
+        content: attr(data-period);
+      }
+      .break {
+        height: 10px;
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        transition: all .2s;
+      }
+      .break c- {
+        white-space: nowrap;
+        color: rgba(0, 0, 0, 0.4);
+        text-transform: uppercase;
+        font-family: sans-serif;
+        font-size: 10px;
+        height: 10px;
+      }
+      .break c-::before {
+        content: '';
+        position: absolute;
+        z-index: -1;
+        width: 100%;
+        display: block;
+        height: 1px;
+        background-color: rgba(0, 0, 0, 0.05);
+        left: 0;
+        bottom: 6px;
+      }
+      .break c-::after {
+        content: '';
+        position: absolute;
+        z-index: -1;
+        width: 60px;
+        display: block;
+        height: 100%;
+        background-color: #eee;
+        left: 0;
+        right: 0;
+        top: 0;
+        margin: auto;
+      }
+      .days {
+        height: 8px;
+      }
+      .days c- {
+        font-size: 8px;
+        text-align: center;
+        text-transform: uppercase;
+        width: 80px;
+        margin: 0 2px;
+        font-family: sans-serif;
+        color: rgba(0, 0, 0, 0.3);
+      }
+
+      .anim-stage0 .schedule {
+        position: absolute;
+        opacity: 0;
+      }
+      .anim-stage1 .schedule .periods c- {
+        opacity: 0;
+      }
+      .anim-stage1 .schedule .periods:not(.after-lunch) c- {
+        animation: fadein .5s var(--anim1-delay) forwards;
+      }
+      .anim-stage1 .brunch, .anim-stage2 .brunch {
+        height: 0;
+        margin: -2px 0;
+      }
+      .anim-stage1 .days, .anim-stage1 .lunch {
+        animation: fadein .5s;
+      }
+      .anim-stage2 .schedule .periods c- {
+        transition: all .5s;
+        transition-delay: var(--anim2-delay);
+      }
+      .anim-stage2 .schedule .periods.after-lunch c-,
+      .anim-stage3 .schedule .periods.after-lunch c- {
+        opacity: 0;
+      }
+      .anim-stage4 .schedule .periods.after-lunch c-:not(.staff):not(.flex) {
+        animation: fadein .2s;
+      }
+      .anim-stage4 .f:not(:last-child), .anim-stage4 .g:not(:last-child) {
+        transition: color .5s, background-color .5s;
+        transition-delay: var(--anim4-delay);
+      }
+      .anim-stage4 .g:not(:last-child), .anim-stage5 .g:not(:last-child), .anim-stage6 .g:not(:last-child) {
+        transform: translateY(-44px);
+      }
+      .anim-stage4 .flex, .anim-stage5 .flex, .anim-stage6 .flex {
+        opacity: 0;
+      }
+      .anim-stage5 .after-lunch :last-child {
+        transition: all .5s;
+      }
+      .anim-stage7 .g:not(:last-child) {
+        transition: transform .5s;
+      }
+      .anim-stage7 .flex {
+        opacity: 1;
+      }
+      .anim-stage8 .a, .anim-stage8 .flex, .anim-stage9 .e, .anim-stage9 .flex {
+        transition: transform .5s;
+      }
+      .anim-stage8 .a:nth-child(2),
+      .anim-stage9 .a:nth-child(2),
+      .anim-stage10 :not(.copy) r- .a:nth-child(2) {
+        transform: translateY(58px);
+      }
+      .anim-stage8 .flex:nth-child(2) {
+        transform: translateY(-58px);
+      }
+      .anim-stage8 .a:nth-child(4),
+      .anim-stage9 .a:nth-child(4),
+      .anim-stage10 :not(.copy) r- .a:nth-child(4) {
+        transform: translateY(102px);
+      }
+      .anim-stage8 .flex:nth-child(4),
+      .anim-stage9 .flex:nth-child(4),
+      .anim-stage10 :not(.copy) r- .flex:nth-child(4) {
+        transform: translateY(-102px);
+      }
+      .anim-stage9 .e:nth-child(2),
+      .anim-stage10 :not(.copy) r- .e:nth-child(2) {
+        transform: translateY(44px);
+      }
+      .anim-stage9 .flex:nth-child(2),
+      .anim-stage10 :not(.copy) r- .flex:nth-child(2) {
+        transform: translateY(-102px);
+      }
+      .anim-stage10 :not(.copy) r- .g:nth-child(2) {
+        transform: translateY(-44px);
+        transition: transform .5s .5s;
+      }
+      .anim-stage10 :not(.copy) r-:not(.break) c-:last-child {
+        transition: all .5s;
+        width: 0;
+        margin: 0;
+        overflow: hidden;
+        opacity: 0;
+      }
+      .anim-stage10 .periods c-:nth-child(3), .anim-stage10 .periods c-:nth-child(4), .anim-stage10 .days {
+        transition: opacity .5s;
+        opacity: 0;
+      }
+      .anim-stage10 .schedule.copy {
+        opacity: 1;
+        transform: translateX(168px);
+        transition: transform .5s 1s, opacity 0s 1s;
+      }
+
+      .end {
+        display: none;
+      }
+      .anim-stage11 .end {
+        display: flex;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        justify-content: center;
+        align-items: center;
+        background-color: black;
+        color: white;
+        font-size: 50px;
+      }
+
+      .beginning .schedule, .ending .schedule {
+        display: none;
+      }
+      .ending {
+        background-color: black;
+      }
     </style>
   </head>
-  <body>
-    <p>Voice: <select id="voices"><option value="SELECT" selected>Choose one</option></select></p>
+  <body class="not-playing">
+    <img id="schedule-img" src="https://gunn.pausd.org/sites/default/files/resize/18-19%20Bell%20Schedule%20NT-643x480.jpg">
+    <custom-table class="schedule">
+      <r- class="days"><c->m</c-><c->t</c-><c->w</c-><c->&theta;</c-><c->f</c-></r->
+      <r- class="periods"><c- class="a"></c-><c- class="d"></c-><c- class="b"></c-><c- class="e"></c-><c- class="c"></c-></r->
+      <r- class="break brunch"><c- colspan="5">brunch</c-></r->
+      <r- class="periods"><c- class="b"></c-><c- class="e"></c-><c- class="c"></c-><c- class="a"></c-><c- class="d"></c-></r->
+      <r- class="periods"><c- class="c"></c-><c- class="a"></c-><c- class="d"></c-><c- class="b"></c-><c- class="e"></c-></r->
+      <r- class="break lunch"><c- colspan="5">lunch</c-></r->
+      <r- class="periods after-lunch"><c- class="f"></c-><c- class="flex"></c-><c- class="f"></c-><c- class="flex"></c-><c- class="f"></c-></r->
+      <r- class="periods after-lunch"><c- class="staff"></c-><c- class="g"></c-><c- class="staff"></c-><c- class="g"></c-><c- class="g"></c-></r->
+    </custom-table>
+    <custom-table class="schedule copy">
+      <r- class="days"></r->
+      <r- class="periods"><c- class="a"></c-><c- class="d"></r->
+      <r- class="break brunch"><c- colspan="5">brunch</c-></r->
+      <r- class="periods"><c- class="b"></c-><c- class="flex"></c-></r->
+      <r- class="periods"><c- class="c"></c-><c- class="e"></c-></r->
+      <r- class="break lunch"><c- colspan="5">lunch</c-></r->
+      <r- class="periods after-lunch"><c- class="f"></c-><c- class="g"></c-></r->
+      <r- class="periods after-lunch"><c- class="staff"></r->
+    </custom-table>
+    <span class="end">DOWN WITH SELF</span>
+
+    <p class="play-ui">Narrator accent: <select id="voices"><option value="SELECT" selected>Choose one</option></select></p>
+    <button id="play" class="play-ui" disabled>Play animation</button>
     <script>
 function fragmentify(nodes) {
   const fragment = document.createDocumentFragment();
@@ -24,9 +314,26 @@ Promise.all([
   new Promise(resolve => document.addEventListener('DOMContentLoaded', resolve)),
   new Promise(resolve => window.speechSynthesis.onvoiceschanged = resolve)
 ]).then(() => {
+  const periods = document.querySelectorAll('.schedule .periods c-');
+  periods.forEach((pd, index) => {
+    const x = index % 5;
+    const y = Math.floor(index / 5);
+    if (y <= 3) {
+      pd.style.setProperty('--anim1-delay', (y + x) / 10 + 's');
+      pd.style.setProperty('--anim2-delay', (y + x * 3) / 10 + 's');
+    }
+    if (pd.className === 'f' || pd.className === 'g') {
+      pd.style.setProperty('--anim4-delay', ((pd.className === 'g') + (x > 1) * 2 + 2) / 10 + 's');
+    }
+    pd.dataset.period = pd.className;
+  });
+
   const voices = window.speechSynthesis.getVoices();
+  let selectedVoice = null;
 
   const voiceSelect = document.getElementById('voices');
+  const playBtn = document.getElementById('play');
+
   voiceSelect.appendChild(fragmentify(voices.map((voice, index) => {
     const option = document.createElement('option');
     option.textContent = voice.name;
@@ -38,11 +345,59 @@ Promise.all([
     window.speechSynthesis.cancel();
     if (voice !== 'SELECT') {
       const speak = new SpeechSynthesisUtterance('Down with SELF.');
-      speak.voice = voices[voice];
+      speak.voice = selectedVoice = voices[voice];
+      // speak.pitch = 0.3;
       window.speechSynthesis.speak(speak);
+      playBtn.disabled = false;
+    } else {
+      playBtn.disabled = true;
     }
-  });;
+  });
+
+  playBtn.addEventListener('click', e => {
+    window.speechSynthesis.cancel();
+    playBtn.disabled = true;
+    playAnimation(selectedVoice).then(() => {
+      playBtn.disabled = false;
+    });
+  });
 });
+
+const script = [
+  "This is one way you can remember the normal Gunn schedule.",
+  "Focus on the periods before lunch first.",
+  "Fill in the periods A through E in order, going back to A after E.",
+  "Brunch is after the first period of each day.",
+  "For the first four days, F and G alternate after lunch.",
+  "There is both F and G on Friday.",
+  "On the even number days, or Tuesday and Thursday, or the days starting with T, or the days with the last two A periods or the first G periods,",
+  "or however you want to remember it, flex goes right after lunch.",
+  "Psych! Gunn only wants the most attentive students, so they swapped A period with flex.",
+  "They also flipped E and flex on Tuesday so people don’t get hungry before lunch and eat food.",
+  "On weeks with only four days, just take the Monday and Tuesday schedules, remove the Tuesday A period, and repeat it twice.",
+  "Down with SELF."
+];
+async function playAnimation(voice) {
+  // https://stackoverflow.com/questions/23483990/speechsynthesis-api-onend-callback-not-working
+  window.speaks = script.map(line => {
+    const speak = new SpeechSynthesisUtterance(line);
+    speak.voice = voice;
+    if (line.includes('SELF')) speak.pitch = 0.5;
+    return speak;
+  });
+  document.body.className = 'no-sheep beginning';
+  await new Promise(resolve => setTimeout(resolve, 500));
+  for (let i = 0; i < script.length; i++) {
+    document.body.className = 'no-sheep anim-stage' + i;
+    await new Promise(resolve => {
+      window.speaks[i].onend = resolve;
+      window.speechSynthesis.speak(window.speaks[i]);
+    });
+  }
+  document.body.className = 'no-sheep ending';
+  await new Promise(resolve => setTimeout(resolve, 500));
+  document.body.className = 'not-playing';
+}
     </script>
   </body>
 </html>
