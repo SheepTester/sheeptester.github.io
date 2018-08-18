@@ -9,6 +9,16 @@ let camera = {x: 0, z: -700, rot: 0, xv: 0, zv: 0, rotVel: 0},
 items = [],
 keys = {};
 
+function cameraFromHash() {
+  if (window.location.hash)
+    [camera.x, camera.z, camera.rot] = window.location.hash.slice(1).split(',').map(n => +n / 100);
+  else
+    [camera.x, camera.z, camera.rot] = [0, -700, 0];
+}
+window.addEventListener('hashchange', cameraFromHash, false);
+cameraFromHash();
+
+
 for (let i = objects.children.length; i--;) {
   let elem = objects.children[i];
   items.push({
@@ -75,6 +85,9 @@ function draw() {
   camera.x += camera.xv;
   camera.z += camera.zv;
   camera.rot += camera.rotVel;
+
+  window.location.hash = Object.values(camera).slice(0, 3).map(n => Math.round(n * 100)).join(',');
+
   window.requestAnimationFrame(draw);
 }
 
