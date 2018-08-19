@@ -86,28 +86,47 @@ var sheeptest=(function(){
   }
   var preferences=JSON.parse(cookie.preferences);
   var places2go=[
-    {url:'all/',img:'img/all2.png',name:'Almost Everything',featured:1},
-    {url:'platformre',img:'img/plat.svg',name:'Platformre'},
-    {url:'platformre/maker',img:'img/platmakre.png',name:'Level editor'},
-    {url:'?penland',img:'img/penland.png',name:'Penland'},
-    {url:'platformre/nova/penland/',img:'img/newpenland.png',name:'Penland Nova',new:1},
-    {url:'gamepro5/minigames/turkeys/',img:'img/turkeys.png',name:'Turkeys',new:1},
-    {url:'telegraph',img:'img/tele.png',name:'Telegraph'},
-    {url:'javascripts/shepform',img:'img/colorpicker.png',name:'Color input'},
+    {url:'all/',img:'img/all2.png',name:'Almost Everything'},
+
+    // FEATURED
+    {url:'platformre/',img:'img/plat.svg',name:'Platformre',featured:1},
+    {url:'platformre/maker/',img:'img/platmakre.png',name:'Level editor'},
+    {url:'https://orbiit.github.io/gunn-web-app/',img:'img/ugwa.png',name:'Unofficial Gunn Web App',new:1},
+    {url:'javascripts/carecalc.html',img:'img/carecalc.png',name:'Grade Care Calculator',new:1},
+    {url:'javascripts/shepform/colour.html',img:'img/colourpick.png',name:'Color input II',new:1},
+    {url:'trumpdays/',img:'img/trumpdays.png',name:'Trump days'},
+
+    // GAMES
+    {url:'platformre/nova/penland/',img:'img/newpenland.png',name:'Penland Nova'},
+    {url:'gamepro5/minigames/turkeys/',img:'img/turkeys.png',name:'Turkeys'},
+    {url:'telegraph/',img:'img/tele.png',name:'Telegraph'},
     {url:'javascripts/clicker',img:'img/click.png',name:'Clicker Game'},
-    {url:'trumpdays',img:'img/trumpdays.png',name:'Trump days'},
     {url:'gamepro5/minigames/dodgedots.html',img:'img/reds.png',name:'Dodge dots game thing'},
     {url:'gamepro5/minigames/color.html',img:'img/color.png',name:'Color fight thing'},
-    {url:'animations',img:'img/anima.png',name:'Animations'},
-    {url:'javascripts',img:'img/js.png',name:'Javascripts'},
-    {url:'sentence',img:'img/sentence.png',name:'Sentence Generator'},
-    {url:'happynumbers',img:'img/mems.png',name:'Happy Number Finder'},
-    {url:'javascripts/mutate.html',img:'img/life.png',name:'Cell Simulation'},
-    {url:'eyo-dictionary/validator.html',img:'img/die.png',name:'Eyo Word Validator'},
-    {url:'eyo-dictionary',img:'img/eyo.png',name:'Eyo Dictionary'},
+    {url:'https://orbiit.github.io/gunn-web-app/games/connect4.html',img:'img/connect4.png',name:'Connect 3',new:1},
+
+    // DIRECTORIES
+    {url:'javascripts/',img:'img/js.png',name:'Javascripts'},
+    {url:'words-go-here/misc/',img:'img/misc.png',name:'Miscellaneous'},
+    {url:'thingkingland/sitemap.html',img:'img/thingkingland.png',name:'Thingkingland',new:1},
+    {url:'javascripts/particles/',img:'img/particles.png',name:'Particles',new:1},
+
+    // OTHER THINGS
+    {url:'happynumbers/',img:'img/mems.png',name:'Happy Number Finder'},
+    {url:'happynumbers/sieve/',img:'img/sieve.png',name:'Sieve of Eranthoses',new:1},
+    {url:'animations/',img:'img/anima.png',name:'Animations'},
+    {url:'sentence/',img:'img/sentence.png',name:'Sentence Generator'},
     {url:'contextmenutest.html',img:'img/rightclick.png',name:'Context Menu Test'},
-    {url:'blog',img:'img/blog..png',name:'Blog'},
-    {url:'words-go-here/misc/',img:'img/misc.png',name:'Miscellaneous',new:1}
+    {url:'longer-tweets/',img:'img/longtweets.png',name:'Longer Tweets',new:1}, // hiddenish
+    {url:'themes/billy-goat/index-dark.html',img:'img/billy-goat.png',name:'Billy Goat Blog Theme',new:1},
+
+    // CONFUSING THINGS
+    {url:'javascripts/imagetoscheme.html',img:'img/scheme.png',name:'Image to ASCII',new:1},
+    {url:'javascripts/terminal/',img:'img/terminal.png',name:'Terminal',new:1},
+    {url:'?penland',img:'img/penland.png',name:'Penland'},
+    {url:'javascripts/mutate.html',img:'img/life.png',name:'Cell Simulation'},
+    {url:'eyo-dictionary/',img:'img/eyo.png',name:'Eyo Dictionary'},
+    {url:'eyo-dictionary/validator.html',img:'img/die.png',name:'Eyo Word Validator'}
   ];
   if (preferences.view==='grid') {
     document.querySelector('#view').innerHTML='list view';
