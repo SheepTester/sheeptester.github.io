@@ -1,0 +1,14 @@
+{
+  "colours": {
+    "[": "#5f5f5f",
+    "]": "#5f5f5f",
+    "=": "#8f6c3b",
+    "|": "#ad6705",
+    "m": "#212121"
+  },
+  "solid": "[]",
+  "bold": "|",
+  "messages": {
+    "onenter": "You enter a house."
+  }
+}

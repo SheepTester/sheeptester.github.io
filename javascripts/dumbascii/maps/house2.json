@@ -1,0 +1,17 @@
+{
+  "extends": "house",
+  "start": [19, 10],
+  "portals": {
+    "20,10": ["world", 0, 1, true],
+    "16,7": ["house2basement", 2, 2],
+    "17,7": ["house2basement", 3, 2],
+    "18,7": ["house2basement", 4, 2],
+    "19,7": ["house2basement", 5, 2]
+  },
+  "colours": {
+    "message": "#299174",
+    "(": "#8f842b",
+    ")": "#8f842b"
+  },
+  "bold": "()"
+}

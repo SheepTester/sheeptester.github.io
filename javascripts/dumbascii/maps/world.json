@@ -1,0 +1,26 @@
+{
+  "start": [22, 51],
+  "portals": {
+    "56,4": ["house1"],
+    "22,30": ["house1"],
+    "75,64": ["house1"],
+    "36,93": ["house1"],
+    "73,97": ["house1"],
+    "6,83": ["house2"]
+  },
+  "colours": {
+    "message": "#0592ae",
+    ".": "#6aa152",
+    ",": "#43833a",
+    ";": "#26632a",
+    "H": "#82529e",
+    "O": "#82529e"
+  },
+  "bold": "HO",
+  "solid": ";",
+  "messages": {
+    "onenter": "You enter the world.",
+    "onenter.": "The grass is shorter here.",
+    "onenter,": "The grass is longer here."
+  }
+}

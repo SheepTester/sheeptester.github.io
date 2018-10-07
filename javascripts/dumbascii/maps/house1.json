@@ -1,0 +1,13 @@
+{
+  "extends": "house",
+  "start": [2, 1],
+  "portals": {
+    "1,1": ["world", 0, 1, true]
+  },
+  "colours": {
+    "message": "#652d96"
+  },
+  "messages": {
+    "onleave": "You leave the house."
+  }
+}

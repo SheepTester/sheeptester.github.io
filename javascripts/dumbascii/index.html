@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Dumb ASCII game</title>
+    <meta charset="UTF-8">
+    <meta name="description" content="some random, heh, 'game' i made using ascii characters (though it doesn't make much of a difference)"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link rel="stylesheet" type="text/css" href="../../sheep2.css">
+    <script src="../../sheep2.js" charset="utf-8"></script>
+    <style>
+      body {
+        background: #212121;
+        color: #888;
+        font-size: 0;
+        font-family: monospace;
+        line-height: 1;
+      }
+      .screen {
+        position: absolute;
+        top: 0;
+        left: 0;
+        font-size: 14px;
+        white-space: pre;
+        overflow: hidden;
+      }
+      #log {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        width: 32ch;
+        height: 5em;
+        top: 1em;
+        left: 1ch;
+      }
+      #board {
+        width: 32ch;
+        height: 20em;
+        top: 7em;
+        left: 1ch;
+      }
+      #board > span {
+        position: absolute;
+        top: 0;
+        left: 0;
+      }
+      #player {
+        background-color: #212121;
+        font-weight: bold;
+        color: #703515;
+        z-index: 2;
+      }
+      #iframe {
+        font-weight: bold;
+      }
+      #status {
+        width: 32ch;
+        height: 1em;
+        top: 28em;
+        left: 1ch;
+        color: #aaa;
+      }
+    </style>
+  </head>
+  <body>
+    <span class="screen" id="frame">+--------------------------------+
+|                                |
+|                                |
+|                                |
+|                                |
+|                                |
++--------------------------------+
+|                                |
+|                                |
+|                                |
+|                                |
+|                                |
+|                                |
+|                                |
+|                                |
+|                                |
+|                                |
+|                                |
+|                                |
+|                                |
+|                                |
+|                                |
+|                                |
+|                                |
+|                                |
+|                                |
+|                                |
++--------------------------------+
+|                                |
++--------------------------------+</span>
+    <ul class="screen" id="log"></ul>
+    <div class="screen" id="board"><span id="player">@</span></div>
+    <span class="screen" id="status"></span>
+    <script>
+const log = document.getElementById('log');
+const gameBoard = document.getElementById('board');
+const playerCell = document.getElementById('player');
+const status = document.getElementById('status');
+
+function displayToLog(content, colour = '#eee', bold = false) {
+  if (log.children.length >= 5) log.removeChild(log.firstChild);
+  const li = document.createElement('li');
+  li.appendChild(document.createTextNode(content));
+  li.style.color = colour;
+  li.style.fontWeight = bold ? 'bold' : 'normal';
+  log.appendChild(li);
+}
+
+const WIDTH = 32;
+const HEIGHT = 20;
+const whitespaceRegex = /\s/;
+
+function cellPos(col, row) {
+  return `translate(${col}ch, ${row}em)`;
+}
+
+const player = {
+  get x() { return this.xPos; },
+  get y() { return this.yPos; },
+  set x(x) {
+    if (worldData[this.dimension].isSolid(x, this.yPos)) return;
+    this.xPos = x;
+    this.positionDimension();
+  },
+  set y(y) {
+    if (worldData[this.dimension].isSolid(this.xPos, y)) return;
+    this.yPos = y;
+    this.positionDimension();
+  },
+  positionDimension() {
+    const portal = worldData[this.dimension].isPortal(this.xPos, this.yPos);
+    if (portal) {
+      this.changeDimension(...portal);
+    } else {
+      worldData[this.dimension].span.style.transform = cellPos(
+        WIDTH / 2 - this.xPos,
+        HEIGHT / 2 - this.yPos
+      );
+      const cell = worldData[this.dimension].getCell(this.xPos, this.yPos);
+      if (this.lastCell !== cell) {
+        this.lastCell = cell;
+        worldData[this.dimension].message('onenter' + cell);
+      }
+    }
+    status.textContent = `at (${this.xPos}, ${this.yPos}) in ${this.dimension.toUpperCase()}`;
+  },
+  changeDimension(newDimension, ...overridePositions) {
+    if (this.dimension) {
+      worldData[this.dimension].span.style.display = 'none';
+      worldData[this.dimension].lastPosition = [this.xPos, this.yPos];
+      worldData[this.dimension].message('onleave');
+    }
+    if (overridePositions[2]) {
+      [this.xPos, this.yPos] = worldData[newDimension].lastPosition;
+      this.xPos += overridePositions[0];
+      this.yPos += overridePositions[1];
+    } else {
+      [this.xPos, this.yPos] = overridePositions.length ? overridePositions
+        : worldData[newDimension].options.start;
+    }
+    worldData[newDimension].span.style.display = 'block';
+    this.lastCell = worldData[newDimension].getCell(this.xPos, this.yPos);
+    worldData[newDimension].message('onenter');
+    this.dimension = newDimension;
+    this.positionDimension();
+  }
+};
+class Dimension {
+
+  constructor(name) {
+    this.onload = Promise.all([
+      fetch(`./maps/${name}.txt`)
+        .then(r => r.text())
+        .then(data => this.data = data),
+      fetch(`./maps/${name}.json`)
+        .then(r => r.json())
+        .then(data => this.options = data)
+    ]);
+  }
+
+  optionsReady() {
+    const data = this.data;
+    const options = this.options;
+
+    if (!options.start) options.start = [0, 0];
+    if (!options.portals) options.portals = {};
+    if (!options.colour) options.colour = {};
+    if (!options.messages) options.messages = {};
+    if (!options.bold) options.bold = '';
+    if (!options.solid) options.solid = '';
+
+    this.width = data.indexOf('\n');
+    this.height = data.split('\n').length - 1;
+
+    this.span = document.createElement('span');
+    let result = '';
+    for (let lastChar, i = 0; i < data.length; i++) {
+      const char = data[i];
+      if (!whitespaceRegex.test(char) && char !== lastChar) {
+        if (lastChar !== undefined) result += '</span>';
+        result += `<span style="`
+          + (options.colours[char] ? 'color:' + options.colours[char] + ';' : '')
+          + (options.bold.includes(char) ? 'font-weight:bold;' : '')
+          + '">';
+        lastChar = char;
+      }
+      result += char;
+    }
+    result += '</span>';
+    this.span.innerHTML = result;
+    this.span.style.display = 'none';
+    gameBoard.appendChild(this.span);
+  }
+
+  getCell(x, y) {
+    return this.data[y * (this.width + 1) + x];
+  }
+
+  isSolid(x, y) {
+    if (x < 0 || y < 0 || x >= this.width || y >= this.height) return true;
+    else return this.options.solid.includes(this.getCell(x, y));
+  }
+
+  isPortal(x, y) {
+    return this.options.portals[`${x},${y}`];
+  }
+
+  message(type) {
+    if (this.options.messages[type])
+      displayToLog(this.options.messages[type], this.options.colours.message);
+  }
+
+}
+const worldData = {
+  world: new Dimension('world'),
+  house1: new Dimension('house1'),
+  house2: new Dimension('house2'),
+  house2basement: new Dimension('house2basement')
+};
+function init() {
+  playerCell.style.transform = cellPos(WIDTH / 2, HEIGHT / 2);
+  displayToLog('Hello!');
+  player.changeDimension('world');
+  document.addEventListener('keydown', e => {
+    switch (e.keyCode) {
+      case 37: player.x--; break;
+      case 38: player.y--; break;
+      case 39: player.x++; break;
+      case 40: player.y++; break;
+      default: return;
+    }
+  });
+}
+Promise.all(Object.values(worldData).map(d => d.onload)).then(() => {
+  const dimensions = Object.values(worldData);
+  const neededParents = {};
+  const promises = [];
+  dimensions.forEach(d => {
+    if (d.options.extends) {
+      if (!neededParents[d.options.extends])
+        neededParents[d.options.extends] = fetch(`./maps/${d.options.extends}.json`).then(r => r.json());
+      promises.push(neededParents[d.options.extends].then(options => {
+        for (var prop in options) {
+          switch (prop) {
+            case "bold":
+            case "solid":
+              d.options[prop] = (d.options[prop] || '') + options[prop];
+              break;
+            case "colours":
+            case "messages":
+              if (d.options[prop]) {
+                for (var subProp in options[prop]) {
+                  if (!d.options[prop][subProp])
+                    d.options[prop][subProp] = options[prop][subProp];
+                }
+              } else {
+                d.options[prop] = options[prop];
+              }
+              break;
+          }
+        }
+      }));
+    }
+  });
+  return Promise.all(promises).then(() => dimensions.map(d => d.optionsReady()));
+}).then(init);
+    </script>
+  </body>
+</html>
