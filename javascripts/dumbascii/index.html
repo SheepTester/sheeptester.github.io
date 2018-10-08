@@ -3,7 +3,7 @@
   <head>
     <title>Dumb ASCII game</title>
     <meta charset="UTF-8">
-    <meta name="description" content="some random, heh, 'game' i made using ascii characters (though it doesn't make much of a difference)"/>
+    <meta name="description" content="some random 'game' i made using ascii characters (though it doesn't make much of a difference)"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <link rel="stylesheet" type="text/css" href="../../sheep2.css">
     <script src="../../sheep2.js" charset="utf-8"></script>
@@ -104,10 +104,11 @@ const status = document.getElementById('status');
 function displayToLog(content, colour = '#eee', bold = false) {
   if (log.children.length >= 5) log.removeChild(log.firstChild);
   const li = document.createElement('li');
-  li.appendChild(document.createTextNode(content));
+  li.appendChild(document.createTextNode(content.slice(0, 32)));
   li.style.color = colour;
   li.style.fontWeight = bold ? 'bold' : 'normal';
   log.appendChild(li);
+  if (content.length > 32) displayToLog('> ' + content.slice(32), colour, bold);
 }
 
 const WIDTH = 32;
