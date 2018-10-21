@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Extraneous character finder</title>
+    <meta charset="UTF-8">
+    <meta name="description" content="Finds characters that you can't type on a US keyboard (in case someone inserted a lookalike)"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link rel="stylesheet" type="text/css" href="../sheep2.css">
+    <script src="../sheep2.js" charset="utf-8"></script>
+    <link href="https://fonts.googleapis.com/css?family=Roboto+Condensed" rel="stylesheet">
+    <style>
+      html {
+        width: 100%;
+        height: 100%;
+        background-image: linear-gradient(30deg, #1d2130, #304560);
+        background-size: contain;
+        font-family: 'Roboto Condensed', sans-serif;
+        color: rgba(255, 255, 255, 0.8);
+        font-size: 24px;
+      }
+      body {
+        margin: 30px;
+      }
+      textarea {
+        border-radius: 5px;
+        border: none;
+        background: none;
+        background-color: rgba(255, 255, 255, 0.2);
+        font: inherit;
+        color: rgba(255, 255, 255, 0.7);
+        box-shadow: 0 0 5px rgba(255, 255, 255, 0.2);
+        cursor: pointer;
+        width: 100%;
+        display: block;
+        padding: 20px;
+        margin: 0 auto;
+        box-sizing: border-box;
+        max-width: 600px;
+        height: 200px;
+        transition: all .5s;
+      }
+      textarea:focus {
+        outline: none;
+        cursor: auto;
+        color: white;
+        background-color: rgba(255, 255, 255, 0.3);
+        text-shadow: 0 0 5px rgba(255, 255, 255, 0.7);
+        box-shadow: 0 0 5px rgba(255, 255, 255, 0.3), 0 0 10px rgba(255, 255, 255, 0.3);
+      }
+      textarea::placeholder {
+        color: rgba(255, 255, 255, 0.5);
+      }
+      table {
+        border-collapse: collapse;
+        border-radius: 5px;
+        margin: 30px auto;
+        overflow: hidden;
+        background-color: rgba(255, 255, 255, 0.05);
+      }
+      table, th, td {
+        border: 1px solid rgba(255, 255, 255, 0.3);
+      }
+      th {
+        font-weight: normal;
+        background-color: rgba(255, 255, 255, 0.1);
+        padding: 10px;
+      }
+      p {
+        max-width: 600px;
+        margin: 30px auto;
+      }
+    </style>
+  </head>
+  <body>
+    <textarea id="input" placeholder="Paste here"></textarea>
+    <p>Finds all characters that aren't on the US keyboard, and the newline and tab characters:</p>
+    <table id="table">
+      <tr>
+        <th>Pos.</th>
+        <th>Char.</th>
+        <th>Character code</th>
+      </tr>
+    </table>
+    <script>
+const regex = /[^\u0020-\u007e\n\t]/g;
+const table = document.getElementById('table');
+document.getElementById('input').addEventListener('input', e => {
+  const value = e.target.value;
+  while (table.children.length > 1) table.removeChild(table.lastChild);
+  const fragment = document.createDocumentFragment();
+  value.replace(regex, (char, pos) => {
+    const charCode = char.charCodeAt();
+    const hex = charCode.toString(16).toUpperCase();
+    const tr = document.createElement('tr');
+    const posTd = document.createElement('td');
+    posTd.appendChild(document.createTextNode(pos));
+    tr.appendChild(posTd);
+    const charTd = document.createElement('td');
+    charTd.appendChild(document.createTextNode(char));
+    tr.appendChild(charTd);
+    const codeTd = document.createElement('td');
+    codeTd.appendChild(document.createTextNode(`${charCode} (U+${hex.length < 4 ? ('000' + hex).slice(-4) : hex})`));
+    tr.appendChild(codeTd);
+    fragment.appendChild(tr);
+  });
+  table.appendChild(fragment);
+});
+    </script>
+  </body>
+</html>
