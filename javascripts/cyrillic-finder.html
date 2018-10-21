@@ -88,8 +88,9 @@
     <script>
 const regex = /[^\u0020-\u007e\n\t]/g;
 const table = document.getElementById('table');
-document.getElementById('input').addEventListener('input', e => {
-  const value = e.target.value;
+const input = document.getElementById('input');
+function update() {
+  const value = input.value;
   while (table.children.length > 1) table.removeChild(table.lastChild);
   const fragment = document.createDocumentFragment();
   value.replace(regex, (char, pos) => {
@@ -108,7 +109,10 @@ document.getElementById('input').addEventListener('input', e => {
     fragment.appendChild(tr);
   });
   table.appendChild(fragment);
-});
+}
+input.value = [913,914,917,919,921,922,924,925,927,929,932,935,933,918,8288,8204,6158,8203,65279,8291,1409,1392,1400,1405,1359,1340,1072,1089,1077,1086,1088,1093,1091,1110,1112,1307,1109,1309].map(char => String.fromCharCode(char)).join('');
+update();
+input.addEventListener('input', update);
     </script>
   </body>
 </html>
