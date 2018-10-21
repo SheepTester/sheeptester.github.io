@@ -22,6 +22,28 @@
       body {
         margin: 30px;
       }
+      .input-wrapper {
+        position: relative;
+        max-width: 600px;
+        height: 200px;
+        margin: 0 auto;
+      }
+      #fake-input {
+        position: absolute;
+        padding: 20px;
+        width: 100%;
+        height: 100%;
+        box-sizing: border-box;
+        overflow: hidden;
+        color: transparent;
+        z-index: -1;
+        white-space: pre-wrap;
+        overflow-wrap: break-word;
+      }
+      #fake-input b {
+        background-color: #de3050;
+        font-weight: normal;
+      }
       textarea {
         border-radius: 5px;
         border: none;
@@ -34,10 +56,10 @@
         width: 100%;
         display: block;
         padding: 20px;
-        margin: 0 auto;
         box-sizing: border-box;
-        max-width: 600px;
-        height: 200px;
+        width: 100%;
+        height: 100%;
+        resize: none;
         transition: all .5s;
       }
       textarea:focus {
@@ -51,23 +73,36 @@
       textarea::placeholder {
         color: rgba(255, 255, 255, 0.5);
       }
-      table {
+      #table {
+        display: table;
         border-collapse: collapse;
         border-radius: 5px;
         margin: 30px auto;
         overflow: hidden;
         background-color: rgba(255, 255, 255, 0.05);
       }
-      td {
+      #table a, #table .heading {
+        display: table-row;
+      }
+      #table a {
+        color: inherit;
+        text-decoration: none;
+        transition: background-color .2s;
+      }
+      #table a:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+      }
+      #table > a > span {
+        display: table-cell;
+        padding: 10px;
         border-top: 1px solid rgba(255, 255, 255, 0.3);
       }
-      th {
+      #table .heading span {
+        display: table-cell;
         font-weight: normal;
         background-color: rgba(255, 255, 255, 0.1);
         padding: 10px;
-      }
-      td {
-        padding: 10px;
+        border: none;
       }
       p {
         max-width: 600px;
@@ -76,41 +111,51 @@
     </style>
   </head>
   <body>
-    <textarea id="input" placeholder="Paste here"></textarea>
+    <div class="input-wrapper">
+      <div id="fake-input"></div>
+      <textarea id="input" placeholder="Paste here"></textarea>
+    </div>
     <p>Finds all characters that aren't on the US keyboard, and the newline and tab characters:</p>
-    <table id="table">
-      <tr>
-        <th>Pos.</th>
-        <th>Char.</th>
-        <th>Character code</th>
-      </tr>
-    </table>
+    <div id="table">
+      <span class="heading">
+        <span>Pos.</span>
+        <span>Char.</span>
+        <span>Character code</span>
+      </span>
+    </div>
     <script>
 const regex = /[^\u0020-\u007e\n\t]/g;
 const table = document.getElementById('table');
 const input = document.getElementById('input');
+const fakeInput = document.getElementById('fake-input');
 function update() {
   const value = input.value;
   while (table.children.length > 1) table.removeChild(table.lastChild);
   const fragment = document.createDocumentFragment();
+  let html = '', lastIndex = 0;
   value.replace(regex, (char, pos) => {
     const charCode = char.charCodeAt();
     const hex = charCode.toString(16).toUpperCase();
-    const tr = document.createElement('tr');
-    const posTd = document.createElement('td');
+    const tr = document.createElement('a');
+    tr.href = 'http://unicode.org/cldr/utility/character.jsp?a=0' + hex;
+    const posTd = document.createElement('span');
     posTd.appendChild(document.createTextNode(pos));
     tr.appendChild(posTd);
-    const charTd = document.createElement('td');
+    const charTd = document.createElement('span');
     charTd.appendChild(document.createTextNode(char));
     tr.appendChild(charTd);
-    const codeTd = document.createElement('td');
+    const codeTd = document.createElement('span');
     codeTd.appendChild(document.createTextNode(`${charCode} (U+${hex.length < 4 ? ('000' + hex).slice(-4) : hex})`));
     tr.appendChild(codeTd);
     fragment.appendChild(tr);
+    html += value.slice(lastIndex, pos) + '<b>' + char + '</b>'; // deHTMLify somehow
+    lastIndex = pos + 1;
   });
+  html += value.slice(lastIndex);
   table.appendChild(fragment);
+  // fakeInput.innerHTML = html;
 }
-input.value = [913,914,917,919,921,922,924,925,927,929,932,935,933,918,8288,8204,6158,8203,65279,8291,1409,1392,1400,1405,1359,1340,1072,1089,1077,1086,1088,1093,1091,1110,1112,1307,1109,1309].map(char => String.fromCharCode(char)).join('');
+input.value = [913,914,917,919,921,922,924,925,927,929,932,935,933,918,8288,8204,6158,8203,65279,8291,1409,1392,1400,1405,1359,1340,1072,1089,1077,1086,1088,1093,1091,1110,1112,1307,1109,12,1309].map(char => String.fromCharCode(char)).join('');
 update();
 input.addEventListener('input', update);
     </script>
