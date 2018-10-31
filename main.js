@@ -91,8 +91,9 @@ var sheeptest=(function(){
     // FEATURED
     {url:'platformre/',img:'img/plat.svg',name:'Platformre'},
     {url:'platformre/maker/',img:'img/platmakre.png',name:'Level editor'},
+    {url:'olamreee/',img:'img/olamreee.png',name:'OlamREEE',featured:1},
     {url:'https://orbiit.github.io/gunn-web-app/',img:'img/ugwa.png',name:'Unofficial Gunn Web App'},
-    {url:'javascripts/carecalc.html',img:'img/carecalc.png',name:'Grade Care Calculator',featured:1},
+    {url:'javascripts/carecalc.html',img:'img/carecalc.png',name:'Grade Care Calculator'},
     {url:'javascripts/shepform/colour.html',img:'img/colourpick.png',name:'Color input II'},
     {url:'trumpdays/',img:'img/trumpdays.png',name:'Trump days'},
 
