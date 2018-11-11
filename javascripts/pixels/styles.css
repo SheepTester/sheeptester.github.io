@@ -12,6 +12,9 @@ body {
   font-family: 'Open Sans', sans-serif;
   line-height: 1;
 }
+.hidden {
+  display: none;
+}
 canvas {
   -ms-interpolation-mode: bicubic;
   image-rendering: -moz-crisp-edges;
@@ -76,8 +79,12 @@ canvas {
   vertical-align: top;
   background-color: rgba(255,255,255,0.1);
 }
-#toolbar {
-  top: 0;
+#toolbar { /* TEMP */
+  top: 400px;
+  left: 0;
+}
+#taskbar {
+  top: 426px;
   left: 0;
 }
 #select {
@@ -88,10 +95,6 @@ canvas {
 }
 #redo {
   background-image: url("icon_redo.svg");
-}
-#taskbar {
-  left: 0;
-  bottom: 0;
 }
 
 .tabs {
@@ -122,7 +125,7 @@ canvas {
   position: fixed;
   top: 0;
   right: 0;
-  bottom: 24px;
+  bottom: 0;
 }
 #colourbar h3 {
   font-size: 14px;
@@ -216,14 +219,6 @@ canvas {
   margin: 5px;
   opacity: 0.6;
 }
-#hex::before {
-  content: "#";
-  left: 0;
-}
-#opacityinput::before {
-  content: "%";
-  right: 0;
-}
 .input-wrapper input {
   display: inline-block;
   background: none;
@@ -238,14 +233,46 @@ canvas {
   outline: none;
   background-color: #4c3b63;
 }
-#hex input {
+.hex::before {
+  content: "#";
+  left: 0;
+}
+.hex input {
   padding-left: 17px;
+}
+.percentage::before {
+  content: "%";
+  right: 0;
+}
+.percentage input {
+  padding-right: 20px;
+  text-align: right;
+}
+.pixels::before {
+  content: "px";
+  right: 0;
+}
+.pixels input {
+  padding-right: 23px;
+  text-align: right;
+}
+#hex {
   width: 55px;
 }
-#opacityinput input {
-  padding-right: 20px;
+#opacityinput {
   width: 25px;
-  text-align: right;
+}
+#width, #height {
+  width: 30px;
+}
+.label {
+  display: inline-block;
+  height: 1em;
+  color: rgba(255,255,255,0.4);
+  padding: 5px;
+  font-size: 14px;
+  margin: 10px 0;
+  margin-right: -10px;
 }
 #pickcolour {
   opacity: 0.6;
@@ -267,7 +294,6 @@ canvas {
   position: fixed;
   top: 0;
   left: 0;
-  transform: translate(10vw, 10vh) scale(5);
 }
 #canvases canvas {
   position: absolute;

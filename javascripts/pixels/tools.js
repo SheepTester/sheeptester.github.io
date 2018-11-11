@@ -2,6 +2,40 @@ const settingTypes = {
   TOGGLE: 0
 };
 
+function generatePixelLine(x1, y1, x2, y2) {
+  // https://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm
+  const pixels = [],
+  deltaX = x2 - x1,
+  deltaY = y2 - y1,
+  signX = deltaX < 0 ? -1 : 1,
+  signY = deltaY < 0 ? -1 : 1;
+  let error = 0;
+  if (Math.abs(deltaY) > Math.abs(deltaX)) {
+    let deltaErr = Math.abs(deltaX / deltaY),
+    x = x1;
+    for (let y = y1; signY <= 0 ? y >= y2 : y <= y2; y += signY) {
+      pixels.push([x, y]);
+      error += deltaErr;
+      while (error >= 0.5) {
+        x += signX;
+        error--;
+      }
+    }
+  } else {
+    let deltaErr = Math.abs(deltaY / deltaX),
+    y = y1;
+    for (let x = x1; signX <= 0 ? x >= x2 : x <= x2; x += signX) {
+      pixels.push([x, y]);
+      error += deltaErr;
+      while (error >= 0.5) {
+        y += signY;
+        error--;
+      }
+    }
+  }
+  return pixels;
+}
+
 class PixelPen {
   constructor() {
     // meta stuff
@@ -33,36 +67,11 @@ class PixelPen {
       this.alreadyDrawn.push(x + "," + y);
     }
   }
-  penMove(mouseX, mouseY, mainContext, previewContext, options) { // https://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm
-    let context = options.overwrite ? mainContext : previewContext,
-    deltaX = mouseX - this.lastX,
-    deltaY = mouseY - this.lastY,
-    signX = deltaX < 0 ? -1 : 1,
-    signY = deltaY < 0 ? -1 : 1,
-    error = 0;
-    if (Math.abs(deltaY) > Math.abs(deltaX)) {
-      let deltaErr = Math.abs(deltaX / deltaY),
-      x = this.lastX;
-      for (let y = this.lastY; signY <= 0 ? y >= mouseY : y <= mouseY; y += signY) {
-        this.plot(x, y, context, options.overwrite);
-        error += deltaErr;
-        while (error >= 0.5) {
-          x += signX;
-          error--;
-        }
-      }
-    } else {
-      let deltaErr = Math.abs(deltaY / deltaX),
-      y = this.lastY;
-      for (let x = this.lastX; signX <= 0 ? x >= mouseX : x <= mouseX; x += signX) {
-        this.plot(x, y, context, options.overwrite);
-        error += deltaErr;
-        while (error >= 0.5) {
-          y += signY;
-          error--;
-        }
-      }
-    }
+  penMove(mouseX, mouseY, mainContext, previewContext, options) {
+    const context = options.overwrite ? mainContext : previewContext;
+    generatePixelLine(this.lastX, this.lastY, mouseX, mouseY).forEach(([x, y]) => {
+      this.plot(x, y, context, options.overwrite);
+    });
     this.lastX = mouseX;
     this.lastY = mouseY;
   }
@@ -113,20 +122,60 @@ class Fill {
 }
 
 function loadTools() {
-  const mainCanvas = document.querySelector("#output"),
+  const canvasWrapper = document.getElementById('canvases'),
+  mainCanvas = document.getElementById("output"),
   mainContext = mainCanvas.getContext("2d"),
-  previewCanvas = document.querySelector("#preview"),
+  previewCanvas = document.getElementById("preview"),
   previewContext = previewCanvas.getContext("2d"),
-  elementInsertMark = document.querySelector("#aftertools"),
-  selectTool = document.querySelector("#select");
+  elementInsertMark = document.getElementById("aftertools"),
+  selectTool = document.getElementById("select"),
+  uiWrapper = document.getElementById('ui-wrapper');
 
   let tools = [],
   currentTool = null,
   canvasWidth = 50,
   canvasHeight = 50;
 
+  const camera = { scale: 5, x: -20, y: -20 };
+  function positionCamera() {
+    canvasWrapper.style.transform = `scale(${camera.scale}) translate(${-camera.x}px, ${-camera.y}px)`;
+  }
+  positionCamera();
+  function getXYFromMouse(event) {
+    const mouseX = event.type.includes("touch") ? event.touches[0].clientX : event.clientX;
+    const mouseY = event.type.includes("touch") ? event.touches[0].clientY : event.clientY;
+    const position = [
+      Math.floor(mouseX / camera.scale + camera.x),
+      Math.floor(mouseY / camera.scale + camera.y)
+    ];
+    return position;
+  }
+  document.addEventListener('wheel', e => {
+    if (uiWrapper.contains(e.target)) return;
+    if (e.ctrlKey || e.metaKey) {
+      const change = Math.abs(e.deltaY / 1000) + 1;
+      const oldScale = camera.scale;
+      let xDiff = -camera.x * oldScale - e.clientX, yDiff = -camera.y * oldScale - e.clientY;
+      if (e.deltaY > 0) {
+        camera.scale /= change, xDiff /= change, yDiff /= change;
+      } else if (e.deltaY < 0) {
+        camera.scale *= change, xDiff *= change, yDiff *= change;
+      }
+      camera.x = -(e.clientX + xDiff) / camera.scale;
+      camera.y = -(e.clientY + yDiff) / camera.scale;
+      e.preventDefault();
+    } else {
+      camera.x += (e.shiftKey ? e.deltaY : e.deltaX) / camera.scale;
+      camera.y += (e.shiftKey ? e.deltaX : e.deltaY) / camera.scale;
+      if (e.deltaX) e.preventDefault();
+    }
+    positionCamera();
+  });
+
+  const pointers = []; // TODO: allow multiple fingers
   function mouseDown(e) {
-    let [x, y] = getXY(e, null, true, true);
+    if (uiWrapper.contains(e.target)) return;
+    let [x, y] = getXYFromMouse(e);
     if (e.which === 2) {
       let colour = getPixelAt(mainContext, x, y);
       currentColour.setColour(colour.r, colour.g, colour.b, colour.a);
@@ -147,7 +196,7 @@ function loadTools() {
     e.preventDefault();
   }
   function mouseMove(e) {
-    if (tools[currentTool].penMove) tools[currentTool].penMove(...getXY(e, null, true, true), mainContext, previewContext, {
+    if (tools[currentTool].penMove) tools[currentTool].penMove(...getXYFromMouse(e), mainContext, previewContext, {
       _width_: canvasWidth,
       _height_: canvasHeight,
       _colour_: currentColour
@@ -167,22 +216,8 @@ function loadTools() {
     document.removeEventListener("touchend", mouseUp, {passive: false});
     e.preventDefault();
   }
-  mainCanvas.addEventListener("mousedown", mouseDown, false);
-  mainCanvas.addEventListener("touchstart", mouseDown, {passive: false});
-
-  function getXY(mouseX, mouseY, round = false, isEventObj = false) {
-    if (isEventObj) {
-      mouseY = mouseX.type.includes("touch") ? mouseX.touches[0].clientY : mouseX.clientY;
-      mouseX = mouseX.type.includes("touch") ? mouseX.touches[0].clientX : mouseX.clientX;
-    }
-    let rect = mainCanvas.getBoundingClientRect(),
-    position = [
-      (mouseX - rect.left) / rect.width * canvasWidth,
-      (mouseY - rect.top) / rect.height * canvasHeight
-    ];
-    if (round) return position.map(Math.round);
-    return position;
-  }
+  document.addEventListener("mousedown", mouseDown, false);
+  document.addEventListener("touchstart", mouseDown, {passive: false});
 
   selectTool.addEventListener("click", e => {
     if (currentTool !== null) tools[currentTool].icon.classList.remove("active");

@@ -39,23 +39,23 @@ function isSlider(elem, moveFn, doneFn) {
 
 const currentColour = {h: 174, s: 100, v: 59, a: 1, str: "hsla(174, 100%, 30%, 1)"};
 function loadColours() {
-  const hsvRect = document.querySelector("#colourrect"),
+  const hsvRect = document.getElementById("colourrect"),
   hsvRectKnob = document.querySelector("#colourrect span"),
   hsvRectHeight = 100,
   hsvRectWidth = 180,
 
   sliderWidth = 170,
   sliderSidePadding = 5,
-  hueSlider = document.querySelector("#hue"),
+  hueSlider = document.getElementById("hue"),
   hueSliderKnob = document.querySelector("#hue span"),
 
   opacitySlider = document.querySelector("#opacity div"),
   opacitySliderKnob = document.querySelector("#opacity span"),
-  opacityInput = document.querySelector("#opacityinput input"),
+  opacityInput = document.getElementById("opacityinput"),
 
   rgbConverterCanvas = document.createElement("canvas"),
   rgbConverterContext = rgbConverterCanvas.getContext("2d"),
-  hexInput = document.querySelector("#hex input");
+  hexInput = document.getElementById("hex");
 
   rgbConverterCanvas.width = rgbConverterCanvas.height = 1;
   function getRGBA(hsla) {

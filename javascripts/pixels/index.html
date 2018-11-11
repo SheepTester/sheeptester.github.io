@@ -14,38 +14,51 @@
     <script src="main.js" charset="utf-8"></script>
   </head>
   <body>
-    <ul id="taskbar" class="toolbar">
-      <li class="handle"></li>
-      <li class="text" tabindex="0">file</li>
-      <li class="text" tabindex="0">edit</li>
-      <li class="text" tabindex="0">help</li>
-    </ul>
-    <ul id="toolbar" class="toolbar">
-      <li class="handle"></li>
-      <li class="icon" tabindex="0" id="select"></li>
-      <li class="separator" id="aftertools"></li>
-      <li class="icon" tabindex="0" id="undo"></li>
-      <li class="icon" tabindex="0" id="redo"></li>
-    </ul>
-    <div id="colourbar">
-      <div class="tabs">
-        <span class="active">colour</span>
-        <span>tool</span>
-        <span>canvas</span>
-      </div>
-      <h3>select colour</h3>
-      <div id="colourrect"><span></span></div>
-      <div class="slider" id="hue"><span></span></div>
-      <div class="slider transparent" id="opacity"><div class="slider"><span></span></div></div>
-      <div class="input-wrapper" id="hex"><input type="text" value="00BCD4"></div>
-      <div class="input-wrapper" id="opacityinput"><input type="text" value="100"></div>
-      <button type="button" id="pickcolour"></button>
-      <canvas id="colourhistory" width="200" height="100" class="transparent"></canvas>
-      <h3>palettes</h3>
-    </div>
     <div id="canvases">
       <canvas id="output" width="50" height="50" class="transparent"></canvas>
       <canvas id="preview" width="50" height="50"></canvas>
+    </div>
+    <div id="ui-wrapper">
+      <div id="colourbar">
+        <div class="tabs">
+          <span id="colour-tab">colour</span>
+          <span id="tool-tab">tool</span>
+          <span id="canvas-tab">canvas</span>
+        </div>
+        <div id="colour-section">
+          <h3>select colour</h3>
+          <div id="colourrect"><span></span></div>
+          <div class="slider" id="hue"><span></span></div>
+          <div class="slider transparent" id="opacity"><div class="slider"><span></span></div></div>
+          <div class="input-wrapper hex"><input class="focusable" type="text" value="00BCD4" id="hex"></div>
+          <div class="input-wrapper percentage"><input class="focusable" type="text" value="100" id="opacityinput"></div>
+          <button class="focusable" type="button" id="pickcolour"></button>
+          <canvas id="colourhistory" width="200" height="100" class="transparent"></canvas>
+          <h3>palettes</h3>
+        </div>
+        <div id="tool-section" class="hidden">
+          <!-- -->
+        </div>
+        <div id="canvas-section" class="hidden">
+          <h3>canvas size</h3>
+          <div class="input-wrapper pixels"><input class="focusable" type="text" value="50" id="width"></div>
+          <span class="label">by</span>
+          <div class="input-wrapper pixels"><input class="focusable" type="text" value="50" id="height"></div>
+        </div>
+      </div>
+      <ul id="taskbar" class="toolbar">
+        <li class="handle"></li>
+        <li class="text" tabindex="0">file</li>
+        <li class="text" tabindex="0">edit</li>
+        <li class="text" tabindex="0">help</li>
+      </ul>
+      <ul id="toolbar" class="toolbar">
+        <li class="handle"></li>
+        <li class="icon" tabindex="0" id="select"></li>
+        <li class="separator" id="aftertools"></li>
+        <li class="icon" tabindex="0" id="undo"></li>
+        <li class="icon" tabindex="0" id="redo"></li>
+      </ul>
     </div>
   </body>
   <!-- MADE BY SEAN -->
