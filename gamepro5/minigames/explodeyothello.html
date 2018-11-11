@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Explodey Othello</title>
+    <meta charset="UTF-8">
+    <meta name="description" content="Recreation of Swatch on Scratch"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link rel="stylesheet" type="text/css" href="../../sheep2.css">
+    <script src="../../sheep2.js" charset="utf-8"></script>
+    <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
+    <style>
+      .palette1 { --colour1: #000000; --colour2: #FFFFFF; --colour3: #FF5E5E; }
+      .palette2 { --colour1: #163100; --colour2: #BDFF2E; --colour3: #3B9C01; }
+      .palette3 { --colour1: #0D0067; --colour2: #FF5E5E; --colour3: #FFFFFF; }
+      .palette4 { --colour1: #5B0284; --colour2: #FF82FF; --colour3: #B1055B; }
+      .palette5 { --colour1: #A2771B; --colour2: #FFF34B; --colour3: #FFBC28; }
+      .palette6 { --colour1: #8ACBFF; --colour2: #AFFF95; --colour3: #FF82FF; }
+      .palette7 { --colour1: #B1055B; --colour2: #FF82FF; --colour3: #FF5E5E; }
+      .palette8 { --colour1: #0D0067; --colour2: #BDFF2E; --colour3: #FFBC28; }
+      .palette9 { --colour1: #5B0284; --colour2: #BDFF2E; --colour3: #FFFFFF; }
+
+      html, body {
+        width: 100%;
+        height: 100%;
+      }
+      body {
+        margin: 0;
+        display: flex;
+        background-color: var(--colour3);
+        color: var(--colour1);
+        justify-content: center;
+        align-items: center;
+        font-family: 'Montserrat', sans-serif;
+      }
+      #desc {
+        position: fixed;
+        top: 0;
+        left: 0;
+        margin: 20px;
+      }
+      #board {
+        font-size: 0;
+        position: relative;
+        overflow: hidden;
+      }
+      .cell {
+        display: inline-block;
+        background-color: var(--colour2);
+        width: 30px;
+        height: 30px;
+        transition: transform 1s, border-radius .5s, background-color 1s;
+      }
+      .playing .cell {
+        transform: scale(0.9);
+        border-radius: 5px;
+        transition: transform 1s, border-radius .5s, background-color .2s;
+      }
+      .playing .cell.dead {
+        background-color: var(--colour1);
+      }
+      .entity {
+        position: absolute;
+        left: 0;
+        top: 0;
+        border-radius: 50%;
+        width: 15px;
+        height: 15px;
+        background-color: var(--colour3);
+        margin: -7.5px;
+        z-index: 1;
+      }
+      .entity.player {
+        background-color: var(--colour1);
+      }
+      .entity.bullet {
+        width: 5px;
+        height: 5px;
+        margin: -2.5px;
+      }
+      #ui {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-between;
+        transition: transform .5s, opacity .5s;
+        z-index: 10;
+      }
+      a {
+        color: var(--colour2);
+      }
+      h1 {
+        font-weight: normal;
+        font-size: 30px;
+        text-align: center;
+        margin: 0;
+      }
+      .display-score {
+        font-size: 60px;
+      }
+      button {
+        font-size: 16px;
+        border: none;
+        background: none;
+        background-color: var(--colour1);
+        color: var(--colour2);
+        padding: 10px;
+        border-radius: 5px;
+      }
+      #palette-selector {
+        max-width: 150px;
+      }
+      .select-palette {
+        background-color: var(--colour1);
+        box-shadow: 5px -5px 0 var(--colour2), 10px -10px 0 var(--colour3);
+        margin: 10px;
+        padding: 15px;
+      }
+      .placeholder {
+        display: block;
+        height: 50px;
+      }
+      .playing #ui {
+        pointer-events: none;
+        transform: scale(1.5);
+        opacity: 0;
+      }
+    </style>
+  </head>
+  <body class="palette1">
+    <p id="desc">Effectively a copy of <a href="https://scratch.mit.edu/projects/184190723/">Swatch</a> by <a href="https://scratch.mit.edu/users/joshrawesome/">joshrawesome</a> on Scratch. / (not touch friendly) WASD/arrow keys to move, click to shoot, don't touch the dark tiles.</p>
+    <div id="board">
+      <div id="ui">
+        <span class="placeholder"></span>
+        <h1 id="score">Explodey othello</h1>
+        <button id="play">play</button>
+        <div id="palette-selector"></div>
+        <span class="placeholder"></span>
+      </div>
+    </div>
+    <script>
+const BOARD_SIZE = 16;
+const TILE_SIZE = 30;
+const BOARD_SIZE_PX = TILE_SIZE * BOARD_SIZE;
+const ENEMY_SPEED = 0.5;
+const BULLET_SPEED = 2.5;
+const ENEMY_RATE = 30;
+const PLAYER_SPEED = 1.5;
+const EXPLOSION_RADIUS = 40;
+const PALETTES = 9;
+
+function createFragment(elems) {
+  const fragment = document.createDocumentFragment();
+  elems.forEach(elem => elem instanceof Element ? fragment.appendChild(elem) : typeof elem === 'string' && document.createTextNode(elem));
+  return fragment;
+}
+const wrapper = document.getElementById('board');
+const rows = [];
+const board = new Array(BOARD_SIZE).fill().map(() => {
+  const row = document.createElement('div');
+  row.classList.add('row');
+  const cells = new Array(BOARD_SIZE).fill().map(() => {
+    const cell = document.createElement('div');
+    cell.classList.add('cell');
+    return cell;
+  });
+  row.appendChild(createFragment(cells));
+  rows.push(row);
+  return cells;
+});
+wrapper.appendChild(createFragment(rows));
+
+class Entity {
+
+  constructor() {
+    this.radius = 7.5;
+    this.speed = ENEMY_SPEED;
+    this.dead = false;
+  }
+
+  start() {
+    const elem = document.createElement('div');
+    elem.classList.add('entity');
+    this.elem = elem;
+    this.position();
+    wrapper.appendChild(elem);
+  }
+
+  position() {
+    this.elem.style.transform = `translate(${this.x}px, ${this.y}px)`;
+  }
+
+  move() {
+    this.x += Math.cos(this.direction) * this.speed;
+    this.y += Math.sin(this.direction) * this.speed;
+    this.position();
+  }
+
+  pointAt(entity) {
+    this.pointAtXY(entity.x, entity.y);
+  }
+
+  pointAtXY(x, y) {
+    this.direction = Math.atan2(y - this.y, x - this.x);
+  }
+
+  compDist(entity, otherDist) {
+    const dx = entity.x - this.x;
+    const dy = entity.y - this.y;
+    const dist = dx * dx + dy * dy;
+    if (otherDist === undefined) {
+      const minRadius = entity.radius + this.radius;
+      otherDist = minRadius * minRadius;
+    } else {
+      otherDist *= otherDist;
+    }
+    return dist === otherDist ? 0 : dist < otherDist ? -1 : 1;
+  }
+
+  kill() {
+    if (this.dead) return true;
+    this.dead = true;
+    wrapper.removeChild(this.elem);
+  }
+
+  getTouchingCells() {
+    const minX = Math.floor((this.x - this.radius) / TILE_SIZE);
+    const maxX = Math.ceil((this.x + this.radius) / TILE_SIZE);
+    const minY = Math.floor((this.y - this.radius) / TILE_SIZE);
+    const maxY = Math.ceil((this.y + this.radius) / TILE_SIZE);
+    const cells = [];
+    for (let row = Math.max(0, minY); row < maxY && row < BOARD_SIZE; row++) {
+      for (let cell = Math.max(0, minX); cell < maxX && cell < BOARD_SIZE; cell++) {
+        cells.push(board[row][cell]);
+      }
+    }
+    return cells;
+  }
+
+  outOfView() {
+    return this.x + this.radius < 0 || this.x - this.radius > BOARD_SIZE_PX
+      || this.y + this.radius < 0 || this.y - this.radius > BOARD_SIZE_PX;
+  }
+
+}
+const enemies = [];
+let score;
+class Enemy extends Entity {
+
+  constructor() {
+    super();
+    const side = Math.random() < 0.5 ? -this.radius : BOARD_SIZE_PX + this.radius;
+    const pos = Math.random() * (BOARD_SIZE_PX + this.radius * 2) - this.radius;
+    if (Math.random() < 0.5) this.x = side, this.y = pos;
+    else this.x = pos, this.y = side;
+    this.start();
+  }
+
+  start() {
+    super.start();
+    enemies.push(this);
+  }
+
+  move() {
+    this.pointAt(player);
+    super.move();
+    this.getTouchingCells().forEach(cell => cell.classList.add('dead'));
+  }
+
+  kill(bulletKill = false) {
+    if (super.kill()) return;
+    enemies.splice(enemies.indexOf(this), 1);
+    this.radius = EXPLOSION_RADIUS;
+    if (bulletKill) {
+      score++;
+      this.getTouchingCells().forEach(cell => cell.classList.remove('dead'));
+      Array.from(enemies).forEach(enemy => {
+        if (!enemy.dead && this.compDist(enemy) <= 0) {
+          enemy.kill(true);
+        }
+      });
+    }
+  }
+
+}
+const bullets = [];
+class Bullet extends Entity {
+
+  constructor() {
+    super();
+    this.radius = 2.5;
+    this.x = player.x;
+    this.y = player.y;
+  }
+
+  start() {
+    super.start();
+    this.elem.classList.add('bullet');
+    bullets.push(this);
+    this.dx = Math.cos(this.direction) * BULLET_SPEED;
+    this.dy = Math.sin(this.direction) * BULLET_SPEED;
+  }
+
+  move() {
+    this.x += this.dx;
+    this.y += this.dy;
+    if (this.outOfView()) {
+      this.kill();
+      return;
+    }
+    this.position();
+    Array.from(enemies).forEach(enemy => {
+      if (!enemy.dead && this.compDist(enemy) <= 0) {
+        enemy.kill(true);
+      }
+    });
+  }
+
+  kill() {
+    super.kill();
+    bullets.splice(bullets.indexOf(this), 1);
+  }
+
+}
+class Player extends Entity {
+
+  constructor() {
+    super();
+    this.x = this.y = BOARD_SIZE_PX / 2;
+    this.xv = this.yv = 0;
+    this.start();
+  }
+
+  start() {
+    super.start();
+    this.elem.classList.add('player');
+  }
+
+  move() {
+    this.xv *= 0.8;
+    this.yv *= 0.8;
+    if (keys.left) player.xv = -PLAYER_SPEED;
+    if (keys.up) player.yv = -PLAYER_SPEED;
+    if (keys.right) player.xv = PLAYER_SPEED;
+    if (keys.down) player.yv = PLAYER_SPEED;
+    this.x = Math.max(this.radius, Math.min(BOARD_SIZE_PX - this.radius, this.x + this.xv));
+    this.y = Math.max(this.radius, Math.min(BOARD_SIZE_PX - this.radius, this.y + this.yv));
+    this.position();
+    return this.getTouchingCells().find(cell => cell.classList.contains('dead'));
+  }
+
+}
+const win = {};
+function calcWindow() {
+  const rect = wrapper.getBoundingClientRect();
+  win.left = rect.left;
+  win.top = rect.top;
+}
+calcWindow();
+window.addEventListener('resize', calcWindow);
+const keys = { left: false, up: false, right: false, down: false };
+document.addEventListener('keydown', e => {
+  switch (e.keyCode) {
+    case 65: case 37: keys.left = true; break;
+    case 87: case 38: keys.up = true; break;
+    case 68: case 39: keys.right = true; break;
+    case 83: case 40: keys.down = true; break;
+  }
+});
+document.addEventListener('keyup', e => {
+  switch (e.keyCode) {
+    case 65: case 37: keys.left = false; break;
+    case 87: case 38: keys.up = false; break;
+    case 68: case 39: keys.right = false; break;
+    case 83: case 40: keys.down = false; break;
+  }
+});
+document.addEventListener('click', e => {
+  if (player) {
+    const bullet = new Bullet();
+    bullet.pointAtXY(e.clientX - win.left, e.clientY - win.top);
+    bullet.start();
+    e.preventDefault();
+  }
+});
+
+let enemyTimer = 0;
+function draw() {
+  if (player.move()) {
+    document.body.classList.remove('playing');
+    scoreDisplay.textContent = score;
+    scoreDisplay.classList.add('display-score');
+    buttons.forEach(b => b.disabled = false);
+    player.kill();
+    player = null;
+    for (let i = bullets.length; i--;) bullets[i].kill();
+    for (let i = enemies.length; i--;) enemies[i].kill();
+    return;
+  }
+  Array.from(bullets).forEach(b => b.move());
+  Array.from(enemies).forEach(e => e.move());
+  enemyTimer++;
+  if (enemyTimer >= ENEMY_RATE) {
+    enemyTimer = 0;
+    new Enemy();
+  }
+  window.requestAnimationFrame(draw);
+}
+
+const startBtn = document.getElementById('play');
+const scoreDisplay = document.getElementById('score');
+const buttons = [];
+let currentPalette = 1;
+
+document.getElementById('palette-selector').appendChild(createFragment(new Array(PALETTES).fill().map((_, i) => {
+  const btn = document.createElement('button');
+  btn.classList.add('select-palette');
+  btn.classList.add('palette' + (i + 1));
+  btn.addEventListener('click', e => {
+    document.body.classList.remove('palette' + currentPalette);
+    currentPalette = i + 1;
+    document.body.classList.add('palette' + (i + 1));
+  });
+  buttons.push(btn);
+  return btn;
+})))
+
+const selectionThingy = window.getSelection ? window.getSelection() : document.selection;
+let player;
+function start() {
+  // clear selection so user doesn't drag
+  // https://stackoverflow.com/a/3171348
+  if (selectionThingy) {
+    if (selectionThingy.removeAllRanges) {
+      selectionThingy.removeAllRanges();
+    } else if (selectionThingy.empty) {
+      selectionThingy.empty();
+    }
+  }
+  Array.from(document.getElementsByClassName('dead')).forEach(cell => cell.classList.remove('dead'));
+  document.body.classList.add('playing');
+  buttons.forEach(b => b.disabled = true);
+  player = new Player();
+  score = 0;
+  draw();
+}
+startBtn.addEventListener('click', start);
+    </script>
+  </body>
+</html>
