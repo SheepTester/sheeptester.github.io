@@ -132,7 +132,7 @@
     </style>
   </head>
   <body class="palette1">
-    <p id="desc">Effectively a copy of <a href="https://scratch.mit.edu/projects/184190723/">Swatch</a> by <a href="https://scratch.mit.edu/users/joshrawesome/">joshrawesome</a> on Scratch. / (not touch friendly) WASD/arrow keys to move, click to shoot, don't touch the dark tiles.</p>
+    <p id="desc">Effectively a copy of <a href="https://scratch.mit.edu/projects/184190723/">Swatch</a> by <a href="https://scratch.mit.edu/users/joshrawesome/">joshrawesome</a> on Scratch. / (not touch friendly) WASD/arrow keys to move, click/space to shoot, don't touch the dark tiles.</p>
     <div id="board">
       <div id="ui">
         <span class="placeholder"></span>
@@ -362,13 +362,23 @@ function calcWindow() {
 }
 calcWindow();
 window.addEventListener('resize', calcWindow);
-const keys = { left: false, up: false, right: false, down: false };
+const keys = { left: false, up: false, right: false, down: false, spaceDown: false, lastX: 0, lastY: 0 };
 document.addEventListener('keydown', e => {
   switch (e.keyCode) {
     case 65: case 37: keys.left = true; break;
     case 87: case 38: keys.up = true; break;
     case 68: case 39: keys.right = true; break;
     case 83: case 40: keys.down = true; break;
+    case 32:
+      if (!keys.spaceDown) {
+        keys.spaceDown = true;
+        if (player) {
+          const bullet = new Bullet();
+          bullet.pointAtXY(keys.lastX - win.left, keys.lastY - win.top);
+          bullet.start();
+        }
+      }
+      break;
   }
 });
 document.addEventListener('keyup', e => {
@@ -377,7 +387,14 @@ document.addEventListener('keyup', e => {
     case 87: case 38: keys.up = false; break;
     case 68: case 39: keys.right = false; break;
     case 83: case 40: keys.down = false; break;
+    case 32:
+      keys.spaceDown = false;
+      break;
   }
+});
+document.addEventListener('mousemove', e => {
+  keys.lastX = e.clientX;
+  keys.lastY = e.clientY;
 });
 document.addEventListener('click', e => {
   if (player) {
@@ -413,7 +430,7 @@ function draw() {
 
 const startBtn = document.getElementById('play');
 const scoreDisplay = document.getElementById('score');
-const buttons = [];
+const buttons = [startBtn];
 let currentPalette = 1;
 
 document.getElementById('palette-selector').appendChild(createFragment(new Array(PALETTES).fill().map((_, i) => {
@@ -432,6 +449,7 @@ document.getElementById('palette-selector').appendChild(createFragment(new Array
 const selectionThingy = window.getSelection ? window.getSelection() : document.selection;
 let player;
 function start() {
+  if (player) return;
   // clear selection so user doesn't drag
   // https://stackoverflow.com/a/3171348
   if (selectionThingy) {
