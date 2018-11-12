@@ -156,6 +156,12 @@ function loadColours() {
   c = historyCanvas.getContext("2d");
   pixelateCanvas(c);
 
+  historyCanvas.addEventListener('click', e => {
+    const rect = historyCanvas.getBoundingClientRect();
+    const colour = getPixelAt(c, e.clientX - rect.left, e.clientY - rect.top);
+    currentColour.setColour(colour.r, colour.g, colour.b, colour.a);
+  });
+
   let history = [];
   function addToHistory() {
     c.clearRect(0, 0, historyCanvas.width, historyCanvas.height);

@@ -49,7 +49,7 @@ class Fill {
     return {
       id: "fill",
       name: "fill tool",
-      iconURI: "./icon_fill.svg",
+      iconURI: "./img/icon_fill.svg",
       translations: {},
       options: []
     };

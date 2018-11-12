@@ -47,12 +47,38 @@ function loadTools() {
   selectTool = document.getElementById("select"),
   uiWrapper = document.getElementById('ui-wrapper'),
   undoBtn = document.getElementById('undo'),
-  redoBtn = document.getElementById('redo');
+  redoBtn = document.getElementById('redo'),
+  widthInput = document.getElementById('width'),
+  heightInput = document.getElementById('height'),
+  colourPicker = document.getElementById('pickcolour');
 
   let tools = [],
-  currentTool = null,
+  currentTool = -1,
+  lastTool,
   canvasWidth = 50,
   canvasHeight = 50;
+  function resizeCanvas(width, height) {
+    previewContext.drawImage(mainCanvas, 0, 0);
+    mainCanvas.width = canvasWidth = width;
+    mainCanvas.height = canvasHeight = height;
+    mainContext.drawImage(previewCanvas, 0, 0);
+    previewCanvas.width = width;
+    previewCanvas.height = height;
+  }
+  widthInput.addEventListener('change', e => {
+    let val = +widthInput.value >> 0;
+    if (isNaN(val) || val < 1) {
+      val = widthInput.value = 1;
+    }
+    resizeCanvas(val, canvasHeight);
+  });
+  heightInput.addEventListener('change', e => {
+    let val = +heightInput.value >> 0;
+    if (isNaN(val) || val < 1) {
+      val = heightInput.value = 1;
+    }
+    resizeCanvas(canvasWidth, val);
+  });
 
   const camera = { scale: 5, x: -(window.innerWidth / 5 - canvasWidth - 40) / 2, y: -(window.innerHeight / 5 - canvasHeight) / 2 };
   function positionCamera() {
@@ -87,7 +113,7 @@ function loadTools() {
     positionCamera();
   });
 
-  const pointers = { mouse: null, count: 0 }; // TODO: allow multiple fingers
+  const pointers = { mouse: null, count: 0 };
   const toolParent = {
     mainCanvas: mainCanvas, previewCanvas: previewCanvas,
     mc: mainContext, pc: previewContext,
@@ -108,6 +134,7 @@ function loadTools() {
     const cachedData = toolParent.getCanvasData();
     const changes = [];
     pixels.forEach(({x, y, colour}) => {
+      if (!toolParent.inCanvas(x, y)) return;
       changes.push(toolParent.getPixel(cachedData, x, y));
       mainContext.fillStyle = `rgb(${colour.slice(0, 3).join(',')},${colour[3] / 255})`;
       mainContext.clearRect(x, y, 1, 1);
@@ -116,6 +143,7 @@ function loadTools() {
     return changes;
   }
   function getOptions() {
+    previewContext.clearRect(0, 0, canvasWidth, canvasHeight);
     return {
       _width_: canvasWidth,
       _height_: canvasHeight,
@@ -124,11 +152,18 @@ function loadTools() {
   }
   function mouseDown(e) {
     if (uiWrapper.contains(e.target)) return;
-    if (e.which === 2) {
+    if (e.which === 2 || currentTool === -2) {
       const [x, y] = getXYFromMouse(e.clientX, e.clientY);
-      const colour = getPixelAt(mainContext, x, y);
-      currentColour.setColour(colour.r, colour.g, colour.b, colour.a);
-    } else if (currentTool !== null) {
+      if (toolParent.inCanvas(x, y)) {
+        const colour = getPixelAt(mainContext, x, y);
+        currentColour.setColour(colour.r, colour.g, colour.b, colour.a);
+      }
+      if (currentTool === -2) {
+        currentTool = lastTool;
+        if (currentTool >= 0) tools[currentTool].icon.classList.add("active");
+        else if (currentTool === -1) selectTool.classList.add("active");
+      }
+    } else if (currentTool >= 0 && e.which < 2) {
       if (e.type.includes('mouse')) {
         if (pointers.mouse !== false) {
           const [x, y] = getXYFromMouse(e.clientX, e.clientY);
@@ -191,10 +226,19 @@ function loadTools() {
       history.push(changes);
       redoHistory = [];
     }
+    previewContext.clearRect(0, 0, canvasWidth, canvasHeight);
     e.preventDefault();
   }
   document.addEventListener("mousedown", mouseDown, false);
   document.addEventListener("touchstart", mouseDown, {passive: false});
+  document.addEventListener('mousemove', e => {
+    if (pointers.mouse === null) {
+      const [x, y] = getXYFromMouse(e.clientX, e.clientY);
+      previewContext.clearRect(0, 0, canvasWidth, canvasHeight);
+      previewContext.fillStyle = currentColour.str;
+      previewContext.fillRect(x, y, 1, 1);
+    }
+  });
 
   let history = [];
   let redoHistory = [];
@@ -208,11 +252,17 @@ function loadTools() {
   });
 
   selectTool.addEventListener("click", e => {
-    if (currentTool !== null) tools[currentTool].icon.classList.remove("active");
-    currentTool = null;
+    if (currentTool >= 0) tools[currentTool].icon.classList.remove("active");
+    currentTool = -1;
     selectTool.classList.add("active");
   }, false);
   selectTool.classList.add("active");
+  colourPicker.addEventListener('click', e => {
+    if (currentTool >= 0) tools[currentTool].icon.classList.remove("active");
+    else if (currentTool === -1) selectTool.classList.remove("active");
+    lastTool = currentTool;
+    currentTool = -2;
+  });
 
   function registerTool(tool) {
     const toolData = tool.getInfo();
@@ -221,17 +271,55 @@ function loadTools() {
     icon.style.backgroundImage = `url("${toolData.iconURI}")`;
     icon.classList.add("icon");
     icon.setAttribute("tabindex", "0");
-    icon.addEventListener("click", e => {
-      if (currentTool !== null) tools[currentTool].icon.classList.remove("active");
-      else selectTool.classList.remove("active");
+    tool.trigger = () => {
+      if (currentTool >= 0) tools[currentTool].icon.classList.remove("active");
+      else if (currentTool === -1) selectTool.classList.remove("active");
       currentTool = id;
       icon.classList.add("active");
-    }, false);
+    };
+    icon.addEventListener("click", tool.trigger, false);
     elementInsertMark.parentNode.insertBefore(icon, elementInsertMark);
     tool.icon = icon;
     tools.push(tool);
   }
 
   registerTool(PixelPen);
+  registerTool(Line);
   registerTool(Fill);
+
+  document.addEventListener('keydown', e => {
+    let success = false;
+    if (e.keyCode >= 50 && e.keyCode <= 57) { // alt+2 to alt+9
+      if (e.altKey && tools[e.keyCode - 50]) {
+        tools[e.keyCode - 50].trigger();
+        success = true;
+      }
+    } else switch (e.keyCode) {
+      case 49: // alt+1
+        if (e.altKey) {
+          selectTool.click();
+          success = true;
+        }
+        break;
+      case 67: // alt+C
+        if (e.altKey) {
+          colourPicker.click();
+          success = true;
+        }
+        break;
+      case 90: // ctrl+Z
+        if (e.ctrlKey || e.metaKey) {
+          if (e.shiftKey) redoBtn.click();
+          else undoBtn.click();
+          success = true;
+        }
+        break;
+      case 90: // ctrl+Y
+        if (e.ctrlKey || e.metaKey) {
+          redoBtn.click();
+          success = true;
+        }
+        break;
+    }
+  });
 }

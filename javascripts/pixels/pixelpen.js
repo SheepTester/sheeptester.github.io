@@ -42,7 +42,7 @@ class PixelPen {
     return {
       id: "pixelpen",
       name: "pixel pen",
-      iconURI: "./icon_pixelpen.svg",
+      iconURI: "./img/icon_pixelpen.svg",
       translations: {},
       options: [
         {

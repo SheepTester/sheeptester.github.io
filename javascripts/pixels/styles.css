@@ -88,13 +88,13 @@ canvas {
   left: 0;
 }
 #select {
-  background-image: url("icon_cursor.svg");
+  background-image: url("img/icon_cursor.svg");
 }
 #undo {
-  background-image: url("icon_undo.svg");
+  background-image: url("img/icon_undo.svg");
 }
 #redo {
-  background-image: url("icon_redo.svg");
+  background-image: url("img/icon_redo.svg");
 }
 
 .tabs {
@@ -228,10 +228,12 @@ canvas {
   height: 14px;
   color: inherit;
   padding: 5px;
+  cursor: pointer;
 }
 .input-wrapper input:focus {
   outline: none;
   background-color: #4c3b63;
+  cursor: auto;
 }
 .hex::before {
   content: "#";
@@ -277,7 +279,7 @@ canvas {
 #pickcolour {
   opacity: 0.6;
   background: none;
-  background-image: url("material_colorize.svg");
+  background-image: url("img/material_colorize.svg");
   height: 24px;
   width: 24px;
   border: none;
@@ -288,6 +290,36 @@ canvas {
 #pickcolour:focus {
   outline: none;
   opacity: 0.8;
+}
+input[type=checkbox] {
+  display: inline-block;
+  -webkit-appearance: none;
+  height: 14px;
+  width: 14px;
+  border-radius: 2px;
+  background-color: #2F1D42;
+  vertical-align: top;
+  border: 1px solid transparent;
+  box-sizing: border-box;
+  cursor: pointer;
+}
+input[type=checkbox]:checked {
+  background-image: url('img/icon_checked.svg');
+  background-repeat: no-repeat;
+  background-size: 12px;
+  background-position: center;
+  border-color: #E3006E;
+}
+input[type=checkbox]:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px #4c3b63;
+}
+.checkbox-wrapper input[type=checkbox] {
+  margin: 10px;
+}
+.checkbox-wrapper .label {
+  padding: 0;
+  line-height: 0.9;
 }
 
 #canvases {
