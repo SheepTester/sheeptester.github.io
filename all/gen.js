@@ -79,7 +79,7 @@ const folderSymbol = Symbol('folder');
           break;
       }
       type = type ? ` class="${type}"` : '';
-      html += `<a href="${tempPath.join('/') + line}"${type}>${line}</a>`;
+      html += `<a href="${tempPath.join('/') + '/' + line}"${type}>${line}</a>`;
     }
   });
   console.log('Writing to index');
