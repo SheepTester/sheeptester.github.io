@@ -7,8 +7,9 @@ function generatePixelLine(x1, y1, x2, y2) {
   const pixels = [],
   deltaX = x2 - x1,
   deltaY = y2 - y1,
-  signX = deltaX < 0 ? -1 : 1,
-  signY = deltaY < 0 ? -1 : 1;
+  signX = Math.sign(deltaX),
+  signY = Math.sign(deltaY);
+  if (deltaX === 0 && deltaY === 0) return [[x1, y1]];
   let error = 0;
   if (Math.abs(deltaY) > Math.abs(deltaX)) {
     let deltaErr = Math.abs(deltaX / deltaY),
@@ -36,91 +37,6 @@ function generatePixelLine(x1, y1, x2, y2) {
   return pixels;
 }
 
-class PixelPen {
-  constructor() {
-    // meta stuff
-    this.id = "pixelpen";
-    this.name = "pixel pen";
-    this.iconURI = "./icon_pixelpen.svg";
-    this.translations = {};
-    this.options = [
-      {
-        type: settingTypes.TOGGLE,
-        text: "Overwrite pixels?",
-        id: "overwrite"
-      }
-    ];
-
-    // actually cool stuff
-    // (there are none D:)
-  }
-  drawBegin(x, y, mainContext, previewContext, options) {
-    previewContext.fillStyle = mainContext.fillStyle = options._colour_.str;
-    this.alreadyDrawn = [];
-    this.lastX = x;
-    this.lastY = y;
-  }
-  plot(x, y, c, overwrite) {
-    if (!this.alreadyDrawn.includes(x + "," + y)) {
-      if (overwrite) c.clearRect(x, y, 1, 1);
-      c.fillRect(x, y, 1, 1);
-      this.alreadyDrawn.push(x + "," + y);
-    }
-  }
-  penMove(mouseX, mouseY, mainContext, previewContext, options) {
-    const context = options.overwrite ? mainContext : previewContext;
-    generatePixelLine(this.lastX, this.lastY, mouseX, mouseY).forEach(([x, y]) => {
-      this.plot(x, y, context, options.overwrite);
-    });
-    this.lastX = mouseX;
-    this.lastY = mouseY;
-  }
-  drawEnd(mainContext, previewContext, options) {
-    if (!options.overwrite) {
-      mainContext.drawImage(previewContext.canvas, 0, 0);
-      previewContext.clearRect(0, 0, options._width_, options._height_);
-    }
-  }
-}
-class Fill {
-  constructor() {
-    // meta stuff
-    this.id = "fill";
-    this.name = "fill tool";
-    this.iconURI = "./icon_fill.svg";
-    this.translations = {};
-    this.options = [];
-  }
-  drawBegin(x, y, c, previewContext, options) {
-    c.fillStyle = options._colour_.str;
-    this.alreadyDrawn = [];
-    this.canvasWidth = options._width_;
-    this.canvasHeight = options._height_;
-    this.targetColour = getPixelAt(c, x, y);
-    this.c = c;
-    this.check(x, y);
-  }
-  sameColours(colour1, colour2) {
-    return colour1.r === colour2.r
-        && colour1.g === colour2.g
-        && colour1.b === colour2.b
-        && colour1.a === colour2.a;
-  }
-  check(x, y) {
-    if (this.alreadyDrawn.includes(x + "," + y)) return;
-    this.plot(x, y);
-    if (x > 0 && this.sameColours(this.targetColour, getPixelAt(this.c, x - 1, y))) this.check(x - 1, y);
-    if (y > 0 && this.sameColours(this.targetColour, getPixelAt(this.c, x, y - 1))) this.check(x, y - 1);
-    if (x < this.canvasWidth - 1 && this.sameColours(this.targetColour, getPixelAt(this.c, x + 1, y))) this.check(x + 1, y);
-    if (y < this.canvasHeight - 1 && this.sameColours(this.targetColour, getPixelAt(this.c, x, y + 1))) this.check(x, y + 1);
-  }
-  plot(x, y) {
-    this.c.clearRect(x, y, 1, 1);
-    this.c.fillRect(x, y, 1, 1);
-    this.alreadyDrawn.push(x + "," + y);
-  }
-}
-
 function loadTools() {
   const canvasWrapper = document.getElementById('canvases'),
   mainCanvas = document.getElementById("output"),
@@ -129,26 +45,25 @@ function loadTools() {
   previewContext = previewCanvas.getContext("2d"),
   elementInsertMark = document.getElementById("aftertools"),
   selectTool = document.getElementById("select"),
-  uiWrapper = document.getElementById('ui-wrapper');
+  uiWrapper = document.getElementById('ui-wrapper'),
+  undoBtn = document.getElementById('undo'),
+  redoBtn = document.getElementById('redo');
 
   let tools = [],
   currentTool = null,
   canvasWidth = 50,
   canvasHeight = 50;
 
-  const camera = { scale: 5, x: -20, y: -20 };
+  const camera = { scale: 5, x: -(window.innerWidth / 5 - canvasWidth - 40) / 2, y: -(window.innerHeight / 5 - canvasHeight) / 2 };
   function positionCamera() {
     canvasWrapper.style.transform = `scale(${camera.scale}) translate(${-camera.x}px, ${-camera.y}px)`;
   }
   positionCamera();
-  function getXYFromMouse(event) {
-    const mouseX = event.type.includes("touch") ? event.touches[0].clientX : event.clientX;
-    const mouseY = event.type.includes("touch") ? event.touches[0].clientY : event.clientY;
-    const position = [
+  function getXYFromMouse(mouseX, mouseY) {
+    return [
       Math.floor(mouseX / camera.scale + camera.x),
       Math.floor(mouseY / camera.scale + camera.y)
     ];
-    return position;
   }
   document.addEventListener('wheel', e => {
     if (uiWrapper.contains(e.target)) return;
@@ -172,52 +87,125 @@ function loadTools() {
     positionCamera();
   });
 
-  const pointers = []; // TODO: allow multiple fingers
+  const pointers = { mouse: null, count: 0 }; // TODO: allow multiple fingers
+  const toolParent = {
+    mainCanvas: mainCanvas, previewCanvas: previewCanvas,
+    mc: mainContext, pc: previewContext,
+    inCanvas(x, y) {
+      return x >= 0 && x < canvasWidth && y >= 0 && y < canvasHeight;
+    },
+    getCanvasData() {
+      return mainContext.getImageData(0, 0, canvasWidth, canvasHeight).data;
+    },
+    getPixel(canvasData, x, y) {
+      return {
+        x: x, y: y,
+        colour: canvasData.slice((y * canvasWidth + x) * 4, (y * canvasWidth + x) * 4 + 4)
+      }
+    }
+  };
+  function replacePixels(pixels) {
+    const cachedData = toolParent.getCanvasData();
+    const changes = [];
+    pixels.forEach(({x, y, colour}) => {
+      changes.push(toolParent.getPixel(cachedData, x, y));
+      mainContext.fillStyle = `rgb(${colour.slice(0, 3).join(',')},${colour[3] / 255})`;
+      mainContext.clearRect(x, y, 1, 1);
+      mainContext.fillRect(x, y, 1, 1);
+    });
+    return changes;
+  }
+  function getOptions() {
+    return {
+      _width_: canvasWidth,
+      _height_: canvasHeight,
+      _colour_: currentColour
+    };
+  }
   function mouseDown(e) {
     if (uiWrapper.contains(e.target)) return;
-    let [x, y] = getXYFromMouse(e);
     if (e.which === 2) {
-      let colour = getPixelAt(mainContext, x, y);
+      const [x, y] = getXYFromMouse(e.clientX, e.clientY);
+      const colour = getPixelAt(mainContext, x, y);
       currentColour.setColour(colour.r, colour.g, colour.b, colour.a);
     } else if (currentTool !== null) {
-      let params = [x, y, mainContext, previewContext, {
-        _width_: canvasWidth,
-        _height_: canvasHeight,
-        _colour_: currentColour
-      }];
-      if (tools[currentTool].drawBegin) tools[currentTool].drawBegin(...params);
-      if (tools[currentTool].penMove) tools[currentTool].penMove(...params);
-      drawing = true;
-      document.addEventListener("mousemove", mouseMove, false);
-      document.addEventListener("mouseup", mouseUp, false);
-      document.addEventListener("touchmove", mouseMove, {passive: false});
-      document.addEventListener("touchend", mouseUp, {passive: false});
+      if (e.type.includes('mouse')) {
+        if (pointers.mouse !== false) {
+          const [x, y] = getXYFromMouse(e.clientX, e.clientY);
+          const tool = new tools[currentTool](toolParent, getOptions(), x, y);
+          pointers.mouse = tool;
+          document.addEventListener("mousemove", mouseMove, false);
+          document.addEventListener("mouseup", mouseUp, false);
+          if (tool.move) tool.move(x, y);
+        }
+      } else {
+        pointers.mouse = false;
+        if (pointers.count === 0) {
+          document.addEventListener("touchmove", mouseMove, {passive: false});
+          document.addEventListener("touchend", mouseUp, {passive: false});
+        }
+        Array.from(e.changedTouches).forEach(touch => {
+          const [x, y] = getXYFromMouse(touch.clientX, touch.clientY);
+          const tool = new tools[currentTool](toolParent, getOptions(), x, y);
+          pointers[touch.identifier] = tool;
+          pointers.count++;
+          if (tool.move) tool.move(x, y);
+        });
+      }
     }
     e.preventDefault();
   }
   function mouseMove(e) {
-    if (tools[currentTool].penMove) tools[currentTool].penMove(...getXYFromMouse(e), mainContext, previewContext, {
-      _width_: canvasWidth,
-      _height_: canvasHeight,
-      _colour_: currentColour
-    });
+    if (pointers.mouse) {
+      if (pointers.mouse.move) pointers.mouse.move(...getXYFromMouse(e.clientX, e.clientY));
+    } else {
+      Array.from(e.changedTouches).forEach(touch => {
+        if (pointers[touch.identifier] && pointers[touch.identifier].move) pointers[touch.identifier].move(...getXYFromMouse(touch.clientX, touch.clientY));
+      });
+    }
     e.preventDefault();
   }
   function mouseUp(e) {
-    if (tools[currentTool].drawEnd) tools[currentTool].drawEnd(mainContext, previewContext, {
-      _width_: canvasWidth,
-      _height_: canvasHeight,
-      _colour_: currentColour,
-      _rgb_: currentColour
-    });
-    document.removeEventListener("mousemove", mouseMove, false);
-    document.removeEventListener("mouseup", mouseUp, false);
-    document.removeEventListener("touchmove", mouseMove, {passive: false});
-    document.removeEventListener("touchend", mouseUp, {passive: false});
+    let changes;
+    if (pointers.mouse) {
+      changes = pointers.mouse.end();
+      pointers.mouse = null;
+      document.removeEventListener("mousemove", mouseMove, false);
+      document.removeEventListener("mouseup", mouseUp, false);
+    } else {
+      changes = [];
+      Array.from(e.changedTouches).forEach(touch => {
+        if (pointers[touch.identifier]) {
+          changes.push(...pointers[touch.identifier].end());
+          delete pointers[touch.identifier];
+          pointers.count--;
+        }
+      });
+      if (pointers.count === 0) {
+        document.removeEventListener("touchmove", mouseMove, {passive: false});
+        document.removeEventListener("touchend", mouseUp, {passive: false});
+        pointers.mouse = null;
+      }
+    }
+    if (changes.length) {
+      history.push(changes);
+      redoHistory = [];
+    }
     e.preventDefault();
   }
   document.addEventListener("mousedown", mouseDown, false);
   document.addEventListener("touchstart", mouseDown, {passive: false});
+
+  let history = [];
+  let redoHistory = [];
+  undoBtn.addEventListener('click', e => {
+    if (history.length)
+      redoHistory.push(replacePixels(history.pop()));
+  });
+  redoBtn.addEventListener('click', e => {
+    if (redoHistory.length)
+      history.push(replacePixels(redoHistory.pop()));
+  });
 
   selectTool.addEventListener("click", e => {
     if (currentTool !== null) tools[currentTool].icon.classList.remove("active");
@@ -227,21 +215,23 @@ function loadTools() {
   selectTool.classList.add("active");
 
   function registerTool(tool) {
-    let id = tools.length;
-    tool.icon = document.createElement("li");
-    tool.icon.style.backgroundImage = `url("${tool.iconURI}")`;
-    tool.icon.classList.add("icon");
-    tool.icon.setAttribute("tabindex", "0");
-    tool.icon.addEventListener("click", e => {
+    const toolData = tool.getInfo();
+    const id = tools.length;
+    const icon = document.createElement("li");
+    icon.style.backgroundImage = `url("${toolData.iconURI}")`;
+    icon.classList.add("icon");
+    icon.setAttribute("tabindex", "0");
+    icon.addEventListener("click", e => {
       if (currentTool !== null) tools[currentTool].icon.classList.remove("active");
       else selectTool.classList.remove("active");
       currentTool = id;
-      tool.icon.classList.add("active");
+      icon.classList.add("active");
     }, false);
-    elementInsertMark.parentNode.insertBefore(tool.icon, elementInsertMark);
+    elementInsertMark.parentNode.insertBefore(icon, elementInsertMark);
+    tool.icon = icon;
     tools.push(tool);
   }
 
-  registerTool(new PixelPen());
-  registerTool(new Fill());
+  registerTool(PixelPen);
+  registerTool(Fill);
 }

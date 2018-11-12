@@ -2,12 +2,13 @@ const RGBtoHSV = (rgb,r,g,b,a,h,s,d)=>([r,g,b]=rgb.map(a=>a/255),a=Math.max(r,g,
 SVtoSL = (s,v,l)=>(s/=100,v/=100,l=(2-s)*v/2,[l&&l<1?s*v/(l<0.5?l*2:2-l*2)*100:0,l*100].map(Math.round));
 
 function isSlider(elem, moveFn, doneFn) {
+  let touchIdentifier = null;
   let move = e => {
     let boundingRect = elem.getBoundingClientRect();
     if (e.type === "mousemove") {
       moveFn(e.clientX - boundingRect.left, e.clientY - boundingRect.top, boundingRect);
     } else if (e.type === "touchmove") {
-      moveFn(e.touches[0].clientX - boundingRect.left, e.touches[0].clientY - boundingRect.top, boundingRect);
+      moveFn(e.touches[touchIdentifier].clientX - boundingRect.left, e.touches[touchIdentifier].clientY - boundingRect.top, boundingRect);
     }
     e.preventDefault();
   }, up = e => {
@@ -17,6 +18,7 @@ function isSlider(elem, moveFn, doneFn) {
       document.removeEventListener("mousemove", move, false);
       document.removeEventListener("mouseup", up, false);
     } else if (e.type === "touchend") {
+      touchIdentifier = null;
       document.removeEventListener("touchmove", move, {passive: false});
       document.removeEventListener("touchend", up, {passive: false});
     }
@@ -30,8 +32,10 @@ function isSlider(elem, moveFn, doneFn) {
     document.addEventListener("mouseup", up, false);
   }, false);
   elem.addEventListener("touchstart", e => {
+    if (touchIdentifier !== null) return;
+    touchIdentifier = e.changedTouches[0].identifier;
     let boundingRect = elem.getBoundingClientRect();
-    moveFn(e.touches[0].clientX - boundingRect.left, e.touches[0].clientY - boundingRect.top, boundingRect);
+    moveFn(e.touches[touchIdentifier].clientX - boundingRect.left, e.touches[touchIdentifier].clientY - boundingRect.top, boundingRect);
     document.addEventListener("touchmove", move, {passive: false});
     document.addEventListener("touchend", up, {passive: false});
   }, false);
