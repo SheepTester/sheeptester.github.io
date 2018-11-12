@@ -48,7 +48,8 @@ class PixelPen {
         {
           type: settingTypes.TOGGLE,
           text: "Overwrite pixels?",
-          id: "overwrite"
+          id: "overwrite",
+          defaultVal: false
         }
       ]
     };

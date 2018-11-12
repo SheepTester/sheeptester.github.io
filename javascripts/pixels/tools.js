@@ -50,7 +50,8 @@ function loadTools() {
   redoBtn = document.getElementById('redo'),
   widthInput = document.getElementById('width'),
   heightInput = document.getElementById('height'),
-  colourPicker = document.getElementById('pickcolour');
+  colourPicker = document.getElementById('pickcolour'),
+  toolOptions = document.getElementById('tool-section');
 
   let tools = [],
   currentTool = -1,
@@ -144,11 +145,14 @@ function loadTools() {
   }
   function getOptions() {
     previewContext.clearRect(0, 0, canvasWidth, canvasHeight);
-    return {
+    let options = {
       _width_: canvasWidth,
       _height_: canvasHeight,
       _colour_: currentColour
     };
+    if (tools[currentTool].getOptions)
+      options = Object.assign(options, tools[currentTool].getOptions());
+    return options;
   }
   function mouseDown(e) {
     if (uiWrapper.contains(e.target)) return;
@@ -280,6 +284,35 @@ function loadTools() {
     icon.addEventListener("click", tool.trigger, false);
     elementInsertMark.parentNode.insertBefore(icon, elementInsertMark);
     tool.icon = icon;
+    if (toolData.options.length) {
+      const options = {};
+      const optionWrapper = document.createElement('div');
+      const h3 = document.createElement('h3');
+      h3.textContent = toolData.name;
+      toolOptions.appendChild(h3);
+      toolData.options.forEach(setting => {
+        const wrapper = document.createElement('div');
+        const label = document.createElement('span');
+        label.classList.add('label');
+        label.textContent = setting.text;
+        switch (setting.type) {
+          case settingTypes.TOGGLE:
+            wrapper.classList.add('checkbox-wrapper');
+            wrapper.appendChild(options[setting.id] = document.createElement('input'));
+            options[setting.id].type = 'checkbox';
+            options[setting.id].checked = setting.defaultVal;
+            wrapper.appendChild(label);
+            break;
+        }
+        toolOptions.appendChild(wrapper);
+      });
+      toolOptions.appendChild(optionWrapper);
+      tool.getOptions = () => {
+        const obj = {};
+        toolData.options.forEach(({id, type}) => obj[id] = type === settingTypes.TOGGLE ? options[id].checked : options[id].value);
+        return obj;
+      };
+    }
     tools.push(tool);
   }
 
