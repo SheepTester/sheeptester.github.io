@@ -86,7 +86,7 @@ function draw() {
   camera.z += camera.zv;
   camera.rot += camera.rotVel;
 
-  window.location.hash = Object.values(camera).slice(0, 3).map(n => Math.round(n * 100)).join(',');
+  window.location.replace('#' + Object.values(camera).slice(0, 3).map(n => Math.round(n * 100)).join(','));
 
   window.requestAnimationFrame(draw);
 }
