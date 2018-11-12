@@ -1,2 +1,5 @@
 # Dependency directories
 node_modules/
+
+# other stuff
+all/more-everything.json
