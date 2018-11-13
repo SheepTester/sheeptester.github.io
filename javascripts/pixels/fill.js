@@ -13,7 +13,7 @@ class Fill {
       this.canvasHeight = options._height_;
       this.c = c;
       this.canvasData = parent.getCanvasData();
-      this.targetColour = parent.getPixel(this.canvasData, x, y);
+      this.targetColour = parent.getPixel(this.canvasData, x, y).colour;
       const requests = [[x, y]];
       while (requests.length) {
         const [x, y] = requests.shift();
@@ -28,7 +28,7 @@ class Fill {
   }
 
   sameColour(x, y) {
-    const colour = this.parent.getPixel(this.canvasData, x, y);
+    const colour = this.parent.getPixel(this.canvasData, x, y).colour;
     return this.targetColour[0] === colour[0]
         && this.targetColour[1] === colour[1]
         && this.targetColour[2] === colour[2]

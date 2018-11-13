@@ -87,9 +87,6 @@ canvas {
   top: 426px;
   left: 0;
 }
-#select {
-  background-image: url("img/icon_cursor.svg");
-}
 #undo {
   background-image: url("img/icon_undo.svg");
 }

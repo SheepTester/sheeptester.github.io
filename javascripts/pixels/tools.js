@@ -44,7 +44,6 @@ function loadTools() {
   previewCanvas = document.getElementById("preview"),
   previewContext = previewCanvas.getContext("2d"),
   elementInsertMark = document.getElementById("aftertools"),
-  selectTool = document.getElementById("select"),
   uiWrapper = document.getElementById('ui-wrapper'),
   undoBtn = document.getElementById('undo'),
   redoBtn = document.getElementById('redo'),
@@ -54,10 +53,11 @@ function loadTools() {
   toolOptions = document.getElementById('tool-section');
 
   let tools = [],
-  currentTool = -1,
+  currentTool = 0,
   lastTool,
   canvasWidth = 50,
-  canvasHeight = 50;
+  canvasHeight = 50,
+  selected = { data: null, x: 0, y: 0 };
   function resizeCanvas(width, height) {
     previewContext.drawImage(mainCanvas, 0, 0);
     mainCanvas.width = canvasWidth = width;
@@ -86,8 +86,11 @@ function loadTools() {
     canvasWrapper.style.transform = `scale(${camera.scale}) translate(${-camera.x}px, ${-camera.y}px)`;
   }
   positionCamera();
-  function getXYFromMouse(mouseX, mouseY) {
-    return [
+  function getXYFromMouse(mouseX, mouseY, dontRound = false) {
+    return dontRound ? [
+      mouseX / camera.scale + camera.x,
+      mouseY / camera.scale + camera.y
+    ] : [
       Math.floor(mouseX / camera.scale + camera.x),
       Math.floor(mouseY / camera.scale + camera.y)
     ];
@@ -128,7 +131,7 @@ function loadTools() {
       return {
         x: x, y: y,
         colour: canvasData.slice((y * canvasWidth + x) * 4, (y * canvasWidth + x) * 4 + 4)
-      }
+      };
     }
   };
   function replacePixels(pixels) {
@@ -165,7 +168,6 @@ function loadTools() {
       if (currentTool === -2) {
         currentTool = lastTool;
         if (currentTool >= 0) tools[currentTool].icon.classList.add("active");
-        else if (currentTool === -1) selectTool.classList.add("active");
       }
     } else if (currentTool >= 0 && e.which < 2) {
       if (e.type.includes('mouse')) {
@@ -208,6 +210,10 @@ function loadTools() {
     let changes;
     if (pointers.mouse) {
       changes = pointers.mouse.end();
+      if (changes.select) {
+        tools[currentTool].icon.classList.remove("active");
+        currentTool = -1;
+      }
       pointers.mouse = null;
       document.removeEventListener("mousemove", mouseMove, false);
       document.removeEventListener("mouseup", mouseUp, false);
@@ -215,7 +221,13 @@ function loadTools() {
       changes = [];
       Array.from(e.changedTouches).forEach(touch => {
         if (pointers[touch.identifier]) {
-          changes.push(...pointers[touch.identifier].end());
+          const change = pointers[touch.identifier].end();
+          if (change.select) {
+            tools[currentTool].icon.classList.remove("active");
+            currentTool = -1;
+            changes = change;
+          }
+          else changes.push(...change);
           delete pointers[touch.identifier];
           pointers.count--;
         }
@@ -226,7 +238,13 @@ function loadTools() {
         pointers.mouse = null;
       }
     }
-    if (changes.length) {
+    if (currentTool === -1) {
+      selected.data = changes.data;
+      selected.x = changes.x;
+      selected.y = changes.y;
+      selected.width = changes.width;
+      selected.height = changes.height;
+    } else if (changes && changes.length) {
       history.push(changes);
       redoHistory = [];
     }
@@ -237,7 +255,7 @@ function loadTools() {
   document.addEventListener("touchstart", mouseDown, {passive: false});
   const mouse = {x: 0, y: 0};
   document.addEventListener('mousemove', e => {
-    if (pointers.mouse === null) {
+    if (pointers.mouse === null && currentTool !== -1) {
       previewContext.clearRect(mouse.x, mouse.y, 1, 1);
       [mouse.x, mouse.y] = getXYFromMouse(e.clientX, e.clientY);
       previewContext.fillStyle = currentColour.str;
@@ -256,15 +274,8 @@ function loadTools() {
       history.push(replacePixels(redoHistory.pop()));
   });
 
-  selectTool.addEventListener("click", e => {
-    if (currentTool >= 0) tools[currentTool].icon.classList.remove("active");
-    currentTool = -1;
-    selectTool.classList.add("active");
-  }, false);
-  selectTool.classList.add("active");
   colourPicker.addEventListener('click', e => {
     if (currentTool >= 0) tools[currentTool].icon.classList.remove("active");
-    else if (currentTool === -1) selectTool.classList.remove("active");
     lastTool = currentTool;
     currentTool = -2;
   });
@@ -278,7 +289,6 @@ function loadTools() {
     icon.setAttribute("tabindex", "0");
     tool.trigger = () => {
       if (currentTool >= 0) tools[currentTool].icon.classList.remove("active");
-      else if (currentTool === -1) selectTool.classList.remove("active");
       currentTool = id;
       icon.classList.add("active");
     };
@@ -317,43 +327,45 @@ function loadTools() {
     tools.push(tool);
   }
 
+  registerTool(SelectTool);
   registerTool(PixelPen);
   registerTool(Line);
   registerTool(Fill);
 
+  tools[0].icon.classList.add('active');
+
   document.addEventListener('keydown', e => {
     let success = false;
-    if (e.keyCode >= 50 && e.keyCode <= 57) { // alt+2 to alt+9
-      if (e.altKey && tools[e.keyCode - 50]) {
-        tools[e.keyCode - 50].trigger();
+    if (e.keyCode >= 49 && e.keyCode <= 57) { // alt+1 to alt+9
+      if (e.altKey && tools[e.keyCode - 49]) {
+        tools[e.keyCode - 49].trigger();
         success = true;
       }
-    } else switch (e.keyCode) {
-      case 49: // alt+1
-        if (e.altKey) {
-          selectTool.click();
-          success = true;
-        }
-        break;
-      case 67: // alt+C
-        if (e.altKey) {
-          colourPicker.click();
-          success = true;
-        }
-        break;
-      case 90: // ctrl+Z
-        if (e.ctrlKey || e.metaKey) {
-          if (e.shiftKey) redoBtn.click();
-          else undoBtn.click();
-          success = true;
-        }
-        break;
-      case 90: // ctrl+Y
-        if (e.ctrlKey || e.metaKey) {
-          redoBtn.click();
-          success = true;
-        }
-        break;
+    } else {
+      success = true;
+      switch (e.keyCode) {
+        case 67: // alt+C
+          if (e.altKey) {
+            colourPicker.click();
+          }
+          break;
+        case 90: // ctrl+Z
+          if (e.ctrlKey || e.metaKey) {
+            if (e.shiftKey) redoBtn.click();
+            else undoBtn.click();
+            success = true;
+          }
+          break;
+        case 90: // ctrl+Y
+          if (e.ctrlKey || e.metaKey) {
+            redoBtn.click();
+            success = true;
+          }
+          break;
+        default:
+          success = false;
+      }
     }
+    if (success) e.preventDefault();
   });
 }

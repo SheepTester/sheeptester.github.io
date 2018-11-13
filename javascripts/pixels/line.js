@@ -9,6 +9,7 @@ class Line {
     this.initX = x;
     this.initY = y;
     this.canvasData = parent.getCanvasData();
+    this.changes = [];
   }
 
   plot(x, y) {
@@ -19,7 +20,7 @@ class Line {
   }
 
   move(mouseX, mouseY) {
-    this.parent.pc.clearRect(0, 0, this.options._width_, this.options._height_);
+    this.changes.forEach(({x, y}) => this.parent.pc.clearRect(x, y, 1, 1));
     this.changes = [];
     generatePixelLine(this.initX, this.initY, mouseX, mouseY).forEach(([x, y]) => {
       this.plot(x, y);
