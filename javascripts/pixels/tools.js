@@ -235,12 +235,13 @@ function loadTools() {
   }
   document.addEventListener("mousedown", mouseDown, false);
   document.addEventListener("touchstart", mouseDown, {passive: false});
+  const mouse = {x: 0, y: 0};
   document.addEventListener('mousemove', e => {
     if (pointers.mouse === null) {
-      const [x, y] = getXYFromMouse(e.clientX, e.clientY);
-      previewContext.clearRect(0, 0, canvasWidth, canvasHeight);
+      previewContext.clearRect(mouse.x, mouse.y, 1, 1);
+      [mouse.x, mouse.y] = getXYFromMouse(e.clientX, e.clientY);
       previewContext.fillStyle = currentColour.str;
-      previewContext.fillRect(x, y, 1, 1);
+      previewContext.fillRect(mouse.x, mouse.y, 1, 1);
     }
   });
 

@@ -11,27 +11,28 @@ class Fill {
       this.alreadyDrawn = {};
       this.canvasWidth = options._width_;
       this.canvasHeight = options._height_;
-      this.targetColour = getPixelAt(c, x, y);
       this.c = c;
       this.canvasData = parent.getCanvasData();
-      this.check(x, y);
+      this.targetColour = parent.getPixel(this.canvasData, x, y);
+      const requests = [[x, y]];
+      while (requests.length) {
+        const [x, y] = requests.shift();
+        if (this.alreadyDrawn[x + "," + y] || !parent.inCanvas(x, y) || !this.sameColour(x, y)) continue;
+        this.plot(x, y);
+        requests.push([x - 1, y]);
+        requests.push([x, y - 1]);
+        requests.push([x + 1, y]);
+        requests.push([x, y + 1]);
+      }
     }
   }
 
-  sameColour(colour) {
-    return this.targetColour.r === colour.r
-        && this.targetColour.g === colour.g
-        && this.targetColour.b === colour.b
-        && this.targetColour.a === colour.a;
-  }
-
-  check(x, y) {
-    if (this.alreadyDrawn[x + "," + y]) return;
-    this.plot(x, y);
-    if (x > 0 && this.sameColour(getPixelAt(this.c, x - 1, y))) this.check(x - 1, y);
-    if (y > 0 && this.sameColour(getPixelAt(this.c, x, y - 1))) this.check(x, y - 1);
-    if (x < this.canvasWidth - 1 && this.sameColour(getPixelAt(this.c, x + 1, y))) this.check(x + 1, y);
-    if (y < this.canvasHeight - 1 && this.sameColour(getPixelAt(this.c, x, y + 1))) this.check(x, y + 1);
+  sameColour(x, y) {
+    const colour = this.parent.getPixel(this.canvasData, x, y);
+    return this.targetColour[0] === colour[0]
+        && this.targetColour[1] === colour[1]
+        && this.targetColour[2] === colour[2]
+        && this.targetColour[3] === colour[3];
   }
 
   plot(x, y) {
