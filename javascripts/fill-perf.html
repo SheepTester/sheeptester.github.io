@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Flood fill algorithm comparisons</title>
+    <meta charset="UTF-8">
+    <meta name="description" content="Wikipedia has a few flood fill algorithms. I wonder which one's the fastest?"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link rel="stylesheet" type="text/css" href="../sheep2.css">
+    <style media="screen">
+      body {
+        background-color: #293b44;
+        color: #918864;
+      }
+      input, button {
+        font: inherit;
+        background: none;
+        border: 1px solid #705882;
+        color: #705882;
+      }
+      :disabled {
+        opacity: 0.5;
+      }
+      canvas {
+        border: 1px solid #915757;
+        -ms-interpolation-mode: bicubic;
+        image-rendering: -moz-crisp-edges;
+        image-rendering: -webkit-optimize-contrast;
+        image-rendering: crisp-edges;
+        image-rendering: pixelated;
+      }
+      .inline {
+        display: inline-block;
+        margin-right: 10px;
+      }
+    </style>
+    <script src="../sheep2.js" charset="utf-8"></script>
+    <script src="./pixels/pixel-line.js" charset="utf-8"></script>
+  </head>
+  <body>
+    <h1>Flood fill algorithm comparisons</h1>
+    <p>The editor only works with the mouse.</p>
+    <p><label for="width">Canvas width: </label><input type="number" id="width" value="200"></p>
+    <p><label for="height">Canvas height: </label><input type="number" id="height" value="200"></p>
+    <p><button id="size-ok">ok</button></p>
+    <p>Use your mouse to drag stuff on the canvas. <strong>There is no undo.</strong></p>
+    <p id="edit-canvas-wrapper"></p>
+    <p><button id="edit-ok" disabled>ok</button></p>
+    <p>Click where the fill should start.</p>
+    <p><label for="trials">Trials: </label><input type="number" id="trials" value="3" disabled></p>
+    <div id="test-canvas-wrapper"></div>
+    <script>
+function sameColour(colour1, colour2) {
+  return colour1[0] === colour2[0]
+      && colour1[1] === colour2[1]
+      && colour1[2] === colour2[2]
+      && colour1[3] === colour2[3];
+}
+function getPixel(data, x, y) {
+  const temp = (y * data.width + x) * 4;
+  // return data.data.slice(temp, temp + 4);
+  return [data.data[temp], data.data[temp + 1], data.data[temp + 2], data.data[temp + 3]];
+}
+function setPixel(data, x, y, colour) {
+  const temp = (y * data.width + x) * 4;
+  data.data[temp] = colour[0];
+  data.data[temp + 1] = colour[1];
+  data.data[temp + 2] = colour[2];
+  data.data[temp + 3] = colour[3];
+}
+class ForestFire {
+
+  constructor(c) {
+    this.c = c;
+  }
+
+  fill(source, initX, initY, toColour) {
+    const result = this.c.createImageData(source);
+    const width = source.width;
+    const height = source.height;
+    const goodColour = getPixel(source, initX, initY);
+    const filled = {};
+    const toFill = [[initX, initY]];
+    while (toFill.length) {
+      const [x, y] = toFill.shift();
+      if (filled[x + '-' + y]) continue;
+      const pixel = getPixel(source, x, y);
+      if (sameColour(pixel, goodColour)) {
+        setPixel(result, x, y, toColour);
+        filled[x + '-' + y] = true;
+        if (x > 0) toFill.push([x - 1, y]);
+        if (x < width - 1) toFill.push([x + 1, y]);
+        if (y > 0) toFill.push([x, y - 1]);
+        if (y < height - 1) toFill.push([x, y + 1]);
+      }
+    }
+    return result;
+  }
+
+  get info() {
+    return { name: 'forest fire' };
+  }
+
+}
+class WestEast {
+
+  constructor(c) {
+    this.c = c;
+  }
+
+  fill(source, initX, initY, toColour) {
+    const result = this.c.createImageData(source);
+    const width = source.width;
+    const height = source.height;
+    const goodColour = getPixel(source, initX, initY);
+    const filled = {};
+    const queue = [[initX, initY]];
+    while (queue.length) {
+      const [x, y] = queue.shift();
+      if (filled[`${x}-${y}`]) continue;
+      let west = x;
+      while (west > 0) {
+        if (filled[`${west - 1}-${y}`] || !sameColour(getPixel(source, west - 1, y), goodColour)) {
+          break;
+        }
+        west--;
+      }
+      let east = x;
+      while (east < width - 1) {
+        if (filled[`${east + 1}-${y}`] || !sameColour(getPixel(source, east + 1, y), goodColour)) {
+          break;
+        }
+        east++;
+      }
+      for (let tx = west; tx <= east; tx++) {
+        filled[`${tx}-${y}`] = true;
+        setPixel(result, tx, y, toColour);
+        if (y > 0 && !filled[`${tx}-${y - 1}`] && sameColour(getPixel(source, tx, y - 1), goodColour))
+          queue.push([tx, y - 1]);
+        if (y < height - 1 && !filled[`${tx}-${y + 1}`] && sameColour(getPixel(source, tx, y + 1), goodColour))
+          queue.push([tx, y + 1]);
+      }
+    }
+    return result;
+  }
+
+  get info() {
+    return { name: 'flood fill west/east optimization' };
+  }
+
+}
+/*class RightHandFill {
+
+  constructor(c) {
+    this.c = c;
+  }
+
+  fill(source, initX, initY, toColour) {
+    const result = this.c.createImageData(source);
+    const width = source.width;
+    const height = source.height;
+    const goodColour = getPixel(source, initX, initY);
+    const filled = {};
+    function inBound(x, y) {
+      return x >= 0 && y >= 0 && x < width && y < height;
+    }
+    function isFilled(x, y) {
+      return inBound(x, y) && !filled[x + '-' + y] && sameColour(getPixel(source, x, y), goodColour);
+    }
+    let cur = [false, initX, initY],
+    curDir = [-1, 0],
+    mark = [true], mark2 = [true],
+    mark, mark2,
+    backtrack = false, findloop = false;
+    while (!isFilled(cur[1] + curDir[0], cur[2] + curDir[1])) {
+      cur[1] += curDir[0];
+      cur[2] += curDir[1];
+    }
+    function start() {
+      let count = 0;
+      if (isFilled(cur[1] - 1, cur[2])) count++;
+      if (isFilled(cur[1] + 1, cur[2])) count++;
+      if (isFilled(cur[1], cur[2] - 1)) count++;
+      if (isFilled(cur[1], cur[2] + 1)) count++;
+      if (count !== 4) {
+        do {
+          curDir = [curDir[1], -curDir[0]]; // turn right
+        } while (!isFilled(cur[1] + curDir[0], cur[2] + curDir[1]));
+        do {
+          curDir = [-curDir[1], curDir[0]]; // turn left
+        } while (isFilled(cur[1] + curDir[0], cur[2] + curDir[1]));
+      }
+      switch (count) {
+        case 1:
+          if (backtrack) findloop = true;
+          else if (findloop) {
+            if (mark[0]) mark[0] = false;
+          } else if (!isFilled(cur[1] + curDir[0] - curDir[1], cur[2] + curDir[1] + curDir[0]) && !isFilled(cur[1] - curDir[0] - curDir[1], cur[2] - curDir[1] + curDir[0])) {
+            mark[0] = true;
+            filled[`${cur[1]}-${cur[2]}`] = true;
+            setPixel(result, cur[1], cur[2], toColour);
+            // jump to paint??
+          }
+          break;
+        case 2:
+          if (isFilled(cur[1] - curDir[0], cur[2] - curDir[1])) {
+            if (!isFilled(cur[1] + curDir[0] - curDir[1], cur[2] + curDir[1] + curDir[0])) {
+              mark[0] = true;
+              filled[`${cur[1]}-${cur[2]}`] = true;
+              setPixel(result, cur[1], cur[2], toColour);
+              // jump to paint??
+            }
+          } else if (!mark[0]) {
+            mark = [...cur];
+            markDir = [...curDir];
+          }
+          break;
+      }
+    }
+    return result;
+  }
+
+  get info() {
+    return { name: 'right-hand fill method' };
+  }
+
+}*/
+class Scanline {
+
+  constructor(c) {
+    this.c = c;
+  }
+
+  fill(source, initX, initY, toColour) {
+    const result = this.c.createImageData(source);
+    const width = source.width;
+    const height = source.height;
+    const goodColour = getPixel(source, initX, initY);
+    const queue = [[initY, initX, initX, initX, initX, false, false]];
+    const lines = new Array(height);
+    const filled = {};
+    function canFill(x, y) {
+      return sameColour(goodColour, getPixel(source, x, y));
+    }
+    let i = 0;
+    while (queue.length) {
+      i++;
+      let [y, start, parentStart, end, parentEnd, parentIsAbove, parentIsBelow] = queue.shift();
+      if (start === parentStart) while (start > 0 && canFill(start - 1, y)) start--;
+      if (end === parentEnd) while (end < width - 1 && canFill(end + 1, y)) end++;
+      let currentAboveLine = null, currentBelowLine = null;
+      for (let x = start; x <= end; x++) {
+        setPixel(result, x, y, toColour);
+        filled[x + '-' + y] = true;
+        const inParentLand = x >= parentStart && x <= parentEnd;
+        if (y > 0 && !(inParentLand && parentIsAbove) && !filled[`${x}-${y - 1}`] && canFill(x, y - 1)) {
+          if (currentAboveLine) currentAboveLine[3] = x;
+          else currentAboveLine = [y - 1, x, start, x, end, false, true];
+        } else if (currentAboveLine) {
+          queue.push(currentAboveLine);
+          currentAboveLine = null;
+        }
+        if (y < height - 1 && !(inParentLand && parentIsBelow) && !filled[`${x}-${y + 1}`] && canFill(x, y + 1)) {
+          if (currentBelowLine) currentBelowLine[3] = x;
+          else currentBelowLine = [y + 1, x, start, x, end, true, false];
+        } else if (currentBelowLine) {
+          queue.push(currentBelowLine);
+          currentBelowLine = null;
+        }
+      }
+      if (currentAboveLine) queue.push(currentAboveLine);
+      if (currentBelowLine) queue.push(currentBelowLine);
+    }
+    return result;
+  }
+
+  get info() {
+    return { name: 'scanline' };
+  }
+
+}
+
+const widthInput = document.getElementById('width');
+const heightInput = document.getElementById('height');
+const sizeDoneBtn = document.getElementById('size-ok');
+const canvasEditorWrapper = document.getElementById('edit-canvas-wrapper');
+const editDoneBtn = document.getElementById('edit-ok');
+const canvasesWrapper = document.getElementById('test-canvas-wrapper');
+const trialsInput = document.getElementById('trials');
+
+const canvasEditor = document.createElement('canvas');
+const ec = canvasEditor.getContext('2d');
+let drawingOK = true;
+sizeDoneBtn.addEventListener('click', e => {
+  canvasEditor.width = +widthInput.value;
+  canvasEditor.height = +heightInput.value;
+  ec.imageSmoothingEnabled = false;
+  ec.mozImageSmoothingEnabled = false;
+  ec.webkitImageSmoothingEnabled = false;
+  widthInput.disabled = heightInput.disabled = sizeDoneBtn.disabled = true;
+  editDoneBtn.disabled = false;
+  canvasEditorWrapper.appendChild(canvasEditor);
+  let drawing = false, lastX, lastY;
+  ec.fillStyle = '#75bda9';
+  canvasEditor.addEventListener('mousedown', e => {
+    if (!drawingOK) return;
+    drawing = true;
+    const rect = canvasEditor.getBoundingClientRect();
+    lastX = e.clientX - rect.left;
+    lastY = e.clientY - rect.top;
+  });
+  function drawLine(e) {
+    const rect = canvasEditor.getBoundingClientRect();
+    const canvasX = e.clientX - rect.left;
+    const canvasY = e.clientY - rect.top;
+    generatePixelLine(lastX, lastY, canvasX, canvasY).forEach(([x, y]) => {
+      ec.fillRect(Math.floor(x), Math.floor(y), 1, 1);
+    })
+    lastX = canvasX;
+    lastY = canvasY;
+  }
+  document.addEventListener('mousemove', e => {
+    if (drawing) {
+      drawLine(e);
+    }
+  });
+  document.addEventListener('mouseup', e => {
+    if (drawing) {
+      drawLine(e);
+      drawing = false;
+    }
+  });
+}, {once: true});
+
+const competitors = [
+  ForestFire,
+  WestEast,
+  // RightHandFill,
+  Scanline
+];
+editDoneBtn.addEventListener('click', e => {
+  editDoneBtn.disabled = true;
+  trialsInput.disabled = false;
+  drawingOK = false;
+  canvasEditor.addEventListener('click', e => {
+    const imageData = ec.getImageData(0, 0, canvasEditor.width, canvasEditor.height);
+    const rect = canvasEditor.getBoundingClientRect();
+    const canvasX = Math.floor(e.clientX - rect.left);
+    const canvasY = Math.floor(e.clientY - rect.top);
+    const trials = +trialsInput.value;
+    competitors.forEach(competitor => {
+      const instance = new competitor(ec);
+      const {name} = instance.info;
+      const competitorWrapper = document.createElement('div');
+      let sum = 0;
+      for (let i = 0; i < trials; i++) {
+        const canvas = document.createElement('canvas');
+        const c = canvas.getContext('2d');
+        canvas.width = canvasEditor.width;
+        canvas.height = canvasEditor.height;
+        c.imageSmoothingEnabled = false;
+        c.mozImageSmoothingEnabled = false;
+        c.webkitImageSmoothingEnabled = false;
+        const beginTime = performance.now();
+        const result = instance.fill(imageData, canvasX, canvasY, [78, 143, 125, 255]);
+        const endTime = performance.now();
+        c.putImageData(result, 0, 0);
+        c.drawImage(canvasEditor, 0, 0);
+        const wrapper = document.createElement('div');
+        const label = document.createElement('h2');
+        const time = document.createElement('p');
+        wrapper.classList.add('inline');
+        label.textContent = name;
+        time.textContent = endTime - beginTime + ' ms';
+        sum += endTime - beginTime;
+        wrapper.appendChild(label);
+        wrapper.appendChild(canvas);
+        wrapper.appendChild(time);
+        competitorWrapper.appendChild(wrapper);
+      }
+      const avg = document.createElement('p');
+      avg.innerHTML = `<strong>${name}</strong> average = ${sum / trials} ms`;
+      competitorWrapper.appendChild(avg);
+      canvasesWrapper.appendChild(competitorWrapper);
+    });
+  }, {once: true});
+}, {once: true});
+    </script>
+  </body>
+</html>
