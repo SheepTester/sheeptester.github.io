@@ -216,7 +216,7 @@ nav .btn:hover {
   overflow-x: auto;
   overflow-y: hidden;
 }
-.list .social {
+.list .social, .mini-social {
   display: inline-block;
   height: 100px;
   width: 100px;
@@ -230,7 +230,7 @@ nav .btn:hover {
 .list .social:hover {
   transform: scale(1.1);
 }
-.list .social .ball {
+.list .social .ball, .mini-social .ball {
   display: block;
   height: 50px;
   width: 50px;
@@ -244,6 +244,20 @@ nav .btn:hover {
   right: 0;
   box-sizing: border-box;
 }
+.mini-social {
+  cursor: auto;
+  height: 30px;
+  width: 30px;
+  border-radius: 3px;
+  margin: 5px 0;
+  margin-right: 10px;
+  position: relative;
+  vertical-align: middle;
+}
+.mini-social .ball {
+  height: 15px;
+  width: 15px;
+}
 #scratch {background-color: #25AFF4;}
 #scratch .ball {border: 5px solid white; background-color: #F8A839;}
 #instagram {background-image: url('img/instagram_gradient.png'); background-size: 100px 100px;}
@@ -255,6 +269,16 @@ nav .btn:hover {
 #blogger {background-color: #FF5722;}
 #twitter .ball {background-color: #1DA1F2;}
 #reddit {background-color: #FF4500;}
+#jsfiddle {background-color: #0483FF;}
+#jsfiddle .ball {border: 5px solid white; background-color: transparent;}
+#twitch {background-color: #6441A4;}
+#twitch .ball {border: 5px solid white; background-color: transparent;}
+#replit {background-color: #F4F4F5;}
+#replit .ball {border: 15px solid #697C84; background-color: #4F5151;}
+#codecademy .ball {border: 5px solid #1F4056; background-color: transparent;}
+#minecraft {background-color: #6CD45A;}
+#minecraft .ball {background-color: #000000;}
+#discord {background-color: #7289DA;}
 #users h1 {
   margin: 0;
   font-weight: normal;
