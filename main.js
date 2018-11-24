@@ -91,8 +91,8 @@ var sheeptest=(function(){
     // FEATURED
     {url:'platformre/',img:'img/plat.svg',name:'Platformre'},
     {url:'platformre/maker/',img:'img/platmakre.png',name:'Level editor'},
-    {url:'olamreee/',img:'img/olamreee.png',name:'OlamREEE',featured:1},
     {url:'https://orbiit.github.io/gunn-web-app/',img:'img/ugwa.png',name:'Unofficial Gunn Web App'},
+    {url:'gunn-student-sim/',img:'img/gunn%20student%20simulator.png',name:'Gunn student simulator',featured:1},
     {url:'javascripts/carecalc.html',img:'img/carecalc.png',name:'Grade Care Calculator'},
     {url:'javascripts/shepform/colour.html',img:'img/colourpick.png',name:'Color input II'},
     {url:'trumpdays/',img:'img/trumpdays.png',name:'Trump days'},
@@ -123,6 +123,7 @@ var sheeptest=(function(){
     {url:'themes/billy-goat/index-dark.html',img:'img/billy-goat.png',name:'Billy Goat Blog Theme'},
 
     // CONFUSING THINGS
+    {url:'olamreee/',img:'img/olamreee.png',name:'OlamREEE'},
     {url:'javascripts/imagetoscheme.html',img:'img/scheme.png',name:'Image to ASCII'},
     {url:'javascripts/terminal/',img:'img/terminal.png',name:'Terminal'},
     {url:'?penland',img:'img/penland.png',name:'Penland'},
