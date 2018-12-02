@@ -89,10 +89,10 @@ var sheeptest=(function(){
     {url:'all/',img:'img/all2.png',name:'Almost Everything'},
 
     // FEATURED
+    {url:'fun-gunn-run/',img:'img/fgr.png',name:'"Fun" Gunn Run',featured:1},
     {url:'platformre/',img:'img/plat.svg',name:'Platformre'},
     {url:'platformre/maker/',img:'img/platmakre.png',name:'Level editor'},
     {url:'https://orbiit.github.io/gunn-web-app/',img:'img/ugwa.png',name:'Unofficial Gunn Web App'},
-    {url:'gunn-student-sim/',img:'img/gunn%20student%20simulator.png',name:'Gunn student simulator',featured:1},
     {url:'javascripts/carecalc.html',img:'img/carecalc.png',name:'Grade Care Calculator'},
     {url:'javascripts/shepform/colour.html',img:'img/colourpick.png',name:'Color input II'},
     {url:'trumpdays/',img:'img/trumpdays.png',name:'Trump days'},
@@ -105,13 +105,14 @@ var sheeptest=(function(){
     {url:'gamepro5/minigames/dodgedots.html',img:'img/reds.png',name:'Dodge dots game thing'},
     {url:'gamepro5/minigames/color.html',img:'img/color.png',name:'Color fight thing'},
     {url:'https://orbiit.github.io/gunn-web-app/games/connect4.html',img:'img/connect4.png',name:'Connect 3'},
+    {url:'gunn-student-sim/',img:'img/gunn%20student%20simulator.png',name:'Gunn student simulator',new:1},
 
     // DIRECTORIES
     {url:'javascripts/',img:'img/js.png',name:'Javascripts'},
     {url:'words-go-here/misc/',img:'img/misc.png',name:'Miscellaneous'},
     {url:'thingkingland/sitemap.html',img:'img/thingkingland.png',name:'Thingkingland'},
     {url:'javascripts/particles/',img:'img/particles.png',name:'Particles'},
-    {url:'hello-world/',img:'img/helloworlddir.png',name:'Chromebook creations',new:1},
+    {url:'hello-world/',img:'img/helloworlddir.png',name:'Chromebook creations'},
 
     // OTHER THINGS
     {url:'happynumbers/',img:'img/mems.png',name:'Happy Number Finder'},
