@@ -115,6 +115,7 @@ var sheeptest=(function(){
     {url:'hello-world/',img:'img/helloworlddir.png',name:'Chromebook creations'},
 
     // OTHER THINGS
+    {url:'roots/',img:'img/roots.png',name:'Roots and Affixes',new:1},
     {url:'happynumbers/',img:'img/mems.png',name:'Happy Number Finder'},
     {url:'happynumbers/sieve/',img:'img/sieve.png',name:'Sieve of Eranthoses'},
     {url:'animations/',img:'img/anima.png',name:'Animations'},
