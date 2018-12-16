@@ -1,4 +1,4 @@
-// service worker version 01
+// service worker version 02
 
 const CACHE_NAME = 'sheeptester-cache';
 const URL_DB = 'sheeptester-urls';
@@ -38,12 +38,22 @@ self.addEventListener('install', e => {
   self.skipWaiting();
 });
 self.addEventListener('fetch', e => {
-  const url = new URL(e.request.url);
-  if ((url.hostname === 'sheeptester.github.io' || url.hostname === 'localhost') && !urlsToAdd.includes(url.pathname)) {
-    urlsToAdd.push(url.pathname);
-    eventuallySaveURLS();
-  }
-  e.respondWith(fetch(e.request).catch(() => caches.match(e.request, {ignoreSearch: true})));
+  e.respondWith(fetch(e.request).then(res => {
+    if (res.ok) {
+      const url = new URL(e.request.url);
+      if ((url.hostname === 'sheeptester.github.io' || url.hostname === 'localhost') && !urlsToAdd.includes(url.pathname)) {
+        urlsToAdd.push(url.pathname);
+        eventuallySaveURLS();
+      }
+
+      const resCopy = res.clone();
+      caches.match(e.request, {ignoreSearch: true}).then(cachedResponse => {
+        if (cachedResponse)
+          caches.open(CACHE_NAME).then(cache => cache.put(e.request, resCopy)); // update cache
+      });
+    }
+    return res;
+  }).catch(() => caches.match(e.request, {ignoreSearch: true})));
 });
 self.addEventListener('activate', e => {
   e.waitUntil(self.clients.claim());
