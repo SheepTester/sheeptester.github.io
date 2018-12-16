@@ -321,6 +321,10 @@ var sheeptest=(function(){
     else document.querySelector('nav').classList.add('open');
   };
 
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/sw.js'); // literally don't care about service worker rn
+  }
+
   var bob=function(){/*use sheeptest()() to call me*/console.log('%chi bob\noh wait im bob\nnvm hi stranger','padding:5px;background:#404637;color:#9EC962;line-height:1.5;font-size:30px;font-family:sans-serif;');};
   bob.prototype={
     idk: 'i dunno',

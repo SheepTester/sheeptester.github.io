@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Cacher</title>
+    <meta charset="UTF-8">
+    <meta name="description" content="Cache pages and files on SheepTester for offline use."/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" type="text/css" href="../../sheep3.css">
+    <script src="../main.js" charset="utf-8"></script>
+    <script src="../../sheep3.js" charset="utf-8"></script>
+    <style>
+      .cached {
+        font-weight: bold;
+        background-color: rgba(0, 0, 0, 0.05);
+      }
+      .loading {
+        opacity: 0.5;
+        pointer-events: none;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Cacher</h1>
+    <p>Click on a file to cache for offline use. Don't forget to cache their dependencies!</p>
+    <div class="btn-wrapper"><a href="../" class="button">Back to /all/</a></div>
+    <div class="btn-wrapper"><label>Show:</label> <input type="checkbox" id='html' checked><label>HTML</label> <input type="checkbox" id='img' checked><label>images</label> <input type="checkbox" id='other' checked><label>everything else</label></div>
+    <div class="dir" id="main"></div>
+    <script>
+if (!navigator.serviceWorker.controller) {
+  throw new Error('Where\'s my service worker?');
+}
+const mainDir = document.getElementById('main');
+const urlElems = {};
+let canCacheNow = false;
+function onmessage(e) {
+  switch (e.data.type) {
+    case 'all-urls':
+      const fragment = document.createDocumentFragment();
+      e.data.urls.sort().forEach(url => {
+        const a = document.createElement('a');
+        a.textContent = url;
+        a.dataset.url = url;
+        a.tabIndex = 0;
+        a.addEventListener('click', e => {
+          if (canCacheNow) {
+            a.classList.add('loading');
+            sendMessage({type: a.classList.contains('cached') ? 'uncache' : 'cache', url: url});
+          }
+        });
+        a.addEventListener('keydown', e => {
+          if (e.keyCode === 13) a.click();
+        });
+        if (url[url.length - 1] === '/') {
+          a.classList.add('html');
+          a.classList.add('index');
+        } else {
+          const extension = url.slice(url.lastIndexOf('.') + 1);
+          switch (extension) {
+            case 'html':
+              a.classList.add('html');
+              break;
+            case 'css':
+              a.classList.add('css');
+              break;
+            case 'js':
+              a.classList.add('js');
+              break;
+            case 'svg':
+            case 'png':
+            case 'gif':
+            case 'jpg':
+              a.classList.add('img');
+              break;
+          }
+        }
+        fragment.appendChild(a);
+        urlElems[url] = a;
+      });
+      mainDir.appendChild(fragment);
+      sendMessage({type: 'cached-urls'});
+      break;
+    case 'cached-urls':
+      e.data.urls.forEach(url => {
+        urlElems[url].classList.add('cached');
+      });
+      canCacheNow = true;
+      break;
+    case 'cache-done':
+      urlElems[e.data.url].classList.remove('loading');
+      urlElems[e.data.url].classList.add('cached');
+      break;
+    case 'uncache-done':
+      urlElems[e.data.url].classList.remove('loading');
+      urlElems[e.data.url].classList.remove('cached');
+      break;
+  }
+}
+function sendMessage(msg) {
+  const messageChannel = new MessageChannel(); // can't reuse
+  messageChannel.port1.onmessage = onmessage;
+  navigator.serviceWorker.controller.postMessage(msg, [messageChannel.port2]);
+}
+sendMessage({type: 'all-urls'});
+    </script>
+  </body>
+</html>
