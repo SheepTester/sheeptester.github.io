@@ -1,4 +1,4 @@
-// service worker version 02
+// service worker version 03
 
 const CACHE_NAME = 'sheeptester-cache';
 const URL_DB = 'sheeptester-urls';
@@ -38,22 +38,30 @@ self.addEventListener('install', e => {
   self.skipWaiting();
 });
 self.addEventListener('fetch', e => {
+  const url = new URL(e.request.url);
+  const local = url.hostname === 'sheeptester.github.io' || url.hostname === 'localhost';
   e.respondWith(fetch(e.request).then(res => {
-    if (res.ok) {
-      const url = new URL(e.request.url);
-      if ((url.hostname === 'sheeptester.github.io' || url.hostname === 'localhost') && !urlsToAdd.includes(url.pathname)) {
-        urlsToAdd.push(url.pathname);
-        eventuallySaveURLS();
+    if (res.ok || res.type === 'opaque') {
+      if (local) {
+        if (!urlsToAdd.includes(url.pathname)) {
+          urlsToAdd.push(url.pathname);
+          eventuallySaveURLS();
+        }
+      } else {
+        if (!urlsToAdd.includes(url.href)) {
+          urlsToAdd.push(url.href);
+          eventuallySaveURLS();
+        }
       }
 
       const resCopy = res.clone();
-      caches.match(e.request, {ignoreSearch: true}).then(cachedResponse => {
+      caches.match(e.request, {ignoreSearch: local}).then(cachedResponse => {
         if (cachedResponse)
           caches.open(CACHE_NAME).then(cache => cache.put(e.request, resCopy)); // update cache
       });
     }
     return res;
-  }).catch(() => caches.match(e.request, {ignoreSearch: true})));
+  }).catch(() => caches.match(e.request, {ignoreSearch: local})));
 });
 self.addEventListener('activate', e => {
   e.waitUntil(self.clients.claim());
@@ -67,7 +75,12 @@ self.addEventListener('message', e => {
       break;
     case 'cached-urls':
       caches.open(CACHE_NAME).then(cache => cache.keys()).then(responses => {
-        e.ports[0].postMessage({type: 'cached-urls', urls: responses.map(res => new URL(res.url).pathname)});
+        e.ports[0].postMessage({type: 'cached-urls', urls: responses.map(res => {
+          const url = new URL(res.url);
+          return url.hostname === 'sheeptester.github.io' || url.hostname === 'localhost'
+            ? url.pathname
+            : url.href
+        })});
       });
       break;
     case 'cache':
