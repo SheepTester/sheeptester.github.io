@@ -126,3 +126,15 @@ body.hideother > .dir a:not(.html):not(.img) {
 input[type=checkbox]:focus {
   filter: drop-shadow(0 0 3px rgb(125, 162, 206));
 }
+@media (hover: none) {
+  .head, .dir a {
+    padding: 5px 2px;
+  }
+  button, .button {
+    padding: 5px 10px;
+  }
+  /* input[type=checkbox] {
+    width: 15px;
+    height: 15px;
+  } */
+}
