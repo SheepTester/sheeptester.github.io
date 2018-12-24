@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>towering game</title>
+    <meta charset="UTF-8">
+    <meta name="description" content="stack blocks on each other haphazardly and hope they don't fall"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link rel="stylesheet" type="text/css" href="../sheep3.css">
+    <script src="../sheep3.js" charset="utf-8"></script>
+    <style>
+      html, body {
+        height: 100%;
+        width: 100%;
+      }
+      body {
+        margin: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        overflow: hidden;
+      }
+      #message {
+        font-size: 50px;
+        text-shadow: 1px 1px white, -1px -1px white;
+        position: relative;
+        z-index: 1;
+      }
+      #block-wrapper {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+      }
+      #block-wrapper div {
+        background-color: black;
+        height: 30vh;
+        width: 40vw;
+        margin-left: 30vw;
+        transition: transform .5s cubic-bezier(0, 0, 1, 0);
+        animation: fade-in .5s;
+      }
+      .elevated {
+        transform: translateY(-30vh);
+      }
+      #block-wrapper .ground {
+        height: 10vh;
+      }
+      @keyframes fade-in {
+        from {opacity: 0;}
+        to {opacity: 1;}
+      }
+      .die {
+        animation: death-anim 1s 0.4s forwards;
+      }
+      @keyframes death-anim {
+        0% { background-color: white; }
+        10% { background-color: red; }
+        20% { background-color: white; }
+        30% { background-color: red; }
+        40% { background-color: white; }
+        100% { background-color: black; }
+      }
+      .fade-to-white {
+        background-color: black;
+        animation: fade-to-white .5s 2.5s forwards;
+      }
+      @keyframes fade-to-white {
+        from { background-color: black; }
+        to { background-color: white; }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- clone of https://scratch.mit.edu/projects/155128646/ -->
+    <span id="message">press space/tap to start</span>
+    <div id="block-wrapper"></div>
+    <script>
+const message = document.getElementById('message');
+const blockWrapper = document.getElementById('block-wrapper');
+let playing = false;
+class Block {
+
+  constructor(width = 40, left = 30) {
+    this.elem = document.createElement('div');
+    this.width = width;
+    this.left = left;
+  }
+
+  addToWrapper() {
+    if (blockWrapper.firstChild) blockWrapper.insertBefore(this.elem, blockWrapper.firstChild);
+    else blockWrapper.appendChild(this.elem);
+  }
+
+  get width() { return this.w; }
+
+  set width(w) {
+    this.w = w;
+    this.elem.style.width = w / 3 + 'vw';
+  }
+
+  get left() { return this.l; }
+
+  set left(l) {
+    this.l = l;
+    this.elem.style.marginLeft = l / 3 + 'vw';
+  }
+
+}
+let cancelTimeout = null;
+function waitOrUntilClick(fn, delay) {
+  const timeoutID = setTimeout(() => {
+    cancelTimeout = null;
+    fn();
+  }, delay);
+  cancelTimeout = () => {
+    clearTimeout(timeoutID);
+    cancelTimeout = null;
+    fn();
+  };
+}
+const WIDTH = 300;
+let click = false;
+function startGame() {
+  if (playing) return;
+  playing = true;
+  click = false;
+  message.textContent = '';
+  const ground = new Block(WIDTH, 0);
+  ground.addToWrapper();
+  ground.elem.classList.add('ground');
+  let lastBlock = new Block(120, 90),
+  currentBlock = new Block(120, 0);
+  currentBlock.elem.classList.add('elevated');
+  lastBlock.addToWrapper();
+  currentBlock.addToWrapper();
+  let y = 0, destY = 0;
+  blockWrapper.style.bottom = '0';
+  let speed = 1, blockRight = true;
+  let stop = false, dead = false, shakeTimer = 0;
+  let score = 0;
+  function move() {
+    if (stop) {
+      waitOrUntilClick(() => {
+        message.textContent = 'score: ' + score;
+        document.body.classList.remove('die');
+        document.body.classList.add('fade-to-white');
+        waitOrUntilClick(() => {
+          message.textContent = 'press space/tap to start';
+          document.body.classList.remove('fade-to-white');
+          playing = false;
+        }, 3000);
+      }, 1500);
+      blockWrapper.innerHTML = '';
+      return;
+    }
+    y += (destY - y) / 5;
+    blockWrapper.style.bottom = y + 'vh';
+    if (click) {
+      click = false;
+      const diff = Math.abs(currentBlock.left - lastBlock.left);
+      if (diff > lastBlock.width) {
+        dead = true;
+        setTimeout(() => {
+          message.textContent = 'oof';
+          stop = true;
+        }, 500);
+        document.body.classList.add('die');
+        currentBlock.elem.classList.remove('elevated');
+      } else {
+        let msg = '';
+        if (currentBlock.left === lastBlock.left) msg = 'perfect';
+        else if (diff < 10) msg = 'good enough';
+        setTimeout(() => {
+          message.textContent = msg;
+          shakeTimer = 30;
+        }, 500);
+        currentBlock.width = lastBlock.width - diff;
+        currentBlock.left = Math.max(lastBlock.left, currentBlock.left);
+        currentBlock.elem.classList.remove('elevated');
+        lastBlock = currentBlock;
+        currentBlock = new Block(currentBlock.width, currentBlock.left);
+        currentBlock.elem.classList.add('elevated');
+        currentBlock.addToWrapper();
+        destY -= 30;
+        speed++;
+        score++;
+      }
+    }
+    if (!dead) {
+      if (blockRight) {
+        currentBlock.left += speed;
+        if (currentBlock.left + currentBlock.width >= WIDTH) {
+          blockRight = false;
+          currentBlock.left = WIDTH - currentBlock.width;
+        }
+      } else {
+        currentBlock.left -= speed;
+        if (currentBlock.left <= 0) {
+          blockRight = true;
+          currentBlock.left = 0;
+        }
+      }
+    }
+    if (shakeTimer > 0) {
+      document.body.style.transform = `translate(${Math.random() * 20 - 10}px, ${Math.random() * 20 - 10}px)`;
+      shakeTimer--;
+    } else {
+      document.body.style.transform = null;
+    }
+    window.requestAnimationFrame(move);
+  }
+  move();
+}
+function handleClick() {
+  if (cancelTimeout) cancelTimeout();
+  else if (playing) click = true;
+  else startGame();
+}
+document.addEventListener('click', handleClick);
+document.addEventListener('keydown', e => {
+  if (e.keyCode === 32) handleClick();
+});
+    </script>
+  </body>
+</html>
