@@ -159,7 +159,7 @@ function startGame() {
     if (click) {
       click = false;
       const diff = Math.abs(currentBlock.left - lastBlock.left);
-      if (diff > lastBlock.width) {
+      if (diff >= lastBlock.width) {
         dead = true;
         setTimeout(() => {
           message.textContent = 'oof';
@@ -171,15 +171,20 @@ function startGame() {
         let msg = '';
         if (currentBlock.left === lastBlock.left) msg = 'perfect';
         else if (diff < 10) msg = 'good enough';
+        const width = lastBlock.width - diff;
+        const left = Math.max(lastBlock.left, currentBlock.left);
+        const oldBlock = currentBlock;
+        oldBlock.w = width; // HACK
+        oldBlock.l = left;
         setTimeout(() => {
           message.textContent = msg;
           shakeTimer = 30;
+          oldBlock.width = width;
+          oldBlock.left = left;
         }, 500);
-        currentBlock.width = lastBlock.width - diff;
-        currentBlock.left = Math.max(lastBlock.left, currentBlock.left);
         currentBlock.elem.classList.remove('elevated');
         lastBlock = currentBlock;
-        currentBlock = new Block(currentBlock.width, currentBlock.left);
+        currentBlock = new Block(width, currentBlock.left);
         currentBlock.elem.classList.add('elevated');
         currentBlock.addToWrapper();
         destY -= 30;
