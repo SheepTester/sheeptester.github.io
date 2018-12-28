@@ -10,13 +10,20 @@ function write(file, contents) {
 const fs = require('fs');
 
 // based on https://stackoverflow.com/a/20525865
+const blackList = [
+  './all/more-everything.json',
+  '../site/sheep.css',
+  '../site/sheep.js',
+  '../site/sheep3.css',
+  '../site/sheep3.js'
+];
 function getFiles(dir, files = []){
     fs.readdirSync(dir).forEach(file => {
       const name = dir + '/' + file;
       if (fs.statSync(name).isDirectory()) {
         if (file !== '.git' && file !== 'node_modules') getFiles(name, files);
       }
-      else if (file !== '.gitignore' && name !== './all/more-everything.json') files.push(name);
+      else if (file !== '.gitignore' && !blackList.includes(name)) files.push(name);
     });
     return files;
 }
