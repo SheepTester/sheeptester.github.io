@@ -59,15 +59,12 @@ var sheeptest=(function(){
     {url:'all/',img:'img/all2.png',name:'Almost Everything'},
 
     // FEATURED
-    {url:'fun-gunn-run/',img:'img/fgr.png',name:'"Fun" Gunn Run',featured:1},
-    {url:'platformre/',img:'img/plat.svg',name:'Platformre'},
-    {url:'platformre/maker/',img:'img/platmakre.png',name:'Level editor'},
+    {url:'platformre/',img:'img/plat.svg',name:'Platformre',featured:1},
     {url:'https://orbiit.github.io/gunn-web-app/',img:'img/ugwa.png',name:'Unofficial Gunn Web App'},
-    {url:'javascripts/carecalc.html',img:'img/carecalc.png',name:'Grade Care Calculator'},
     {url:'javascripts/shepform/colour.html',img:'img/colourpick.png',name:'Color input II'},
-    {url:'trumpdays/',img:'img/trumpdays.png',name:'Trump days'},
 
     // GAMES
+    {url:'platformre/maker/',img:'img/platmakre.png',name:'Level editor'},
     {url:'platformre/nova/penland/',img:'img/newpenland.png',name:'Penland Nova'},
     {url:'gamepro5/minigames/turkeys/',img:'img/turkeys.png',name:'Turkeys'},
     {url:'telegraph/',img:'img/tele.png',name:'Telegraph'},
@@ -76,6 +73,7 @@ var sheeptest=(function(){
     {url:'gamepro5/minigames/color.html',img:'img/color.png',name:'Color fight thing'},
     {url:'https://orbiit.github.io/gunn-web-app/games/connect4.html',img:'img/connect4.png',name:'Connect 3'},
     {url:'gunn-student-sim/',img:'img/gunn%20student%20simulator.png',name:'Gunn student simulator',new:1},
+    {url:'fun-gunn-run/',img:'img/fgr.png',name:'"Fun" Gunn Run',new:1},
 
     // DIRECTORIES
     {url:'javascripts/',img:'img/js.png',name:'Javascripts'},
@@ -85,7 +83,8 @@ var sheeptest=(function(){
     {url:'hello-world/',img:'img/helloworlddir.png',name:'Chromebook creations'},
 
     // OTHER THINGS
-    {url:'roots/',img:'img/roots.png',name:'Roots and Affixes',new:1},
+    {url:'trumpdays/',img:'img/trumpdays.png',name:'Trump days'},
+    {url:'roots/',img:'img/roots.png',name:'Roots and Affixes'},
     {url:'happynumbers/',img:'img/mems.png',name:'Happy Number Finder'},
     {url:'happynumbers/sieve/',img:'img/sieve.png',name:'Sieve of Eranthoses'},
     {url:'animations/',img:'img/anima.png',name:'Animations'},
@@ -93,6 +92,7 @@ var sheeptest=(function(){
     {url:'contextmenutest.html',img:'img/rightclick.png',name:'Context Menu Test'},
     {url:'longer-tweets/',img:'img/longtweets.png',name:'Longer Tweets'}, // hiddenish
     {url:'themes/billy-goat/index-dark.html',img:'img/billy-goat.png',name:'Billy Goat Blog Theme'},
+    {url:'javascripts/carecalc.html',img:'img/carecalc.png',name:'Grade Care Calculator'},
 
     // CONFUSING THINGS
     {url:'olamreee/',img:'img/olamreee.png',name:'OlamREEE'},
