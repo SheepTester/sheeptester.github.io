@@ -59,7 +59,7 @@ var sheeptest=(function(){
     {url:'/all/',img:'img/all2.png',name:'Almost Everything'},
 
     // FEATURED
-    {url:'/platformre/',img:'img/plat.svg',name:'Platformre',featured:1},
+    {url:'/platformre/',img:'img/plat.svg',name:'Platformre'},
     {url:'https://orbiit.github.io/gunn-web-app/',img:'img/ugwa.png',name:'Unofficial Gunn Web App'},
     {url:'/javascripts/shepform/colour.html',img:'img/colourpick.png',name:'Color input II'},
 
@@ -72,8 +72,8 @@ var sheeptest=(function(){
     {url:'/gamepro5/minigames/dodgedots.html',img:'img/reds.png',name:'Dodge dots game thing'},
     {url:'/gamepro5/minigames/color.html',img:'img/color.png',name:'Color fight thing'},
     {url:'https://orbiit.github.io/gunn-web-app/games/connect4.html',img:'img/connect4.png',name:'Connect 3'},
-    {url:'/gunn-student-sim/',img:'img/gunn%20student%20simulator.png',name:'Gunn student simulator',new:1},
-    {url:'/fun-gunn-run/',img:'img/fgr.png',name:'"Fun" Gunn Run',new:1},
+    {url:'/gunn-student-sim/',img:'img/gunn%20student%20simulator.png',name:'Gunn student simulator'},
+    {url:'/fun-gunn-run/',img:'img/fgr.png',name:'"Fun" Gunn Run'},
 
     // DIRECTORIES
     {url:'/javascripts/',img:'img/js.png',name:'Javascripts'},
@@ -107,20 +107,14 @@ var sheeptest=(function(){
     document.querySelector('#view').innerHTML='list view';
     var inner='';
     for (var i=0;i<places2go.length;i++) {
-      var badge='';
-      if (places2go[i].featured) badge='<span class="badge featured">featured</span>';
-      else if (places2go[i].new) badge='<span class="badge new">new</span>';
-      inner+='<a class="place" href="'+places2go[i].url+'"><div class="squarifier"><div></div></div><img src="'+places2go[i].img+'" alt="A picture."/>'+badge+'<p>'+places2go[i].name+'</p></a>';
+      inner+='<a class="place" href="'+places2go[i].url+'"><div class="squarifier"><div></div></div><img src="'+places2go[i].img+'" alt="A picture."/><p>'+places2go[i].name+'</p></a>';
     }
     document.querySelector('#places').innerHTML=inner;
   } else {
     document.querySelector('#view').innerHTML='grid view';
     var inner='';
     for (var i=0;i<places2go.length;i++) {
-      var badge='';
-      if (places2go[i].featured) badge='<span class="badge featured">featured</span>';
-      else if (places2go[i].new) badge='<span class="badge new">new</span>';
-      inner+='<a class="placelist" href="'+places2go[i].url+'">'+badge+places2go[i].name+'</a>';
+      inner+='<a class="placelist" href="'+places2go[i].url+'">'+places2go[i].name+'</a>';
     }
     document.querySelector('#places').innerHTML=inner;
   }
