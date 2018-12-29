@@ -224,7 +224,7 @@ nav .btn:hover {
   background-color: white;
   transition: transform .2s;
 }
-.list .social:hover {
+.list .social:hover, .list .social:focus {
   transform: scale(1.1);
 }
 .list .social .ball, .mini-social .ball {
@@ -306,7 +306,7 @@ nav .btn:hover {
   opacity: 0.8;
   background-color: rgba(255,255,255,0.1);
 }
-#redirects a:hover {
+#redirects a:hover, #redirects a:focus {
   opacity: 1;
   background-color: rgba(255,255,255,0.15);
 }
