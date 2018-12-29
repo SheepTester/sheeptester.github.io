@@ -433,10 +433,7 @@ var SHEEP={
       return false;
     }
   };
-  if (!SHEEP.dismissed.accounts) {
-    SHEEP.dismiss('accounts');
-    SHEEP.notify('A very insecure system of accounts has been introduced.','/?signin');
-  } else if (!SHEEP.dismissed.eucookies) {
+  if (!SHEEP.dismissed.eucookies) {
     SHEEP.dismiss('eucookies');
     SHEEP.notify(
       '<strong>This site uses localStorage.</strong><br>I don\'t care about your privacy.',
@@ -454,22 +451,6 @@ var SHEEP={
   // SHEEP.ajax('https://sheeptester.github.io/showads.js',e=>{},e=>window.location.replace('https://sheeptester.github.io?tryTurningOffYourAdblock'));
   else if (!Math.floor(Math.random()*5)) {
     switch (true) {
-      case !SHEEP.dismissed.leafism:
-        SHEEP.dismiss('leafism');
-        SHEEP.notify('Join the leaf cult!','https://sites.google.com/site/realaxolotls/members/michaela/triangle-bird-sign-ups/leafism');
-        break;
-      case !SHEEP.dismissed.gamepro5:
-        SHEEP.dismiss('gamepro5');
-        SHEEP.notify('Subscribe to Gamepro5!','/?gamepro5');
-        break;
-      case !SHEEP.dismissed.uselessbutwhatever:
-        SHEEP.dismiss('uselessbutwhatever');
-        SHEEP.notify('Visit the page you\'re already on!');
-        break;
-      case !SHEEP.dismissed.gaffachris:
-        SHEEP.dismiss('gaffachris');
-        SHEEP.notify('Watch quality trash!','/?gaffasaurus');
-        break;
       case !SHEEP.dismissed.ugwa:
         SHEEP.dismiss('ugwa');
         SHEEP.notify('See our Gunn Web App if you go to Gunn :)','https://orbiit.github.io/gunn-web-app/');
