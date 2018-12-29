@@ -84,7 +84,7 @@ nav .btn:hover {
   padding: 4px;
   margin: 8px;
 }
-@media (max-width: 500px) {
+@media (max-width: 570px) {
   #view {
     display: none;
   }
@@ -471,7 +471,7 @@ body.blank noscript {
 nav .btncontainer {
   display: inline-block;
 }
-@media (max-width:430px) {
+@media (max-width:480px) {
   nav .clickable {
     display: none;
   }
@@ -495,6 +495,18 @@ nav .btncontainer {
   nav.open .menuicon {
     background-image: url('/img/down.svg');
   }
+}
+.text-logo {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 25px;
+  padding: 7.5px;
+  vertical-align: top;
+}
+.text-logo span {
+  color: white;
+  padding: 0;
+  font-size: inherit;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
 }
 ::-webkit-scrollbar {
   width: 5px !important;
