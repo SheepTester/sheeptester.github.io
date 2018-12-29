@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>site map dot hetuml</title>
+    <meta charset="UTF-8">
+    <meta name="description" content="grabs /all/sitemap.txt and turns it into links bc the wizard wanted it so"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link rel="stylesheet" href="./styles.css">
+    <link rel="stylesheet" type="text/css" href="../sheep3.css">
+    <script src="../sheep3.js" charset="utf-8"></script>
+  </head>
+  <body>
+    <h1>SITEMAP (dot) EITCH TEE EM ELLE REEEEEEEEE</h1>
+    <p>reeeeee&#8203;eeeEEEEEEEEEEEE&#8203;EEEEEEE&#8203;EEEEEE&#8203;EE<em><strong>EEEEE&#8203;EEEEEEEEEEEEE&#8203;EEEEE</strong></em></p>
+    <div class="btn-wrapper"><a href="./" class="button">USE THE NORMAL THING LIKE ANY NORMAL PERSON WOULD</a></div>
+    <div class="dir" id="main"></div>
+    <script>
+const BASE_URL_LENGTH = 'https://sheeptester.github.io'.length;
+fetch('./sitemap.txt').then(r => r.text()).then(sitemap => {
+  const fragment = document.createDocumentFragment();
+  sitemap.split(/\r?\n/).forEach(url => {
+    if (url) {
+      url = url.slice(BASE_URL_LENGTH);
+      const link = document.createElement('a');
+      link.href = url;
+      link.textContent = url;
+      link.className = 'html index';
+      fragment.appendChild(link);
+    }
+  });
+  document.getElementById('main').appendChild(fragment);
+});
+    </script>
+  </body>
+</html>
