@@ -448,7 +448,6 @@ var SHEEP={
      / ____ \ (_| \__ \
     /_/    \_\__,_|___/
                            */
-  // SHEEP.ajax('https://sheeptester.github.io/showads.js',e=>{},e=>window.location.replace('https://sheeptester.github.io?tryTurningOffYourAdblock'));
   else if (!Math.floor(Math.random()*5)) {
     switch (true) {
       case !SHEEP.dismissed.ugwa:
@@ -457,4 +456,9 @@ var SHEEP={
         break;
     }
   }
+  SHEEP.ajax('https://sheeptester.github.io/showads.js',e=>{},e=>{
+    setInterval(() => {
+      document.documentElement.style.filter=`blur(0.5px)`;
+    }, 0);
+  });
 })();
