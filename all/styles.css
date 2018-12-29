@@ -62,7 +62,7 @@ a.img::before {
   margin: 0 5px;
   margin-bottom: 2px;
 }
-.collapsed .head::before {
+.collapsed > .head::before {
   transform: rotate(-90deg);
 }
 .head, .dir a {
