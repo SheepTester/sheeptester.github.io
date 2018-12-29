@@ -58,7 +58,7 @@ nav .clickable {
   transition: background .2s;
   color: rgba(255,255,255,0.8);
 }
-nav .clickable:not(.active):hover {
+nav .clickable:not(.active):hover, nav .clickable:not(.active):focus {
   background-color: rgba(0,0,0,0.2);
   color: white;
 }
@@ -78,7 +78,7 @@ nav .btn {
   background-color: rgba(255, 255, 255, 0.1);
   transition: all .2s;
 }
-nav .btn:hover {
+nav .btn:hover, nav .btn:focus {
   color: white;
   background-color: rgba(255, 255, 255, 0.3);
   padding: 4px;
@@ -141,7 +141,7 @@ nav .btn:hover {
     margin: 5px 16%;
   }
 }
-.place:hover {
+.place:hover, .place:focus {
   transform: scale(1.05);
   z-index: 10;
 }
@@ -155,7 +155,7 @@ nav .btn:hover {
   top: 0;
   transition: all .2s;
 }
-.place:hover img {
+.place:hover img, .place:focus img {
   opacity: 1;
   filter: grayscale(0%);
 }
@@ -178,7 +178,7 @@ nav .btn:hover {
 .placelist:nth-child(even) {
   background-color: rgba(255,255,255,0.1);
 }
-.placelist:hover {
+.placelist:hover, .placelist:focus {
   background-color: rgba(79,161,167,0.8);
 }
 #stalking {
