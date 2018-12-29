@@ -178,6 +178,9 @@ nav .btn:hover {
 .placelist:nth-child(even) {
   background-color: rgba(255,255,255,0.1);
 }
+.placelist:hover {
+  background-color: rgba(79,161,167,0.8);
+}
 #stalking {
   padding: 0 10px 50px;
   height: auto;
