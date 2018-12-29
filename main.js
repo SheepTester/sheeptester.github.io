@@ -56,56 +56,56 @@ var sheeptest=(function(){
   }
   var preferences=JSON.parse(cookie.preferences);
   var places2go=[
-    {url:'all/',img:'img/all2.png',name:'Almost Everything'},
+    {url:'/all/',img:'img/all2.png',name:'Almost Everything'},
 
     // FEATURED
-    {url:'platformre/',img:'img/plat.svg',name:'Platformre',featured:1},
+    {url:'/platformre/',img:'img/plat.svg',name:'Platformre',featured:1},
     {url:'https://orbiit.github.io/gunn-web-app/',img:'img/ugwa.png',name:'Unofficial Gunn Web App'},
-    {url:'javascripts/shepform/colour.html',img:'img/colourpick.png',name:'Color input II'},
+    {url:'/javascripts/shepform/colour.html',img:'img/colourpick.png',name:'Color input II'},
 
     // GAMES
-    {url:'platformre/maker/',img:'img/platmakre.png',name:'Level editor'},
-    {url:'platformre/nova/penland/',img:'img/newpenland.png',name:'Penland Nova'},
-    {url:'gamepro5/minigames/turkeys/',img:'img/turkeys.png',name:'Turkeys'},
-    {url:'telegraph/',img:'img/tele.png',name:'Telegraph'},
-    {url:'javascripts/clicker',img:'img/click.png',name:'Clicker Game'},
-    {url:'gamepro5/minigames/dodgedots.html',img:'img/reds.png',name:'Dodge dots game thing'},
-    {url:'gamepro5/minigames/color.html',img:'img/color.png',name:'Color fight thing'},
+    {url:'/platformre/maker/',img:'img/platmakre.png',name:'Level editor'},
+    {url:'/platformre/nova/penland/',img:'img/newpenland.png',name:'Penland Nova'},
+    {url:'/gamepro5/minigames/turkeys/',img:'img/turkeys.png',name:'Turkeys'},
+    {url:'/telegraph/',img:'img/tele.png',name:'Telegraph'},
+    {url:'/javascripts/clicker',img:'img/click.png',name:'Clicker Game'},
+    {url:'/gamepro5/minigames/dodgedots.html',img:'img/reds.png',name:'Dodge dots game thing'},
+    {url:'/gamepro5/minigames/color.html',img:'img/color.png',name:'Color fight thing'},
     {url:'https://orbiit.github.io/gunn-web-app/games/connect4.html',img:'img/connect4.png',name:'Connect 3'},
-    {url:'gunn-student-sim/',img:'img/gunn%20student%20simulator.png',name:'Gunn student simulator',new:1},
-    {url:'fun-gunn-run/',img:'img/fgr.png',name:'"Fun" Gunn Run',new:1},
+    {url:'/gunn-student-sim/',img:'img/gunn%20student%20simulator.png',name:'Gunn student simulator',new:1},
+    {url:'/fun-gunn-run/',img:'img/fgr.png',name:'"Fun" Gunn Run',new:1},
 
     // DIRECTORIES
-    {url:'javascripts/',img:'img/js.png',name:'Javascripts'},
-    {url:'words-go-here/misc/',img:'img/misc.png',name:'Miscellaneous'},
-    {url:'thingkingland/sitemap.html',img:'img/thingkingland.png',name:'Thingkingland'},
-    {url:'javascripts/particles/',img:'img/particles.png',name:'Particles'},
-    {url:'hello-world/',img:'img/helloworlddir.png',name:'Chromebook creations'},
+    {url:'/javascripts/',img:'img/js.png',name:'Javascripts'},
+    {url:'/words-go-here/misc/',img:'img/misc.png',name:'Miscellaneous'},
+    {url:'/thingkingland/sitemap.html',img:'img/thingkingland.png',name:'Thingkingland'},
+    {url:'/javascripts/particles/',img:'img/particles.png',name:'Particles'},
+    {url:'/hello-world/',img:'img/helloworlddir.png',name:'Chromebook creations'},
 
     // OTHER THINGS
-    {url:'trumpdays/',img:'img/trumpdays.png',name:'Trump days'},
-    {url:'roots/',img:'img/roots.png',name:'Roots and Affixes'},
-    {url:'happynumbers/',img:'img/mems.png',name:'Happy Number Finder'},
-    {url:'happynumbers/sieve/',img:'img/sieve.png',name:'Sieve of Eranthoses'},
-    {url:'animations/',img:'img/anima.png',name:'Animations'},
-    {url:'sentence/',img:'img/sentence.png',name:'Sentence Generator'},
-    {url:'contextmenutest.html',img:'img/rightclick.png',name:'Context Menu Test'},
-    {url:'longer-tweets/',img:'img/longtweets.png',name:'Longer Tweets'}, // hiddenish
-    {url:'themes/billy-goat/index-dark.html',img:'img/billy-goat.png',name:'Billy Goat Blog Theme'},
-    {url:'javascripts/carecalc.html',img:'img/carecalc.png',name:'Grade Care Calculator'},
+    {url:'/trumpdays/',img:'img/trumpdays.png',name:'Trump days'},
+    {url:'/roots/',img:'img/roots.png',name:'Roots and Affixes'},
+    {url:'/happynumbers/',img:'img/mems.png',name:'Happy Number Finder'},
+    {url:'/happynumbers/sieve/',img:'img/sieve.png',name:'Sieve of Eranthoses'},
+    {url:'/animations/',img:'img/anima.png',name:'Animations'},
+    {url:'/sentence/',img:'img/sentence.png',name:'Sentence Generator'},
+    {url:'/contextmenutest.html',img:'img/rightclick.png',name:'Context Menu Test'},
+    {url:'/longer-tweets/',img:'img/longtweets.png',name:'Longer Tweets'}, // hiddenish
+    {url:'/themes/billy-goat/index-dark.html',img:'img/billy-goat.png',name:'Billy Goat Blog Theme'},
+    {url:'/javascripts/carecalc.html',img:'img/carecalc.png',name:'Grade Care Calculator'},
 
     // CONFUSING THINGS
-    {url:'olamreee/',img:'img/olamreee.png',name:'OlamREEE'},
-    {url:'javascripts/imagetoscheme.html',img:'img/scheme.png',name:'Image to ASCII'},
-    {url:'javascripts/terminal/',img:'img/terminal.png',name:'Terminal'},
+    {url:'/olamreee/',img:'img/olamreee.png',name:'OlamREEE'},
+    {url:'/javascripts/imagetoscheme.html',img:'img/scheme.png',name:'Image to ASCII'},
+    {url:'/javascripts/terminal/',img:'img/terminal.png',name:'Terminal'},
     {url:'?penland',img:'img/penland.png',name:'Penland'},
-    {url:'javascripts/mutate.html',img:'img/life.png',name:'Cell Simulation'},
-    {url:'eyo-dictionary/',img:'img/eyo.png',name:'Eyo Dictionary'},
-    {url:'eyo-dictionary/validator.html',img:'img/die.png',name:'Eyo Word Validator'}
+    {url:'/javascripts/mutate.html',img:'img/life.png',name:'Cell Simulation'},
+    {url:'/eyo-dictionary/',img:'img/eyo.png',name:'Eyo Dictionary'},
+    {url:'/eyo-dictionary/validator.html',img:'img/die.png',name:'Eyo Word Validator'}
   ];
   if (preferences.view==='grid') {
     document.querySelector('#view').innerHTML='list view';
-    var inner='<a class="place" id="more"><div class="squarifier"><div></div></div><p>More links</p></a>';
+    var inner='';
     for (var i=0;i<places2go.length;i++) {
       var badge='';
       if (places2go[i].featured) badge='<span class="badge featured">featured</span>';
@@ -115,7 +115,7 @@ var sheeptest=(function(){
     document.querySelector('#places').innerHTML=inner;
   } else {
     document.querySelector('#view').innerHTML='grid view';
-    var inner='<a class="placelist" id="more">More links</a>';
+    var inner='';
     for (var i=0;i<places2go.length;i++) {
       var badge='';
       if (places2go[i].featured) badge='<span class="badge featured">featured</span>';
@@ -124,40 +124,6 @@ var sheeptest=(function(){
     }
     document.querySelector('#places').innerHTML=inner;
   }
-  var sites;
-  document.querySelector('#places').onclick=function(e){
-    /*if (e.target.dataset.href) window.location.href=e.target.dataset.href;
-    else if (e.target.parentNode.dataset.href) window.location.href=e.target.parentNode.dataset.href;
-    else */if (e.target.id==='more'||e.target.parentNode.id==='more') {
-      document.querySelector('.more').style.display='block';
-      function render() {
-        var el=document.querySelector('.morecontainer');
-        while (el.hasChildNodes()) el.removeChild(el.lastChild);
-        var s=document.createElement("span");
-        s.className='closemore';
-        s.innerHTML='close';
-        s.onclick=e=>document.querySelector('.more').style.display='none';
-        el.appendChild(s);
-        for (var i=0;i<sites.length;i+=2) {
-          var s=document.createElement("a");
-          s.href=sites[i+1];
-          s.textContent=sites[i];
-          el.appendChild(s);
-        }
-      }
-      if (!sites) SHEEP.ajax(
-        'https://gist.githubusercontent.com/SheepTester/74cf1a0d5da818c4e0470a84c6c00225/raw/sites.txt',
-        e=>{
-          sites=e.split(/\r?\n/);
-          for (var i=0;i<sites.length;i++) if (!sites[i]) sites.splice(i,1);
-          render();
-        }
-      );
-    }
-  };
-  document.querySelector('.more').onclick=e=>{
-    if (e.target.className==='more') document.querySelector('.more').style.display='none';
-  };
   document.querySelector("nav").ontouchstart=document.querySelector("nav").onclick=function(e){
     if (e.target.className=="clickable") {
       document.querySelector(".active.clickable").className="clickable";

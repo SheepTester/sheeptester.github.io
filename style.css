@@ -20,7 +20,7 @@ a {
   }
 }
 #background {
-  background-image: url('img/blur.png');
+  background-image: url('/img/blur.png');
   background-size: 100vw 100vh;
   background-position: center;
   position: fixed;
@@ -178,12 +178,6 @@ nav .btn:hover {
 .placelist:nth-child(even) {
   background-color: rgba(255,255,255,0.1);
 }
-.placelist#more {
-  background-color: rgba(255,255,255,0.2);
-}
-.placelist:hover, .placelist#more:hover {
-  background-color: rgba(79,161,167,0.8);
-}
 #stalking {
   padding: 0 10px 50px;
   height: auto;
@@ -260,7 +254,7 @@ nav .btn:hover {
 }
 #scratch {background-color: #25AFF4;}
 #scratch .ball {border: 5px solid white; background-color: #F8A839;}
-#instagram {background-image: url('img/instagram_gradient.png'); background-size: 100px 100px;}
+#instagram {background-image: url('/img/instagram_gradient.png'); background-size: 100px 100px;}
 #instagram .ball {border: 5px solid white; background-color: transparent;}
 #github {background-color: #181717;}
 #google {background-color: #DC4E41;}
@@ -310,13 +304,13 @@ nav .btn:hover {
   background-color: #7DAB55;
 }
 .featured:before {
-  background-image: url('img/star.svg');
+  background-image: url('/img/star.svg');
 }
 .new {
   background-color: #B18C5B;
 }
 .new:before {
-  background-image: url('img/material_new_releases.svg');
+  background-image: url('/img/material_new_releases.svg');
 }
 .place .badge {
   display: block;
@@ -454,7 +448,7 @@ body.blank noscript {
   display: none;
   height: 20px;
   width: 20px;
-  background-image: url('img/hamburger.svg');
+  background-image: url('/img/hamburger.svg');
   padding: 4px 6px;
   border: 2px solid rgba(0,0,0,0.2);
   margin: 4px;
@@ -496,67 +490,8 @@ nav .btncontainer {
     height: auto;
   }
   nav.open .menuicon {
-    background-image: url('img/down.svg');
+    background-image: url('/img/down.svg');
   }
-}
-.more {
-  display: none;
-  position: fixed;
-  background-color: rgba(0,0,0,0.5);
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 101;
-  cursor: pointer;
-}
-.more .morecontainer {
-  display: block;
-  position: absolute;
-  background-color: rgba(0,0,0,0.5);
-  top: 0;
-  left: 0;
-  bottom: 0;
-  height: 70vh;
-  width: 100%;
-  margin: auto 0;
-  padding: 20px;
-  box-sizing: border-box;
-  overflow-y: auto;
-  cursor: default;
-}
-.more .morecontainer a, .more .morecontainer .closemore {
-  display: inline-block;
-  background-color: #4FA1A7;
-  color: white;
-  text-decoration: none;
-  margin: 5px;
-  padding: 5px;
-  transition: all .2s;
-}
-.more .morecontainer .closemore {
-  background-color: #d24b4b;
-  cursor: pointer;
-}
-.more .morecontainer a:hover, .more .morecontainer .closemore:hover {
-  background-color: white;
-  color: #4FA1A7;
-}
-.more .morecontainer .closemore:hover {
-  color: #d24b4b;
-}
-.more .morecontainer a:active, .more .morecontainer .closemore:active {
-  box-shadow: inset 0 0 0 3px rgba(0,0,0,0.2);
-}
-.more disclaimer {
-  display: block;
-  font-size: 10px;
-  position: absolute;
-  bottom: 15vh;
-  right: 0;
-  margin: 10px;
-  color: rgba(255,255,255,0.5);
-  pointer-events: none;
 }
 ::-webkit-scrollbar {
   width: 5px !important;
