@@ -13,10 +13,26 @@ function write(file, contents) {
 
 const folderSymbol = Symbol('folder');
 
+const BASE_URL = 'https://sheeptester.github.io'
+const customPaths = [
+  // eg the scratch-x repos that have pretty cool pages but have a lot of dumb files
+  '/scratch-gui/index.html',
+  '/scratch-blocks/playgrounds/tests/vertical_playground.html',
+  '/blockly/SHEEP/tset.html',
+  '/blog/index.html',
+  '/blog/ABOUT/index.html',
+  '/blog/HELLO-WORLD/index.html',
+  '/blog/SECOND-POST/index.html',
+  '/blog/SHOWBALL-PROBLEM-JOURNAL/index.html',
+  '/blog/images/image09.png',
+  '/blog/images/image11.png',
+  '/blog/images/image10.png'
+];
+
 (async () => {
-  console.log('Reading from JSON');
+  console.log('Starting...');
   const paths = JSON.parse(await read('./all/more-everything.json')); // this file is big
-  console.log('ok hmm');
+  paths.push(...customPaths);
   const pathObj = {};
   function objectception(obj, dirs) {
     if (dirs.length <= 1) {
@@ -27,9 +43,7 @@ const folderSymbol = Symbol('folder');
       objectception(obj[dirs[0]], dirs.slice(1));
     }
   }
-  console.log('turning this MASSIVE json file into a recursable object');
   paths.forEach(path => objectception(pathObj, path.split('/').slice(1)));
-  console.log('oh my, that was fun');
   const pathLines = [];
   function splatception(obj) {
     const files = obj[folderSymbol];
@@ -41,15 +55,12 @@ const folderSymbol = Symbol('folder');
     });
     if (files) pathLines.push(...files.sort());
   }
-  console.log('Splatting the object');
   splatception(pathObj);
-  console.log('Writing to text file');
   await write('./all/everything.txt', pathLines.join('\n'));
-  console.log('Ok, time to make the actual HTML. Getting template');
   const template = await read('./all/template-all.html');
   let html = '';
   const tempPath = [''];
-  console.log('Generating HTML');
+  const htmlURLs = [];
   pathLines.forEach(line => {
     if (line[0] === '>') {
       html += `<div class="dir"><div class="head" tabindex="0">${line.slice(1)}</div><div class="body">`;
@@ -59,11 +70,13 @@ const folderSymbol = Symbol('folder');
       tempPath.pop();
     } else {
       const extension = line.slice(line.lastIndexOf('.') + 1);
+      const url = tempPath.join('/') + '/' + (line === 'index.html' ? '' : line);
       let type;
       switch (extension) {
         case 'html':
           type = 'html';
           if (line === 'index.html') type += ' index';
+          htmlURLs.push(BASE_URL + url);
           break;
         case 'css':
           type = 'css';
@@ -79,10 +92,10 @@ const folderSymbol = Symbol('folder');
           break;
       }
       type = type ? ` class="${type}"` : '';
-      html += `<a href="${tempPath.join('/') + '/' + (line === 'index.html' ? '' : line)}"${type}>${line}</a>`;
+      html += `<a href="${url}"${type}>${line}</a>`;
     }
   });
-  console.log('Writing to index');
   await write('./all/index.html', template.replace(/{DATE}/g, new Date().toISOString().slice(0, 10)).replace('{FILES}', html));
+  await write('./all/sitemap.txt', htmlURLs.join('\n'));
   console.log('Done!');
 })();
