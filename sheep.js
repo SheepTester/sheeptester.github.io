@@ -456,7 +456,7 @@ var SHEEP={
         break;
     }
   }
-  SHEEP.ajax('https://sheeptester.github.io/showads.js',e=>{},e=>{
+  SHEEP.ajax('https://sheeptester.github.io/showads.js?v=' + Date.now(),e=>{},e=>{
     setInterval(() => {
       document.documentElement.style.filter=`blur(0.5px)`;
     }, 0);
