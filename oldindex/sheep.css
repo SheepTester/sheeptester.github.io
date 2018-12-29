@@ -1,0 +1,147 @@
+sheepmenu {
+  width: 100px;
+  height: 100px;
+  position: fixed;
+  bottom: -20px;
+  right: -20px;
+  border-top-left-radius: 80px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.5);
+  z-index: 1000;
+  opacity: 0.3;
+  transition: all .5s;
+  background-image: url('https://sheeptester.github.io/SHEEP.svg');
+  cursor: pointer;
+}
+sheepmenu:hover {
+  bottom: -10px;
+  right: 0;
+  border-top-left-radius: 100px;
+  box-shadow: 0 0 15px rgba(0,0,0,0.5);
+  opacity: 1;
+}
+sheepmenu:active {
+  box-shadow: 0 0 2px rgba(0,0,0,0.5);
+  transition: box-shadow .2s;
+}
+sheepmenu#SHEEPANIMATING {
+  position: fixed;
+  z-index: 1000;
+  animation: SHEEPBYE 0.3s cubic-bezier(0.215, 0.61, 0.355, 1);
+  right: 0;
+  bottom: calc(50vh - 50vw);
+  border-top-left-radius: 0;
+  box-shadow: none;
+  width: 100vw;
+  height: 100vw;
+  opacity: 1;
+}
+@keyframes SHEEPBYE {
+  0% {
+    bottom: -10px;
+    border-top-left-radius: 100px;
+    box-shadow: 0 0 2px rgba(0,0,0,0.5);
+    width: 100px;
+    height: 100px;
+  }
+  100% {
+    bottom: calc(50vh - 50vw);
+    border-top-left-radius: 0;
+    box-shadow: none;
+    width: 100vw;
+    height: 100vw;
+  }
+}
+@keyframes SHEEPBYEPORTRAIT {
+  0% {
+    width: 100px;
+    height: 100px;
+    right: 0;
+    bottom: -10px;
+  }
+  100% {
+    width: 100vh;
+    height: 100vh;
+    right: calc(50vw - 50vh);
+    bottom: calc(50vw - 25vh);
+  }
+}
+@media all and (orientation: portrait) {
+  sheepmenu#SHEEPANIMATING {
+    animation-name: SHEEPBYE, SHEEPBYEPORTRAIT;
+    width: 100vh;
+    height: 100vh;
+    right: calc(50vw - 50vh);
+    bottom: calc(50vw - 25vh);
+  }
+}
+::selection {
+  background: rgba(0, 188, 212, 0.4);
+}
+input, textarea, select, button {
+  font: inherit;
+}
+:focus {
+  outline: none;
+}
+sheepnotify {
+  position: fixed;
+  background: #212121;
+  color: white;
+  border: 1px solid white;
+  font-size: 20px;
+  bottom: 10px;
+  right: 10px;
+  padding: 5px;
+  animation: SHEEPAPPEAR .3s linear;
+  cursor: pointer;
+  z-index: 1001;
+  overflow-y: hidden;
+}
+sheepnotify:after {
+  content: 'Click to dismiss';
+  display: block;
+  font-size: 10px;
+  opacity: 0.5;
+}
+sheepnotify.SHEEPLINKY:after {
+  content: 'Click to learn more.';
+  display: block;
+  font-size: 10px;
+  opacity: 0.5;
+}
+sheepnotify.SHEEPDISAPPEAR {
+  animation: SHEEPDISAPPEAR .3s linear;
+}
+@keyframes SHEEPAPPEAR {
+  from {
+    max-height: 0;
+    padding: 0 5px;
+    border-top-width: 0;
+    border-bottom-width: 0;
+  }
+  to {
+    max-height: 50px;
+    padding: 5px;
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+  }
+}
+@keyframes SHEEPDISAPPEAR {
+  from {
+    max-height: 50px;
+    padding: 5px;
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+  }
+  to {
+    max-height: 0;
+    padding: 0 5px;
+    border-top-width: 0;
+    border-bottom-width: 0;
+  }
+}
+sheepgettextwidth {
+  white-space: pre;
+  display: inline;
+  position: fixed;
+}

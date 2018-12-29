@@ -1,0 +1,31 @@
+body {
+  margin: 0;
+  font-size: 30px;
+  background: #212224;
+  color: #FFFFFF;
+  font-family: 'Roboto',sans-serif;
+}
+ul {
+  margin: 0;
+  padding: 5px;
+}
+li {
+  display: block;
+  padding-left: 5px;
+}
+a {
+  text-decoration: none;
+  padding-bottom: 1px;
+  color: #999999;
+}
+a:hover {
+  padding-bottom: 0;
+  border-bottom: solid 1px #999999;
+}
+a:active {
+  color: #FFFFFF;
+  border-bottom-color: #FFFFFF;
+}
+p {
+  margin: 0;
+}
