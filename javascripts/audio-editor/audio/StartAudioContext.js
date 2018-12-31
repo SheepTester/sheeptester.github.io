@@ -12,7 +12,7 @@
 	} else {
 		root.StartAudioContext = factory()
   }
-}(this, function () {
+}(window, function () {
 
 	//TAP LISTENER/////////////////////////////////////////////////////////////
 
@@ -141,7 +141,7 @@
 			//if it's an element, create a TapListener
 			var tap = new TapListener(element, context)
 			tapListeners.push(tap)
-		} 
+		}
 	}
 
 	/**
@@ -188,3 +188,4 @@
 
 	return StartAudioContext
 }))
+export default StartAudioContext;

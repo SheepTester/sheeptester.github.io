@@ -1,7 +1,7 @@
 import StartAudioContext from './StartAudioContext.js';
 //import bowser from 'bowser';
 
-//let AUDIO_CONTEXT;
+let AUDIO_CONTEXT;
 //if (!bowser.msie) {
     AUDIO_CONTEXT = new (window.AudioContext || window.webkitAudioContext)();
 
