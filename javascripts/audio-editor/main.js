@@ -1,5 +1,25 @@
-import {computeChunkedRMS} from './audio/audio-util.js';
-import AudioEffects from './audio/audio-effects.js';
-import AudioBufferPlayer from './audio/audio-buffer-player.js';
+import {handleFileUpload} from './file-uploader.js';
 
-let hi;
+import AudioEngine from './AudioEngine.js';
+import SharedAudioContext from './audio/shared-audio-context.js';
+
+import SoundEditor from './sound-editor.js';
+
+document.addEventListener('DOMContentLoaded', e => {
+  const addSound = document.getElementById('add-sound');
+  addSound.addEventListener('change', e => {
+    // https://github.com/LLK/scratch-gui/blob/develop/src/containers/sound-tab.jsx#L122
+
+    handleFileUpload(e.target, (buffer, fileType, fileName) => {
+      const audioBuffer = new AudioEngine(new SharedAudioContext())._decodeSound({data: {buffer}});
+      audioBuffer.then(audioBuffer => {
+        const editor = new SoundEditor({
+          sampleRate: audioBuffer.sampleRate,
+          samples: audioBuffer.getChannelData(0),
+          name: fileName
+        });
+        console.log(editor);
+      });
+    });
+  });
+});
