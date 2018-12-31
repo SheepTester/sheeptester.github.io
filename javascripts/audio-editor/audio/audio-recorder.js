@@ -1,5 +1,5 @@
-import 'get-float-time-domain-data';
-import getUserMedia from 'get-user-media-promise';
+import './get-float-time-domain-data.min.js';
+import getUserMedia from './get-user-media-promise.min.js';
 import SharedAudioContext from './shared-audio-context.js';
 import {computeRMS} from './audio-util.js';
 
