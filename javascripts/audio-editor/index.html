@@ -21,7 +21,7 @@
         position: absolute;
         width: 1px;
         height: 100%;
-        background-color: blue;
+        background-color: red;
         left: 0;
         top: 0;
         display: none;
@@ -29,7 +29,7 @@
       .selection-range {
         position: absolute;
         height: 100%;
-        background-color: rgba(0, 0, 0, 0.1);
+        background-color: rgba(0, 255, 255, 0.1);
         top: 0;
         left: 0;
         right: 0;
@@ -39,11 +39,21 @@
         position: absolute;
         width: 1px;
         height: 100%;
-        background-color: rgba(0, 0, 0, 0.5);
+        background-color: rgba(0, 0, 255, 0.5);
         top: 0;
       }
       .selection-range::before { left: -0.5px; }
       .selection-range::after { right: -0.5px; }
+      .waveform {
+        position: absolute;
+        top: 0;
+        left: 0;
+        -ms-interpolation-mode: bicubic;
+        image-rendering: -moz-crisp-edges;
+        image-rendering: -webkit-optimize-contrast;
+        image-rendering: crisp-edges;
+        image-rendering: pixelated;
+      }
     </style>
   </head>
   <body>

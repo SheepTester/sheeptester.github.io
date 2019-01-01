@@ -19,8 +19,8 @@ document.addEventListener('DOMContentLoaded', e => {
           name: fileName,
           clipboard: clipboard
         });
-        console.log(editor);
         document.body.appendChild(editor.render());
+        editor.renderWaveform();
       });
     });
   });
