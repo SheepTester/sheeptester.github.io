@@ -6,8 +6,8 @@ import SharedAudioContext from './audio/shared-audio-context.js';
 import SoundEditor from './sound-editor.js';
 
 document.addEventListener('DOMContentLoaded', e => {
-  const addSound = document.getElementById('add-sound');
-  addSound.addEventListener('change', e => {
+  const clipboard = {data: null};
+  document.getElementById('add-sound').addEventListener('change', e => {
     // https://github.com/LLK/scratch-gui/blob/develop/src/containers/sound-tab.jsx#L122
 
     handleFileUpload(e.target, (buffer, fileType, fileName) => {
@@ -16,9 +16,11 @@ document.addEventListener('DOMContentLoaded', e => {
         const editor = new SoundEditor({
           sampleRate: audioBuffer.sampleRate,
           samples: audioBuffer.getChannelData(0),
-          name: fileName
+          name: fileName,
+          clipboard: clipboard
         });
         console.log(editor);
+        document.body.appendChild(editor.render());
       });
     });
   });

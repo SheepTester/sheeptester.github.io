@@ -7,12 +7,46 @@
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <link rel="stylesheet" type="text/css" href="../../sheep3.css">
     <script src="../../sheep3.js" charset="utf-8"></script>
+    <script src="../_dom.js" charset="utf-8"></script>
+    <script src="./select.js" charset="utf-8"></script>
+    <script src="./main.js" type="module" charset="utf-8"></script>
     <style>
-      /**/
+      .preview {
+        position: relative;
+        width: 300px;
+        height: 50px;
+        border: 1px solid rgba(0, 0, 0, 0.5);
+      }
+      .playhead {
+        position: absolute;
+        width: 1px;
+        height: 100%;
+        background-color: blue;
+        left: 0;
+        top: 0;
+        display: none;
+      }
+      .selection-range {
+        position: absolute;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.1);
+        top: 0;
+        left: 0;
+        right: 0;
+      }
+      .selection-range::before, .selection-range::after {
+        content: '';
+        position: absolute;
+        width: 1px;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        top: 0;
+      }
+      .selection-range::before { left: -0.5px; }
+      .selection-range::after { right: -0.5px; }
     </style>
   </head>
   <body>
     <p><label for="add-sound">add sound: </label><input type="file" id="add-sound" accept=".mp3,.wav"></p>
-    <script src="./main.js" type="module" charset="utf-8"></script>
   </body>
 </html>
