@@ -5,6 +5,26 @@ import SharedAudioContext from './audio/shared-audio-context.js';
 
 import SoundEditor from './sound-editor.js';
 
+const adjectives = [
+  'new',
+  'pretty cool',
+  'interesting',
+  'awesome',
+  'empty',
+  'fascinating',
+  'untitled',
+  'nameless',
+  'loud',
+  'quiet',
+  'intriguing',
+  'okay',
+  'audible'
+];
+function randomName() {
+  const adjective = adjectives[Math.floor(Math.random() * adjectives.length)];
+  return `A${'aeiou'.includes(adjective[0]) ? 'n' : ''} ${adjective} sound`;
+}
+
 document.addEventListener('DOMContentLoaded', e => {
   const audioContext = new SharedAudioContext();
   const clipboard = {data: null};
@@ -30,7 +50,7 @@ document.addEventListener('DOMContentLoaded', e => {
     const editor = new SoundEditor({
       sampleRate: 48000,
       samples: new Float32Array([0]),
-      name: 'New sound',
+      name: randomName(),
       clipboard: clipboard
     });
     document.body.appendChild(createElement('hr'))
