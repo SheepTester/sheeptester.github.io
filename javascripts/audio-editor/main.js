@@ -19,6 +19,7 @@ document.addEventListener('DOMContentLoaded', e => {
           name: fileName,
           clipboard: clipboard
         });
+        document.body.appendChild(createElement('hr'))
         document.body.appendChild(editor.render());
         editor.renderWaveform();
       });

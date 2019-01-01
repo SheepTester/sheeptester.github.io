@@ -10,6 +10,9 @@ import SharedAudioContext from './audio/shared-audio-context.js';
 
 const UNDO_STACK_SIZE = 99;
 
+const WIDTH = 600;
+const HEIGHT = 100;
+
 class SoundEditor {
 
   constructor(props) {
@@ -65,10 +68,10 @@ class SoundEditor {
     const levels = this.state.chunkLevels.length;
     c.clearRect(0, 0, c.canvas.width, c.canvas.height);
     const segmentWidth = c.canvas.width / levels;
-    const halfHeight = c.canvas.height / 2;
+    const waveHeight = c.canvas.height / 3;
     c.fillStyle = '#333';
     this.state.chunkLevels.forEach((v, i) => {
-      c.fillRect(i * segmentWidth, halfHeight - v * halfHeight, segmentWidth, v * halfHeight * 2);
+      c.fillRect(i * segmentWidth, Math.floor(c.canvas.height / 2 - v * waveHeight), segmentWidth, Math.ceil(v * waveHeight * 2));
     });
   }
 
@@ -283,8 +286,8 @@ class SoundEditor {
     elems.waveform = createElement('canvas', {
       classes: 'waveform',
       attributes: {
-        width: 300,
-        height: 50
+        width: WIDTH,
+        height: HEIGHT
       }
     });
     elems.waveformContext = elems.waveform.getContext('2d');
@@ -310,8 +313,16 @@ class SoundEditor {
             elems.playhead = createElement('div', { classes: 'playhead' }),
             elems.selection = createElement('div', { classes: 'selection-range' })
           ],
+          styles: {
+            width: WIDTH + 'px',
+            height: HEIGHT + 'px'
+          },
           listeners: {
             mousedown: e => {
+              if (elems.thatWasAFinger) {
+                elems.thatWasAFinger = false;
+                return;
+              }
               const rect = elems.preview.getBoundingClientRect();
               const initialPosition = (e.clientX - rect.left) / rect.width;
               this.state.selectionEnd = 1;
@@ -331,6 +342,31 @@ class SoundEditor {
               document.addEventListener('mousemove', updatePosition);
               document.addEventListener('mouseup', e => {
                 document.removeEventListener('mousemove', updatePosition);
+              }, {once: true});
+            },
+            touchstart: e => {
+              elems.thatWasAFinger = true;
+              const rect = elems.preview.getBoundingClientRect();
+              const finger = e.changedTouches[0].identifier;
+              const initialPosition = (e.touches[finger].clientX - rect.left) / rect.width;
+              this.state.selectionEnd = 1;
+              this.updateSelectionStart(initialPosition);
+              this.updateSelectionEnd(initialPosition);
+              const self = this;
+              function updatePosition(e) {
+                const position = (e.touches[finger].clientX - rect.left) / rect.width;
+                if (position < initialPosition) {
+                  self.state.mainSelection = 'start';
+                  self.updateSelectionStart(position);
+                } else {
+                  self.state.mainSelection = 'end';
+                  self.updateSelectionEnd(position);
+                }
+                e.preventDefault();
+              }
+              document.addEventListener('touchmove', updatePosition, {passive: false});
+              document.addEventListener('touchend', e => {
+                document.removeEventListener('touchmove', updatePosition);
               }, {once: true});
             }
           }
@@ -499,7 +535,7 @@ class SoundEditor {
             prevent = true;
           } else if (notShift && e.keyCode === 32) {
             if (this.state.playhead === null) this.play();
-            else this.stop();
+            else this.stopPlaying();
             prevent = true;
           }
           if (prevent) e.preventDefault();
