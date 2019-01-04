@@ -55,68 +55,17 @@ var sheeptest=(function(){
     cookie.preferences='{"view":"grid"}';
   }
   var preferences=JSON.parse(cookie.preferences);
-  var places2go=[
-    {url:'/all/',img:'img/all2.png',name:'Almost Everything'},
-
-    // FEATURED
-    {url:'/platformre/',img:'img/plat.svg',name:'Platformre'},
-    {url:'https://orbiit.github.io/gunn-web-app/',img:'img/ugwa.png',name:'Unofficial Gunn Web App'},
-    {url:'/javascripts/shepform/colour.html',img:'img/colourpick.png',name:'Color input II'},
-
-    // GAMES
-    {url:'/platformre/maker/',img:'img/platmakre.png',name:'Level editor'},
-    {url:'/platformre/nova/penland/',img:'img/newpenland.png',name:'Penland Nova'},
-    {url:'/gamepro5/minigames/turkeys/',img:'img/turkeys.png',name:'Turkeys'},
-    {url:'/telegraph/',img:'img/tele.png',name:'Telegraph'},
-    {url:'/javascripts/clicker',img:'img/click.png',name:'Clicker Game'},
-    {url:'/gamepro5/minigames/dodgedots.html',img:'img/reds.png',name:'Dodge dots game thing'},
-    {url:'/gamepro5/minigames/color.html',img:'img/color.png',name:'Color fight thing'},
-    {url:'https://orbiit.github.io/gunn-web-app/games/connect4.html',img:'img/connect4.png',name:'Connect 3'},
-    {url:'/gunn-student-sim/',img:'img/gunn%20student%20simulator.png',name:'Gunn student simulator'},
-    {url:'/fun-gunn-run/',img:'img/fgr.png',name:'"Fun" Gunn Run'},
-
-    // DIRECTORIES
-    {url:'/javascripts/',img:'img/js.png',name:'Javascripts'},
-    {url:'/words-go-here/misc/',img:'img/misc.png',name:'Miscellaneous'},
-    {url:'/thingkingland/sitemap.html',img:'img/thingkingland.png',name:'Thingkingland'},
-    {url:'/javascripts/particles/',img:'img/particles.png',name:'Particles'},
-    {url:'/hello-world/',img:'img/helloworlddir.png',name:'Chromebook creations'},
-
-    // OTHER THINGS
-    {url:'/trumpdays/',img:'img/trumpdays.png',name:'Trump days'},
-    {url:'/roots/',img:'img/roots.png',name:'Roots and Affixes'},
-    {url:'/happynumbers/',img:'img/mems.png',name:'Happy Number Finder'},
-    {url:'/happynumbers/sieve/',img:'img/sieve.png',name:'Sieve of Eranthoses'},
-    {url:'/animations/',img:'img/anima.png',name:'Animations'},
-    {url:'/sentence/',img:'img/sentence.png',name:'Sentence Generator'},
-    {url:'/contextmenutest.html',img:'img/rightclick.png',name:'Context Menu Test'},
-    {url:'/longer-tweets/',img:'img/longtweets.png',name:'Longer Tweets'}, // hiddenish
-    {url:'/themes/billy-goat/index-dark.html',img:'img/billy-goat.png',name:'Billy Goat Blog Theme'},
-    {url:'/javascripts/carecalc.html',img:'img/carecalc.png',name:'Grade Care Calculator'},
-
-    // CONFUSING THINGS
-    {url:'/olamreee/',img:'img/olamreee.png',name:'OlamREEE'},
-    {url:'/javascripts/imagetoscheme.html',img:'img/scheme.png',name:'Image to ASCII'},
-    {url:'/javascripts/terminal/',img:'img/terminal.png',name:'Terminal'},
-    {url:'?penland',img:'img/penland.png',name:'Penland'},
-    {url:'/javascripts/mutate.html',img:'img/life.png',name:'Cell Simulation'},
-    {url:'/eyo-dictionary/',img:'img/eyo.png',name:'Eyo Dictionary'},
-    {url:'/eyo-dictionary/validator.html',img:'img/die.png',name:'Eyo Word Validator'}
-  ];
   if (preferences.view==='grid') {
     document.querySelector('#view').innerHTML='list view';
-    var inner='';
-    for (var i=0;i<places2go.length;i++) {
-      inner+='<a class="place" href="'+places2go[i].url+'"><div class="squarifier"><div></div></div><img src="'+places2go[i].img+'" alt="A picture."/><p>'+places2go[i].name+'</p></a>';
-    }
-    document.querySelector('#places').innerHTML=inner;
+    Array.from(document.getElementsByClassName('place')).forEach(link => {
+      link.innerHTML = `<div class="squarifier"><div></div></div><img src="${link.dataset.image}" alt="A picture."/>` + link.innerHTML;
+    });
   } else {
     document.querySelector('#view').innerHTML='grid view';
-    var inner='';
-    for (var i=0;i<places2go.length;i++) {
-      inner+='<a class="placelist" href="'+places2go[i].url+'">'+places2go[i].name+'</a>';
-    }
-    document.querySelector('#places').innerHTML=inner;
+    document.body.classList.add('list-view');
+    Array.from(document.getElementsByClassName('place')).forEach(link => {
+      link.className = 'placelist';
+    });
   }
   document.querySelector("nav").ontouchstart=document.querySelector("nav").onclick=function(e){
     if (e.target.className=="clickable") {

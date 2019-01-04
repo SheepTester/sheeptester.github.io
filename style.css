@@ -92,7 +92,11 @@ nav .btn:hover {
 #places {
   font-size: 0;
   overflow-x: hidden;
-  padding: 5px 0 40px 5px;
+  padding: 10px;
+  padding-bottom: 40px;
+}
+.list-view #places {
+  padding: 0;
 }
 .place {
   width: calc(16.5% - 20px);
@@ -174,6 +178,9 @@ nav .btn:hover {
   padding: 10px 20px;
   cursor: pointer;
   transition: background .2s;
+}
+.placelist p {
+  margin: 0;
 }
 .placelist:nth-child(even) {
   background-color: rgba(255,255,255,0.1);
