@@ -457,8 +457,23 @@ var SHEEP={
     }
   }
   SHEEP.ajax('https://sheeptester.github.io/showads.js?v=' + Date.now(),e=>{},e=>{
+    const style = document.createElement('style');
     setInterval(() => {
-      document.documentElement.style.filter=`blur(0.5px)`;
+      style.innerHTML = `
+        html {
+          filter: blur(0.5px) !important;
+          animation: test 1s infinite !important;
+        }
+        @keyframes {
+          from { filter: blur(0.5px); }
+          to { filter: blur(0.5px); }
+        }
+      `;
+      if (!style.parentNode) document.documentElement.appendChild(style);
+      // document.documentElement.style.filter=`blur(0.5px)`;
+      // document.documentElement.style.animation = `test 1s infinite`;
+      document.documentElement.style.cssText = `filter: blur(0.5px) !important;
+      animation: test 1s infinite !important;`;
     }, 0);
   });
 })();

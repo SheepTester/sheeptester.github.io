@@ -184,10 +184,11 @@ nav .btn:hover {
 #stalking {
   padding: 0 10px 50px;
   height: auto;
+  text-align: center;
 }
 #stalking p, #stalking h1 {
   margin: 0;
-  padding: 5px 0;
+  padding: 15px 0;
   font-weight: normal;
 }
 #stalking p strong {
@@ -208,17 +209,20 @@ nav .btn:hover {
 .list {
   background-color: rgba(255,255,255,0.1);
   display: block;
-  padding: 0 5px;
-  white-space: nowrap;
+  text-align: center;
+  padding: 10px;
   overflow-x: auto;
   overflow-y: hidden;
+  border-radius: 10px;
+  max-width: 620px;
+  margin: 15px auto;
 }
 .list .social, .mini-social {
   display: inline-block;
   height: 100px;
   width: 100px;
   border-radius: 5px;
-  margin: 15px 10px;
+  margin: 10px;
   position: relative;
   cursor: pointer;
   background-color: white;
@@ -272,11 +276,25 @@ nav .btn:hover {
 #twitch .ball {border: 5px solid white; background-color: transparent;}
 #replit {background-color: #F4F4F5;}
 #replit .ball {border: 15px solid #697C84; background-color: #4F5151;}
+#gitlab {background-color: #2D2D61;}
+#gitlab .ball {background-color: #E1452D;}
 #codecademy .ball {border: 5px solid #1F4056; background-color: transparent;}
 #minecraft {background-color: #6CD45A;}
 #minecraft .ball {background-color: #000000;}
 #discord {background-color: #7289DA;}
 #facebook {background-color: #3B5998;}
+#duolingo {background-color: #30A7E4;}
+#duolingo .ball {background-color: #77C700;}
+#jsperf {background-image: linear-gradient(#6ca5dd, #1a6ab9);}
+#jsperf .ball {background-color: white;}
+#gravatar {background-color: #1E8CBE;}
+#gravatar .ball {background-color: white;}
+#quizlet {background-color: #4458B0;}
+#quizlet .ball {background-color: white;}
+#lernu {background-color: #347F78;}
+#lernu .ball {background-color: white;}
+#storyboardthat {background-color: white;}
+#storyboardthat .ball {background-color: #729DC8;}
 #redirects h1 {
   margin: 0;
   padding: 10px;
@@ -285,20 +303,23 @@ nav .btn:hover {
 #redirects dl {
   margin: 0;
   padding: 10px;
+  font-size: 16px;
 }
 #redirects dt {
   float: left;
   clear: left;
   padding-right: 5px;
   margin: 5px 0;
+  color: white;
 }
 #redirects dt:before {
   content: '?';
 }
 #redirects dd {
-  margin: 0;
   float: left;
   margin: 5px 0;
+  margin-left: 15px;
+  margin-bottom: 10px;
 }
 #redirects a {
   color: inherit;
