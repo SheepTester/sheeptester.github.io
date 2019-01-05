@@ -176,6 +176,10 @@ nav .btn:hover, .tabkeyfocus nav .btn:focus {
   position: relative;
   text-align: center;
   text-shadow: 0 0 20px black;
+  transition: transform .2s;
+}
+.place:hover p, .place:focus p {
+  transform: scale(1.1);
 }
 .placelist {
   width: 100%;
@@ -258,6 +262,10 @@ nav .btn:hover, .tabkeyfocus nav .btn:focus {
   left: 0;
   right: 0;
   box-sizing: border-box;
+  transition: transform .2s;
+}
+.list .social:hover .ball, .list .social:focus .ball {
+  transform: scale(1.2);
 }
 .mini-social {
   cursor: auto;
