@@ -33,7 +33,7 @@ a {
   display: none;
   overflow: auto;
 }
-.page.active {
+.page.active, .page:target {
   display: block;
 }
 nav {
@@ -47,18 +47,19 @@ nav {
   font-size: 0;
   z-index: 15;
 }
-nav span {
+nav span, nav a {
   padding: 10px;
   display: inline-block;
   font-size: 20px;
   color: white;
 }
 nav .clickable {
+  text-decoration: none;
   cursor: pointer;
   transition: background .2s;
   color: rgba(255,255,255,0.8);
 }
-nav .clickable:not(.active):hover {
+nav .clickable:not(.active):hover, .tabkeyfocus .clickable:not(.active):focus {
   background-color: rgba(0,0,0,0.2);
   color: white;
 }
@@ -78,7 +79,7 @@ nav .btn {
   background-color: rgba(255, 255, 255, 0.1);
   transition: all .2s;
 }
-nav .btn:hover {
+nav .btn:hover, .tabkeyfocus nav .btn:focus {
   color: white;
   background-color: rgba(255, 255, 255, 0.3);
   padding: 4px;
@@ -94,9 +95,14 @@ nav .btn:hover {
   overflow-x: hidden;
   padding: 10px;
   padding-bottom: 40px;
+  display: block;
+}
+:target ~ #places {
+  display: none;
 }
 .list-view #places {
   padding: 0;
+  padding-bottom: 40px;
 }
 .place {
   width: calc(16.5% - 20px);
@@ -174,7 +180,7 @@ nav .btn:hover {
 .placelist {
   width: 100%;
   display: block;
-  font-size: 60px;
+  font-size: 30px;
   padding: 10px 20px;
   cursor: pointer;
   transition: background .2s;
@@ -204,6 +210,7 @@ nav .btn:hover {
 }
 #milliage, #yage {
   font-weight: bold;
+  font-family: monospace;
 }
 #stalking ul {
   padding: 5px;
@@ -395,21 +402,20 @@ sheepmenu.playhellos > svg {
 }
 body.blank {
   background-color: white;
-  color: black;
+  opacity: 0;
 }
-body.blank *:not(noscript) {
+noscript, #error {
+  font-size: 24px;
+  background-color: #f44336;
+  color: white;
+  padding: 20px;
+  display: block;
+}
+#error {
   display: none;
-}
-body.blank noscript {
-  line-height: 18px;
-  height: 18px;
-  width: 100%;
-  text-align: center;
-  margin: auto;
-  position: absolute;
-  top: 0;
-  left: 0;
-  bottom: 0;
+  font-family: monospace;
+  white-space: pre-wrap;
+  font-size: 10px;
 }
 .menuicon {
   display: none;
@@ -437,7 +443,9 @@ nav .btncontainer {
 }
 @media (max-width:480px) {
   nav .clickable {
-    display: none;
+    display: block;
+    visibility: hidden;
+    animation: stay-displayed-briefly 0.1s;
   }
   nav .btncontainer {
     background-color: rgba(79,161,167,0.7);
@@ -446,19 +454,31 @@ nav .btncontainer {
     left: 0;
     width: 100%;
     display: block;
+    height: 0;
+    animation: stay-heighted-briefly 0.1s;
   }
   .menuicon {
     display: inline-block;
   }
-  nav.open .clickable {
-    display: block;
+  .menuicon:focus ~ .btncontainer > .clickable, .btncontainer:focus-within > .clickable {
+    visibility: visible;
+    animation: none;
   }
-  nav.open .btncontainer {
+  .menuicon:focus ~ .btncontainer, .btncontainer:focus-within {
     height: auto;
+    animation: none;
   }
-  nav.open .menuicon {
+  .menuicon:focus {
     background-image: url('/img/down.svg');
   }
+}
+@keyframes stay-heighted-briefly {
+  0% { height: auto; }
+  100% { height: auto; }
+}
+@keyframes stay-displayed-briefly {
+  0% { visibility: visible; }
+  100% { visibility: visible; }
 }
 .text-logo {
   color: rgba(255, 255, 255, 0.7);

@@ -36,71 +36,23 @@
     <link rel="stylesheet" type="text/css" href="style.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
   </head>
-  <body class='blank'>
-    <noscript>Your Javascript isn't working.</noscript>
+  <body class="list-view tabkeyfocus">
+    <script>document.body.classList.add('blank');</script>
     <nav>
-      <span class='menuicon'></span>
+      <span class='menuicon' tabindex="0"></span>
       <span class="text-logo"><span>Sheep</span>Tester</span>
       <div class="btncontainer">
-        <span class='clickable active' data-place='places'>places</span>
-        <span class='clickable' data-place='stalking'>stalking</span>
-        <span class='clickable' data-place='redirects'>redirects</span>
+        <a class='clickable' href='#places'>places</a>
+        <a class='clickable' href='#stalking'>stalking</a>
+        <a class='clickable' href='#redirects'>redirects</a>
       </div>
-      <span class='btn' id='view'>list/grid view</span>
+      <span class='btn' id='view' tabindex="0">list/grid view</span>
     </nav>
     <div id="background"></div>
-    <div id="places" class='page active'>
-      <a class="place" href="/all/" data-image="img/all2.png"><p>Almost Everything</p></a>
-
-      <!-- FEATURED -->
-      <a class="place" href="/platformre/" data-image="img/plat.svg"><p>Platformre</p></a>
-      <a class="place" href="https://orbiit.github.io/gunn-web-app/" data-image="img/ugwa.png"><p>Unofficial Gunn Web App</p></a>
-      <a class="place" href="/javascripts/shepform/colour.html" data-image="img/colourpick.png"><p>Color input II</p></a>
-
-      <!-- GAMES -->
-      <a class="place" href="/platformre/maker/" data-image="img/platmakre.png"><p>Level editor</p></a>
-      <a class="place" href="/platformre/nova/penland/" data-image="img/newpenland.png"><p>Penland Nova</p></a>
-      <a class="place" href="/gamepro5/minigames/turkeys/" data-image="img/turkeys.png"><p>Turkeys</p></a>
-      <a class="place" href="/telegraph/" data-image="img/tele.png"><p>Telegraph</p></a>
-      <a class="place" href="/javascripts/clicker" data-image="img/click.png"><p>Clicker Game</p></a>
-      <a class="place" href="/gamepro5/minigames/dodgedots.html" data-image="img/reds.png"><p>Dodge dots game thing</p></a>
-      <a class="place" href="/gamepro5/minigames/color.html" data-image="img/color.png"><p>Color fight thing</p></a>
-      <a class="place" href="https://orbiit.github.io/gunn-web-app/games/connect4.html" data-image="img/connect4.png"><p>Connect 3</p></a>
-      <a class="place" href="/gunn-student-sim/" data-image="img/gunn%20student%20simulator.png"><p>Gunn student simulator</p></a>
-      <a class="place" href="/fun-gunn-run/" data-image="img/fgr.png"><p>"Fun" Gunn Run</p></a>
-
-      <!-- DIRECTORIES -->
-      <a class="place" href="/javascripts/" data-image="img/js.png"><p>Javascripts</p></a>
-      <a class="place" href="/words-go-here/misc/" data-image="img/misc.png"><p>Miscellaneous</p></a>
-      <a class="place" href="/thingkingland/sitemap.html" data-image="img/thingkingland.png"><p>Thingkingland</p></a>
-      <a class="place" href="/javascripts/particles/" data-image="img/particles.png"><p>Particles</p></a>
-      <a class="place" href="/hello-world/" data-image="img/helloworlddir.png"><p>Chromebook creations</p></a>
-
-      <!-- OTHER THINGS -->
-      <a class="place" href="/trumpdays/" data-image="img/trumpdays.png"><p>Trump days</p></a>
-      <a class="place" href="/roots/" data-image="img/roots.png"><p>Roots and Affixes</p></a>
-      <a class="place" href="/happynumbers/" data-image="img/mems.png"><p>Happy Number Finder</p></a>
-      <a class="place" href="/happynumbers/sieve/" data-image="img/sieve.png"><p>Sieve of Eranthoses</p></a>
-      <a class="place" href="/animations/" data-image="img/anima.png"><p>Animations</p></a>
-      <a class="place" href="/sentence/" data-image="img/sentence.png"><p>Sentence Generator</p></a>
-      <a class="place" href="/contextmenutest.html" data-image="img/rightclick.png"><p>Context Menu Test</p></a>
-      <a class="place" href="/longer-tweets/" data-image="img/longtweets.png"><p>Longer Tweets</p></a>
-      <a class="place" href="/themes/billy-goat/index-dark.html" data-image="img/billy-goat.png"><p>Billy Goat Blog Theme</p></a>
-      <a class="place" href="/javascripts/carecalc.html" data-image="img/carecalc.png"><p>Grade Care Calculator</p></a>
-
-      <!-- CONFUSING THINGS -->
-      <a class="place" href="/olamreee/" data-image="img/olamreee.png"><p>OlamREEE</p></a>
-      <a class="place" href="/javascripts/imagetoscheme.html" data-image="img/scheme.png"><p>Image to ASCII</p></a>
-      <a class="place" href="/javascripts/terminal/" data-image="img/terminal.png"><p>Terminal</p></a>
-      <a class="place" href="?penland" data-image="img/penland.png"><p>Penland</p></a>
-      <a class="place" href="/javascripts/mutate.html" data-image="img/life.png"><p>Cell Simulation</p></a>
-      <a class="place" href="/eyo-dictionary/" data-image="img/eyo.png"><p>Eyo Dictionary</p></a>
-      <a class="place" href="/eyo-dictionary/validator.html" data-image="img/die.png"><p>Eyo Word Validator</p></a>
-    </div>
     <div id="stalking" class='page'>
       <p><strong>Hellos</strong>, I am Sean aka SheepTester or Sheep_tester, depending on the day.</p>
       <p>I find sheep, front end stuff, and constructed languages interesting.</p>
-      <p>I was born on 9apr'3@17:08, which makes me <span id='milliage'>a few</span> milliseconds or <span id='yage'>too many</span> years old.</p>
+      <p>I was born on 2003-04-09 at 17:08 PT, which makes me <span id='milliage'>a few</span> milliseconds or <span id='yage'>too many</span> years old.</p>
       <p>The following links are abstract representations of my social media:</p>
       <div class="list">
         <a class="social" id="github" href="https://github.com/SheepTester"><span class="ball"></span></a>
@@ -146,6 +98,57 @@
         <dt>js[ANYTHING]</dt><dd>redirects to a <a href="?js">jumpscare</a>. You can put anything after the js as a decoy (eg "jstutorial" since "js" could stand for a "javascript")</dd>
         <dt>try[ANYTHING]</dt><dd>redirects to the Google Images results for searching "<a href="?try">trypophobia</a>." You can put anything after the try as a decoy (eg "tryiteditor" since "try" is an English word). Apologies to all victims.</dd>
       </dl>
+    </div>
+    <!-- places at bottom so it can be default shown for non-JS users -->
+    <div id="places" class='page'>
+      <noscript>The rest of this site requires JavaScript. Please turn it on.</noscript>
+      <div id="error"></div>
+      <a class="placelist" href="/all/" data-image="img/all2.png"><p>Almost Everything</p></a>
+
+      <!-- FEATURED -->
+      <a class="placelist" href="/platformre/" data-image="img/plat.svg"><p>Platformre</p></a>
+      <a class="placelist" href="https://orbiit.github.io/gunn-web-app/" data-image="img/ugwa.png"><p>Unofficial Gunn Web App</p></a>
+      <a class="placelist" href="/javascripts/shepform/colour.html" data-image="img/colourpick.png"><p>Color input II</p></a>
+
+      <!-- GAMES -->
+      <a class="placelist" href="/platformre/maker/" data-image="img/platmakre.png"><p>Level editor</p></a>
+      <a class="placelist" href="/platformre/nova/penland/" data-image="img/newpenland.png"><p>Penland Nova</p></a>
+      <a class="placelist" href="/gamepro5/minigames/turkeys/" data-image="img/turkeys.png"><p>Turkeys</p></a>
+      <a class="placelist" href="/telegraph/" data-image="img/tele.png"><p>Telegraph</p></a>
+      <a class="placelist" href="/javascripts/clicker" data-image="img/click.png"><p>Clicker Game</p></a>
+      <a class="placelist" href="/gamepro5/minigames/dodgedots.html" data-image="img/reds.png"><p>Dodge dots game thing</p></a>
+      <a class="placelist" href="/gamepro5/minigames/color.html" data-image="img/color.png"><p>Color fight thing</p></a>
+      <a class="placelist" href="https://orbiit.github.io/gunn-web-app/games/connect4.html" data-image="img/connect4.png"><p>Connect 3</p></a>
+      <a class="placelist" href="/gunn-student-sim/" data-image="img/gunn%20student%20simulator.png"><p>Gunn student simulator</p></a>
+      <a class="placelist" href="/fun-gunn-run/" data-image="img/fgr.png"><p>"Fun" Gunn Run</p></a>
+
+      <!-- DIRECTORIES -->
+      <a class="placelist" href="/javascripts/" data-image="img/js.png"><p>Javascripts</p></a>
+      <a class="placelist" href="/words-go-here/misc/" data-image="img/misc.png"><p>Miscellaneous</p></a>
+      <a class="placelist" href="/thingkingland/sitemap.html" data-image="img/thingkingland.png"><p>Thingkingland</p></a>
+      <a class="placelist" href="/javascripts/particles/" data-image="img/particles.png"><p>Particles</p></a>
+      <a class="placelist" href="/hello-world/" data-image="img/helloworlddir.png"><p>Chromebook creations</p></a>
+
+      <!-- OTHER THINGS -->
+      <a class="placelist" href="/trumpdays/" data-image="img/trumpdays.png"><p>Trump days</p></a>
+      <a class="placelist" href="/roots/" data-image="img/roots.png"><p>Roots and Affixes</p></a>
+      <a class="placelist" href="/happynumbers/" data-image="img/mems.png"><p>Happy Number Finder</p></a>
+      <a class="placelist" href="/happynumbers/sieve/" data-image="img/sieve.png"><p>Sieve of Eranthoses</p></a>
+      <a class="placelist" href="/animations/" data-image="img/anima.png"><p>Animations</p></a>
+      <a class="placelist" href="/sentence/" data-image="img/sentence.png"><p>Sentence Generator</p></a>
+      <a class="placelist" href="/contextmenutest.html" data-image="img/rightclick.png"><p>Context Menu Test</p></a>
+      <a class="placelist" href="/longer-tweets/" data-image="img/longtweets.png"><p>Longer Tweets</p></a>
+      <a class="placelist" href="/themes/billy-goat/index-dark.html" data-image="img/billy-goat.png"><p>Billy Goat Blog Theme</p></a>
+      <a class="placelist" href="/javascripts/carecalc.html" data-image="img/carecalc.png"><p>Grade Care Calculator</p></a>
+
+      <!-- CONFUSING THINGS -->
+      <a class="placelist" href="/olamreee/" data-image="img/olamreee.png"><p>OlamREEE</p></a>
+      <a class="placelist" href="/javascripts/imagetoscheme.html" data-image="img/scheme.png"><p>Image to ASCII</p></a>
+      <a class="placelist" href="/javascripts/terminal/" data-image="img/terminal.png"><p>Terminal</p></a>
+      <a class="placelist" href="?penland" data-image="img/penland.png"><p>Penland</p></a>
+      <a class="placelist" href="/javascripts/mutate.html" data-image="img/life.png"><p>Cell Simulation</p></a>
+      <a class="placelist" href="/eyo-dictionary/" data-image="img/eyo.png"><p>Eyo Dictionary</p></a>
+      <a class="placelist" href="/eyo-dictionary/validator.html" data-image="img/die.png"><p>Eyo Word Validator</p></a>
     </div>
     <sarcasm>Inspect element is truly the best way to flaunt your hacking abilities.</sarcasm>
 

@@ -1,4 +1,4 @@
-var sheeptest=(function(){
+try {window.sheeptest=(function(){
   if (document.querySelector('sheepmenu')) {
     document.querySelector('sheepmenu').classList.add('blockvision');
   }
@@ -43,42 +43,38 @@ var sheeptest=(function(){
     }
     else window.location.replace(redirect);
   }
-  if (window.location.hash) {
-    if (document.querySelector(window.location.hash)) {
-      document.querySelector(".active.clickable").className="clickable";
-      document.querySelector(".active.page").className="page";
-      document.querySelector('.clickable[data-place="'+window.location.hash.slice(1)+'"]').className+=" active";
-      document.querySelector(window.location.hash).className+=" active";
+  document.querySelector('.clickable[href="#places"]').className += ' active';
+  (window.onhashchange = () => {
+    document.querySelector(".active.clickable").className="clickable";
+    if (window.location.hash && document.querySelector(window.location.hash)) {
+      // document.querySelector(".active.page").className="page";
+      document.querySelector('.clickable[href="#'+window.location.hash.slice(1)+'"]').className+=" active";
+      // document.querySelector(window.location.hash).className+=" active";
+    } else {
+      document.querySelector('.clickable[href="#places"]').className += ' active';
     }
-  }
+  })();
   if (!cookie.preferences) {
     cookie.preferences='{"view":"grid"}';
   }
   var preferences=JSON.parse(cookie.preferences);
   if (preferences.view==='grid') {
     document.querySelector('#view').innerHTML='list view';
-    Array.from(document.getElementsByClassName('place')).forEach(link => {
+    document.body.classList.remove('list-view');
+    Array.from(document.getElementsByClassName('placelist')).forEach(link => {
       link.innerHTML = `<div class="squarifier"><div></div></div><img src="${link.dataset.image}" alt="A picture."/>` + link.innerHTML;
+      link.className = 'place';
     });
   } else {
     document.querySelector('#view').innerHTML='grid view';
-    document.body.classList.add('list-view');
-    Array.from(document.getElementsByClassName('place')).forEach(link => {
-      link.className = 'placelist';
-    });
   }
   document.querySelector("nav").ontouchstart=document.querySelector("nav").onclick=function(e){
     if (e.target.className=="clickable") {
       document.querySelector(".active.clickable").className="clickable";
-      document.querySelector(".active.page").className="page";
+      // document.querySelector(".active.page").className="page";
       e.target.className+=" active";
-      if (e.target.id=='user') {
-        document.querySelector("#users").className+=" active";
-        window.location.hash='users';
-      } else {
-        document.querySelector("#"+e.target.innerHTML).className+=" active";
-        window.location.hash=e.target.innerHTML;
-      }
+      // document.querySelector("#"+e.target.innerHTML).className+=" active";
+      window.location.hash=e.target.innerHTML;
     }
   };
   document.querySelector('#view').onclick=function(e){
@@ -89,8 +85,8 @@ var sheeptest=(function(){
   function displayAge() {
     var age=new Date().getTime()-1049933280000;
     document.querySelector("#milliage").innerHTML=age;
-    document.querySelector("#yage").innerHTML=age/31557600000;
-    setTimeout(displayAge,200);
+    document.querySelector("#yage").innerHTML=(age/31557600000).toString().padEnd(18, '0');
+    window.requestAnimationFrame(displayAge);
   }
   displayAge();
   function zalgify(text,intensity) {
@@ -131,10 +127,25 @@ var sheeptest=(function(){
     xmlHttp.open("GET",theUrl,true); // true for asynchronous
     xmlHttp.send(null);
   }
-  document.querySelector('.menuicon').onclick=e=>{
-    if (document.querySelector('nav').classList.contains('open')) document.querySelector('nav').classList.remove('open');
-    else document.querySelector('nav').classList.add('open');
-  };
+  let tabFocus = false;
+  document.addEventListener('keydown', e => {
+    if (e.keyCode === 9) {
+      document.body.classList.add('tabkeyfocus');
+      tabFocus = true;
+    } else if (e.target.tagName === 'SPAN' && e.keyCode === 13) {
+      e.target.click();
+    }
+  });
+  document.addEventListener('keyup', e => {
+    if (e.keyCode === 9) {
+      tabFocus = false;
+    }
+  });
+  document.addEventListener('focusin', e => {
+    if (!tabFocus) {
+      document.body.classList.remove('tabkeyfocus');
+    }
+  });
 
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('/sw.js');
@@ -147,4 +158,8 @@ var sheeptest=(function(){
   };
   var bobrina=new bob();
   return function(){return bobrina;};
-})();
+})();} catch (e) {
+  const error = document.getElementById('error');
+  error.textContent = e && e.stack;
+  error.style.display = 'block';
+}
