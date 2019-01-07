@@ -15,7 +15,8 @@ const blackList = [
   '../site/sheep.css',
   '../site/sheep.js',
   '../site/sheep3.css',
-  '../site/sheep3.js'
+  '../site/sheep3.js',
+  '../site/gunn-student-sim/the-actual-unminified-encoder-that-you-wont-be-able-to-see-muahahaha.js'
 ];
 function getFiles(dir, files = []){
     fs.readdirSync(dir).forEach(file => {

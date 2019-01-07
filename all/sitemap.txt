@@ -3,6 +3,7 @@ https://sheeptester.github.io/all/links/
 https://sheeptester.github.io/all/localStorage/
 https://sheeptester.github.io/all/generator.html
 https://sheeptester.github.io/all/
+https://sheeptester.github.io/all/sitemap.html
 https://sheeptester.github.io/all/template-all.html
 https://sheeptester.github.io/alt-schedule-parser-tester/
 https://sheeptester.github.io/amend1/
@@ -77,6 +78,7 @@ https://sheeptester.github.io/hello-world/meta-test.html
 https://sheeptester.github.io/hello-world/profile-redirector.html
 https://sheeptester.github.io/hello-world/sigfig.html
 https://sheeptester.github.io/hello-world/tabletest.html
+https://sheeptester.github.io/hello-world/vm.html
 https://sheeptester.github.io/hello-world/waffleconcept.html
 https://sheeptester.github.io/htmlblocks/css/colour.html
 https://sheeptester.github.io/htmlblocks/css/concept.html
@@ -94,6 +96,8 @@ https://sheeptester.github.io/htmlblocks/
 https://sheeptester.github.io/htmlblocks/renderattempt.html
 https://sheeptester.github.io/htmlblocks/rendertest.html
 https://sheeptester.github.io/htmlblocks/test1.html
+https://sheeptester.github.io/javascripts/audio-editor/about.html
+https://sheeptester.github.io/javascripts/audio-editor/
 https://sheeptester.github.io/javascripts/clicker/dungeon.html
 https://sheeptester.github.io/javascripts/clicker/
 https://sheeptester.github.io/javascripts/dumbascii/
@@ -141,18 +145,21 @@ https://sheeptester.github.io/javascripts/towering-game.html
 https://sheeptester.github.io/javascripts/written_book.html
 https://sheeptester.github.io/life/
 https://sheeptester.github.io/life/scrolltest.html
+https://sheeptester.github.io/longer-tweets/_templates/links.html
+https://sheeptester.github.io/longer-tweets/_templates/main.html
+https://sheeptester.github.io/longer-tweets/_templates/metadata.html
+https://sheeptester.github.io/longer-tweets/_templates/post.html
+https://sheeptester.github.io/longer-tweets/_templates/postentry.html
+https://sheeptester.github.io/longer-tweets/_templates/tag.html
 https://sheeptester.github.io/longer-tweets/better-tests/
 https://sheeptester.github.io/longer-tweets/creating-this-blog/
 https://sheeptester.github.io/longer-tweets/flawless-new-english/
+https://sheeptester.github.io/longer-tweets/gamepro5-translation/
 https://sheeptester.github.io/longer-tweets/life-after-death/
 https://sheeptester.github.io/longer-tweets/lol-vocabulary/
+https://sheeptester.github.io/longer-tweets/phonology/
+https://sheeptester.github.io/longer-tweets/pronouns/
 https://sheeptester.github.io/longer-tweets/scratch-www-troubles/
-https://sheeptester.github.io/longer-tweets/templates/links.html
-https://sheeptester.github.io/longer-tweets/templates/main.html
-https://sheeptester.github.io/longer-tweets/templates/metadata.html
-https://sheeptester.github.io/longer-tweets/templates/post.html
-https://sheeptester.github.io/longer-tweets/templates/postentry.html
-https://sheeptester.github.io/longer-tweets/templates/tag.html
 https://sheeptester.github.io/longer-tweets/test/
 https://sheeptester.github.io/longer-tweets/
 https://sheeptester.github.io/mars/
@@ -165,6 +172,9 @@ https://sheeptester.github.io/oldindex/
 https://sheeptester.github.io/opinions/
 https://sheeptester.github.io/ovinetopia/images/tile-test.html
 https://sheeptester.github.io/ovinetopia/
+https://sheeptester.github.io/platformre/a/actualdatagetter.html
+https://sheeptester.github.io/platformre/a/
+https://sheeptester.github.io/platformre/a/texturemapmaker.html
 https://sheeptester.github.io/platformre/explore/
 https://sheeptester.github.io/platformre/explore/submit.html
 https://sheeptester.github.io/platformre/maker/
@@ -173,6 +183,7 @@ https://sheeptester.github.io/platformre/nova/penland/choppy.html
 https://sheeptester.github.io/platformre/nova/penland/
 https://sheeptester.github.io/platformre/nova/customise.html
 https://sheeptester.github.io/platformre/nova/
+https://sheeptester.github.io/platformre/nova/paint.html
 https://sheeptester.github.io/platformre/nova/player.html
 https://sheeptester.github.io/platformre/nova/render.html
 https://sheeptester.github.io/platformre/penland/editingworld.html
@@ -263,6 +274,7 @@ https://sheeptester.github.io/thingkingland/
 https://sheeptester.github.io/thingkingland/sitemap.html
 https://sheeptester.github.io/trumpdays/inseconds/
 https://sheeptester.github.io/trumpdays/
+https://sheeptester.github.io/words-go-here/f-word/
 https://sheeptester.github.io/words-go-here/misc/2048simplified.html
 https://sheeptester.github.io/words-go-here/misc/3dcube.html
 https://sheeptester.github.io/words-go-here/misc/3dhall.html
@@ -272,6 +284,7 @@ https://sheeptester.github.io/words-go-here/misc/camera.html
 https://sheeptester.github.io/words-go-here/misc/certainly-google-docs.html
 https://sheeptester.github.io/words-go-here/misc/chooper3d.html
 https://sheeptester.github.io/words-go-here/misc/doodle.html
+https://sheeptester.github.io/words-go-here/misc/dumbplatscript.html
 https://sheeptester.github.io/words-go-here/misc/filledcube.html
 https://sheeptester.github.io/words-go-here/misc/format.html
 https://sheeptester.github.io/words-go-here/misc/gemini.html
