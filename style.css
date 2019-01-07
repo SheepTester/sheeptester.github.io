@@ -94,7 +94,7 @@ nav .btn:hover, .tabkeyfocus nav .btn:focus {
   font-size: 0;
   overflow-x: hidden;
   padding: 10px;
-  padding-bottom: 40px;
+  padding-bottom: 50px;
   display: block;
 }
 :target ~ #places {
