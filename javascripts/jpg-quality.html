@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>JPG quality</title>
+    <meta charset="UTF-8">
+    <meta name="description" content="JavaScript lets you set how crappy your JPG is lol"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link rel="stylesheet" type="text/css" href="../sheep3.css">
+    <script src="../sheep3.js" charset="utf-8"></script>
+    <style>
+      /**/
+    </style>
+  </head>
+  <body>
+    <p><label for="image">image to ruin: </label><input type="file" id="image" accept="image/*">(you can also paste in an image)</p>
+    <p><label for="quality">jpg quality: </label><input type="range" id="quality" value="0.92" min="0" max="1" step="any"><span id="quality-value">0.92</span></p>
+    <img id="output">
+    <p>remember that jpeg has no transparency!</p>
+    <script>
+const image = document.getElementById('image');
+const quality = document.getElementById('quality');
+const qualityValue = document.getElementById('quality-value');
+const output = document.getElementById('output');
+const canvas = document.createElement('canvas');
+const c = canvas.getContext('2d');
+let selectedImage = false;
+function outputImage() {
+  output.src = canvas.toDataURL('image/jpeg', +quality.value);
+}
+quality.addEventListener('input', e => {
+  qualityValue.textContent = quality.value;
+  if (selectedImage) outputImage();
+});
+function loadFile(file) {
+  if (!file) {
+    selectedImage = false;
+    return;
+  }
+  if (file.type === 'image/svg+xml') {
+    const img = document.createElement('img');
+    img.addEventListener('load', e => {
+      canvas.width = img.width;
+      canvas.height = img.height;
+      c.drawImage(img, 0, 0);
+      selectedImage = true;
+      outputImage();
+    }, {once: true});
+    img.src = URL.createObjectURL(file);
+  } else {
+    createImageBitmap(file).then(bitmap => {
+      canvas.width = bitmap.width;
+      canvas.height = bitmap.height;
+      c.drawImage(bitmap, 0, 0);
+      selectedImage = true;
+      outputImage();
+    }).catch(err => {
+      console.dir(err);
+    });
+  }
+}
+image.addEventListener('change', e => {
+  loadFile(image.files[0]);
+});
+document.addEventListener('paste', e => {
+  loadFile(e.clipboardData.files[0]);
+});
+    </script>
+  </body>
+</html>
