@@ -151,7 +151,7 @@ nav .btn:hover, .tabkeyfocus nav .btn:focus {
     margin: 5px 16%;
   }
 }
-.place:hover, .place:focus {
+.place:hover, .tabkeyfocus .place:focus {
   transform: scale(1.05);
   z-index: 10;
 }
@@ -165,7 +165,7 @@ nav .btn:hover, .tabkeyfocus nav .btn:focus {
   top: 0;
   transition: all .2s;
 }
-.place:hover img, .place:focus img {
+.place:hover img, .tabkeyfocus .place:focus img {
   opacity: 1;
   filter: grayscale(0%);
 }
@@ -178,7 +178,7 @@ nav .btn:hover, .tabkeyfocus nav .btn:focus {
   text-shadow: 0 0 20px black;
   transition: transform .2s;
 }
-.place:hover p, .place:focus p {
+.place:hover p, .tabkeyfocus .place:focus p {
   transform: scale(1.1);
 }
 .placelist {
@@ -195,7 +195,7 @@ nav .btn:hover, .tabkeyfocus nav .btn:focus {
 .placelist:nth-child(even) {
   background-color: rgba(255,255,255,0.1);
 }
-.placelist:hover, .placelist:focus {
+.placelist:hover, .tabkeyfocus .placelist:focus {
   background-color: rgba(79,161,167,0.8);
 }
 #stalking {
@@ -246,7 +246,7 @@ nav .btn:hover, .tabkeyfocus nav .btn:focus {
   background-color: white;
   transition: transform .2s;
 }
-.list .social:hover, .list .social:focus {
+.list .social:hover, .tabkeyfocus .list .social:focus {
   transform: scale(1.1);
 }
 .list .social .ball, .mini-social .ball {
@@ -264,7 +264,7 @@ nav .btn:hover, .tabkeyfocus nav .btn:focus {
   box-sizing: border-box;
   transition: transform .2s;
 }
-.list .social:hover .ball, .list .social:focus .ball {
+.list .social:hover .ball, .tabkeyfocus .list .social:focus .ball {
   transform: scale(1.2);
 }
 .mini-social {
@@ -349,7 +349,7 @@ nav .btn:hover, .tabkeyfocus nav .btn:focus {
   opacity: 0.8;
   background-color: rgba(255,255,255,0.1);
 }
-#redirects a:hover, #redirects a:focus {
+#redirects a:hover, .tabkeyfocus #redirects a:focus {
   opacity: 1;
   background-color: rgba(255,255,255,0.15);
 }
