@@ -63,15 +63,29 @@ const renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight); // can halve to reduce quality
 document.body.appendChild(renderer.domElement);
 
+const bricks = new THREE.TextureLoader().load('./bricks.png');
+bricks.wrapS = THREE.RepeatWrapping;
+bricks.wrapT = THREE.RepeatWrapping;
+bricks.repeat.set(3, 1);
+bricks.magFilter = THREE.NearestFilter;
+bricks.minFilter = THREE.LinearMipMapLinearFilter;
+
+const carpet = new THREE.TextureLoader().load('./carpet.png');
+carpet.wrapS = THREE.RepeatWrapping;
+carpet.wrapT = THREE.RepeatWrapping;
+carpet.repeat.set(100, 100);
+carpet.magFilter = THREE.NearestFilter;
+carpet.minFilter = THREE.LinearMipMapLinearFilter;
+
 const cube = new THREE.Mesh(
   new THREE.BoxGeometry(3, 1, 1),
-  new THREE.MeshBasicMaterial({color: 0xb25656})
+  new THREE.MeshBasicMaterial({map: bricks})
 );
 scene.add(cube);
 
 const plane = new THREE.Mesh(
-  new THREE.PlaneGeometry(400, 400),
-  new THREE.MeshBasicMaterial({color: 0x838383, side: THREE.DoubleSide})
+  new THREE.PlaneGeometry(300, 300),
+  new THREE.MeshBasicMaterial({map: carpet, side: THREE.DoubleSide})
 );
 plane.rotation.x = Math.PI / 2;
 plane.position.y = -2;
