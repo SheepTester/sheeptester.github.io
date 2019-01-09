@@ -51,6 +51,7 @@ document.addEventListener('click', e => {
 
 // where things go
 const scene = new THREE.Scene();
+scene.background = new THREE.Color(0xc9c9c9);
 
 // the Eye(tm) - FOV, aspect ratio, near plane, far plane
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -69,7 +70,7 @@ const cube = new THREE.Mesh(
 scene.add(cube);
 
 const plane = new THREE.Mesh(
-  new THREE.PlaneGeometry(5, 2),
+  new THREE.PlaneGeometry(400, 400),
   new THREE.MeshBasicMaterial({color: 0x838383, side: THREE.DoubleSide})
 );
 plane.rotation.x = Math.PI / 2;
@@ -84,6 +85,17 @@ document.addEventListener('mousemove', e => {
     else if (camera.rotation.x < -Math.PI / 2) camera.rotation.x = -Math.PI / 2;
   }
 });
+
+const lineGeo = new THREE.Geometry();
+lineGeo.vertices.push(new THREE.Vector3(-10, 0, 0));
+lineGeo.vertices.push(new THREE.Vector3(0, 10, 0));
+const line = new THREE.Line(
+  lineGeo,
+  new THREE.LineBasicMaterial({color: 0xff0000})
+);
+scene.add(line);
+
+const raycaster = new THREE.Raycaster();
 
 const PLAYER_SPEED = 0.2;
 let onGround = true, yv = 0;
@@ -122,6 +134,17 @@ function animate() {
       yv = 0;
       onGround = true;
     }
+  }
+  raycaster.setFromCamera(new THREE.Vector2(0, 0), camera);
+  const [intersection] = raycaster.intersectObject(plane);
+  if (intersection) {
+    const {point} = intersection;
+    lineGeo.vertices[0] = point;
+    lineGeo.vertices[1] = new THREE.Vector3(point.x, point.y + 1, point.z);
+    lineGeo.verticesNeedUpdate = true;
+    line.visible = true;
+  } else {
+    line.visible = false;
   }
 	renderer.render(scene, camera);
 }
