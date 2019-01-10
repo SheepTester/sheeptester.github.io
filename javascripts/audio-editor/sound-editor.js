@@ -38,6 +38,17 @@ class SoundEditor {
     };
   }
 
+  getHistoricalState() {
+    const {samples, sampleRate} = this.copyCurrentBuffer();
+    return {
+      samples: samples,
+      sampleRate: sampleRate,
+      selectionStart: this.state.selectionStart,
+      selectionEnd: this.state.selectionEnd,
+      mainSelection: this.state.mainSelection
+    };
+  }
+
   resetState (samples, sampleRate) {
     this.audioBufferPlayer.stop();
     this.audioBufferPlayer = new AudioBufferPlayer(samples, sampleRate);
@@ -57,7 +68,7 @@ class SoundEditor {
       if (this.undoStack.length >= UNDO_STACK_SIZE) {
         this.undoStack.shift(); // Drop the first element off the array
       }
-      this.undoStack.push(this.copyCurrentBuffer());
+      this.undoStack.push(this.getHistoricalState());
     }
 
     this.resetState(samples, sampleRate);
@@ -101,23 +112,27 @@ class SoundEditor {
   }
 
   undo() {
-    this.redoStack.push(this.copyCurrentBuffer());
-    const {samples, sampleRate} = this.undoStack.pop();
+    this.redoStack.push(this.getHistoricalState());
+    const {samples, sampleRate, selectionStart, selectionEnd, mainSelection} = this.undoStack.pop();
     if (samples) {
       this.submitNewSamples(samples, sampleRate, true);
     }
-    this.updateSelectionStart(0);
-    this.updateSelectionEnd(1);
+    this.state.selectionStart = 0;
+    this.updateSelectionEnd(selectionEnd);
+    this.updateSelectionStart(selectionStart);
+    this.state.mainSelection = mainSelection;
   }
 
   redo() {
-    const {samples, sampleRate} = this.redoStack.pop();
+    const {samples, sampleRate, selectionStart, selectionEnd, mainSelection} = this.redoStack.pop();
     if (samples) {
-      this.undoStack.push(this.copyCurrentBuffer());
+      this.undoStack.push(this.getHistoricalState());
       this.submitNewSamples(samples, sampleRate, true);
     }
-    this.updateSelectionStart(0);
-    this.updateSelectionEnd(1);
+    this.state.selectionStart = 0;
+    this.updateSelectionEnd(selectionEnd);
+    this.updateSelectionStart(selectionStart);
+    this.state.mainSelection = mainSelection;
   }
 
   updateSelectionStart(selectionStart) {
@@ -146,8 +161,8 @@ class SoundEditor {
       const startIndex = Math.floor(this.state.selectionStart * sampleCount);
       const endIndex = Math.floor(this.state.selectionEnd * sampleCount);
       const clippedSamples = samples.slice(startIndex, endIndex);
-      this.selectAll();
       this.submitNewSamples(clippedSamples, sampleRate);
+      this.selectAll();
     }
   }
 
@@ -172,6 +187,7 @@ class SoundEditor {
         if (insertData) newSample.set(insertData, leftSample.length);
         newSample.set(rightSample, leftSample.length + insertDataLength);
       }
+      this.submitNewSamples(newSample, sampleRate);
       const newSelectionRange = startIndex / totalLength;
       this.state.selectionEnd = 1;
       this.updateSelectionStart(newSelectionRange);
@@ -180,7 +196,6 @@ class SoundEditor {
       } else {
         this.updateSelectionEnd(newSelectionRange);
       }
-      this.submitNewSamples(newSample, sampleRate);
       return samples.slice(startIndex, endIndex);
     } else {
       return null;
@@ -229,10 +244,10 @@ class SoundEditor {
         newSample.set(leftSample);
         newSample.set(samples, leftSample.length);
         newSample.set(rightSample, leftSample.length + samples.length);
+        this.submitNewSamples(newSample, sampleRate);
         this.state.selectionEnd = 1;
         this.updateSelectionStart(startIndex / totalLength);
         this.updateSelectionEnd(1 - (sampleCount - endIndex) / totalLength);
-        this.submitNewSamples(newSample, sampleRate);
         this.play();
       });
     }

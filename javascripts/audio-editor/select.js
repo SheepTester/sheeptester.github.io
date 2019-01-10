@@ -1,34 +1,31 @@
 function Select(label, options, handler) {
-  return createElement('select', {
-    classes: 'select',
+  let buttonsWrapper;
+  return createElement('div', {
+    classes: 'select-wrapper',
     children: [
-      createElement('option', {
+      createElement('button', {
+        classes: 'select-toggle-button',
         html: label,
-        attributes: {
-          value: -1,
-          selected: true,
-          disabled: true,
-          hidden: true
+        listeners: {
+          click(e) {
+            buttonsWrapper.classList.toggle('show');
+          }
         }
       }),
-      ...options.map((option, i) => option === '---' ? createElement('option', {
-        html: '─────',
-        attributes: {
-          disabled: true
-        }
-      }) : createElement('option', {
-        html: option,
-        attributes: {
-          value: i
-        }
-      }))
-    ],
-    listeners: {
-      change(e) {
-        const val = +this.value;
-        if (val !== -1) handler(options[val]);
-        this.value = -1;
-      }
-    }
+      buttonsWrapper = createElement('div', {
+        classes: 'select-options-wrapper',
+        children: options.map((option, i) => option === '---' ? createElement('span', {
+          classes: 'select-separator'
+        }) : createElement('button', {
+          classes: 'select-option',
+          html: option,
+          listeners: {
+            click(e) {
+              handler(option);
+            }
+          }
+        }))
+      })
+    ]
   });
 }
