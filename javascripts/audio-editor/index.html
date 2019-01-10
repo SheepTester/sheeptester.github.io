@@ -74,9 +74,23 @@
       .select-option {
         display: block;
       }
+      #record-display {
+        width: 100px;
+        height: 5px;
+        display: inline-block;
+        background-color: rgba(0, 0, 0, 0.3);
+      }
+      #record-display::before {
+        content: '';
+        background-color: red;
+        width: var(--level);
+        height: 100%;
+        display: block;
+      }
     </style>
   </head>
   <body>
     <p><label for="add-sound">Add sound: </label><input type="file" id="add-sound" accept=".mp3,.wav"> <button id="new-sound">Add empty sound</button> <a href="about.html">About</a></p>
+    <p><button id="record-sound">record sound</button><button id="stop-record" disabled>stop recording</button><span id="record-display"></span></p>
   </body>
 </html>
