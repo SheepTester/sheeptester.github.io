@@ -64,6 +64,8 @@ class SoundEditor {
 
   submitNewSamples(samples, sampleRate, skipUndo) {
     if (!skipUndo) {
+      if (this.redoStack.length) this.elems.redoBtn.disabled = true;
+      if (!this.undoStack.length) this.elems.undoBtn.disabled = false;
       this.redoStack = [];
       if (this.undoStack.length >= UNDO_STACK_SIZE) {
         this.undoStack.shift(); // Drop the first element off the array
@@ -87,6 +89,8 @@ class SoundEditor {
   }
 
   play() {
+    this.elems.playBtn.disabled = true;
+    this.elems.stopBtn.disabled = false;
     this.elems.playhead.style.display = 'block';
     this.audioBufferPlayer.play(
       this.state.selectionStart || 0,
@@ -107,11 +111,14 @@ class SoundEditor {
   }
 
   stoppedPlaying() {
+    this.elems.playBtn.disabled = false;
+    this.elems.stopBtn.disabled = true;
     this.elems.playhead.style.display = null;
     this.state.playhead = null;
   }
 
   undo() {
+    if (!this.redoStack.length) this.elems.redoBtn.disabled = false;
     this.redoStack.push(this.getHistoricalState());
     const {samples, sampleRate, selectionStart, selectionEnd, mainSelection} = this.undoStack.pop();
     if (samples) {
@@ -121,9 +128,11 @@ class SoundEditor {
     this.updateSelectionEnd(selectionEnd);
     this.updateSelectionStart(selectionStart);
     this.state.mainSelection = mainSelection;
+    if (!this.undoStack.length) this.elems.undoBtn.disabled = true;
   }
 
   redo() {
+    if (!this.undoStack.length) this.elems.undoBtn.disabled = false;
     const {samples, sampleRate, selectionStart, selectionEnd, mainSelection} = this.redoStack.pop();
     if (samples) {
       this.undoStack.push(this.getHistoricalState());
@@ -133,6 +142,7 @@ class SoundEditor {
     this.updateSelectionEnd(selectionEnd);
     this.updateSelectionStart(selectionStart);
     this.state.mainSelection = mainSelection;
+    if (!this.redoStack.length) this.elems.redoBtn.disabled = true;
   }
 
   updateSelectionStart(selectionStart) {
@@ -394,7 +404,8 @@ class SoundEditor {
         elems.stopBtn = createElement('button', {
           classes: 'stop-btn',
           children: ['stop'],
-          listeners: {click: this.stopPlaying.bind(this)}
+          listeners: {click: this.stopPlaying.bind(this)},
+          attributes: {disabled: true}
         }),
         elems.edit = Select('Edit', ['cut', 'copy', 'paste', '---', 'delete', 'select all', 'trim'], option => {
           switch (option) {
@@ -446,12 +457,14 @@ class SoundEditor {
         elems.undoBtn = createElement('button', {
           classes: 'undo-btn',
           children: ['undo'],
-          listeners: {click: this.undo.bind(this)}
+          listeners: {click: this.undo.bind(this)},
+          attributes: {disabled: true}
         }),
         elems.redoBtn = createElement('button', {
           classes: 'redo-btn',
           children: ['redo'],
-          listeners: {click: this.redo.bind(this)}
+          listeners: {click: this.redo.bind(this)},
+          attributes: {disabled: true}
         })
       ],
       attributes: {
