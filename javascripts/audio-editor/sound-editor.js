@@ -285,7 +285,7 @@ class SoundEditor {
       });
       const content = new Blob([wavBuffer], {type: 'audio/wav'});
 
-      const filename = `${this.props.name}.wav`;
+      const filename = `${this.elems.name.value}.wav`;
 
       // Use special ms version if available to get it working on Edge.
       if (navigator.msSaveOrOpenBlob) {
@@ -472,6 +472,7 @@ class SoundEditor {
       },
       listeners: {
         keydown: e => {
+          if (document.activeElement.tagName === 'INPUT') return;
           const notShift = !e.shiftKey && !e.altKey;
           const shift = e.shiftKey && !e.altKey;
           let prevent = false;
