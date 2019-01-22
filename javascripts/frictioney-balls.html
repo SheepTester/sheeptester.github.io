@@ -112,6 +112,7 @@ class Muscle {
     const midY = (this.node1.y + this.node2.y) / 2;
     const dist = Math.hypot(this.node1.x - this.node2.x, this.node1.y - this.node2.y);
     const multiplier = dist / this.targetLength || Number.EPSILON;
+    // this math magically pushes/pulls away from the centre as appropriate
     this.node1.xv += (midX - this.node1.x) * (1 - 1 / multiplier) * this.forcefullness;
     this.node1.yv += (midY - this.node1.y) * (1 - 1 / multiplier) * this.forcefullness;
     this.node2.xv += (midX - this.node2.x) * (1 - 1 / multiplier) * this.forcefullness;
