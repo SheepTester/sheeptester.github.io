@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Frictioney Balls</title>
+    <meta charset="UTF-8">
+    <meta name="description" content="Step one in recreating carykh's evolution simulator"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link rel="stylesheet" type="text/css" href="../sheep3.css">
+    <script src="../sheep3.js" charset="utf-8"></script>
+    <style>
+      body {
+        font-size: 0;
+        background-color: #77959b;
+        margin: 0;
+      }
+      .ground {
+        background-color: #3e6443;
+        height: 100px;
+        left: 0;
+        position: fixed;
+        width: 100%;
+        bottom: 0;
+      }
+      .ball {
+        background-color: hsl(0, 53%, 38%);
+        border-radius: 50%;
+        width: 60px;
+        height: 60px;
+        margin: -30px;
+        position: fixed;
+        bottom: 100px;
+        left: 50%;
+      }
+      #stuff {
+        position: fixed;
+        bottom: 0;
+        left: 50%;
+        overflow: visible;
+        width: 100px;
+        height: 100px;
+        margin-left: -50px;
+      }
+      .muscle {
+        stroke-linecap: round;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="ground"></div>
+    <svg xmlns="http://www.w3.org/2000/svg" fill='#4FA1A7' id="stuff"></svg>
+    <script>
+const GRAVITY = -0.5;
+const BALL_RADIUS = 30;
+const GROUND = 0;
+const SVG_NS = 'http://www.w3.org/2000/svg';
+class Ball {
+
+  constructor(friction = 1, x = 0, y = 0) {
+    this.friction = friction;
+    this.x = x, this.y = y, this.yv = 0;
+    this.elem = document.createElementNS(SVG_NS, 'circle');
+    this.elem.classList.add('ball');
+    this.elem.style.fill = `hsl(0, 53%, ${friction * 100}%)`;
+    this.elem.setAttributeNS(null, 'r', BALL_RADIUS);
+    this.muscles = [];
+    this.muscleVels = [];
+  }
+
+  move() {
+    this.yv += GRAVITY;
+    this.y += this.yv + this.muscleVels.reduce((acc, curr) => acc + curr[1], 0);
+    const xv = this.muscleVels.reduce((acc, curr) => acc + curr[0], 0);
+    if (this.y <= GROUND + BALL_RADIUS) {
+      this.x += xv * this.friction;
+      this.yv = 0;
+      this.y = GROUND + BALL_RADIUS;
+    } else {
+      this.x += xv;
+    }
+  }
+
+  addTo(parent) {
+    parent.appendChild(this.elem);
+  }
+
+  position() {
+    this.elem.setAttributeNS(null, 'cx', this.x);
+    this.elem.setAttributeNS(null, 'cy', -this.y);
+  }
+
+  addMuscle(muscle) {
+    this.muscles.push(muscle);
+    this.muscleVels.push([0, 0]);
+    return this.muscles.length - 1;
+  }
+
+}
+
+class Muscle {
+
+  constructor(node1, node2, forcefullness = 1, targetLength = 100) {
+    this.node1 = node1;
+    this.node1MuscleId = node1.addMuscle(this);
+    this.node2 = node2;
+    this.node2MuscleId = node2.addMuscle(this);
+    this.targetLength = targetLength;
+    this.forcefullness = forcefullness;
+
+    this.elem = document.createElementNS(SVG_NS, 'path');
+    this.elem.classList.add('muscle');
+    this.elem.style.stroke = `rgba(158, 81, 81, ${forcefullness})`;
+    this.elem.style.strokeWidth = '10px';
+  }
+
+  move() {
+    const midX = (this.node1.x + this.node2.x) / 2;
+    const midY = (this.node1.y + this.node2.y) / 2;
+    const dist = Math.hypot(this.node1.x - this.node2.x, this.node1.y - this.node2.y);
+    const multiplier = dist / this.targetLength || Number.EPSILON;
+    this.node1.muscleVels[this.node1MuscleId] = [
+      (midX - this.node1.x) * (1 - 1 / multiplier) * this.forcefullness,
+      (midY - this.node1.y) * (1 - 1 / multiplier) * this.forcefullness
+    ];
+    this.node2.muscleVels[this.node2MuscleId] = [
+      (midX - this.node2.x) * (1 - 1 / multiplier) * this.forcefullness,
+      (midY - this.node2.y) * (1 - 1 / multiplier) * this.forcefullness
+    ];
+  }
+
+  addTo(parent) {
+    parent.appendChild(this.elem);
+  }
+
+  position() {
+    this.elem.setAttributeNS(null, 'd', `M${this.node1.x} ${-this.node1.y}L${this.node2.x} ${-this.node2.y}`);
+  }
+
+}
+class TimingMuscle {
+
+  constructor() {
+    //
+  }
+
+}
+const svg = document.getElementById('stuff');
+const node1 = new Ball(0, 200, 50);
+const node2 = new Ball(0, -200, 50);
+const node3 = new Ball(0.1, 30, 100);
+const muscle1 = new Muscle(node1, node2, 0.9, 100);
+const muscle2 = new Muscle(node3, node2, 1, 200);
+const muscle3 = new Muscle(node1, node3, 1, 200);
+const balls = [node1, node2, node3, muscle1, muscle2, muscle3];
+balls.forEach(b => b.addTo(svg));
+(function paint() {
+  balls.forEach(b => (b.move(), b.position()));
+  window.requestAnimationFrame(paint);
+})();
+    </script>
+  </body>
+</html>
