@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Escape from SELF</title>
+    <meta charset="UTF-8">
+    <meta name="description" content="Kind of choose your own adventure but not really"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link href="https://fonts.googleapis.com/css?family=Share" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="../../sheep3.css">
+    <script src="../../sheep3.js" charset="utf-8"></script>
+    <style>
+      html, body {
+        height: 100%;
+        width: 100%;
+      }
+      body {
+        margin: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: 'Share', cursive;
+        color: #333;
+        background-color: white;
+        font-size: 24px;
+        transition: color .5s, background-color .5s;
+      }
+      .container {
+        position: relative;
+        background-color: inherit;
+        padding: 10px;
+        width: 100%;
+        max-width: 500px;
+        margin: 20px;
+      }
+      .border {
+        border: 2px solid currentColor;
+        opacity: 0.5;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        margin: -2px;
+        z-index: -1;
+      }
+      .heading {
+        margin: 0;
+        position: absolute;
+        top: -0.5em;
+        font-size: 1em;
+        padding: 0 10px;
+        font-weight: normal;
+        background-color: inherit;
+      }
+      .description {
+        margin: 10px 0;
+        line-height: 1.3;
+        font-size: 0.8em;
+        white-space: pre-wrap;
+      }
+      .choices {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        font-size: 0.85em;
+      }
+      .choices li {
+        cursor: pointer;
+      }
+      .choices li::before {
+        content: '>';
+        opacity: 0.5;
+        padding-right: 5px;
+        transition: margin-left .2s;
+      }
+      .choices li:hover::before, .tab-focus .choices li:focus::before {
+        margin-left: 10px;
+      }
+      :focus {
+        outline: none;
+      }
+
+      .game-end {
+        background-color: black;
+        color: red;
+      }
+      .outside {
+        background-color: #f6c9c9;
+        color: #541717;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="border"></div>
+      <h1 class="heading" id="heading">Something broken</h1>
+      <p class="description" id="description">Either your JavaScript is disabled or something disasterous has happened. Check the console.</p>
+      <ul class="choices" id="choices"></ul>
+    </div>
+    <script>
+let tabFocus = false;
+document.addEventListener('keydown', e => {
+	if (e.keyCode === 9 || e.keyCode === 13) {
+  	document.documentElement.classList.add('tab-focus');
+    tabFocus = true;
+  }
+  if (e.keyCode === 13) {
+    document.activeElement.click();
+  }
+});
+document.addEventListener('keyup', e => {
+	if (e.keyCode === 9 || e.keyCode === 13) {
+    tabFocus = false;
+  }
+});
+document.addEventListener('focusin', e => {
+	if (!tabFocus) {
+    document.documentElement.classList.remove('tab-focus');
+  }
+});
+
+const headingElem = document.getElementById('heading');
+const descElem = document.getElementById('description');
+const choicesElem = document.getElementById('choices');
+let playerState = {};
+const game = {
+
+  INIT(start = false) {
+    if (start) playerState = {};
+    return {
+      heading: start && 'Gunn classroom',
+      desc: 'You are in your SELF class, waiting for class to start.',
+      setClass: start && '',
+      choices: [
+        ['Look around', game.observeSELF],
+        ['Check phone', game.checkPhone],
+        playerState.selfObserved && ['Talk to your SELF teacher', game.talkToTeacher],
+        playerState.selfObserved && ['Talk to the other student', game.talkToStudent],
+        playerState.hopelessStudy && ['Ditch SELF', game.ditch]
+      ]
+    };
+  },
+
+  observeSELF() {
+    playerState.selfObserved = true;
+    return {
+      desc: 'Your SELF teacher sits at her desk. Only one other student is here right now.',
+      choices: [
+        ['OK', game.INIT]
+      ]
+    };
+  },
+
+  talkToTeacher() {
+    if (playerState.checkPhone) playerState.hopelessStudy = true;
+    return {
+      desc: playerState.checkPhone
+        ? 'You ask your teacher if you can study for a math quiz this SELF period. She tuts at you and scolds you for not studying beforehand. She then starts explaining about the importance of social emotional learning, and why you should not focus on academics that much. You cautiously back away.'
+        : 'Your teacher\'s face lights up as you approach her, and she launches into a stampede of questions after questions about your social emotional well-being. You cautiously back away.',
+      choices: [
+        ['OK', game.INIT]
+      ]
+    };
+  },
+
+  talkToStudent() {
+    return {
+      desc: playerState.checkPhone
+        ? 'This student skipped a grade in math; they do not have the math quiz.'
+        : 'You have no reason to talk to this student right now. Striking up a conversation would be a waste of both your time and their time.',
+      choices: [
+        ['OK', game.INIT]
+      ]
+    };
+  },
+
+  checkPhone() {
+    playerState.checkPhone = true;
+    return {
+      desc: 'Schoology says that you have a math quiz next class, and you need to study. Unfortunately, your SELF teacher has infamously exhibited violent behaviour towards any attempt to study, and even has gone as far as to douse a student\'s notebook in water.',
+      choices: [
+        ['Continue', game.contGradeRant]
+      ]
+    };
+  },
+
+  contGradeRant() {
+    return {
+      desc: 'Your math grade is at stake here. Both of your parents have attended the top schools in their home country, and you must continue their legacy. Should you fail the following math quiz, your grade may drop and become unrecoverable, resulting in a slightly imperfect grade on your record, ultimately leading to you not getting to an Ivy League college, your life being ruined, and you getting disowned by your friends and family. It is of utmost importance you find a way to study for this math quiz.',
+      choices: [
+        ['OK', game.INIT]
+      ]
+    };
+  },
+
+  ditch() {
+    return {
+      desc: 'You stand up and start heading for the door.\n\tYour SELF teacher calls out, "Where are you going?"',
+      choices: [
+        ['Reply "Never mind." and return to your seat.', () => ({
+          desc: 'Your SELF teacher eyes you suspiciously as you return to your seat.',
+          choices: [['OK', game.INIT]]
+        })],
+        ['Ignore her.', game.leave]
+      ]
+    };
+  },
+
+  leave() {
+    return {
+      heading: 'Outside the G building',
+      setClass: 'outside',
+      desc: 'As you leave, your SELF teacher yells at you to come back. She rises out of her seat to run after you, but she spills over her coffee cup, which saves you some time. However, she is now multitaskingly cleaning up the spill and contacting the office simultaneously. The bell rings; SELF has started. You have to hurry.',
+      choices: [['OK', game.outside]]
+    };
+  },
+
+  outside() {
+    return {
+      desc: 'The campus is eeriely quiet.',
+      choices: [
+        ['Go back inside your classroom', game.DIE, 'Unfortunately, you are now considered tardy, and in addition to a hefty scolding from your SELF teacher, you also get suspended thanks to the school\'s recently implemented new attendance policy.'],
+        ['Run', game.DIE, 'Security personnel from the office chase you on their golf carts, which unfortunately are faster than you. They promptly catch you and send you to the office where you are suspended after some thorough questioning.'],
+        ['Ascend into the fifth dimension', game.DIE, 'Cross-fifth-dimensional transportation is illegal in many jurisdictions, including yours. God apparates in front of you and sends you to hell.']
+      ]
+    };
+  },
+
+  DIE(reason) {
+    return {
+      heading: 'Game over',
+      desc: reason,
+      setClass: 'game-end',
+      choices: [
+        ['Try again', game.INIT, true]
+      ]
+    };
+  }
+
+};
+function runGame({heading, desc, setClass, choices = []}) {
+  if (typeof heading === 'string') headingElem.textContent = heading;
+  if (typeof desc === 'string') descElem.textContent = desc;
+  if (typeof setClass === 'string') document.body.className = setClass;
+  choicesElem.innerHTML = '';
+  choices.forEach(choiceData => {
+    if (!Array.isArray(choiceData)) return;
+    const [choice, fn, ...args] = choiceData;
+    const elem = document.createElement('li');
+    elem.textContent = choice;
+    elem.tabIndex = 1;
+    elem.addEventListener('click', e => {
+      runGame(fn(...args));
+    }, {once: true});
+    choicesElem.appendChild(elem);
+  });
+}
+runGame(game.INIT(true));
+    </script>
+  </body>
+</html>
