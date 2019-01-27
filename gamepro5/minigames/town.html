@@ -11,12 +11,240 @@
     <style>
       body {
         font-family: 'Inconsolata', monospace;
+        color: rgba(255, 255, 255, 0.7);
+        background-color: #44633f;
+      }
+      #wrapper {
+        position: absolute;
+        width: 0;
+        height: 0;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        margin: auto;
+        color: #699a61;
+      }
+      #wrapper span {
+        position: absolute;
+        left: -0.5ch;
+        top: -0.5em;
+        transform: translate(var(--x), var(--y));
+      }
+      .selected {
+        background-color: rgba(255, 255, 255, 0.1);
+      }
+      .road {
+        color: #a78f7a;
+      }
+      .house {
+        font-weight: bold;
+        color: #cb5f5f;
+      }
+      .town-hall {
+        font-weight: bold;
+        color: black;
+      }
+      .menu {
+        position: fixed;
+        padding: 5px;
+        background-color: #ddd;
+        color: rgba(0, 0, 0, 0.7);
+      }
+      .menu-item {
+        display: block;
+        position: relative;
+      }
+      .menu-item-clickable > .menu-text {
+        cursor: pointer;
+      }
+      .menu-item-clickable:hover {
+        background-color: rgba(0, 0, 0, 0.1);
+      }
+      .disabled {
+        cursor: auto;
+      }
+      .disabled > .menu-text {
+        opacity: 0.5;
+      }
+      .disabled:hover {
+        background-color: transparent;
+      }
+      .menu-heading {
+        font-weight: bold;
+        color: rgba(0, 0, 0, 0.9);
+      }
+      .has-submenu:hover > .submenu {
+        display: block;
+      }
+      .submenu {
+        display: none;
+        position: absolute;
+        left: 100%;
+        top: 0;
+        background-color: #ddd;
+        padding: 5px;
+        width: 150px;
+      }
+      .desc {
+        font-style: italic;
       }
     </style>
   </head>
   <body>
+    <div id="wrapper"></div>
     <script>
-//
+const wrapper = document.getElementById('wrapper');
+const grid = {};
+const gridElems = {};
+const gridMetaData = {};
+function setGridSize(width, height) {
+  const fragment = document.createDocumentFragment();
+  for (let x = -width; x < width; x++) {
+    for (let y = -height; y < height; y++) {
+      const coords = x + ',' + y;
+      if (!gridElems[coords]) {
+        gridElems[coords] = document.createElement('span');
+        gridElems[coords].dataset.x = x;
+        gridElems[coords].dataset.y = y;
+        gridElems[coords].style.setProperty('--x', x + 'ch');
+        gridElems[coords].style.setProperty('--y', y + 'em');
+        gridElems[coords].textContent = '.';
+        fragment.appendChild(gridElems[coords]);
+        grid[coords] = '';
+        gridMetaData[coords] = null;
+      }
+    }
+  }
+  wrapper.appendChild(fragment);
+}
+const tilesToCharAndClass = {
+  '': ['.', ''],
+  road: ['#', 'road'],
+  house: ['H', 'house'],
+  'town hall': ['T', 'town-hall'],
+  'tree': ['|', 'tree']
+};
+function setTile(coords, to, metadata = null) {
+  if (typeof coords !== 'string')
+    coords = coords[0] + ',' + coords[1];
+  grid[coords] = to;
+  gridMetaData[coords] = metadata;
+  const [char, classes] = tilesToCharAndClass[to] || [' ', ''];
+  gridElems[coords].className = classes;
+  gridElems[coords].textContent = char;
+}
+setGridSize(10, 5);
+setTile([-1, 0], 'road');
+setTile([0, 0], 'road');
+setTile([1, 0], 'road');
+setTile([0, -1], 'town hall');
+const menu = document.createElement('div');
+menu.classList.add('menu');
+function openMenu(items, ev, parent = menu) {
+  items.forEach(item => {
+    const elem = document.createElement('span');
+    if (typeof item === 'string') elem.innerHTML = `<span class="menu-text">${item}</span>`;
+    else {
+      elem.innerHTML = `<span class="menu-text">${item[0]}</span>`;
+      const items = item.slice(1).filter(i => typeof i === 'string' || typeof i === 'function' || Array.isArray(i));
+      if (typeof items[0] === 'string') {
+        elem.className = items[0];
+        items.splice(0, 1);
+      }
+      if (typeof items[0] === 'function') {
+        elem.onclick = items[0];
+        elem.classList.add('menu-item-clickable');
+        items.splice(0, 1);
+      }
+      if (Array.isArray(items[0])) {
+        const submenu = document.createElement('div');
+        submenu.classList.add('submenu');
+        openMenu(items[0], null, submenu);
+        elem.appendChild(submenu);
+        elem.classList.add('has-submenu');
+        items.splice(0, 1);
+      }
+    }
+    elem.classList.add('menu-item');
+    parent.appendChild(elem);
+  });
+  if (menu === parent) {
+    menu.style.left = ev.clientX + 'px';
+    menu.style.top = ev.clientY + 8 + 'px';
+    document.body.appendChild(menu);
+  }
+}
+let lastSelectedCell = null;
+let money = 200;
+document.addEventListener('click', e => {
+  if (menu.parentNode) {
+    menu.parentNode.removeChild(menu);
+    menu.innerHTML = '';
+  }
+  if (lastSelectedCell) {
+    lastSelectedCell.classList.remove('selected');
+    lastSelectedCell = null;
+  }
+  if (e.target.parentNode === wrapper) {
+    lastSelectedCell = e.target;
+    e.target.classList.add('selected');
+    const x = +e.target.dataset.x;
+    const y = +e.target.dataset.y;
+    const coords = x + ',' + y;
+    switch (grid[coords]) {
+      // https://stackoverflow.com/a/35746467
+      case '': {
+        const adjacentToRoad = grid[`${x - 1},${y}`] === 'road' || grid[`${x},${y - 1}`] === 'road'
+          || grid[`${x + 1},${y}`] === 'road' || grid[`${x},${y + 1}`] === 'road';
+        openMenu([
+          ['Build...', 'menu-heading'],
+          ['A house', adjacentToRoad && money >= 30 ? '' : 'disabled', adjacentToRoad && money >= 30 && (() => {
+            setTile(coords, 'house', {people: 0});
+            money -= 30;
+          }), [
+            ['A house', 'menu-heading'],
+            ['Stores people in a realistic fashion', 'desc'],
+            'Cost: 30 MU',
+            'Capacity: 2 people'
+          ]],
+          ['A road', adjacentToRoad && money >= 5 ? '' : 'disabled', adjacentToRoad && money >= 5 && (() => {
+            setTile(coords, 'road');
+            money -= 5;
+          }), [
+            ['A road', 'menu-heading'],
+            ['Connects your town together; also makes it realistic', 'desc'],
+            'Cost: 5 MU'
+          ]],
+          ['Materialize...', 'menu-heading'],
+          ['A tree', () => {
+            setTile(coords, 'tree');
+          }, [
+            ['A tree', 'menu-heading'],
+            ['Makes the landscape less ugly', 'desc'],
+            'Cost: FREE',
+          ]]
+        ], e);
+        break;
+      }
+      case 'house': {
+        openMenu([
+          ['A house', 'menu-heading'],
+          'Residents: ' + gridMetaData[coords].people
+        ], e);
+        break;
+      }
+      case 'town hall': {
+        openMenu([
+          ['Town hall', 'menu-heading'],
+          `Money: ${money} MU`,
+          'Population: 0'
+        ], e);
+        break;
+      }
+    }
+  }
+});
     </script>
   </body>
 </html>
