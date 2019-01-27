@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Colour picker</title>
+    <meta charset="UTF-8">
+    <meta name="description" content="A colour selector with an unnecessary quantity of features, built with chroma.js"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link href="https://fonts.googleapis.com/css?family=Questrial" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="../../sheep3.css">
+    <link rel="stylesheet" href="./styles.css">
+    <script src="../../sheep3.js" charset="utf-8"></script>
+    <script src="chroma.min.js" charset="utf-8"></script>
+  </head>
+  <body>
+    <div class="selection-wrapper">
+      <div class="sliders-wrapper">
+        <div class="canvas-wrapper" id="box-wrapper">
+          <canvas id="box-canvas"></canvas>
+          <span class="box-handle"></span>
+        </div>
+        <div class="canvas-wrapper" id="slider-wrapper">
+          <canvas id="slider-canvas"></canvas>
+          <span class="slider-handle"></span>
+        </div>
+      </div>
+    </div>
+    <div class="inputs-wrapper">
+      <p class="space-input"><label for="alpha">alpha</label><input type="text" name="alpha" value="0"></p>
+      <div class="space-wrapper">
+        <p class="space-heading"><span class="label">RGB</span><span class="line"></span></p>
+        <p class="space-input"><label for="red">red</label><input type="text" name="red" value="0"></p>
+        <p class="space-input"><label for="green">green</label><input type="text" name="green" value="0"></p>
+        <p class="space-input"><label for="blue">blue</label><input type="text" name="blue" value="0"></p>
+      </div>
+      <div class="space-wrapper">
+        <p class="space-heading"><span class="label">HSL</span><span class="line"></span></p>
+        <p class="space-input"><label for="hue">hue</label><input type="text" name="hue" value="0"></p>
+        <p class="space-input"><label for="saturation">saturation</label><input type="text" name="saturation" value="0"></p>
+        <p class="space-input"><label for="lightness">lightness</label><input type="text" name="lightness" value="0"></p>
+      </div>
+    </div>
+    <script src="./main.js" charset="utf-8"></script>
+  </body>
+</html>

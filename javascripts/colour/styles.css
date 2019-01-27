@@ -1,0 +1,125 @@
+html, body {
+  width: 100%;
+  height: 100%;
+}
+body {
+  margin: 0;
+  font-size: 0;
+  background-color: #ddd;
+  display: flex;
+  font-family: 'Questrial', sans-serif;
+}
+.inputs-wrapper {
+  flex: none;
+  background-color: #eee;
+  width: 200px;
+  box-sizing: border-box;
+  padding: 20px;
+  height: 100%;
+  overflow: auto;
+}
+.space-wrapper {
+  margin-top: 20px;
+}
+.space-heading {
+  margin: 0;
+  display: flex;
+  margin-bottom: 5px;
+}
+.space-heading .label {
+  font-size: 16px;
+  color: rgba(0, 0, 0, 0.9);
+}
+.space-heading .line {
+  flex: auto;
+  border-top: 1px solid rgba(0, 0, 0, 0.2);
+  margin-top: 7px;
+  margin-left: 10px;
+  margin-right: 10px;
+}
+.space-input {
+  margin: 0;
+  margin-bottom: 5px;
+  display: flex;
+  align-items: center;
+}
+.space-input label {
+  flex: auto;
+  font-size: 16px;
+  color: rgba(0, 0, 0, 0.7);
+}
+.space-input input {
+  border: none;
+  background: none;
+  border-radius: 5px;
+  background-color: rgba(0, 0, 0, 0.05);
+  font: inherit;
+  color: rgba(0, 0, 0, 0.8);
+  padding: 5px;
+  font-size: 16px;
+  text-align: right;
+  width: 4ch;
+  cursor: pointer;
+}
+.space-input input:focus {
+  outline: none;
+  cursor: auto;
+  background-color: rgba(0, 0, 0, 0.1);
+}
+@media (max-width: 550px) {
+
+  body {
+    flex-direction: column;
+  }
+
+  .inputs-wrapper {
+    width: auto;
+    height: 200px;
+  }
+
+}
+canvas {
+  height: 100%;
+  border-radius: 5px;
+}
+.selection-wrapper {
+  flex: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.canvas-wrapper {
+  position: relative;
+  display: inline-block;
+  height: 300px;
+}
+#slider-wrapper {
+  margin-left: 10px;
+}
+#slider-canvas {
+  width: 15px;
+  border-radius: 15px;
+}
+.box-handle {
+  position: absolute;
+  box-sizing: border-box;
+  width: 10px;
+  height: 10px;
+  border: 2px solid rgba(255, 255, 255, 0.8);
+  border-radius: 50%;
+  margin: -5px;
+  z-index: 1;
+  left: var(--x);
+  top: var(--y);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2), inset 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+.slider-handle {
+  position: absolute;
+  background-color: white;
+  width: 15px;
+  height: 15px;
+  top: var(--y);
+  margin: -7.5px;
+  transform: rotate(45deg);
+  box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+}
