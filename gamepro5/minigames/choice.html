@@ -69,12 +69,13 @@
       }
       .choices li::before {
         content: '>';
-        opacity: 0.5;
+        opacity: 0.3;
         padding-right: 5px;
-        transition: margin-left .2s;
+        transition: all .2s;
       }
       .choices li:hover::before, .tab-focus .choices li:focus::before {
         margin-left: 10px;
+        opacity: 0.7;
       }
       :focus {
         outline: none;
