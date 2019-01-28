@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>legalese informalifier</title>
+    <meta charset="UTF-8">
+    <meta name="description" content="does some text transformations to make your legal text more familiar"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link rel="stylesheet" type="text/css" href="../sheep3.css">
+    <script src="../sheep3.js" charset="utf-8"></script>
+    <style media="screen">
+      #output {
+        resize: none;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>legalese informalifier</h1>
+    <textarea id="input" rows="22" cols="76">
+MIT License
+
+Copyright (c) 2019
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+    </textarea>
+    <textarea id="output" rows="22" cols="76" readonly></textarea>
+    <script>
+function transform(legalese) {
+  return legalese
+    .toLowerCase()
+    .replace(/\b(you are|your)\b/g, 'ur')
+    .replace(/\byou\b/g, 'u')
+    .replace(/\bare\b/g, 'r')
+    .replace(/\bwith\b/g, 'w')
+    .replace(/\bsubstantial\b/g, 'big nuff')
+    .replace(/\bwarrant(?=y|ies)/g, 'safet')
+    .replace(/\bmerchant(?=a)/g, 'sell')
+    .replace(/\sis\b/g, '\'s')
+    .replace(/\btort\b/g, 'oofy')
+    .replace(/,/g, '')
+    .replace(/\b(and\/or|collectively)\b/g, '')
+    .replace(/\bagreement\b/g, 'thing')
+    .replace(/\b(accept|agree)\b/g, 'be ok with')
+    .replace(/\bacceptance\b/g, 'ok-ness')
+    .replace(/\bhere[a-z]+\b/g, 'here')
+    .replace(/\bthere[a-z]+\b/g, 'there')
+    .replace(/\bliability\b/g, 'blameability')
+    .replace(/\shave\b/g, '\'ve')
+    .replace(/\bnot\s([a-z]+)\b/g, '$1n\'t');
+}
+const input = document.getElementById('input');
+const output = document.getElementById('output');
+function calc() {
+  output.value = transform(input.value);
+}
+input.addEventListener('input', calc);
+calc();
+input.addEventListener('scroll', e => {
+  output.scrollTop = input.scrollTop;
+});
+new ResizeObserver(([{contentRect: {width, height}}]) => {
+  output.style.width = width + 'px';
+  output.style.height = height + 'px';
+}).observe(input);
+    </script>
+  </body>
+</html>
