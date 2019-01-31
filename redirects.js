@@ -11,6 +11,7 @@
     "dairy":"http://thingkingland-com.stackstaging.com/mysql/dairy.php",
     'gaffasaurus':'https://www.youtube.com/channel/UCrvlbaPVXWjHGG3YtelpbNw/',
     'noskillzjusthacks':'https://www.youtube.com/channel/UCEAF8wDyCTKDIiVHnnu7a2Q',
+    'slime': 'https://www.youtube.com/channel/UCN9TtguBmgxMbJVybmSvK1A'
   };
   if (window.location.search) {
     var redirect=window.location.search.slice(1);
