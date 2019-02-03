@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>"Cryptography"</title>
+    <meta charset="UTF-8">
+    <meta name="description" content="Tools for most common codes used: morse code, binary, alphabet, base64, and caesar ciphers."/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link rel="stylesheet" type="text/css" href="../sheep3.css">
+    <script src="../sheep3.js" charset="utf-8"></script>
+    <script src="./_dom.js" charset="utf-8"></script>
+    <style>
+      label {
+        display: inline-block;
+        text-align: right;
+        width: 50px;
+        margin-right: 10px;
+        vertical-align: top;
+      }
+      .rows div {
+        padding: 5px;
+        font-family: monospace;
+        background-color: rgba(0, 0, 0, 0.05);
+      }
+      .rows div:nth-child(2n) {
+        background-color: rgba(0, 0, 0, 0.1);
+      }
+      :target {
+        animation: play 5s;
+      }
+      @keyframes play {
+        from {
+          box-shadow: 0 0 0 5px rgba(255, 0, 0, 0.5);
+        }
+        to {
+          box-shadow: 0 0 0 5px rgba(255, 0, 0, 0);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <p><a id="link">link to inputs</a></p>
+    <script>
+const params = new URL(window.location).searchParams;
+const inputs = {};
+const runMeAfter = [];
+const link = document.getElementById('link');
+function input(name, fn) {
+  const onchange = () => {
+    fn(input.value);
+    params.set(name, input.value);
+    link.href = '?' + params.toString();
+  };
+  const input = createElement('textarea', {
+    listeners: {
+      input: onchange
+    },
+    attributes: {
+      id: name,
+      value: params.get(name) || ''
+    }
+  });
+  inputs[name] = {
+    get value() {
+      return input.value;
+    },
+    set value(val) {
+      input.value = val;
+      // onchange();
+    }
+  };
+  if (params.get(name)) runMeAfter.push(onchange);
+  return input;
+}
+function inputWrapper(name, label, fn) {
+  return createElement('p', {
+    children: [
+      createElement('label', { children: [label], attributes: {for: name} }),
+      input(name, fn)
+    ]
+  });
+}
+const morse = {
+  '0': '-----', '1': '.----', '2': '..---', '3': '...--', '4': '....-',
+  '5': '.....', '6': '-....', '7': '--...', '8': '---..', '9': '----.',
+  'A': '.-', 'B': '-...', 'C': '-.-.', 'D': '-..', 'E': '.', 'F': '..-.',
+  'G': '--.', 'H': '....', 'I': '..', 'J': '.---', 'K': '-.-', 'L': '.-..',
+  'M': '--', 'N': '-.', 'O': '---', 'P': '.--.', 'Q': '--.-', 'R': '.-.',
+  'S': '...', 'T': '-', 'U': '..-', 'V': '...-', 'W': '.--', 'X': '-..-',
+  'Y': '-.--', 'Z': '--..', '.': '.-.-.-', ',': '--..--', '?': '..--..',
+  '/': '-..-.', '@': '.--.-.', '\'': '.----.', '!': '-.-.--', '(': '-.--.',
+  ')': '-.--.-', '&': '.-...', ':': '---...', ';': '-.-.-.', '=': '-...-',
+  '+': '.-.-.', '-': '-....-', '_': '..--.-', '"': '.-..-.','$': '...-..'
+};
+let caesarTable;
+document.body.appendChild(createElement('div', {
+  children: [
+    createElement('h1', { children: ['Morse code'] }),
+    inputWrapper('from-morse', 'From', text => inputs['to-morse'].value
+      = text.replace(/(\S)\/(\S)/g, '$1 / $2').split(' ').map(c => {
+        if (!c || c === '/') return ' ';
+        const pattern = c.replace(/[−‒–—―]/g, '-').replace(/[﹒．·⋅·]/g, '.').replace(/[^.-]/g, '');
+        return Object.keys(morse).find(char => morse[char] === pattern) || '';
+      }).join('')),
+    inputWrapper('to-morse', 'To', text => inputs['from-morse'].value
+      = text.toUpperCase().split('').map(l => morse[l] || '/').join(' ')),
+
+    createElement('h1', { children: ['Binary'] }),
+    inputWrapper('from-binary', 'From', text => inputs['to-binary'].value
+      = text.replace(/[^01]/g, '').replace(/[01]{8}/g, m => String.fromCharCode(parseInt(m, 2)))),
+    inputWrapper('to-binary', 'To', text => inputs['from-binary'].value
+      = text.split('').map(c => c.charCodeAt().toString(2).padStart(8, '0')).join(' ')),
+
+    createElement('h1', { children: ['Alphabet'] }),
+    inputWrapper('from-alphabet', 'From', text => inputs['to-alphabet'].value
+      = text.replace(/(2[0-6]|1[0-9]|[1-9])-?/g, (m, g1) => String.fromCharCode(+g1 + 64))),
+    inputWrapper('to-alphabet', 'To', text => inputs['from-alphabet'].value
+      = text.replace(/[a-z]+/gi, word => word.split('').map(l => l.toUpperCase().charCodeAt() - 64).join('-'))),
+
+    createElement('h1', { children: ['Base64'] }),
+    inputWrapper('from-base64', 'From', text => inputs['to-base64'].value = btoa(text)),
+    inputWrapper('to-base64', 'To', text => {
+      try {
+        inputs['from-base64'].value = atob(text);
+      } catch (e) {
+        inputs['from-base64'].value = e;
+      }
+    }),
+
+    createElement('h1', { children: ['Caesar cipher'] }),
+    inputWrapper('caesar', 'Text', text => {
+      caesarTable.innerHTML = '';
+      const rows = [];
+      for (let shift = 0; shift < 26; shift++) {
+        rows.push(createElement('div', {
+          children: [
+            `(+${shift.toString().padStart(2, '0')}) ` + text
+              .replace(/[a-z]/g, l => String.fromCharCode((l.charCodeAt() - 97 + shift) % 26 + 97))
+              .replace(/[A-Z]/g, l => String.fromCharCode((l.charCodeAt() - 65 + shift) % 26 + 65))
+          ],
+          attributes: {
+            id: 'shift' + shift
+          }
+        }));
+      }
+      caesarTable.appendChild(createFragment(rows));
+    }),
+    caesarTable = createElement('div', { classes: 'rows' })
+  ]
+}));
+runMeAfter.forEach(fn => fn());
+    </script>
+  </body>
+</html>
