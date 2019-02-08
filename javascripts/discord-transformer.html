@@ -76,7 +76,7 @@ const transformers = [
     };
     const alphabet = 'abcdefghijklmnopqrstuvwxyz';
     output.value = input.toLowerCase('').split('').map(c => alphabet.includes(c)
-      ? `:regional_indicator_${c}:` : chars[c] ? `:${chars}:` : c).join(' ');
+      ? `:regional_indicator_${c}:` : chars[c] ? `:${chars[c]}:` : c).join(' ');
   })(document.getElementById('emojify')),
   (output => input => {
     output.value = input.split('').join('\u200B');
