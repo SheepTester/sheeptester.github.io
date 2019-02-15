@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Sudoku ruiner</title>
+    <meta charset="UTF-8">
+    <meta name="description" content="For all empty cells in a sudoku puzzle it outputs possible numbers"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:600" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="../sheep3.css">
+    <script src="../sheep3.js" charset="utf-8"></script>
+    <script src="./_dom.js" charset="utf-8"></script>
+    <style>
+      body {
+        /* https://colorhunt.co/palette/134510 */
+        --theme-1: #132238;
+        --theme-2: #364e68;
+        --theme-3: #98ccd3;
+        --theme-4: #ebf0f6;
+
+        margin: 0;
+        font-size: 0;
+        display: flex;
+        background-color: var(--theme-1);
+        justify-content: center;
+        align-items: center;
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 600;
+      }
+      html, body {
+        width: 100%;
+        height: 100%;
+      }
+      .grid {
+        width: 90vmin;
+        height: 90vmin;
+      }
+      .grid, .mini-grid, .has-hints {
+        display: grid;
+        grid-template: repeat(3, 1fr) / repeat(3, 1fr);
+      }
+      .mini-grid {
+        border-bottom: 1px solid var(--theme-2);
+        border-right: 1px solid var(--theme-2);
+      }
+      .mini-grid:nth-child(3n+3) {
+        border-right: none;
+      }
+      .mini-grid:nth-child(n+7) {
+        border-bottom: none;
+      }
+      .cell span {
+        pointer-events: none;
+      }
+      .is-default, .is-user {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 5vmin;
+      }
+      .is-default {
+        color: var(--theme-4);
+      }
+      .is-user {
+        color: var(--theme-3);
+      }
+      .is-selected {
+        background-color: var(--theme-2);
+      }
+      .is-invalid {
+        background-color: currentColor;
+      }
+      .is-invalid span {
+        color: var(--theme-1);
+      }
+      .is-invalid.is-selected span {
+        color: var(--theme-2);
+      }
+      .has-hints {
+        align-items: center;
+        text-align: center;
+        padding: 1vmin;
+        font-size: 2vmin;
+        color: var(--theme-2);
+      }
+      .has-hints.is-selected {
+        color: var(--theme-3);
+      }
+      h1 {
+        font-weight: inherit;
+        margin-top: 0;
+      }
+      .help {
+        position: fixed;
+        width: 100%;
+        max-width: 500px;
+        background-color: var(--theme-2);
+        padding: 20px;
+        box-sizing: border-box;
+        max-height: 80%;
+        font-size: 20px;
+        color: var(--theme-4);
+        border-radius: 10px;
+      }
+      kbd {
+        background-color: var(--theme-3);
+        color: var(--theme-1);
+        padding: 0 5px;
+        border-radius: 5px;
+      }
+      button {
+        -webkit-appearance: none;
+        border: none;
+        background: none;
+        background-color: var(--theme-1);
+        font: inherit;
+        color: var(--theme-3);
+        margin: 0 auto;
+        padding: 10px;
+        font-size: 30px;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="help" id="help">
+      <h1>Keyboard shortcuts</h1>
+      <p>Keys <kbd>1</kbd> to <kbd>9</kbd> to set a cell</p>
+      <p><kbd>0</kbd>/<kbd>backspace</kbd> to clear a cell</p>
+      <p>Arrow keys to move selection</p>
+      <p><kbd>z</kbd> to undo, <kbd>y</kbd> to redo</p>
+      <p>You start first by inputing the given numbers; then press <kbd>enter</kbd> to start.</p>
+      <button id="close">I can read</button>
+    </div>
+    <script>
+const grid = {};
+const MINIGRIDS = 3;
+const MINIGRID_SIZE = 3;
+const SUDOKU_SIZE = MINIGRIDS * MINIGRID_SIZE;
+function getXY(id) {
+  const [x, y] = id.split(',').map(Number);
+  return {x, y};
+}
+function toID({x, y}) {
+  return `${x},${y}`;
+}
+document.body.appendChild(createElement('div', {
+  classes: 'grid',
+  children: (() => {
+    const minigrids = [];
+    for (let py = 0; py < MINIGRIDS; py++) {
+      for (let px = 0; px < MINIGRIDS; px++) {
+        const cells = [];
+        for (let cy = 0; cy < MINIGRID_SIZE; cy++) {
+          for (let cx = 0; cx < MINIGRID_SIZE; cx++) {
+            const id = toID({
+              x: cx + px * MINIGRID_SIZE,
+              y: cy + py * MINIGRID_SIZE
+            });
+            cells.push(grid[id] = createElement('div', {
+              classes: 'cell',
+              attributes: {
+                'data-id': id
+              }
+            }));
+          }
+        }
+        minigrids.push(createElement('div', {
+          classes: 'mini-grid',
+          children: cells
+        }));
+      }
+    }
+    return minigrids;
+  })(),
+  listeners: {
+    click(e) {
+      if (e.target.dataset.id) {
+        grid[toID(selected)].classList.remove('is-selected');
+        selected = getXY(e.target.dataset.id);
+        e.target.classList.add('is-selected');
+      }
+    }
+  }
+}));
+let selected = {x: 0, y: 0};
+let editing = true;
+grid[toID(selected)].classList.add('is-selected');
+let undoHist = [], redoHist = [];
+function clear({x, y}) {
+  return () => {
+    const cell = grid[toID({x, y})];
+    if (!editing && cell.classList.contains('is-default')) return;
+    cell.dataset.value = '';
+    cell.innerHTML = '';
+    if (editing) cell.classList.remove('is-default');
+    else cell.classList.remove('is-user');
+    inspect();
+  };
+}
+function set({x, y}, val) {
+  return () => {
+    const cell = grid[toID({x, y})];
+    if (!editing && cell.classList.contains('is-default')) return;
+    cell.dataset.value = val;
+    cell.innerHTML = `<span>${val}</span>`;
+    if (editing) cell.classList.add('is-default');
+    else cell.classList.add('is-user');
+    inspect();
+  };
+}
+document.addEventListener('keydown', e => {
+  if (e.keyCode > 48 && e.keyCode < 58) { // numbers 1-9 - set value
+    const n = e.keyCode - 48;
+    const fn = set(selected, n);
+    fn();
+    undoHist.push([clear(selected), fn]);
+    redoHist = [];
+  }
+  const oldSelected = toID(selected);
+  let selectChange = false;
+  switch (e.keyCode) {
+    case 48: // 0 - clear value
+    case 46: // delete
+    case 8:  // backspace
+      const val = grid[toID(selected)].dataset.value;
+      const fn = clear(selected);
+      fn();
+      undoHist.push([set(selected, val), fn]);
+      redoHist = [];
+      break;
+    case 90: { // Z - undo
+      const item = undoHist.pop();
+      if (item) {
+        item[0]();
+        redoHist.push([item[1], item[0]]);
+      }
+      break;
+    }
+    case 89: { // Y - redo
+      const item = redoHist.pop();
+      if (item) {
+        item[0]();
+        undoHist.push([item[1], item[0]]);
+      }
+      break;
+    }
+    case 13: // enter - start playing
+      if (editing) start();
+      break;
+    case 37: // arrow keys - select cell
+      selected.x = (selected.x + SUDOKU_SIZE - 1) % SUDOKU_SIZE;
+      selectChange = true;
+      break;
+    case 38:
+      selected.y = (selected.y + SUDOKU_SIZE - 1) % SUDOKU_SIZE;
+      selectChange = true;
+      break;
+    case 39:
+      selected.x = (selected.x + 1) % SUDOKU_SIZE;
+      selectChange = true;
+      break;
+    case 40:
+      selected.y = (selected.y + 1) % SUDOKU_SIZE;
+      selectChange = true;
+      break;
+  }
+  if (selectChange) {
+    grid[oldSelected].classList.remove('is-selected');
+    grid[toID(selected)].classList.add('is-selected');
+  }
+});
+function inspect() {
+  for (let x = 0; x < SUDOKU_SIZE; x++) {
+    for (let y = 0; y < SUDOKU_SIZE; y++) {
+      const id = toID({x, y});
+      const cell = grid[id];
+      const val = cell.dataset.value;
+      if (val) {
+        cell.classList.remove('has-hints');
+        const gridX = (x / 3 >> 0) * 3;
+        const gridY = (y / 3 >> 0) * 3;
+        let invalid = false;
+        function test(pos) {
+          const testId = toID(pos);
+          if (id === testId) return false;
+          let temp = grid[testId].dataset.value;
+          if (temp === val) {
+            invalid = true;
+            return true;
+          } else {
+            return false;
+          }
+        }
+        for (let i = 0; i < SUDOKU_SIZE; i++) {
+          if (test({x: i, y}) || test({x, y: i}) ||
+              test({x: gridX + i % MINIGRID_SIZE, y: gridY + i / MINIGRID_SIZE >> 0}))
+            break;
+        }
+        if (invalid) {
+          cell.classList.add('is-invalid');
+        } else {
+          cell.classList.remove('is-invalid');
+        }
+      } else if (!editing) {
+        cell.classList.remove('is-invalid');
+        cell.classList.add('has-hints');
+        const impossibleNums = {};
+        const gridX = (x / 3 >> 0) * 3;
+        const gridY = (y / 3 >> 0) * 3;
+        for (let i = 0; i < SUDOKU_SIZE; i++) {
+          impossibleNums[grid[toID({x: i, y})].dataset.value] = true;
+          impossibleNums[grid[toID({x, y: i})].dataset.value] = true;
+          impossibleNums[grid[toID({x: gridX + i % MINIGRID_SIZE, y: gridY + i / MINIGRID_SIZE >> 0})].dataset.value] = true;
+        }
+        let hintHTML = '';
+        for (let i = 1; i <= SUDOKU_SIZE; i++) {
+          hintHTML += `<span class="hint">${impossibleNums[i] ? '' : i}</span>`;
+        }
+        cell.innerHTML = hintHTML;
+      } else {
+        cell.classList.remove('is-invalid');
+      }
+    }
+  }
+}
+function start() {
+  editing = false;
+  undoHist = [], redoHist = [];
+  inspect();
+}
+document.getElementById('close').addEventListener('click', e => {
+  document.getElementById('help').remove();
+}, {once: true});
+    </script>
+  </body>
+</html>

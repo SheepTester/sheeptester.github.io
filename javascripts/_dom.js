@@ -33,7 +33,7 @@ function createElement(tag, data = {}) {
       }
     });
   }
-  if (data.html) elem.innerHTML = data.html;
+  if (data.html !== undefined) elem.innerHTML = data.html;
   return elem;
 }
 function createFragment(elems) {
