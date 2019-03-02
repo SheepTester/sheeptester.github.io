@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>PeerJS test</title>
+    <meta charset="UTF-8">
+    <meta name="description" content="Testing out how PeerJS works"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link rel="stylesheet" type="text/css" href="../sheep3.css">
+    <script src="../sheep3.js" charset="utf-8"></script>
+    <script src="https://cdn.jsdelivr.net/npm/peerjs@0.3.20/dist/peer.min.js" charset="utf-8"></script>
+    <style>
+      .boxed {
+        padding: 10px;
+        border: 1px solid black;
+      }
+      .message::before {
+        opacity: 0.5;
+      }
+      .their {
+        color: blue;
+      }
+      .their::before {
+        content: 'them: ';
+      }
+      .your {
+        color: green;
+      }
+      .your::before {
+        content: 'you: ';
+      }
+    </style>
+  </head>
+  <body>
+    <h1 id="peer-id"></h1>
+    <p>This uses <a href="https://peerjs.com/">PeerJS</a>.</p>
+    <button id="begin">Open</button>
+    <button id="connect" disabled>Connect</button>
+    <script>
+const beginBtn = document.getElementById('begin');
+const peerIDDisplay = document.getElementById('peer-id');
+const connectBtn = document.getElementById('connect');
+
+let peer;
+beginBtn.addEventListener('click', e => {
+  peer = new Peer({debug: 3});
+  peer.on('open', id => {
+    peerIDDisplay.textContent = 'Your ID: ' + id;
+  });
+  peer.on('connection', conn => connection(conn, false));
+  beginBtn.disabled = true;
+  connectBtn.disabled = false;
+});
+function connection(conn, byMe) {
+  const box = document.createElement('div');
+  box.className = 'boxed connection';
+  box.innerHTML = `<h3>Connection with ${conn.peer}</h3><p>Made by ${byMe ? 'me' : 'them'}</p>`;
+  const status = document.createElement('p');
+  box.appendChild(status);
+  const received = document.createElement('ul');
+  box.appendChild(received);
+  const sender = document.createElement('input');
+  sender.placeholder = 'Press enter to send';
+  box.appendChild(sender);
+  document.body.appendChild(box);
+
+  conn.on('open', () => {
+    status.innerHTML = `Open`;
+    conn.on('data', data => {
+      const li = document.createElement('li');
+      li.className = 'their message';
+      li.textContent = data;
+      received.appendChild(li);
+    });
+
+    sender.addEventListener('keydown', e => {
+      if (e.keyCode === 13 && sender.value) {
+        conn.send(sender.value);
+        const li = document.createElement('li');
+        li.className = 'your message';
+        li.textContent = sender.value;
+        received.appendChild(li);
+        sender.value = '';
+      }
+    });
+  });
+
+  conn.on('close', () => {
+    status.innerHTML = `<strong>Closed</strong>`;
+  });
+}
+connectBtn.addEventListener('click', e => {
+  const otherID = prompt('ID of other person:');
+  if (otherID) {
+    connection(peer.connect(otherID), true);
+  }
+});
+    </script>
+  </body>
+</html>
