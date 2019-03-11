@@ -404,7 +404,6 @@ const nameColours = {
   grey: '#95a5a6', gray: '#95a5a6', black: '#34495e'
 };
 async function launchChat(chatGetter) {
-  chat.innerHTML = '';
   document.body.classList.add('chat-mode');
   let messages, userData;
   function createMessage({type, content, author, time, data}) {
@@ -513,19 +512,21 @@ async function launchChat(chatGetter) {
   hostClosedBtn.classList.add('chat-btn');
   hostClosedBtn.textContent = 'Sure';
   hostClosedBtn.addEventListener('click', e => {
-    messages.push({
+    const messagesClone = JSON.parse(JSON.stringify(messages));
+    const userDataClone = JSON.parse(JSON.stringify(userData));
+    messagesClone.push({
       type: 'announcement',
       content: encodeURIComponent(`Host transferred to ${userData[obj.myID].name}.`),
       time: Date.now()
     });
     const newID = SHEEP_PREFIX + obj.id;
-    userData[newID] = userData[obj.myID];
-    delete userData[obj.myID];
-    messages.forEach(msg => {
+    userDataClone[newID] = userDataClone[obj.myID];
+    delete userDataClone[obj.myID];
+    messagesClone.forEach(msg => {
       if (msg.author === obj.myID) msg.author = newID;
       else if (msg.author === newID) msg.author = 'was-' + newID;
     });
-    launchChat(listeners => createChat(listeners, obj.id, messages, userData))
+    launchChat(listeners => createChat(listeners, obj.id, messagesClone, userDataClone))
       .catch(err => {
         console.log(err);
         selfPost('There was a problem taking over.');

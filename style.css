@@ -317,6 +317,8 @@ nav .btn:hover, .tabkeyfocus nav .btn:focus {
 #lernu .ball {background-color: white;}
 #storyboardthat {background-color: white;}
 #storyboardthat .ball {background-color: #729DC8;}
+#imgur {background-color: #21B66E;}
+#imgur .ball {border: 5px solid white; background-color: transparent;}
 #redirects h1 {
   margin: 0;
   padding: 10px;
