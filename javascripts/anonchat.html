@@ -3,7 +3,7 @@
   <head>
     <title>Anonymousish chat</title>
     <meta charset="UTF-8">
-    <meta name="description" content="Chat without authentucation"/>
+    <meta name="description" content="Chat without authentication"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <link rel="stylesheet" type="text/css" href="../sheep3.css">
     <script src="../sheep3.js" charset="utf-8"></script>
@@ -440,8 +440,8 @@ async function launchChat(chatGetter) {
           case 'help': {
             selfPost('/help - List of commands\n'
               + '//[rest of message] - Sends the message beginning with a single slash (escapes the command)\n'
-              + '/setname [name] (alias: /nick) - Sets your display name\n'
-              + '/setcolour [colour name] (aliases: /setcolor, /colour) - Sets your display name colour\n'
+              + '/setname [name] - Sets your display name (alias: /nick)\n'
+              + '/setcolour [colour name] - Sets your display name colour (aliases: /setcolor, /colour)\n'
               + '/me [message] - Italicizes your message');
             break;
           }
