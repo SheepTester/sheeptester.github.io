@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Anonymousish chat</title>
+    <meta charset="UTF-8">
+    <meta name="description" content="Chat without authentucation"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link rel="stylesheet" type="text/css" href="../sheep3.css">
+    <script src="../sheep3.js" charset="utf-8"></script>
+    <script src="https://cdn.jsdelivr.net/npm/peerjs@0.3.20/dist/peer.min.js" charset="utf-8"></script>
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+    <style>
+      html, body {
+        width: 100%;
+        height: 100%;
+      }
+      body {
+        background-color: #eee;
+        font-family: 'Open Sans', sans-serif;
+        font-size: 0;
+        margin: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        word-break: break-word;
+      }
+      .welcome {
+        display: flex;
+        align-items: top;
+        color: #666;
+        margin: 0 50px;
+      }
+      .side {
+        flex: 1 0 0;
+      }
+      .create {
+        --colour: #63bd67;
+        text-align: right;
+      }
+      .join {
+        --colour: #6295bd;
+      }
+      .line {
+        background-color: rgba(0, 0, 0, 0.1);
+        margin: 0 50px;
+        width: 1px;
+      }
+      .side h1 {
+        font-weight: normal;
+        font-size: 32px;
+      }
+      .button {
+        -webkit-appearance: none;
+        border: none;
+        background: none;
+        border-radius: 5px;
+        background-color: var(--colour);
+        color: white;
+        font: inherit;
+        font-size: 24px;
+        height: 40px;
+        width: 100%;
+        cursor: pointer;
+      }
+      .input {
+        -webkit-appearance: none;
+        border: 3px solid var(--colour);
+        background: none;
+        border-radius: 5px;
+        background-color: white;
+        font: inherit;
+        color: #333;
+        font-size: 24px;
+        padding: 5px;
+        height: 40px;
+        width: 100%;
+        box-sizing: border-box;
+        margin-bottom: 15px;
+        text-align: center;
+      }
+      ::-webkit-input-placeholder {
+        color: inherit;
+        opacity: 0.3;
+      }
+      .hidden {
+        display: none;
+      }
+      .error {
+        color: #dd5454;
+        font-size: 16px;
+      }
+      @media (max-width: 510px) {
+
+        .welcome, .line {
+          margin: 0 20px;
+        }
+
+      }
+      .chat-mode {
+        background-color: #494f55;
+        color: rgba(255, 255, 255, 0.6);
+        align-items: flex-end;
+      }
+      .chat-mode .welcome {
+        display: none;
+      }
+      .chat, #message {
+        display: none;
+      }
+      .chat-mode .chat {
+        display: block;
+        position: fixed;
+        bottom: 75px;
+        left: 0;
+        width: 100%;
+      }
+      .scroll-mode .chat {
+        max-height: calc(100% - 75px);
+        overflow: auto;
+      }
+      .chat-mode #message {
+        display: block;
+        -webkit-appearance: none;
+        border: none;
+        background: none;
+        border-radius: 5px;
+        font: inherit;
+        background-color: rgba(255, 255, 255, 0.1);
+        color: rgba(255, 255, 255, 0.8);
+        height: 35px;
+        margin: 20px;
+        padding: 0 15px;
+        font-size: 16px;
+        flex: 1;
+      }
+      #message:disabled {
+        opacity: 0.5;
+      }
+      .message {
+        margin: 0 20px;
+        margin-top: 10px;
+      }
+      .announcement {
+        color: rgba(255, 255, 255, 0.4);
+      }
+      .self-message {
+        margin-left: 0;
+        padding-left: 17px;
+        border-left: 3px solid rgba(255, 255, 255, 0.5);
+        color: rgba(255, 255, 255, 0.8);
+      }
+      .self-message + .self-message {
+        margin-top: 0;
+        padding-top: 10px;
+      }
+      .author, .content {
+        font-size: 16px;
+      }
+      .author {
+        color: white;
+        margin-right: 10px;
+      }
+      .content {
+        white-space: pre-wrap;
+      }
+      .italics {
+        font-style: italic;
+      }
+      input:focus { /* oof */
+        outline: none;
+      }
+      .chat-btn {
+        -webkit-appearance: none;
+        border: none;
+        background: none;
+        border-radius: 5px;
+        font: inherit;
+        background-color: rgba(255, 255, 255, 0.1);
+        font-size: 16px;
+        color: rgba(255, 255, 255, 0.7);
+        margin-left: 10px;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="welcome">
+      <div class="side create">
+        <h1>Create a chat</h1>
+        <button class="button" id="create">Create</button>
+      </div>
+      <div class="line"></div>
+      <div class="side join">
+        <h1>Join a chat</h1>
+        <div><input type="text" placeholder="Chat ID" id="join-id" class="input"></div>
+        <button class="button" id="join">Join</button>
+        <p class="error hidden" id="id-error"></p>
+      </div>
+    </div>
+    <div class="chat" id="chat"></div>
+    <input type="text" placeholder="Send a message" id="message" disabled>
+    <script>
+const consonants = 'bdfghjklmnprstvwz';
+const vowels = 'aeiou';
+function randomWord(syllables = 3, nasalChances = 0.3) {
+  let word = '';
+  for (let i = 0; i < syllables; i++) {
+    const consonant = consonants[Math.random() * consonants.length >> 0];
+    if (consonant !== word[word.length - 1])
+      word += consonant; // no double n
+    word += vowels[Math.random() * vowels.length >> 0];
+    if (Math.random() < nasalChances) word += 'n';
+  }
+  return word;
+}
+
+const SHEEP_PREFIX = 'sheeptester-';
+function createChat(on = {}, id = randomWord(), messages = [], userData = {}) {
+  return new Promise((res, rej) => {
+    const peer = new Peer(SHEEP_PREFIX + id);
+    const members = []; // list of connections
+    if (!userData[peer.id]) userData[peer.id] = {colour: '#ffffff', name: randomWord()};
+    function broadcast(msg) {
+      members.forEach(conn => conn.send(msg));
+    }
+    function announce(msg, time = Date.now()) {
+      const msgObj = {type: 'announcement', content: encodeURIComponent(msg), time};
+      messages.push(msgObj);
+      broadcast({type: 'new-message', message: msgObj});
+      if (on.message) on.message(msgObj);
+    }
+    function receive(peerID, data) {
+      switch (data.type) {
+        case 'new-message': {
+          const msgObj = {type: 'message', content: data.content, author: peerID, time: data.time, data: data.data};
+          messages.push(msgObj);
+          broadcast({type: 'new-message', message: msgObj});
+          if (on.message) on.message(msgObj);
+          break;
+        }
+        case 'set-colour': {
+          userData[peerID].colour = data.colour;
+          broadcast({type: 'set-user-data', user: peerID, colour: data.colour});
+          if (on.coloursUpdate) on.coloursUpdate(peerID);
+          break;
+        }
+        case 'set-name': {
+          const oldName = userData[peerID].name;
+          userData[peerID].name = data.name;
+          broadcast({type: 'set-user-data', user: peerID, name: data.name});
+          announce(`${oldName} set their name to ${data.name} (id: ${peerID}).`);
+          break;
+        }
+      }
+    }
+    function welcomeNewMember(conn) {
+      members.push(conn);
+      let unwelcomed = true;
+      conn.on('open', () => {
+        conn.send({type: 'welcome', messages, userData});
+      });
+      conn.on('data', data => {
+        if (data.type === 'welcomed' && unwelcomed) {
+          if (!userData[conn.peer]) {
+            const name = randomWord();
+            userData[conn.peer] = {colour: '#ffffff', name};
+            broadcast({type: 'set-user-data', user: conn.peer, colour: '#ffffff', name});
+            if (on.coloursUpdate) on.coloursUpdate(conn.peer);
+          }
+          announce(`${userData[conn.peer].name} joined (id: ${conn.peer}).`);
+          unwelcomed = false;
+        } else receive(conn.peer, data);
+      });
+      conn.on('close', () => {
+        const index = members.indexOf(conn);
+        if (~index) members.splice(index, 1);
+        announce(`${userData[conn.peer].name} left (id: ${conn.peer}).`);
+        delete userData[conn.peer];
+        broadcast({type: 'user-left', user: conn.peer});
+      });
+    }
+    peer.on('open', () => {
+      Object.keys(userData).forEach(peerID => {
+        if (peerID === peer.id) return;
+        const conn = peer.connect(peerID);
+        welcomeNewMember(conn);
+      });
+      peer.on('connection', welcomeNewMember);
+      res({
+        send(msg, metadata) {
+          receive(peer.id, {type: 'new-message', content: encodeURIComponent(msg), time: Date.now(), data: metadata});
+        },
+        setColour(colour) {
+          receive(peer.id, {type: 'set-colour', colour})
+        },
+        setName(name) {
+          receive(peer.id, {type: 'set-name', name, time: Date.now()});
+        },
+        id,
+        myID: peer.id
+      });
+      if (on.initialize) on.initialize(messages, userData);
+      announce(`The chatroom ID is ${id}; share this with other people so they can join!`);
+    });
+    peer.on('error', rej);
+  });
+}
+function joinChat(id, on = {}) {
+  return new Promise((res, rej) => {
+    const peer = new Peer();
+    const obj = {id};
+    let wasClosed = false, open = false;
+    function treatConnection(conn) {
+      if (open) return;
+      open = true;
+      let messages, userData;
+      conn.on('data', data => {
+        switch (data.type) {
+          case 'welcome': {
+            messages = data.messages;
+            userData = data.userData;
+            if (on.initialize) on.initialize(messages, userData);
+            conn.send({type: 'welcomed'});
+            break;
+          }
+          case 'new-message': {
+            messages.push(data.message);
+            if (on.message) on.message(data.message);
+            break;
+          }
+          case 'set-user-data': {
+            if (!userData[data.user]) userData[data.user] = {};
+            if (data.colour) {
+              userData[data.user].colour = data.colour;
+              if (on.coloursUpdate) on.coloursUpdate(data.user);
+            }
+            if (data.name) {
+              userData[data.user].name = data.name;
+            }
+            break;
+          }
+          case 'user-left': {
+            delete userData[data.user];
+            break;
+          }
+        }
+      });
+      obj.send = (msg, metadata) => conn.send({type: 'new-message', content: encodeURIComponent(msg), time: Date.now(), data: metadata});
+      obj.setColour = colour => conn.send({type: 'set-colour', colour});
+      obj.setName = name => conn.send({type: 'set-name', name, time: Date.now()});
+      obj.destroy = () => peer.destroy();
+      obj.myID = peer.id;
+      conn.on('close', () => {
+        delete userData[conn.peer];
+        if (on.close) on.close();
+        wasClosed = true;
+        open = false;
+      });
+      if (wasClosed && on.reopen) on.reopen();
+    }
+    peer.on('open', () => {
+      const conn = peer.connect(SHEEP_PREFIX + id);
+      treatConnection(conn);
+      conn.on('open', () => {
+        res(obj);
+      });
+      peer.on('connection', treatConnection);
+      conn.on('error', rej);
+    });
+    peer.on('error', rej);
+  });
+}
+
+const chat = document.getElementById('chat');
+const messageInput = document.getElementById('message');
+let onsubmit = null;
+messageInput.addEventListener('keydown', e => {
+  const trueValue = messageInput.value.trim();
+  if (e.keyCode === 13 && trueValue && onsubmit) {
+    onsubmit(trueValue);
+    messageInput.value = '';
+  }
+});
+chat.addEventListener('wheel', e => {
+  messageInput.blur();
+});
+chat.addEventListener('touchstart', e => {
+  messageInput.blur();
+});
+messageInput.addEventListener('blur', e => {
+  if (document.body.classList.contains('scroll-mode')) return;
+  messageInput.blur();
+  document.body.classList.add('scroll-mode');
+  chat.scrollTo(0, chat.scrollHeight);
+});
+messageInput.addEventListener('focus', e => {
+  document.body.classList.remove('scroll-mode');
+});
+const illegalNameCharsRegex = /[^a-z ]/i;
+// https://www.materialui.co/flatuicolors
+const nameColours = {
+  teal: '#1abc9c', green: '#2ecc71', blue: '#3498db', purple: '#9b59b6',
+  yellow: '#f1c40f', orange: '#e67e22', red: '#e74c3c', white: '#ecf0f1',
+  grey: '#95a5a6', gray: '#95a5a6', black: '#34495e'
+};
+async function launchChat(chatGetter) {
+  chat.innerHTML = '';
+  document.body.classList.add('chat-mode');
+  let messages, userData;
+  function createMessage({type, content, author, time, data}) {
+    if (!data) data = {};
+    const message = document.createElement('div');
+    message.classList.add('message');
+    if (type === 'message') {
+      message.classList.add('normal');
+      const authorSpan = document.createElement('span');
+      authorSpan.classList.add('author');
+      authorSpan.textContent = userData[author] ? userData[author].name : '[deleted user]';
+      if (userData[author]) authorSpan.style.color = userData[author].colour;
+      message.appendChild(authorSpan);
+      message.appendChild(document.createTextNode(': '));
+    } else if (type === 'announcement') {
+      message.classList.add('announcement');
+    } else if (type === 'self-message') {
+      message.classList.add('self-message');
+    }
+    const contentSpan = document.createElement('span');
+    contentSpan.classList.add('content');
+    contentSpan.textContent = decodeURIComponent(content);
+    if (data.italics) contentSpan.classList.add('italics');
+    message.appendChild(contentSpan);
+    return message;
+  }
+  function submitHandler(msg) {
+    if (msg[0] === '/') {
+      if (msg[1] === '/') obj.send(msg.slice(1));
+      else {
+        const command = msg.slice(1).split(' ')[0];
+        switch (command) {
+          case 'help': {
+            selfPost('/help - List of commands\n'
+              + '//[rest of message] - Sends the message beginning with a single slash (escapes the command)\n'
+              + '/setname [name] (alias: /nick) - Sets your display name\n'
+              + '/setcolour [colour name] (aliases: /setcolor, /colour) - Sets your display name colour\n'
+              + '/me [message] - Italicizes your message');
+            break;
+          }
+          case 'setname': case 'nick': {
+            const name = msg.slice(1 + command.length + 1);
+            if (!name) selfPost('Display names must be between 3-20 characters long and may only contain letters and spaces.');
+            else if (name.length < 3) selfPost('Display name too short (min 3 chars).');
+            else if (name.length > 20) selfPost('Display name too long (max 20 chars).');
+            else if (name.includes('  ')) selfPost('Display name contains more than one space in a row.');
+            else if (illegalNameCharsRegex.test(name)) selfPost('Display name contains undesirable characters.');
+            else obj.setName(name);
+            break;
+          }
+          case 'setcolour': case 'setcolor': case 'colour': {
+            const colour = msg.slice(1 + command.length + 1);
+            if (nameColours[colour]) {
+              obj.setColour(nameColours[colour]);
+              selfPost('Name colour set to ' + colour);
+            }
+            else selfPost('Colours: ' + Object.keys(nameColours).join(', '));
+            break;
+          }
+          case 'me': {
+            const message = msg.slice(1 + command.length + 1);
+            if (message) {
+              obj.send(message, {italics: true});
+            }
+            break;
+          }
+          default:
+            selfPost('Unknown command. (use a double slash to escape a command)');
+        }
+      }
+    } else {
+      obj.send(msg);
+    }
+  }
+  const obj = await chatGetter({
+    initialize(msgs, ud) {
+      chat.innerHTML = '';
+      messages = msgs;
+      userData = ud;
+      const fragment = document.createDocumentFragment();
+      messages.forEach(msg => fragment.appendChild(createMessage(msg)));
+      chat.appendChild(fragment);
+      selfPost('Hello! Type /help for a list of commands.');
+    },
+    message(msg) {
+      chat.appendChild(createMessage(msg));
+    },
+    close() {
+      onsubmit = null;
+      messageInput.disabled = true;
+      chat.appendChild(hostClosedMessage);
+    },
+    reopen() {
+      onsubmit = submitHandler;
+      messageInput.disabled = false;
+      chat.removeChild(hostClosedMessage);
+    }
+  });
+  const hostClosedMessage = document.createElement('div');
+  hostClosedMessage.classList.add('message');
+  const hostClosedContent = document.createElement('span');
+  hostClosedContent.classList.add('content');
+  hostClosedContent.textContent = 'Seems the host of the chat has gone offline. Take over?';
+  hostClosedMessage.appendChild(hostClosedContent);
+  const hostClosedBtn = document.createElement('button');
+  hostClosedBtn.classList.add('chat-btn');
+  hostClosedBtn.textContent = 'Sure';
+  hostClosedBtn.addEventListener('click', e => {
+    messages.push({
+      type: 'announcement',
+      content: encodeURIComponent(`Host transferred to ${userData[obj.myID].name}.`),
+      time: Date.now()
+    });
+    const newID = SHEEP_PREFIX + obj.id;
+    userData[newID] = userData[obj.myID];
+    delete userData[obj.myID];
+    messages.forEach(msg => {
+      if (msg.author === obj.myID) msg.author = newID;
+      else if (msg.author === newID) msg.author = 'was-' + newID;
+    });
+    launchChat(listeners => createChat(listeners, obj.id, messages, userData))
+      .catch(err => {
+        console.log(err);
+        selfPost('There was a problem taking over.');
+      });
+    obj.destroy();
+  });
+  hostClosedMessage.appendChild(hostClosedBtn);
+  window.history.pushState({}, '', '?chat=' + obj.id);
+  onsubmit = submitHandler;
+  messageInput.disabled = false;
+  messageInput.focus();
+  function selfPost(msg) {
+    chat.appendChild(createMessage({type: 'self-message', content: encodeURIComponent(msg), time: Date.now()}));
+  }
+}
+document.getElementById('create').addEventListener('click', e => {
+  launchChat(listeners => createChat(listeners))
+    .catch(err => {
+      document.body.classList.remove('chat-mode');
+      window.history.pushState({}, '', window.location.pathname);
+      console.log(err);
+    });
+});
+const joinID = document.getElementById('join-id');
+const idError = document.getElementById('id-error');
+const idRegex = /[a-z]{6,9}/;
+document.getElementById('join').addEventListener('click', e => {
+  const id = joinID.value.toLowerCase();
+  if (idRegex.test(id))
+    launchChat(listeners => joinChat(id, listeners))
+      .catch(err => {
+        idError.textContent = 'Problem connecting to room.';
+        idError.classList.remove('hidden');
+        document.body.classList.remove('chat-mode');
+        window.history.pushState({}, '', window.location.pathname);
+        console.log(err);
+      });
+  else {
+    idError.textContent = 'That doesn\'t look like a chat ID.';
+    idError.classList.remove('hidden');
+  }
+});
+const params = new URL(window.location).searchParams;
+if (params.get('chat')) {
+  const id = params.get('chat');
+  if (idRegex.test(id)) {
+    launchChat(listeners => joinChat(id, listeners))
+      .catch(() => launchChat(listeners => createChat(listeners, id)))
+        .catch(err => {
+          document.body.classList.remove('chat-mode');
+          window.history.pushState({}, '', window.location.pathname);
+          console.log(err);
+        });
+  }
+}
+    </script>
+  </body>
+</html>
