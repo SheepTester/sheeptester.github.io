@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Voice control</title>
+    <meta charset="UTF-8">
+    <meta name="description" content="Your voice box has a lot of potential; it's a shame to see it go to waste."/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link rel="stylesheet" type="text/css" href="../sheep3.css">
+    <script src="../sheep3.js" charset="utf-8"></script>
+    <script src="./_dom.js" charset="utf-8"></script>
+    <style media="screen">
+      /* https://colorhunt.co/palette/137415 */
+      body {
+        color: #e6f5ff;
+        background-color: #3c4f65;
+      }
+      h1, h2, h3 {
+        font-weight: normal;
+      }
+      input, select, button {
+        border: 1px solid #834c69;
+        background: #33313b;
+        color: #e6f5ff;
+        font: inherit;
+      }
+      :disabled {
+        opacity: 0.5;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Speech</h1>
+    <p>Speaker accent: <select id="voices"><option value="SELECT" selected disabled>Choose one</option></select></p>
+    <!-- <p>I agree to only use the following words: <input type="text" id="words" value="one two three"></p> -->
+    <p>Are you ready? <button id="play" disabled>I speak now</button></p>
+    <script>
+const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+const SpeechGrammarList = window.SpeechGrammarList || window.webkitSpeechGrammarList;
+
+const voiceSelect = document.getElementById('voices');
+const playBtn = document.getElementById('play');
+// const wordsInput = document.getElementById('words');
+let voices = [];
+window.speechSynthesis.onvoiceschanged = () => {
+  voices = window.speechSynthesis.getVoices();
+  voiceSelect.innerHTML = '';
+  voiceSelect.appendChild(createFragment([
+    createElement('option', {
+      children: ['Choose one'],
+      attributes: {value: 'SELECT', selected: true}
+    }),
+    ...voices.map((voice, index) => createElement('option', {
+      children: [voice.name],
+      attributes: {value: index}
+    }))
+  ]));
+  playBtn.disabled = true;
+
+  window.speechSynthesis.onvoiceschanged = null;
+}
+voiceSelect.addEventListener('change', e => {
+  window.speechSynthesis.cancel();
+  if (voiceSelect.value !== 'SELECT') {
+    say('Down with SELF.');
+    playBtn.disabled = false;
+    console.log(playBtn.disabled);
+  } else {
+    playBtn.disabled = true;
+  }
+});
+function say(text) {
+  window.speechSynthesis.cancel();
+  const speech = new SpeechSynthesisUtterance(text);
+  speech.voice = voices[voiceSelect.value];
+  window.speechSynthesis.speak(speech);
+  console.log(text);
+}
+const recognition = new SpeechRecognition();
+recognition.lang = 'en-US';
+recognition.interimResults = false;
+recognition.maxAlternatives = 3;
+playBtn.addEventListener('click', e => {
+  // const grammar = `#JSGF V1.0; grammar colors; public <color> = ${wordsInput.value.split(' ').join(' | ')} ;`;
+  // const grammarList = new SpeechGrammarList();
+  // grammarList.addFromString(grammar, 1);
+  // recognition.grammars = grammarList;
+  playBtn.disabled = voiceSelect.disabled = true;
+
+  recognition.onresult = e => {
+    say(`Perhaps ${Array.from(e.results[0], ({transcript, confidence}) => `you said "${transcript}" (${Math.round(confidence * 100)}% confident on this)`).join(', or maybe ')}.`);
+  };
+  recognition.onspeechend = () => {
+    recognition.stop();
+    playBtn.disabled = voiceSelect.disabled = false;
+  };
+  recognition.onnomatch = () => {
+    say('What?');
+  };
+  recognition.onerror = e => {
+    say('Problem!');
+    console.log(e);
+  };
+
+  recognition.start();
+});
+    </script>
+  </body>
+</html>

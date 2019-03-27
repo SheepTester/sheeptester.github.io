@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Panchroma</title>
+    <meta charset="UTF-8">
+    <meta name="description" content="ALL the colours!"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link rel="stylesheet" type="text/css" href="../sheep3.css">
+    <script src="../sheep3.js" charset="utf-8"></script>
+    <style>
+      body {
+        margin: 0;
+      }
+      canvas {
+        image-rendering: pixelated;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="canvas"></canvas>
+    <script>
+function waitForNextFrame() {
+  return new Promise(res => window.requestAnimationFrame(res));
+}
+const canvas = document.getElementById('canvas');
+canvas.width = canvas.height = 256 * 16;
+const c = canvas.getContext('2d');
+const MAX_RENDER_TIME = 1000 / 60; // time it should do things until it stops
+(async () => {
+  let breakTime = Date.now() + MAX_RENDER_TIME;
+  for (let r = 0; r < 256; r++) {
+    const rx = r % 16 * 256;
+    const ry = Math.floor(r / 16) * 256;
+    for (let g = 0; g < 256; g++) for (let b = 0; b < 256; b++) {
+      c.fillStyle = `rgb(${r}, ${g}, ${b})`;
+      c.fillRect(rx + g, ry + b, 1, 1);
+      if (Date.now() > breakTime) {
+        await waitForNextFrame();
+        breakTime = Date.now() + MAX_RENDER_TIME;
+      }
+    }
+  }
+})();
+    </script>
+  </body>
+</html>
