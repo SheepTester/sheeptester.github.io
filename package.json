@@ -1,0 +1,5 @@
+{
+  "scripts": {
+    "all": "node ./all/makermakermaker.js && node ./all/gen.js"
+  }
+}

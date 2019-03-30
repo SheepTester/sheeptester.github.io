@@ -1,13 +1,16 @@
 const fs = require('fs');
+const path = require('path');
+
+const siteRoot = path.resolve(__dirname, '..');
 
 function read(file) {
   return new Promise((res, rej) => {
-    fs.readFile(file, 'utf8', (err, data) => err ? rej(err) : res(data));
+    fs.readFile(path.resolve(siteRoot, file), 'utf8', (err, data) => err ? rej(err) : res(data));
   });
 }
 function write(file, contents) {
   return new Promise((res, rej) => {
-    fs.writeFile(file, contents, 'utf8', err => err ? rej(err) : res());
+    fs.writeFile(path.resolve(siteRoot, file), contents, 'utf8', err => err ? rej(err) : res());
   });
 }
 
