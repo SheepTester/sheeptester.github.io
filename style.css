@@ -1,108 +1,31 @@
-html, body, .page, #background {
+html, body {
   height: 100%;
   width: 100%;
 }
 body {
   margin: 0;
-  font-size: 15px;
-  color: rgba(255,255,255,0.8);
+  font-size: 20px;
+  color: rgba(255, 255, 255, 0.7);
   font-family: 'Roboto', sans-serif;
   background-color: #222;
   line-height: 1;
+  overflow: auto;
+  background-image: radial-gradient(circle at 100% 100%, #72f3c6, #28cdc4, #00a6b8, #007fa0, #225a7e, #293756);
+  background-attachment: fixed;
 }
 a {
   color: inherit;
   text-decoration: inherit;
 }
-@media (max-width: 800px) {
-  body {
-    font-size: 20px;
-  }
+:focus {
+  outline: none;
 }
-#background {
-  background-image: url('/img/blur.png');
-  background-size: 100vw 100vh;
-  background-position: center;
-  position: fixed;
-  z-index: -1;
-  /*filter: blur(5px) brightness(0.8);*/
-}
-.page {
-  padding-bottom: 40px;
-  box-sizing: border-box;
-  display: none;
-  overflow: auto;
-}
-.page.active, .page:target {
-  display: block;
-}
-nav {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 40px;
-  background-color: rgba(79,161,167,0.8);
-  padding: 0 5px;
+
+/* LINKS - GRID */
+.places {
   font-size: 0;
-  z-index: 15;
-}
-nav span, nav a {
-  padding: 10px;
-  display: inline-block;
-  font-size: 20px;
-  color: white;
-}
-nav .clickable {
-  text-decoration: none;
-  cursor: pointer;
-  transition: background .2s;
-  color: rgba(255,255,255,0.8);
-}
-nav .clickable:not(.active):hover, .tabkeyfocus .clickable:not(.active):focus {
-  background-color: rgba(0,0,0,0.2);
-  color: white;
-}
-nav .clickable.active {
-  cursor: default;
-  color: white;
-  text-shadow: 0 0 3px rgba(0,0,0,0.8);
-}
-nav .btn {
-  cursor: pointer;
-  color: rgba(255,255,255,0.8);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  padding: 2px;
-  font-size: 16px;
-  border-radius: 5px;
-  margin: 10px;
-  background-color: rgba(255, 255, 255, 0.1);
-  transition: all .2s;
-}
-nav .btn:hover, .tabkeyfocus nav .btn:focus {
-  color: white;
-  background-color: rgba(255, 255, 255, 0.3);
-  padding: 4px;
-  margin: 8px;
-}
-@media (max-width: 570px) {
-  #view {
-    display: none;
-  }
-}
-#places {
-  font-size: 0;
-  overflow-x: hidden;
-  padding: 10px;
-  padding-bottom: 50px;
-  display: block;
-}
-:target ~ #places {
-  display: none;
-}
-.list-view #places {
-  padding: 0;
-  padding-bottom: 40px;
+  padding: 0 10px;
+  color: rgba(255, 255, 255, 0.8);
 }
 .place {
   width: calc(16.5% - 20px);
@@ -112,18 +35,18 @@ nav .btn:hover, .tabkeyfocus nav .btn:focus {
   position: relative;
   cursor: pointer;
   z-index: 0;
-  background-color: #4FA1A7;
+  background-color: rgba(0, 0, 0, 0.2);
   vertical-align: top;
-  border-radius: 2px;
+  border-radius: 10px;
   overflow: hidden;
   transition: transform .2s, z-index .2s;
 }
-.squarifier {
-  width: 100%;
-  margin-left: -100%;
-}
-.squarifier div {
-  margin-top: 100%;
+.place::before {
+  content: '';
+  display: inline-block;
+  padding-bottom: 100%;
+  width: 10px;
+  margin-left: -10px;
 }
 @media (max-width: 2550px) {
   .place {
@@ -164,6 +87,7 @@ nav .btn:hover, .tabkeyfocus nav .btn:focus {
   position: absolute;
   top: 0;
   transition: all .2s;
+  z-index: -1;
 }
 .place:hover img, .tabkeyfocus .place:focus img {
   opacity: 1;
@@ -181,6 +105,11 @@ nav .btn:hover, .tabkeyfocus nav .btn:focus {
 .place:hover p, .tabkeyfocus .place:focus p {
   transform: scale(1.1);
 }
+
+/* LINKS - LIST */
+.list-view .places {
+  padding: 0;
+}
 .placelist {
   width: 100%;
   display: block;
@@ -188,41 +117,45 @@ nav .btn:hover, .tabkeyfocus nav .btn:focus {
   padding: 10px 20px;
   cursor: pointer;
   transition: background .2s;
+  box-sizing: border-box;
 }
 .placelist p {
   margin: 0;
 }
 .placelist:nth-child(even) {
-  background-color: rgba(255,255,255,0.1);
+  background-color: rgba(255, 255, 255, 0.1);
 }
-.placelist:hover, .tabkeyfocus .placelist:focus {
-  background-color: rgba(79,161,167,0.8);
+.placelist:hover, .tabkeyfocus .placelist:focus:not(:active) {
+  background-color: rgba(0, 0, 0, 0.2);
 }
-#stalking {
-  padding: 0 10px 50px;
+.placelist:active {
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+/* ABOUT */
+.about {
   height: auto;
   text-align: center;
+  margin: 10px auto;
+  margin-top: 20px;
+  max-width: 650px;
+  padding: 0 10px;
+  line-height: 1.5;
 }
-#stalking p, #stalking h1 {
-  margin: 0;
-  padding: 15px 0;
-  font-weight: normal;
-}
-#stalking p strong {
-  font-size: 1.5em;
+.about strong {
+  color: white;
   font-weight: normal;
 }
 #milliage, #yage {
   font-weight: bold;
   font-family: monospace;
 }
-#stalking ul {
-  padding: 5px;
-  margin: 0;
-  list-style: none;
-}
-#stalking ul li:before {
-  content: '- ';
+
+/* SOCIAL MEDIA */
+.socials {
+  text-align: center;
+  padding: 0 20px;
+  margin-bottom: 20px;
 }
 .list {
   background-color: rgba(255,255,255,0.1);
@@ -234,6 +167,7 @@ nav .btn:hover, .tabkeyfocus nav .btn:focus {
   border-radius: 10px;
   max-width: 620px;
   margin: 15px auto;
+  font-size: 0;
 }
 .list .social, .mini-social {
   display: inline-block;
@@ -266,6 +200,10 @@ nav .btn:hover, .tabkeyfocus nav .btn:focus {
 }
 .list .social:hover .ball, .tabkeyfocus .list .social:focus .ball {
   transform: scale(1.2);
+}
+.other > span {
+  margin: 0 10px;
+  white-space: nowrap;
 }
 .mini-social {
   cursor: auto;
@@ -319,205 +257,60 @@ nav .btn:hover, .tabkeyfocus nav .btn:focus {
 #storyboardthat .ball {background-color: #729DC8;}
 #imgur {background-color: #21B66E;}
 #imgur .ball {border: 5px solid white; background-color: transparent;}
-#redirects h1 {
-  margin: 0;
-  padding: 10px;
-  font-weight: normal;
+
+/* SHEEP INTRO ANIMATION */
+.blank {
+  background-color: black;
+  background-image: none;
+  pointer-events: none;
+  opacity: 0;
 }
-#redirects dl {
-  margin: 0;
-  padding: 10px;
-  font-size: 16px;
-}
-#redirects dt {
-  float: left;
-  clear: left;
-  padding-right: 5px;
-  margin: 5px 0;
-  color: white;
-}
-#redirects dt:before {
-  content: '?';
-}
-#redirects dd {
-  float: left;
-  margin: 5px 0;
-  margin-left: 15px;
-  margin-bottom: 10px;
-}
-#redirects a {
-  color: inherit;
-  text-decoration: none;
-  opacity: 0.8;
-  background-color: rgba(255,255,255,0.1);
-}
-#redirects a:hover, .tabkeyfocus #redirects a:focus {
-  opacity: 1;
-  background-color: rgba(255,255,255,0.15);
-}
-sheepmenu.blockvision, sheepmenu.blockvision:hover, sheepmenu.blockvision:active {
+.blank sheep-btn {
+  right: 0;
+  bottom: 0;
   border-radius: 0;
   width: 100vw;
   height: 100vh;
-  bottom: 0 !important;
-  right: 0 !important;
-  background-color: white;
+  background-color: black;
+  background-size: 70px;
+  background-position: 50% 50%;
   box-shadow: none;
+  transition: all .5s, background-position 0s;
+}
+.reveal-sheep {
+  transition: opacity .5s;
+  opacity: 1;
+}
+.reveal-sheep-immediately {
+  opacity: 1;
+}
+.sheep-minimize sheep-btn {
+  transition: all .5s;
   pointer-events: none;
 }
-sheepmenu.blockvision > svg, sheepmenu.blockvision:hover > svg, sheepmenu.blockvision:active > svg {
-  position: absolute;
-  padding: 0;
-  margin: auto;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  stroke: black;
-  width: 60px;
-  height: 60px;
-  opacity: 0;
-}
-sheepmenu.playhellos {
-  transition: all 0.5s;
-}
-sheepmenu.playhellos > svg {
-  transition: all 0.5s;
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  margin: auto;
-}
-@keyframes hellos {
-  0% {
-    bottom: calc(50vh - 50vw);
-    border-top-left-radius: 0;
-    box-shadow: none;
-    width: 100vw;
-    height: 100vw;
-    right: 0;
-    opacity: 1;
-  }
-  100% {
-    bottom: -20px;
-    border-top-left-radius: 80px;
-    box-shadow: 0 0 2px rgba(0,0,0,0.5);
-    width: 100px;
-    height: 100px;
-    right: -20px;
-    opacity: 0.3;
-  }
-}
-body.blank {
-  background-color: white;
-  opacity: 0;
-}
-noscript, #error {
+
+noscript {
   font-size: 24px;
   background-color: #f44336;
   color: white;
   padding: 20px;
   display: block;
 }
-#error {
-  display: none;
-  font-family: monospace;
-  white-space: pre-wrap;
-  font-size: 10px;
-}
-.menuicon {
-  display: none;
-  height: 20px;
-  width: 20px;
-  background-image: url('/img/hamburger.svg');
-  padding: 4px 6px;
-  border: 2px solid rgba(0,0,0,0.2);
-  margin: 4px;
-  background-size: 20px;
-  background-position: center;
-  background-repeat: no-repeat;
-  border-radius: 2px;
-  cursor: pointer;
-}
-.menuicon:hover {
-  background-color: rgba(0,0,0,0.1);
-}
-.menuicon:active {
-  background-color: transparent;
-  transition: background-color .5s cubic-bezier(0,0,0,1);
-}
-nav .btncontainer {
-  display: inline-block;
-}
-@media (max-width:480px) {
-  nav .clickable {
-    display: block;
-    visibility: hidden;
-    animation: stay-displayed-briefly 0.1s;
-  }
-  nav .btncontainer {
-    background-color: rgba(79,161,167,0.7);
-    position: absolute;
-    bottom: 100%;
-    left: 0;
-    width: 100%;
-    display: block;
-    height: 0;
-    animation: stay-heighted-briefly 0.1s;
-  }
-  .menuicon {
-    display: inline-block;
-  }
-  .menuicon:focus ~ .btncontainer > .clickable, .btncontainer:focus-within > .clickable {
-    visibility: visible;
-    animation: none;
-  }
-  .menuicon:focus ~ .btncontainer, .btncontainer:focus-within {
-    height: auto;
-    animation: none;
-  }
-  .menuicon:focus {
-    background-image: url('/img/down.svg');
-  }
-}
-@keyframes stay-heighted-briefly {
-  0% { height: auto; }
-  100% { height: auto; }
-}
-@keyframes stay-displayed-briefly {
-  0% { visibility: visible; }
-  100% { visibility: visible; }
-}
-.text-logo {
-  color: rgba(255, 255, 255, 0.7);
-  font-size: 25px;
-  padding: 7.5px;
-  vertical-align: top;
-}
-.text-logo span {
-  color: white;
-  padding: 0;
-  font-size: inherit;
-  text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
-}
+
+/* SHADY DEFAULT CHANGING */
 ::-webkit-scrollbar {
-  width: 5px !important;
+  width: 5px;
 }
 ::-webkit-scrollbar-track {
-  background-color: black !important;
+  background-color: #03AFBA;
 }
 ::-webkit-scrollbar-thumb {
-  background-color: #4fa1a7 !important;
-  border-radius: 0 !important;
+  background-color: rgba(255, 255, 255, 0.5);
+  border-top-left-radius: 3px;
+  border-bottom-left-radius: 3px;
 }
-#stalking p > a {
-  background-color: rgba(0,0,0,0.3);
-  border-bottom: 1px solid transparent;
-}
-#stalking p > a:hover, #stalking p > a:focus {
-  border-bottom-color: rgba(255,255,255,0.8);
+::selection {
+  background: rgba(0, 188, 212, 0.4);
 }
 
 sarcasm {

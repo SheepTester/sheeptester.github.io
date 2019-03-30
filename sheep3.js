@@ -5,7 +5,7 @@ document.addEventListener("DOMContentLoaded", e => {
   homeButton.addEventListener('click', e => {
     document.body.classList.add('sheep-blockscreen');
     setTimeout(() => {
-      window.location = '/';
+      window.location = '/?from=sheep3';
     }, 500);
   });
   homeButton.addEventListener('keydown', e => {
