@@ -101,6 +101,7 @@ a {
   text-align: center;
   text-shadow: 0 0 20px black;
   transition: transform .2s;
+  word-break: break-word;
 }
 .place:hover p, .tabkeyfocus .place:focus p {
   transform: scale(1.1);
