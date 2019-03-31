@@ -1,3 +1,4 @@
+// detect if user is from l'sxafeto
 let revealClass = 'reveal-sheep';
 if (window.location.search.slice(0, 11) === '?from=sheep') {
   window.history.replaceState({}, '', '/');
@@ -70,18 +71,21 @@ document.addEventListener('focusin', e => {
   }
 });
 
+// REGISTER SERVICE WORKER
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('/sw.js');
 }
 
 let sheepAppearTime;
 document.addEventListener('DOMContentLoaded', e => {
+  // MAKE SHEEP APPEAR
   window.requestAnimationFrame(() => {
     document.body.classList.add(revealClass);
     document.body.classList.add('sheep-minimize');
     sheepAppearTime = Date.now();
   });
 
+  // MAKE GRID (as opposed to no-js list)
   document.body.classList.remove('list-view');
   Array.from(document.getElementsByClassName('placelist')).forEach(link => {
     link.className = 'place';
@@ -104,6 +108,7 @@ document.addEventListener('DOMContentLoaded', e => {
   displayAge();
 });
 
+// SHEEP CAN HIDE NOW
 window.addEventListener('load', e => {
   setTimeout(() => {
     document.body.classList.remove('blank');

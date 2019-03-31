@@ -6,7 +6,7 @@ body {
   margin: 0;
   font-size: 20px;
   color: rgba(255, 255, 255, 0.7);
-  font-family: 'Roboto', sans-serif;
+  font-family: 'Roboto Condensed', sans-serif;
   background-color: #222;
   line-height: 1;
   overflow: auto;
@@ -139,17 +139,13 @@ a {
   text-align: center;
   margin: 10px auto;
   margin-top: 20px;
-  max-width: 600px;
+  max-width: 500px;
   padding: 0 10px;
   line-height: 1.5;
 }
 .about strong {
   color: white;
   font-weight: normal;
-}
-#milliage, #yage {
-  font-weight: bold;
-  font-family: monospace;
 }
 
 /* SOCIAL MEDIA */
@@ -180,6 +176,8 @@ a {
   cursor: pointer;
   background-color: white;
   transition: transform .2s;
+  font-size: 0;
+  vertical-align: top;
 }
 .list .social:hover, .tabkeyfocus .list .social:focus {
   transform: scale(1.1);
@@ -300,17 +298,6 @@ noscript {
 }
 
 /* SHADY DEFAULT CHANGING */
-::-webkit-scrollbar {
-  width: 5px;
-}
-::-webkit-scrollbar-track {
-  background-color: #03AFBA;
-}
-::-webkit-scrollbar-thumb {
-  background-color: rgba(255, 255, 255, 0.5);
-  border-top-left-radius: 3px;
-  border-bottom-left-radius: 3px;
-}
 ::selection {
   background: rgba(0, 188, 212, 0.4);
 }
