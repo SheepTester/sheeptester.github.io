@@ -18,7 +18,6 @@ sheep-btn {
   width: 50px;
   border-radius: 25px; /* to make animation less awkward */
   background-color: rgba(0,0,0,0.4);
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 480 480' stroke='white' stroke-opacity='0.7' stroke-width='20' fill='none'%3E%3Cpath d='M90 90a50 50 0 0 0 0 100H98.579A150 150 0 1 0 381.421 190H390a50 50 0 0 0 0 -100a50 50 0 1 1 -100 0a50 50 0 1 1 -100 0a50 50 0 1 1 -100 0z'/%3E%3C/svg%3E");
   background-size: 45px;
   background-repeat: no-repeat;
   background-position: 2.5px 4px;
@@ -27,11 +26,14 @@ sheep-btn {
   -webkit-tap-highlight-color: transparent;
   transition: all .2s;
 }
+sheep-btn, body.sheep-blockscreen sheep-btn {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 480 480' stroke='white' stroke-opacity='0.7' stroke-width='20' fill='none'%3E%3Cpath d='M90 90a50 50 0 0 0 0 100H98.579A150 150 0 1 0 381.421 190H390a50 50 0 0 0 0 -100a50 50 0 1 1 -100 0a50 50 0 1 1 -100 0a50 50 0 1 1 -100 0z'/%3E%3C/svg%3E");
+}
 sheep-btn:hover, body.sheep-dragging sheep-btn {
   background-color: rgba(255,255,255,0.8);
   box-shadow: 0 0 4px rgba(0,0,0,0.5);
 }
-sheep-btn:hover, body.sheep-dragging sheep-btn, body.sheep-blockscreen sheep-btn {
+sheep-btn:hover, body.sheep-dragging sheep-btn {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 480 480' stroke='black' stroke-opacity='0.7' stroke-width='20' fill='none'%3E%3Cpath d='M90 90a50 50 0 0 0 0 100H98.579A150 150 0 1 0 381.421 190H390a50 50 0 0 0 0 -100a50 50 0 1 1 -100 0a50 50 0 1 1 -100 0a50 50 0 1 1 -100 0z'/%3E%3C/svg%3E");
 }
 sheep-btn:active {
@@ -53,13 +55,16 @@ body.sheep-will-open-context-menu sheep-btn {
 body.no-sheep sheep-btn {
   display: none;
 }
+body.sheep-blockscreen {
+  overflow: hidden;
+}
 body.sheep-blockscreen sheep-btn {
   right: 0 !important;
   bottom: 0 !important;
   border-radius: 0;
   width: 100vw;
   height: 100vh;
-  background-color: white;
+  background-color: black;
   background-size: 70px;
   background-position: 50% 50%;
   box-shadow: none;

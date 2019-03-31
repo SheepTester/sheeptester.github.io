@@ -92,7 +92,7 @@ document.addEventListener("DOMContentLoaded", e => {
     document.body.appendChild(shadow);
     document.body.classList.add('sheep-blockscreen');
     setTimeout(() => {
-      window.location = 'https://sheeptester.github.io/#delsxafet';
+      window.location = '/?from=sheep2';
       // location.reload(); // TEMP
     },500);
   }

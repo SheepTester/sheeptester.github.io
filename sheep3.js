@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", e => {
     document.body.classList.add('sheep-blockscreen');
     setTimeout(() => {
       window.location = '/?from=sheep3';
-    }, 500);
+    }, 200);
   });
   homeButton.addEventListener('keydown', e => {
     if (e.keyCode === 13) homeButton.click();

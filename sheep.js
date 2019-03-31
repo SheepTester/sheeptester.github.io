@@ -66,7 +66,8 @@ try {
         window.location='/?js';
       } else {
         el.id="SHEEPANIMATING";
-        window.setTimeout(_=>window.location="https://sheeptester.github.io/",300);
+        document.body.style.overflow = 'hidden';
+        window.setTimeout(_=>window.location="/?from=sheep",300);
       }
       e.preventDefault();
       return false;
@@ -105,7 +106,8 @@ try {
       if (mousemoved) cookie.sheepmenuposition=el.style.right.slice(0,-2)+','+el.style.bottom.slice(0,-2);
       else if (+new Date()-pressstart<700) {
         el.id="SHEEPANIMATING";
-        window.setTimeout(_=>window.location="https://sheeptester.github.io/",300);
+        document.body.style.overflow = 'hidden';
+        window.setTimeout(_=>window.location="/?from=sheep",300);
       }
       if (+new Date()-pressstart>=700&&offset.lx<10&&offset.ly<10) {
         el.classList.add('SHEEPMENUDONTACTIVE');
@@ -381,7 +383,7 @@ var SHEEP={
     return dpr/bsr;
   },
   menu:{
-    'go to index page':_=>window.location='https://sheeptester.github.io/',
+    'go to index page':_=>window.location='/?from=sheep',
     'reset little sheep position':_=>{
       cookie.sheepmenuposition='10-10';
       var t=document.querySelector('sheepmenu');

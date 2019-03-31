@@ -53,7 +53,7 @@ sheepmenu#SHEEPANIMATING {
     border-radius: 0;
     width: 100vw;
     height: 100vh;
-    background-color: white;
+    background-color: black;
     box-shadow: none;
   }
 }
@@ -65,10 +65,9 @@ sheepmenu#SHEEPANIMATING > svg {
   left: 0;
   right: 0;
   bottom: 0;
-  stroke: black;
-  width: 60px;
-  height: 60px;
-  opacity: 0;
+  stroke: white;
+  width: 70px;
+  height: 70px;
 }
 sheepmenu-dragcover {
   display: block;

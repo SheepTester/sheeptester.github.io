@@ -1,5 +1,5 @@
 let revealClass = 'reveal-sheep';
-if (window.location.search === '?from=sheep3') {
+if (window.location.search.slice(0, 11) === '?from=sheep') {
   window.history.replaceState({}, '', '/');
   revealClass = 'reveal-sheep-immediately';
 }
