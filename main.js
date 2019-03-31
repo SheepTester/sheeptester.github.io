@@ -76,13 +76,11 @@ if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('/sw.js');
 }
 
-let sheepAppearTime;
 document.addEventListener('DOMContentLoaded', e => {
   // MAKE SHEEP APPEAR
   window.requestAnimationFrame(() => {
     document.body.classList.add(revealClass);
     document.body.classList.add('sheep-minimize');
-    sheepAppearTime = Date.now();
   });
 
   // MAKE GRID (as opposed to no-js list)
@@ -106,15 +104,48 @@ document.addEventListener('DOMContentLoaded', e => {
     window.requestAnimationFrame(displayAge);
   }
   displayAge();
+
+  const sheepLetters = document.getElementById('happy');
+  const letters = [{pos: 0, vel: 0}, {pos: 0, vel: 0}, {pos: 0, vel: 0}, {pos: 0, vel: 0}, {pos: 0, vel: 0}];
+  let animating = false;
+  function bounceLetters(args) {
+    let stop = true;
+    letters.forEach((letter, i) => {
+      letter.vel = -letter.pos / 10 + letter.vel * 0.9;
+      letter.pos += letter.vel;
+      sheepLetters.children[i].style.transform = `translateY(${letter.pos}px)`;
+      if (Math.abs(letter.vel) > 0.01 || Math.abs(letter.pos) > 0.01) stop = false;
+    });
+    if (stop) {
+      animating = false;
+      for (const letter of sheepLetters.children) {
+        letter.style.transform = null;
+      }
+    }
+    else window.requestAnimationFrame(bounceLetters);
+  }
+  sheepLetters.addEventListener('mouseenter', e => {
+    sheepLetters.click();
+  });
+  sheepLetters.addEventListener('click', e => {
+    letters.forEach(letter => {
+      letter.vel += (Math.random() < 0.5 ? 1 : -1) * (Math.random() * 5 + 4);
+    });
+    if (!animating) {
+      animating = true;
+      bounceLetters();
+    }
+  });
 });
 
 // SHEEP CAN HIDE NOW
 window.addEventListener('load', e => {
-  setTimeout(() => {
-    document.body.classList.remove('blank');
-    document.body.classList.remove(revealClass);
-    setTimeout(() => {
+  document.body.classList.remove('blank');
+  document.body.classList.remove(revealClass);
+  document.body.addEventListener('transitionend', function transitionend(e) {
+    if (e.target.tagName === 'SHEEP-BTN') {
       document.body.classList.remove('sheep-minimize');
-    }, 500);
-  }, sheepAppearTime + 500 - Date.now());
+      document.body.removeEventListener('transitionend', transitionend);
+    }
+  });
 });

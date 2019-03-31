@@ -7,11 +7,12 @@ body {
   font-size: 20px;
   color: rgba(255, 255, 255, 0.7);
   font-family: 'Roboto Condensed', sans-serif;
-  background-color: #222;
+  background-color: black;
   line-height: 1;
   overflow: auto;
   background-image: radial-gradient(circle at 100% 100%, #72f3c6, #28cdc4, #00a6b8, #007fa0, #225a7e, #293756);
   background-attachment: fixed;
+  background-size: contain;
 }
 a {
   color: inherit;
@@ -99,12 +100,14 @@ a {
   width: 100%;
   position: relative;
   text-align: center;
-  text-shadow: 0 0 20px black;
-  transition: transform .2s;
+  text-shadow: 0 0 5px transparent, 0 0 30px transparent;
+  transition: all .2s;
   word-break: break-word;
 }
 .place:hover p, .tabkeyfocus .place:focus p {
   transform: scale(1.1);
+  text-shadow: 0 0 5px black, 0 0 30px black;
+  color: white;
 }
 
 /* LINKS - LIST */
@@ -146,6 +149,12 @@ a {
 .about strong {
   color: white;
   font-weight: normal;
+}
+#happy {
+  cursor: pointer;
+}
+#happy span {
+  display: inline-block;
 }
 
 /* SOCIAL MEDIA */
