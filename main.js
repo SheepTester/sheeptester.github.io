@@ -1,5 +1,5 @@
 // detect if user is from l'sxafeto
-let revealClass = 'reveal-sheep';
+var revealClass = 'reveal-sheep';
 if (window.location.search.slice(0, 11) === '?from=sheep') {
   window.history.replaceState({}, '', '/');
   revealClass = 'reveal-sheep-immediately';
@@ -7,7 +7,7 @@ if (window.location.search.slice(0, 11) === '?from=sheep') {
 
 // ZALGIFY PAGE TITLE AFTER TIME
 // characters from http://www.eeemo.net/
-const upperDiacritics = '\u030d\u030e\u0304\u0305\u033f\u0311\u0306\u0310'
+var upperDiacritics = '\u030d\u030e\u0304\u0305\u033f\u0311\u0306\u0310'
   + '\u0352\u0357\u0351\u0307\u0308\u030a\u0342\u0343\u0344\u034a\u034b\u034c'
   + '\u0303\u0302\u030c\u0350\u0300\u0301\u030b\u030f\u0312\u0313\u0314\u033d'
   + '\u0309\u0363\u0364\u0365\u0366\u0367\u0368\u0369\u036a\u036b\u036c\u036d'
@@ -23,25 +23,27 @@ function randInt(max) {
   return Math.floor(Math.random() * max);
 }
 function zalgify(text, intensity) {
+  var str = '';
   if (intensity < 1) {
-    return text.split('').map(char => {
-      if (randInt(1 / intensity) === 0) char += upperDiacritics[randInt(upperDiacritics.length)];
-      if (randInt(1 / intensity) === 0) char += lowerDiacritics[randInt(lowerDiacritics.length)];
-      return char;
-    }).join('');
+    for (var i = 0; i < text.length; i++) {
+      str += text[i];
+      if (randInt(1 / intensity) === 0) str += upperDiacritics[randInt(upperDiacritics.length)];
+      if (randInt(1 / intensity) === 0) str += lowerDiacritics[randInt(lowerDiacritics.length)];
+    }
   } else {
-    return text.split('').map(char => {
-      const midDiacriticsCopy = midDiacritics.split('');
-      for (let j = 0; j < intensity; j++)
-        char += upperDiacritics[randInt(upperDiacritics.length)] + lowerDiacritics[randInt(lowerDiacritics.length)];
-      for (let j = 0; j < intensity / 4 && j < midDiacritics.length; j++)
-        char += midDiacriticsCopy.splice(randInt(midDiacriticsCopy.length), 1)[0];
-      return char;
-    }).join('');
+    for (var i = 0; i < text.length; i++) {
+      str += text[i];
+      var midDiacriticsCopy = midDiacritics.split('');
+      for (var j = 0; j < intensity; j++)
+        str += upperDiacritics[randInt(upperDiacritics.length)] + lowerDiacritics[randInt(lowerDiacritics.length)];
+      for (var j = 0; j < intensity / 4 && j < midDiacritics.length; j++)
+        str += midDiacriticsCopy.splice(randInt(midDiacriticsCopy.length), 1)[0];
+    }
   }
+  return str;
 }
-setTimeout(() => {
-  let intensity = 0;
+setTimeout(function() {
+  var intensity = 0;
   function zalgoTitle() {
     if (intensity < 30) intensity++;
     document.title = zalgify('SheepTester', intensity / 10);
@@ -51,8 +53,8 @@ setTimeout(() => {
 }, 60000);
 
 // TAB KEY FOCUS
-let tabFocus = false;
-document.addEventListener('keydown', e => {
+var tabFocus = false;
+document.addEventListener('keydown', function(e) {
   if (e.keyCode === 9) {
     document.body.classList.add('tabkeyfocus');
     tabFocus = true;
@@ -60,12 +62,12 @@ document.addEventListener('keydown', e => {
     e.target.click();
   }
 });
-document.addEventListener('keyup', e => {
+document.addEventListener('keyup', function(e) {
   if (e.keyCode === 9) {
     tabFocus = false;
   }
 });
-document.addEventListener('focusin', e => {
+document.addEventListener('focusin', function(e) {
   if (!tabFocus) {
     document.body.classList.remove('tabkeyfocus');
   }
@@ -76,61 +78,66 @@ if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('/sw.js');
 }
 
-document.addEventListener('DOMContentLoaded', e => {
+document.addEventListener('DOMContentLoaded', function(e) {
   // MAKE SHEEP APPEAR
-  window.requestAnimationFrame(() => {
+  window.requestAnimationFrame(function() {
     document.body.classList.add(revealClass);
     document.body.classList.add('sheep-minimize');
   });
 
   // MAKE GRID (as opposed to no-js list)
   document.body.classList.remove('list-view');
-  Array.from(document.getElementsByClassName('placelist')).forEach(link => {
-    link.className = 'place';
-    const image = document.createElement('img');
-    image.src = link.dataset.image;
-    link.appendChild(image);
-  });
+  var placesLiveArray = document.getElementsByClassName('placelist');
+  var places = [];
+  for (var i = 0; i < placesLiveArray.length; i++) places.push(placesLiveArray[i]);
+  for (var i = 0; i < places.length; i++) {
+    places[i].className = 'place';
+    var image = document.createElement('img');
+    image.src = places[i].dataset.image;
+    places[i].appendChild(image);
+  }
 
   // UPDATE AGE DISPLAY
-  const BIRTHDAY = 1049933280000;
-  const MS_PER_YEAR = 365.25 * 24 * 60 * 60 * 1000;
-  const msAge = document.getElementById('milliage');
-  const yearAge = document.getElementById('yage');
+  var BIRTHDAY = 1049933280000;
+  var MS_PER_YEAR = 365.25 * 24 * 60 * 60 * 1000;
+  var msAge = document.getElementById('milliage');
+  var yearAge = document.getElementById('yage');
   function displayAge() {
-    const age = new Date().getTime() - BIRTHDAY;
+    var age = new Date().getTime() - BIRTHDAY;
     msAge.textContent = age;
-    yearAge.textContent = (age / MS_PER_YEAR).toString().padEnd(18, '0');
+    var str = (age / MS_PER_YEAR).toString();
+    while (str.length < 18) str += '0';
+    yearAge.textContent = str;
     window.requestAnimationFrame(displayAge);
   }
   displayAge();
 
-  const sheepLetters = document.getElementById('happy');
-  const letters = [{pos: 0, vel: 0}, {pos: 0, vel: 0}, {pos: 0, vel: 0}, {pos: 0, vel: 0}, {pos: 0, vel: 0}];
-  let animating = false;
+  var sheepLetters = document.getElementById('happy');
+  var varters = [{pos: 0, vel: 0}, {pos: 0, vel: 0}, {pos: 0, vel: 0}, {pos: 0, vel: 0}, {pos: 0, vel: 0}];
+  var animating = false;
   function bounceLetters(args) {
-    let stop = true;
-    letters.forEach((letter, i) => {
-      letter.vel = -letter.pos / 10 + letter.vel * 0.9;
-      letter.pos += letter.vel;
-      sheepLetters.children[i].style.transform = `translateY(${letter.pos}px)`;
-      if (Math.abs(letter.vel) > 0.01 || Math.abs(letter.pos) > 0.01) stop = false;
-    });
+    var stop = true;
+    for (var i = 0; i < 5; i++) {
+      varters[i].vel = -varters[i].pos / 10 + varters[i].vel * 0.9;
+      varters[i].pos += varters[i].vel;
+      sheepLetters.children[i].style.transform = 'translateY(' + varters[i].pos + 'px)';
+      if (Math.abs(varters[i].vel) > 0.01 || Math.abs(varters[i].pos) > 0.01) stop = false;
+    }
     if (stop) {
       animating = false;
-      for (const letter of sheepLetters.children) {
-        letter.style.transform = null;
+      for (var i = 0; i < 5; i++) {
+        sheepLetters.children[i].style.transform = null;
       }
     }
     else window.requestAnimationFrame(bounceLetters);
   }
-  sheepLetters.addEventListener('mouseenter', e => {
+  sheepLetters.addEventListener('mouseenter', function(e) {
     sheepLetters.click();
   });
-  sheepLetters.addEventListener('click', e => {
-    letters.forEach(letter => {
-      letter.vel += (Math.random() < 0.5 ? 1 : -1) * (Math.random() * 5 + 4);
-    });
+  sheepLetters.addEventListener('click', function(e) {
+    for (var i = 0; i < 5; i++) {
+      varters[i].vel += (Math.random() < 0.5 ? 1 : -1) * (Math.random() * 5 + 4);
+    }
     if (!animating) {
       animating = true;
       bounceLetters();
@@ -139,7 +146,7 @@ document.addEventListener('DOMContentLoaded', e => {
 });
 
 // SHEEP CAN HIDE NOW
-window.addEventListener('load', e => {
+window.addEventListener('load', function(e) {
   document.body.classList.remove('blank');
   document.body.classList.remove(revealClass);
   document.body.addEventListener('transitionend', function transitionend(e) {

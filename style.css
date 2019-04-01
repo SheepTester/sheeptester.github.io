@@ -295,6 +295,7 @@ a {
 }
 .sheep-minimize sheep-btn {
   transition: all .5s;
+  transition-delay: .5s;
   pointer-events: none;
 }
 
