@@ -229,7 +229,7 @@ a {
 }
 #scratch {background-color: #25AFF4;}
 #scratch .ball {border: 5px solid white; background-color: #F8A839;}
-#instagram {background-image: url('/img/instagram_gradient.png'); background-size: 100px 100px;}
+#instagram {background-image: radial-gradient(circle at 20% 100%, #F9D773, #F5AB3F, #F05431, #DD1D4F, #AA128D, #3D3CE2); background-size: 100px 100px;}
 #instagram .ball {border: 5px solid white; background-color: transparent;}
 #github {background-color: #181717;}
 #google {background-color: #DC4E41;}
