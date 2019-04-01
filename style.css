@@ -155,6 +155,8 @@ a {
 }
 #happy {
   cursor: pointer;
+  white-space: nowrap;
+  -webkit-tap-highlight-color: transparent;
 }
 #happy span {
   display: inline-block;
@@ -268,6 +270,13 @@ a {
 #storyboardthat .ball {background-color: #729DC8;}
 #imgur {background-color: #21B66E;}
 #imgur .ball {border: 5px solid white; background-color: transparent;}
+#gmail {background-color: #E4E4E4;}
+#gmail .ball {border: 2px solid #D14836; background-color: transparent;}
+#outlook {background-color: #0072C6;}
+#outlook .ball {border: 2px solid white; background-color: transparent;}
+#email::after {
+  content: 'ussa.say';
+}
 
 /* SHEEP INTRO ANIMATION */
 .blank {
