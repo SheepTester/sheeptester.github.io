@@ -70,6 +70,9 @@ a {
   }
 }
 @media (max-width: 400px) {
+  .about {
+    font-size: 16px;
+  }
   .place {
     width: calc(75% - 20px);
     margin: 5px 16%;
