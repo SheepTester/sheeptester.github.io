@@ -86,6 +86,36 @@ body > .dir {
   margin: 0 auto;
   padding: 2px;
 }
+.cached {
+  font-weight: bold;
+  background-color: rgba(0, 0, 0, 0.05);
+}
+.loading {
+  font-style: italic;
+}
+.cache-wrapper {
+  border: 1px solid rgba(0,0,0,0.1);
+  padding: 2px;
+  margin: 5px auto;
+  max-width: 500px;
+}
+.cache-new-wrapper {
+  display: flex;
+}
+.cache-new-url {
+  flex: auto;
+  -webkit-appearance: none;
+  background: none;
+  border: 1px solid rgba(0,0,0,0.15);
+  font: inherit;
+  border-radius: 2px;
+  margin: 2px;
+  color: black;
+  padding: 0 3px;
+}
+.cache-new-url:focus {
+  border-color: rgb(125, 162, 206);
+}
 h1, .btn-wrapper, p {
   max-width: 500px;
   margin: 0 auto;
@@ -96,6 +126,7 @@ button, .button {
   background: none;
   border: 1px solid rgba(0,0,0,0.15);
   background-color: rgba(0,0,0,0.05);
+  font: inherit;
   border-radius: 2px;
   margin: 2px;
   cursor: pointer;
@@ -114,6 +145,10 @@ button:focus, .button:focus {
   background-color: hsl(214, 91%, 89%);
   border-color: rgb(125, 162, 206);
 }
+:disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
 body.hidehtml .html {
   display: none;
 }
@@ -126,15 +161,22 @@ body.hideother > .dir a:not(.html):not(.img) {
 input[type=checkbox]:focus {
   filter: drop-shadow(0 0 3px rgb(125, 162, 206));
 }
+:focus {
+  outline: none;
+}
 @media (hover: none) {
+  .btn-wrapper {
+    margin: 10px 0;
+  }
   .head, .dir a {
     padding: 5px 2px;
   }
   button, .button {
     padding: 5px 10px;
   }
-  /* input[type=checkbox] {
-    width: 15px;
-    height: 15px;
-  } */
+  input[type=checkbox] {
+    width: 16px;
+    height: 16px;
+    vertical-align: middle;
+  }
 }
