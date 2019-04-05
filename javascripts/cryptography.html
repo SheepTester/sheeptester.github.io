@@ -44,7 +44,7 @@ const params = new URL(window.location).searchParams;
 const inputs = {};
 const runMeAfter = [];
 const link = document.getElementById('link');
-function input(name, fn) {
+function input(name, fn, placeholder) {
   const onchange = () => {
     fn(input.value);
     params.set(name, input.value);
@@ -56,7 +56,8 @@ function input(name, fn) {
     },
     attributes: {
       id: name,
-      value: params.get(name) || ''
+      value: params.get(name) || '',
+      placeholder
     }
   });
   inputs[name] = {
@@ -71,11 +72,11 @@ function input(name, fn) {
   if (params.get(name)) runMeAfter.push(onchange);
   return input;
 }
-function inputWrapper(name, label, fn) {
+function inputWrapper(name, label, fn, example = '') {
   return createElement('p', {
     children: [
       createElement('label', { children: [label], attributes: {for: name} }),
-      input(name, fn)
+      input(name, fn, example)
     ]
   });
 }
@@ -100,31 +101,31 @@ document.body.appendChild(createElement('div', {
         if (!c || c === '/') return ' ';
         const pattern = c.replace(/[−‒–—―]/g, '-').replace(/[﹒．·⋅·]/g, '.').replace(/[^.-]/g, '');
         return Object.keys(morse).find(char => morse[char] === pattern) || '';
-      }).join('')),
+      }).join(''), '... --- ...'),
     inputWrapper('to-morse', 'To', text => inputs['from-morse'].value
-      = text.toUpperCase().split('').map(l => morse[l] || '/').join(' ')),
+      = text.toUpperCase().split('').map(l => morse[l] || '/').join(' '), 'SOS'),
 
     createElement('h1', { children: ['Binary'] }),
     inputWrapper('from-binary', 'From', text => inputs['to-binary'].value
-      = text.replace(/[^01]/g, '').replace(/[01]{8}/g, m => String.fromCharCode(parseInt(m, 2)))),
+      = text.replace(/[^01]/g, '').replace(/[01]{8}/g, m => String.fromCharCode(parseInt(m, 2))), '01110100 01100101 01111000 01110100'),
     inputWrapper('to-binary', 'To', text => inputs['from-binary'].value
-      = text.split('').map(c => c.charCodeAt().toString(2).padStart(8, '0')).join(' ')),
+      = text.split('').map(c => c.charCodeAt().toString(2).padStart(8, '0')).join(' '), 'text'),
 
     createElement('h1', { children: ['Alphabet'] }),
     inputWrapper('from-alphabet', 'From', text => inputs['to-alphabet'].value
-      = text.replace(/(2[0-6]|1[0-9]|[1-9])-?/g, (m, g1) => String.fromCharCode(+g1 + 64))),
+      = text.replace(/(2[0-6]|1[0-9]|[1-9])-?/g, (m, g1) => String.fromCharCode(+g1 + 64)), '23-15-18-4'),
     inputWrapper('to-alphabet', 'To', text => inputs['from-alphabet'].value
-      = text.replace(/[a-z]+/gi, word => word.split('').map(l => l.toUpperCase().charCodeAt() - 64).join('-'))),
+      = text.replace(/[a-z]+/gi, word => word.split('').map(l => l.toUpperCase().charCodeAt() - 64).join('-')), 'words'),
 
     createElement('h1', { children: ['Base64'] }),
-    inputWrapper('from-base64', 'From', text => inputs['to-base64'].value = btoa(text)),
+    inputWrapper('from-base64', 'From', text => inputs['to-base64'].value = btoa(text), 'hello'),
     inputWrapper('to-base64', 'To', text => {
       try {
         inputs['from-base64'].value = atob(text);
       } catch (e) {
         inputs['from-base64'].value = e;
       }
-    }),
+    }, 'aGVsbG8='),
 
     createElement('h1', { children: ['Caesar cipher'] }),
     inputWrapper('caesar', 'Text', text => {
@@ -143,7 +144,7 @@ document.body.appendChild(createElement('div', {
         }));
       }
       caesarTable.appendChild(createFragment(rows));
-    }),
+    }, 'ejap dzxpestyr'),
     caesarTable = createElement('div', { classes: 'rows' })
   ]
 }));
