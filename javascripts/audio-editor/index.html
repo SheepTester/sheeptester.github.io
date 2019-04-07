@@ -11,9 +11,30 @@
     <script src="./select.js" charset="utf-8"></script>
     <script src="./main.js" type="module" charset="utf-8"></script>
     <style>
+      body {
+        background-color: #eee;
+        color: #666;
+      }
+      button {
+        -webkit-appearance: none;
+        border: none;
+        background: none;
+        font: inherit;
+        color: #333;
+        font-weight: bold;
+        font-size: 14px;
+        cursor: pointer;
+      }
+      button:hover:not(:disabled) {
+        text-decoration: underline;
+      }
+      button:disabled {
+        opacity: 0.5;
+        cursor: auto;
+      }
       .preview {
         position: relative;
-        border: 1px solid rgba(0, 0, 0, 0.5);
+        border: 1px solid #999;
       }
       .playhead {
         position: absolute;
@@ -62,6 +83,7 @@
         left: 0;
         display: none;
         white-space: nowrap;
+        background-color: #ddd;
       }
       .select-options-wrapper.show {
         display: block;
@@ -69,20 +91,24 @@
       .select-separator {
         margin: 5px 0;
         display: block;
-        border-top: 1px solid rgba(0, 0, 0, 0.5);
+        border-top: 1px solid #999;
       }
       .select-option {
         display: block;
       }
+      #record-sound {
+        color: #d74e4a;
+      }
       #record-display {
         width: 100px;
-        height: 5px;
         display: inline-block;
-        background-color: rgba(0, 0, 0, 0.3);
+        background-color: #999;
       }
       #record-display::before {
-        content: '';
-        background-color: red;
+        content: attr(data-time);
+        color: white;
+        font-family: monospace;
+        background-color: #d74e4a;
         width: var(--level);
         height: 100%;
         display: block;

@@ -60,6 +60,7 @@ class SoundEditor {
       mainSelection: this.state.mainSelection
     };
     this.renderWaveform();
+    this.displayLength();
   }
 
   submitNewSamples(samples, sampleRate, skipUndo) {
@@ -86,6 +87,12 @@ class SoundEditor {
     this.state.chunkLevels.forEach((v, i) => {
       c.fillRect(i * segmentWidth, Math.floor(c.canvas.height / 2 - v * waveHeight), segmentWidth, Math.ceil(v * waveHeight * 2));
     });
+  }
+
+  displayLength() {
+    const {samples, sampleRate} = this.copyCurrentBuffer();
+    const sampleCount = samples.length;
+    this.elems.length.textContent = (sampleCount / sampleRate).toFixed(2) + 's';
   }
 
   play() {
@@ -330,6 +337,9 @@ class SoundEditor {
           classes: 'download-btn',
           children: ['download'],
           listeners: {click: this.download.bind(this)}
+        }),
+        elems.length = createElement('span', {
+          classes: 'sound-length'
         }),
         elems.preview = createElement('div', {
           classes: 'preview',

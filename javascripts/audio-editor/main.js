@@ -45,6 +45,7 @@ document.addEventListener('DOMContentLoaded', e => {
         document.body.appendChild(createElement('hr'))
         document.body.appendChild(editor.render());
         editor.renderWaveform();
+        editor.displayLength();
       });
     });
   });
@@ -58,14 +59,16 @@ document.addEventListener('DOMContentLoaded', e => {
     document.body.appendChild(createElement('hr'))
     document.body.appendChild(editor.render());
     editor.renderWaveform();
+    editor.displayLength();
   });
   const recordSound = document.getElementById('record-sound');
   const stopRecord = document.getElementById('stop-record');
   const recordingDisplay = document.getElementById('record-display');
   recordingDisplay.style.display = 'none';
-  let audioRecorder = null;
+  let audioRecorder = null, recordingStartTime;
   function levelUpdate(level) {
     recordingDisplay.style.setProperty('--level', level * 100 + '%');
+    recordingDisplay.dataset.time = (Date.now() - recordingStartTime) / 1000 + 's';
   }
   recordSound.addEventListener('click', e => {
     if (audioRecorder) return;
@@ -74,6 +77,7 @@ document.addEventListener('DOMContentLoaded', e => {
     audioRecorder = new AudioRecorder();
     audioRecorder.startListening(() => {
       recordingDisplay.style.display = null;
+      recordingStartTime = Date.now();
       audioRecorder.startRecording();
     }, levelUpdate, () => {
       alert('recording problem');
@@ -93,6 +97,7 @@ document.addEventListener('DOMContentLoaded', e => {
     document.body.appendChild(createElement('hr'))
     document.body.appendChild(editor.render());
     editor.renderWaveform();
+    editor.displayLength();
     audioRecorder.dispose();
     audioRecorder = null;
     recordingDisplay.style.display = 'none';
