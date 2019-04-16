@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Easing equations</title>
+    <meta charset="UTF-8">
+    <meta name="description" content="A HTML5 version of Robert Penner's easing equations visual aid."/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link href="https://fonts.googleapis.com/css?family=Roboto+Slab" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="../sheep3.css">
+    <script src="../sheep3.js" charset="utf-8"></script>
+    <script src="./_dom.js" charset="utf-8"></script>
+    <script src="./easing.js" charset="utf-8"></script>
+    <style>
+      body {
+        background-color: #414450;
+        margin: 0;
+        font-size: 0;
+        font-family: 'Roboto Slab', serif;
+        color: rgba(255, 255, 255, 0.5);
+      }
+      .ball {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        margin: -20px;
+        background-color: #6980e5;
+        opacity: 0.8;
+      }
+      .ball-trail {
+        /* animation: trail .2s forwards; */
+        opacity: 0.1;
+      }
+      @keyframes trail {
+        from { opacity: 0.8; }
+        to   { opacity: 0.1; }
+      }
+      .sidebar {
+        position: fixed;
+        top: 0;
+        bottom: 0;
+        right: 0;
+        background-color: rgba(0, 0, 0, 0.5);
+        width: 250px;
+        padding: 20px;
+        overflow: auto;
+        z-index: 1;
+      }
+      @media (max-width: 500px) {
+        .sidebar {
+          left: 0;
+          padding-top: 80vh;
+          width: auto;
+          background-color: transparent;
+        }
+      }
+      table {
+        border-spacing: 0;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+      }
+      .easing-type {
+        width: 300px;
+        position: relative;
+        height: 1em;
+      }
+      .easing-type span {
+        white-space: nowrap;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+      }
+      th {
+        font-weight: normal;
+      }
+      th, td {
+        font-size: 16px;
+        border-right: 1px solid rgba(255, 255, 255, 0.03);
+        border-top: 1px solid rgba(255, 255, 255, 0.03);
+        padding: 5px;
+        text-align: center;
+      }
+      th:last-child, td:last-child {
+        border-right: none;
+      }
+      tr:nth-child(2n) th, tr:nth-child(2n) td {
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+      }
+      .no-border th, .no-border td {
+        border-top: none;
+      }
+      .radio-wrapper {
+        position: relative;
+      }
+      .radio {
+        margin: 0;
+        opacity: 0;
+        width: 16px;
+        height: 16px;
+        cursor: pointer;
+      }
+      .radio, .checkbox {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+      }
+      .checkbox {
+        pointer-events: none;
+        height: 16px;
+        width: 16px;
+        border-radius: 50%;
+        background-color: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+      }
+      .checkbox::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 8px;
+        height: 8px;
+        background-color: rgba(255, 255, 255, 0.8);
+        box-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
+        margin: -4px;
+        border-radius: 50%;
+        transform: scale(0);
+        transition: transform .2s;
+      }
+      .radio:checked ~ .checkbox::after {
+        transform: scale(1);
+      }
+      .radio:focus ~ .checkbox {
+        box-shadow: 0 0 0 3px rgba(105, 128, 229, 0.5);
+      }
+      #ball {
+        transform: translate(-20px, -20px);
+      }
+      .function-code-wrapper {
+        background-color: rgba(0, 0, 0, 0.3);
+        margin-top: 20px;
+      }
+      .function-heading {
+        background-color: rgba(255, 255, 255, 0.3);
+        color: rgba(255, 255, 255, 0.8);
+        padding: 10px 20px;
+        font-size: 18px;
+      }
+      .function-heading::after {
+        content: ' (t)';
+        color: rgba(255, 255, 255, 0.5);
+      }
+      .function-body {
+        padding: 20px;
+        font-family: monospace;
+        font-size: 14px;
+        white-space: pre;
+        overflow-x: auto;
+      }
+      .inline-checkbox {
+        display: inline-block;
+        width: 1em;
+        height: 1em;
+        vertical-align: top;
+        margin-right: 5px;
+      }
+      .show-trail-wrapper {
+        font-size: 14px;
+        margin-bottom: 5px;
+      }
+      p {
+        font-size: 14px;
+      }
+      p:first-child {
+        margin-top: 0;
+      }
+      a {
+        color: #6980e5;
+        text-decoration: none;
+      }
+      a:hover {
+        text-decoration: underline;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="ball" id="ball"></div>
+    <div class="sidebar" id="sidebar">
+      <p>Click.</p>
+      <div class="show-trail-wrapper">
+        <div class="radio-wrapper inline-checkbox">
+          <input type="checkbox" class="radio" id="trail" checked>
+          <div class="checkbox"></div>
+        </div>
+        <label for="trail">show trail?</label>
+      </div>
+      <table id="fn-table">
+        <tr class="no-border">
+          <td colspan="2" class="empty"></td>
+          <th class="easing-type"><span>in</span></th>
+          <th class="easing-type"><span>out</span></th>
+          <th class="easing-type"><span>in-out</span></th>
+        </tr>
+      </table>
+      <p>Code and design adapted from <a href="http://gizma.com/easing/">Easing Equations</a> by <a href="http://robertpenner.com/">Robert Penner</a>.</p>
+    </div>
+    <script>
+const sidebar = document.getElementById('sidebar');
+const table = document.getElementById('fn-table');
+const functions = [
+  ['lin', 'linear', true],
+  ['quad', 'Quad'],
+  ['sin', 'Sine'],
+  ['expo', 'Expo'],
+  ['circ', 'Circ'],
+  ['cube', 'Cubic'],
+  ['qrt', 'Quart'],
+  ['qnt', 'Quint']
+];
+function makeRadioForXY(value) {
+  return [
+    createElement('input', {
+      classes: 'radio',
+      attributes: {
+        type: 'radio',
+        value,
+        name: 'x'
+      }
+    }),
+    createElement('input', {
+      classes: 'radio',
+      attributes: {
+        type: 'radio',
+        value,
+        name: 'y'
+      }
+    })
+  ].map(child => createElement('td', {
+    classes: 'radio-wrapper',
+    children: [
+      child,
+      createElement('span', {
+        classes: 'checkbox'
+      })
+    ]
+  }));
+}
+const types = ['easeIn', 'easeOut', 'easeInOut'];
+table.appendChild(createFragment(functions.map(([label, fnName, noEase]) => {
+  const xRow = createElement('tr', {
+    children: [
+      createElement('th', {
+        children: [label],
+        attributes: {rowspan: 2}
+      }),
+      createElement('th', {
+        children: ['x']
+      })
+    ]
+  });
+  const yRow = createElement('tr', {
+    children: [
+      createElement('th', {
+        children: ['y']
+      })
+    ]
+  });
+  if (noEase) {
+    const [xRadio, yRadio] = makeRadioForXY(fnName);
+    xRadio.setAttribute('colspan', 3);
+    yRadio.setAttribute('colspan', 3);
+    xRow.appendChild(xRadio);
+    yRow.appendChild(yRadio);
+  } else {
+    types.forEach(type => {
+      const [xRadio, yRadio] = makeRadioForXY(type + fnName);
+      xRow.appendChild(xRadio);
+      yRow.appendChild(yRadio);
+    });
+  }
+  return createFragment([xRow, yRow]);
+})));
+document.querySelector('[name=x][value=easeInOutQuad]').checked = true;
+document.querySelector('[name=y][value=easeInOutQuad]').checked = true;
+const functionBodyRegex = /[a-z]\(t\) \{((?:.|\r?\n)+)\}/i;
+sidebar.appendChild(createFragment(Object.keys(Easing).map(fn => {
+  return createElement('div', {
+    classes: 'function-code-wrapper',
+    children: [
+      createElement('div', {
+        classes: 'function-heading',
+        children: [fn]
+      }),
+      createElement('div', {
+        classes: 'function-body',
+        children: [
+          functionBodyRegex
+            .exec(Easing[fn])[1]
+            .trim()
+            .split(/\r?\n/)
+            .map(a => a.trim())
+            .join('\n')
+        ]
+      })
+    ]
+  });
+})));
+const ANIMATION_LENGTH = 700;
+const TRAIL_BALLS = 20;
+const ball = document.getElementById('ball');
+const trail = document.getElementById('trail');
+let animating = null, x = -20, y = -20;
+function setXY(newX, newY) {
+  x = newX, y = newY;
+  ball.style.transform = `translate(${x}px, ${y}px)`;
+}
+function animateBall() {
+  const elapsedTime = Date.now() - animating.start;
+  if (animating.trail) {
+    while (animating.trailCreated <= elapsedTime / ANIMATION_LENGTH * TRAIL_BALLS) {
+      const [x, y] = animating.getProgress(animating.trailCreated / TRAIL_BALLS);
+      document.body.appendChild(createElement('div', {
+        classes: 'ball ball-trail',
+        styles: {
+          transform: `translate(${x}px, ${y}px)`
+        }
+      }));
+      animating.trailCreated++;
+    }
+  }
+  if (elapsedTime > ANIMATION_LENGTH) {
+    setXY(animating.destX, animating.destY);
+    animating = null;
+    return;
+  }
+  setXY(...animating.getProgress(elapsedTime / ANIMATION_LENGTH));
+  animating.id = window.requestAnimationFrame(animateBall);
+}
+document.addEventListener('click', e => {
+  console.log(e.which);
+  if (animating) window.cancelAnimationFrame(animating.id);
+  Array.from(document.getElementsByClassName('ball-trail')).forEach(ball => {
+    document.body.removeChild(ball);
+  });
+  animating = {
+    start: Date.now(),
+    trailCreated: 0,
+    trail: trail.checked,
+    xFn: Easing[document.querySelector('[name=x]:checked').value],
+    yFn: Easing[document.querySelector('[name=y]:checked').value],
+    startX: x,
+    startY: y,
+    destX: e.clientX,
+    destY: e.clientY,
+    getProgress(progress) {
+      return [
+        this.xFn(progress) * (this.destX - this.startX) + this.startX,
+        this.yFn(progress) * (this.destY - this.startY) + this.startY
+      ];
+    }
+  };
+  animateBall();
+});
+    </script>
+  </body>
+</html>
