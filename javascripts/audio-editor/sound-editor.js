@@ -439,7 +439,7 @@ class SoundEditor {
               break;
           }
         }),
-        elems.effects = Select('Effects', ['reverse', '---', 'slower', 'faster', 'softer', 'louder', '---', 'robot', 'echo'], option => {
+        elems.effects = Select('Effects', ['reverse', '---', 'slower', 'faster', 'softer', 'louder', '---', 'robot', 'echo', 'reverb'], option => {
           switch (option) {
             case 'reverse':
               this.effect(effectTypes.REVERSE);
@@ -461,6 +461,9 @@ class SoundEditor {
               break;
             case 'echo':
               this.effect(effectTypes.ECHO);
+              break;
+            case 'reverb':
+              this.effect(effectTypes.REVERB);
               break;
           }
         }),

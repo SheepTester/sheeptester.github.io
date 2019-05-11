@@ -1,6 +1,7 @@
 import EchoEffect from './effects/echo-effect.js';
 import RobotEffect from './effects/robot-effect.js';
 import VolumeEffect from './effects/volume-effect.js';
+import SimpleReverb from '../simple-reverb.js';
 
 const effectTypes = {
     ROBOT: 'robot',
@@ -9,7 +10,8 @@ const effectTypes = {
     SOFTER: 'lower',
     FASTER: 'faster',
     SLOWER: 'slower',
-    ECHO: 'echo'
+    ECHO: 'echo',
+    ECHO: 'reverb'
 };
 
 class AudioEffects {
@@ -82,6 +84,9 @@ class AudioEffects {
             break;
         case effectTypes.ROBOT:
             ({input, output} = new RobotEffect(this.audioContext, 0.25));
+            break;
+        case effectTypes.REVERB:
+            ({input, output} = new SimpleReverb(this.audioContext));
             break;
         }
 
