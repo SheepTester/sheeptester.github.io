@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Autocomplete</title>
+    <meta charset="UTF-8">
+    <meta name="description" content="Autocompletes as you type when you press tab"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link rel="stylesheet" type="text/css" href="../sheep3.css">
+    <script src="../sheep3.js" charset="utf-8"></script>
+    <style>
+      html, body {
+        width: 100%;
+        height: 100%;
+      }
+      body {
+        margin: 0;
+        font-size: 0;
+      }
+      .wrapper {
+        position: relative;
+        height: 100%;
+      }
+      textarea {
+        -webkit-appearance: none;
+        resize: none;
+      }
+      .textarea {
+        width: 100%;
+        box-sizing: border-box;
+        border: 1px solid black;
+        padding: 10px;
+        font-family: monospace;
+        font-size: 14px;
+        line-height: 1.5;
+        height: 100%;
+        white-space: pre-wrap;
+        overflow-wrap: break-word;
+        overflow: auto;
+      }
+      .overlay {
+        position: absolute;
+        top: 0;
+        pointer-events: none;
+        border-color: transparent;
+        color: transparent;
+      }
+      #caret {
+        position: relative;
+        font-size: 0;
+      }
+      #autocomplete-choices {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: -10px;
+        padding: 0;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+        background-color: #f7f7f7;
+        margin: 0;
+        margin-top: 5px;
+        list-style: none;
+        max-height: 200px;
+        overflow: hidden;
+        max-width: 80vw;
+      }
+      #autocomplete-choices.show {
+        display: block;
+      }
+      #autocomplete-choices li {
+        font-size: 14px;
+        padding: 5px 10px;
+        color: black;
+        white-space: pre;
+      }
+      .description {
+        margin-left: 15px;
+      }
+      .selected {
+        background-color: rgba(0, 0, 0, 0.1);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrapper">
+      <textarea id="input" rows="8" cols="80" class="textarea">Press up/down to select and tab to complete.</textarea>
+      <div class="textarea overlay" id="overlay"><span id="caret"><ul id="autocomplete-choices"></ul></span></div>
+    </div>
+    <script>
+const input = document.getElementById('input');
+const overlay = document.getElementById('overlay');
+const caret = document.getElementById('caret');
+const fillerBeforeText = document.createTextNode('');
+overlay.insertBefore(fillerBeforeText, caret);
+const fillerAfterText = document.createTextNode('');
+overlay.appendChild(fillerAfterText);
+const choices = document.getElementById('autocomplete-choices');
+function clearAndHideChoices() {
+  selectedSuggestion = null;
+  choices.classList.remove('show');
+  choicesShowing = false;
+  while (choices.firstChild) choices.removeChild(choices.firstChild);
+}
+let thereWasInput = false, choicesShowing = false, selectedSuggestion = null;
+const keywordGetter = /[a-z0-9_-]*$/i;
+function getKeywordPosition() {
+  if (input.selectionStart === input.selectionEnd) {
+    const typeProgressMatch = input.value.slice(0, input.selectionStart).match(keywordGetter);
+    if (typeProgressMatch && typeProgressMatch[0]) {
+      return {keyword: typeProgressMatch[0], index: input.selectionStart - typeProgressMatch[0].length}
+    } else {
+      return null;
+    }
+  } else {
+    return null;
+  }
+}
+function setCaretPosition() {
+  const position = getKeywordPosition();
+  if (position) {
+    fillerBeforeText.nodeValue = input.value.slice(0, position.index);
+    fillerAfterText.nodeValue = input.value.slice(position.index);
+    return position.keyword;
+  } else {
+    return null;
+  }
+}
+let suggestions = [];
+fetch('./toki-pona.json').then(r => r.json()).then(json => suggestions = json);
+input.addEventListener('input', e => {
+  thereWasInput = true;
+  const keyword = setCaretPosition();
+  clearAndHideChoices();
+  if (keyword) {
+    const additions = suggestions.filter(({word}) => word.slice(0, keyword.length).toLowerCase() === keyword.toLowerCase());
+    if (!additions.length) return;
+    const fragment = document.createDocumentFragment();
+    additions.forEach(({word, desc}) => {
+      const suggestion = document.createElement('li');
+      suggestion.dataset.addition = word.slice(keyword.length);
+      const match = document.createElement('strong');
+      match.textContent = word.slice(0, keyword.length);
+      suggestion.appendChild(match);
+      const addition = document.createTextNode(word.slice(keyword.length));
+      suggestion.appendChild(addition);
+      const description = document.createElement('em');
+      description.textContent = desc;
+      description.classList.add('description');
+      suggestion.appendChild(description);
+      fragment.appendChild(suggestion);
+    });
+    choices.appendChild(fragment);
+    selectedSuggestion = choices.firstChild;
+    selectedSuggestion.classList.add('selected');
+    choices.classList.add('show');
+    choicesShowing = true;
+  }
+});
+input.addEventListener('keydown', e => {
+  if (!choicesShowing) return;
+  if (e.keyCode === 38 || e.keyCode === 40) {
+    selectedSuggestion.classList.remove('selected');
+    selectedSuggestion = e.keyCode === 38
+      ? selectedSuggestion.previousSibling || choices.lastChild
+      : selectedSuggestion.nextSibling || choices.firstChild;
+    selectedSuggestion.classList.add('selected');
+    selectedSuggestion.scrollIntoView({block: 'nearest'});
+  } else if (e.keyCode === 9) {
+    const oldPos = input.selectionStart;
+    input.value = input.value.slice(0, oldPos) + selectedSuggestion.dataset.addition + input.value.slice(oldPos);
+    input.selectionStart = input.selectionEnd = oldPos + selectedSuggestion.dataset.addition.length;
+    clearAndHideChoices();
+  } else if (e.keyCode === 27) {
+    clearAndHideChoices();
+  } else return;
+  e.preventDefault();
+});
+document.addEventListener('selectionchange', e => {
+  if (thereWasInput) {
+    thereWasInput = false;
+  } else {
+    setCaretPosition();
+    if (choicesShowing) clearAndHideChoices();
+  }
+});
+input.addEventListener('keyup', e => {
+  if (thereWasInput) thereWasInput = false;
+});
+input.addEventListener('scroll', e => {
+  overlay.scrollTop = input.scrollTop;
+});
+    </script>
+  </body>
+</html>
