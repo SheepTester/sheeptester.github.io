@@ -13,20 +13,27 @@
   </head>
   <body>
     <p><label for="image">image to ruin: </label><input type="file" id="image" accept="image/*">(you can also paste in an image)</p>
-    <p><label for="quality">jpg quality: </label><input type="range" id="quality" value="0.92" min="0" max="1" step="any"><span id="quality-value">0.92</span></p>
+    <p><select id="format">
+      <option value="image/jpeg" selected>jpeg</option>
+      <option value="image/webp">webp</option>
+    </select><label for="quality"> quality: </label><input type="range" id="quality" value="0.92" min="0" max="1" step="any"><span id="quality-value">0.92</span></p>
     <img id="output">
     <p>remember that jpeg has no transparency!</p>
     <script>
 const image = document.getElementById('image');
 const quality = document.getElementById('quality');
 const qualityValue = document.getElementById('quality-value');
+const format = document.getElementById('format');
 const output = document.getElementById('output');
 const canvas = document.createElement('canvas');
 const c = canvas.getContext('2d');
 let selectedImage = false;
 function outputImage() {
-  output.src = canvas.toDataURL('image/jpeg', +quality.value);
+  output.src = canvas.toDataURL(format.value, +quality.value);
 }
+format.addEventListener('change', e => {
+  if (selectedImage) outputImage();
+});
 quality.addEventListener('input', e => {
   qualityValue.textContent = quality.value;
   if (selectedImage) outputImage();
