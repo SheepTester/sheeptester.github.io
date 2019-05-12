@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Character copy area</title>
+    <meta charset="UTF-8">
+    <meta name="description" content="Quickly copy special characters with a single click"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="../sheep3.css">
+    <script src="../sheep3.js" charset="utf-8"></script>
+    <script src="./clipboard.min.js" charset="utf-8"></script>
+    <style>
+      /* https://colorhunt.co/palette/144698 */
+      body {
+        background-color: #103c42;
+        margin: 10px;
+        font-size: 0;
+        font-family: 'Roboto', sans-serif;
+      }
+      .card {
+        border-radius: 8px;
+        padding: 10px;
+        background-color: #02576c;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        display: inline-flex;
+        margin: 10px;
+        justify-content: center;
+        align-items: center;
+        width: 120px;
+        height: 180px;
+        flex: none;
+        vertical-align: top;
+        cursor: pointer;
+        transition: box-shadow .2s;
+        position: relative;
+      }
+      .card:hover {
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
+      }
+      .card:active {
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+      }
+      .card span {
+        font-size: 60px;
+        text-align: center;
+        color: #ffe837;
+      }
+      .long span {
+        font-size: 20px;
+        word-wrap: break-word;
+        max-height: 200px;
+        overflow: hidden;
+      }
+      .really-long span {
+        font-size: 10px;
+      }
+      .add-btn {
+        background-image: url('./material-add_circle_outline.svg');
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: 60px;
+      }
+      .corner-btn {
+        width: 48px;
+        height: 48px;
+        -webkit-appearance: none;
+        border: none;
+        background: none;
+        margin: -24px;
+        position: absolute;
+        pointer-events: none;
+        opacity: 0;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: 24px;
+        transition: opacity .2s;
+        cursor: pointer;
+      }
+      .card:hover .corner-btn {
+        pointer-events: all;
+        opacity: 0.5;
+      }
+      .card:hover .corner-btn:hover {
+        opacity: 1;
+      }
+      .remove-btn {
+        background-image: url('./material-remove.svg');
+        top: 0;
+        right: 0;
+      }
+      .left-btn {
+        background-image: url('./material-chevron_left.svg');
+        bottom: 0;
+        left: 0;
+      }
+      .right-btn {
+        background-image: url('./material-chevron_right.svg');
+        bottom: 0;
+        right: 0;
+      }
+      :focus {
+        outline: none;
+      }
+    </style>
+  </head>
+  <body>
+    <script>
+let strings = ['—', '–', '×', 'Δ', '¯\\_(ツ)_/¯', '🤔'];
+try {
+  const arr = JSON.parse(localStorage.getItem('[javascripts] charcopy'));
+  if (Array.isArray(arr)) strings = arr;
+} catch (e) {}
+const fragment = document.createDocumentFragment();
+function newCard(str) {
+  const card = document.createElement('div');
+  card.dataset.clipboardText = str;
+  new ClipboardJS(card, {container: card});
+  card.classList.add('card');
+  if (str.length > 2) card.classList.add('long');
+  if (str.length > 80) card.classList.add('really-long');
+  const char = document.createElement('span');
+  char.textContent = str;
+  card.appendChild(char);
+  const removeBtn = document.createElement('button');
+  removeBtn.classList.add('corner-btn');
+  removeBtn.classList.add('remove-btn');
+  removeBtn.addEventListener('click', e => {
+    document.body.removeChild(card);
+    const index = strings.indexOf(str);
+    if (~index) strings.splice(index, 1);
+    localStorage.setItem('[javascripts] charcopy', JSON.stringify(strings));
+  });
+  card.appendChild(removeBtn);
+  const moveLeftBtn = document.createElement('button');
+  moveLeftBtn.classList.add('corner-btn');
+  moveLeftBtn.classList.add('left-btn');
+  moveLeftBtn.addEventListener('click', e => {
+    const index = strings.indexOf(str);
+    if (~index && index > 0) {
+      strings.splice(index, 1);
+      strings.splice(index - 1, 0, str);
+      document.body.insertBefore(card, card.previousElementSibling);
+      localStorage.setItem('[javascripts] charcopy', JSON.stringify(strings));
+    }
+  });
+  card.appendChild(moveLeftBtn);
+  const moveRightBtn = document.createElement('button');
+  moveRightBtn.classList.add('corner-btn');
+  moveRightBtn.classList.add('right-btn');
+  moveRightBtn.addEventListener('click', e => {
+    const index = strings.indexOf(str);
+    if (~index && index < strings.length - 1) {
+      strings.splice(index, 1);
+      strings.splice(index + 1, 0, str);
+      document.body.insertBefore(card.nextElementSibling, card);
+      localStorage.setItem('[javascripts] charcopy', JSON.stringify(strings));
+    }
+  });
+  card.appendChild(moveRightBtn);
+  return card;
+}
+strings.forEach(str => {
+  fragment.appendChild(newCard(str));
+});
+const addCard = document.createElement('div');
+addCard.classList.add('card');
+addCard.classList.add('add-btn');
+addCard.addEventListener('click', e => {
+  const newStr = prompt('Add character:');
+  if (newStr && !strings.includes(newStr)) {
+    strings.push(newStr);
+    document.body.insertBefore(newCard(newStr), addCard);
+    localStorage.setItem('[javascripts] charcopy', JSON.stringify(strings));
+  }
+});
+fragment.appendChild(addCard);
+document.body.appendChild(fragment);
+    </script>
+  </body>
+</html>
