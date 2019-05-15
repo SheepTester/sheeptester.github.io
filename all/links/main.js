@@ -45,6 +45,7 @@ function transform(camera, x, z, sin, cos) {
   };
 }
 
+let frame = 0;
 function draw() {
   let sin = Math.sin(camera.rot),
   cos = Math.cos(camera.rot);
@@ -86,8 +87,11 @@ function draw() {
   camera.z += camera.zv;
   camera.rot += camera.rotVel;
 
-  window.location.replace('#' + Object.values(camera).slice(0, 3).map(n => Math.round(n * 100)).join(','));
+  if (frame % 30 === 0) {
+    window.location.replace('#' + Object.values(camera).slice(0, 3).map(n => Math.round(n * 100)).join(','));
+  }
 
+  frame++;
   window.requestAnimationFrame(draw);
 }
 
