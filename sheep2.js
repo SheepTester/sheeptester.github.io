@@ -203,8 +203,8 @@ document.addEventListener("DOMContentLoaded", e => {
         if (dragging) {
           let x = cursorPos.clientX - xOffset,
           y = cursorPos.clientY - yOffset;
-          x = x < 0 ? 0 : x > document.body.clientWidth - 50 ? document.body.clientWidth - 50 : x;
-          y = y < 0 ? 0 : y > document.body.clientHeight - 50 ? document.body.clientHeight - 50 : y;
+          x = x < 0 ? 0 : x > window.innerWidth - 50 ? window.innerWidth - 50 : x;
+          y = y < 0 ? 0 : y > window.innerHeight - 50 ? window.innerHeight - 50 : y;
           homeButton.style.left = x + 'px';
           homeButton.style.top = y + 'px';
         }
@@ -214,8 +214,8 @@ document.addEventListener("DOMContentLoaded", e => {
         if (dragging) {
           let newClientRect = homeButton.getBoundingClientRect();
           homeButton.style.top = homeButton.style.left = null;
-          homeButton.style.right = SHEEP.setPref('sheepBtnX', document.body.clientWidth - newClientRect.right) + 'px';
-          homeButton.style.bottom = SHEEP.setPref('sheepBtnY', document.body.clientHeight - newClientRect.bottom) + 'px';
+          homeButton.style.right = SHEEP.setPref('sheepBtnX', window.innerWidth - newClientRect.right) + 'px';
+          homeButton.style.bottom = SHEEP.setPref('sheepBtnY', window.innerHeight - newClientRect.bottom) + 'px';
           document.body.classList.remove('sheep-dragging');
           document.body.removeChild(shadow);
         } else if (isTouch&&openMenu) {
