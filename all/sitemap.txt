@@ -83,6 +83,7 @@ https://sheeptester.github.io/hello-world/flashcards-sato-macbeth.html
 https://sheeptester.github.io/hello-world/flashcards.html
 https://sheeptester.github.io/hello-world/gunn-confessions.html
 https://sheeptester.github.io/hello-world/julienbtn.html
+https://sheeptester.github.io/hello-world/largetext.html
 https://sheeptester.github.io/hello-world/meta-test.html
 https://sheeptester.github.io/hello-world/profile-redirector.html
 https://sheeptester.github.io/hello-world/quick-brown-fox.html
@@ -136,14 +137,17 @@ https://sheeptester.github.io/javascripts/three/penworld.html
 https://sheeptester.github.io/javascripts/three/square.html
 https://sheeptester.github.io/javascripts/webgl/
 https://sheeptester.github.io/javascripts/anonchat.html
+https://sheeptester.github.io/javascripts/autocomplete.html
 https://sheeptester.github.io/javascripts/bignummathtester.html
 https://sheeptester.github.io/javascripts/carecalc.html
 https://sheeptester.github.io/javascripts/caretdemo.html
+https://sheeptester.github.io/javascripts/charcopy.html
 https://sheeptester.github.io/javascripts/clickanywhere.html
 https://sheeptester.github.io/javascripts/cryptography.html
 https://sheeptester.github.io/javascripts/cyrillic-finder.html
 https://sheeptester.github.io/javascripts/delegalifier.html
 https://sheeptester.github.io/javascripts/discord-transformer.html
+https://sheeptester.github.io/javascripts/easing.html
 https://sheeptester.github.io/javascripts/events.html
 https://sheeptester.github.io/javascripts/fill-perf.html
 https://sheeptester.github.io/javascripts/fontmaker.html
@@ -240,6 +244,11 @@ https://sheeptester.github.io/stalk/
 https://sheeptester.github.io/telegraph/cited.html
 https://sheeptester.github.io/telegraph/
 https://sheeptester.github.io/telegraph/player.html
+https://sheeptester.github.io/text-save/404.html
+https://sheeptester.github.io/text-save/dir.html
+https://sheeptester.github.io/text-save/
+https://sheeptester.github.io/text-save/invalid-id.html
+https://sheeptester.github.io/text-save/template.html
 https://sheeptester.github.io/theflat/easierjson.html
 https://sheeptester.github.io/theflat/
 https://sheeptester.github.io/themes/billy-goat/index-dark.html
@@ -306,6 +315,7 @@ https://sheeptester.github.io/words-go-here/misc/2048simplified.html
 https://sheeptester.github.io/words-go-here/misc/3dcube.html
 https://sheeptester.github.io/words-go-here/misc/3dhall.html
 https://sheeptester.github.io/words-go-here/misc/accelerationtest.html
+https://sheeptester.github.io/words-go-here/misc/animated-painting-maker.html
 https://sheeptester.github.io/words-go-here/misc/bioconcept.html
 https://sheeptester.github.io/words-go-here/misc/camera.html
 https://sheeptester.github.io/words-go-here/misc/certainly-google-docs.html
@@ -336,6 +346,7 @@ https://sheeptester.github.io/words-go-here/misc/scratchtojs.html
 https://sheeptester.github.io/words-go-here/misc/simplex.html
 https://sheeptester.github.io/words-go-here/misc/skin.html
 https://sheeptester.github.io/words-go-here/misc/solidrectangles.html
+https://sheeptester.github.io/words-go-here/misc/svg-pen-canvas.html
 https://sheeptester.github.io/words-go-here/misc/svgtopng.html
 https://sheeptester.github.io/words-go-here/misc/tiles1.html
 https://sheeptester.github.io/words-go-here/misc/tiles2.html
@@ -349,6 +360,10 @@ https://sheeptester.github.io/words-go-here/attempt1.html
 https://sheeptester.github.io/words-go-here/attempt2.html
 https://sheeptester.github.io/words-go-here/
 https://sheeptester.github.io/words-go-here/savefiletest.html
+https://sheeptester.github.io/yesnt/
+https://sheeptester.github.io/yesnt/simple-reverb-test.html
+https://sheeptester.github.io/yesnt/squiggly-line-maker.html
+https://sheeptester.github.io/yesnt/timing-thing.html
 https://sheeptester.github.io/404.html
 https://sheeptester.github.io/all.html
 https://sheeptester.github.io/contextmenutest.html
