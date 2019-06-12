@@ -1,0 +1,113 @@
+body {
+  margin: 0 auto;
+  padding: 20px;
+  max-width: 600px;
+  font-size: 0;
+  background-color: #221c26;
+  color: white;
+  font-family: 'Roboto', sans-serif;
+  text-align: center;
+}
+
+.glow {
+  text-shadow: 0 0 0.15em currentColor;
+}
+h2 {
+  color: #0284fd;
+  font-size: 24px;
+  display: flex;
+  font-family: 'Audiowide', monospace;
+  align-items: center;
+  margin-bottom: 0;
+}
+h2::after {
+  content: '';
+  flex: auto;
+  height: 2px;
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 1px;
+  margin-left: 1ch;
+}
+.content {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.5);
+  text-align: left;
+  line-height: 1.5;
+}
+
+.good-day {
+  font-size: 48px;
+  color: rgba(255, 255, 255, 0.8);
+  margin-top: 50px;
+  margin-bottom: 0;
+}
+
+.full-name, .name {
+  font-size: 96px;
+  font-family: 'Audiowide', monospace;
+}
+.name-block {
+  display: inline-block;
+  vertical-align: top;
+  font-size: 0;
+  font-family: 'Roboto', sans-serif;
+}
+.first-name {
+  color: #fdeb02;
+}
+.last-name {
+  color: #02ebfd;
+}
+.name {
+  cursor: pointer;
+  display: block;
+}
+.ipa {
+  color: rgba(255, 255, 255, 0.3);
+  font-size: 34px;
+}
+.ipa::before, .ipa::after {
+  content: '/';
+  opacity: 0.5;
+}
+
+.etymology {
+  margin-bottom: 50px;
+}
+.arrow {
+  display: block;
+  margin: 16px auto;
+  width: 24px;
+  height: 24px;
+  background-image: url('./etym-arrow.svg');
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+.language {
+  font-size: 12px;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.5);
+  display: block;
+}
+.word {
+  font-size: 20px;
+  display: block;
+}
+.chinese {
+  font-size: 48px;
+}
+.romanization {
+  font-size: 16px;
+  color: rgba(255, 255, 255, 0.8);
+  display: block;
+  font-style: italic;
+}
+.meaning {
+  font-size: 16px;
+  color: rgba(255, 255, 255, 0.6);
+  display: block;
+}
+.meaning::before, .meaning::after {
+  content: '"';
+}
