@@ -37,3 +37,10 @@ rightBtn.addEventListener('click', e => {
   newShowingCard.classList.add('showing');
   newShowingCard.classList.add('showing-right');
 });
+
+const ad = document.getElementById('website-ad');
+const html = document.documentElement;
+ad.style.bottom = (html.scrollTop + window.innerHeight - html.scrollHeight) + 'px';
+document.addEventListener('scroll', e => {
+  ad.style.bottom = (html.scrollTop + window.innerHeight - html.scrollHeight) + 'px';
+});
