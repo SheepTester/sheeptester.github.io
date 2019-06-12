@@ -11,12 +11,12 @@ body {
 
 .glow {
   text-shadow: 0 0 0.15em currentColor;
+  font-family: 'Audiowide', monospace;
 }
-h2 {
+h2, h1 {
   color: #0284fd;
   font-size: 24px;
   display: flex;
-  font-family: 'Audiowide', monospace;
   align-items: center;
   margin-bottom: 0;
   font-weight: normal;
@@ -29,11 +29,22 @@ h2::after {
   border-radius: 1px;
   margin-left: 1ch;
 }
+h1 {
+  color: #fd8e02;
+  font-size: 48px;
+  display: block;
+}
 .content {
   font-size: 14px;
   color: rgba(255, 255, 255, 0.5);
   text-align: left;
   line-height: 1.5;
+}
+a {
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
 }
 
 /* target audience is capable classmates, so accessibility not a concern */
@@ -65,7 +76,6 @@ h2::after {
   color: #02ebfd;
 }
 .name {
-  cursor: pointer;
   display: block;
 }
 .ipa {
@@ -117,6 +127,15 @@ h2::after {
 .meaning::before, .meaning::after {
   content: '"';
 }
+.source {
+  display: block;
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.4);
+  margin-top: 10px;
+}
+.source a {
+  color: #fdeb02;
+}
 
 #definitions {
   position: relative;
@@ -132,12 +151,14 @@ h2::after {
 .def-by {
   font-size: 16px;
   font-weight: normal;
-  font-family: 'Audiowide', monospace;
 }
 .def-1 {color: #fd1902;}
 .def-2 {color: #dafd02;}
 .def-3 {color: #02b1fd;}
 .def-4 {color: #8802fd;}
+.def-4 a {
+  color: #8802fd;
+}
 .showing {
   display: block;
   position: relative;
@@ -183,11 +204,11 @@ h2::after {
   position: absolute;
   top: 50px;
   background-position: 50% 50%;
-  background-size: contain;
+  background-size: 16px;
   background-repeat: no-repeat;
-  width: 24px;
-  height: 24px;
-  padding: 0;
+  width: 40px;
+  height: 40px;
+  padding: 8px;
   opacity: 0.5;
   z-index: 1;
   transition: background-position-x .2s;
@@ -200,12 +221,21 @@ h2::after {
   background-image: url('./arrow-left.svg');
 }
 #left:hover {
-  background-position-x: left;
+  background-position-x: 30%;
 }
 #right {
   right: 0;
   background-image: url('./arrow-right.svg');
 }
 #right:hover {
-  background-position-x: right;
+  background-position-x: 70%;
+}
+
+.website-ad {
+  text-align: right;
+  max-width: 400px;
+  font-size: 16px;
+  margin: 0;
+  margin-left: auto;
+  margin-top: 50px;
 }

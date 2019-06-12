@@ -9,10 +9,12 @@ function leave(elem, dir) {
     elem.classList.remove('leaving-' + dir);
     elem.removeEventListener('animationend', done);
   };
-  elem.addEventListener('animationend', done);
-  elem.classList.add('leaving-' + dir);
   elem.classList.remove('showing-left');
   elem.classList.remove('showing-right');
+  elem.addEventListener('animationend', done);
+  elem.offsetWidth; // make browser recognize that the animation changed
+  elem.classList.add('leaving-' + dir);
+  elem.classList.remove('showing');
   stopLeaveEarly = done;
 }
 leftBtn.addEventListener('click', e => {
@@ -23,7 +25,6 @@ leftBtn.addEventListener('click', e => {
     : showingCard.previousElementSibling;
   if (showingCard === newShowingCard) throw new Error('yikes');
   leave(showingCard, 'left');
-  showingCard.classList.remove('showing');
   newShowingCard.classList.add('showing');
   newShowingCard.classList.add('showing-left');
 });
@@ -33,7 +34,6 @@ rightBtn.addEventListener('click', e => {
   const newShowingCard = showingCard.nextElementSibling || defs.children[2];
   if (showingCard === newShowingCard) throw new Error('yikes');
   leave(showingCard, 'right');
-  showingCard.classList.remove('showing');
   newShowingCard.classList.add('showing');
   newShowingCard.classList.add('showing-right');
 });
