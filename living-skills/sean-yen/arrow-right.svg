@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg"
+     xmlns:xlink="http://www.w3.org/1999/xlink"
+     width="16" height="24"
+     viewBox="0 0 16 24"
+     version="1.1"
+     fill="none"
+     stroke="white"
+     stroke-linecap="round"
+     stroke-linejoin="round">
+  <path d="M 4 4 L 12 12 L 4 20"/>
+</svg>
