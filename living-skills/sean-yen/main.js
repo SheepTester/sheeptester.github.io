@@ -58,9 +58,9 @@ function reveal(stagger = false) {
     }
   }
 }
+reveal(true);
 const ad = document.getElementById('website-ad');
 ad.style.bottom = (window.scrollY + window.innerHeight - html.scrollHeight) + 'px';
-reveal(true);
 document.addEventListener('scroll', e => {
   reveal(false);
   ad.style.bottom = (window.scrollY + window.innerHeight - html.scrollHeight) + 'px';
