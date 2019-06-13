@@ -185,3 +185,6 @@ function paint() {
   window.requestAnimationFrame(paint);
 }
 paint();
+
+// remind myself what the tinyurl link is
+console.log('TinyURL: https://tinyurl.com/seanpersonal');

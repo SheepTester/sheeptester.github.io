@@ -15,7 +15,7 @@ body {
   font-family: 'Audiowide', monospace;
 }
 h2, h1 {
-  color: #0284fd;
+  color: #7dbffd;
   font-size: 24px;
   display: flex;
   align-items: center;
@@ -26,9 +26,10 @@ h2::after {
   content: '';
   flex: auto;
   height: 2px;
-  background-color: rgba(255, 255, 255, 0.2);
+  background-color: rgba(255, 255, 255, 0.5);
   border-radius: 1px;
   margin-left: 1ch;
+  box-shadow: 0 0 3px rgba(255, 255, 255, 0.5);
 }
 h1 {
   color: #fd8e02;
@@ -192,12 +193,12 @@ img {
   font-size: 16px;
   font-weight: normal;
 }
-.def-1 {color: #fd1902;}
+.def-1 {color: #fd6456;}
 .def-2 {color: #dafd02;}
 .def-3 {color: #02b1fd;}
-.def-4 {color: #8802fd;}
+.def-4 {color: #bb6ffd;}
 .def-4 a {
-  color: #8802fd;
+  color: #bb6ffd;
 }
 .showing {
   display: block;
