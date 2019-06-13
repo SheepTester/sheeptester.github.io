@@ -56,6 +56,9 @@ img {
   max-height: 50vh;
   border-radius: 10px;
 }
+.higher-contrast {
+  max-height: 80vh;
+}
 .caption {
   display: block;
   max-width: 70%;
