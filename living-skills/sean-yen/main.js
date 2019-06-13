@@ -68,7 +68,7 @@ document.addEventListener('scroll', e => {
 
 const canvas = document.getElementById('background');
 const c = canvas.getContext('2d');
-let width, height, dpr, mx = -100, my = -100;
+let width, height, dpr, mx = -100, my = -100, showLight = true;
 const shapeTypes = ['circle', 'square', 'triangle', 'cross'];
 const SHAPE_LIFE_SPAN = 3000;
 const RADIUS = 10;
@@ -97,9 +97,15 @@ document.addEventListener('mousemove', e => {
   mx = e.clientX;
   my = e.clientY;
 });
+document.addEventListener('touchstart', e => {
+  showLight = true;
+});
 document.addEventListener('touchmove', e => {
   mx = e.changedTouches[0].clientX;
   my = e.changedTouches[0].clientY;
+});
+document.addEventListener('touchend', e => {
+  if (e.touches.length === 0) showLight = false;
 });
 function newShape(x, y) {
   return {
@@ -125,8 +131,9 @@ function paint() {
         shapes.splice(i, 1);
       } else {
         // c.save();
-        c.globalAlpha = Math.max(1 - Math.hypot(shape.x - mx, shape.y - my) / 300, 0);
-        if (c.globalAlpha === 0) continue;
+        const opacity = showLight ? Math.max(1 - Math.hypot(shape.x - mx, shape.y - my) / 300, 0) : 0;
+        if (Math.abs(opacity) < 0.001) continue;
+        c.globalAlpha = opacity;
         const x = shape.x + Math.cos(now / shape.clock) * shape.circleRadius;
         const y = shape.y + Math.sin(now / shape.clock) * shape.circleRadius;
         const rot = shape.rot + shape.rotspeed * now;
