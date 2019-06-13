@@ -98,6 +98,8 @@ document.addEventListener('mousemove', e => {
   my = e.clientY;
 });
 document.addEventListener('touchstart', e => {
+  mx = e.changedTouches[0].clientX;
+  my = e.changedTouches[0].clientY;
   showLight = true;
 });
 document.addEventListener('touchmove', e => {
@@ -115,16 +117,20 @@ function newShape(x, y) {
     y,
     clock: Math.random() * 1000 + 1500,
     circleRadius: RADIUS * (Math.random() * 2 + 2),
-    rotspeed: Math.random() / 1000
+    rotspeed: Math.random() / 1000,
+    opacity: 0
   };
 }
 function easeInQuint(t) {
   return t * t * t * t * t;
 }
+let lastTime = Date.now();
 function paint() {
   if (shapes.length) {
     c.clearRect(0, 0, width, height);
     const now = Date.now();
+    const elapsedTime = now - lastTime;
+    lastTime = now;
     for (let i = shapes.length; i--;) {
       const shape = shapes[i];
       if (now - shape.start > SHAPE_LIFE_SPAN) {
@@ -132,8 +138,9 @@ function paint() {
       } else {
         // c.save();
         const opacity = showLight ? Math.max(1 - Math.hypot(shape.x - mx, shape.y - my) / 300, 0) : 0;
-        if (Math.abs(opacity) < 0.001) continue;
-        c.globalAlpha = opacity;
+        shape.opacity += (opacity - shape.opacity) * (1 - (4 / 5) ** (elapsedTime / 15));
+        if (Math.abs(shape.opacity) < 0.001) continue;
+        c.globalAlpha = shape.opacity;
         const x = shape.x + Math.cos(now / shape.clock) * shape.circleRadius;
         const y = shape.y + Math.sin(now / shape.clock) * shape.circleRadius;
         const rot = shape.rot + shape.rotspeed * now;
