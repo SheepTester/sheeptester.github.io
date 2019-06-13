@@ -1,3 +1,8 @@
+const params = new URL(window.location).searchParams;
+if (params.get('contrast')) {
+  document.body.classList.add('higher-contrast');
+}
+
 const leftBtn = document.getElementById('left');
 const rightBtn = document.getElementById('right');
 const defs = document.getElementById('definitions');

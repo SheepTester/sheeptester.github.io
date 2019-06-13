@@ -41,6 +41,9 @@ h1 {
   text-align: left;
   line-height: 1.5;
 }
+.higher-contrast .content {
+  color: white;
+}
 a {
   text-decoration: none;
 }
