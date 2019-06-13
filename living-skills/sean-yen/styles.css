@@ -41,7 +41,7 @@ h1 {
   text-align: left;
   line-height: 1.5;
 }
-.higher-contrast .content {
+.higher-contrast .content, .higher-contrast .caption {
   color: white;
 }
 a {
@@ -49,6 +49,21 @@ a {
 }
 a:hover {
   text-decoration: underline;
+}
+img {
+  max-width: 100%;
+  max-height: 50vh;
+  border-radius: 10px;
+}
+.caption {
+  display: block;
+  max-width: 70%;
+  margin: 10px auto;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.4);
+}
+.caption a {
+  color: white;
 }
 
 /* target audience is capable classmates, so accessibility not a concern */
