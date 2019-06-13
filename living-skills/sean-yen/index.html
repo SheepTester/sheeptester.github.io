@@ -15,12 +15,12 @@
   <body>
     <canvas id="background"></canvas>
 
-    <p class="good-day">Good day, I am</p>
+    <p class="good-day reveal">Good day, I am</p>
     <div class="full-name">
       <div class="name-block first-name">
-        <span class="name glow">Sean</span>
-        <span class="ipa">ʃɔːn</span>
-        <div class="etymology">
+        <span class="name glow reveal">Sean</span>
+        <span class="ipa reveal">ʃɔːn</span>
+        <div class="etymology reveal-children">
           <span class="arrow"></span>
           <span class="language">Irish</span>
           <span class="word">Seán</span>
@@ -44,9 +44,9 @@
         </div>
       </div>
       <div class="name-block last-name">
-        <span class="name glow">Yen</span>
-        <span class="ipa">jɛn</span>
-        <div class="etymology">
+        <span class="name glow reveal">Yen</span>
+        <span class="ipa reveal">jɛn</span>
+        <div class="etymology reveal-children">
           <span class="arrow"></span>
           <span class="language">Chinese</span>
           <span class="word chinese">顏</span>
@@ -56,12 +56,12 @@
       </div>
     </div>
 
-    <h2 class="glow">Other name things</h2>
-    <p class="content">My name means nothing to me, and it holds no cultural significance.</p>
-    <p class="content">My parents named me after a character in <em>The Sixth Sense</em>; I haven’t watched the movie yet though. They realized my name was hard for native Chinese speakers to pronounce, so they chose an easier one for my brother.</p>
-    <p class="content">I like my name because it’s short and monosyllabic, but perhaps it could be shorter and more intuitive to spell (eg San, Sa, S?), but then it might look too Chinese and affect some people’s initial perceptions before meeting me. I prefer Irish spelling because it’s shorter.</p>
+    <h2 class="glow reveal">Other name things</h2>
+    <p class="content reveal">My name means nothing to me, and it holds no cultural significance.</p>
+    <p class="content reveal">My parents named me after a character in <em>The Sixth Sense</em>; I haven’t watched the movie yet though. They realized my name was hard for native Chinese speakers to pronounce, so they chose an easier one for my brother.</p>
+    <p class="content reveal">I like my name because it’s short and monosyllabic, but perhaps it could be shorter and more intuitive to spell (eg San, Sa, S?), but then it might look too Chinese and affect some people’s initial perceptions before meeting me. I prefer Irish spelling because it’s shorter.</p>
 
-    <div id="definitions">
+    <div id="definitions" class="reveal">
       <button class="def-arrow" id="left"></button>
       <button class="def-arrow" id="right"></button>
       <div class="definition def-1 showing">
@@ -82,19 +82,19 @@
       </div>
     </div>
 
-    <h2 class="glow">Success story</h2>
-    <p class="content">So far, Gunn Student Simulator has been pretty successful; surprisingly, even some Paly students have heard of it. The game would get a “success” score on my popularity-based rubric.</p>
+    <h2 class="glow reveal">Success story</h2>
+    <p class="content reveal">So far, Gunn Student Simulator has been pretty successful; surprisingly, even some Paly students have heard of it. The game would get a “success” score on my popularity-based rubric.</p>
 
-    <h1 class="glow">Family history</h1>
-    <p class="content">My extended family had been in Taiwan for a while, even before the Kuomintang fled from Mainland China during the Chinese Civil War.</p>
-    <img src="./yan-hui.jpg" alt="A portrait of Yán Huí">
-    <span class="caption">My dad says this guy, Yan Hui (顏回), is apparently one of our ancestors according to some generational record. He was Confucius's favourite disciple. This portrait was taken from <a href="https://en.wikipedia.org/wiki/File:Half_Portraits_of_the_Great_Sage_and_Virtuous_Men_of_Old_-_Yan_Hui_Ziyuan_(%E9%A1%8F%E5%9B%9E_%E5%AD%90%E6%B7%B5).jpg">Wikipedia</a>; artist unknown.</span>
-    <p class="content">My parents immigrated to the United States from Taiwan; my mom liked Western cultures and wanted to experience a different lifestyle, while my dad just wanted a better life. Before coming to Palo Alto, my mom lived in England for 7 months for university, and my dad was in Princeton.</p>
-    <img src="./family.jpg" alt="A photo of my family">
-    <span class="caption">Our family visiting Europe in 2009. I think we're posing in front of a bridge in London.</span>
-    <p class="content">My family history is only important to me because it makes me Asian, which makes me unfavourable to forced diversity by places like colleges. I also care that Taiwan is recognized for being independent and having access to Google. Otherwise my history is fairly unimportant.</p>
+    <h1 class="glow reveal">Family history</h1>
+    <p class="content reveal">My extended family had been in Taiwan for a while, even before the Kuomintang fled from Mainland China during the Chinese Civil War.</p>
+    <img src="./yan-hui.jpg" alt="A portrait of Yán Huí" class="reveal">
+    <span class="caption reveal">My dad says this guy, Yan Hui (顏回), is apparently one of our ancestors according to some generational record. He was Confucius's favourite disciple. This portrait was taken from <a href="https://en.wikipedia.org/wiki/File:Half_Portraits_of_the_Great_Sage_and_Virtuous_Men_of_Old_-_Yan_Hui_Ziyuan_(%E9%A1%8F%E5%9B%9E_%E5%AD%90%E6%B7%B5).jpg">Wikipedia</a>; artist unknown.</span>
+    <p class="content reveal">My parents immigrated to the United States from Taiwan; my mom liked Western cultures and wanted to experience a different lifestyle, while my dad just wanted a better life. Before coming to Palo Alto, my mom lived in England for 7 months for university, and my dad was in Princeton.</p>
+    <img src="./family.jpg" alt="A photo of my family" class="reveal">
+    <span class="caption reveal">Our family visiting Europe in 2009. I think we're posing in front of a bridge in London.</span>
+    <p class="content reveal">My family history is only important to me because it makes me Asian, which makes me unfavourable to forced diversity by places like colleges. I also care that Taiwan is recognized for being independent and having access to Google. Otherwise my history is fairly unimportant.</p>
 
-    <p class="glow" id="website-ad">Click this little circle thing to see my "special talent" &rightarrow;</p>
+    <p class="glow reveal" id="website-ad">Click this little circle thing to see my "special talent" &rightarrow;</p>
 
     <!-- too lazy to do DOMContentLoaded -->
     <script src="./main.js" charset="utf-8"></script>

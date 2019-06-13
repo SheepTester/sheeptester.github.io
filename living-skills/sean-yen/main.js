@@ -43,10 +43,26 @@ rightBtn.addEventListener('click', e => {
   newShowingCard.classList.add('showing-right');
 });
 
-const ad = document.getElementById('website-ad');
 const html = document.documentElement;
+const toReveal = Array.from(document.querySelectorAll('.reveal, .reveal-children > *'));
+function reveal(stagger = false) {
+  for (let i = toReveal.length; i--;) {
+    const elem = toReveal[i];
+    const rect = elem.getBoundingClientRect();
+    if (rect.top < window.innerHeight && rect.bottom > 0) {
+      toReveal.splice(i, 1);
+      // also should prevent lag from page relayout
+      setTimeout(() => {
+        elem.classList.add('revealed');
+      }, stagger ? rect.top / 2 : 0);
+    }
+  }
+}
+reveal(true);
+const ad = document.getElementById('website-ad');
 ad.style.bottom = (html.scrollTop + window.innerHeight - html.scrollHeight) + 'px';
 document.addEventListener('scroll', e => {
+  reveal(false);
   ad.style.bottom = (html.scrollTop + window.innerHeight - html.scrollHeight) + 'px';
 });
 

@@ -81,6 +81,17 @@ img {
   pointer-events: none;
 }
 
+.reveal, .reveal-children > * {
+  opacity: 0;
+}
+.revealed {
+  animation: reveal 1s forwards;
+}
+@keyframes reveal {
+  from {opacity: 0;}
+  to {opacity: 1;}
+}
+
 .good-day {
   font-size: 48px;
   color: rgba(255, 255, 255, 0.8);
