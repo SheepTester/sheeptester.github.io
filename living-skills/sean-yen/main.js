@@ -52,7 +52,11 @@ document.addEventListener('scroll', e => {
 
 const canvas = document.getElementById('background');
 const c = canvas.getContext('2d');
-let width, height, dpr;
+let width, height, dpr, mx = -100, my = -100;
+const shapeTypes = ['circle', 'square', 'triangle', 'cross'];
+const SHAPE_LIFE_SPAN = 3000;
+const RADIUS = 10;
+let shapes;
 function resize() {
   width = window.innerWidth;
   height = window.innerHeight;
@@ -60,26 +64,36 @@ function resize() {
   canvas.width = width * dpr;
   canvas.height = height * dpr;
   c.scale(dpr, dpr);
-  c.strokeStyle = 'rgba(255, 255, 255, 0.2)';
+  c.strokeStyle = 'rgba(255, 255, 255, 0.15)';
   c.lineWidth = 2;
   c.lineCap = 'round';
   c.lineJoin = 'round';
+  shapes = [];
+  for (let x = 0; x < width; x += RADIUS * 5) {
+    for (let y = 0; y < height; y += RADIUS * 5) {
+      shapes.push(newShape(x + Math.random() * RADIUS, y + Math.random() * RADIUS));
+    }
+  }
 }
 resize();
 window.addEventListener('resize', resize);
-const shapes = [];
-const shapeTypes = ['circle', 'square', 'triangle', 'cross'];
-const SHAPE_LIFE_SPAN = 3000;
-const RADIUS = 10;
-function newShape(y: Math.random() * height, yvel = 0, rotvel = 0) {
+document.addEventListener('mousemove', e => {
+  mx = e.clientX;
+  my = e.clientY;
+});
+document.addEventListener('touchmove', e => {
+  mx = e.changedTouches[0].clientX;
+  my = e.changedTouches[0].clientY;
+});
+function newShape(x, y) {
   return {
     type: shapeTypes[Math.random() * shapeTypes.length >> 0],
     rot: Math.random() * Math.PI * 2,
-    rotvel,
-    x: Math.random() * width,
+    x,
     y,
-    yvel,
-    start: Date.now()
+    clock: Math.random() * 1000 + 1500,
+    circleRadius: RADIUS * (Math.random() * 2 + 2),
+    rotspeed: Math.random() / 1000
   };
 }
 function easeInQuint(t) {
@@ -95,37 +109,40 @@ function paint() {
         shapes.splice(i, 1);
       } else {
         // c.save();
-        const opacity = 1 - easeInQuint((now - shape.start) / SHAPE_LIFE_SPAN);
-        c.globalAlpha = opacity;
+        c.globalAlpha = Math.max(1 - Math.hypot(shape.x - mx, shape.y - my) / 300, 0);
+        if (c.globalAlpha === 0) continue;
+        const x = shape.x + Math.cos(now / shape.clock) * shape.circleRadius;
+        const y = shape.y + Math.sin(now / shape.clock) * shape.circleRadius;
+        const rot = shape.rot + shape.rotspeed * now;
         c.beginPath();
         let vertices;
         switch (shape.type) {
           case 'circle':
-            c.arc(shape.x, shape.y, RADIUS, 0, 2 * Math.PI);
+            c.arc(x, y, RADIUS, 0, 2 * Math.PI);
             break;
           case 'square': {
-            const cos = Math.cos(shape.rot) * RADIUS;
-            const sin = Math.sin(shape.rot) * RADIUS;
-            c.moveTo(cos + shape.x, sin + shape.y);
-            c.lineTo(sin + shape.x, -cos + shape.y);
-            c.lineTo(-cos + shape.x, -sin + shape.y);
-            c.lineTo(-sin + shape.x, cos + shape.y);
+            const cos = Math.cos(rot) * RADIUS;
+            const sin = Math.sin(rot) * RADIUS;
+            c.moveTo(cos + x, sin + y);
+            c.lineTo(sin + x, -cos + y);
+            c.lineTo(-cos + x, -sin + y);
+            c.lineTo(-sin + x, cos + y);
             c.closePath();
             break;
           }
           case 'triangle':
-            c.moveTo(Math.cos(shape.rot) * RADIUS + shape.x, Math.sin(shape.rot) * RADIUS + shape.y);
-            c.lineTo(Math.cos(shape.rot + Math.PI * 2 / 3) * RADIUS + shape.x, Math.sin(shape.rot + Math.PI * 2 / 3) * RADIUS + shape.y);
-            c.lineTo(Math.cos(shape.rot + Math.PI * 4 / 3) * RADIUS + shape.x, Math.sin(shape.rot + Math.PI * 4 / 3) * RADIUS + shape.y);
+            c.moveTo(Math.cos(rot) * RADIUS + x, Math.sin(rot) * RADIUS + y);
+            c.lineTo(Math.cos(rot + Math.PI * 2 / 3) * RADIUS + x, Math.sin(rot + Math.PI * 2 / 3) * RADIUS + y);
+            c.lineTo(Math.cos(rot + Math.PI * 4 / 3) * RADIUS + x, Math.sin(rot + Math.PI * 4 / 3) * RADIUS + y);
             c.closePath();
             break;
           case 'cross': {
-            const cos = Math.cos(shape.rot) * RADIUS;
-            const sin = Math.sin(shape.rot) * RADIUS;
-            c.moveTo(cos + shape.x, sin + shape.y);
-            c.lineTo(-cos + shape.x, -sin + shape.y);
-            c.moveTo(sin + shape.x, -cos + shape.y);
-            c.lineTo(-sin + shape.x, cos + shape.y);
+            const cos = Math.cos(rot) * RADIUS;
+            const sin = Math.sin(rot) * RADIUS;
+            c.moveTo(cos + x, sin + y);
+            c.lineTo(-cos + x, -sin + y);
+            c.moveTo(sin + x, -cos + y);
+            c.lineTo(-sin + x, cos + y);
             c.closePath();
             break;
           }
@@ -138,10 +155,3 @@ function paint() {
   window.requestAnimationFrame(paint);
 }
 paint();
-window.addEventListener('wheel', e => {
-  if (e.deltaY === 0) return;
-  const shapeCount = Math.abs(Math.round(e.deltaY / 10));
-  for (let i = 0; i < shapeCount; i++) {
-    shapes.push(newShape(e.deltaY < 0 ? -RADIUS : height + RADIUS, -e.deltaY / (90 + Math.random() * 100)));
-  }
-});
