@@ -37,7 +37,8 @@ class SoundEditor {
       'handleCopy',
       'handlePaste',
       'paste',
-      'handleKeyPress'
+      'handleKeyPress',
+      'handleDownload'
     ].forEach(method => this[method] = this[method].bind(this));
 
     this.props = props;
@@ -111,6 +112,7 @@ class SoundEditor {
         this.handlePaste();
       } else if (event.key === 'a') {
         this.handleUpdateTrim(0, 1);
+        e.preventDefault();
       }
     }
   }
@@ -142,15 +144,16 @@ class SoundEditor {
     this.resetState(samples, sampleRate);
   }
 
-  handlePlay(playToEnd = false) {
+  handlePlay() {
     this.elems.playBtn.disabled = true;
     this.elems.stopBtn.disabled = false;
     this.elems.playhead.style.display = 'block';
 
     this.audioBufferPlayer.stop();
+    const playAll = this.state.trimStart === this.state.trimEnd;
     this.audioBufferPlayer.play(
       this.state.trimStart || 0,
-      playToEnd === true ? 1 : this.state.trimEnd || 1,
+      this.state.trimStart === this.state.trimEnd ? 1 : this.state.trimEnd || 1,
       this.handleUpdatePlayhead,
       this.handleStoppedPlaying
     );
@@ -313,27 +316,28 @@ class SoundEditor {
   }
 
   paste() {
+    const {samples, sampleRate} = this.copyCurrentBuffer();
     const copyBuffer = this.props.clipboard.copyBuffer;
     // If there's no selection, paste at the end of the sound
     if (this.state.trimStart === null) {
-      const newLength = this.props.samples.length + copyBuffer.samples.length;
+      const newLength = samples.length + copyBuffer.samples.length;
       const newSamples = new Float32Array(newLength);
-      newSamples.set(this.props.samples, 0);
-      newSamples.set(copyBuffer.samples, this.props.samples.length);
-      this.submitNewSamples(newSamples, this.props.sampleRate, false);
+      newSamples.set(samples, 0);
+      newSamples.set(copyBuffer.samples, samples.length);
+      this.submitNewSamples(newSamples, sampleRate, false);
     } else {
       // else replace the selection with the pasted sound
-      const trimStartSamples = this.state.trimStart * this.props.samples.length;
-      const trimEndSamples = this.state.trimEnd * this.props.samples.length;
-      const firstPart = this.props.samples.slice(0, trimStartSamples);
-      const lastPart = this.props.samples.slice(trimEndSamples);
+      const trimStartSamples = this.state.trimStart * samples.length;
+      const trimEndSamples = this.state.trimEnd * samples.length;
+      const firstPart = samples.slice(0, trimStartSamples);
+      const lastPart = samples.slice(trimEndSamples);
       const newLength = firstPart.length + copyBuffer.samples.length + lastPart.length;
       const newSamples = new Float32Array(newLength);
       newSamples.set(firstPart, 0);
       newSamples.set(copyBuffer.samples, firstPart.length);
       newSamples.set(lastPart, firstPart.length + copyBuffer.samples.length);
 
-      const trimStartSeconds = trimStartSamples / this.props.sampleRate;
+      const trimStartSeconds = trimStartSamples / sampleRate;
       const trimEndSeconds = trimStartSeconds +
           (copyBuffer.samples.length / copyBuffer.sampleRate);
       const newDurationSeconds = newSamples.length / copyBuffer.sampleRate;
@@ -341,7 +345,7 @@ class SoundEditor {
       const adjustedTrimEnd = trimEndSeconds / newDurationSeconds;
       this.handleUpdateTrim(adjustedTrimStart, adjustedTrimEnd);
 
-      this.submitNewSamples(newSamples, this.props.sampleRate, false);
+      this.submitNewSamples(newSamples, sampleRate, false);
     }
 
     this.handlePlay();
