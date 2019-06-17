@@ -27,39 +27,29 @@ function randomName(noun) {
   return `A${'aeiou'.includes(adjective[0]) ? 'n' : ''} ${adjective} ${noun}`;
 }
 
+const clipboard = {copyBuffer: null};
+function addSound(name, sampleRate, samples) {
+  const editor = new SoundEditor({sampleRate, samples, name, clipboard});
+  document.body.appendChild(Elem('hr'))
+  document.body.appendChild(editor.render());
+  editor.renderWaveform();
+  editor.displayLength();
+}
+
 document.addEventListener('DOMContentLoaded', e => {
   const audioContext = new SharedAudioContext();
-  const clipboard = {data: null};
   document.getElementById('add-sound').addEventListener('change', e => {
     // https://github.com/LLK/scratch-gui/blob/develop/src/containers/sound-tab.jsx#L122
 
     handleFileUpload(e.target, (buffer, fileType, fileName) => {
       const audioBuffer = new AudioEngine(audioContext)._decodeSound({data: {buffer}});
       audioBuffer.then(audioBuffer => {
-        const editor = new SoundEditor({
-          sampleRate: audioBuffer.sampleRate,
-          samples: audioBuffer.getChannelData(0),
-          name: fileName,
-          clipboard: clipboard
-        });
-        document.body.appendChild(createElement('hr'))
-        document.body.appendChild(editor.render());
-        editor.renderWaveform();
-        editor.displayLength();
+        addSound(fileName, audioBuffer.sampleRate, audioBuffer.getChannelData(0));
       });
     });
   });
   document.getElementById('new-sound').addEventListener('click', e => {
-    const editor = new SoundEditor({
-      sampleRate: 48000,
-      samples: new Float32Array([0]),
-      name: randomName('sound'),
-      clipboard: clipboard
-    });
-    document.body.appendChild(createElement('hr'))
-    document.body.appendChild(editor.render());
-    editor.renderWaveform();
-    editor.displayLength();
+    addSound(randomName('sound'), 48000, new Float32Array([0]));
   });
   const recordSound = document.getElementById('record-sound');
   const stopRecord = document.getElementById('stop-record');
@@ -88,16 +78,7 @@ document.addEventListener('DOMContentLoaded', e => {
     recordSound.disabled = false;
     stopRecord.disabled = true;
     const {samples, sampleRate} = audioRecorder.stop();
-    const editor = new SoundEditor({
-      sampleRate: sampleRate,
-      samples: samples,
-      name: randomName('recording'),
-      clipboard: clipboard
-    });
-    document.body.appendChild(createElement('hr'))
-    document.body.appendChild(editor.render());
-    editor.renderWaveform();
-    editor.displayLength();
+    addSound(randomName('recording'), sampleRate, samples);
     audioRecorder.dispose();
     audioRecorder = null;
     recordingDisplay.style.display = 'none';

@@ -23,7 +23,7 @@ class AudioRecorder {
 
     startListening (onStarted, onUpdate, onError) {
         try {
-            navigator.mediaDevices.getUserMedia({audio: true})
+            getUserMedia({audio: true})
                 .then(userMediaStream => {
                     if (!this.disposed) {
                         this.started = true;
@@ -96,8 +96,14 @@ class AudioRecorder {
             }
         }
 
-        const trimStart = Math.max(2, firstChunkAboveThreshold - 2) / this.buffers.length;
-        const trimEnd = Math.min(this.buffers.length - 2, lastChunkAboveThreshold + 2) / this.buffers.length;
+        let trimStart = Math.max(2, firstChunkAboveThreshold - 2) / this.buffers.length;
+        let trimEnd = Math.min(this.buffers.length - 2, lastChunkAboveThreshold + 2) / this.buffers.length;
+
+        // With very few samples, the automatic trimming can produce invalid values
+        if (trimStart >= trimEnd) {
+            trimStart = 0;
+            trimEnd = 1;
+        }
 
         const buffer = new Float32Array(this.buffers.length * this.bufferLength);
 
