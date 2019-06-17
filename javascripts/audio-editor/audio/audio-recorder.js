@@ -23,7 +23,7 @@ class AudioRecorder {
 
     startListening (onStarted, onUpdate, onError) {
         try {
-            getUserMedia({audio: true})
+            navigator.mediaDevices.getUserMedia({audio: true})
                 .then(userMediaStream => {
                     if (!this.disposed) {
                         this.started = true;

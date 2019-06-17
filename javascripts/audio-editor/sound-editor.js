@@ -56,12 +56,16 @@ class SoundEditor {
     this.audioContext = new SharedAudioContext();
     const {effectTypes} = AudioEffects;
     this.impulseResponses = {};
-    this.audioContext.decodeAudioData(reverbImpulseResponse.slice(0)).then(buffer => {
-      this.impulseResponses[effectTypes.REVERB] = buffer;
-    });
-    this.audioContext.decodeAudioData(magicImpulseResponse.slice(0)).then(buffer => {
-      this.impulseResponses[effectTypes.MAGIC] = buffer;
-    });
+    this.audioContext.decodeAudioData(reverbImpulseResponse.slice(0))
+      .then(buffer => this.resampleAudioBufferToRate(buffer, 44100))
+      .then(buffer => {
+        this.impulseResponses[effectTypes.REVERB] = buffer;
+      });
+    this.audioContext.decodeAudioData(magicImpulseResponse.slice(0))
+      .then(buffer => this.resampleAudioBufferToRate(buffer, 44100))
+      .then(buffer => {
+        this.impulseResponses[effectTypes.MAGIC] = buffer;
+      });
 
     this.audioBufferPlayer = new AudioBufferPlayer(this.props.samples, this.props.sampleRate);
     this.audioContext = new SharedAudioContext();
@@ -311,6 +315,25 @@ class SoundEditor {
             sampleRate: newRate
           });
         };
+      }
+    });
+  }
+
+  resampleAudioBufferToRate(buffer, newRate) {
+    return new Promise(resolve => {
+      if (window.OfflineAudioContext) {
+        const sampleRateRatio = newRate / buffer.sampleRate;
+        const samples = buffer.getChannelData(0);
+        const newLength = sampleRateRatio * samples.length;
+        const offlineContext = new window.OfflineAudioContext(1, newLength, newRate);
+        const source = offlineContext.createBufferSource();
+        const audioBuffer = this.audioContext.createBuffer(1, samples.length, buffer.sampleRate);
+        audioBuffer.getChannelData(0).set(samples);
+        source.buffer = audioBuffer;
+        source.connect(offlineContext.destination);
+        source.start();
+        offlineContext.startRendering();
+        offlineContext.oncomplete = ({renderedBuffer}) => resolve(renderedBuffer);
       }
     });
   }
