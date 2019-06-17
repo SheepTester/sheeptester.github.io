@@ -8,9 +8,10 @@ import AudioBufferPlayer from './audio/audio-buffer-player.js';
 
 import SharedAudioContext from './audio/shared-audio-context.js';
 
-let reverbImpulseResponse, magicImpulseResponse;
+let reverbImpulseResponse, magicImpulseResponse, meowImpulseResponse;
 fetch('./audio/york-minster-short.wav').then(r => r.arrayBuffer()).then(b => reverbImpulseResponse = b);
 fetch('./audio/magic-spell.wav').then(r => r.arrayBuffer()).then(b => magicImpulseResponse = b);
+fetch('./audio/scratch-meow.wav').then(r => r.arrayBuffer()).then(b => meowImpulseResponse = b);
 
 const UNDO_STACK_SIZE = 99;
 
@@ -66,6 +67,11 @@ class SoundEditor {
       .then(buffer => {
         this.impulseResponses[effectTypes.MAGIC] = buffer;
       });
+    this.audioContext.decodeAudioData(meowImpulseResponse.slice(0))
+      .then(buffer => this.resampleAudioBufferToRate(buffer, 44100))
+      .then(buffer => {
+        this.impulseResponses[effectTypes.MEOW] = buffer;
+      });
 
     this.audioBufferPlayer = new AudioBufferPlayer(this.props.samples, this.props.sampleRate);
     this.audioContext = new SharedAudioContext();
@@ -94,6 +100,7 @@ class SoundEditor {
       } else {
         this.handlePlay();
       }
+      e.preventDefault();
     }
     if (event.key === 'Delete' || event.key === 'Backspace') {
       this.handleActivateTrim();
@@ -556,7 +563,8 @@ class SoundEditor {
         ['echo', this.effectFactory(effectTypes.ECHO)],
         ['alien', this.effectFactory(effectTypes.ALIEN)],
         ['reverb', this.effectFactory(effectTypes.REVERB)],
-        ['magic', this.effectFactory(effectTypes.MAGIC)]
+        ['magic', this.effectFactory(effectTypes.MAGIC)],
+        ['meow', this.effectFactory(effectTypes.MEOW)]
       ]),
       elems.undoBtn = Elem('button', {
         className: 'undo-btn',

@@ -149,6 +149,11 @@ class AudioEffects {
                 this.impulseResponses[effectTypes.REVERB],
                 this.adjustedTrimStartSeconds, this.adjustedTrimEndSeconds));
             break;
+        case effectTypes.MEOW:
+            ({input, output} = new ReverbEffect(this.audioContext,
+                this.impulseResponses[effectTypes.MEOW],
+                this.adjustedTrimStartSeconds, this.adjustedTrimEndSeconds));
+            break;
         case effectTypes.FADEIN:
             ({input, output} = new FadeEffect(this.audioContext, true,
                 this.adjustedTrimStartSeconds, this.adjustedTrimEndSeconds));
