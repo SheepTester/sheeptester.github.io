@@ -459,6 +459,7 @@ var SHEEP={
     }
   }
   SHEEP.ajax('https://sheeptester.github.io/showads.js?v=' + Date.now(),e=>{},e=>{
+    return; // TEMP
     const style = document.createElement('style');
     setInterval(() => {
       style.innerHTML = `
