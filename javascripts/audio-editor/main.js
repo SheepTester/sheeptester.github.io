@@ -28,9 +28,8 @@ function randomName(noun) {
 }
 
 const clipboard = {copyBuffer: null};
-function addSound(name, sampleRate, samples) {
-  const editor = new SoundEditor({sampleRate, samples, name, clipboard});
-  document.body.appendChild(Elem('hr'))
+function addSound(name, samples, sampleRate) {
+  const editor = new SoundEditor({sampleRate, samples, name, clipboard, addSound});
   document.body.appendChild(editor.render());
   editor.renderWaveform();
   editor.displayLength();
@@ -44,12 +43,12 @@ document.addEventListener('DOMContentLoaded', e => {
     handleFileUpload(e.target, (buffer, fileType, fileName) => {
       const audioBuffer = new AudioEngine(audioContext)._decodeSound({data: {buffer}});
       audioBuffer.then(audioBuffer => {
-        addSound(fileName, audioBuffer.sampleRate, audioBuffer.getChannelData(0));
+        addSound(fileName, audioBuffer.getChannelData(0), audioBuffer.sampleRate);
       });
     });
   });
   document.getElementById('new-sound').addEventListener('click', e => {
-    addSound(randomName('sound'), 48000, new Float32Array([0]));
+    addSound(randomName('sound'), new Float32Array([0]), 48000);
   });
   const recordSound = document.getElementById('record-sound');
   const stopRecord = document.getElementById('stop-record');
@@ -78,7 +77,7 @@ document.addEventListener('DOMContentLoaded', e => {
     recordSound.disabled = false;
     stopRecord.disabled = true;
     const {samples, sampleRate} = audioRecorder.stop();
-    addSound(randomName('recording'), sampleRate, samples);
+    addSound(randomName('recording'), samples, sampleRate);
     audioRecorder.dispose();
     audioRecorder = null;
     recordingDisplay.style.display = 'none';

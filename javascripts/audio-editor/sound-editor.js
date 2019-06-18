@@ -39,7 +39,8 @@ class SoundEditor {
       'handlePaste',
       'paste',
       'handleKeyPress',
-      'handleDownload'
+      'handleDownload',
+      'handleDelete'
     ].forEach(method => this[method] = this[method].bind(this));
 
     this.props = props;
@@ -84,6 +85,10 @@ class SoundEditor {
     this.audioBufferPlayer.stop();
 
     document.removeEventListener('keydown', this.handleKeyPress);
+
+    if (this.elems.wrapper.parentNode) {
+      this.elems.wrapper.parentNode.removeChild(this.elems.wrapper);
+    }
   }
 
   handleKeyPress(e) {
@@ -329,7 +334,7 @@ class SoundEditor {
   }
 
   handleCopy() {
-    this.copy();
+    this.props.clipboard.copyBuffer = this.copy();
   }
 
   copy(callback) {
@@ -343,11 +348,16 @@ class SoundEditor {
 
     newCopyBuffer.samples = newCopyBuffer.samples.slice(trimStartSamples, trimEndSamples);
 
-    return this.props.clipboard.copyBuffer = newCopyBuffer;
+    return newCopyBuffer;
   }
 
   handleCopyToNew() {
-    this.copy(); // then do something
+    const {samples, sampleRate} = this.copy();
+    this.props.addSound(
+      'Copy of ' + this.elems.name.value,
+      samples,
+      sampleRate
+    );
   }
 
   resampleBufferToRate(buffer, newRate) {
@@ -472,6 +482,12 @@ class SoundEditor {
     }
   }
 
+  handleDelete() {
+    if (confirm('Are you sure you want to delete this sound?')) {
+      this.unmount();
+    }
+  }
+
   renderWaveform() {
     const canvas = this.elems.waveform;
     const c = this.elems.waveformContext;
@@ -541,6 +557,10 @@ class SoundEditor {
         className: 'download-btn',
         onclick: this.handleDownload
       }, ['download']),
+      elems.downloadBtn = Elem('button', {
+        className: 'delete-btn',
+        onclick: this.handleDelete
+      }, ['delete']),
       elems.length = Elem('span', {className: 'sound-length'}),
       elems.preview = Elem('div', {
         className: 'preview',
@@ -607,7 +627,11 @@ class SoundEditor {
         className: 'redo-btn',
         disabled: true,
         onclick: this.handleRedo
-      }, ['redo (ctrl + Y)'])
+      }, ['redo (ctrl + Y)']),
+      Elem('button', {
+        className: 'copy-to-new-btn',
+        onclick: this.handleCopyToNew
+      }, ['copy to new'])
     ]);
   }
 
