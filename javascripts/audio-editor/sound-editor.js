@@ -57,6 +57,7 @@ class SoundEditor {
     this.audioContext = new SharedAudioContext();
     const {effectTypes} = AudioEffects;
     this.impulseResponses = {};
+    // HACK to allow reverb-effect to accept different sample rates
     this.audioContext.decodeAudioData(reverbImpulseResponse.slice(0))
       .then(buffer => this.resampleAudioBufferToRate(buffer, 44100))
       .then(buffer => {
@@ -94,7 +95,7 @@ class SoundEditor {
       // Ignore keyboard shortcuts if a different editor is focused
       return;
     }
-    if (event.key === ' ') {
+    if (e.key === ' ') {
       if (this.state.playhead) {
         this.handleStopPlaying();
       } else {
@@ -102,26 +103,68 @@ class SoundEditor {
       }
       e.preventDefault();
     }
-    if (event.key === 'Delete' || event.key === 'Backspace') {
+    if (e.key === 'Delete' || e.key === 'Backspace') {
       this.handleActivateTrim();
     }
-    if (event.metaKey || event.ctrlKey) {
-      if (event.shiftKey && event.key.toLowerCase() === 'z' || event.key === 'y') {
+    const start = this.state.trimStart;
+    const end = this.state.trimEnd;
+    if (e.key === 'ArrowLeft') {
+      if (e.metaKey || e.ctrlKey) {
+        if (e.shiftKey) this.handleUpdateTrim(0, end);
+        else if (start === end) this.handleUpdateTrim(0, 0);
+        else this.handleUpdateTrim(start, start);
+      } else {
+        if (e.shiftKey) {
+          if (this.state.selectDirection === 'start') {
+            this.handleUpdateTrim(start - 0.01, end);
+          } else if (end - 0.01 < start) {
+            this.handleUpdateTrim(end - 0.01, start);
+            this.state.selectDirection = 'start';
+          } else {
+            this.handleUpdateTrim(start, end - 0.01);
+          }
+        } else {
+          this.handleUpdateTrim(start - 0.01, end - 0.01);
+        }
+      }
+    }
+    if (e.key === 'ArrowRight') {
+      if (e.metaKey || e.ctrlKey) {
+        if (e.shiftKey) this.handleUpdateTrim(start, 1);
+        else if (start === end) this.handleUpdateTrim(1, 1);
+        else this.handleUpdateTrim(end, end);
+      } else {
+        if (e.shiftKey) {
+          if (this.state.selectDirection === 'end') {
+            this.handleUpdateTrim(start, end + 0.01);
+          } else if (end < start + 0.01) {
+            this.handleUpdateTrim(end, start + 0.01);
+            this.state.selectDirection = 'end';
+          } else {
+            this.handleUpdateTrim(start + 0.01, end);
+          }
+        } else {
+          this.handleUpdateTrim(start + 0.01, end + 0.01);
+        }
+      }
+    }
+    if (e.metaKey || e.ctrlKey) {
+      if (e.shiftKey && e.key.toLowerCase() === 'z' || e.key === 'y') {
         if (this.redoStack.length > 0) {
           this.handleRedo();
         }
-      } else if (event.key === 'z') {
+      } else if (e.key === 'z') {
         if (this.undoStack.length > 0) {
           this.handleUndo();
         }
-      } else if (event.key === 'x') {
+      } else if (e.key === 'x') {
         this.handleCopy();
         this.handleActivateTrim();
-      } else if (event.key === 'c') {
+      } else if (e.key === 'c') {
         this.handleCopy();
-      } else if (event.key === 'v') {
+      } else if (e.key === 'v') {
         this.handlePaste();
-      } else if (event.key === 'a') {
+      } else if (e.key === 'a') {
         this.handleUpdateTrim(0, 1);
         e.preventDefault();
       }
@@ -217,9 +260,12 @@ class SoundEditor {
     if (trimStart < 0) trimStart = 0;
     if (trimEnd > 1) trimEnd = 1;
     else if (trimEnd < trimStart) throw new Error("smh that's not my job")
+    const buffer = this.copyCurrentBuffer();
     this.elems.trim.style.left = trimStart * 100 + '%';
+    this.elems.trim.dataset.leftTime = (trimStart * buffer.samples.length / buffer.sampleRate).toFixed(2) + 's';
     this.state.trimStart = trimStart;
     this.elems.trim.style.right = (1 - trimEnd) * 100 + '%';
+    this.elems.trim.dataset.rightTime = (trimEnd * buffer.samples.length / buffer.sampleRate).toFixed(2) + 's';
     this.state.trimEnd = trimEnd;
     this.handleStopPlaying();
   }
@@ -290,10 +336,11 @@ class SoundEditor {
     const trimStart = this.state.trimStart === null ? 0.0 : this.state.trimStart;
     const trimEnd = this.state.trimEnd === null ? 1.0 : this.state.trimEnd;
 
-    const trimStartSamples = trimStart * this.props.samples.length;
-    const trimEndSamples = trimEnd * this.props.samples.length;
-
+    // NOTE: this.props.samples seemed to be outdated at times, giving badly cropped copies
     const newCopyBuffer = this.copyCurrentBuffer();
+    const trimStartSamples = trimStart * newCopyBuffer.samples.length;
+    const trimEndSamples = trimEnd * newCopyBuffer.samples.length;
+
     newCopyBuffer.samples = newCopyBuffer.samples.slice(trimStartSamples, trimEndSamples);
 
     return this.props.clipboard.copyBuffer = newCopyBuffer;
@@ -426,14 +473,14 @@ class SoundEditor {
   }
 
   renderWaveform() {
+    const canvas = this.elems.waveform;
     const c = this.elems.waveformContext;
     const levels = this.state.chunkLevels.length;
-    c.clearRect(0, 0, c.canvas.width, c.canvas.height);
-    const segmentWidth = c.canvas.width / levels;
-    const waveHeight = c.canvas.height / 3;
+    canvas.width = levels;
+    const waveHeight = HEIGHT / 3;
     c.fillStyle = '#333';
     this.state.chunkLevels.forEach((v, i) => {
-      c.fillRect(i * segmentWidth, Math.floor(c.canvas.height / 2 - v * waveHeight), segmentWidth, Math.ceil(v * waveHeight * 2));
+      c.fillRect(i, Math.floor(HEIGHT / 2 - v * waveHeight), 1, Math.ceil(v * waveHeight * 2));
     });
   }
 
@@ -449,10 +496,38 @@ class SoundEditor {
     this.elems = elems;
     elems.waveform = Elem('canvas', {
       className: 'waveform',
-      width: WIDTH,
       height: HEIGHT
     });
     elems.waveformContext = elems.waveform.getContext('2d');
+    let thatWasAFinger;
+    const trimHandles = e => {
+      const isTouch = e.type.includes('touch');
+      if (isTouch) thatWasAFinger = true;
+      else if (thatWasAFinger) {
+        thatWasAFinger = false;
+        return;
+      }
+      const rect = elems.preview.getBoundingClientRect();
+      const pointerID = isTouch && e.changedTouches[0].identifier;
+      const pointer = isTouch ? e.touches[pointerID] : e;
+      const initialPosition = (pointer.clientX - rect.left) / rect.width;
+      this.handleUpdateTrim(initialPosition, initialPosition);
+      const updatePosition = e => {
+        const pointer = isTouch ? e.touches[pointerID] : e;
+        const position = (pointer.clientX - rect.left) / rect.width;
+        if (position < initialPosition) {
+          this.state.selectDirection = 'start';
+          this.handleUpdateTrim(position, initialPosition);
+        } else {
+          this.state.selectDirection = 'end';
+          this.handleUpdateTrim(initialPosition, position);
+        }
+      }
+      document.addEventListener(isTouch ? 'touchmove' : 'mousemove', updatePosition);
+      document.addEventListener(isTouch ? 'touchend' : 'mouseup', e => {
+        document.removeEventListener(isTouch ? 'touchmove' : 'mousemove', updatePosition);
+      }, {once: true});
+    };
     return elems.wrapper = Elem('div', {
       className: 'sound-editor',
       tabindex: 0
@@ -473,51 +548,8 @@ class SoundEditor {
           width: WIDTH + 'px',
           height: HEIGHT + 'px'
         },
-        onmousedown: e => {
-          if (elems.thatWasAFinger) {
-            elems.thatWasAFinger = false;
-            return;
-          }
-          const rect = elems.preview.getBoundingClientRect();
-          const initialPosition = (e.clientX - rect.left) / rect.width;
-          this.handleUpdateTrim(initialPosition, initialPosition);
-          const updatePosition = e => {
-            const position = (e.clientX - rect.left) / rect.width;
-            if (position < initialPosition) {
-              this.state.selectDirection = 'start';
-              this.handleUpdateTrim(position, initialPosition);
-            } else {
-              this.state.selectDirection = 'end';
-              this.handleUpdateTrim(initialPosition, position);
-            }
-          }
-          document.addEventListener('mousemove', updatePosition);
-          document.addEventListener('mouseup', e => {
-            document.removeEventListener('mousemove', updatePosition);
-          }, {once: true});
-        },
-        ontouchstart: e => {
-          elems.thatWasAFinger = true;
-          const rect = elems.preview.getBoundingClientRect();
-          const finger = e.changedTouches[0].identifier;
-          const initialPosition = (e.touches[finger].clientX - rect.left) / rect.width;
-          this.handleUpdateTrim(initialPosition, initialPosition);
-          const updatePosition = e => {
-            const position = (e.touches[finger].clientX - rect.left) / rect.width;
-            if (position < initialPosition) {
-              this.state.selectDirection = 'start';
-              this.handleUpdateTrim(position, this.state.trimEnd);
-            } else {
-              this.state.selectDirection = 'end';
-              this.handleUpdateTrim(this.state.trimStart, position);
-            }
-            e.preventDefault();
-          }
-          document.addEventListener('touchmove', updatePosition, {passive: false});
-          document.addEventListener('touchend', e => {
-            document.removeEventListener('touchmove', updatePosition);
-          }, {once: true});
-        }
+        onmousedown: trimHandles,
+        ontouchstart: trimHandles
       }, [
         elems.waveform,
         elems.playhead = Elem('div', {className: 'playhead'}),
