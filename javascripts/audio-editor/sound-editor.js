@@ -1,6 +1,7 @@
 // reconstruction of https://github.com/LLK/scratch-gui/blob/develop/src/containers/sound-editor.jsx
 
 import WavEncoder from './wav-encoder/index.js';
+import lamejs from './lame.min.js';
 
 import {computeChunkedRMS} from './audio/audio-util.js';
 import AudioEffects from './audio/audio-effects.js';
@@ -17,6 +18,8 @@ const UNDO_STACK_SIZE = 99;
 
 const WIDTH = 600;
 const HEIGHT = 100;
+
+const MAX_MP3_SAMPLES = 1152;
 
 class SoundEditor {
 
@@ -40,7 +43,8 @@ class SoundEditor {
       'paste',
       'handleKeyPress',
       'handleDownload',
-      'handleDelete'
+      'handleDelete',
+      'handleDownloadMp3'
     ].forEach(method => this[method] = this[method].bind(this));
 
     this.props = props;
@@ -172,6 +176,9 @@ class SoundEditor {
       } else if (e.key === 'a') {
         this.handleUpdateTrim(0, 1);
         e.preventDefault();
+      } else if (e.key === 's') {
+        if (e.altKey) this.handleDownloadMp3();
+        else this.handleDownload();
       }
     }
   }
@@ -451,32 +458,64 @@ class SoundEditor {
     }
   }
 
+  download(content, type) {
+    const saveLink = document.createElement('a');
+    document.body.appendChild(saveLink);
+
+    const filename = `${this.elems.name.value}.${type}`;
+
+    // Use special ms version if available to get it working on Edge.
+    if (navigator.msSaveOrOpenBlob) {
+      navigator.msSaveOrOpenBlob(content, filename);
+      return;
+    }
+
+    const url = window.URL.createObjectURL(content);
+    saveLink.href = url;
+    saveLink.download = filename;
+    saveLink.click();
+    window.URL.revokeObjectURL(url);
+    document.body.removeChild(saveLink);
+  }
+
   handleDownload() {
     try {
-      const saveLink = document.createElement('a');
-      document.body.appendChild(saveLink);
-
       const {samples, sampleRate} = this.copyCurrentBuffer();
       const wavBuffer = WavEncoder.encode.sync({
         sampleRate: sampleRate,
         channelData: [samples]
       });
       const content = new Blob([wavBuffer], {type: 'audio/wav'});
+      this.download(content, 'wav');
+    } catch (e) {
+      console.log(e);
+    }
+  }
 
-      const filename = `${this.elems.name.value}.wav`;
+  handleDownloadMp3() {
+    try {
+      const {samples: floatSamples, sampleRate} = this.copyCurrentBuffer();
 
-      // Use special ms version if available to get it working on Edge.
-      if (navigator.msSaveOrOpenBlob) {
-        navigator.msSaveOrOpenBlob(content, filename);
-        return;
+      // from https://github.com/zhuker/lamejs/issues/55#issuecomment-417944979
+      const samples = new Int16Array(floatSamples.length);
+      for (let i = 0; i < floatSamples.length; i++) {
+        samples[i] = (floatSamples[i] < 0 ? 0x8000 : 0x7fff) * floatSamples[i];
       }
 
-      const url = window.URL.createObjectURL(content);
-      saveLink.href = url;
-      saveLink.download = filename;
-      saveLink.click();
-      window.URL.revokeObjectURL(url);
-      document.body.removeChild(saveLink);
+      const encoder = new lamejs.Mp3Encoder(1, sampleRate, 128);
+      const result = [];
+      for (let i = 0; i < samples.length; i += MAX_MP3_SAMPLES) {
+        const buffer = encoder.encodeBuffer(samples.subarray(i, i + MAX_MP3_SAMPLES));
+        if (buffer.length > 0) {
+          result.push(new Int8Array(buffer));
+        }
+      }
+      const buffer = encoder.flush();
+      if (buffer.length > 0) {
+        result.push(new Int8Array(buffer));
+      }
+      const content = new Blob(result, {type: 'audio/mp3'});
+      this.download(content, 'mp3');
     } catch (e) {
       console.log(e);
     }
@@ -556,7 +595,11 @@ class SoundEditor {
       elems.downloadBtn = Elem('button', {
         className: 'download-btn',
         onclick: this.handleDownload
-      }, ['download']),
+      }, ['download as wav']),
+      elems.downloadBtn = Elem('button', {
+        className: 'download-btn',
+        onclick: this.handleDownloadMp3
+      }, ['download as mp3']),
       elems.downloadBtn = Elem('button', {
         className: 'delete-btn',
         onclick: this.handleDelete

@@ -11,9 +11,9 @@
   <body>
     <a href="./">back</a>
     <h1>About the audio editor</h1>
-    <p>Many Scratchers threaten to leave Scratch when Scratch 3.0 comes for many reasons. I doubt this, but whatever. One of them is that the rewritten sound editor has less features than that of Scratch 2.0.</p>
-    <p>I stole some code from Scratch 3.0's open source repositories: <a href="https://github.com/LLK/scratch-gui/"><code>scratch-gui</code></a>, <a href="https://github.com/LLK/scratch-audio/"><code>scratch-audio</code></a>, and maybe <a href="https://github.com/LLK/scratch-vm/"><code>scratch-vm</code></a> I don't remember.</p>
-    <p>I also used some of their dependencies: <a href="https://www.npmjs.com/package/wav-encoder">wav-encoder</a>, <a href="https://www.npmjs.com/package/startaudiocontext">startaudiocontext</a>, <a href="https://www.npmjs.com/package/get-float-time-domain-data">getFloatTimeDomainData</a>, <a href="https://www.npmjs.com/package/get-user-media-promise">get-user-media-promise</a>, and maybe one more but I don't remember. I'm not exactly sure how to make them link up and work in the browser (Scratch didn't exactly prepare me for this), so I tried my best. I also used <a href="https://github.com/web-audio-components/simple-reverb/">simple-reverb</a> for the reverb.</p>
+    <p>A major complaint about Scratch 3.0 is that the rewritten sound editor has less features than that of Scratch 2.0.</p>
+    <p>I stole some code from Scratch 3.0's open source repositories: <a href="https://github.com/LLK/scratch-gui/"><code>scratch-gui</code></a>, <a href="https://github.com/LLK/scratch-audio/"><code>scratch-audio</code></a>, and maybe <a href="https://github.com/LLK/scratch-vm/"><code>scratch-vm</code></a>.</p>
+    <p>I also used some of their dependencies: <a href="https://www.npmjs.com/package/wav-encoder">wav-encoder</a>, <a href="https://www.npmjs.com/package/startaudiocontext">startaudiocontext</a>, <a href="https://www.npmjs.com/package/get-float-time-domain-data">getFloatTimeDomainData</a>, <a href="https://www.npmjs.com/package/get-user-media-promise">get-user-media-promise</a>, and maybe one more but I don't remember. I also used <a href="https://github.com/zhuker/lamejs">lamejs</a> for downloading as an MP3.</p>
     <p>The editor source code is <a href="https://github.com/SheepTester/sheeptester.github.io/tree/master/javascripts/audio-editor">here</a>.</p>
     <h2>Keyboard shortcuts</h2>
     <p>You have to be focused on a sound editor for these shortcuts to work. You can set the focus by clicking on the editor. The command key also works for the <code>ctrl</code> shortcuts.</p>
@@ -35,7 +35,9 @@
       <dt><code>ctrl + Y</code> or <code>ctrl + shift + Z</code></dt>
         <dd>redo</dd>
       <dt><code>ctrl + S</code></dt>
-        <dd>download</dd>
+        <dd>download as wav</dd>
+      <dt><code>ctrl + alt + S</code></dt>
+        <dd>download as mp3</dd>
       <dt><code>left/right arrow key</code></dt>
         <dd>move cursor/selection left/right</dd>
       <dt><code>shift + left/right arrow key</code></dt>
