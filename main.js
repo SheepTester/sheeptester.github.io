@@ -87,14 +87,20 @@ document.addEventListener('DOMContentLoaded', function(e) {
 
   // MAKE GRID (as opposed to no-js list)
   document.body.classList.remove('list-view');
-  var placesLiveArray = document.getElementsByClassName('placelist');
-  var places = [];
-  for (var i = 0; i < placesLiveArray.length; i++) places.push(placesLiveArray[i]);
+  var places = document.querySelectorAll('.places a');
   for (var i = 0; i < places.length; i++) {
     places[i].className = 'place';
+    var wrapper = document.createElement('span');
+    wrapper.className = 'place-box';
+    var name = document.createElement('span');
+    name.className = 'place-name';
+    name.textContent = places[i].textContent;
+    wrapper.appendChild(name);
     var image = document.createElement('img');
     image.src = places[i].dataset.image;
-    places[i].appendChild(image);
+    wrapper.appendChild(image);
+    places[i].textContent = '';
+    places[i].appendChild(wrapper);
   }
 
   // UPDATE AGE DISPLAY

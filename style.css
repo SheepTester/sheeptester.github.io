@@ -25,15 +25,36 @@ a {
 /* LINKS - GRID */
 .places {
   font-size: 0;
-  padding: 0 10px;
+  padding: 0 20px;
   color: rgba(255, 255, 255, 0.8);
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  grid-gap: 20px;
+}
+@media (max-width: 2250px) {.places {grid-template-columns: repeat(9, 1fr);}}
+@media (max-width: 2000px) {.places {grid-template-columns: repeat(8, 1fr);}}
+@media (max-width: 1750px) {.places {grid-template-columns: repeat(7, 1fr);}}
+@media (max-width: 1500px) {.places {grid-template-columns: repeat(6, 1fr);}}
+@media (max-width: 1250px) {.places {grid-template-columns: repeat(5, 1fr);}}
+@media (max-width: 1000px) {.places {grid-template-columns: repeat(4, 1fr);}}
+@media (max-width: 750px) {.places {grid-template-columns: repeat(3, 1fr);}}
+@media (max-width: 550px) {.places {grid-template-columns: repeat(2, 1fr);}}
+@media (max-width: 350px) {
+  .places {
+    grid-template-columns: 1fr;
+    padding: 0 16%;
+  }
 }
 .place {
-  width: calc(16.5% - 20px);
-  margin: 10px;
+  position: relative;
+  padding-bottom: 100%;
+}
+.place-box {
+  width: 100%;
+  height: 100%;
   display: inline-flex;
   align-items: center;
-  position: relative;
+  position: absolute;
   cursor: pointer;
   z-index: 0;
   background-color: rgba(0, 0, 0, 0.2);
@@ -41,44 +62,9 @@ a {
   border-radius: 10px;
   overflow: hidden;
   transition: transform .2s, z-index .2s;
+  will-change: transform;
 }
-.place::before {
-  content: '';
-  display: inline-block;
-  padding-bottom: 100%;
-  width: 10px;
-  margin-left: -10px;
-}
-@media (max-width: 2550px) {
-  .place {
-    width: calc(20% - 20px);
-  }
-}
-@media (max-width: 1600px) {
-  .place {
-    width: calc(25% - 20px);
-  }
-}
-@media (max-width: 800px) {
-  .place {
-    width: calc(33% - 20px);
-  }
-}
-@media (max-width: 600px) {
-  .place {
-    width: calc(50% - 20px);
-  }
-}
-@media (max-width: 400px) {
-  .about {
-    font-size: 16px;
-  }
-  .place {
-    width: calc(75% - 20px);
-    margin: 5px 16%;
-  }
-}
-.place:hover, .tabkeyfocus .place:focus {
+.place:hover .place-box, .tabkeyfocus .place:focus .place-box {
   transform: scale(1.05);
   z-index: 10;
 }
@@ -97,7 +83,7 @@ a {
   opacity: 1;
   filter: grayscale(0%);
 }
-.place p {
+.place-name {
   font-size: 30px;
   margin: 0;
   width: 100%;
@@ -106,8 +92,9 @@ a {
   text-shadow: 0 0 5px transparent, 0 0 30px transparent;
   transition: all .2s;
   word-break: break-word;
+  will-change: transform;
 }
-.place:hover p, .tabkeyfocus .place:focus p {
+.place:hover .place-name, .tabkeyfocus .place:focus .place-name {
   transform: scale(1.1);
   text-shadow: 0 0 5px black, 0 0 30px black;
   color: white;
@@ -117,7 +104,7 @@ a {
 .list-view .places {
   padding: 0;
 }
-.placelist {
+.list-view .places a {
   width: 100%;
   display: block;
   font-size: 30px;
@@ -126,16 +113,13 @@ a {
   transition: background .2s;
   box-sizing: border-box;
 }
-.placelist p {
-  margin: 0;
-}
-.placelist:nth-child(even) {
+.list-view .places a:nth-child(even) {
   background-color: rgba(255, 255, 255, 0.1);
 }
-.placelist:hover, .tabkeyfocus .placelist:focus:not(:active) {
+.list-view .places a:hover, .tabkeyfocus .list-view .places a:focus:not(:active) {
   background-color: rgba(0, 0, 0, 0.2);
 }
-.placelist:active {
+.list-view .places a:active {
   background-color: rgba(0, 0, 0, 0.4);
 }
 
@@ -152,6 +136,11 @@ a {
 .about strong {
   color: white;
   font-weight: normal;
+}
+@media (max-width: 400px) {
+  .about {
+    font-size: 16px;
+  }
 }
 #happy {
   cursor: pointer;
