@@ -56,7 +56,9 @@ const images = [
   // 'ovinetopia.png',
   // 'eyo.png',
   // 'die.png',
-  'drills.png',
+  // 'drills.png',
+  'house.png',
+  'hotel.png',
 ].map(img => path.resolve(__dirname, img));
 
 console.log('Starting...');
