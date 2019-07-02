@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>spoken french</title>
+    <meta name="description" content="uses TTS to speak french"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link rel="stylesheet" type="text/css" href="../sheep3.css">
+    <script src="../sheep3.js" charset="utf-8"></script>
+    <style>
+      html, body {
+        width: 100%;
+        height: 100%;
+      }
+      body {
+        margin: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+      }
+      button {
+        font-size: 1.5em;
+      }
+      .hide-unless {
+        display: none;
+      }
+      .no-speech .no-speech, .speech .speech {
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="hide-unless no-speech">
+      <p>add <strong>?words</strong> to the URL to make it say something</p>
+    </div>
+    <div class="hide-unless speech">
+      <h1 id="words"></h1>
+      <button id="speak" disabled>speak</button>
+    </div>
+    <script>
+function cant() {
+  window.location = `https://translate.google.com/#view=home&op=translate&sl=fr&tl=en&text=` + window.location.search.slice(1);
+}
+const words = decodeURIComponent(window.location.search.slice(1));
+if (words) {
+  if (!window.speechSynthesis) cant();
+  document.body.classList.add('speech');
+  document.getElementById('words').textContent = words;
+  const btn = document.getElementById('speak');
+  window.speechSynthesis.onvoiceschanged = () => {
+    const frenchVoice = window.speechSynthesis.getVoices().find(({lang}) => lang.includes('fr'));
+    if (!frenchVoice) cant();
+    window.speechSynthesis.onvoiceschanged = null;
+    btn.disabled = false;
+    const speech = new SpeechSynthesisUtterance(words);
+    speech.voice = frenchVoice;
+    window.speechSynthesis.speak(speech);
+    btn.addEventListener('click', e => {
+      window.speechSynthesis.cancel();
+      window.speechSynthesis.speak(speech);
+    });
+  };
+} else {
+  document.body.classList.add('no-speech');
+}
+    </script>
+  </body>
+</html>
