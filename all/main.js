@@ -2,16 +2,15 @@ document.addEventListener('DOMContentLoaded', e => {
   const htmlCheckbox = document.getElementById('html');
   const imgCheckbox = document.getElementById('img');
   const otherCheckbox = document.getElementById('other');
-  function checkboxChange() {
-    document.body.className = [
-      htmlCheckbox.checked || 'hidehtml',
-      imgCheckbox.checked || 'hideimg',
-      otherCheckbox.checked || 'hideother'
-    ].join(' ');
-  }
-  htmlCheckbox.addEventListener('change', checkboxChange);
-  imgCheckbox.addEventListener('change', checkboxChange);
-  otherCheckbox.addEventListener('change', checkboxChange);
+  htmlCheckbox.addEventListener('change', e => {
+    document.body.classList[htmlCheckbox.checked ? 'remove' : 'add']('hidehtml');
+  });
+  imgCheckbox.addEventListener('change', e => {
+    document.body.classList[imgCheckbox.checked ? 'remove' : 'add']('hideimg');
+  });
+  otherCheckbox.addEventListener('change', e => {
+    document.body.classList[otherCheckbox.checked ? 'remove' : 'add']('hideother');
+  });
 
   const dir = Array.from(document.getElementsByClassName('dir'));
   document.getElementById('collapse').addEventListener('click', e => {

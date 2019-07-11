@@ -541,6 +541,8 @@ darkforest.jpg
 die-smaller.png
 die.png
 down.svg
+drills-smaller.png
+drills.png
 eyo-smaller.png
 eyo.png
 fgr-smaller.png
@@ -552,6 +554,10 @@ gunn student simulator.png
 hamburger.svg
 helloworlddir-smaller.png
 helloworlddir.png
+hotel-smaller.png
+hotel.png
+house-smaller.png
+house.png
 html.svg
 instagram_gradient.png
 js-smaller.png
@@ -620,6 +626,10 @@ ugwa.png
 >audio
 >effects
 echo-effect.js
+fade-effect.js
+flanger-effect.js
+mute-effect.js
+reverb-effect.js
 robot-effect.js
 volume-effect.js
 <
@@ -631,7 +641,10 @@ audio-recorder.js
 audio-util.js
 get-float-time-domain-data.min.js
 get-user-media-promise.min.js
+magic-spell.wav
+scratch-meow.wav
 shared-audio-context.js
+york-minster-short.wav
 <
 >wav-encoder
 index.js
@@ -642,6 +655,7 @@ AudioEngine.js
 about.html
 file-uploader.js
 index.html
+lame.min.js
 main.js
 select.js
 simple-reverb.js
@@ -758,6 +772,7 @@ index.js
 <
 2048.js
 _dom.js
+_dom2.js
 anonchat.html
 autocomplete.html
 bignummath.js
@@ -783,6 +798,7 @@ fontmaker.html
 footer.css
 footer.html
 footer.js
+french.html
 frictioney-balls.html
 good-password.html
 hamburger.svg
@@ -826,6 +842,19 @@ renderads.js
 scrolltest.html
 tilesads.css
 uiads.css
+<
+>living-skills
+>sean-yen
+arrow-left.svg
+arrow-right.svg
+etym-arrow.svg
+family.jpg
+index.html
+main.js
+styles.css
+yan-hui.jpg
+<
+index.html
 <
 >longer-tweets
 >_posts
@@ -1026,6 +1055,10 @@ texture-data.json
 texturemapmaker.html
 textures.png
 waterflame_glorious_morning.mp3
+<
+>box2d
+Box2d.min.js
+index.html
 <
 >explore
 index.html
@@ -1623,6 +1656,7 @@ gender.svg
 geometrystuff.js
 google-doc-dropdown-arrow.png
 google-doc-icons.svg
+imgtosvg.html
 index.html
 intelligent-navbar.html
 makeludicrous.html
@@ -1771,6 +1805,7 @@ mstile-70x70.png
 package-lock.json
 package.json
 redirects.js
+robots.txt
 safari-pinned-tab.svg
 sheep.css
 sheep.js

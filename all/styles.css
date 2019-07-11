@@ -116,6 +116,9 @@ body > .dir {
 .cache-new-url:focus {
   border-color: rgb(125, 162, 206);
 }
+.error {
+  color: #bd5555;
+}
 h1, .btn-wrapper, p {
   max-width: 500px;
   margin: 0 auto;
@@ -158,6 +161,15 @@ body.hideimg .img {
 body.hideother > .dir a:not(.html):not(.img) {
   display: none;
 }
+body.hideuncached > .dir a:not(.cached) {
+  display: none;
+}
+label {
+  margin-right: 10px;
+}
+input[type=checkbox] {
+  vertical-align: middle;
+}
 input[type=checkbox]:focus {
   filter: drop-shadow(0 0 3px rgb(125, 162, 206));
 }
@@ -166,7 +178,7 @@ input[type=checkbox]:focus {
 }
 @media (hover: none) {
   .btn-wrapper {
-    margin: 10px 0;
+    margin: 10px auto;
   }
   .head, .dir a {
     padding: 5px 2px;
@@ -177,6 +189,5 @@ input[type=checkbox]:focus {
   input[type=checkbox] {
     width: 16px;
     height: 16px;
-    vertical-align: middle;
   }
 }

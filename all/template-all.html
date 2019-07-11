@@ -16,7 +16,11 @@
     <p>Last updated {DATE}</p>
     <div class="btn-wrapper"><a href="links/" class="button">Other people's pages</a><a href="localStorage/" class="button">Manage localStorage</a><button id="cache" class="button" disabled>Cache files</button></div>
     <div class="btn-wrapper"><button id="collapse">Collapse all</button><button id="open">Open all</button></div>
-    <div class="btn-wrapper">Show: <input type="checkbox" id='html' checked><label for="html">HTML</label> <input type="checkbox" id='img' checked><label for="img">images</label> <input type="checkbox" id='other' checked><label for="other">everything else</label></div>
+    <div class="btn-wrapper" id="checkboxes">Show:
+      <label><input type="checkbox" id='html' checked> HTML</label>
+      <label><input type="checkbox" id='img' checked> images</label>
+      <label><input type="checkbox" id='other' checked> everything else</label>
+    </div>
     <div class="dir" id="files">{FILES}</div>
   </body>
   <!-- MADE BY SEAN -->

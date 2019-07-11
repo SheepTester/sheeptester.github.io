@@ -152,6 +152,7 @@ https://sheeptester.github.io/javascripts/events.html
 https://sheeptester.github.io/javascripts/fill-perf.html
 https://sheeptester.github.io/javascripts/fontmaker.html
 https://sheeptester.github.io/javascripts/footer.html
+https://sheeptester.github.io/javascripts/french.html
 https://sheeptester.github.io/javascripts/frictioney-balls.html
 https://sheeptester.github.io/javascripts/good-password.html
 https://sheeptester.github.io/javascripts/happenings.html
@@ -173,6 +174,8 @@ https://sheeptester.github.io/javascripts/voice-control.html
 https://sheeptester.github.io/javascripts/written_book.html
 https://sheeptester.github.io/life/
 https://sheeptester.github.io/life/scrolltest.html
+https://sheeptester.github.io/living-skills/sean-yen/
+https://sheeptester.github.io/living-skills/
 https://sheeptester.github.io/longer-tweets/_templates/links.html
 https://sheeptester.github.io/longer-tweets/_templates/main.html
 https://sheeptester.github.io/longer-tweets/_templates/metadata.html
@@ -204,6 +207,7 @@ https://sheeptester.github.io/ovinetopia/
 https://sheeptester.github.io/platformre/a/actualdatagetter.html
 https://sheeptester.github.io/platformre/a/
 https://sheeptester.github.io/platformre/a/texturemapmaker.html
+https://sheeptester.github.io/platformre/box2d/
 https://sheeptester.github.io/platformre/explore/
 https://sheeptester.github.io/platformre/explore/submit.html
 https://sheeptester.github.io/platformre/maker/
@@ -326,6 +330,7 @@ https://sheeptester.github.io/words-go-here/misc/evosim-in-js.html
 https://sheeptester.github.io/words-go-here/misc/filledcube.html
 https://sheeptester.github.io/words-go-here/misc/format.html
 https://sheeptester.github.io/words-go-here/misc/gemini.html
+https://sheeptester.github.io/words-go-here/misc/imgtosvg.html
 https://sheeptester.github.io/words-go-here/misc/
 https://sheeptester.github.io/words-go-here/misc/intelligent-navbar.html
 https://sheeptester.github.io/words-go-here/misc/makeludicrous.html
