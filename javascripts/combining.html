@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>Combining characters</title>
+    <meta name="description" content="Add combining characters to text"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link rel="stylesheet" type="text/css" href="../sheep3.css">
+    <script src="../sheep3.js" charset="utf-8"></script>
+    <script src="./clipboard.min.js" charset="utf-8"></script>
+    <style>
+      textarea {
+        width: 100%;
+        resize: vertical;
+        min-height: 100px;
+      }
+    </style>
+  </head>
+  <body>
+    <textarea id="input"></textarea>
+    <p><button class="clipboard" data-clipboard-target="#input">copy all</button></p>
+    <script>
+new ClipboardJS('.clipboard');
+const placeholder = '\u25cc';
+const altKeys = '1234567890qwertyuiopasdfghjklzxcvbnm';
+const namedChars = [
+  ['\u0300', 'grave accent'],
+  ['\u0301', 'acute accent'],
+  ['\u0302', 'circumflex'],
+  ['\u0303', 'tilde'],
+  ['\u0304', 'macron'],
+  ['\u0305', 'overline'],
+  ['\u0306', 'breve'],
+  ['\u0307', 'dot'],
+  ['\u0308', 'diaeresis'],
+  ['\u0309', 'hook above']
+  ['\u030a', 'ring'],
+  ['\u030b', 'double acute accent'],
+  ['\u030c', 'caron'],
+  ['\u030f', 'double grave accent'],
+  ['\u0310', 'chandrabindu'],
+  ['\u0311', 'inverted breve'],
+  ['\u0313', 'comma'],
+  ['\u0314', 'rough breathing'],
+  ['\u0318', 'advanced tongue root'],
+  ['\u0319', 'retracted tongue root']
+  ['\u031a', 'no audible release'],
+  ['\u031b', 'horn'],
+  ['\u031d', 'raised'],
+  ['\u031e', 'lowered'],
+  ['\u031f', 'advanced']
+  ['\u0320', 'retracted'],
+  ['\u0321', 'palatal hook'],
+  ['\u0322', 'hook'],
+  ['\u0323', 'underdot'],
+  ['\u0324', 'diaeresis'],
+  ['\u0325', 'underring'],
+  ['\u0327', 'cedilla'],
+  ['\u0328', 'ogonek'],
+  ['\u032a', 'dental consonant'],
+  ['\u032c', 'caron'],
+  ['\u032e', 'breve below'],
+  ['\u032f', 'breve']
+  ['\u0330', 'tilde below'],
+  ['\u0331', 'macron below'],
+  ['\u0334', 'tilde overlay'],
+  ['\u0335', 'strikethrough'],
+  ['\u0336', 'strikethrough'],
+  ['\u0338', 'bar'],
+  ['\u033b', 'laminal consonant'],
+  ['\u033c', 'linguolabial consonant'],
+  ['\u033d', ''],
+  ['\u033e', 'vertical tilde'],
+  ['\u033f', 'double overline'],
+  ['\u0345', 'iota subscript'],
+  ['\u0346', 'bidental consonant'],
+  ['\u0348', 'faucalized voice'],
+  ['\u034b', 'nareal fricative'],
+  ['\u0352', 'fermata'],
+  ['\u035c', 'undertie'],
+  ['\u035d', 'double tie'],
+  ['\u0361', 'ligature tie'],
+  ['\u0362', 'arrow']
+];
+const unnamedChars = ['\u030d', '\u030e', '\u0312', '\u0315',
+'\u0316',
+'\u0317',
+'\u031c',
+'\u0326',
+'\u0329',
+'\u032b',
+'\u032d',
+'\u0332',
+'\u0333',
+'\u0337',
+'\u0339',
+'\u033a',
+'\u0340',
+'\u0341',
+'\u0342',
+'\u0343',
+'\u0344',
+'\u0347',
+'\u0349',
+'\u034a',
+'\u034c',
+'\u034d',
+'\u034e', '\u0350', '\u0351', '\u0353', '\u0354', '\u0355', '\u0356', '\u0357', '\u0358', '\u0359', '\u035a', '\u035b', '\u035e', '\u035f', '\u0360', '\u0363', '\u0364', '\u0365', '\u0366', '\u0367', '\u0368', '\u0369', '\u036a', '\u036b', '\u036c', '\u036d', '\u036e', '\u036f', '\u1ab0', '\u1ab1', '\u1ab2', '\u1ab3', '\u1ab4', '\u1ab5', '\u1ab6', '\u1ab7', '\u1ab8', '\u1ab9', '\u1aba', '\u1abb', '\u1abc', '\u1abd', '\u1abe', '\u1abf', '\u1dc0'];
+    </script>
+  </body>
+</html>
