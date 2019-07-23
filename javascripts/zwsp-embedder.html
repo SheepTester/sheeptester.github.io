@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>Zero-width space embedder</title>
+    <meta name="description" content="Encodes text as zero-width spaces and embeds it in more text."/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link rel="stylesheet" type="text/css" href="../sheep3.css">
+    <script src="../sheep3.js" charset="utf-8"></script>
+    <style>
+      body {
+        margin: 0;
+      }
+      label {
+        display: block;
+        padding-left: 80px;
+        position: relative;
+        margin: 20px 0;
+      }
+      label::before {
+        content: attr(data-op);
+        font-size: 48px;
+        position: absolute;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        width: 80px;
+        margin: auto;
+        height: 1em;
+        text-align: center;
+      }
+      span {
+        display: block;
+      }
+      textarea {
+        width: 50%;
+        height: 50px;
+      }
+    </style>
+  </head>
+  <body>
+    <label><span>Encoding method</span><select id="method">
+      <option value="alphabet">Alphabet (letters and spaces, not case sensitive)</option>
+      <option value="binary">Binary (all characters)</option>
+    </select></label>
+    <label><span>Host text (should be longer than encoded text)</span><textarea id="host"></textarea></label>
+    <label data-op="+"><span>Encoded text</span><textarea id="encoded"></textarea></label>
+    <label data-op="="><span>Embedded text (paste encoded text here)</span><textarea id="embedded"></textarea></label>
+    <label data-op="&rightarrow;"><span>Decoded text</span><textarea id="decoded" readonly></textarea></label>
+    <script>
+const zwsp = '\u200b';
+const zwnj = '\u200c';
+
+const methods = {
+  alphabet: {
+    encode(char) {
+      const code = char.toLowerCase().charCodeAt() - 96;
+      return code < 1 || code > 26 ? 0 : code;
+    },
+    decode({count}) {
+      return count === 0 ? ' ' : String.fromCharCode(count + 96);
+    }
+  },
+  charcode: {
+    encode(char) {
+      return char.charCodeAt();
+    },
+    decode({count}) {
+      return String.fromCharCode(count);
+    }
+  },
+  binary: {
+    encode(char) {
+      return char.charCodeAt().toString(2).replace(/0/g, zwsp).replace(/1/g, zwnj);
+    },
+    decode({sequence}) {
+      return String.fromCharCode(parseInt(sequence.replace(/\u200b/g, 0).replace(/\u200c/g, 1), 2));
+    }
+  }
+};
+
+const methodElem = document.getElementById('method');
+const hostElem = document.getElementById('host');
+const encodedElem = document.getElementById('encoded');
+const embeddedElem = document.getElementById('embedded');
+const decodedElem = document.getElementById('decoded');
+
+function process() {
+  const {encode, decode} = methods[methodElem.value];
+  if (hostElem.value) {
+    const host = hostElem.value;
+    const encoded = encodedElem.value.split('').map(encode);
+    let finalStr = '';
+    for (let i = 0; i < host.length; i++) {
+      finalStr += host[i];
+      if (i < encoded.length) {
+        if (typeof encoded[i] === 'number') finalStr += zwsp.repeat(encoded[i]);
+        else finalStr += encoded[i];
+      }
+    }
+    embeddedElem.value = finalStr;
+  }
+  const embedded = embeddedElem.value;
+  const regex = /[^\u200b\u200c][\u200b\u200c]*/g;
+  let match, decoded = '';
+  while (match = regex.exec(embedded)) {
+    decoded += decode({count: match[0].length - 1, sequence: match[0].slice(1)});
+  }
+  decodedElem.value = decoded;
+}
+
+methodElem.addEventListener('change', process);
+hostElem.addEventListener('input', process);
+encodedElem.addEventListener('input', process);
+embeddedElem.addEventListener('input', e => {
+  hostElem.value = encodedElem.value = '';
+  process();
+});
+    </script>
+  </body>
+</html>
