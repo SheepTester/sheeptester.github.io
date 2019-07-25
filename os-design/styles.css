@@ -1,0 +1,110 @@
+html, body, .full-screen {
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+body {
+  margin: 0;
+  font-size: 0;
+  background-color: black;
+  animation: start-up .5s;
+  font-family: 'Roboto', sans-serif;
+  user-select: none;
+}
+@keyframes start-up {
+  0% { opacity: 0; }
+  20% { opacity: 0; }
+  100% { opacity: 1; }
+}
+.background {
+  position: fixed;
+  background-image: url('./background.jpg');
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  transition: filter .5s;
+  pointer-events: none;
+}
+.btn {
+  -webkit-appearance: none;
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+.icon-btn {
+  background-position: center;
+  background-repeat: no-repeat;
+}
+:focus {
+  outline: none;
+}
+.has-focus-ring {
+  transition: box-shadow .2s;
+}
+.has-focus-ring:focus {
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.3);
+}
+
+.locked .background {
+  filter: blur(10px);
+}
+.lock-screen {
+  position: fixed;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  pointer-events: none;
+  animation: fade-out .5s forwards;
+}
+.locked .lock-screen {
+  animation: none;
+  pointer-events: all;
+}
+@keyframes fade-out {
+  0% { opacity: 1; }
+  100% { opacity: 0; }
+}
+.time {
+  font-size: 84px;
+  color: rgba(255, 255, 255, 0.8);
+  margin-bottom: 10px;
+}
+.password-wrapper {
+  display: flex;
+  background-color: rgba(0, 0, 0, 0.3);
+  border-radius: 50px;
+  padding: 5px;
+  transition: box-shadow .2s;
+}
+.password-wrapper:focus-within {
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.3);
+}
+.password {
+  -webkit-appearance: none;
+  border: none;
+  background: none;
+  padding: 0;
+  font-size: 24px;
+  color: rgba(255, 255, 255, 0.7);
+  margin-left: 10px;
+  width: 200px;
+  cursor: pointer;
+}
+.password:focus {
+  cursor: auto;
+}
+.sign-in {
+  padding: 0;
+  width: 36px;
+  height: 36px;
+  background-image: url('./arrow_forward.svg');
+  background-size: 24px;
+  border-radius: 50%;
+  opacity: 0.7;
+}
+.sign-in:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  opacity: 1;
+}
