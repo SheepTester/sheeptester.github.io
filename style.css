@@ -102,6 +102,7 @@ a {
 
 /* LINKS - LIST */
 .list-view .places {
+  display: block;
   padding: 0;
 }
 .list-view .places a {
