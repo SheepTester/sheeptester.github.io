@@ -112,11 +112,11 @@ body {
 }
 
 .windows {
-  transition: opacity .5s;
+  animation: fade-out .5s reverse;
 }
 .locked .windows {
   display: none;
-  opacity: 0;
+  animation: none;
 }
 .window {
   position: fixed;
@@ -129,7 +129,7 @@ body {
 .content {
   flex: auto;
   border: none;
-  background-color: black;
+  background-color: white;
   border-bottom-left-radius: 5px;
   border-bottom-right-radius: 5px;
 }
@@ -181,6 +181,9 @@ body {
   background-image: url('./close.svg');
 }
 
+.address-bar {
+  display: flex;
+}
 .address-bar .icon-btn {
   width: 24px;
   height: 24px;
@@ -199,11 +202,16 @@ body {
 .reload {
   background-image: url('./refresh.svg');
 }
+.menu {
+  background-image: url('./more_vert.svg');
+}
 .url {
+  flex: auto;
   -webkit-appearance: none;
   border: none;
   background: none;
   font: inherit;
-  font-size: 16px;
+  font-size: 14px;
   color: rgba(255, 255, 255, 0.8);
+  padding: 0 10px;
 }
