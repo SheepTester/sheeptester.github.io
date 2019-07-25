@@ -7,13 +7,35 @@
     <link href="https://fonts.googleapis.com/css?family=Roboto:300&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./styles.css">
   </head>
-  <body class="locked">
+  <body class="not-locked">
     <div class="background full-screen"></div>
     <div class="lock-screen full-screen">
       <div class="time">14:38</div>
       <div class="password-wrapper">
         <input type="password" class="password" id="password" autofocus>
-        <button class="btn icon-btn has-focus-ring sign-in" id="sign-in"></button>
+        <button class="btn icon-btn has-focus-ring sign-in" id="sign-in">Sign in</button>
+      </div>
+    </div>
+    <div class="windows">
+      <div class="window" style="left: 50px; top: 50px; width: 500px; height: 400px;">
+        <div class="tabs">
+          <div class="tab active"><img src="./insert_drive_file.svg" class="favicon">about:blank</div>
+          <div class="tab"><img src="/favicon.ico" class="favicon">SheepTester</div>
+          <div class="tab"><img src="/favicon.ico" class="favicon">Javascripts</div>
+          <span class="flex-space"></span>
+          <div class="window-controls">
+            <button class="btn icon-btn minimize">Minimize</button>
+            <button class="btn icon-btn close">Close</button>
+          </div>
+        </div>
+        <div class="address-bar">
+          <button class="btn icon-btn back">Back</button>
+          <button class="btn icon-btn forward" disabled>Forward</button>
+          <button class="btn icon-btn reload">Reload</button>
+          <input type="url" class="url" value="about:blank" spellcheck="false">
+          <button class="btn icon-btn menu">Menu</button>
+        </div>
+        <iframe class="content"></iframe>
       </div>
     </div>
     <script src="./functionality.js" charset="utf-8"></script>

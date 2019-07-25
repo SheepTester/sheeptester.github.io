@@ -4,4 +4,4 @@
 
 [pfp.jpg](./pfp.jpg) is my photo of Yang-Yang.
 
-[arrow_forward.svg](./arrow_forward.svg) is from [Material Design](https://material.io/tools/icons/).
+[arrow_back.svg](./arrow_back.svg), [arrow_forward.svg](./arrow_forward.svg), [close.svg](./close.svg), [insert_drive_file.svg](./insert_drive_file.svg), [minimize.svg](./minimize.svg), [more-vert.svg](./more-vert.svg), and [refresh.svg](./refresh.svg) is from [Material Design](https://material.io/tools/icons/).
