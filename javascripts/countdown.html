@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>Countdown</title>
+    <meta name="description" content="Shows days/weeks left until a given date"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="../sheep3.css">
+    <script src="../sheep3.js" charset="utf-8"></script>
+    <script src="./_dom2.js" charset="utf-8"></script>
+    <style>
+      body {
+        margin: 0;
+        font-size: 0;
+        font-family: 'Montserrat', sans-serif;
+        margin-top: 70px;
+        margin-bottom: 300px;
+      }
+      #date-wrapper {
+        width: 100%;
+        height: 100%;
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+        background-color: white;
+        z-index: 2;
+      }
+      .choose-date #date-wrapper {
+        display: flex;
+      }
+      .week {
+        display: flex;
+        padding-left: 2px;
+      }
+      .day {
+        flex: 1 0 0;
+        border: 2px solid rgba(0, 0, 0, 0.2);
+        margin-top: -2px;
+        margin-left: -2px;
+        background-color: #e0e0e0;
+        height: 70px;
+        font-size: 12px;
+        padding: 10px;
+        color: #444;
+        word-break: break-all;
+      }
+      .odd-month {
+        background-color: #eee;
+      }
+      .hide {
+        visibility: hidden;
+      }
+      .today {
+        background-color: #407be1;
+        color: white;
+      }
+      .last-day {
+        background-color: #dfcc41;
+        color: #787039;
+      }
+      .month-label {
+        font-weight: 700;
+        text-transform: uppercase;
+      }
+      .bottom {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        background-image: linear-gradient(transparent 0%, white 50%, white 100%);
+        padding-top: 100px;
+        text-align: center;
+      }
+      .days {
+        font-weight: 700;
+        font-size: 48px;
+        color: #222;
+      }
+      .weeks {
+        font-size: 16px;
+        color: #777;
+        margin-bottom: 10px;
+      }
+      .until {
+        font-size: 24px;
+        color: #555;
+        margin-bottom: 20px;
+      }
+      .weekdays {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        display: flex;
+        box-shadow: 0 3px rgba(0, 0, 0, 0.1);
+        height: 50px;
+        text-align: center;
+        font-weight: 700;
+        align-items: center;
+        background-color: white;
+      }
+      .weekdays span {
+        flex: 1 0 0;
+        font-size: 15px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="date-wrapper">
+      <form method="GET">
+        <label>Select a date to count down to: <input type="date" name="date" value="2019-08-13" autofocus></label>
+        <input type="submit" value="👌">
+      </form>
+    </div>
+    <div class="week weekdays">
+      <span>S</span>
+      <span>M</span>
+      <span>T</span>
+      <span>W</span>
+      <span>&Theta;</span>
+      <span>F</span>
+      <span>S</span>
+    </div>
+    <script>
+const dateStr = new URL(location).searchParams.get('date');
+const dateObj = new Date(dateStr);
+if (!dateStr || isNaN(dateObj.getTime())) {
+  document.body.classList.add('choose-date');
+  throw 'halt';
+}
+
+const now = new Date();
+let startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+let endDate = new Date(dateObj.getUTCFullYear(), dateObj.getUTCMonth(), dateObj.getUTCDate());
+let flipped = false;
+
+if (startDate > endDate) {
+  const temp = startDate;
+  startDate = endDate;
+  endDate = temp;
+  flipped = true;
+}
+
+const months = [
+  'January', 'February', 'March', 'April',
+  'May', 'June', 'July', 'August',
+  'September', 'October', 'November', 'December'
+];
+
+const fragment = document.createDocumentFragment();
+const tempDate = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate() - startDate.getDay());
+const stopDate = new Date(endDate.getFullYear(), endDate.getMonth(), endDate.getDate() + 7 - endDate.getDay());
+let currentWeek;
+while (tempDate < stopDate) {
+  if (tempDate.getDay() === 0) {
+    if (currentWeek) fragment.appendChild(currentWeek);
+    currentWeek = Elem('div', {className: 'week'});
+  }
+  currentWeek.appendChild(Elem('div', {
+    className: [
+      'day',
+      tempDate < startDate || tempDate > endDate ? 'hide' : null,
+      tempDate - (flipped ? endDate : startDate) === 0 ? 'today' : null,
+      tempDate - (flipped ? startDate : endDate) === 0 ? 'last-day' : null,
+      tempDate.getDate() === 1 ? 'month-label' : null,
+      tempDate.getMonth() % 2 === 0 ? 'even-month' : 'odd-month'
+    ]
+  }, [
+    tempDate.getDate() === 1
+      ? months[tempDate.getMonth()]
+        + (tempDate.getMonth() === 0
+          ? ' ' + tempDate.getFullYear()
+          : '')
+      : tempDate.getDate()
+  ]));
+  tempDate.setDate(tempDate.getDate() + 1);
+}
+fragment.appendChild(currentWeek);
+document.body.appendChild(fragment);
+
+const days = Math.floor((endDate - startDate) / (1000 * 60 * 60 * 24));
+const weeks = Math.floor(days / 7);
+document.body.appendChild(Elem('div', {className: 'bottom'}, [
+  Elem('div', {className: 'days'}, [days + ' day' + (days === 1 ? '' : 's')]),
+  weeks ? Elem('div', {className: 'weeks'}, [`(${weeks} week${days > 1 ? 's' : ''})`]) : null,
+  Elem('div', {className: 'until'}, [(flipped ? 'since' : 'until') + ' ' + (flipped ? startDate : endDate).toLocaleDateString(undefined, {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  })])
+]));
+    </script>
+  </body>
+</html>
