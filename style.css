@@ -264,6 +264,8 @@ a {
 #gmail .ball {border: 2px solid #D14836; background-color: transparent;}
 #outlook {background-color: #0072C6;}
 #outlook .ball {border: 2px solid white; background-color: transparent;}
+#snap {background-color: #E6A822;}
+#snap .ball {background-color: #4A6CD4;}
 #email::after {
   content: 'ussa.say';
 }
