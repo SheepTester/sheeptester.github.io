@@ -16,8 +16,10 @@ fetch('./audio/scratch-meow.wav').then(r => r.arrayBuffer()).then(b => meowImpul
 
 const UNDO_STACK_SIZE = 99;
 
-const WIDTH = 600;
 const HEIGHT = 100;
+const DEFAULT_ZOOM = 20;
+const MIN_ZOOM = 0.03125;
+const MAX_ZOOM = 10000;
 
 const MAX_MP3_SAMPLES = 1152;
 
@@ -42,16 +44,21 @@ class SoundEditor {
       'handlePaste',
       'paste',
       'handleKeyPress',
-      'handleRemove'
+      'handleRemove',
+      'handleDownload',
+      'handleDownloadMp3',
+      'handleZoomIn',
+      'handleZoomOut',
+      'handleUpdateZoom'
     ].forEach(method => this[method] = this[method].bind(this));
 
     this.props = props;
     this.state = {
-      chunkLevels: computeChunkedRMS(this.props.samples),
       playhead: null, // null is not playing, [0 -> 1] is playing percent
       trimStart: 0,
       trimEnd: 0,
-      selectDirection: 'end'
+      selectDirection: 'end',
+      zoom: this.props.sampleRate / DEFAULT_ZOOM
     };
 
     this.redoStack = [];
@@ -199,13 +206,13 @@ class SoundEditor {
     this.audioBufferPlayer.stop();
     this.audioBufferPlayer = new AudioBufferPlayer(samples, sampleRate);
     this.state = {
-      chunkLevels: computeChunkedRMS(samples),
       playhead: null,
       trimStart: this.state.trimStart,
       trimEnd: this.state.trimEnd,
-      selectDirection: this.state.selectDirection
+      selectDirection: this.state.selectDirection,
+      zoom: this.state.zoom
     };
-    this.renderWaveform();
+    this.renderWaveform(samples);
     this.displayLength();
     this.elems.redoBtn.disabled = !this.redoStack.length;
     this.elems.undoBtn.disabled = !this.undoStack.length;
@@ -289,6 +296,8 @@ class SoundEditor {
 
   handleUpdateTrim(trimStart, trimEnd) {
     if (trimStart < 0) trimStart = 0;
+    if (trimEnd < 0) trimEnd = 0;
+    if (trimStart > 1) trimStart = 1;
     if (trimEnd > 1) trimEnd = 1;
     else if (trimEnd < trimStart) throw new Error("smh that's not my job")
     const buffer = this.copyCurrentBuffer();
@@ -534,14 +543,15 @@ class SoundEditor {
     }
   }
 
-  renderWaveform() {
+  renderWaveform(samples) {
+    const chunkLevels = computeChunkedRMS(samples, this.state.zoom);
     const canvas = this.elems.waveform;
     const c = this.elems.waveformContext;
-    const levels = this.state.chunkLevels.length;
+    const levels = chunkLevels.length;
     canvas.width = levels;
     const waveHeight = HEIGHT / 3;
     c.fillStyle = '#333';
-    this.state.chunkLevels.forEach((v, i) => {
+    chunkLevels.forEach((v, i) => {
       c.fillRect(i, Math.floor(HEIGHT / 2 - v * waveHeight), 1, Math.ceil(v * waveHeight * 2));
     });
   }
@@ -550,6 +560,31 @@ class SoundEditor {
     const {samples, sampleRate} = this.copyCurrentBuffer();
     const sampleCount = samples.length;
     this.elems.length.textContent = (sampleCount / sampleRate).toFixed(2) + 's';
+  }
+
+  handleZoomIn() {
+    this.state.zoom /= 2;
+    this.handleUpdateZoom();
+  }
+
+  handleZoomOut() {
+    this.state.zoom *= 2;
+    this.handleUpdateZoom();
+  }
+
+  handleUpdateZoom() {
+    const {samples, sampleRate} = this.copyCurrentBuffer();
+
+    const baseZoom = sampleRate / DEFAULT_ZOOM;
+    const zoomFactor = baseZoom / this.state.zoom;
+    console.log(zoomFactor);
+    if (zoomFactor < MIN_ZOOM) this.state.zoom = baseZoom / MIN_ZOOM;
+    if (zoomFactor > MAX_ZOOM) this.state.zoom = baseZoom / MAX_ZOOM;
+    if (this.state.zoom < 1) this.state.zoom = 1;
+
+    // not using zoomFactor because .zoom changes
+    this.elems.zoomDisplay.textContent = baseZoom / this.state.zoom * 100 + '%';
+    this.renderWaveform(samples);
   }
 
   render() {
@@ -569,12 +604,16 @@ class SoundEditor {
         thatWasAFinger = false;
         return;
       }
-      const rect = elems.preview.getBoundingClientRect();
+      const rect = elems.waveform.getBoundingClientRect();
       const pointerID = isTouch && e.changedTouches[0].identifier;
       const pointer = isTouch ? e.touches[pointerID] : e;
-      const initialPosition = (pointer.clientX - rect.left) / rect.width;
-      this.handleUpdateTrim(initialPosition, initialPosition);
+      const initialPosition = e.shiftKey
+        ? (this.state.selectDirection === 'end'
+          ? this.state.trimStart
+          : this.state.trimEnd)
+        : (pointer.clientX - rect.left) / rect.width;
       const updatePosition = e => {
+        const rect = elems.waveform.getBoundingClientRect();
         const pointer = isTouch ? e.touches[pointerID] : e;
         const position = (pointer.clientX - rect.left) / rect.width;
         if (position < initialPosition) {
@@ -584,6 +623,11 @@ class SoundEditor {
           this.state.selectDirection = 'end';
           this.handleUpdateTrim(initialPosition, position);
         }
+      }
+      if (e.shiftKey) {
+        updatePosition(e);
+      } else {
+        this.handleUpdateTrim(initialPosition, initialPosition);
       }
       document.addEventListener(isTouch ? 'touchmove' : 'mousemove', updatePosition);
       document.addEventListener(isTouch ? 'touchend' : 'mouseup', e => {
@@ -599,6 +643,17 @@ class SoundEditor {
         type: 'text',
         value: this.props.name
       }),
+      elems.zoomOut = Elem('button', {
+        className: 'zoom-btn',
+        onclick: this.handleZoomOut
+      }, ['-']),
+      elems.zoomDisplay = Elem('span', {
+        className: 'zoom-display'
+      }),
+      elems.zoomIn = Elem('button', {
+        className: 'zoom-btn',
+        onclick: this.handleZoomIn
+      }, ['+']),
       elems.downloadBtn = Elem('button', {
         className: 'download-btn',
         onclick: this.handleDownload
@@ -614,17 +669,21 @@ class SoundEditor {
       elems.length = Elem('span', {className: 'sound-length'}),
       elems.preview = Elem('div', {
         className: 'preview',
-        style: {
-          width: WIDTH + 'px',
-          height: HEIGHT + 'px'
-        },
         onmousedown: trimHandles,
-        ontouchstart: trimHandles
+        ontouchstart: trimHandles,
+        onwheel: e => {
+          if (!e.shiftKey) {
+            this.state.zoom *= e.deltaY / 500 + 1;
+            this.handleUpdateZoom();
+          }
+        }
+      }, [Elem('div', {
+        className: 'waveform-wrapper'
       }, [
         elems.waveform,
         elems.playhead = Elem('div', {className: 'playhead'}),
         elems.trim = Elem('div', {className: 'selection-range'})
-      ]),
+      ])]),
       elems.playBtn = Elem('button', {
         className: 'play-btn',
         onclick: this.handlePlay

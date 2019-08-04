@@ -31,7 +31,7 @@ const clipboard = {copyBuffer: null};
 function addSound(name, samples, sampleRate) {
   const editor = new SoundEditor({sampleRate, samples, name, clipboard, addSound});
   document.body.appendChild(editor.render());
-  editor.renderWaveform();
+  editor.handleUpdateZoom();
   editor.displayLength();
 }
 
