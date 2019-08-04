@@ -17,9 +17,9 @@ fetch('./audio/scratch-meow.wav').then(r => r.arrayBuffer()).then(b => meowImpul
 const UNDO_STACK_SIZE = 99;
 
 const HEIGHT = 100;
-const DEFAULT_ZOOM = 20;
+const DEFAULT_ZOOM = 200;
 const MIN_ZOOM = 0.03125;
-const MAX_ZOOM = 10000;
+const MAX_ZOOM = 50;
 
 const MAX_MP3_SAMPLES = 1152;
 
@@ -69,17 +69,17 @@ class SoundEditor {
     this.impulseResponses = {};
     // HACK to allow reverb-effect to accept different sample rates
     this.audioContext.decodeAudioData(reverbImpulseResponse.slice(0))
-      .then(buffer => this.resampleAudioBufferToRate(buffer, 48000))
+      .then(buffer => this.resampleAudioBufferToRate(buffer, this.props.sampleRate))
       .then(buffer => {
         this.impulseResponses[effectTypes.REVERB] = buffer;
       });
     this.audioContext.decodeAudioData(magicImpulseResponse.slice(0))
-      .then(buffer => this.resampleAudioBufferToRate(buffer, 48000))
+      .then(buffer => this.resampleAudioBufferToRate(buffer, this.props.sampleRate))
       .then(buffer => {
         this.impulseResponses[effectTypes.MAGIC] = buffer;
       });
     this.audioContext.decodeAudioData(meowImpulseResponse.slice(0))
-      .then(buffer => this.resampleAudioBufferToRate(buffer, 48000))
+      .then(buffer => this.resampleAudioBufferToRate(buffer, this.props.sampleRate))
       .then(buffer => {
         this.impulseResponses[effectTypes.MEOW] = buffer;
       });
@@ -577,7 +577,6 @@ class SoundEditor {
 
     const baseZoom = sampleRate / DEFAULT_ZOOM;
     const zoomFactor = baseZoom / this.state.zoom;
-    console.log(zoomFactor);
     if (zoomFactor < MIN_ZOOM) this.state.zoom = baseZoom / MIN_ZOOM;
     if (zoomFactor > MAX_ZOOM) this.state.zoom = baseZoom / MAX_ZOOM;
     if (this.state.zoom < 1) this.state.zoom = 1;
@@ -669,16 +668,20 @@ class SoundEditor {
       elems.length = Elem('span', {className: 'sound-length'}),
       elems.preview = Elem('div', {
         className: 'preview',
-        onmousedown: trimHandles,
-        ontouchstart: trimHandles,
         onwheel: e => {
           if (!e.shiftKey) {
-            this.state.zoom *= e.deltaY / 500 + 1;
+            if (e.deltaY > 0) {
+              this.state.zoom *= e.deltaY / 500 + 1;
+            } else {
+              this.state.zoom /= -e.deltaY / 500 + 1;
+            }
             this.handleUpdateZoom();
           }
         }
       }, [Elem('div', {
-        className: 'waveform-wrapper'
+        className: 'waveform-wrapper',
+        onmousedown: trimHandles,
+        ontouchstart: trimHandles
       }, [
         elems.waveform,
         elems.playhead = Elem('div', {className: 'playhead'}),
