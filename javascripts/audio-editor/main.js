@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', e => {
     });
   });
   document.getElementById('new-sound').addEventListener('click', e => {
-    addSound(randomName('sound'), new Float32Array([0]), 48000);
+    addSound(randomName('sound'), new Float32Array(1), 48000);
   });
   const recordSound = document.getElementById('record-sound');
   const stopRecord = document.getElementById('stop-record');

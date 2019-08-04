@@ -10,15 +10,20 @@ function Select(label, options) {
     }),
     buttonsWrapper = Elem(
       'div',
-      {className: 'select-options-wrapper'},
+      {
+        className: 'select-options-wrapper',
+        onclick(e) {
+          if (!e.shiftKey) {
+            buttonsWrapper.classList.remove('show');
+          }
+        }
+      },
       options.map(([option, fn]) => option === '---'
         ? Elem('span', {className: 'select-separator'})
         : Elem('button', {
           className: 'select-option',
           innerHTML: option,
-          onclick(e) {
-            fn(option);
-          }
+          onclick: fn
         }))
     )
   ]);

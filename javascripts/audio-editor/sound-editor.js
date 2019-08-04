@@ -32,7 +32,7 @@ class SoundEditor {
       'handlePlay',
       'handleStopPlaying',
       'handleUpdatePlayhead',
-      'handleActivateTrim',
+      'handleDelete',
       'handleUpdateTrim',
       'handleEffect',
       'handleUndo',
@@ -42,9 +42,7 @@ class SoundEditor {
       'handlePaste',
       'paste',
       'handleKeyPress',
-      'handleDownload',
-      'handleDelete',
-      'handleDownloadMp3'
+      'handleRemove'
     ].forEach(method => this[method] = this[method].bind(this));
 
     this.props = props;
@@ -64,17 +62,17 @@ class SoundEditor {
     this.impulseResponses = {};
     // HACK to allow reverb-effect to accept different sample rates
     this.audioContext.decodeAudioData(reverbImpulseResponse.slice(0))
-      .then(buffer => this.resampleAudioBufferToRate(buffer, 44100))
+      .then(buffer => this.resampleAudioBufferToRate(buffer, 48000))
       .then(buffer => {
         this.impulseResponses[effectTypes.REVERB] = buffer;
       });
     this.audioContext.decodeAudioData(magicImpulseResponse.slice(0))
-      .then(buffer => this.resampleAudioBufferToRate(buffer, 44100))
+      .then(buffer => this.resampleAudioBufferToRate(buffer, 48000))
       .then(buffer => {
         this.impulseResponses[effectTypes.MAGIC] = buffer;
       });
     this.audioContext.decodeAudioData(meowImpulseResponse.slice(0))
-      .then(buffer => this.resampleAudioBufferToRate(buffer, 44100))
+      .then(buffer => this.resampleAudioBufferToRate(buffer, 48000))
       .then(buffer => {
         this.impulseResponses[effectTypes.MEOW] = buffer;
       });
@@ -95,35 +93,44 @@ class SoundEditor {
     }
   }
 
-  handleKeyPress(e) {
-    if (e.target instanceof HTMLInputElement) {
+  handleKeyPress(event) {
+    if (event.target instanceof HTMLInputElement) {
       // Ignore keyboard shortcuts if a text input field is focused
       return;
     }
-    if (!this.elems.wrapper.contains(e.target)) {
+    if (!this.elems.wrapper.contains(event.target)) {
       // Ignore keyboard shortcuts if a different editor is focused
       return;
     }
-    if (e.key === ' ') {
+    if (event.key === ' ') {
+      event.preventDefault();
       if (this.state.playhead) {
         this.handleStopPlaying();
       } else {
         this.handlePlay();
       }
-      e.preventDefault();
     }
-    if (e.key === 'Delete' || e.key === 'Backspace') {
-      this.handleActivateTrim();
+    if (event.key === 'Delete' || event.key === 'Backspace') {
+      event.preventDefault();
+      if (event.shiftKey) {
+        this.handleDeleteInverse();
+      } else {
+        this.handleDelete();
+      }
+    }
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      this.handleUpdateTrim(null, null);
     }
     const start = this.state.trimStart;
     const end = this.state.trimEnd;
-    if (e.key === 'ArrowLeft') {
-      if (e.metaKey || e.ctrlKey) {
-        if (e.shiftKey) this.handleUpdateTrim(0, end);
+    if (event.key === 'ArrowLeft') {
+      if (event.metaKey || event.ctrlKey) {
+        if (event.shiftKey) this.handleUpdateTrim(0, end);
         else if (start === end) this.handleUpdateTrim(0, 0);
         else this.handleUpdateTrim(start, start);
       } else {
-        if (e.shiftKey) {
+        if (event.shiftKey) {
           if (this.state.selectDirection === 'start') {
             this.handleUpdateTrim(start - 0.01, end);
           } else if (end - 0.01 < start) {
@@ -137,13 +144,13 @@ class SoundEditor {
         }
       }
     }
-    if (e.key === 'ArrowRight') {
-      if (e.metaKey || e.ctrlKey) {
-        if (e.shiftKey) this.handleUpdateTrim(start, 1);
+    if (event.key === 'ArrowRight') {
+      if (event.metaKey || event.ctrlKey) {
+        if (event.shiftKey) this.handleUpdateTrim(start, 1);
         else if (start === end) this.handleUpdateTrim(1, 1);
         else this.handleUpdateTrim(end, end);
       } else {
-        if (e.shiftKey) {
+        if (event.shiftKey) {
           if (this.state.selectDirection === 'end') {
             this.handleUpdateTrim(start, end + 0.01);
           } else if (end < start + 0.01) {
@@ -157,27 +164,32 @@ class SoundEditor {
         }
       }
     }
-    if (e.metaKey || e.ctrlKey) {
-      if (e.shiftKey && e.key.toLowerCase() === 'z' || e.key === 'y') {
+    if (event.metaKey || event.ctrlKey) {
+      if (event.shiftKey && event.key.toLowerCase() === 'z' || event.key === 'y') {
+        event.preventDefault();
         if (this.redoStack.length > 0) {
           this.handleRedo();
         }
-      } else if (e.key === 'z') {
+      } else if (event.key === 'z') {
         if (this.undoStack.length > 0) {
+          event.preventDefault();
           this.handleUndo();
         }
-      } else if (e.key === 'x') {
+      } else if (event.key === 'x') {
         this.handleCopy();
-        this.handleActivateTrim();
-      } else if (e.key === 'c') {
+        this.handleDelete();
+      } else if (event.key === 'c') {
+        event.preventDefault();
         this.handleCopy();
-      } else if (e.key === 'v') {
+      } else if (event.key === 'v') {
+        event.preventDefault();
         this.handlePaste();
-      } else if (e.key === 'a') {
+      } else if (event.key === 'a') {
+        event.preventDefault();
         this.handleUpdateTrim(0, 1);
-        e.preventDefault();
-      } else if (e.key === 's') {
-        if (e.altKey) this.handleDownloadMp3();
+      } else if (event.key === 's') {
+        event.preventDefault();
+        if (event.altKey) this.handleDownloadMp3();
         else this.handleDownload();
       }
     }
@@ -211,18 +223,17 @@ class SoundEditor {
   }
 
   handlePlay() {
-    this.elems.playBtn.disabled = true;
-    this.elems.stopBtn.disabled = false;
-    this.elems.playhead.style.display = 'block';
-
     this.audioBufferPlayer.stop();
-    const playAll = this.state.trimStart === this.state.trimEnd;
     this.audioBufferPlayer.play(
       this.state.trimStart || 0,
       this.state.trimStart === this.state.trimEnd ? 1 : this.state.trimEnd || 1,
       this.handleUpdatePlayhead,
       this.handleStoppedPlaying
     );
+
+    this.elems.playBtn.disabled = true;
+    this.elems.stopBtn.disabled = false;
+    this.elems.playhead.style.display = 'block';
   }
 
   handleStopPlaying() {
@@ -242,30 +253,38 @@ class SoundEditor {
     this.state.playhead = playhead;
   }
 
-  handleActivateTrim(inverted = false) {
+  handleDelete() {
     const {samples, sampleRate} = this.copyCurrentBuffer();
     const sampleCount = samples.length;
     const startIndex = Math.floor(this.state.trimStart * sampleCount);
     const endIndex = Math.floor(this.state.trimEnd * sampleCount);
+    const firstPart = samples.slice(0, startIndex);
+    const secondPart = samples.slice(endIndex, sampleCount);
+    const newLength = firstPart.length + secondPart.length;
     let newSamples;
-    if (inverted) {
-      newSamples = samples.slice(startIndex, endIndex);
-      this.handleUpdateTrim(0, 1);
+    if (newLength === 0) {
+      newSamples = new Float32Array(1);
     } else {
-      const firstPart = samples.slice(0, startIndex);
-      const secondPart = samples.slice(endIndex, sampleCount);
-      const newLength = firstPart.length + secondPart.length;
-      if (newLength === 0) {
-        newSamples = new Float32Array(1);
-      } else {
-        newSamples = new Float32Array(newLength);
-        newSamples.set(firstPart, 0);
-        newSamples.set(secondPart, firstPart.length);
-      }
-      const trimPos = firstPart.length / newLength;
-      this.handleUpdateTrim(trimPos, trimPos);
+      newSamples = new Float32Array(newLength);
+      newSamples.set(firstPart, 0);
+      newSamples.set(secondPart, firstPart.length);
     }
     this.submitNewSamples(newSamples, sampleRate);
+    const trimPos = firstPart.length / newLength;
+    this.handleUpdateTrim(trimPos, trimPos);
+  }
+
+  handleDeleteInverse() {
+    const {samples, sampleRate} = this.copyCurrentBuffer();
+    const sampleCount = samples.length;
+    const startIndex = Math.floor(this.state.trimStart * sampleCount);
+    const endIndex = Math.floor(this.state.trimEnd * sampleCount);
+    let clippedSamples = samples.slice(startIndex, endIndex);
+    if (clippedSamples.length === 0) {
+      clippedSamples = new Float32Array(1);
+    }
+    this.submitNewSamples(clippedSamples, sampleRate);
+    this.handleUpdateTrim(0, 1);
   }
 
   handleUpdateTrim(trimStart, trimEnd) {
@@ -298,15 +317,17 @@ class SoundEditor {
     const trimStart = this.state.trimStart === null ? 0.0 : this.state.trimStart;
     const trimEnd = this.state.trimEnd === null ? 1.0 : this.state.trimEnd;
 
-    const effects = new AudioEffects(this.audioBufferPlayer.buffer, name,
-      trimStart, trimEnd, this.impulseResponses);
+    // Offline audio context needs at least 2 samples
+    if (this.audioBufferPlayer.buffer.length < 2) {
+      return;
+    }
+
+    const effects = new AudioEffects(this.audioBufferPlayer.buffer, name, trimStart, trimEnd,  this.impulseResponses);
     effects.process((renderedBuffer, adjustedTrimStart, adjustedTrimEnd) => {
       const samples = renderedBuffer.getChannelData(0);
       const sampleRate = renderedBuffer.sampleRate;
       this.submitNewSamples(samples, sampleRate);
-      if (this.state.trimStart !== null) {
-        this.handleUpdateTrim(adjustedTrimStart, adjustedTrimEnd);
-      }
+      this.handleUpdateTrim(adjustedTrimStart, adjustedTrimEnd);
       this.handlePlay();
     });
   }
@@ -315,8 +336,7 @@ class SoundEditor {
     return {
       ...this.copyCurrentBuffer(),
       trimStart: this.state.trimStart,
-      trimEnd: this.state.trimEnd,
-      selectDirection: this.state.selectDirection
+      trimEnd: this.state.trimEnd
     };
   }
 
@@ -341,30 +361,31 @@ class SoundEditor {
   }
 
   handleCopy() {
-    this.props.clipboard.copyBuffer = this.copy();
+    this.copy();
   }
 
   copy(callback) {
     const trimStart = this.state.trimStart === null ? 0.0 : this.state.trimStart;
     const trimEnd = this.state.trimEnd === null ? 1.0 : this.state.trimEnd;
 
-    // NOTE: this.props.samples seemed to be outdated at times, giving badly cropped copies
     const newCopyBuffer = this.copyCurrentBuffer();
     const trimStartSamples = trimStart * newCopyBuffer.samples.length;
     const trimEndSamples = trimEnd * newCopyBuffer.samples.length;
-
     newCopyBuffer.samples = newCopyBuffer.samples.slice(trimStartSamples, trimEndSamples);
 
-    return newCopyBuffer;
+    this.props.clipboard.copyBuffer = newCopyBuffer;
+    if (callback) callback();
   }
 
   handleCopyToNew() {
-    const {samples, sampleRate} = this.copy();
-    this.props.addSound(
-      'Copy of ' + this.elems.name.value,
-      samples,
-      sampleRate
-    );
+    this.copy(() => {
+      const {samples, sampleRate} = this.props.clipboard.copyBuffer;
+      this.props.addSound(
+        'Copy of ' + this.elems.name.value,
+        samples,
+        sampleRate
+      );
+    });
   }
 
   resampleBufferToRate(buffer, newRate) {
@@ -410,48 +431,34 @@ class SoundEditor {
   }
 
   paste() {
-    const {samples, sampleRate} = this.copyCurrentBuffer();
-    const copyBuffer = this.props.clipboard.copyBuffer;
-    // If there's no selection, paste at the end of the sound
-    if (this.state.trimStart === null) {
-      const newLength = samples.length + copyBuffer.samples.length;
-      const newSamples = new Float32Array(newLength);
-      newSamples.set(samples, 0);
-      newSamples.set(copyBuffer.samples, samples.length);
-      this.submitNewSamples(newSamples, sampleRate, false);
-    } else {
-      // else replace the selection with the pasted sound
-      const trimStartSamples = this.state.trimStart * samples.length;
-      const trimEndSamples = this.state.trimEnd * samples.length;
-      const firstPart = samples.slice(0, trimStartSamples);
-      const lastPart = samples.slice(trimEndSamples);
-      const newLength = firstPart.length + copyBuffer.samples.length + lastPart.length;
-      const newSamples = new Float32Array(newLength);
-      newSamples.set(firstPart, 0);
-      newSamples.set(copyBuffer.samples, firstPart.length);
-      newSamples.set(lastPart, firstPart.length + copyBuffer.samples.length);
+    const {samples} = this.copyCurrentBuffer();
+    const trimStartSamples = this.state.trimStart * samples.length;
+    const trimEndSamples = this.state.trimEnd * samples.length;
+    const firstPart = samples.slice(0, trimStartSamples);
+    const lastPart = samples.slice(trimEndSamples);
+    const newLength = firstPart.length + this.props.clipboard.copyBuffer.samples.length + lastPart.length;
+    const newSamples = new Float32Array(newLength);
+    newSamples.set(firstPart, 0);
+    newSamples.set(this.props.clipboard.copyBuffer.samples, firstPart.length);
+    newSamples.set(lastPart, firstPart.length + this.props.clipboard.copyBuffer.samples.length);
 
-      const trimStartSeconds = trimStartSamples / sampleRate;
-      const trimEndSeconds = trimStartSeconds +
-          (copyBuffer.samples.length / copyBuffer.sampleRate);
-      const newDurationSeconds = newSamples.length / copyBuffer.sampleRate;
-      const adjustedTrimStart = trimStartSeconds / newDurationSeconds;
-      const adjustedTrimEnd = trimEndSeconds / newDurationSeconds;
-      this.handleUpdateTrim(adjustedTrimStart, adjustedTrimEnd);
-
-      this.submitNewSamples(newSamples, sampleRate, false);
-    }
-
+    const trimStartSeconds = trimStartSamples / this.props.sampleRate;
+    const trimEndSeconds = trimStartSeconds +
+        (this.props.clipboard.copyBuffer.samples.length / this.props.clipboard.copyBuffer.sampleRate);
+    const newDurationSeconds = newSamples.length / this.props.clipboard.copyBuffer.sampleRate;
+    const adjustedTrimStart = trimStartSeconds / newDurationSeconds;
+    const adjustedTrimEnd = trimEndSeconds / newDurationSeconds;
+    this.submitNewSamples(newSamples, this.props.sampleRate, false);
+    this.handleUpdateTrim(adjustedTrimStart, adjustedTrimEnd);
     this.handlePlay();
   }
 
   handlePaste() {
-    const copyBuffer = this.props.clipboard.copyBuffer;
-    if (copyBuffer.sampleRate === this.props.sampleRate) {
+    if (!this.props.clipboard.copyBuffer) return;
+    if (this.props.clipboard.copyBuffer.sampleRate === this.props.sampleRate) {
       this.paste();
     } else {
-      console.warn('pasted audio sample rate does not match editor sample rate, resampling');
-      this.resampleBufferToRate(copyBuffer, this.props.sampleRate).then(buffer => {
+      this.resampleBufferToRate(this.props.clipboard.copyBuffer, this.props.sampleRate).then(buffer => {
         this.props.clipboard.copyBuffer = buffer;
         this.paste();
       });
@@ -521,8 +528,8 @@ class SoundEditor {
     }
   }
 
-  handleDelete() {
-    if (confirm('Are you sure you want to delete this sound?')) {
+  handleRemove() {
+    if (confirm('Are you sure you want to remove this sound?')) {
       this.unmount();
     }
   }
@@ -602,8 +609,8 @@ class SoundEditor {
       }, ['download as mp3']),
       elems.downloadBtn = Elem('button', {
         className: 'delete-btn',
-        onclick: this.handleDelete
-      }, ['delete']),
+        onclick: this.handleRemove
+      }, ['remove']),
       elems.length = Elem('span', {className: 'sound-length'}),
       elems.preview = Elem('div', {
         className: 'preview',
@@ -630,17 +637,17 @@ class SoundEditor {
       elems.edit = Select('Edit', [
         ['cut (ctrl + X)', () => {
           this.handleCopy();
-          this.handleActivateTrim();
+          this.handleDelete();
         }],
         ['copy (ctrl + C)', this.handleCopy],
         ['paste (ctrl + V)', this.handlePaste],
         ['---'],
-        ['delete (backspace)', this.handleActivateTrim],
+        ['delete (backspace)', this.handleDelete],
         ['select all (ctrl + A)', () => {
           this.handleUpdateTrim(0, 1);
         }],
-        ['trim', () => {
-          this.handleActivateTrim(true);
+        ['trim (shift + backspace)', () => {
+          this.handleDeleteInverse();
         }]
       ]),
       elems.effects = Select('Effects', [

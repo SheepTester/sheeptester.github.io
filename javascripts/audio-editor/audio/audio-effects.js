@@ -5,7 +5,6 @@ import FlangerEffect from './effects/flanger-effect.js';
 import ReverbEffect from './effects/reverb-effect.js';
 import FadeEffect from './effects/fade-effect.js';
 import MuteEffect from './effects/mute-effect.js';
-import SimpleReverb from '../simple-reverb.js';
 
 const effectTypes = {
     ROBOT: 'robot',
@@ -20,7 +19,8 @@ const effectTypes = {
     MAGIC: 'magic',
     FADEIN: 'fade in',
     FADEOUT: 'fade out',
-    MUTE: 'mute'
+    MUTE: 'mute',
+    MEOW: 'meow'
 };
 
 class AudioEffects {
@@ -39,24 +39,25 @@ class AudioEffects {
         let sampleCount = buffer.length;
         const affectedSampleCount = Math.floor((this.trimEndSeconds - this.trimStartSeconds) *
             buffer.sampleRate);
+        let adjustedAffectedSampleCount = affectedSampleCount;
         const unaffectedSampleCount = sampleCount - affectedSampleCount;
 
         this.playbackRate = 1;
         switch (name) {
         case effectTypes.ECHO:
-            sampleCount = Math.max(sampleCount, Math.floor((this.trimEndSeconds + 0.75) * buffer.sampleRate));
+            sampleCount = Math.max(sampleCount,
+                Math.floor((this.trimEndSeconds + EchoEffect.TAIL_SECONDS) * buffer.sampleRate));
             break;
         case effectTypes.FASTER:
             this.playbackRate = pitchRatio;
-            sampleCount = unaffectedSampleCount + Math.floor(affectedSampleCount / this.playbackRate);
-            this.adjustedTrimEndSeconds = this.trimStartSeconds +
-                ((affectedSampleCount / this.playbackRate) / buffer.sampleRate);
+            adjustedAffectedSampleCount = Math.floor(affectedSampleCount / this.playbackRate);
+            sampleCount = unaffectedSampleCount + adjustedAffectedSampleCount;
+
             break;
         case effectTypes.SLOWER:
             this.playbackRate = 1 / pitchRatio;
-            sampleCount = unaffectedSampleCount + Math.floor(affectedSampleCount / this.playbackRate);
-            this.adjustedTrimEndSeconds = this.trimStartSeconds +
-                ((affectedSampleCount / this.playbackRate) / buffer.sampleRate);
+            adjustedAffectedSampleCount = Math.floor(affectedSampleCount / this.playbackRate);
+            sampleCount = unaffectedSampleCount + adjustedAffectedSampleCount;
             break;
         case effectTypes.REVERB:
         case effectTypes.MAGIC:
@@ -64,12 +65,14 @@ class AudioEffects {
             break;
         }
 
-        this.adjustedTrimStart = this.adjustedTrimStartSeconds / (sampleCount / buffer.sampleRate);
-        this.adjustedTrimEnd = this.adjustedTrimEndSeconds / (sampleCount / buffer.sampleRate);
+        const durationSeconds = sampleCount / buffer.sampleRate;
+        this.adjustedTrimEndSeconds = this.trimStartSeconds +
+            (adjustedAffectedSampleCount / buffer.sampleRate);
+        this.adjustedTrimStart = this.adjustedTrimStartSeconds / durationSeconds;
+        this.adjustedTrimEnd = this.adjustedTrimEndSeconds / durationSeconds;
 
         if (window.OfflineAudioContext) {
-            const sampleScale = 44100 / buffer.sampleRate;
-            this.audioContext = new window.OfflineAudioContext(1, sampleScale * sampleCount, 44100);
+            this.audioContext = new window.OfflineAudioContext(1, sampleCount, buffer.sampleRate);
         } else {
             // Need to use webkitOfflineAudioContext, which doesn't support all sample rates.
             // Resample by adjusting sample count to make room and set offline context to desired sample rate.
@@ -90,7 +93,7 @@ class AudioEffects {
             const endSamples = Math.floor(this.trimEndSeconds * buffer.sampleRate);
             let counter = 0;
             for (let i = 0; i < bufferLength; i++) {
-                if (i > startSamples && i < endSamples) {
+                if (i >= startSamples && i < endSamples) {
                     newBufferData[i] = originalBufferData[endSamples - counter - 1];
                     counter++;
                 } else {
