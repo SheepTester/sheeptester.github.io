@@ -143,6 +143,8 @@ https://sheeptester.github.io/javascripts/carecalc.html
 https://sheeptester.github.io/javascripts/caretdemo.html
 https://sheeptester.github.io/javascripts/charcopy.html
 https://sheeptester.github.io/javascripts/clickanywhere.html
+https://sheeptester.github.io/javascripts/combining.html
+https://sheeptester.github.io/javascripts/countdown.html
 https://sheeptester.github.io/javascripts/cryptography.html
 https://sheeptester.github.io/javascripts/cyrillic-finder.html
 https://sheeptester.github.io/javascripts/delegalifier.html
@@ -172,6 +174,7 @@ https://sheeptester.github.io/javascripts/sudoku-ruiner.html
 https://sheeptester.github.io/javascripts/towering-game.html
 https://sheeptester.github.io/javascripts/voice-control.html
 https://sheeptester.github.io/javascripts/written_book.html
+https://sheeptester.github.io/javascripts/zwsp-embedder.html
 https://sheeptester.github.io/life/
 https://sheeptester.github.io/life/scrolltest.html
 https://sheeptester.github.io/living-skills/sean-yen/
@@ -190,8 +193,10 @@ https://sheeptester.github.io/longer-tweets/life-after-death/
 https://sheeptester.github.io/longer-tweets/lol-vocabulary/
 https://sheeptester.github.io/longer-tweets/phonology/
 https://sheeptester.github.io/longer-tweets/pronouns/
+https://sheeptester.github.io/longer-tweets/racism-response/
 https://sheeptester.github.io/longer-tweets/scratch-www-troubles/
 https://sheeptester.github.io/longer-tweets/test/
+https://sheeptester.github.io/longer-tweets/ugwa-alt-schedules/
 https://sheeptester.github.io/longer-tweets/underground-schoology/
 https://sheeptester.github.io/longer-tweets/
 https://sheeptester.github.io/mars/
@@ -202,6 +207,7 @@ https://sheeptester.github.io/oldindex/new2/
 https://sheeptester.github.io/oldindex/oldest/
 https://sheeptester.github.io/oldindex/
 https://sheeptester.github.io/opinions/
+https://sheeptester.github.io/os-design/
 https://sheeptester.github.io/ovinetopia/images/tile-test.html
 https://sheeptester.github.io/ovinetopia/
 https://sheeptester.github.io/platformre/a/actualdatagetter.html
@@ -315,6 +321,9 @@ https://sheeptester.github.io/toastia/
 https://sheeptester.github.io/trumpdays/inseconds/
 https://sheeptester.github.io/trumpdays/
 https://sheeptester.github.io/words-go-here/f-word/
+https://sheeptester.github.io/words-go-here/htmlifier/
+https://sheeptester.github.io/words-go-here/htmlifier/template.html
+https://sheeptester.github.io/words-go-here/htmlifier/vm-copy.html
 https://sheeptester.github.io/words-go-here/misc/2048simplified.html
 https://sheeptester.github.io/words-go-here/misc/3dcube.html
 https://sheeptester.github.io/words-go-here/misc/3dhall.html
@@ -327,7 +336,11 @@ https://sheeptester.github.io/words-go-here/misc/chooper3d.html
 https://sheeptester.github.io/words-go-here/misc/doodle.html
 https://sheeptester.github.io/words-go-here/misc/dumbplatscript.html
 https://sheeptester.github.io/words-go-here/misc/evosim-in-js.html
+https://sheeptester.github.io/words-go-here/misc/factorial-bigint.html
+https://sheeptester.github.io/words-go-here/misc/factorial-scinot.html
+https://sheeptester.github.io/words-go-here/misc/factorial.html
 https://sheeptester.github.io/words-go-here/misc/filledcube.html
+https://sheeptester.github.io/words-go-here/misc/fooling-open-graph.html
 https://sheeptester.github.io/words-go-here/misc/format.html
 https://sheeptester.github.io/words-go-here/misc/gemini.html
 https://sheeptester.github.io/words-go-here/misc/imgtosvg.html
@@ -358,9 +371,6 @@ https://sheeptester.github.io/words-go-here/misc/tiles2.html
 https://sheeptester.github.io/words-go-here/misc/tiles3.html
 https://sheeptester.github.io/words-go-here/misc/varyai.html
 https://sheeptester.github.io/words-go-here/scratch3-htmlifier/
-https://sheeptester.github.io/words-go-here/scratch3-htmlifier/template-quick.html
-https://sheeptester.github.io/words-go-here/scratch3-htmlifier/template.html
-https://sheeptester.github.io/words-go-here/scratch3-htmlifier/vm-copy.html
 https://sheeptester.github.io/words-go-here/attempt1.html
 https://sheeptester.github.io/words-go-here/attempt2.html
 https://sheeptester.github.io/words-go-here/
