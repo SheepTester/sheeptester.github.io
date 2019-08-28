@@ -37,7 +37,7 @@
     <!-- <div id="test"></div> -->
 
     <script src="../sheep.js" charset="utf-8"></script>
-    <script src="https://cdn.jsdelivr.net/npm/opentype.js@latest/dist/opentype.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/opentype.js@1.1.0/dist/opentype.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.5/jszip.min.js" charset="utf-8"></script>
     <script>
 var input=document.querySelector('#input'),
@@ -52,7 +52,7 @@ colour.addEventListener("input",e=>{
   colour.style.backgroundColor=colour.value;
 },false);
 function getSVG(fontsize,font,char,colour) {
-  var path=font.getPath(char,240,180,fontsize,{kerning:false}).commands,
+  var path=font.getPath(char,240,180,fontsize,{kerning:false, features: false}).commands,
   str='';
   for (var cmd of path) {
     str+=cmd.type;
