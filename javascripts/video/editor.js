@@ -11,7 +11,7 @@ class Source {
       className: 'source disabled',
       onpointerdown: this.createClip
     }, [
-      Elem('span', {className: 'source-name'}, [name])
+      Elem('span', {className: 'name'}, [name])
     ]);
     sourceWrapper.insertBefore(this.sourceElem, addSource.parentNode);
 
@@ -44,7 +44,7 @@ class Source {
   createClip(e) {
     const rect = this.sourceElem.getBoundingClientRect();
     const clip = new Clip(this);
-    clip.startDragging(e.clientX - rect.left, e.clientY - rect.top, rect.left, rect.top);
+    clip.startDragging(e.clientX - rect.left, e.clientY - rect.top, e);
   }
 
 }
@@ -53,6 +53,7 @@ class Clip {
 
   constructor(src) {
     this.dragMove = this.dragMove.bind(this);
+    this.trimMove = this.trimMove.bind(this);
 
     this.src = src;
     this.start = 0;
@@ -60,33 +61,106 @@ class Clip {
     this.elem = Elem('div', {
       className: 'clip',
       style: {
-        '--start': this.start,
-        '--length': this.end - this.start,
-        backgroundImage: `url(${encodeURI(src.image)})`
+        '--length': this.length * scale + 'px',
+        backgroundImage: `url(${encodeURI(src.image)})`,
+        backgroundSize: this.length * scale + 'px',
+        backgroundPosition: 0
+      },
+      onpointerdown: e => {
+        if (e.target.classList.contains('trim-bar')) {
+          this.startTrimming(e, e.target.classList.contains('left'));
+        } else {
+          const rect = this.elem.getBoundingClientRect();
+          clips.splice(this.clipIndex, 1);
+          updateClips();
+          this.startDragging(e.clientX - rect.left, e.clientY - rect.top, e);
+        }
       }
     }, [
-      Elem('span', {className: 'source-name'}, [src.name])
+      Elem('div', {className: 'trim-bar left'}),
+      Elem('span', {className: 'name'}, [src.name]),
+      Elem('div', {className: 'trim-bar right'})
     ]);
   }
 
-  startDragging(diffX, diffY, startX, startY) {
+  startDragging(diffX, diffY, e) {
     document.body.style.touchAction = 'none';
+    previewMarker.classList.remove('hidden');
     this.dragData = [diffX, diffY];
-    this.elem.style.left = startX + 'px';
-    this.elem.style.top = startY + 'px';
+    this.dragMove(e);
     this.elem.classList.add('dragging');
     document.body.appendChild(this.elem);
-    document.body.addEventListener('pointermove', this.dragMove);
-    document.body.addEventListener('pointerup', e => {
-      this.dragData = null;
+
+    document.addEventListener('pointermove', this.dragMove);
+    document.addEventListener('pointerup', e => {
       document.body.style.touchAction = null;
-      document.body.removeEventListener('pointermove', this.dragMove);
+      previewMarker.classList.add('hidden');
+      this.dragData = null;
+      this.elem.style.left = null;
+      this.elem.style.top = null;
+      this.elem.classList.remove('dragging');
+      timelineWrapper.appendChild(this.elem);
+
+      clips.splice(this.newIndex, 0, this);
+      updateClips();
+      document.removeEventListener('pointermove', this.dragMove);
     }, {once: true});
   }
 
   dragMove(e) {
     this.elem.style.left = e.clientX - this.dragData[0] + 'px';
     this.elem.style.top = e.clientY - this.dragData[1] + 'px';
+    const pos = (e.clientX - this.dragData[0] + timelineScroll) / scale;
+    let x = 0;
+    for (let i = 0; i < clips.length; x += clips[i++].length) {
+      if (pos < clips[i].length / 2 + x) {
+        this.newIndex = i;
+        previewMarker.style.setProperty('--pos', x * scale + 'px');
+        return;
+      }
+    }
+    this.newIndex = clips.length;
+    previewMarker.style.setProperty('--pos', x * scale + 'px');
+  }
+
+  startTrimming(e, trimmingStart) {
+    preview.src = this.src.video;
+    document.body.style.touchAction = 'none';
+    this.initX = e.clientX + timelineScroll;
+    this.initVal = trimmingStart ? this.start : this.end;
+    this.trimmingStart = trimmingStart;
+
+    document.addEventListener('pointermove', this.trimMove);
+    document.addEventListener('pointerup', e => {
+      document.body.style.touchAction = null;
+      this.initX = null;
+      this.initVal = null;
+      this.trimmingStart = null;
+
+      updateClips();
+      document.removeEventListener('pointermove', this.trimMove);
+    }, {once: true});
+  }
+
+  trimMove(e) {
+    const diff = (e.clientX + timelineScroll - this.initX) / scale;
+    if (this.trimmingStart) {
+      this.start = this.initVal + diff;
+      if (this.start < 0) this.start = 0;
+      this.elem.style.backgroundPosition = -this.start * scale + 'px';
+      this.elem.style.setProperty('--pos', (this.pos + this.start - this.initVal) * scale + 'px');
+      this.elem.style.setProperty('--length', this.length * scale + 'px');
+      preview.currentTime = this.pos + this.start - this.initVal;
+    } else {
+      this.end = this.initVal + diff;
+      if (this.end > this.src.length) this.end = this.src.length;
+      this.elem.style.setProperty('--length', this.length * scale + 'px');
+      preview.currentTime = this.pos + this.length;
+    }
+  }
+
+  get length() {
+    return this.end - this.start;
   }
 
 }
@@ -107,6 +181,22 @@ const zoomOutBtn = document.getElementById('out');
 const zoomDisplay = document.getElementById('zoom')
 const zoomInBtn = document.getElementById('in');
 const timelineWrapper = document.getElementById('timeline');
+const previewMarker = document.getElementById('marker');
+
+const clips = [];
+let scale = 3;
+function updateClips() {
+  for (let i = 0, x = 0; i < clips.length; x += clips[i++].length) {
+    clips[i].clipIndex = i;
+    clips[i].pos = x;
+    clips[i].elem.style.setProperty('--pos', x * scale + 'px');
+  }
+}
+
+let timelineScroll = timelineWrapper.scrollLeft;
+timelineWrapper.addEventListener('scroll', e => {
+  timelineScroll = timelineWrapper.scrollLeft;
+});
 
 addSource.addEventListener('change', e => {
   if (addSource.files[0]) {

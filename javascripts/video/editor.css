@@ -20,8 +20,7 @@ body {
   background-color: var(--background);
   color: var(--text);
   font-family: 'Montserrat', sans-serif;
-
-  --scale: 10px;
+  user-select: none;
 }
 
 .menubar {
@@ -87,7 +86,7 @@ body {
   background-repeat: no-repeat;
   cursor: pointer;
 }
-.source-name {
+.name {
   display: block;
   padding: 10px;
   font-size: 14px;
@@ -157,19 +156,54 @@ body {
   background-color: var(--layer);
   border-radius: 10px;
   padding: 20px;
+  overflow-x: auto;
+  position: relative;
 }
 .clip {
   background-color: var(--metalayer);
-  width: calc(var(--length) * var(--scale));
+  width: var(--length);
   height: 150px;
   border-radius: 5px;
-  margin: 10px;
-  background-position: center;
-  background-size: cover;
+  margin: 0 20px;
+  background-repeat: no-repeat;
   cursor: pointer;
+  left: var(--pos);
+  position: absolute;
+  top: 20px;
 }
 .dragging {
   position: fixed;
   opacity: 0.5;
   box-shadow: 0 3px 8px rgba(0, 0, 0, 0.5);
+  pointer-events: none;
+  margin: 0;
+}
+.marker {
+  position: absolute;
+  background-color: var(--text-em);
+  left: var(--pos);
+  width: 4px;
+  margin-left: 18px;
+  top: 20px;
+  bottom: 20px;
+  border-radius: 2px;
+  z-index: 2;
+}
+.hidden {
+  display: none;
+}
+.trim-bar {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  cursor: ew-resize;
+  width: 20px;
+}
+.left {
+  left: 0;
+  background-image: linear-gradient(90deg, rgba(0, 0, 0, 0.5), transparent);
+}
+.right {
+  right: 0;
+  background-image: linear-gradient(-90deg, rgba(0, 0, 0, 0.5), transparent);
 }

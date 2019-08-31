@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8">
-    <title>Dumb video editor</title>
+    <title>Smothered Rock</title>
     <meta name="description" content="Trim and put together videos, that's it."/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700&display=swap" rel="stylesheet">
@@ -14,7 +14,7 @@
   </head>
   <body>
     <ul class="menubar">
-      <li><span class="logo">Dumb video editor</span></li>
+      <li><span class="logo">Smothered Rock</span></li>
       <li><button type="button" class="menu-btn" id="save">save</button></li>
       <li><button type="button" class="menu-btn" id="load">load</button></li>
       <li><button type="button" class="menu-btn" id="export" disabled>export</button></li>
@@ -36,7 +36,9 @@
       <span class="zoom-level" id="zoom">100%</span>
       <button type="button" class="tool-btn" id="in" aria-label="zoom in"><i class="material-icons">zoom_in</i></button>
     </div>
-    <div class="timeline" id="timeline"></div>
+    <div class="timeline" id="timeline">
+      <div class="marker hidden" id="marker"></div>
+    </div>
     <script src="./editor.js" charset="utf-8"></script>
   </body>
 </html>
