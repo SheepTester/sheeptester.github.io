@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>Video playback?</title>
+    <meta name="description" content="A test to see if a video can be selected from the file system and be directly played. This test gets a three second clip of a video starting from the two-second mark."/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link rel="stylesheet" type="text/css" href="../../sheep3.css">
+    <script src="../../sheep3.js" charset="utf-8"></script>
+    <style>
+      video {
+        max-width: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <p><label>Video: <input type="file" id="video" accept="video/*"></label></p>
+    <script>
+const videoInput = document.getElementById('video');
+videoInput.addEventListener('change', e => {
+  if (videoInput.files[0]) {
+    console.log(videoInput.files[0]);
+    const videoElem = document.createElement('video');
+    videoElem.src = URL.createObjectURL(videoInput.files[0]);
+    // videoElem.controls = true;
+    document.body.appendChild(videoElem);
+    // videoElem.play();
+    console.log(videoElem);
+    videoElem.addEventListener('loadeddata', e => {
+      if (videoElem.readyState < 2) return;
+      const recorder = new MediaRecorder(videoElem.captureStream(), {mimeType: 'video/webm'});
+      recorder.addEventListener('dataavailable', e => {
+        console.log(e.data);
+        if (recorder.state === 'recording') {
+          videoElem.pause();
+          recorder.stop();
+          const newVideo = document.createElement('video');
+          newVideo.src = URL.createObjectURL(e.data);
+          newVideo.controls = true;
+          document.body.appendChild(newVideo);
+          newVideo.play();
+          console.log(newVideo);
+        }
+      });
+      videoElem.currentTime = 2;
+      recorder.start(3000);
+      videoElem.play();
+    });
+  }
+});
+/*
+notes: `timeupdate` event exists for video
+*/
+    </script>
+  </body>
+</html>
