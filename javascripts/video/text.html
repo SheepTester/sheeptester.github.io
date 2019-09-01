@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>Text.</title>
+    <meta name="description" content="Adds 'TEXT' to a video."/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link rel="stylesheet" type="text/css" href="../../sheep3.css">
+    <link href="https://fonts.googleapis.com/css?family=Oswald&display=swap" rel="stylesheet">
+    <script src="../../sheep3.js" charset="utf-8"></script>
+    <style>
+      video, canvas {
+        max-width: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <p><label>Video: <input type="file" id="video" accept="video/*"></label></p>
+    <p>wait 10 seconds as it processes</p>
+    <script>
+const START_TIME = 10; // s
+const LENGTH = 10000; // ms
+
+const videoInput = document.getElementById('video');
+videoInput.addEventListener('change', e => {
+  if (videoInput.files[0]) {
+    const videoElem = document.createElement('video');
+    videoElem.src = URL.createObjectURL(videoInput.files[0]);
+    videoElem.addEventListener('loadeddata', e => {
+      if (videoElem.readyState < 2) return;
+      const canvas = document.createElement('canvas');
+      const c = canvas.getContext('2d');
+      canvas.width = videoElem.videoWidth;
+      canvas.height = videoElem.videoHeight;
+      c.font = `100px 'Oswald', Impact, sans-serif`;
+      c.textAlign = 'center';
+      c.textBaseline = 'middle';
+      c.fillStyle = 'blue';
+      const stream = canvas.captureStream();
+
+      // https://stackoverflow.com/a/39302994
+      const audioContext = new AudioContext();
+      const dest = audioContext.createMediaStreamDestination();
+      const source = audioContext.createMediaElementSource(videoElem);
+      source.connect(dest);
+      stream.addTrack(dest.stream.getAudioTracks()[0]);
+
+      const recorder = new MediaRecorder(stream, {
+        mimeType: 'video/webm;codecs=h264',
+        videoBitsPerSecond: 8000000
+      });
+      recorder.addEventListener('dataavailable', e => {
+        const newVideo = document.createElement('video');
+        const url = URL.createObjectURL(e.data);
+        newVideo.src = url;
+        newVideo.controls = true;
+        document.body.appendChild(newVideo);
+        newVideo.play();
+        window.download = function download() {
+          const saveLink = document.createElement('a');
+          saveLink.href = url;
+          saveLink.download = 'wigglesplat.webm';
+          document.body.appendChild(saveLink);
+          saveLink.click();
+          document.body.removeChild(saveLink);
+        };
+        console.log('window.download available for execution');
+      });
+      videoElem.addEventListener('timeupdate', e => {
+        const start = Date.now();
+        function draw() {
+          c.drawImage(videoElem, 0, 0, canvas.width, canvas.height);
+          c.save();
+          c.translate(canvas.width / 2 + Math.sin(Date.now() / 1000) * 500, canvas.height / 2);
+          c.rotate(Math.sin(Date.now() / 90) * Math.PI / 3);
+          c.fillText('TEXT', 0, 0);
+          c.restore();
+          if (Date.now() - start < LENGTH) {
+            window.requestAnimationFrame(draw);
+          } else {
+            recorder.stop();
+            videoElem.pause();
+          }
+        }
+        draw();
+        recorder.start();
+        videoElem.play();
+      }, {once: true});
+      videoElem.currentTime = START_TIME;
+    });
+  }
+});
+/*
+notes: `timeupdate` event exists for video
+*/
+    </script>
+  </body>
+</html>
