@@ -59,6 +59,15 @@ body {
 .menu-btn:hover {
   background-color: var(--btn-hover);
 }
+/* https://tympanus.net/codrops/2015/09/15/styling-customizing-file-inputs-smart-way/ */
+#load {
+  width: 0.1px;
+	height: 0.1px;
+	opacity: 0;
+	overflow: hidden;
+	position: absolute;
+	z-index: -1;
+}
 
 .video-wrapper {
   display: flex;

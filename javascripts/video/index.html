@@ -16,7 +16,7 @@
     <ul class="menubar">
       <li><span class="logo">Smothered Rock</span></li>
       <li><button type="button" class="menu-btn" id="save">Save</button></li>
-      <li><button type="button" class="menu-btn" id="load">Load</button></li>
+      <li><label for="load" class="menu-btn">Load</label><input type="file" accept="application/json" id="load"></li>
       <li><button type="button" class="menu-btn" id="export" disabled>Export</button></li>
     </ul>
     <div class="video-wrapper">
@@ -26,18 +26,18 @@
       <div class="preview"><video id="preview"></video></div>
     </div>
     <div class="toolbar">
-      <button type="button" class="tool-btn" id="start" aria-label="to beginning"><i class="material-icons">first_page</i></button>
-      <button type="button" class="tool-btn" id="prev" aria-label="jump to previous point"><i class="material-icons">navigate_before</i></button>
-      <button type="button" class="tool-btn" id="play" aria-label="play/pause"><i class="material-icons" id="icon">play_arrow</i></button>
-      <button type="button" class="tool-btn" id="next" aria-label="jump to next point"><i class="material-icons">navigate_next</i></button>
+      <button type="button" class="tool-btn" id="start" aria-label="to beginning" title="ctrl + shift + left arrow"><i class="material-icons">first_page</i></button>
+      <button type="button" class="tool-btn" id="prev" aria-label="jump to previous point" title="ctrl + left arrow"><i class="material-icons">navigate_before</i></button>
+      <button type="button" class="tool-btn" id="play" aria-label="play/pause" title="space"><i class="material-icons" id="icon">play_arrow</i></button>
+      <button type="button" class="tool-btn" id="next" aria-label="jump to next point" title="ctrl + right arrow"><i class="material-icons">navigate_next</i></button>
       <span class="timestamp"><span id="current">0:00</span> / <span id="length">0:00</span></span>
       <span class="flex"></span>
-      <button type="button" class="tool-btn" id="undo" aria-label="undo" disabled><i class="material-icons">undo</i></button>
-      <button type="button" class="tool-btn" id="redo" aria-label="redo" disabled><i class="material-icons">redo</i></button>
+      <button type="button" class="tool-btn" id="undo" aria-label="undo" title="ctrl + Z" disabled><i class="material-icons">undo</i></button>
+      <button type="button" class="tool-btn" id="redo" aria-label="redo" title="ctrl + Y" disabled><i class="material-icons">redo</i></button>
       <span class="space"></span>
-      <button type="button" class="tool-btn" id="out" aria-label="zoom out"><i class="material-icons">zoom_out</i></button>
+      <button type="button" class="tool-btn" id="out" aria-label="zoom out" title="-"><i class="material-icons">zoom_out</i></button>
       <span class="zoom-level" id="zoom">1x</span>
-      <button type="button" class="tool-btn" id="in" aria-label="zoom in"><i class="material-icons">zoom_in</i></button>
+      <button type="button" class="tool-btn" id="in" aria-label="zoom in" title="="><i class="material-icons">zoom_in</i></button>
     </div>
     <div class="timeline" id="timeline">
       <div class="marker hidden" id="marker"></div>

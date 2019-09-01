@@ -131,7 +131,7 @@ const clipMenu = new Menu([
     target => {
       target.splitAt(target.cutPoint);
     },
-    'Split here',
+    'Split here (enter)',
     'content_cut'
   ],
   [
@@ -149,7 +149,7 @@ const clipMenu = new Menu([
     target => {
       target.remove();
     },
-    'Delete',
+    'Delete (delete)',
     'delete'
   ]
 ]);
@@ -164,12 +164,6 @@ class Clip {
     this.end = end === null ? this.src.length : end;
     this.elem = Elem('div', {
       className: 'clip',
-      style: {
-        '--length': this.length * scale + 'px',
-        backgroundImage: `url(${encodeURI(this.src.image)})`,
-        backgroundSize: this.src.length * scale + 'px',
-        backgroundPosition: -this.start * scale + 'px'
-      },
       onpointerdown: e => {
         const rect = this.elem.getBoundingClientRect();
         if (e.which === 1) {
@@ -188,9 +182,14 @@ class Clip {
       }
     }, [
       Elem('div', {className: 'trim-bar left'}),
-      Elem('span', {className: 'name'}, [src.name]),
+      Elem('span', {className: 'name'}, [this.src.name]),
       Elem('div', {className: 'trim-bar right'})
     ]);
+    this.src.ready.then(() => {
+      this.elem.style.backgroundImage = `url(${encodeURI(this.src.image)})`;
+      this.elem.style.backgroundSize = this.src.length * scale + 'px';
+    });
+    this.updateStartEndStyle();
   }
 
   startDragging(diffX, diffY, e) {
@@ -513,6 +512,10 @@ document.addEventListener('keydown', e => {
     if (currentIndex !== null) {
       clips[currentIndex].remove();
     }
+  } else if (e.key === '-') {
+    zoomOutBtn.click();
+  } else if (e.key === '=' || e.key === '+') {
+    zoomInBtn.click();
   }
 });
 
@@ -566,7 +569,9 @@ function useEntry(entry) {
   clips.push(...entry.map(data => new Clip(data)));
   clips.forEach(clip => timelineWrapper.appendChild(clip.elem));
   updateClips();
-  movePlayhead(entry.time);
+  if (typeof entry.time === 'number') {
+    movePlayhead(entry.time);
+  }
 }
 undoBtn.addEventListener('click', e => {
   if (undoHist.length) {
@@ -584,6 +589,27 @@ redoBtn.addEventListener('click', e => {
     useEntry(entry);
     undoBtn.disabled = false;
     if (!redoHist.length) redoBtn.disabled = true;
+  }
+});
+
+saveBtn.addEventListener('click', e => {
+  const saveLink = document.createElement('a');
+  const url = window.URL.createObjectURL(new Blob([JSON.stringify(clips)], {type: 'application/json'}));
+  saveLink.href = url;
+  saveLink.download = 'smothered-rock-project.json';
+  document.body.appendChild(saveLink);
+  saveLink.click();
+  document.body.removeChild(saveLink);
+  window.URL.revokeObjectURL(url);
+});
+loadBtn.addEventListener('change', e => {
+  if (loadBtn.files[0]) {
+    const reader = new FileReader();
+    reader.onload = ({target: {result}}) => {
+      logThis();
+      useEntry(JSON.parse(result));
+    };
+    reader.readAsText(loadBtn.files[0]);
   }
 });
 
