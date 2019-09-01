@@ -180,6 +180,7 @@ class Clip {
         } else if (e.which === 3) {
           this.cutPoint = (e.clientX - rect.left) / scale + this.start;
           clipMenu.trigger(this, e);
+          movePlayhead((e.clientX + timelineScroll - 40) / scale);
         }
       }
     }, [
