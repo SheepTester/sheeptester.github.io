@@ -529,12 +529,12 @@ timelineWrapper.addEventListener('pointerdown', e => {
   movingPlayhead = true;
   movePlayhead((e.clientX + timelineScroll - 40) / scale);
 });
-timelineWrapper.addEventListener('pointermove', e => {
+document.addEventListener('pointermove', e => {
   if (movingPlayhead) {
     movePlayhead((e.clientX + timelineScroll - 40) / scale);
   }
 });
-timelineWrapper.addEventListener('pointerup', e => {
+document.addEventListener('pointerup', e => {
   movingPlayhead = false;
 });
 
