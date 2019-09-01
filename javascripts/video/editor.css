@@ -178,7 +178,7 @@ body {
   pointer-events: none;
   margin: 0;
 }
-.marker {
+.marker, .playhead {
   position: absolute;
   background-color: var(--text-em);
   left: var(--pos);
@@ -188,6 +188,23 @@ body {
   bottom: 20px;
   border-radius: 2px;
   z-index: 2;
+}
+.playhead {
+  position: absolute;
+  width: 1px;
+  margin-left: 19.5px;
+  top: 10px;
+  bottom: 20px;
+  cursor: pointer;
+  --pos: 0;
+}
+.playhead::after {
+  content: '';
+  display: block;
+  border-top: 10px solid var(--text-em);
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  margin-left: -9.5px;
 }
 .hidden {
   display: none;

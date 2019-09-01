@@ -21,23 +21,24 @@
     </ul>
     <div class="video-wrapper">
       <div class="sources" id="sources">
-        <div class="add source"><i class="material-icons">add</i><input type="file" accept="video/*" aria-label="add a source video" id="add"></div>
+        <div class="add source"><i class="material-icons">add</i><input type="file" accept="video/*" aria-label="add a source video" id="add" multiple></div>
       </div>
       <div class="preview"><video id="preview"></video></div>
     </div>
     <div class="toolbar">
       <button type="button" class="tool-btn" id="start" aria-label="to beginning"><i class="material-icons">first_page</i></button>
       <button type="button" class="tool-btn" id="prev" aria-label="jump to previous point"><i class="material-icons">navigate_before</i></button>
-      <button type="button" class="tool-btn" id="play" aria-label="play/pause"><i class="material-icons">play_arrow</i></button>
+      <button type="button" class="tool-btn" id="play" aria-label="play/pause"><i class="material-icons" id="icon">play_arrow</i></button>
       <button type="button" class="tool-btn" id="next" aria-label="jump to next point"><i class="material-icons">navigate_next</i></button>
       <span class="timestamp"><span id="current">0:00</span> / <span id="length">0:00</span></span>
       <span class="flex"></span>
       <button type="button" class="tool-btn" id="out" aria-label="zoom out"><i class="material-icons">zoom_out</i></button>
-      <span class="zoom-level" id="zoom">100%</span>
+      <span class="zoom-level" id="zoom">1x</span>
       <button type="button" class="tool-btn" id="in" aria-label="zoom in"><i class="material-icons">zoom_in</i></button>
     </div>
     <div class="timeline" id="timeline">
       <div class="marker hidden" id="marker"></div>
+      <div class="playhead" id="playhead"></div>
     </div>
     <script src="./editor.js" charset="utf-8"></script>
   </body>

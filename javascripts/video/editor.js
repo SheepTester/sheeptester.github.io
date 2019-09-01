@@ -124,7 +124,6 @@ class Clip {
   }
 
   startTrimming(e, trimmingStart) {
-    preview.src = this.src.video;
     document.body.style.touchAction = 'none';
     this.initX = e.clientX + timelineScroll;
     this.initVal = trimmingStart ? this.start : this.end;
@@ -138,6 +137,7 @@ class Clip {
       this.trimmingStart = null;
 
       updateClips();
+      movePlayhead(trimmingStart ? this.pos : this.pos + this.length);
       document.removeEventListener('pointermove', this.trimMove);
     }, {once: true});
   }
@@ -147,15 +147,17 @@ class Clip {
     if (this.trimmingStart) {
       this.start = this.initVal + diff;
       if (this.start < 0) this.start = 0;
+      if (this.start > this.end) this.start = this.end;
       this.elem.style.backgroundPosition = -this.start * scale + 'px';
       this.elem.style.setProperty('--pos', (this.pos + this.start - this.initVal) * scale + 'px');
       this.elem.style.setProperty('--length', this.length * scale + 'px');
-      preview.currentTime = this.pos + this.start - this.initVal;
+      movePlayhead(this.pos + this.start - this.initVal);
     } else {
       this.end = this.initVal + diff;
+      if (this.end < this.start) this.end = this.start;
       if (this.end > this.src.length) this.end = this.src.length;
       this.elem.style.setProperty('--length', this.length * scale + 'px');
-      preview.currentTime = this.pos + this.length;
+      movePlayhead(this.pos + this.length);
     }
   }
 
@@ -174,7 +176,8 @@ const preview = document.getElementById('preview');
 const toStartBtn = document.getElementById('start');
 const prevBtn = document.getElementById('prev');
 const playBtn = document.getElementById('play');
-const nextBtn = document.getElementById('play');
+const playIcon = document.getElementById('icon');
+const nextBtn = document.getElementById('next');
 const currentTime = document.getElementById('current');
 const lengthSpan = document.getElementById('length');
 const zoomOutBtn = document.getElementById('out');
@@ -182,31 +185,186 @@ const zoomDisplay = document.getElementById('zoom')
 const zoomInBtn = document.getElementById('in');
 const timelineWrapper = document.getElementById('timeline');
 const previewMarker = document.getElementById('marker');
+const playhead = document.getElementById('playhead');
+
+let playheadTime = 0, length = 0, currentIndex = null, playing = false;
 
 const clips = [];
+const BASE_SCALE = 3;
+const scales = [3, 6, 12, 24, 48, 96];
+let scaleIndex = 0;
 let scale = 3;
+function updateScale() {
+  clips.forEach(clip => {
+    clip.elem.style.backgroundSize = clip.src.length * scale + 'px';
+    clip.elem.style.backgroundPosition = -clip.start * scale + 'px';
+    clip.elem.style.setProperty('--pos', clip.pos * scale + 'px');
+    clip.elem.style.setProperty('--length', clip.length * scale + 'px');
+  });
+  movePlayhead(playheadTime, false);
+  zoomDisplay.textContent = scale / BASE_SCALE + 'x';
+}
 function updateClips() {
-  for (let i = 0, x = 0; i < clips.length; x += clips[i++].length) {
+  let t = 0;
+  for (let i = 0; i < clips.length; t += clips[i++].length) {
     clips[i].clipIndex = i;
-    clips[i].pos = x;
-    clips[i].elem.style.setProperty('--pos', x * scale + 'px');
+    clips[i].pos = t;
+    clips[i].elem.style.setProperty('--pos', t * scale + 'px');
+  }
+  length = t;
+  lengthSpan.textContent = Math.floor(t / 60) + ':'
+    + Math.floor(t % 60).toString().padStart(2, '0');
+    // + '.' + (t % 1).toFixed(3).slice(2);
+  displayClipAt(playheadTime);
+}
+function displayClipAt(time) {
+  if (clips.length) {
+    for (let i = 0, t = 0; i < clips.length; t += clips[i++].length) {
+      if (time < t + clips[i].length) {
+        currentIndex = i;
+        if (preview.src !== clips[i].src.video) {
+          preview.src = clips[i].src.video;
+        }
+        preview.currentTime = clips[i].start + time - t;
+        return;
+      }
+    }
+    currentIndex = clips.length - 1;
+    if (preview.src !== clips[currentIndex].src.video) {
+      preview.src = clips[currentIndex].src.video
+    }
+    preview.currentTime = clips[currentIndex].end;
+  } else {
+    currentClip = null;
+    preview.src = null;
   }
 }
+function movePlayhead(time, previewUpdate = true) {
+  playheadTime = time;
+  if (time < 0) time = 0;
+  if (time > length) time = length;
+  playhead.style.setProperty('--pos', time * scale + 'px');
+  currentTime.textContent = Math.floor(time / 60) + ':'
+    + Math.floor(time % 60).toString().padStart(2, '0');
+  if (previewUpdate) displayClipAt(time);
+}
+function playheadFromPreview() {
+  return clips[currentIndex].pos + preview.currentTime - clips[currentIndex].start;
+}
+
+preview.addEventListener('timeupdate', e => {
+  if (playing && preview.currentTime > clips[currentIndex].end) {
+    if (currentIndex === clips.length - 1) {
+      stop();
+    } else {
+      currentIndex++;
+      if (preview.src !== clips[currentIndex].src.video) {
+        preview.src = clips[currentIndex].src.video
+      }
+      preview.currentTime = clips[currentIndex].start;
+    }
+  }
+});
+preview.addEventListener('loadeddata', e => {
+  if (playing && preview.readyState >= 2 && preview.paused) {
+    preview.currentTime = clips[currentIndex].start;
+    preview.play();
+  }
+});
+preview.addEventListener('ended', e => {
+  if (playing) stop();
+});
+function positionPlayhead() {
+  movePlayhead(playheadFromPreview(), false);
+  if (playing) {
+    window.requestAnimationFrame(positionPlayhead);
+  }
+}
+function play() {
+  if (currentIndex === null) return;
+  if (playheadTime > length) movePlayhead(0);
+  playing = true;
+  playIcon.textContent = 'pause';
+  preview.play();
+  positionPlayhead();
+}
+function stop() {
+  playing = false;
+  playIcon.textContent = 'play_arrow';
+  preview.pause();
+}
+playBtn.addEventListener('click', e => {
+  if (playing) stop();
+  else play();
+});
+
+toStartBtn.addEventListener('click', e => {
+  movePlayhead(0);
+});
+prevBtn.addEventListener('click', e => {
+  if (clips[currentIndex].start === preview.currentTime && currentIndex > 0) {
+    currentIndex--;
+  }
+  movePlayhead(clips[currentIndex].pos);
+});
+nextBtn.addEventListener('click', e => {
+  movePlayhead(clips[currentIndex].pos + clips[currentIndex].length);
+});
+zoomInBtn.addEventListener('click', e => {
+  if (scaleIndex >= scales.length - 1) return;
+  scale = scales[++scaleIndex];
+  updateScale();
+});
+zoomOutBtn.addEventListener('click', e => {
+  if (scaleIndex < 1) return;
+  scale = scales[--scaleIndex];
+  updateScale();
+});
+document.addEventListener('keydown', e => {
+  if (e.key === ' ') {
+    playBtn.click();
+  } else if (e.key === 'ArrowLeft') {
+    if (e.ctrlKey || e.metaKey) {
+      if (e.shiftKey) toStartBtn.click();
+      else prevBtn.click();
+    }
+    else movePlayhead(playheadTime - 1);
+  } else if (e.key === 'ArrowRight') {
+    if (e.ctrlKey || e.metaKey) {
+      if (e.shiftKey) movePlayhead(length);
+      else nextBtn.click();
+    }
+    else movePlayhead(playheadTime + 1);
+  }
+});
 
 let timelineScroll = timelineWrapper.scrollLeft;
 timelineWrapper.addEventListener('scroll', e => {
   timelineScroll = timelineWrapper.scrollLeft;
 });
-
-addSource.addEventListener('change', e => {
-  if (addSource.files[0]) {
-    const source = new Source(addSource.files[0].name);
-    source.attachFile(addSource.files[0]);
-    addSource.disabled = true;
-    addSource.parentNode.classList.add('disabled');
-    source.ready.then(() => {
-      addSource.disabled = false;
-      addSource.parentNode.classList.remove('disabled');
-    });
+let movingPlayhead = false;
+timelineWrapper.addEventListener('pointerdown', e => {
+  if (e.target.closest('.clip')) return;
+  movingPlayhead = true;
+  movePlayhead((e.clientX + timelineScroll - 40) / scale);
+});
+timelineWrapper.addEventListener('pointermove', e => {
+  if (movingPlayhead) {
+    movePlayhead((e.clientX + timelineScroll - 40) / scale);
   }
+});
+timelineWrapper.addEventListener('pointerup', e => {
+  movingPlayhead = false;
+});
+
+addSource.addEventListener('change', async e => {
+  addSource.disabled = true;
+  addSource.parentNode.classList.add('disabled');
+  for (const file of addSource.files) {
+    const source = new Source(file.name);
+    source.attachFile(file);
+    await source.ready;
+  }
+  addSource.disabled = false;
+  addSource.parentNode.classList.remove('disabled');
 });
