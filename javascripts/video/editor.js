@@ -95,6 +95,7 @@ class Source {
   }
 
   createClip(e) {
+    if (recording) return;
     if (e.which === 1) {
       logThis();
       const rect = this.sourceElem.getBoundingClientRect();
@@ -165,6 +166,7 @@ class Clip {
     this.elem = Elem('div', {
       className: 'clip',
       onpointerdown: e => {
+        if (recording) return;
         const rect = this.elem.getBoundingClientRect();
         if (e.which === 1) {
           logThis();
@@ -334,7 +336,7 @@ const timelineWrapper = document.getElementById('timeline');
 const previewMarker = document.getElementById('marker');
 const playhead = document.getElementById('playhead');
 
-let playheadTime = 0, length = 0, currentIndex = null, playing = false;
+let playheadTime = 0, length = 0, currentIndex = null, playing = false, recording = false;
 
 const clips = [];
 const BASE_SCALE = 3;
@@ -407,11 +409,13 @@ preview.addEventListener('timeupdate', e => {
     if (currentIndex === clips.length - 1) {
       stop();
     } else {
+      if (recording) recorder.pause();
       currentIndex++;
       if (preview.src !== clips[currentIndex].src.video) {
         preview.src = clips[currentIndex].src.video
       }
       preview.currentTime = clips[currentIndex].start;
+      if (recording) recorder.resume();
     }
   }
 });
@@ -420,18 +424,21 @@ preview.addEventListener('loadeddata', e => {
   if (playing && preview.readyState >= 2 && preview.paused) {
     preview.currentTime = clips[currentIndex].start;
     preview.play();
+    if (recording) recorder.resume();
   }
 });
 preview.addEventListener('ended', e => {
   if (currentIndex === null) return;
   if (playing) {
     if (currentIndex < clips.length - 1) {
+      if (recording) recorder.pause();
       currentIndex++;
       if (preview.src !== clips[currentIndex].src.video) {
         preview.src = clips[currentIndex].src.video
       }
       preview.currentTime = clips[currentIndex].start;
       preview.play();
+      if (recording) recorder.resume();
     } else {
       stop();
     }
@@ -455,6 +462,7 @@ function stop() {
   playing = false;
   playIcon.textContent = 'play_arrow';
   preview.pause();
+  if (recording) recorder.stop();
 }
 playBtn.addEventListener('click', e => {
   if (playing) stop();
@@ -486,6 +494,7 @@ zoomOutBtn.addEventListener('click', e => {
   updateScale();
 });
 document.addEventListener('keydown', e => {
+  if (recording) return;
   if (e.ctrlKey || e.metaKey) {
     if (e.key === 'ArrowLeft') {
       if (e.shiftKey) toStartBtn.click();
@@ -592,15 +601,19 @@ redoBtn.addEventListener('click', e => {
   }
 });
 
-saveBtn.addEventListener('click', e => {
+function download(blob, name) {
   const saveLink = document.createElement('a');
-  const url = window.URL.createObjectURL(new Blob([JSON.stringify(clips)], {type: 'application/json'}));
+  const url = window.URL.createObjectURL(blob);
   saveLink.href = url;
-  saveLink.download = 'smothered-rock-project.json';
+  saveLink.download = name;
   document.body.appendChild(saveLink);
   saveLink.click();
   document.body.removeChild(saveLink);
   window.URL.revokeObjectURL(url);
+}
+
+saveBtn.addEventListener('click', e => {
+  download(new Blob([JSON.stringify(clips)], {type: 'application/json'}), 'smothered-rock-project.json');
 });
 loadBtn.addEventListener('change', e => {
   if (loadBtn.files[0]) {
@@ -611,6 +624,41 @@ loadBtn.addEventListener('change', e => {
     };
     reader.readAsText(loadBtn.files[0]);
   }
+});
+
+let recorder;
+exportBtn.addEventListener('click', e => {
+  if (recording) {
+    download(recording, 'exported-project.webm');
+    return;
+  }
+  document.body.classList.add('recording');
+  recording = true;
+  [
+    loadBtn,
+    exportBtn,
+    addSource,
+    toStartBtn,
+    prevBtn,
+    playBtn,
+    nextBtn,
+    undoBtn,
+    redoBtn
+  ].forEach(btn => btn.disabled = true);
+  recorder = new MediaRecorder(preview.captureStream(), {
+    mimeType: 'video/webm;codecs=h264',
+    videoBitsPerSecond: 8000000
+  });
+  recorder.addEventListener('dataavailable', e => {
+    console.log(e.data);
+    download(e.data, 'exported-project.webm');
+    recording = e.data;
+    exportBtn.disabled = false;
+    exportBtn.focus();
+  });
+  recorder.start();
+  movePlayhead(0);
+  play();
 });
 
 // annoying thing to make the editor feel more like a native app

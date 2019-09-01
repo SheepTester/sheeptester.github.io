@@ -264,3 +264,11 @@ body {
 .context-item:hover {
   background-color: var(--btn-hover);
 }
+
+.recording .sources,
+.recording .toolbar,
+.recording .timeline,
+.recording .load {
+  pointer-events: none;
+  opacity: 0.5;
+}

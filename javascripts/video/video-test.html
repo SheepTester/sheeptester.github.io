@@ -35,15 +35,22 @@ videoInput.addEventListener('change', e => {
           videoElem.pause();
           recorder.stop();
           const newVideo = document.createElement('video');
-          newVideo.src = URL.createObjectURL(e.data);
+          const url = URL.createObjectURL(e.data);
+          newVideo.src = url;
           newVideo.controls = true;
           document.body.appendChild(newVideo);
           newVideo.play();
           console.log(newVideo);
+          const saveLink = document.createElement('a');
+          saveLink.href = url;
+          saveLink.download = 'wigglesplat.webm';
+          document.body.appendChild(saveLink);
+          saveLink.click();
+          document.body.removeChild(saveLink);
         }
       });
-      videoElem.currentTime = 2;
-      recorder.start(3000);
+      videoElem.currentTime = 6;
+      recorder.start(6000);
       videoElem.play();
     });
   }
