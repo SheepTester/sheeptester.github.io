@@ -49,6 +49,7 @@ class Menu {
 
 }
 
+const sources = {};
 const thumbnailCanvas = Elem('canvas');
 const thumbnailContext = thumbnailCanvas.getContext('2d');
 class Source {
@@ -58,6 +59,7 @@ class Source {
     this.createClip = this.createClip.bind(this);
 
     this.name = name;
+    sources[name] = this;
     this.sourceElem = Elem('div', {
       className: 'source disabled',
       onpointerdown: this.createClip
@@ -94,8 +96,9 @@ class Source {
 
   createClip(e) {
     if (e.which === 1) {
+      logThis();
       const rect = this.sourceElem.getBoundingClientRect();
-      const clip = new Clip(this);
+      const clip = new Clip({src: this});
       clip.startDragging(e.clientX - rect.left, e.clientY - rect.top, e);
     } else if (e.which === 3) {
       console.log('menu');
@@ -111,6 +114,7 @@ const clipMenu = new Menu([
       const endStr = startStr && prompt(`End time? (between ${startStr}–${target.src.length} seconds)`);
       const start = +startStr;
       const end = +endStr;
+      logThis();
       if (startStr && !isNaN(start) && start >= 0 && start < target.src.length) {
         target.start = start;
       }
@@ -151,24 +155,25 @@ const clipMenu = new Menu([
 ]);
 class Clip {
 
-  constructor(src) {
+  constructor({src, start = 0, end = null}) {
     this.dragMove = this.dragMove.bind(this);
     this.trimMove = this.trimMove.bind(this);
 
-    this.src = src;
-    this.start = 0;
-    this.end = src.length;
+    this.src = typeof src === 'string' ? sources[src] || new Source(src) : src;
+    this.start = start;
+    this.end = end === null ? this.src.length : end;
     this.elem = Elem('div', {
       className: 'clip',
       style: {
         '--length': this.length * scale + 'px',
-        backgroundImage: `url(${encodeURI(src.image)})`,
-        backgroundSize: this.length * scale + 'px',
-        backgroundPosition: 0
+        backgroundImage: `url(${encodeURI(this.src.image)})`,
+        backgroundSize: this.src.length * scale + 'px',
+        backgroundPosition: -this.start * scale + 'px'
       },
       onpointerdown: e => {
         const rect = this.elem.getBoundingClientRect();
         if (e.which === 1) {
+          logThis();
           if (e.target.classList.contains('trim-bar')) {
             this.startTrimming(e, e.target.classList.contains('left'));
           } else {
@@ -180,9 +185,6 @@ class Clip {
           this.cutPoint = (e.clientX - rect.left) / scale + this.start;
           clipMenu.trigger(this, e);
         }
-      },
-      oncontextmenu: e => {
-        e.preventDefault();
       }
     }, [
       Elem('div', {className: 'trim-bar left'}),
@@ -274,11 +276,13 @@ class Clip {
     this.elem.style.setProperty('--length', this.length * scale + 'px');
   }
 
-  splitAt(point) {
-    const newClip = new Clip(this.src);
-    newClip.start = point;
-    newClip.end = this.end;
-    newClip.updateStartEndStyle();
+  splitAt(point, log = true) {
+    if (log) logThis();
+    const newClip = new Clip({
+      src: this.src,
+      start: point,
+      end: this.end
+    });
     clips.splice(this.clipIndex + 1, 0, newClip);
     timelineWrapper.appendChild(newClip.elem);
     this.end = point;
@@ -286,7 +290,8 @@ class Clip {
     updateClips();
   }
 
-  remove() {
+  remove(log = true) {
+    if (log) logThis();
     clips.splice(this.clipIndex, 1);
     if (this.elem.parentNode) {
       this.elem.parentNode.removeChild(this.elem);
@@ -296,6 +301,14 @@ class Clip {
 
   get length() {
     return this.end - this.start;
+  }
+
+  toJSON() {
+    return {
+      src: this.src.name,
+      start: this.start,
+      end: this.end
+    }
   }
 
 }
@@ -313,6 +326,8 @@ const playIcon = document.getElementById('icon');
 const nextBtn = document.getElementById('next');
 const currentTime = document.getElementById('current');
 const lengthSpan = document.getElementById('length');
+const undoBtn = document.getElementById('undo');
+const redoBtn = document.getElementById('redo');
 const zoomOutBtn = document.getElementById('out');
 const zoomDisplay = document.getElementById('zoom')
 const zoomInBtn = document.getElementById('in');
@@ -371,6 +386,7 @@ function displayClipAt(time) {
   } else {
     currentIndex = null;
     preview.src = null;
+    stop();
   }
 }
 function movePlayhead(time, previewUpdate = true) {
@@ -387,6 +403,7 @@ function playheadFromPreview() {
 }
 
 preview.addEventListener('timeupdate', e => {
+  if (currentIndex === null) return;
   if (playing && preview.currentTime > clips[currentIndex].end) {
     if (currentIndex === clips.length - 1) {
       stop();
@@ -400,12 +417,14 @@ preview.addEventListener('timeupdate', e => {
   }
 });
 preview.addEventListener('loadeddata', e => {
+  if (currentIndex === null) return;
   if (playing && preview.readyState >= 2 && preview.paused) {
     preview.currentTime = clips[currentIndex].start;
     preview.play();
   }
 });
 preview.addEventListener('ended', e => {
+  if (currentIndex === null) return;
   if (playing) {
     if (currentIndex < clips.length - 1) {
       currentIndex++;
@@ -447,12 +466,14 @@ toStartBtn.addEventListener('click', e => {
   movePlayhead(0);
 });
 prevBtn.addEventListener('click', e => {
+  if (currentIndex === null) return;
   if (clips[currentIndex].start === preview.currentTime && currentIndex > 0) {
     currentIndex--;
   }
   movePlayhead(clips[currentIndex].pos);
 });
 nextBtn.addEventListener('click', e => {
+  if (currentIndex === null) return;
   movePlayhead(clips[currentIndex].pos + clips[currentIndex].length);
 });
 zoomInBtn.addEventListener('click', e => {
@@ -466,20 +487,24 @@ zoomOutBtn.addEventListener('click', e => {
   updateScale();
 });
 document.addEventListener('keydown', e => {
-  if (e.key === ' ') {
-    playBtn.click();
-  } else if (e.key === 'ArrowLeft') {
-    if (e.ctrlKey || e.metaKey) {
+  if (e.ctrlKey || e.metaKey) {
+    if (e.key === 'ArrowLeft') {
       if (e.shiftKey) toStartBtn.click();
       else prevBtn.click();
-    }
-    else movePlayhead(playheadTime - 1);
-  } else if (e.key === 'ArrowRight') {
-    if (e.ctrlKey || e.metaKey) {
+    } else if (e.key === 'ArrowRight') {
       if (e.shiftKey) movePlayhead(length);
       else nextBtn.click();
+    } else if (e.key === 'z') {
+      undoBtn.click();
+    } else if (e.key === 'Z' || e.key === 'Y') {
+      redoBtn.click();
     }
-    else movePlayhead(playheadTime + 1);
+  } else if (e.key === ' ') {
+    playBtn.click();
+  } else if (e.key === 'ArrowLeft') {
+    movePlayhead(playheadTime - 1);
+  } else if (e.key === 'ArrowRight') {
+    movePlayhead(playheadTime + 1);
   } else if (e.key === 'Enter') {
     if (currentIndex !== null) {
       clips[currentIndex].splitAt(playheadTime - clips[currentIndex].pos + clips[currentIndex].start);
@@ -514,10 +539,55 @@ addSource.addEventListener('change', async e => {
   addSource.disabled = true;
   addSource.parentNode.classList.add('disabled');
   for (const file of addSource.files) {
-    const source = new Source(file.name);
+    const source = sources[file.name] || new Source(file.name);
     source.attachFile(file);
     await source.ready;
   }
   addSource.disabled = false;
   addSource.parentNode.classList.remove('disabled');
+});
+
+const undoHist = [];
+const redoHist = [];
+function getEntry() {
+  const arr = clips.map(clip => clip.toJSON());
+  arr.time = playheadTime;
+  return arr;
+}
+function logThis() {
+  undoHist.push(getEntry());
+  undoBtn.disabled = false;
+  redoBtn.disabled = true;
+  redoHist.splice(0, redoHist.length);
+}
+function useEntry(entry) {
+  clips.forEach(clip => timelineWrapper.removeChild(clip.elem));
+  clips.splice(0, clips.length);
+  clips.push(...entry.map(data => new Clip(data)));
+  clips.forEach(clip => timelineWrapper.appendChild(clip.elem));
+  updateClips();
+  movePlayhead(entry.time);
+}
+undoBtn.addEventListener('click', e => {
+  if (undoHist.length) {
+    redoHist.push(getEntry());
+    const entry = undoHist.pop();
+    useEntry(entry);
+    redoBtn.disabled = false;
+    if (!undoHist.length) undoBtn.disabled = true;
+  }
+});
+redoBtn.addEventListener('click', e => {
+  if (redoHist.length) {
+    undoHist.push(getEntry());
+    const entry = redoHist.pop();
+    useEntry(entry);
+    undoBtn.disabled = false;
+    if (!redoHist.length) redoBtn.disabled = true;
+  }
+});
+
+// annoying thing to make the editor feel more like a native app
+document.addEventListener('contextmenu', e => {
+  e.preventDefault();
 });

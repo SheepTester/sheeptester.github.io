@@ -22,6 +22,10 @@ body {
   font-family: 'Montserrat', sans-serif;
   user-select: none;
 }
+:disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
 
 .menubar {
   display: flex;
@@ -54,10 +58,6 @@ body {
 }
 .menu-btn:hover {
   background-color: var(--btn-hover);
-}
-.menu-btn:disabled {
-  opacity: 0.5;
-  pointer-events: none;
 }
 
 .video-wrapper {
@@ -120,7 +120,8 @@ body {
 #preview {
   width: 100%;
   height: 100%;
-  background-color: black;
+  background-color: var(--layer);
+  border-radius: 20px;
 }
 
 .toolbar {
@@ -130,6 +131,9 @@ body {
 }
 .flex {
   flex: auto;
+}
+.space {
+  width: 20px;
 }
 .tool-btn {
   -webkit-appearance: none;
