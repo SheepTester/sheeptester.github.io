@@ -1,3 +1,54 @@
+'use strict';
+
+class Menu {
+
+  constructor(options) {
+    this.elem = Elem('div', {
+      className: 'context'
+    }, options.map(([fn, label, icon]) => Elem('button', {
+      className: 'context-item',
+      onclick: e => {
+        fn(this.target);
+        this.close();
+      }
+    }, [
+      Elem('i', {className: 'material-icons'}, [icon]),
+      Elem('span', {}, [label])
+    ])));
+    document.addEventListener('click', e => {
+      if (this.elem.parentNode) this.close();
+    });
+  }
+
+  trigger(target, e) {
+    const windowSize = [window.innerWidth, window.innerHeight];
+    this.target = target;
+    if (e) {
+      if (e.clientX > windowSize[0] / 2) {
+        this.elem.style.right = windowSize[0] - e.clientX + 'px';
+      } else {
+        this.elem.style.left = e.clientX + 'px';
+      }
+      if (e.clientY > windowSize[1] / 2) {
+        this.elem.style.bottom = windowSize[1] - e.clientY + 'px';
+      } else {
+        this.elem.style.top = e.clientY + 'px';
+      }
+    }
+    document.body.appendChild(this.elem);
+  }
+
+  close() {
+    this.target = null;
+    document.body.removeChild(this.elem);
+    this.elem.style.left = null;
+    this.elem.style.top = null;
+    this.elem.style.right = null;
+    this.elem.style.bottom = null;
+  }
+
+}
+
 const thumbnailCanvas = Elem('canvas');
 const thumbnailContext = thumbnailCanvas.getContext('2d');
 class Source {
@@ -42,13 +93,62 @@ class Source {
   }
 
   createClip(e) {
-    const rect = this.sourceElem.getBoundingClientRect();
-    const clip = new Clip(this);
-    clip.startDragging(e.clientX - rect.left, e.clientY - rect.top, e);
+    if (e.which === 1) {
+      const rect = this.sourceElem.getBoundingClientRect();
+      const clip = new Clip(this);
+      clip.startDragging(e.clientX - rect.left, e.clientY - rect.top, e);
+    } else if (e.which === 3) {
+      console.log('menu');
+    }
   }
 
 }
 
+const clipMenu = new Menu([
+  [
+    target => {
+      const startStr = prompt(`Start time? (between 0–${target.src.length} seconds)`);
+      const endStr = startStr && prompt(`End time? (between ${startStr}–${target.src.length} seconds)`);
+      const start = +startStr;
+      const end = +endStr;
+      if (startStr && !isNaN(start) && start >= 0 && start < target.src.length) {
+        target.start = start;
+      }
+      if (endStr && !isNaN(end) && end > target.start && end <= target.src.length) {
+        target.end = end;
+      }
+      target.updateStartEndStyle();
+      updateClips();
+    },
+    'Edit timings...',
+    'crop'
+  ],
+  [
+    target => {
+      target.splitAt(target.cutPoint);
+    },
+    'Split here',
+    'content_cut'
+  ],
+  [
+    target => {
+      const pointStr = prompt(`Where to split? (between ${target.start}–${target.end} seconds)`);
+      const point = +pointStr;
+      if (pointStr && !isNaN(point) && point > target.start && point < target.end) {
+        target.splitAt(point);
+      }
+    },
+    'Split at...',
+    'content_cut'
+  ],
+  [
+    target => {
+      target.remove();
+    },
+    'Delete',
+    'delete'
+  ]
+]);
 class Clip {
 
   constructor(src) {
@@ -67,14 +167,22 @@ class Clip {
         backgroundPosition: 0
       },
       onpointerdown: e => {
-        if (e.target.classList.contains('trim-bar')) {
-          this.startTrimming(e, e.target.classList.contains('left'));
-        } else {
-          const rect = this.elem.getBoundingClientRect();
-          clips.splice(this.clipIndex, 1);
-          updateClips();
-          this.startDragging(e.clientX - rect.left, e.clientY - rect.top, e);
+        const rect = this.elem.getBoundingClientRect();
+        if (e.which === 1) {
+          if (e.target.classList.contains('trim-bar')) {
+            this.startTrimming(e, e.target.classList.contains('left'));
+          } else {
+            clips.splice(this.clipIndex, 1);
+            updateClips();
+            this.startDragging(e.clientX - rect.left, e.clientY - rect.top, e);
+          }
+        } else if (e.which === 3) {
+          this.cutPoint = (e.clientX - rect.left) / scale + this.start;
+          clipMenu.trigger(this, e);
         }
+      },
+      oncontextmenu: e => {
+        e.preventDefault();
       }
     }, [
       Elem('div', {className: 'trim-bar left'}),
@@ -161,6 +269,31 @@ class Clip {
     }
   }
 
+  updateStartEndStyle() {
+    this.elem.style.backgroundPosition = -this.start * scale + 'px';
+    this.elem.style.setProperty('--length', this.length * scale + 'px');
+  }
+
+  splitAt(point) {
+    const newClip = new Clip(this.src);
+    newClip.start = point;
+    newClip.end = this.end;
+    newClip.updateStartEndStyle();
+    clips.splice(this.clipIndex + 1, 0, newClip);
+    timelineWrapper.appendChild(newClip.elem);
+    this.end = point;
+    this.updateStartEndStyle();
+    updateClips();
+  }
+
+  remove() {
+    clips.splice(this.clipIndex, 1);
+    if (this.elem.parentNode) {
+      this.elem.parentNode.removeChild(this.elem);
+    }
+    updateClips();
+  }
+
   get length() {
     return this.end - this.start;
   }
@@ -215,7 +348,8 @@ function updateClips() {
   lengthSpan.textContent = Math.floor(t / 60) + ':'
     + Math.floor(t % 60).toString().padStart(2, '0');
     // + '.' + (t % 1).toFixed(3).slice(2);
-  displayClipAt(playheadTime);
+  if (playheadTime > length) movePlayhead(length);
+  else displayClipAt(playheadTime);
 }
 function displayClipAt(time) {
   if (clips.length) {
@@ -235,7 +369,7 @@ function displayClipAt(time) {
     }
     preview.currentTime = clips[currentIndex].end;
   } else {
-    currentClip = null;
+    currentIndex = null;
     preview.src = null;
   }
 }
@@ -272,7 +406,18 @@ preview.addEventListener('loadeddata', e => {
   }
 });
 preview.addEventListener('ended', e => {
-  if (playing) stop();
+  if (playing) {
+    if (currentIndex < clips.length - 1) {
+      currentIndex++;
+      if (preview.src !== clips[currentIndex].src.video) {
+        preview.src = clips[currentIndex].src.video
+      }
+      preview.currentTime = clips[currentIndex].start;
+      preview.play();
+    } else {
+      stop();
+    }
+  }
 });
 function positionPlayhead() {
   movePlayhead(playheadFromPreview(), false);
@@ -335,6 +480,14 @@ document.addEventListener('keydown', e => {
       else nextBtn.click();
     }
     else movePlayhead(playheadTime + 1);
+  } else if (e.key === 'Enter') {
+    if (currentIndex !== null) {
+      clips[currentIndex].splitAt(playheadTime - clips[currentIndex].pos + clips[currentIndex].start);
+    }
+  } else if (e.key === 'Delete') {
+    if (currentIndex !== null) {
+      clips[currentIndex].remove();
+    }
   }
 });
 

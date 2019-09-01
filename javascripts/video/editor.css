@@ -66,7 +66,6 @@ body {
   height: 0;
 }
 .sources {
-  flex: auto;
   margin: 20px;
   background-color: var(--layer);
   border-radius: 10px;
@@ -223,4 +222,32 @@ body {
 .right {
   right: 0;
   background-image: linear-gradient(-90deg, rgba(0, 0, 0, 0.5), transparent);
+}
+
+.context {
+  position: fixed;
+  background-color: var(--metalayer);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+  border-radius: 5px;
+  overflow: hidden;
+  z-index: 3;
+}
+.context-item {
+  -webkit-appearance: none;
+  display: flex;
+  width: 100%;
+  color: var(--text);
+  background: none;
+  border: none;
+  font: inherit;
+  font-size: 14px;
+  padding: 10px;
+  cursor: pointer;
+  align-items: center;
+}
+.context-item .material-icons {
+  margin-right: 10px;
+}
+.context-item:hover {
+  background-color: var(--btn-hover);
 }
