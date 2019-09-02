@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>OpenShit</title>
+    <meta name="description" content="A dumb video editor"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="./openshit.css">
+    <script src="../_dom2.js" charset="utf-8"></script>
+  </head>
+  <body>
+    <div class="main">
+      <div class="panel">
+        <div class="menubar">
+          <div class="logo">OpenShit</div>
+          <button type="button" class="menu-btn" id="save">Save</button>
+          <input type="file" accept="application/json" class="hidden-accessible" id="load">
+          <label for="load" class="menu-btn">Load</label>
+          <button type="button" class="menu-btn" id="export">Export</button>
+        </div>
+        <input type="radio" name="tab" class="hidden-accessible" id="sources-tab" checked>
+        <input type="radio" name="tab" class="hidden-accessible" id="properties-tab">
+        <div class="tabs">
+          <label class="tab" for="sources-tab">Sources</label>
+          <label class="tab" for="properties-tab">Properties</label>
+        </div>
+        <div class="sources" id="sources">hi</div>
+        <div class="properties">hello</div>
+      </div>
+      <div class="player">
+        <div class="preview">
+          <canvas id="preview" width="1600" height="900"></canvas>
+        </div>
+        <div class="toolbar">
+          <button type="button" class="tool-btn" id="start" aria-label="to beginning" title="ctrl + shift + left arrow"><i class="material-icons">first_page</i></button>
+          <button type="button" class="tool-btn" id="prev" aria-label="jump to previous point" title="ctrl + left arrow"><i class="material-icons">navigate_before</i></button>
+          <button type="button" class="tool-btn" id="play" aria-label="play/pause" title="space"><i class="material-icons" id="icon">play_arrow</i></button>
+          <button type="button" class="tool-btn" id="next" aria-label="jump to next point" title="ctrl + right arrow"><i class="material-icons">navigate_next</i></button>
+          <span class="timestamp"><span id="current">0:00</span> / <span id="length">0:00</span></span>
+          <span class="flex"></span>
+          <button type="button" class="tool-btn" id="text" aria-label="add text"><i class="material-icons">title</i></button>
+          <span class="flex"></span>
+          <button type="button" class="tool-btn" id="undo" aria-label="undo" title="ctrl + Z" disabled><i class="material-icons">undo</i></button>
+          <button type="button" class="tool-btn" id="redo" aria-label="redo" title="ctrl + Y" disabled><i class="material-icons">redo</i></button>
+          <span class="space"></span>
+          <button type="button" class="tool-btn" id="out" aria-label="zoom out" title="-"><i class="material-icons">zoom_out</i></button>
+          <button type="button" class="tool-btn" id="in" aria-label="zoom in" title="="><i class="material-icons">zoom_in</i></button>
+        </div>
+      </div>
+    </div>
+    <div class="timeline">
+      <div class="time-markers" id="axis"></div>
+      <div class="playhead" id="playhead"></div>
+      <div class="timing-functions" id="timing functions"></div>
+    </div>
+  </body>
+</html>
