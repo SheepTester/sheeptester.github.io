@@ -2,8 +2,10 @@
   --background: #253137;
   --layer: #1F292E;
   --metalayer: #1B2327;
+  --metalayer-translucent: rgba(27, 35, 39, 0.8);
   --btn: #1F292E;
   --btn-hover: #324149;
+  --separator: rgba(255, 255, 255, 0.1);
   --text: rgba(255, 255, 255, 0.65);
   --text-em: #87c9c3;
 }
@@ -43,7 +45,7 @@ body {
 
 .panel {
   display: flex;
-  width: 300px; /* change later? */
+  width: 286px;
   flex-direction: column;
 }
 .menubar {
@@ -87,12 +89,92 @@ body {
 .properties {
   display: none;
   flex: auto;
-  font-size: 14px; /* TEMP */
-  padding: 10px;
 }
 #sources-tab:checked ~ .sources,
 #properties-tab:checked ~ .properties {
   display: block;
+}
+
+.sources {
+  padding: 5px;
+}
+.source {
+  display: inline-block;
+  width: 128px;
+  height: 72px;
+  background-color: var(--layer);
+  border-radius: 5px;
+  cursor: pointer;
+  vertical-align: top;
+  margin: 5px;
+}
+.add {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.property {
+  display: flex;
+  align-items: center;
+  padding: 5px;
+  padding-left: 10px;
+}
+.property:nth-child(2n) {
+  background-color: var(--layer);
+}
+.property span {
+  flex: auto;
+  font-size: 14px;
+}
+.input-wrapper {
+  flex: none;
+  background-color: var(--metalayer);
+  padding: 5px;
+  padding-right: 30px;
+  border-radius: 5px;
+  font-family: monospace;
+  position: relative;
+}
+.input-wrapper:focus-within {
+  background-color: var(--btn-hover);
+}
+.value {
+  -webkit-appearance: none;
+  border: none;
+  background: none;
+  font: inherit;
+  color: var(--text);
+  font-size: 14px;
+  width: 8ch;
+  text-align: right;
+  cursor: ns-resize;
+}
+.value::-webkit-inner-spin-button {
+  display: none;
+}
+.unit {
+  font-size: 14px;
+  margin-left: 5px;
+  white-space: pre;
+}
+.key {
+  -webkit-appearance: none;
+  border: none;
+  background: none;
+  background-image: url('./key.svg');
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 12px;
+  position: absolute;
+  right: 0;
+  width: 30px;
+  height: 100%;
+  top: 0;
+  cursor: pointer;
+}
+.active {
+  background-image: url('./keyed.svg');
 }
 
 .player {
@@ -142,7 +224,32 @@ body {
   color: var(--text-em);
 }
 
+.timeline-scroller {
+  position: relative;
+  height: 200px;
+  overflow: auto;
+}
+.timeline-wrapper {
+  display: flex;
+  align-items: stretch;
+}
+.timing-functions {
+  position: relative;
+  width: 150px;
+  background-color: var(--metalayer-translucent);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.5);
+}
 .timeline {
-  height: 200px; /* change later? */
+  flex: auto;
+}
+.time-markers {
+  border-bottom: 1px solid var(--separator);
+  height: 20px;
+  width: 100%;
+}
+.track {
+  height: 40px;
+}
+.track:nth-child(2n) {
   background-color: var(--layer);
 }
