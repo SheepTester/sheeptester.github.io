@@ -11,8 +11,11 @@
     <script src="../../_dom2.js" charset="utf-8"></script>
     <script src="./utils.js" charset="utf-8"></script>
     <script src="./sources.js" charset="utf-8"></script>
+    <script src="./tracks.js" charset="utf-8"></script>
+    <script src="./layers.js" charset="utf-8"></script>
   </head>
   <body>
+    <!-- TODO: consider removing border radii (metro-like design) because touching border radii looks ugly in timeline? -->
     <div class="main">
       <div class="panel">
         <div class="menubar">
@@ -65,7 +68,7 @@
           <label class="property">
             <span>Position X</span>
             <div class="input-wrapper">
-              <input type="number" class="value" value="0" data-digits="3" data-range="1">
+              <input type="number" class="value" value="0.000" data-digits="3" data-range="1">
               <span class="unit"> </span>
               <button type="button" class="key active"></button>
             </div>
@@ -73,7 +76,7 @@
           <label class="property">
             <span>Position Y</span>
             <div class="input-wrapper">
-              <input type="number" class="value" value="0" data-digits="3" data-range="1">
+              <input type="number" class="value" value="0.000" data-digits="3" data-range="1">
               <span class="unit"> </span>
               <button type="button" class="key"></button>
             </div>
@@ -101,18 +104,12 @@
         </div>
       </div>
     </div>
-    <div class="timeline-scroller">
+    <div class="timeline-scroller" id="scroll">
       <div class="timeline-wrapper">
-        <div class="timing-functions" id="timing functions"></div>
+        <div class="timing-functions" id="ease"></div>
         <div class="timeline">
           <div class="time-markers" id="axis"></div>
-          <div class="tracks" id="tracks">
-            <div class="track"></div>
-            <div class="track"></div>
-            <div class="track"></div>
-            <div class="track"></div>
-            <div class="track"></div>
-          </div>
+          <div class="layers" id="layers"></div>
           <div class="playhead" id="playhead"></div>
         </div>
       </div>

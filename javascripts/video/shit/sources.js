@@ -16,6 +16,11 @@ class Source {
     }, [
       Elem('span', {className: 'name'}, [this.name])
     ]);
+    isDragTrigger(this.elem, (e, switchControls) => {
+      const track = this.createTrack();
+      track.dragStart(e, [5, 5]);
+      switchControls([track.dragMove, track.dragEnd]);
+    });
 
     this.ready = new Promise(res => this.amReady = res)
       .then(() => {
@@ -50,6 +55,10 @@ class VideoSource extends Source {
     thumbnailVideo.currentTime = thumbnailVideo.duration / 2;
   }
 
+  createTrack() {
+    return new VideoTrack(this);
+  }
+
 }
 
 class ImageSource extends Source {
@@ -65,6 +74,10 @@ class ImageSource extends Source {
       this.amReady();
     };
     this.image.src = this.url;
+  }
+
+  createTrack() {
+    return new ImageTrack(this);
   }
 
 }
@@ -99,6 +112,10 @@ class AudioSource extends Source {
         this.thumbnail = thumbnailCanvas.toDataURL();
         this.amReady();
       });
+  }
+
+  createTrack() {
+    return new AudioTrack(this);
   }
 
 }

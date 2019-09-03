@@ -1,0 +1,363 @@
+const SNAP_DIST = 5; // in px
+
+const baseProps = [
+  {
+    id: 'start',
+    label: 'Trim start',
+    unit: 's',
+    digits: 1,
+    range: 30,
+    defaultVal: 0
+  }
+];
+
+const mediaProps = [
+  {
+    id: 'trimStart',
+    label: 'Trim start',
+    unit: 's',
+    digits: 1,
+    range: 30,
+    defaultVal: 0
+  },
+  {
+    id: 'trimEnd',
+    label: 'Trim end',
+    unit: 's',
+    digits: 1,
+    range: 30,
+    defaultVal: 0
+  },
+  {
+    id: 'volume',
+    label: 'Volume',
+    units: '%',
+    digits: 0,
+    range: 100,
+    defaultVal: 100,
+    animatable: true
+  }
+];
+const graphicalProps = [
+  {
+    id: 'opacity',
+    label: 'Opacity',
+    units: '%',
+    digits: 0,
+    range: 100,
+    defaultVal: 100,
+    animatable: true
+  },
+  {
+    id: 'xPos',
+    label: 'Position X',
+    digits: 3,
+    range: 1,
+    defaultVal: 0,
+    animatable: true
+  },
+  {
+    id: 'yPos',
+    label: 'Position Y',
+    digits: 3,
+    range: 1,
+    defaultVal: 0,
+    animatable: true
+  },
+  {
+    id: 'xScale',
+    label: 'Scale X',
+    digits: 3,
+    range: 1,
+    defaultVal: 0,
+    animatable: true
+  },
+  {
+    id: 'yScale',
+    label: 'Scale Y',
+    digits: 3,
+    range: 1,
+    defaultVal: 0,
+    animatable: true
+  },
+  {
+    id: 'rotation',
+    label: 'Rotation',
+    unit: '°',
+    digits: 1,
+    range: 180,
+    defaultVal: 0,
+    animatable: true
+  }
+];
+
+const lengthProp = {
+  id: 'length',
+  label: 'Duration',
+  unit: 's',
+  digits: 1,
+  range: 30,
+  defaultVal: 3
+};
+
+class Track {
+
+  constructor(source, props) {
+    this.dragMove = this.dragMove.bind(this);
+    this.dragEnd = this.dragEnd.bind(this);
+
+    this.source = source;
+    this.keys = [];
+    this.props = props;
+    props.forEach(({id, defaultVal}) => {
+      if (defaultVal !== undefined) this[id] = defaultVal;
+    });
+    this.elem = Elem('div', {
+      className: 'track',
+      style: {
+        backgroundImage: source && `url(${encodeURI(source.thumbnail)})`
+      }
+    }, [
+      this.name = Elem('span', {className: 'name'}, [source && source.name])
+    ]);
+    isDragTrigger(this.elem, e => this.dragStart(e), this.dragMove, this.dragEnd);
+    this.placeholder = Elem('div', {className: 'track placeholder'});
+    this.updateScale();
+  }
+
+  get end() {
+    return this.start + this.length;
+  }
+
+  updateLength() {
+    this.elem.style.setProperty('--start', this.start * scale + 'px');
+    this.elem.style.setProperty('--length', this.length * scale + 'px');
+  }
+
+  updateScale() {
+    this.updateLength();
+  }
+
+  // TODO: don't start dragging immediately unless otherwise specified
+  dragStart({clientX, clientY}, offsets) {
+    if (this.layer) {
+      this.layer.tracks.splice(this.index, 1);
+      this.layer.updateTracks();
+    }
+    // TODO: should probably set these all to null when done dragging
+    this.layerBounds = getLayerBounds();
+    this.jumpPoints = getAllJumpPoints();
+    this.timelineLeft = layersWrapper.getBoundingClientRect().left + scrollX;
+    if (!offsets) {
+      const {left, top} = this.elem.getBoundingClientRect();
+      offsets = [clientX - left, clientY - top];
+    }
+    this.dragOffsets = offsets;
+    this.elem.classList.add('dragging');
+    this.elem.style.left = clientX - offsets[0] + 'px';
+    this.elem.style.top = clientY - offsets[1] + 'px';
+    document.body.appendChild(this.elem);
+    this.possibleLayer = null;
+    this.placeholder.style.setProperty('--length', this.length * scale + 'px');
+  }
+
+  dragMove({clientX, clientY, shiftKey}) {
+    const placeholder = this.placeholder;
+    if (clientY < this.layerBounds[0].top) {
+      if (this.possibleLayer) {
+        placeholder.parentNode.removeChild(placeholder);
+        this.possibleLayer = null;
+      }
+    } else {
+      const {layer} = this.layerBounds.find(({bottom}) => clientY < bottom - scrollY)
+        || this.layerBounds[this.layerBounds.length - 1];
+      if (this.possibleLayer !== layer) {
+        this.possibleLayer = layer;
+        layer.elem.appendChild(placeholder);
+      }
+      this.possibleStart = (clientX - this.dragOffsets[0] + scrollX - this.timelineLeft) / scale;
+      if (!shiftKey) {
+        let jumpPoint = null, minDist = Infinity;
+        this.jumpPoints.forEach(time => {
+          const dist = Math.abs(time - this.possibleStart);
+          const endDist = Math.abs(time - this.possibleStart - this.length);
+          if (dist < SNAP_DIST && dist < minDist) {
+            jumpPoint = time;
+            minDist = dist;
+          } else if (endDist < SNAP_DIST && endDist < minDist) {
+            jumpPoint = time - this.length;
+            minDist = endDist;
+          }
+        });
+        if (jumpPoint !== null) this.possibleStart = jumpPoint;
+      }
+      if (this.possibleStart < 0) this.possibleStart = 0;
+      placeholder.style.setProperty('--start', this.possibleStart * scale + 'px');
+    }
+    this.elem.style.left = clientX - this.dragOffsets[0] + 'px';
+    this.elem.style.top = clientY - this.dragOffsets[1] + 'px';
+  }
+
+  dragEnd() {
+    this.elem.classList.remove('dragging');
+    this.elem.style.left = null;
+    this.elem.style.top = null;
+    const layer = this.possibleLayer;
+    if (layer) {
+      this.placeholder.parentNode.removeChild(this.placeholder);
+      this.start = this.possibleStart;
+      this.updateLength();
+      if (layer.tracksBetween(this.start, this.end).length) {
+        if (layer.index > 0 && !layers[layer.index - 1].tracksBetween(this.start, this.end).length) {
+          layers[layer.index - 1].addTrack(this);
+        } else {
+          const newLayer = new Layer();
+          layer.insertBefore(newLayer);
+          newLayer.addTrack(this);
+        }
+      } else {
+        layer.addTrack(this);
+      }
+    } else {
+      this.remove('drag-delete');
+    }
+  }
+
+  remove(reason) {
+    if (this.elem.parentNode) {
+      this.elem.parentNode.removeChild(this.elem);
+    }
+    console.log('todo: delete');
+  }
+
+  // start, end, props, keys
+
+  // prepareFrame(time) -> a promise
+
+  // renderFrame(time)
+
+}
+
+class VideoTrack extends Track {
+
+  constructor(source) {
+    super(
+      source,
+      [...baseProps, ...mediaProps, ...graphicalProps]
+    );
+    this.trimEnd = this.source.length;
+    this.updateLength();
+    this.elem.classList.add('video');
+    let videoLoaded;
+    this.videoLoaded = new Promise(res => videoLoaded = res);
+    this.video = Elem('video', {
+      src: this.source.url,
+      onloadeddata: e => {
+        if (this.video.readyState < 2) return;
+        videoLoaded();
+      }
+    });
+  }
+
+  get length() {
+    return this.trimEnd - this.trimStart;
+  }
+
+  updateLength() {
+    super.updateLength();
+    this.elem.style.backgroundPosition = -this.trimStart * scale + 'px';
+  }
+
+  updateScale() {
+    super.updateScale();
+    this.elem.style.backgroundSize = this.source.length * scale + 'px';
+  }
+
+  prepareFrame(time) {
+    return new Promise(res => {
+      this.video.addEventListener('timeupdate', res, {once: true});
+      this.video.currentTime = time - this.start; // TODO: this is incorrect
+    });
+  }
+
+}
+
+class AudioTrack extends Track {
+
+  constructor(source) {
+    super(
+      source,
+      [...baseProps, ...mediaProps]
+    );
+    this.trimEnd = this.source.length;
+    this.updateLength();
+    this.elem.classList.add('audio');
+    this.audio = new Audio(this.source.url);
+    this.audioLoaded = new Promise(res => this.audio.onload = res);
+  }
+
+  get length() {
+    return this.trimEnd - this.trimStart;
+  }
+
+  get end() {
+    return this.start + this.length;
+  }
+
+  updateLength() {
+    super.updateLength();
+    this.elem.style.backgroundPosition = -this.trimStart * scale + 'px';
+  }
+
+  updateScale() {
+    super.updateScale();
+    this.elem.style.backgroundSize = this.source.length * scale + 'px 100%';
+  }
+
+}
+
+class ImageTrack extends Track {
+
+  constructor(source) {
+    super(
+      source,
+      [...baseProps, lengthProp, ...graphicalProps]
+    );
+    this.elem.classList.add('image');
+  }
+
+}
+
+class TextTrack extends Track {
+
+  constructor(source) {
+    super(
+      source,
+      // TODO: font? and also text value lol
+      [...baseProps, lengthProp, ...graphicalProps, {
+        id: 'rColour',
+        label: 'Red',
+        digits: 0,
+        range: 255,
+        defaultVal: 255,
+        animatable: true
+      }, {
+        id: 'gColour',
+        label: 'Green',
+        digits: 0,
+        range: 255,
+        defaultVal: 255,
+        animatable: true
+      }, {
+        id: 'bColour',
+        label: 'Blue',
+        digits: 0,
+        range: 255,
+        defaultVal: 255,
+        animatable: true
+      }]
+    );
+    this.elem.classList.add('text');
+  }
+
+}

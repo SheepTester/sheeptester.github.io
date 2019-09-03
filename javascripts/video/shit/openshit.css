@@ -237,10 +237,12 @@ button, input {
 .timeline-wrapper {
   display: flex;
   align-items: stretch;
+  height: 100%;
 }
 .timing-functions {
   position: relative;
   width: 150px;
+  flex: none;
   background-color: var(--metalayer-translucent);
   box-shadow: 0 3px 8px rgba(0, 0, 0, 0.5);
 }
@@ -252,9 +254,46 @@ button, input {
   height: 20px;
   width: 100%;
 }
-.track {
+
+.layer {
   height: 40px;
+  position: relative;
 }
-.track:nth-child(2n) {
+.layer:nth-child(2n+1) {
   background-color: var(--layer);
+}
+
+.track {
+  border-radius: 5px;
+  background-repeat: repeat-x;
+  background-color: var(--metalayer);
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: var(--start);
+  margin: 5px 0;
+  width: var(--length);
+  overflow: hidden;
+}
+.dragging {
+  position: fixed;
+  height: 30px;
+  opacity: 0.5;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.5);
+  margin: 0;
+  bottom: auto;
+}
+.placeholder {
+  background-color: var(--btn-hover);
+}
+.track .name {
+  white-space: pre;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+.image.track {
+  background-size: cover;
+}
+.text.track {
+  background-color: #725287;
 }
