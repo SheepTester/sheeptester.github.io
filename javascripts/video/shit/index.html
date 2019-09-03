@@ -9,6 +9,8 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="./openshit.css">
     <script src="../../_dom2.js" charset="utf-8"></script>
+    <script src="./utils.js" charset="utf-8"></script>
+    <script src="./sources.js" charset="utf-8"></script>
   </head>
   <body>
     <div class="main">
@@ -26,40 +28,36 @@
           <label class="tab" for="sources-tab">Sources</label>
           <label class="tab" for="properties-tab">Properties</label>
         </div>
-        <div class="sources" id="sources">
-          <div class="source"></div>
-          <div class="source"></div>
-          <div class="source"></div>
-          <div class="source"></div>
-          <input type="file" accept="video/*" class="hidden-accessible" title="Add a source" id="add" multiple>
+        <div class="sources">
+          <input type="file" accept="video/*,audio/*,image/*" class="hidden-accessible" title="Add a source" id="add" multiple>
           <label class="add source" for="add"><i class="material-icons">add</i></label>
         </div>
         <div class="properties">
           <label class="property">
-            <span>Position</span>
+            <span>Start time</span>
             <div class="input-wrapper">
-              <input type="number" class="value" value="0.000">
+              <input type="number" class="value" value="0.0" data-digits="1" data-range="30">
               <span class="unit">s</span>
             </div>
           </label>
           <label class="property">
             <span>Trim start</span>
             <div class="input-wrapper">
-              <input type="number" class="value" value="0.000">
+              <input type="number" class="value" value="0.0" data-digits="1" data-range="30">
               <span class="unit">s</span>
             </div>
           </label>
           <label class="property">
             <span>Trim end</span>
             <div class="input-wrapper">
-              <input type="number" class="value" value="73.123">
+              <input type="number" class="value" value="73.1" data-digits="1" data-range="30">
               <span class="unit">s</span>
             </div>
           </label>
           <label class="property">
             <span>Opacity</span>
             <div class="input-wrapper">
-              <input type="number" class="value" value="100">
+              <input type="number" class="value" value="100" data-digits="0" data-range="100">
               <span class="unit">%</span>
               <button type="button" class="key"></button>
             </div>
@@ -67,7 +65,7 @@
           <label class="property">
             <span>Position X</span>
             <div class="input-wrapper">
-              <input type="number" class="value" value="100">
+              <input type="number" class="value" value="0" data-digits="3" data-range="1">
               <span class="unit"> </span>
               <button type="button" class="key active"></button>
             </div>
@@ -75,7 +73,7 @@
           <label class="property">
             <span>Position Y</span>
             <div class="input-wrapper">
-              <input type="number" class="value" value="100">
+              <input type="number" class="value" value="0" data-digits="3" data-range="1">
               <span class="unit"> </span>
               <button type="button" class="key"></button>
             </div>
@@ -119,5 +117,6 @@
         </div>
       </div>
     </div>
+    <script src="./openshit.js" charset="utf-8"></script>
   </body>
 </html>

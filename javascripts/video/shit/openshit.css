@@ -25,7 +25,9 @@ body {
   font-family: 'Open Sans', sans-serif;
   user-select: none;
 }
-:disabled {
+:disabled,
+.disabled,
+:disabled ~ .add {
   opacity: 0.5;
   pointer-events: none;
 }
@@ -36,6 +38,13 @@ body {
 	overflow: hidden;
 	position: absolute;
 	z-index: -1;
+}
+button, input {
+  -webkit-appearance: none;
+  border: none;
+  background: none;
+  font: inherit;
+  color: inherit;
 }
 
 .main {
@@ -62,12 +71,7 @@ body {
   margin-right: 15px;
 }
 .menu-btn {
-  -webkit-appearance: none;
-  border: none;
-  background: none;
   cursor: pointer;
-  font: inherit;
-  color: var(--text);
   font-size: 14px;
   padding: 0 5px;
 }
@@ -107,6 +111,20 @@ body {
   cursor: pointer;
   vertical-align: top;
   margin: 5px;
+  overflow: hidden;
+  word-break: break-word;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+.audio.source {
+  background-size: 100% 100%;
+}
+.name {
+  display: block;
+  font-size: 12px;
+  padding: 5px 10px;
+  text-shadow: 0 1px 5px rgba(0, 0, 0, 0.8);
 }
 .add {
   display: inline-flex;
@@ -140,11 +158,6 @@ body {
   background-color: var(--btn-hover);
 }
 .value {
-  -webkit-appearance: none;
-  border: none;
-  background: none;
-  font: inherit;
-  color: var(--text);
   font-size: 14px;
   width: 8ch;
   text-align: right;
@@ -159,9 +172,6 @@ body {
   white-space: pre;
 }
 .key {
-  -webkit-appearance: none;
-  border: none;
-  background: none;
   background-image: url('./key.svg');
   background-position: center;
   background-repeat: no-repeat;
@@ -208,11 +218,6 @@ body {
   width: 20px;
 }
 .tool-btn {
-  -webkit-appearance: none;
-  border: none;
-  background: none;
-  font: inherit;
-  color: var(--text);
   padding: 0 5px;
   cursor: pointer;
 }
