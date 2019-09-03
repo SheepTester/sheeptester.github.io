@@ -264,7 +264,6 @@ button, input {
 }
 
 .track {
-  border-radius: 5px;
   background-repeat: repeat-x;
   background-color: var(--metalayer);
   position: absolute;

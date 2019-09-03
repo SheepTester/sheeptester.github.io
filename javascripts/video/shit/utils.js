@@ -1,7 +1,7 @@
 let controller = null;
 function isDragTrigger(elem, ondown, ...fns) {
   elem.addEventListener('mousedown', e => {
-    if (controller) return;
+    if (controller || e.which !== 1) return;
     controller = fns;
     ondown(e, newController => controller = newController);
   });
