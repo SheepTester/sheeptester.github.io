@@ -1,4 +1,5 @@
-const SNAP_DIST = 5; // in px
+const SNAP_DIST = 10; // in px
+const MIN_LENGTH = 0.1; // in s
 
 const baseProps = [
   {
@@ -118,7 +119,9 @@ class Track {
         backgroundImage: source && `url(${encodeURI(source.thumbnail)})`
       }
     }, [
-      this.name = Elem('span', {className: 'name'}, [source && source.name])
+      Elem('span', {className: 'trim trim-start'}),
+      this.name = Elem('span', {className: 'name'}, [source && source.name]),
+      Elem('span', {className: 'trim trim-end'})
     ]);
     isDragTrigger(this.elem, e => this.dragStart(e), this.dragMove, this.dragEnd);
     this.placeholder = Elem('div', {className: 'track placeholder'});
@@ -127,6 +130,16 @@ class Track {
 
   get end() {
     return this.start + this.length;
+  }
+
+  set end(end) {
+    this.length = end - this.start;
+  }
+
+  // sets this.start while keeping this.end constant
+  setLeftSide(start) {
+    this.length = this.end - start;
+    this.start = start;
   }
 
   updateLength() {
@@ -139,7 +152,31 @@ class Track {
   }
 
   // TODO: don't start dragging immediately unless otherwise specified
-  dragStart({clientX, clientY}, offsets) {
+  dragStart({clientX, clientY, target}, offsets) {
+    this.timelineLeft = layersWrapper.getBoundingClientRect().left + scrollX;
+    if (target.classList.contains('trim')) {
+      this.trimming = true;
+      document.body.classList.add('trimming');
+      this.trimmingStart = target.classList.contains('trim-start');
+      if (this.trimmingStart) {
+        this.init = this.start;
+        this.trimMin = this.index > 0
+          ? this.layer.tracks[this.index - 1].end
+          : 0;
+        this.trimMax = this.end - MIN_LENGTH;
+      } else {
+        this.init = this.end;
+        this.trimMin = this.start + MIN_LENGTH;
+        this.trimMax = this.index < this.layer.tracks.length - 1
+          ? this.layer.tracks[this.index + 1].start
+          : Infinity;
+      }
+      this.jumpPoints = getAllJumpPoints();
+      // do not snap to other side
+      const index = this.jumpPoints.indexOf(this.trimmingStart ? this.end : this.start);
+      if (~index) this.jumpPoints.splice(index, 1);
+      return;
+    }
     if (this.layer) {
       this.layer.tracks.splice(this.index, 1);
       this.layer.updateTracks();
@@ -147,7 +184,6 @@ class Track {
     // TODO: should probably set these all to null when done dragging
     this.layerBounds = getLayerBounds();
     this.jumpPoints = getAllJumpPoints();
-    this.timelineLeft = layersWrapper.getBoundingClientRect().left + scrollX;
     if (!offsets) {
       const {left, top} = this.elem.getBoundingClientRect();
       offsets = [clientX - left, clientY - top];
@@ -162,6 +198,20 @@ class Track {
   }
 
   dragMove({clientX, clientY, shiftKey}) {
+    if (this.trimming) {
+      let cursor = (clientX + scrollX - this.timelineLeft) / scale;
+      // TODO: snapping for loop borders
+      if (!shiftKey) cursor = Track.snapPoint(this.jumpPoints, cursor);
+      if (cursor < this.trimMin) cursor = this.trimMin;
+      else if (cursor > this.trimMax) cursor = this.trimMax;
+      if (this.trimmingStart) {
+        this.setLeftSide(cursor);
+      } else {
+        this.end = cursor;
+      }
+      this.updateLength();
+      return;
+    }
     const placeholder = this.placeholder;
     if (clientY < this.layerBounds[0].top) {
       if (this.possibleLayer) {
@@ -177,19 +227,11 @@ class Track {
       }
       this.possibleStart = (clientX - this.dragOffsets[0] + scrollX - this.timelineLeft) / scale;
       if (!shiftKey) {
-        let jumpPoint = null, minDist = Infinity;
-        this.jumpPoints.forEach(time => {
-          const dist = Math.abs(time - this.possibleStart);
-          const endDist = Math.abs(time - this.possibleStart - this.length);
-          if (dist < SNAP_DIST && dist < minDist) {
-            jumpPoint = time;
-            minDist = dist;
-          } else if (endDist < SNAP_DIST && endDist < minDist) {
-            jumpPoint = time - this.length;
-            minDist = endDist;
-          }
-        });
-        if (jumpPoint !== null) this.possibleStart = jumpPoint;
+        this.possibleStart = Track.snapPoint(
+          this.jumpPoints,
+          this.possibleStart,
+          this.possibleStart + this.length
+        );
       }
       if (this.possibleStart < 0) this.possibleStart = 0;
       placeholder.style.setProperty('--start', this.possibleStart * scale + 'px');
@@ -199,6 +241,15 @@ class Track {
   }
 
   dragEnd() {
+    this.timelineLeft = null;
+    this.jumpPoints = null;
+    if (this.trimming) {
+      this.trimming = false;
+      document.body.classList.remove('trimming');
+      return;
+    }
+    this.layerBounds = null;
+    this.dragOffsets = null;
     this.elem.classList.remove('dragging');
     this.elem.style.left = null;
     this.elem.style.top = null;
@@ -221,6 +272,8 @@ class Track {
     } else {
       this.remove('drag-delete');
     }
+    this.possibleLayer = null;
+    this.possibleStart = null;
   }
 
   remove(reason) {
@@ -235,6 +288,24 @@ class Track {
   // prepareFrame(time) -> a promise
 
   // renderFrame(time)
+
+  // returns jumpPoint relative to currentTime, even if it snaps
+  // according to altTime
+  static snapPoint(jumpPoints, currentTime, altTime) {
+    let jumpPoint = currentTime, minDist = Infinity;
+    jumpPoints.forEach(time => {
+      const dist = Math.abs(time - currentTime);
+      const altDist = Math.abs(time - altTime);
+      if (dist < SNAP_DIST / scale && dist < minDist) {
+        jumpPoint = time;
+        minDist = dist;
+      } else if (altDist < SNAP_DIST / scale && altDist < minDist) {
+        jumpPoint = time - (altTime - currentTime);
+        minDist = altDist;
+      }
+    });
+    return jumpPoint;
+  }
 
 }
 
@@ -259,8 +330,18 @@ class VideoTrack extends Track {
     });
   }
 
+  // TODO: make these methods part of a MediaTrack class?
   get length() {
     return this.trimEnd - this.trimStart;
+  }
+
+  set length(len) {
+    this.trimEnd = this.trimStart + len;
+  }
+
+  setLeftSide(start) {
+    this.trimStart = this.trimStart + start - this.start;
+    this.start = start;
   }
 
   updateLength() {
@@ -300,8 +381,13 @@ class AudioTrack extends Track {
     return this.trimEnd - this.trimStart;
   }
 
-  get end() {
-    return this.start + this.length;
+  set length(len) {
+    this.trimEnd = this.trimStart + len;
+  }
+
+  setLeftSide(start) {
+    this.trimStart = this.trimStart + start - this.start;
+    this.start = start;
   }
 
   updateLength() {

@@ -47,6 +47,10 @@ button, input {
   color: inherit;
 }
 
+.trimming {
+  cursor: ew-resize;
+}
+
 .main {
   flex: auto;
   display: flex;
@@ -281,14 +285,10 @@ button, input {
   box-shadow: 0 3px 8px rgba(0, 0, 0, 0.5);
   margin: 0;
   bottom: auto;
+  pointer-events: none;
 }
 .placeholder {
-  background-color: var(--btn-hover);
-}
-.track .name {
-  white-space: pre;
-  text-overflow: ellipsis;
-  overflow: hidden;
+  background-color: rgba(255, 255, 255, 0.7);
 }
 .image.track {
   background-size: cover;
@@ -297,4 +297,24 @@ button, input {
 .text.track {
   background-color: #725287;
   box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.3);
+}
+.track .name {
+  white-space: pre;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+.trim {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  cursor: ew-resize;
+  width: 15px;
+}
+.trim-start {
+  left: 0;
+  background-image: linear-gradient(90deg, rgba(0, 0, 0, 0.7), transparent);
+}
+.trim-end {
+  right: 0;
+  background-image: linear-gradient(-90deg, rgba(0, 0, 0, 0.7), transparent);
 }

@@ -23,7 +23,23 @@ const playheadMarker = document.getElementById('playhead');
 const preview = document.getElementById('preview');
 const c = preview.getContext('2d');
 
-let scale = 3;
+const BASE_SCALE = 3;
+const MAX_SCALE = 5;
+let scale = 3, logScale = 0;
+zoomOutBtn.addEventListener('click', e => {
+  if (logScale > 0) {
+    logScale--;
+    scale = BASE_SCALE * 2 ** logScale;
+    updateScale();
+  }
+});
+zoomInBtn.addEventListener('click', e => {
+  if (logScale < MAX_SCALE) {
+    logScale++;
+    scale = BASE_SCALE * 2 ** logScale;
+    updateScale();
+  }
+});
 
 let scrollX = scrollWrapper.scrollLeft, scrollY = scrollWrapper.scrollTop;
 scrollWrapper.addEventListener('scroll', e => {
