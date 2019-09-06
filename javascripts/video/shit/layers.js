@@ -65,21 +65,16 @@ class Layer {
 }
 
 let maxLength = 0;
-function updateLength() {
+function updateLayers() {
   layers.forEach(layer => {
     const width = layer.getWidth();
     if (width > maxLength) maxLength = width;
   });
   const length = (maxLength + END_PADDING) * scale + 'px';
   layers.forEach((layer, i) => {
-    layer.elem.style.width = length;
-  });
-}
-
-function updateLayers() {
-  layers.forEach((layer, i) => {
     layer.index = i;
     layer.elem.style.top = LAYER_HEIGHT * i + 'px';
+    layer.elem.style.width = length;
   });
 }
 
