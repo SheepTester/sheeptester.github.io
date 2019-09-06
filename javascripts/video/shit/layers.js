@@ -87,4 +87,5 @@ function addLayer(layer = new Layer()) {
 
 function updateScale() {
   layers.forEach(layer => layer.updateScale());
+  renderScale();
 }

@@ -40,12 +40,36 @@ zoomInBtn.addEventListener('click', e => {
     updateScale();
   }
 });
+function renderScale() {
+  while (timeMarkers.firstChild) timeMarkers.removeChild(timeMarkers.firstChild);
+  const majorStep = 20 * 2 ** (-logScale);
+  const step = 2 * 2 ** (-logScale);
+  const minTime = Math.floor((scrollX - 150) / scale / step) * step;
+  const maxTime = Math.ceil((scrollX + windowWidth) / scale / step) * step;
+  for (let t = Math.max(minTime, 0); t <= maxTime; t += step) {
+    timeMarkers.appendChild(Elem('span', {
+      className: 'marker',
+      style: {
+        left: t * scale + 'px'
+      }
+    }, [t % majorStep === 0 ? t + 's' : '']));
+  }
+}
+window.requestAnimationFrame(renderScale);
 
 let scrollX = scrollWrapper.scrollLeft, scrollY = scrollWrapper.scrollTop;
 scrollWrapper.addEventListener('scroll', e => {
   scrollX = scrollWrapper.scrollLeft;
   scrollY = scrollWrapper.scrollTop;
   timingFunctions.style.left = scrollX + 'px';
+  renderScale();
+});
+
+let windowWidth = window.innerWidth, windowHeight = window.innerHeight;
+window.addEventListener('resize', e => {
+  windowWidth = window.innerWidth;
+  windowHeight = window.innerHeight;
+  renderScale();
 });
 
 Array.from(document.getElementsByClassName('value')).forEach(isAdjustableInput); // TEMP

@@ -255,9 +255,26 @@ button, input {
   flex: auto;
 }
 .time-markers {
+  position: relative;
   border-bottom: 1px solid var(--separator);
   height: 20px;
   width: 100%;
+}
+.marker {
+  position: absolute;
+  transform: translateX(-50%);
+  font-size: 10px;
+  bottom: 0;
+  padding-bottom: 5px;
+}
+.marker::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  border-left: 1px solid var(--separator);
+  margin-left: -0.5px;
+  height: 5px;
+  bottom: 0;
 }
 
 .layer {
