@@ -238,30 +238,39 @@ button, input {
   height: 200px;
   overflow: auto;
 }
-.timeline-wrapper {
-  display: flex;
-  align-items: stretch;
-  height: 100%;
-}
 .timing-functions {
-  position: relative;
+  position: absolute;
   width: 150px;
+  top: 0;
+  bottom: 0;
   flex: none;
   background-color: var(--metalayer-translucent);
   box-shadow: 0 3px 8px rgba(0, 0, 0, 0.5);
-}
-.timeline {
-  flex: auto;
+  z-index: 1;
 }
 .time-markers {
+  position: absolute;
+  left: 0;
+  right: 0;
   border-bottom: 1px solid var(--separator);
   height: 20px;
   width: 100%;
 }
+.timeline {
+  position: absolute;
+  left: 150px;
+  right: 0;
+}
 
-.layer {
-  height: 40px;
+.layers {
   position: relative;
+}
+.layer {
+  margin-top: 21px;
+  height: 40px;
+  position: absolute;
+  left: 0;
+  min-width: 100%;
 }
 .layer:nth-child(2n+1) {
   background-color: var(--layer);

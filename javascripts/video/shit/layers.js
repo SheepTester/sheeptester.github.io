@@ -1,3 +1,5 @@
+const LAYER_HEIGHT = 40;
+const END_PADDING = 20;
 const layers = [];
 
 class Layer {
@@ -56,11 +58,28 @@ class Layer {
     updateLayers();
   }
 
+  getWidth() {
+    return this.tracks.length && this.tracks[this.tracks.length - 1].end;
+  }
+
+}
+
+let maxLength = 0;
+function updateLength() {
+  layers.forEach(layer => {
+    const width = layer.getWidth();
+    if (width > maxLength) maxLength = width;
+  });
+  const length = (maxLength + END_PADDING) * scale + 'px';
+  layers.forEach((layer, i) => {
+    layer.elem.style.width = length;
+  });
 }
 
 function updateLayers() {
   layers.forEach((layer, i) => {
     layer.index = i;
+    layer.elem.style.top = LAYER_HEIGHT * i + 'px';
   });
 }
 
@@ -86,5 +105,9 @@ function addLayer(layer = new Layer()) {
 }
 
 function updateScale() {
-  layers.forEach(layer => layer.updateScale());
+  const length = (maxLength + END_PADDING) * scale + 'px';
+  layers.forEach(layer => {
+    layer.updateScale();
+    layer.elem.style.width = length;
+  });
 }
