@@ -249,6 +249,7 @@ button, input {
   flex: none;
   background-color: var(--metalayer-translucent);
   box-shadow: 0 3px 8px rgba(0, 0, 0, 0.5);
+  z-index: 1;
 }
 .timeline {
   flex: auto;
