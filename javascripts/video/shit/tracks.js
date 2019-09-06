@@ -309,28 +309,17 @@ class Track {
 
 }
 
-class VideoTrack extends Track {
+class MediaTrack extends Track {
 
-  constructor(source) {
+  constructor(source, extraProps = []) {
     super(
       source,
-      [...baseProps, ...mediaProps, ...graphicalProps]
+      [...baseProps, ...mediaProps, ...extraProps]
     );
     this.trimEnd = this.source.length;
     this.updateLength();
-    this.elem.classList.add('video');
-    let videoLoaded;
-    this.videoLoaded = new Promise(res => videoLoaded = res);
-    this.video = Elem('video', {
-      src: this.source.url,
-      onloadeddata: e => {
-        if (this.video.readyState < 2) return;
-        videoLoaded();
-      }
-    });
   }
 
-  // TODO: make these methods part of a MediaTrack class?
   get length() {
     return this.trimEnd - this.trimStart;
   }
@@ -354,6 +343,24 @@ class VideoTrack extends Track {
     this.elem.style.backgroundSize = this.source.length * scale + 'px';
   }
 
+}
+
+class VideoTrack extends MediaTrack {
+
+  constructor(source) {
+    super(source, graphicalProps);
+    this.elem.classList.add('video');
+    let videoLoaded;
+    this.videoLoaded = new Promise(res => videoLoaded = res);
+    this.video = Elem('video', {
+      src: this.source.url,
+      onloadeddata: e => {
+        if (this.video.readyState < 2) return;
+        videoLoaded();
+      }
+    });
+  }
+
   prepareFrame(time) {
     return new Promise(res => {
       this.video.addEventListener('timeupdate', res, {once: true});
@@ -363,41 +370,13 @@ class VideoTrack extends Track {
 
 }
 
-class AudioTrack extends Track {
+class AudioTrack extends MediaTrack {
 
   constructor(source) {
-    super(
-      source,
-      [...baseProps, ...mediaProps]
-    );
-    this.trimEnd = this.source.length;
-    this.updateLength();
+    super(source);
     this.elem.classList.add('audio');
     this.audio = new Audio(this.source.url);
     this.audioLoaded = new Promise(res => this.audio.onload = res);
-  }
-
-  get length() {
-    return this.trimEnd - this.trimStart;
-  }
-
-  set length(len) {
-    this.trimEnd = this.trimStart + len;
-  }
-
-  setLeftSide(start) {
-    this.trimStart = this.trimStart + start - this.start;
-    this.start = start;
-  }
-
-  updateLength() {
-    super.updateLength();
-    this.elem.style.backgroundPosition = -this.trimStart * scale + 'px';
-  }
-
-  updateScale() {
-    super.updateScale();
-    this.elem.style.backgroundSize = this.source.length * scale + 'px 100%';
   }
 
 }
