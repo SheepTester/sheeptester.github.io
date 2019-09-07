@@ -15,6 +15,7 @@ const zoomOutBtn = document.getElementById('out');
 const zoomInBtn = document.getElementById('in');
 
 const propertiesList = document.getElementById('properties');
+const playIcon = document.getElementById('icon');
 const scrollWrapper = document.getElementById('scroll');
 const timingFunctions = document.getElementById('ease');
 const timeMarkers = document.getElementById('axis');
@@ -71,11 +72,17 @@ window.addEventListener('resize', e => {
   renderScale();
 });
 
-let previewTime;
+let previewTime, wasPlaying;
 isDragTrigger(scrollWrapper, (e, switchControls) => {
   if (e.target.closest('.track, .timing-functions')) {
     switchControls([]);
   } else {
+    if (playing) {
+      wasPlaying = true;
+      stop();
+    } else {
+      wasPlaying = false;
+    }
     previewTimeAt(Math.max((e.clientX + scrollX - LEFT) / scale, 0));
     if (Track.selected) {
       Track.selected.unselected();
@@ -83,6 +90,8 @@ isDragTrigger(scrollWrapper, (e, switchControls) => {
   }
 }, e => {
   previewTimeAt(Math.max((e.clientX + scrollX - LEFT) / scale, 0));
+}, e => {
+  if (wasPlaying) play();
 });
 previewTimeAt(0);
 
@@ -133,6 +142,11 @@ redoBtn.addEventListener('click', e => {
     undoBtn.disabled = !undoHistory.length;
     redoBtn.disabled = !redoHistory.length;
   }
+});
+
+playBtn.addEventListener('click', e => {
+  if (playing) stop();
+  else play();
 });
 
 document.addEventListener('contextmenu', e => {

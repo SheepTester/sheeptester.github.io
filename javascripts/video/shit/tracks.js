@@ -302,6 +302,18 @@ class Track {
     return returnVal;
   }
 
+  prepare() {
+    // do nothing
+  }
+
+  render() {
+    // TODO: interpolate between keys
+  }
+
+  stop() {
+    // do nothing
+  }
+
   setProps(values) {
     this.props.props.forEach(({id}) => {
       if (values[id] !== undefined) {
@@ -386,6 +398,23 @@ class MediaTrack extends Track {
     return returnVal;
   }
 
+  prepare(relTime) {
+    return new Promise(res => {
+      this.media.addEventListener('timeupdate', res, {once: true});
+      this.media.currentTime = mod(relTime + this.trimStart, this.source.length);
+    });
+  }
+
+  render(ctx, time, play = false) {
+    super.render(ctx, time, play);
+    this.media.volume = this.volume / 100;
+    if (play) this.media.play();
+  }
+
+  stop() {
+    this.media.pause();
+  }
+
 }
 
 class VideoTrack extends MediaTrack {
@@ -402,25 +431,19 @@ class VideoTrack extends MediaTrack {
     super(source, VideoTrack.props);
     this.elem.classList.add('video');
     let videoLoaded;
-    this.videoLoaded = new Promise(res => videoLoaded = res);
-    this.video = Elem('video', {
+    this.mediaLoaded = new Promise(res => videoLoaded = res);
+    this.media = Elem('video', {
       src: this.source.url,
       loop: true,
       onloadeddata: e => {
-        if (this.video.readyState < 2) return;
+        if (this.media.readyState < 2) return;
         videoLoaded();
       }
     });
   }
 
-  prepare(relTime) {
-    return new Promise(res => {
-      this.video.addEventListener('timeupdate', res, {once: true});
-      this.video.currentTime = mod(relTime + this.trimStart, this.source.length); // TODO: this is incorrect
-    });
-  }
-
   render(ctx, time, play = false) {
+    super.render(ctx, time, play);
     ctx.save();
     ctx.translate(ctx.canvas.width * (this.xPos + 1) / 2, ctx.canvas.height * (this.yPos + 1) / 2);
     ctx.rotate(this.rotation * Math.PI / 180);
@@ -432,9 +455,8 @@ class VideoTrack extends MediaTrack {
     } else {
       width = ctx.canvas.width, height = ctx.canvas.width / this.source.width * this.source.height;
     }
-    ctx.drawImage(this.video, -width / 2, -height / 2, width, height);
+    ctx.drawImage(this.media, -width / 2, -height / 2, width, height);
     ctx.restore();
-    if (play) this.video.play();
   }
 
 }
@@ -451,13 +473,9 @@ class AudioTrack extends MediaTrack {
   constructor(source) {
     super(source, AudioTrack.props);
     this.elem.classList.add('audio');
-    this.audio = new Audio(this.source.url);
-    this.audioLoaded = new Promise(res => this.audio.onload = res);
-    this.audio.loop = true;
-  }
-
-  render(ctx, time, play = false) {
-    if (play) this.audio.play();
+    this.media = new Audio(this.source.url);
+    this.mediaLoaded = new Promise(res => this.media.onload = res);
+    this.media.loop = true;
   }
 
 }

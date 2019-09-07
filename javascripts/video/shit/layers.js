@@ -100,25 +100,83 @@ function updateScale(newScale) {
   scrollWrapper.scrollLeft = (scrollX + windowWidth / 2) / oldScale * scale - windowWidth / 2; // could improve
 }
 
-function previewTimeAt(time = previewTime) {
-  Promise.all(layers.map(layer => {
-    const track = layer.trackAt(time);
-    if (track && track.prepare) {
-      return track.prepare(time - track.start);
-    }
-  })).then(rerender);
+let previewTimeReady;
+function previewTimeAt(time = previewTime, prepare = true) {
   previewTime = time;
   playheadMarker.style.left = time * scale + 'px';
+  if (prepare) {
+    previewTimeReady = Promise.all(layers.map(layer => {
+      const track = layer.trackAt(time);
+      if (track) {
+        return track.prepare(time - track.start);
+      }
+    }));
+    previewTimeReady.then(rerender);
+  }
 }
 
-function rerender() {
+async function rerender() {
+  await previewTimeReady;
+  c.clearRect(0, 0, c.canvas.width, c.canvas.height);
+  return layers.map(layer => {
+    const track = layer.trackAt(previewTime);
+    if (track) {
+      track.render(c, previewTime - track.start);
+      return track;
+    }
+  });
+}
+
+let playing = false;
+async function play() {
+  if (playing) return;
+  await Promise.all(layers.map(layer => {
+    layer.playing = layer.trackAt(previewTime);
+    return Promise.all(layer.tracks.map(track => {
+      return track === layer.playing
+        ? track.prepare(previewTime - track.start).then(() => {
+          track.render(c, previewTime - track.start, true);
+        })
+        : track.prepare(0);
+    }));
+  }));
+  playing = {
+    start: Date.now(),
+    startTime: previewTime
+  };
+  playIcon.textContent = 'pause';
+  paint();
+}
+function paint() {
+  if (!playing) return;
+  window.requestAnimationFrame(paint);
+  previewTimeAt((Date.now() - playing.start) / 1000 + playing.startTime, false);
   c.clearRect(0, 0, c.canvas.width, c.canvas.height);
   layers.forEach(layer => {
     const track = layer.trackAt(previewTime);
-    if (track && track.render) {
-      track.render(c, previewTime - track.start);
+    if (track) {
+      if (layer.playing === track) {
+        track.render(c, previewTime - track.start);
+      } else {
+        if (layer.playing) layer.playing.stop();
+        track.render(c, previewTime - track.start, true);
+        layer.playing = track;
+      }
+    } else if (layer.playing) {
+      layer.playing.stop();
+      layer.playing = null;
     }
   });
+}
+function stop() {
+  layers.forEach(layer => {
+    if (layer.playing) {
+      layer.playing.stop();
+      layer.playing = null;
+    }
+  });
+  playing = false;
+  playIcon.textContent = 'play_arrow';
 }
 
 function clearLayers() {
