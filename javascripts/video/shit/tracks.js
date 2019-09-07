@@ -54,57 +54,65 @@ class Track {
   }
 
   // TODO: don't start dragging immediately unless otherwise specified
-  dragStart({clientX, clientY, target}, offsets) {
-    this.init = [clientX, clientY, target, offsets];
-    this.dragging = false;
+  dragStart({clientX, clientY, target}, offsets, dragImmediately = false) {
+    if (dragImmediately) {
+      this.startDragging(clientX, clientY, target, offsets);
+    } else {
+      this.dragStartData = [clientX, clientY, target, offsets];
+      this.dragging = false;
+    }
+  }
+
+  startDragging(clientX, clientY, target, offsets) {
+    this.dragging = true;
+    this.timelineLeft = layersWrapper.getBoundingClientRect().left + scrollX;
+    this.currentState = getEntry();
+    if (target.classList.contains('trim')) {
+      this.trimming = true;
+      document.body.classList.add('trimming');
+      this.trimmingStart = target.classList.contains('trim-start');
+      if (this.trimmingStart) {
+        this.init = this.start;
+        this.trimMin = this.index > 0
+          ? this.layer.tracks[this.index - 1].end
+          : 0;
+        this.trimMax = this.end - MIN_LENGTH;
+      } else {
+        this.init = this.end;
+        this.trimMin = this.start + MIN_LENGTH;
+        this.trimMax = this.index < this.layer.tracks.length - 1
+          ? this.layer.tracks[this.index + 1].start
+          : Infinity;
+      }
+      this.jumpPoints = getAllJumpPoints();
+      // do not snap to other side
+      const index = this.jumpPoints.indexOf(this.trimmingStart ? this.end : this.start);
+      if (~index) this.jumpPoints.splice(index, 1);
+    } else {
+      if (this.layer) {
+        this.layer.tracks.splice(this.index, 1);
+        this.layer.updateTracks();
+      }
+      this.layerBounds = getLayerBounds();
+      this.jumpPoints = getAllJumpPoints();
+      if (!offsets) {
+        const {left, top} = this.elem.getBoundingClientRect();
+        offsets = [clientX - left, clientY - top];
+      }
+      this.dragOffsets = offsets;
+      this.elem.classList.add('dragging');
+      this.elem.style.left = clientX - offsets[0] + 'px';
+      this.elem.style.top = clientY - offsets[1] + 'px';
+      document.body.appendChild(this.elem);
+      this.possibleLayer = null;
+      this.placeholder.style.setProperty('--length', this.length * scale + 'px');
+    }
   }
 
   dragMove({clientX, clientY, shiftKey}) {
     if (!this.dragging) {
-      if (Math.hypot(clientX - this.init[0], clientY - this.init[1]) > DRAG_MIN_DIST) {
-        this.dragging = true;
-        this.timelineLeft = layersWrapper.getBoundingClientRect().left + scrollX;
-        this.currentState = getEntry();
-        if (this.init[2].classList.contains('trim')) {
-          this.trimming = true;
-          document.body.classList.add('trimming');
-          this.trimmingStart = this.init[2].classList.contains('trim-start');
-          if (this.trimmingStart) {
-            this.init = this.start;
-            this.trimMin = this.index > 0
-              ? this.layer.tracks[this.index - 1].end
-              : 0;
-            this.trimMax = this.end - MIN_LENGTH;
-          } else {
-            this.init = this.end;
-            this.trimMin = this.start + MIN_LENGTH;
-            this.trimMax = this.index < this.layer.tracks.length - 1
-              ? this.layer.tracks[this.index + 1].start
-              : Infinity;
-          }
-          this.jumpPoints = getAllJumpPoints();
-          // do not snap to other side
-          const index = this.jumpPoints.indexOf(this.trimmingStart ? this.end : this.start);
-          if (~index) this.jumpPoints.splice(index, 1);
-        } else {
-          if (this.layer) {
-            this.layer.tracks.splice(this.index, 1);
-            this.layer.updateTracks();
-          }
-          this.layerBounds = getLayerBounds();
-          this.jumpPoints = getAllJumpPoints();
-          if (!this.init[3]) {
-            const {left, top} = this.elem.getBoundingClientRect();
-            this.init[3] = [clientX - left, clientY - top];
-          }
-          this.dragOffsets = this.init[3];
-          this.elem.classList.add('dragging');
-          this.elem.style.left = clientX - this.init[3][0] + 'px';
-          this.elem.style.top = clientY - this.init[3][1] + 'px';
-          document.body.appendChild(this.elem);
-          this.possibleLayer = null;
-          this.placeholder.style.setProperty('--length', this.length * scale + 'px');
-        }
+      if (Math.hypot(clientX - this.dragStartData[0], clientY - this.dragStartData[1]) > DRAG_MIN_DIST) {
+        this.startDragging(...this.dragStartData);
       } else {
         return;
       }
@@ -227,13 +235,15 @@ class Track {
   }
 
   remove(reason) {
-    if (this.elem.parentNode) {
-      this.elem.parentNode.removeChild(this.elem);
-    }
-    if (this.layer) {
-      log(this.currentState || getEntry());
-      this.layer.tracks.splice(this.index, 1);
-      this.layer.updateTracks();
+    if (reason !== 'layer-removal') {
+      if (this.elem.parentNode) {
+        this.elem.parentNode.removeChild(this.elem);
+      }
+      if (this.layer) {
+        log(this.currentState || getEntry());
+        this.layer.tracks.splice(this.index, 1);
+        this.layer.updateTracks();
+      }
     }
     if (Track.selected === this) {
       this.unselected();
@@ -302,7 +312,7 @@ class Track {
   }
 
   toJSON() {
-    const obj = {source: this.source.id};
+    const obj = {source: this.source.id, selected: Track.selected === this};
     this.props.props.forEach(({id}) => obj[id] = this[id]);
     return obj;
   }

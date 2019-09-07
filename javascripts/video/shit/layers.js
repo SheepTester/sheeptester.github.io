@@ -57,6 +57,7 @@ class Layer {
   }
 
   remove() {
+    this.tracks.forEach(track => track.remove('layer-removal'));
     layers.splice(this.index, 1);
     layersWrapper.removeChild(this.elem);
   }
@@ -137,6 +138,7 @@ function setEntry(entry) {
       track.setProps(data);
       track.updateLength();
       layer.addTrack(track);
+      if (data.selected) track.selected();
     });
     addLayer(layer);
   });

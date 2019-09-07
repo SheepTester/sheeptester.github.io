@@ -29,7 +29,7 @@ class Source {
     ]);
     isDragTrigger(this.elem, (e, switchControls) => {
       const track = this.createTrack();
-      track.dragStart(e, [5, 5]);
+      track.dragStart(e, [5, 5], true);
       switchControls([track.dragMove, track.dragEnd]);
     });
 

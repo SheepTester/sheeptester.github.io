@@ -90,7 +90,7 @@ addLayer();
 
 isDragTrigger(textBtn, (e, switchControls) => {
   const track = new TextTrack();
-  track.dragStart(e, [5, 5]);
+  track.dragStart(e, [5, 5], true);
   switchControls([track.dragMove, track.dragEnd]);
 });
 
