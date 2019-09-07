@@ -121,6 +121,9 @@ class Track {
         this.end = cursor;
       }
       this.updateLength();
+      if (Track.selected === this) {
+        this.props.setValues(this);
+      }
       return;
     }
     const placeholder = this.placeholder;
@@ -154,8 +157,12 @@ class Track {
   dragEnd() {
     this.init = null;
     if (!this.dragging) {
-      if (Track.selected) Track.selected.unselected();
-      this.selected();
+      if (Track.selected === this) {
+        this.unselected();
+      } else {
+        if (Track.selected) Track.selected.unselected();
+        this.selected();
+      }
       return;
     }
     this.timelineLeft = null;
@@ -164,6 +171,7 @@ class Track {
       log(this.currentState);
       this.trimming = false;
       document.body.classList.remove('trimming');
+      rerender();
       return;
     }
     this.layerBounds = null;
@@ -194,24 +202,28 @@ class Track {
     this.possibleLayer = null;
     this.possibleStart = null;
     this.currentState = null;
+    rerender();
+    if (Track.selected === this) {
+      this.props.setValues(this);
+    }
   }
 
   selected() {
     Track.selected = this;
+    document.body.classList.add('has-selection');
     this.layer.elem.classList.add('has-selected');
     this.elem.classList.add('selected');
     this.props.setValues(this);
     this.props.handler = this.change;
-    propertiesList.removeChild(noSelected);
     propertiesList.appendChild(this.props.elem);
   }
 
   unselected() {
     Track.selected = null;
+    document.body.classList.remove('has-selection');
     this.layer.elem.classList.remove('has-selected');
     this.elem.classList.remove('selected');
     propertiesList.removeChild(this.props.elem);
-    propertiesList.appendChild(noSelected);
   }
 
   remove(reason) {
@@ -246,10 +258,35 @@ class Track {
     let returnVal;
     switch (prop) {
       case 'start':
-        if (value < 0) returnVal = 0;
+        if (value < 0) value = returnVal = 0;
         if (isFinal) {
-          // TODO: don't intersect
+          this.layer.tracks.splice(this.index, 1);
+          const intersections = this.layer.tracksBetween(value, value + this.length);
+          if (intersections[0]) {
+            this.setLeftSide(intersections[0].end);
+            if (intersections[1]) {
+              this.end = intersections[1].start;
+            }
+          } else {
+            this.start = value;
+          }
+          this.layer.addTrack(this);
+        } else {
+          this.start = value;
         }
+        returnVal = this.start;
+        this.updateLength();
+        break;
+      case 'length':
+        if (value < MIN_LENGTH) value = returnVal = MIN_LENGTH;
+        if (isFinal) {
+          if (this.index < this.layer.tracks.length - 1) {
+            if (this.layer.tracks[this.index + 1].start < this.start + value) {
+              value = returnVal = this.layer.tracks[this.index + 1].start - this.start;
+            }
+          }
+        }
+        this.length = value;
         this.updateLength();
         break;
     }
@@ -324,6 +361,22 @@ class MediaTrack extends Track {
     this.elem.style.backgroundSize = this.source.length * scale + 'px';
   }
 
+  showChange(prop, value, isFinal) {
+    let returnVal;
+    switch (prop) {
+      case 'volume':
+        if (value > 100) return 100;
+        else if (value < 0) return 0;
+      case 'trimStart':
+        if (value > this.trimEnd - MIN_LENGTH) return this.trimEnd - MIN_LENGTH;
+      case 'trimEnd':
+        if (value < this.trimStart + MIN_LENGTH) return this.trimStart + MIN_LENGTH;
+      default:
+        return super.showChange(prop, value, isFinal);
+    }
+    return returnVal;
+  }
+
 }
 
 class VideoTrack extends MediaTrack {
@@ -343,6 +396,7 @@ class VideoTrack extends MediaTrack {
     this.videoLoaded = new Promise(res => videoLoaded = res);
     this.video = Elem('video', {
       src: this.source.url,
+      loop: true,
       onloadeddata: e => {
         if (this.video.readyState < 2) return;
         videoLoaded();
@@ -353,12 +407,24 @@ class VideoTrack extends MediaTrack {
   prepare(relTime) {
     return new Promise(res => {
       this.video.addEventListener('timeupdate', res, {once: true});
-      this.video.currentTime = relTime + this.trimStart; // TODO: this is incorrect
+      this.video.currentTime = mod(relTime + this.trimStart, this.source.length); // TODO: this is incorrect
     });
   }
 
-  render(ctx, play = false) {
-    ctx.drawImage(this.video, 0, 0, this.source.width, this.source.height);
+  render(ctx, time, play = false) {
+    ctx.save();
+    ctx.translate(ctx.canvas.width * (this.xPos + 1) / 2, ctx.canvas.height * (this.yPos + 1) / 2);
+    ctx.rotate(this.rotation * Math.PI / 180);
+    ctx.scale(this.xScale, this.yScale);
+    ctx.globalAlpha = this.opacity / 100;
+    let width, height;
+    if (this.source.width / this.source.height > ctx.canvas.width / ctx.canvas.height) {
+      width = ctx.canvas.height / this.source.height * this.source.width, height = ctx.canvas.height;
+    } else {
+      width = ctx.canvas.width, height = ctx.canvas.width / this.source.width * this.source.height;
+    }
+    ctx.drawImage(this.video, -width / 2, -height / 2, width, height);
+    ctx.restore();
     if (play) this.video.play();
   }
 
@@ -378,9 +444,10 @@ class AudioTrack extends MediaTrack {
     this.elem.classList.add('audio');
     this.audio = new Audio(this.source.url);
     this.audioLoaded = new Promise(res => this.audio.onload = res);
+    this.audio.loop = true;
   }
 
-  render(ctx, play = false) {
+  render(ctx, time, play = false) {
     if (play) this.audio.play();
   }
 
@@ -404,8 +471,20 @@ class ImageTrack extends Track {
     this.elem.classList.add('image');
   }
 
-  render(ctx) {
-    ctx.drawImage(this.source.image, 0, 0, this.source.width, this.source.height);
+  render(ctx, time) {
+    ctx.save();
+    ctx.translate(ctx.canvas.width * (this.xPos + 1) / 2, ctx.canvas.height * (this.yPos + 1) / 2);
+    ctx.rotate(this.rotation * Math.PI / 180);
+    ctx.scale(this.xScale, this.yScale);
+    ctx.globalAlpha = this.opacity / 100;
+    let width, height;
+    if (this.source.width / this.source.height > ctx.canvas.width / ctx.canvas.height) {
+      width = ctx.canvas.height / this.source.height * this.source.width, height = ctx.canvas.height;
+    } else {
+      width = ctx.canvas.width, height = ctx.canvas.width / this.source.width * this.source.height;
+    }
+    ctx.drawImage(this.source.image, -width / 2, -height / 2, width, height);
+    ctx.restore();
   }
 
 }
@@ -428,27 +507,27 @@ class TextTrack extends Track {
       lengthProp,
       ...graphicalProps,
       {
-        id: 'rColour',
-        label: 'Red',
+        id: 'hColour',
+        label: 'Hue',
         digits: 0,
-        range: 255,
-        defaultVal: 255,
+        range: 360,
+        defaultVal: 0,
         animatable: true
       },
       {
-        id: 'gColour',
-        label: 'Green',
+        id: 'sColour',
+        label: 'Saturation',
         digits: 0,
-        range: 255,
-        defaultVal: 255,
+        range: 100,
+        defaultVal: 0,
         animatable: true
       },
       {
-        id: 'bColour',
-        label: 'Blue',
+        id: 'lColour',
+        label: 'Lightness',
         digits: 0,
-        range: 255,
-        defaultVal: 255,
+        range: 100,
+        defaultVal: 100,
         animatable: true
       }
     ]));
@@ -466,12 +545,8 @@ class TextTrack extends Track {
       case 'content':
         this.name.textContent = value;
         break;
-      case 'rColour':
-      case 'gColour':
-      case 'bColour':
-        if (value > 255) return 255;
-        else if (value < 0) return 0;
-        break;
+      case 'sColour':
+      case 'lColour':
       case 'opacity':
         if (value > 100) return 100;
         else if (value < 0) return 0;
@@ -481,12 +556,12 @@ class TextTrack extends Track {
     return returnVal;
   }
 
-  render(ctx) {
+  render(ctx, time) {
     ctx.save();
     ctx.translate(ctx.canvas.width * (this.xPos + 1) / 2, ctx.canvas.height * (this.yPos + 1) / 2);
     ctx.rotate(this.rotation * Math.PI / 180);
     ctx.scale(this.xScale, this.yScale);
-    ctx.fillStyle = `rgba(${this.rColour}, ${this.gColour}, ${this.bColour}, ${this.opacity / 100})`;
+    ctx.fillStyle = `hsla(${mod(this.hColour, 360)}, ${this.sColour}%, ${this.lColour}%, ${this.opacity / 100})`;
     ctx.font = `50px "${this.font.replace(/"/g, '\\"')}"`;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';

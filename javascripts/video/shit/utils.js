@@ -52,3 +52,8 @@ function isAdjustableInput(elem, onchange, oninput) {
   );
   return elem;
 }
+
+// https://stackoverflow.com/a/17323608
+function mod(n, m) {
+  return ((n % m) + m) % m;
+}

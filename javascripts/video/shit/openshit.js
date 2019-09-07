@@ -15,7 +15,6 @@ const zoomOutBtn = document.getElementById('out');
 const zoomInBtn = document.getElementById('in');
 
 const propertiesList = document.getElementById('properties');
-const noSelected = document.getElementById('no-select');
 const scrollWrapper = document.getElementById('scroll');
 const timingFunctions = document.getElementById('ease');
 const timeMarkers = document.getElementById('axis');
@@ -72,16 +71,20 @@ window.addEventListener('resize', e => {
   renderScale();
 });
 
-let previewTime = 0;
+let previewTime;
 isDragTrigger(scrollWrapper, (e, switchControls) => {
   if (e.target.closest('.track, .timing-functions')) {
     switchControls([]);
   } else {
     previewTimeAt(Math.max((e.clientX + scrollX - LEFT) / scale, 0));
+    if (Track.selected) {
+      Track.selected.unselected();
+    }
   }
 }, e => {
   previewTimeAt(Math.max((e.clientX + scrollX - LEFT) / scale, 0));
 });
+previewTimeAt(0);
 
 addLayer();
 

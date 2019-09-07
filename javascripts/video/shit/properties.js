@@ -1,7 +1,7 @@
 const baseProps = [
   {
     id: 'start',
-    label: 'Trim start',
+    label: 'Track start',
     unit: 's',
     digits: 1,
     range: 30,
@@ -133,8 +133,8 @@ class Properties {
   }
 
   setValues(values) {
-    this.props.forEach(({id}) => {
-      this.values[id].value = values[id];
+    this.props.forEach(({id, digits}) => {
+      this.values[id].value = digits ? values[id].toFixed(digits) : values[id];
     });
   }
 

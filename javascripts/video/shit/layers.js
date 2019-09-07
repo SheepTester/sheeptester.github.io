@@ -99,29 +99,25 @@ function updateScale(newScale) {
   scrollWrapper.scrollLeft = (scrollX + windowWidth / 2) / oldScale * scale - windowWidth / 2; // could improve
 }
 
-let renderingTracks;
 function previewTimeAt(time = previewTime) {
   Promise.all(layers.map(layer => {
     const track = layer.trackAt(time);
-    if (track) {
-      if (track.prepare) {
-        return track.prepare(time - track.start).then(() => track);
-      } else {
-        return track;
-      }
+    if (track && track.prepare) {
+      return track.prepare(time - track.start);
     }
-  }))
-    .then(tracks => {
-      renderingTracks = tracks;
-      rerender();
-    });
+  })).then(rerender);
   previewTime = time;
   playheadMarker.style.left = time * scale + 'px';
 }
 
 function rerender() {
   c.clearRect(0, 0, c.canvas.width, c.canvas.height);
-  renderingTracks.forEach(track => track && track.render(c, previewTime - track.start));
+  layers.forEach(layer => {
+    const track = layer.trackAt(previewTime);
+    if (track && track.render) {
+      track.render(c, previewTime - track.start);
+    }
+  });
 }
 
 function clearLayers() {

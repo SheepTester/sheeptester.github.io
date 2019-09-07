@@ -25,19 +25,11 @@
           <label for="load" class="menu-btn">Load</label>
           <button type="button" class="menu-btn" id="export">Export</button>
         </div>
-        <input type="radio" name="tab" class="hidden-accessible" id="sources-tab" checked>
-        <input type="radio" name="tab" class="hidden-accessible" id="properties-tab">
-        <div class="tabs">
-          <label class="tab" for="sources-tab">Sources</label>
-          <label class="tab" for="properties-tab">Properties</label>
-        </div>
         <div class="sources">
           <input type="file" accept="video/*,audio/*,image/*" class="hidden-accessible" title="Add a source" id="add" multiple>
           <label class="add source" for="add"><i class="material-icons">add</i></label>
         </div>
-        <div class="properties" id="properties">
-          <div class="no-selected" id="no-select">No track selected.</div>
-        </div>
+        <div class="properties" id="properties"></div>
       </div>
       <div class="player">
         <div class="preview">
