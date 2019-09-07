@@ -247,7 +247,7 @@ button, input {
   flex: none;
   background-color: var(--metalayer-translucent);
   box-shadow: 0 3px 8px rgba(0, 0, 0, 0.5);
-  z-index: 1;
+  z-index: 30;
 }
 .timeline {
   flex: auto;
@@ -276,14 +276,18 @@ button, input {
 }
 
 .layer {
-  height: 40px;
+  min-height: 30px;
   position: relative;
+  padding: 5px 0;
 }
 .layer:nth-child(2n+1) {
   background-color: var(--layer);
 }
 
 .track {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
   background-repeat: repeat-x;
   background-color: var(--metalayer);
   position: absolute;
@@ -318,7 +322,24 @@ button, input {
   white-space: pre;
   text-overflow: ellipsis;
   overflow: hidden;
+  padding: 0 10px;
 }
+
+.selected {
+  position: relative;
+  margin: 0;
+  z-index: 10;
+}
+.keys {
+  display: none;
+  background-color: var(--metalayer);
+  padding: 5px;
+  min-height: 10px; /* TEMP-orary?? */
+}
+.selected .keys {
+  display: block;
+}
+
 .trim {
   position: absolute;
   top: 0;
@@ -343,6 +364,7 @@ button, input {
   left: 0;
   width: 1px;
   background-color: var(--text-em);
+  z-index: 20;
 }
 .playhead::before {
   content: '';

@@ -23,7 +23,8 @@ class Track {
     }, [
       Elem('span', {className: 'trim trim-start'}),
       this.name = Elem('span', {className: 'name'}, [source.name]),
-      Elem('span', {className: 'trim trim-end'})
+      Elem('span', {className: 'trim trim-end'}),
+      Elem('div', {className: 'keys'})
     ]);
     isDragTrigger(this.elem, e => this.dragStart(e), this.dragMove, this.dragEnd);
     this.placeholder = Elem('div', {className: 'track placeholder'});
@@ -269,20 +270,18 @@ class Track {
     switch (prop) {
       case 'start':
         if (value < 0) value = returnVal = 0;
+        this.start = value;
         if (isFinal) {
           this.layer.tracks.splice(this.index, 1);
           const intersections = this.layer.tracksBetween(value, value + this.length);
-          if (intersections[0]) {
-            this.setLeftSide(intersections[0].end);
-            if (intersections[1]) {
-              this.end = intersections[1].start;
-            }
+          if (intersections.length) {
+            this.layer.updateTracks();
+            const newLayer = new Layer();
+            this.layer.insertBefore(newLayer);
+            newLayer.addTrack(this);
           } else {
-            this.start = value;
+            this.layer.addTrack(this);
           }
-          this.layer.addTrack(this);
-        } else {
-          this.start = value;
         }
         returnVal = this.start;
         this.updateLength();
