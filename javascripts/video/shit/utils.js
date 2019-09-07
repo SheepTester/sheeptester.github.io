@@ -18,7 +18,8 @@ document.addEventListener('mouseup', e => {
 
 const ADJUST_HEIGHT = 100;
 const MIN_DRAG_DIST = 5;
-function isAdjustableInput(elem) {
+function isAdjustableInput(elem, onchange, oninput) {
+  if (elem.type !== 'number') return elem;
   const RANGE = +elem.dataset.range;
   const DIGITS = +elem.dataset.digits;
   let initY, dragging, initVal;
@@ -38,13 +39,16 @@ function isAdjustableInput(elem) {
       }
       if (dragging) {
         elem.value = (initVal + (initY - e.clientY) * RANGE / ADJUST_HEIGHT).toFixed(DIGITS);
+        if (oninput) oninput();
         e.preventDefault();
       }
     },
     e => {
       if (dragging) {
         elem.readOnly = false;
+        if (onchange) onchange();
       }
     }
   );
+  return elem;
 }

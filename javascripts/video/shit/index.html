@@ -11,6 +11,7 @@
     <script src="../../_dom2.js" charset="utf-8"></script>
     <script src="./utils.js" charset="utf-8"></script>
     <script src="./sources.js" charset="utf-8"></script>
+    <script src="./properties.js" charset="utf-8"></script>
     <script src="./tracks.js" charset="utf-8"></script>
     <script src="./layers.js" charset="utf-8"></script>
   </head>
@@ -34,52 +35,8 @@
           <input type="file" accept="video/*,audio/*,image/*" class="hidden-accessible" title="Add a source" id="add" multiple>
           <label class="add source" for="add"><i class="material-icons">add</i></label>
         </div>
-        <div class="properties">
-          <label class="property">
-            <span>Start time</span>
-            <div class="input-wrapper">
-              <input type="number" class="value" value="0.0" data-digits="1" data-range="30">
-              <span class="unit">s</span>
-            </div>
-          </label>
-          <label class="property">
-            <span>Trim start</span>
-            <div class="input-wrapper">
-              <input type="number" class="value" value="0.0" data-digits="1" data-range="30">
-              <span class="unit">s</span>
-            </div>
-          </label>
-          <label class="property">
-            <span>Trim end</span>
-            <div class="input-wrapper">
-              <input type="number" class="value" value="73.1" data-digits="1" data-range="30">
-              <span class="unit">s</span>
-            </div>
-          </label>
-          <label class="property">
-            <span>Opacity</span>
-            <div class="input-wrapper">
-              <input type="number" class="value" value="100" data-digits="0" data-range="100">
-              <span class="unit">%</span>
-              <button type="button" class="key"></button>
-            </div>
-          </label>
-          <label class="property">
-            <span>Position X</span>
-            <div class="input-wrapper">
-              <input type="number" class="value" value="0.000" data-digits="3" data-range="1">
-              <span class="unit"> </span>
-              <button type="button" class="key active"></button>
-            </div>
-          </label>
-          <label class="property">
-            <span>Position Y</span>
-            <div class="input-wrapper">
-              <input type="number" class="value" value="0.000" data-digits="3" data-range="1">
-              <span class="unit"> </span>
-              <button type="button" class="key"></button>
-            </div>
-          </label>
+        <div class="properties" id="properties">
+          <div class="no-selected" id="no-select">No track selected.</div>
         </div>
       </div>
       <div class="player">

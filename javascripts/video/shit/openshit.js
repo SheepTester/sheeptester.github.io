@@ -14,6 +14,8 @@ const redoBtn = document.getElementById('redo');
 const zoomOutBtn = document.getElementById('out');
 const zoomInBtn = document.getElementById('in');
 
+const propertiesList = document.getElementById('properties');
+const noSelected = document.getElementById('no-select');
 const scrollWrapper = document.getElementById('scroll');
 const timingFunctions = document.getElementById('ease');
 const timeMarkers = document.getElementById('axis');
@@ -80,8 +82,6 @@ isDragTrigger(scrollWrapper, (e, switchControls) => {
 }, e => {
   previewTimeAt(Math.max((e.clientX + scrollX - LEFT) / scale, 0));
 });
-
-Array.from(document.getElementsByClassName('value')).forEach(isAdjustableInput); // TEMP
 
 addLayer();
 

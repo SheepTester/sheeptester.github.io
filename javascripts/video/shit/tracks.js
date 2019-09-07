@@ -1,116 +1,18 @@
-const SNAP_DIST = 10; // in px
-const MIN_LENGTH = 0.1; // in s
-
-const baseProps = [
-  {
-    id: 'start',
-    label: 'Trim start',
-    unit: 's',
-    digits: 1,
-    range: 30,
-    defaultVal: 0
-  }
-];
-
-const mediaProps = [
-  {
-    id: 'trimStart',
-    label: 'Trim start',
-    unit: 's',
-    digits: 1,
-    range: 30,
-    defaultVal: 0
-  },
-  {
-    id: 'trimEnd',
-    label: 'Trim end',
-    unit: 's',
-    digits: 1,
-    range: 30,
-    defaultVal: 0
-  },
-  {
-    id: 'volume',
-    label: 'Volume',
-    units: '%',
-    digits: 0,
-    range: 100,
-    defaultVal: 100,
-    animatable: true
-  }
-];
-const graphicalProps = [
-  {
-    id: 'opacity',
-    label: 'Opacity',
-    units: '%',
-    digits: 0,
-    range: 100,
-    defaultVal: 100,
-    animatable: true
-  },
-  {
-    id: 'xPos',
-    label: 'Position X',
-    digits: 3,
-    range: 1,
-    defaultVal: 0,
-    animatable: true
-  },
-  {
-    id: 'yPos',
-    label: 'Position Y',
-    digits: 3,
-    range: 1,
-    defaultVal: 0,
-    animatable: true
-  },
-  {
-    id: 'xScale',
-    label: 'Scale X',
-    digits: 3,
-    range: 1,
-    defaultVal: 0,
-    animatable: true
-  },
-  {
-    id: 'yScale',
-    label: 'Scale Y',
-    digits: 3,
-    range: 1,
-    defaultVal: 0,
-    animatable: true
-  },
-  {
-    id: 'rotation',
-    label: 'Rotation',
-    unit: '°',
-    digits: 1,
-    range: 180,
-    defaultVal: 0,
-    animatable: true
-  }
-];
-
-const lengthProp = {
-  id: 'length',
-  label: 'Duration',
-  unit: 's',
-  digits: 1,
-  range: 30,
-  defaultVal: 3
-};
+const SNAP_DIST = 10; // px
+const MIN_LENGTH = 0.1; // s
+const DRAG_MIN_DIST = 5; // px
 
 class Track {
 
   constructor(source, props) {
     this.dragMove = this.dragMove.bind(this);
     this.dragEnd = this.dragEnd.bind(this);
+    this.change = this.change.bind(this);
 
     this.source = source;
     this.keys = [];
     this.props = props;
-    props.forEach(({id, defaultVal}) => {
+    props.props.forEach(({id, defaultVal}) => {
       if (defaultVal !== undefined) this[id] = defaultVal;
     });
     this.elem = Elem('div', {
@@ -153,51 +55,60 @@ class Track {
 
   // TODO: don't start dragging immediately unless otherwise specified
   dragStart({clientX, clientY, target}, offsets) {
-    this.timelineLeft = layersWrapper.getBoundingClientRect().left + scrollX;
-    this.currentState = getEntry();
-    if (target.classList.contains('trim')) {
-      this.trimming = true;
-      document.body.classList.add('trimming');
-      this.trimmingStart = target.classList.contains('trim-start');
-      if (this.trimmingStart) {
-        this.init = this.start;
-        this.trimMin = this.index > 0
-          ? this.layer.tracks[this.index - 1].end
-          : 0;
-        this.trimMax = this.end - MIN_LENGTH;
-      } else {
-        this.init = this.end;
-        this.trimMin = this.start + MIN_LENGTH;
-        this.trimMax = this.index < this.layer.tracks.length - 1
-          ? this.layer.tracks[this.index + 1].start
-          : Infinity;
-      }
-      this.jumpPoints = getAllJumpPoints();
-      // do not snap to other side
-      const index = this.jumpPoints.indexOf(this.trimmingStart ? this.end : this.start);
-      if (~index) this.jumpPoints.splice(index, 1);
-      return;
-    }
-    if (this.layer) {
-      this.layer.tracks.splice(this.index, 1);
-      this.layer.updateTracks();
-    }
-    this.layerBounds = getLayerBounds();
-    this.jumpPoints = getAllJumpPoints();
-    if (!offsets) {
-      const {left, top} = this.elem.getBoundingClientRect();
-      offsets = [clientX - left, clientY - top];
-    }
-    this.dragOffsets = offsets;
-    this.elem.classList.add('dragging');
-    this.elem.style.left = clientX - offsets[0] + 'px';
-    this.elem.style.top = clientY - offsets[1] + 'px';
-    document.body.appendChild(this.elem);
-    this.possibleLayer = null;
-    this.placeholder.style.setProperty('--length', this.length * scale + 'px');
+    this.init = [clientX, clientY, target, offsets];
+    this.dragging = false;
   }
 
   dragMove({clientX, clientY, shiftKey}) {
+    if (!this.dragging) {
+      if (Math.hypot(clientX - this.init[0], clientY - this.init[1]) > DRAG_MIN_DIST) {
+        this.dragging = true;
+        this.timelineLeft = layersWrapper.getBoundingClientRect().left + scrollX;
+        this.currentState = getEntry();
+        if (this.init[2].classList.contains('trim')) {
+          this.trimming = true;
+          document.body.classList.add('trimming');
+          this.trimmingStart = this.init[2].classList.contains('trim-start');
+          if (this.trimmingStart) {
+            this.init = this.start;
+            this.trimMin = this.index > 0
+              ? this.layer.tracks[this.index - 1].end
+              : 0;
+            this.trimMax = this.end - MIN_LENGTH;
+          } else {
+            this.init = this.end;
+            this.trimMin = this.start + MIN_LENGTH;
+            this.trimMax = this.index < this.layer.tracks.length - 1
+              ? this.layer.tracks[this.index + 1].start
+              : Infinity;
+          }
+          this.jumpPoints = getAllJumpPoints();
+          // do not snap to other side
+          const index = this.jumpPoints.indexOf(this.trimmingStart ? this.end : this.start);
+          if (~index) this.jumpPoints.splice(index, 1);
+        } else {
+          if (this.layer) {
+            this.layer.tracks.splice(this.index, 1);
+            this.layer.updateTracks();
+          }
+          this.layerBounds = getLayerBounds();
+          this.jumpPoints = getAllJumpPoints();
+          if (!this.init[3]) {
+            const {left, top} = this.elem.getBoundingClientRect();
+            this.init[3] = [clientX - left, clientY - top];
+          }
+          this.dragOffsets = this.init[3];
+          this.elem.classList.add('dragging');
+          this.elem.style.left = clientX - this.init[3][0] + 'px';
+          this.elem.style.top = clientY - this.init[3][1] + 'px';
+          document.body.appendChild(this.elem);
+          this.possibleLayer = null;
+          this.placeholder.style.setProperty('--length', this.length * scale + 'px');
+        }
+      } else {
+        return;
+      }
+    }
     if (this.trimming) {
       let cursor = (clientX + scrollX - this.timelineLeft) / scale;
       // TODO: snapping for loop borders
@@ -241,6 +152,12 @@ class Track {
   }
 
   dragEnd() {
+    this.init = null;
+    if (!this.dragging) {
+      if (Track.selected) Track.selected.unselected();
+      this.selected();
+      return;
+    }
     this.timelineLeft = null;
     this.jumpPoints = null;
     if (this.trimming) {
@@ -279,6 +196,24 @@ class Track {
     this.currentState = null;
   }
 
+  selected() {
+    Track.selected = this;
+    this.layer.elem.classList.add('has-selected');
+    this.elem.classList.add('selected');
+    this.props.setValues(this);
+    this.props.handler = this.change;
+    propertiesList.removeChild(noSelected);
+    propertiesList.appendChild(this.props.elem);
+  }
+
+  unselected() {
+    Track.selected = null;
+    this.layer.elem.classList.remove('has-selected');
+    this.elem.classList.remove('selected');
+    propertiesList.removeChild(this.props.elem);
+    propertiesList.appendChild(noSelected);
+  }
+
   remove(reason) {
     if (this.elem.parentNode) {
       this.elem.parentNode.removeChild(this.elem);
@@ -288,10 +223,41 @@ class Track {
       this.layer.tracks.splice(this.index, 1);
       this.layer.updateTracks();
     }
+    if (Track.selected === this) {
+      this.unselected();
+    }
+  }
+
+  change(prop, value, isFinal) {
+    if (isFinal) {
+      log(this.propChangesLog);
+      this.propChangesLog = null;
+    } else if (!this.propChangesLog) {
+      this.propChangesLog = getEntry();
+    }
+    const returnVal = this.showChange(prop, value, isFinal);
+    if (returnVal !== undefined) value = returnVal;
+    this[prop] = value;
+    rerender();
+    return returnVal;
+  }
+
+  showChange(prop, value, isFinal) {
+    let returnVal;
+    switch (prop) {
+      case 'start':
+        if (value < 0) returnVal = 0;
+        if (isFinal) {
+          // TODO: don't intersect
+        }
+        this.updateLength();
+        break;
+    }
+    return returnVal;
   }
 
   setProps(values) {
-    this.props.forEach(({id}) => {
+    this.props.props.forEach(({id}) => {
       if (values[id] !== undefined) {
         this[id] = values[id];
       }
@@ -300,7 +266,7 @@ class Track {
 
   toJSON() {
     const obj = {source: this.source.id};
-    this.props.forEach(({id}) => obj[id] = this[id]);
+    this.props.props.forEach(({id}) => obj[id] = this[id]);
     return obj;
   }
 
@@ -326,10 +292,10 @@ class Track {
 
 class MediaTrack extends Track {
 
-  constructor(source, extraProps = []) {
+  constructor(source, props) {
     super(
       source,
-      [...baseProps, ...mediaProps, ...extraProps]
+      props
     );
     this.trimEnd = this.source.length;
     this.updateLength();
@@ -362,8 +328,16 @@ class MediaTrack extends Track {
 
 class VideoTrack extends MediaTrack {
 
+  static get props() {
+    return this._props || (this._props = new Properties([
+      ...baseProps,
+      ...mediaProps,
+      ...graphicalProps
+    ]));
+  }
+
   constructor(source) {
-    super(source, graphicalProps);
+    super(source, VideoTrack.props);
     this.elem.classList.add('video');
     let videoLoaded;
     this.videoLoaded = new Promise(res => videoLoaded = res);
@@ -392,8 +366,15 @@ class VideoTrack extends MediaTrack {
 
 class AudioTrack extends MediaTrack {
 
+  static get props() {
+    return this._props || (this._props = new Properties([
+      ...baseProps,
+      ...mediaProps
+    ]));
+  }
+
   constructor(source) {
-    super(source);
+    super(source, AudioTrack.props);
     this.elem.classList.add('audio');
     this.audio = new Audio(this.source.url);
     this.audioLoaded = new Promise(res => this.audio.onload = res);
@@ -407,10 +388,18 @@ class AudioTrack extends MediaTrack {
 
 class ImageTrack extends Track {
 
+  static get props() {
+    return this._props || (this._props = new Properties([
+      ...baseProps,
+      lengthProp,
+      ...graphicalProps
+    ]));
+  }
+
   constructor(source) {
     super(
       source,
-      [...baseProps, lengthProp, ...graphicalProps]
+      ImageTrack.props
     );
     this.elem.classList.add('image');
   }
@@ -423,40 +412,86 @@ class ImageTrack extends Track {
 
 class TextTrack extends Track {
 
-  constructor() {
-    super(
-      sources.text,
-      // TODO: font? and also text value lol
-      [...baseProps, lengthProp, ...graphicalProps, {
+  static get props() {
+    return this._props || (this._props = new Properties([
+      {
+        id: 'font',
+        label: 'Font',
+        defaultVal: 'Open Sans'
+      },
+      {
+        id: 'content',
+        label: 'Text',
+        defaultVal: 'Xi Jinping eats, shoots, and [removed]!'
+      },
+      ...baseProps,
+      lengthProp,
+      ...graphicalProps,
+      {
         id: 'rColour',
         label: 'Red',
         digits: 0,
         range: 255,
         defaultVal: 255,
         animatable: true
-      }, {
+      },
+      {
         id: 'gColour',
         label: 'Green',
         digits: 0,
         range: 255,
         defaultVal: 255,
         animatable: true
-      }, {
+      },
+      {
         id: 'bColour',
         label: 'Blue',
         digits: 0,
         range: 255,
         defaultVal: 255,
         animatable: true
-      }]
-    );
+      }
+    ]));
+  }
+
+  constructor() {
+    super(sources.text, TextTrack.props);
     this.elem.classList.add('text');
+    this.name.textContent = this.content;
+  }
+
+  showChange(prop, value, isFinal) {
+    let returnVal;
+    switch (prop) {
+      case 'content':
+        this.name.textContent = value;
+        break;
+      case 'rColour':
+      case 'gColour':
+      case 'bColour':
+        if (value > 255) return 255;
+        else if (value < 0) return 0;
+        break;
+      case 'opacity':
+        if (value > 100) return 100;
+        else if (value < 0) return 0;
+      default:
+        return super.showChange(prop, value, isFinal);
+    }
+    return returnVal;
   }
 
   render(ctx) {
-    ctx.fillStyle = 'white';
-    ctx.font = '50px serif';
-    ctx.fillText('yeet', 100, 100);
+    ctx.save();
+    ctx.translate(ctx.canvas.width * (this.xPos + 1) / 2, ctx.canvas.height * (this.yPos + 1) / 2);
+    ctx.rotate(this.rotation * Math.PI / 180);
+    ctx.scale(this.xScale, this.yScale);
+    ctx.fillStyle = `rgba(${this.rColour}, ${this.gColour}, ${this.bColour}, ${this.opacity / 100})`;
+    ctx.font = `50px "${this.font.replace(/"/g, '\\"')}"`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(this.content, 0, 0);
+    ctx.restore();
   }
 
 }

@@ -153,16 +153,27 @@ button, input {
   flex: none;
   background-color: var(--metalayer);
   padding: 5px;
-  padding-right: 30px;
   border-radius: 5px;
-  font-family: monospace;
   position: relative;
+}
+.text {
+  display: flex;
+  flex: auto;
+}
+.number {
+  padding-right: 30px;
+  font-family: monospace;
 }
 .input-wrapper:focus-within {
   background-color: var(--btn-hover);
 }
 .value {
   font-size: 14px;
+}
+.text .value {
+  flex: auto;
+}
+.number .value {
   width: 8ch;
   text-align: right;
   cursor: ns-resize;
@@ -174,6 +185,9 @@ button, input {
   font-size: 14px;
   margin-left: 5px;
   white-space: pre;
+}
+.text .unit {
+  display: none;
 }
 .key {
   background-image: url('./key.svg');
@@ -189,6 +203,10 @@ button, input {
 }
 .active {
   background-image: url('./keyed.svg');
+}
+.no-selected {
+  font-size: 12px;
+  padding: 10px;
 }
 
 .player {
@@ -241,7 +259,7 @@ button, input {
 .timeline-wrapper {
   display: flex;
   align-items: stretch;
-  height: 100%;
+  min-height: 100%;
 }
 .timing-functions {
   position: relative;
