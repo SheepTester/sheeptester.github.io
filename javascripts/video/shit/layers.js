@@ -85,7 +85,38 @@ function addLayer(layer = new Layer()) {
   updateLayers();
 }
 
-function updateScale() {
+function updateScale(newScale) {
+  const oldScale = scale;
+  scale = newScale;
   layers.forEach(layer => layer.updateScale());
   renderScale();
+  playheadMarker.style.left = previewTime * scale + 'px';
+  scrollWrapper.scrollLeft = (scrollX + windowWidth / 2) / oldScale * scale - windowWidth / 2; // could improve
+}
+
+function previewTimeAt(time = previewTime) {
+  Promise.all(layers.map(layer => {
+    const track = layer.trackAt(time);
+    if (track) {
+      if (track.prepare) {
+        return track.prepare(time - track.start).then(() => track);
+      } else {
+        return track;
+      }
+    }
+  }))
+    .then(tracks => {
+      c.clearRect(0, 0, c.canvas.width, c.canvas.height);
+      tracks.forEach(track => track && track.render(c));
+    });
+  previewTime = time;
+  playheadMarker.style.left = time * scale + 'px';
+}
+
+function getEntry() {
+  return layers.map(layer => layer.tracks.map(track => track.toJSON()));
+}
+
+function setEntry(entry) {
+  //
 }

@@ -283,11 +283,11 @@ class Track {
     console.log('todo: delete');
   }
 
-  // start, end, props, keys
-
-  // prepareFrame(time) -> a promise
-
-  // renderFrame(time)
+  toJSON() {
+    const obj = {source: this.source.id};
+    this.props.forEach({id} => obj[id] = this[id]);
+    return obj;
+  }
 
   // returns jumpPoint relative to currentTime, even if it snaps
   // according to altTime
@@ -361,11 +361,16 @@ class VideoTrack extends MediaTrack {
     });
   }
 
-  prepareFrame(time) {
+  prepare(relTime) {
     return new Promise(res => {
       this.video.addEventListener('timeupdate', res, {once: true});
-      this.video.currentTime = time - this.start; // TODO: this is incorrect
+      this.video.currentTime = relTime + this.trimStart; // TODO: this is incorrect
     });
+  }
+
+  render(ctx, play = false) {
+    ctx.drawImage(this.video, 0, 0, this.source.width, this.source.height);
+    if (play) this.video.play();
   }
 
 }
@@ -379,6 +384,10 @@ class AudioTrack extends MediaTrack {
     this.audioLoaded = new Promise(res => this.audio.onload = res);
   }
 
+  render(ctx, play = false) {
+    if (play) this.audio.play();
+  }
+
 }
 
 class ImageTrack extends Track {
@@ -389,6 +398,10 @@ class ImageTrack extends Track {
       [...baseProps, lengthProp, ...graphicalProps]
     );
     this.elem.classList.add('image');
+  }
+
+  render(ctx) {
+    ctx.drawImage(this.source.image, 0, 0, this.source.width, this.source.height);
   }
 
 }
@@ -423,6 +436,12 @@ class TextTrack extends Track {
       }]
     );
     this.elem.classList.add('text');
+  }
+
+  render(ctx) {
+    ctx.fillStyle = 'white';
+    ctx.font = '50px serif';
+    ctx.fillText('yeet', 100, 100);
   }
 
 }

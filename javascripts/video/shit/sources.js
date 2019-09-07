@@ -10,6 +10,7 @@ class Source {
     this.file = file;
     this.url = URL.createObjectURL(file);
     this.name = file.name;
+    this.id = file.name + Math.random().toString(36).slice(2);
     this.elem = Elem('div', {
       className: 'source disabled',
       tabIndex: 0

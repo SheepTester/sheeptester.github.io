@@ -23,28 +23,26 @@ const playheadMarker = document.getElementById('playhead');
 const preview = document.getElementById('preview');
 const c = preview.getContext('2d');
 
+const LEFT = 150;
+
 const BASE_SCALE = 3;
 const MAX_SCALE = 5;
 let scale = 3, logScale = 0;
 zoomOutBtn.addEventListener('click', e => {
   if (logScale > 0) {
-    logScale--;
-    scale = BASE_SCALE * 2 ** logScale;
-    updateScale();
+    updateScale(BASE_SCALE * 2 ** --logScale);
   }
 });
 zoomInBtn.addEventListener('click', e => {
   if (logScale < MAX_SCALE) {
-    logScale++;
-    scale = BASE_SCALE * 2 ** logScale;
-    updateScale();
+    updateScale(BASE_SCALE * 2 ** ++logScale);
   }
 });
 function renderScale() {
   while (timeMarkers.firstChild) timeMarkers.removeChild(timeMarkers.firstChild);
   const majorStep = 20 * 2 ** (-logScale);
   const step = 2 * 2 ** (-logScale);
-  const minTime = Math.floor((scrollX - 150) / scale / step) * step;
+  const minTime = Math.floor((scrollX - LEFT) / scale / step) * step;
   const maxTime = Math.ceil((scrollX + windowWidth) / scale / step) * step;
   for (let t = Math.max(minTime, 0); t <= maxTime; t += step) {
     timeMarkers.appendChild(Elem('span', {
@@ -70,6 +68,17 @@ window.addEventListener('resize', e => {
   windowWidth = window.innerWidth;
   windowHeight = window.innerHeight;
   renderScale();
+});
+
+let previewTime = 0;
+isDragTrigger(scrollWrapper, (e, switchControls) => {
+  if (e.target.closest('.track, .timing-functions')) {
+    switchControls([]);
+  } else {
+    previewTimeAt(Math.max((e.clientX + scrollX - LEFT) / scale, 0));
+  }
+}, e => {
+  previewTimeAt(Math.max((e.clientX + scrollX - LEFT) / scale, 0));
 });
 
 Array.from(document.getElementsByClassName('value')).forEach(isAdjustableInput); // TEMP

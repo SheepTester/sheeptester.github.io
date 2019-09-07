@@ -7,11 +7,11 @@ function isDragTrigger(elem, ondown, ...fns) {
   });
 }
 document.addEventListener('mousemove', e => {
-  if (controller) controller[0](e);
+  if (controller && controller[0]) controller[0](e);
 });
 document.addEventListener('mouseup', e => {
   if (controller) {
-    controller[1](e);
+    if (controller[1]) controller[1](e);
     controller = null;
   }
 });
