@@ -56,6 +56,11 @@ class Layer {
     updateLayers();
   }
 
+  remove() {
+    layers.splice(this.index, 1);
+    layersWrapper.removeChild(this.elem);
+  }
+
 }
 
 function updateLayers() {
@@ -113,10 +118,24 @@ function previewTimeAt(time = previewTime) {
   playheadMarker.style.left = time * scale + 'px';
 }
 
+function clearLayers() {
+  while (layers.length) layers[layers.length - 1].remove();
+}
+
 function getEntry() {
   return layers.map(layer => layer.tracks.map(track => track.toJSON()));
 }
 
 function setEntry(entry) {
-  //
+  clearLayers();
+  entry.forEach(tracks => {
+    const layer = new Layer();
+    tracks.forEach(data => {
+      const track = sources[data.source].createTrack();
+      track.setProps(data);
+      track.updateLength();
+      layer.addTrack(track);
+    });
+    addLayer(layer);
+  });
 }

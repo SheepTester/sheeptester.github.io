@@ -86,7 +86,7 @@ Array.from(document.getElementsByClassName('value')).forEach(isAdjustableInput);
 addLayer();
 
 isDragTrigger(textBtn, (e, switchControls) => {
-  const track = new TextTrack(null);
+  const track = new TextTrack();
   track.dragStart(e, [5, 5]);
   switchControls([track.dragMove, track.dragEnd]);
 });
@@ -103,6 +103,33 @@ addBtn.addEventListener('change', async e => {
     }
   }
   addBtn.disabled = false;
+});
+
+const undoHistory = [];
+const redoHistory = [];
+function log(entry = getEntry()) {
+  undoHistory.push(entry);
+  redoHistory.splice(0, redoHistory.length);
+  undoBtn.disabled = !undoHistory.length;
+  redoBtn.disabled = !redoHistory.length;
+}
+undoBtn.addEventListener('click', e => {
+  if (undoHistory.length) {
+    redoHistory.push(getEntry());
+    const entry = undoHistory.pop();
+    setEntry(entry);
+    undoBtn.disabled = !undoHistory.length;
+    redoBtn.disabled = !redoHistory.length;
+  }
+});
+redoBtn.addEventListener('click', e => {
+  if (redoHistory.length) {
+    undoHistory.push(getEntry());
+    const entry = redoHistory.pop();
+    setEntry(entry);
+    undoBtn.disabled = !undoHistory.length;
+    redoBtn.disabled = !redoHistory.length;
+  }
 });
 
 document.addEventListener('contextmenu', e => {

@@ -4,6 +4,15 @@ const thumbnailVideo = Elem('video');
 const thumbnailAudio = Elem('audio');
 const audioContext = new AudioContext();
 
+const sources = {
+  text: {
+    id: 'text',
+    createTrack() {
+      return new TextTrack();
+    }
+  }
+};
+
 class Source {
 
   constructor(file) {
@@ -11,6 +20,7 @@ class Source {
     this.url = URL.createObjectURL(file);
     this.name = file.name;
     this.id = file.name + Math.random().toString(36).slice(2);
+    sources[this.id] = this;
     this.elem = Elem('div', {
       className: 'source disabled',
       tabIndex: 0

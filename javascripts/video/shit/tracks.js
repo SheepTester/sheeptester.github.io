@@ -116,11 +116,11 @@ class Track {
     this.elem = Elem('div', {
       className: 'track',
       style: {
-        backgroundImage: source && `url(${encodeURI(source.thumbnail)})`
+        backgroundImage: source.thumbnail && `url(${encodeURI(source.thumbnail)})`
       }
     }, [
       Elem('span', {className: 'trim trim-start'}),
-      this.name = Elem('span', {className: 'name'}, [source && source.name]),
+      this.name = Elem('span', {className: 'name'}, [source.name]),
       Elem('span', {className: 'trim trim-end'})
     ]);
     isDragTrigger(this.elem, e => this.dragStart(e), this.dragMove, this.dragEnd);
@@ -154,6 +154,7 @@ class Track {
   // TODO: don't start dragging immediately unless otherwise specified
   dragStart({clientX, clientY, target}, offsets) {
     this.timelineLeft = layersWrapper.getBoundingClientRect().left + scrollX;
+    this.currentState = getEntry();
     if (target.classList.contains('trim')) {
       this.trimming = true;
       document.body.classList.add('trimming');
@@ -181,7 +182,6 @@ class Track {
       this.layer.tracks.splice(this.index, 1);
       this.layer.updateTracks();
     }
-    // TODO: should probably set these all to null when done dragging
     this.layerBounds = getLayerBounds();
     this.jumpPoints = getAllJumpPoints();
     if (!offsets) {
@@ -244,6 +244,7 @@ class Track {
     this.timelineLeft = null;
     this.jumpPoints = null;
     if (this.trimming) {
+      log(this.currentState);
       this.trimming = false;
       document.body.classList.remove('trimming');
       return;
@@ -255,6 +256,7 @@ class Track {
     this.elem.style.top = null;
     const layer = this.possibleLayer;
     if (layer) {
+      log(this.currentState);
       this.placeholder.parentNode.removeChild(this.placeholder);
       this.start = this.possibleStart;
       this.updateLength();
@@ -274,18 +276,31 @@ class Track {
     }
     this.possibleLayer = null;
     this.possibleStart = null;
+    this.currentState = null;
   }
 
   remove(reason) {
     if (this.elem.parentNode) {
       this.elem.parentNode.removeChild(this.elem);
     }
-    console.log('todo: delete');
+    if (this.layer) {
+      log(this.currentState || getEntry());
+      this.layer.tracks.splice(this.index, 1);
+      this.layer.updateTracks();
+    }
+  }
+
+  setProps(values) {
+    this.props.forEach(({id}) => {
+      if (values[id] !== undefined) {
+        this[id] = values[id];
+      }
+    });
   }
 
   toJSON() {
     const obj = {source: this.source.id};
-    this.props.forEach({id} => obj[id] = this[id]);
+    this.props.forEach(({id}) => obj[id] = this[id]);
     return obj;
   }
 
@@ -408,9 +423,9 @@ class ImageTrack extends Track {
 
 class TextTrack extends Track {
 
-  constructor(source) {
+  constructor() {
     super(
-      source,
+      sources.text,
       // TODO: font? and also text value lol
       [...baseProps, lengthProp, ...graphicalProps, {
         id: 'rColour',
