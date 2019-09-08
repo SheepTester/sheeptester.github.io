@@ -27,11 +27,13 @@ const playheadMarker = document.getElementById('playhead');
 const preview = document.getElementById('preview');
 const c = preview.getContext('2d');
 
+const easingEditor = new EasingEditor();
+
 const LEFT = 100;
 
 const BASE_SCALE = 3;
 const MAX_SCALE = 5;
-let scale = 3, logScale = 0;
+let logScale = 1, scale = BASE_SCALE * 2 ** logScale;
 zoomOutBtn.addEventListener('click', e => {
   if (logScale > 0) {
     updateScale(BASE_SCALE * 2 ** --logScale);

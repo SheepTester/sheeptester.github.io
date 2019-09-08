@@ -362,8 +362,7 @@ class Track {
     this.possibleLayer = null;
     this.possibleStart = null;
     this.currentState = null;
-    rerender();
-    this.displayProperties();
+    setPreviewTime(previewTime);
   }
 
   selected() {
@@ -530,7 +529,7 @@ class Track {
     const keys = this.keys[id];
     keys.elem.appendChild(key.elem);
     const index = keys.findIndex(({time}) => time > key.time);
-    key.ease = 'linear'; // TEMP (change back to constant)
+    key.ease = [0.25, 0.1, 0.25, 1.0]; // TEMP (change back to constant)
     if (~index) {
       if (index > 0) key.ease = keys[index - 1].ease;
       keys.splice(index, 0, key);
@@ -624,7 +623,7 @@ class Track {
     const keys = {};
     Object.keys(this.keys).forEach(id => {
       if (this.keys[id].length) {
-        keys[id] = this.keys[id].map(({time, value}) => ({time, value}));
+        keys[id] = this.keys[id].map(({time, value, ease}) => ({time, value, ease}));
       }
     });
     const obj = {

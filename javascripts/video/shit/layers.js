@@ -98,6 +98,8 @@ function updateScale(newScale) {
   renderScale();
   playheadMarker.style.left = previewTime * scale + 'px';
   scrollWrapper.scrollLeft = (scrollX + windowWidth / 2) / oldScale * scale - windowWidth / 2; // could improve
+  zoomOutBtn.disabled = logScale === 0;
+  zoomInBtn.disabled = logScale === MAX_SCALE;
 }
 
 let previewTimeReady;

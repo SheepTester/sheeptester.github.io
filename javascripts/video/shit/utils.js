@@ -62,6 +62,13 @@ function interpolate(time, timingFn) {
       return time;
     case 'constant':
       return 1;
+    case 'easeInElastic':
+    case 'easeOutElastic':
+    case 'easeInOutElastic':
+    case 'easeInBounce':
+    case 'easeOutBounce':
+    case 'easeInOutBounce':
+      return easingsFunctions[timingFn](time);
     default:
       const id = timingFn.join('-');
       if (!beziers[id]) beziers[id] = BezierEasing(...timingFn);
