@@ -425,7 +425,7 @@ class Track {
         if (key) {
           key.value = value;
         } else {
-          this.insertKey(prop, this.createKey(id, {value, time: relTime}));
+          this.insertKey(prop, this.createKey(prop, {value, time: relTime}));
           this.props.keys[prop].classList.add('active');
         }
       }
@@ -521,15 +521,23 @@ class Track {
     }
   }
 
+  // assumes key is new, so it sets ease accordingly
   insertKey(id, key) {
     if (!this.keys[id]) {
       this.keys[id] = this.createKeyRow(id);
       this.keyWrapper.appendChild(this.keys[id].elem);
     }
-    this.keys[id].elem.appendChild(key.elem);
-    const index = this.keys[id].findIndex(({time}) => time > key.time);
-    if (~index) this.keys[id].splice(index, 0, key);
-    else this.keys[id].push(key);
+    const keys = this.keys[id];
+    keys.elem.appendChild(key.elem);
+    const index = keys.findIndex(({time}) => time > key.time);
+    key.ease = 'linear'; // TEMP (change back to constant)
+    if (~index) {
+      if (index > 0) key.ease = keys[index - 1].ease;
+      keys.splice(index, 0, key);
+    } else {
+      if (keys.length) key.ease = keys[keys.length - 1].ease;
+      keys.push(key);
+    }
   }
 
   deleteSelected() {

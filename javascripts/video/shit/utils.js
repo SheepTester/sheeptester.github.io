@@ -3,7 +3,7 @@ function isDragTrigger(elem, ondown, ...fns) {
   elem.addEventListener('mousedown', e => {
     if (controller || e.which !== 1) return;
     controller = fns;
-    ondown(e, newController => controller = newController);
+    if (ondown) ondown(e, newController => controller = newController);
   });
 }
 document.addEventListener('mousemove', e => {
@@ -53,9 +53,20 @@ function isAdjustableInput(elem, onchange, oninput) {
   return elem;
 }
 
+const beziers = {};
+
 // time - [0, 1]
 function interpolate(time, timingFn) {
-  return time; // TEMP
+  switch (timingFn) {
+    case 'linear':
+      return time;
+    case 'constant':
+      return 1;
+    default:
+      const id = timingFn.join('-');
+      if (!beziers[id]) beziers[id] = BezierEasing(...timingFn);
+      return beziers[id](time);
+  }
 }
 
 // https://stackoverflow.com/a/17323608
