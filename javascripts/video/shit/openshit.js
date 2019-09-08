@@ -50,7 +50,7 @@ function renderScale() {
   const maxTime = Math.ceil((scrollX + windowWidth) / scale / step) * step;
   for (let t = Math.max(minTime, 0); t <= maxTime; t += step) {
     timeMarkers.appendChild(Elem('span', {
-      className: 'marker',
+      className: ['marker', t % majorStep === 0 ? 'major' : null],
       style: {
         left: t * scale + 'px'
       }

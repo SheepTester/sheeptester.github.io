@@ -45,9 +45,25 @@ button, input {
   font: inherit;
   color: inherit;
 }
-
 .trimming {
   cursor: ew-resize;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: none;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--text-em);
+  border-radius: 5px;
+  border: 3px solid transparent;
+  background-clip: padding-box;
+}
+::-webkit-scrollbar-corner {
+  background: none;
 }
 
 .main {
@@ -77,6 +93,13 @@ button, input {
   cursor: pointer;
   font-size: 14px;
   padding: 0 5px;
+}
+
+.side-panel {
+  flex: auto;
+  height: 0;
+  overflow: auto;
+  overflow: overlay;
 }
 
 .sources {
@@ -233,7 +256,7 @@ button, input {
 .timeline-scroller {
   position: relative;
   height: 200px;
-  overflow: auto;
+  overflow: scroll;
   background-color: var(--metalayer);
 }
 .timeline {
@@ -261,6 +284,9 @@ button, input {
   margin-left: -0.5px;
   height: 5px;
   bottom: 0;
+}
+.major::after {
+  border-color: rgba(255, 255, 255, 0.3);
 }
 
 .layer {
