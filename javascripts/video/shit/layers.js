@@ -56,6 +56,18 @@ class Layer {
     updateLayers();
   }
 
+  addAudioTracksTo(stream) {
+    this.tracks.forEach(track => {
+      if (track.media) {
+        const dest = audioContext.createMediaStreamDestination();
+        const source = audioContext.createMediaElementSource(track.media);
+        source.connect(dest);
+        source.connect(audioContext.destination);
+        dest.stream.getAudioTracks().forEach(track => stream.addTrack(track));
+      }
+    });
+  }
+
   remove() {
     this.tracks.forEach(track => track.remove('layer-removal'));
     layers.splice(this.index, 1);
@@ -143,7 +155,7 @@ async function rerender() {
 }
 
 let playing = false;
-async function play() {
+async function play(exporting = false) {
   if (playing) return;
   await Promise.all(layers.map(layer => {
     layer.playing = layer.trackAt(previewTime);
@@ -157,7 +169,8 @@ async function play() {
   }));
   playing = {
     start: Date.now(),
-    startTime: previewTime
+    startTime: previewTime,
+    exporting
   };
   playIcon.textContent = 'pause';
   paint();
@@ -183,6 +196,10 @@ function paint() {
       layer.playing = null;
     }
   });
+  if (playing.exporting && previewTime > editorLength) {
+    playing.exporting(true);
+    stop();
+  }
 }
 function stop() {
   layers.forEach(layer => {
@@ -218,4 +235,45 @@ function setEntry(entry) {
     addLayer(layer);
   });
   rerender();
+}
+
+let exportedURL;
+function exportVideo() {
+  // reduce lag by hiding some things
+  if (playing) stop();
+  if (Track.selected) Track.selected.unselected();
+  if (easingEditor.isOpen) easingEditor.close();
+  document.body.classList.add('exporting');
+
+  const stream = preview.captureStream();
+  layers.forEach(layer => layer.addAudioTracksTo(stream));
+  const recorder = new MediaRecorder(stream, {
+    mimeType: 'video/webm;codecs=h264',
+    videoBitsPerSecond: 8000000
+  });
+
+  let download = true;
+  recorder.addEventListener('dataavailable', e => {
+    const newVideo = document.createElement('video');
+    exportedURL = URL.createObjectURL(e.data);
+    if (download) {
+      const saveLink = document.createElement('a');
+      saveLink.href = exportedURL;
+      saveLink.download = 'openshit-export.webm';
+      document.body.appendChild(saveLink);
+      saveLink.click();
+      document.body.removeChild(saveLink);
+    }
+  });
+
+  previewTimeAt(0, false);
+
+  return new Promise(res => {
+    recorder.start();
+    audioContext.resume().then(() => play(res));
+  }).then(successful => {
+    download = successful;
+    recorder.stop();
+    document.body.classList.remove('exporting');
+  });
 }

@@ -93,7 +93,9 @@ isDragTrigger(scrollWrapper, (e, switchControls) => {
     if (Track.selected && !closest) {
       Track.selected.unselected();
     }
-    previewTimeAt(Math.max((e.clientX + scrollX - LEFT) / scale, 0));
+    window.requestAnimationFrame(() => {
+      previewTimeAt(Math.max((e.clientX + scrollX - LEFT) / scale, 0))
+    });
   }
 }, e => {
   previewTimeAt(Math.max((e.clientX + scrollX - LEFT) / scale, 0));
@@ -179,6 +181,12 @@ nextBtn.addEventListener('click', e => {
 });
 
 document.addEventListener('keydown', e => {
+  if (playing && playing.exporting) {
+    if (e.key === 'Escape') playing.exporting(false);
+    return;
+  }
+  if (e.target.tagName === 'INPUT') return;
+  let preventDefault = true;
   if (e.ctrlKey || e.metaKey) {
     if (e.key === 'ArrowLeft') {
       if (e.shiftKey) startBtn.click();
@@ -190,24 +198,33 @@ document.addEventListener('keydown', e => {
       undoBtn.click();
     } else if (e.key === 'Z' || e.key === 'y') {
       redoBtn.click();
+    } else {
+      preventDefault = false;
     }
   } else if (e.key === 'ArrowLeft') {
     if (e.shiftKey) setPreviewTime(previewTime - 10);
     else if (e.altKey) setPreviewTime(previewTime - 0.1);
     else setPreviewTime(previewTime - 1);
-    e.preventDefault();
   } else if (e.key === 'ArrowRight') {
     if (e.shiftKey) setPreviewTime(previewTime + 10);
     else if (e.altKey) setPreviewTime(previewTime + 0.1);
     else setPreviewTime(previewTime + 1);
-    e.preventDefault();
   } else if (e.key === ' ') {
     playBtn.click();
   } else if (e.key === '-') {
     zoomOutBtn.click();
   } else if (e.key === '=' || e.key === '+') {
     zoomInBtn.click();
+  } else if (e.key === 'Delete') {
+    if (Track.selected) Track.deleteSelected();
+  } else {
+    preventDefault = false;
   }
+  if (preventDefault) e.preventDefault();
+});
+
+exportBtn.addEventListener('click', e => {
+  exportVideo();
 });
 
 document.addEventListener('contextmenu', e => {

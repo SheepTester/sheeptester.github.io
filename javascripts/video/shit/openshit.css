@@ -308,6 +308,7 @@ button, input {
   flex-direction: column;
   background-repeat: repeat-x;
   background-color: var(--metalayer);
+  background-position: center;
   position: absolute;
   top: 0;
   bottom: 0;
@@ -328,9 +329,12 @@ button, input {
 .placeholder {
   background-color: rgba(255, 255, 255, 0.7);
 }
+.audio.track {
+  --background-size-y: 100%;
+  background-position-y: top;
+}
 .image.track {
   background-size: cover;
-  background-position: center;
 }
 .text.track {
   background-color: #725287;
@@ -340,6 +344,8 @@ button, input {
   text-overflow: ellipsis;
   overflow: hidden;
   padding: 0 10px;
+  flex: none;
+  height: 16px;
 }
 
 .selected {
@@ -347,6 +353,9 @@ button, input {
   margin: 0;
   z-index: 10;
   overflow: visible;
+}
+.audio.selected {
+  --background-size-y: 16px;
 }
 .keys {
   background-color: var(--background);
@@ -377,6 +386,7 @@ button, input {
   background-color: var(--ease);
   margin-left: 5px;
   cursor: pointer;
+  z-index: 1;
 }
 .key-ease .ease-icon {
   width: 10px;
@@ -548,4 +558,24 @@ button, input {
 }
 .ease-animation {
   margin-top: 5px;
+}
+
+.exporting .main,
+.exporting .timeline-scroller {
+  pointer-events: none;
+  opacity: 0.5;
+}
+.exporting-msg {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  max-width: 500px;
+  text-align: center;
+  margin: 50px auto;
+  font-size: 16px;
+}
+.exporting .exporting-msg {
+  display: block;
 }

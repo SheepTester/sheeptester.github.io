@@ -390,6 +390,12 @@ class Track {
     this.layer.elem.classList.remove('has-selected');
     this.elem.classList.remove('selected');
     propertiesList.removeChild(this.props.elem);
+    if (this.selectedKeys) {
+      this.selectedKeys.forEach(key => {
+        key.elem.classList.remove('select');
+      });
+      this.selectedKeys = null;
+    }
   }
 
   remove(reason) {
@@ -706,7 +712,7 @@ class MediaTrack extends Track {
 
   updateLength() {
     super.updateLength();
-    this.elem.style.backgroundPosition = -this.trimStart * scale + 'px';
+    this.elem.style.backgroundPositionX = -this.trimStart * scale + 'px';
   }
 
   updateScale() {
@@ -721,9 +727,31 @@ class MediaTrack extends Track {
         if (value > 100) return 100;
         else if (value < 0) return 0;
       case 'trimStart':
-        if (value > this.trimEnd - MIN_LENGTH) return this.trimEnd - MIN_LENGTH;
+        if (value > this.trimEnd - MIN_LENGTH) this.trimStart = returnVal = this.trimEnd - MIN_LENGTH;
+        if (isFinal) {
+          if (this.index < this.layer.tracks.length - 1) {
+            if (this.layer.tracks[this.index + 1].start < this.start + this.trimEnd - value) {
+              value = returnVal = this.trimEnd - this.layer.tracks[this.index + 1].start + this.start;
+            }
+          }
+          this.removeOutOfBoundKeys();
+        }
+        this.trimStart = value;
+        this.updateLength();
+        break;
       case 'trimEnd':
-        if (value < this.trimStart + MIN_LENGTH) return this.trimStart + MIN_LENGTH;
+        if (value < this.trimStart + MIN_LENGTH) value = returnVal = this.trimStart + MIN_LENGTH;
+        if (isFinal) {
+          if (this.index < this.layer.tracks.length - 1) {
+            if (this.layer.tracks[this.index + 1].start < this.start + value - this.trimStart) {
+              value = returnVal = this.trimStart + this.layer.tracks[this.index + 1].start - this.start;
+            }
+          }
+          this.removeOutOfBoundKeys();
+        }
+        this.trimEnd = value;
+        this.updateLength();
+        break;
       default:
         return super.showChange(prop, value, isFinal);
     }
@@ -820,6 +848,11 @@ class AudioTrack extends MediaTrack {
     this.media = new Audio(this.source.url);
     this.mediaLoaded = new Promise(res => this.media.onload = res);
     this.media.loop = true;
+  }
+
+  updateScale() {
+    super.updateScale();
+    this.elem.style.backgroundSize = this.source.length * scale + 'px var(--background-size-y)';
   }
 
 }

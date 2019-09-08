@@ -27,6 +27,7 @@ class EasingEditor {
     this.animate = this.animate.bind(this);
     this.close = this.close.bind(this);
 
+    this.isOpen = false;
     const svg = document.createElementNS(NS, 'svg');
     svg.setAttributeNS(null, 'viewBox', `${-PAD} ${-PAD} ${TOTAL} ${TOTAL}`);
     svg.classList.add('ease-preview');
@@ -142,6 +143,7 @@ class EasingEditor {
   }
 
   open(rect) {
+    this.isOpen = true;
     if (rect) {
       if (rect.top > windowHeight / 2) {
         this.elem.style.bottom = windowHeight - rect.top + 'px';
@@ -158,6 +160,7 @@ class EasingEditor {
     if (e && this.elem.contains(e.target)) {
       return;
     }
+    this.isOpen = false;
     this.onchange = null;
     this.elem.style.left = null;
     this.elem.style.right = null;
