@@ -73,7 +73,7 @@ window.addEventListener('resize', e => {
   renderScale();
 });
 
-let previewTime, wasPlaying;
+let previewTime, wasPlaying, editorLength;
 isDragTrigger(scrollWrapper, (e, switchControls) => {
   const closest = e.target.closest('.track');
   if (closest && !closest.classList.contains('selected')) {
@@ -163,7 +163,7 @@ startBtn.addEventListener('click', e => {
 prevBtn.addEventListener('click', e => {
   const jumpPoints = getAllJumpPoints();
   const goodTime = jumpPoints.findIndex(t => t >= previewTime);
-  if (goodTime === 0) setPreviewTime(0);
+  if (goodTime === 0 || !jumpPoints.length) setPreviewTime(0);
   else if (~goodTime) setPreviewTime(jumpPoints[goodTime - 1]);
   else setPreviewTime(jumpPoints[jumpPoints.length - 1]);
 });
@@ -171,6 +171,38 @@ nextBtn.addEventListener('click', e => {
   const jumpPoints = getAllJumpPoints();
   const goodTime = jumpPoints.find(t => t > previewTime);
   if (goodTime) setPreviewTime(goodTime);
+});
+
+document.addEventListener('keydown', e => {
+  if (e.ctrlKey || e.metaKey) {
+    if (e.key === 'ArrowLeft') {
+      if (e.shiftKey) startBtn.click();
+      else prevBtn.click();
+    } else if (e.key === 'ArrowRight') {
+      if (e.shiftKey) setPreviewTime(editorLength);
+      else nextBtn.click();
+    } else if (e.key === 'z') {
+      undoBtn.click();
+    } else if (e.key === 'Z' || e.key === 'y') {
+      redoBtn.click();
+    }
+  } else if (e.key === 'ArrowLeft') {
+    if (e.shiftKey) setPreviewTime(previewTime - 10);
+    else if (e.altKey) setPreviewTime(previewTime - 0.1);
+    else setPreviewTime(previewTime - 1);
+    e.preventDefault();
+  } else if (e.key === 'ArrowRight') {
+    if (e.shiftKey) setPreviewTime(previewTime + 10);
+    else if (e.altKey) setPreviewTime(previewTime + 0.1);
+    else setPreviewTime(previewTime + 1);
+    e.preventDefault();
+  } else if (e.key === ' ') {
+    playBtn.click();
+  } else if (e.key === '-') {
+    zoomOutBtn.click();
+  } else if (e.key === '=' || e.key === '+') {
+    zoomInBtn.click();
+  }
 });
 
 document.addEventListener('contextmenu', e => {

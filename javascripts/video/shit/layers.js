@@ -103,6 +103,7 @@ function updateScale(newScale) {
 let previewTimeReady;
 // use `setPreviewTime` if you want to set it while playing
 function previewTimeAt(time = previewTime, prepare = true) {
+  if (time < 0) time = 0;
   previewTime = time;
   playheadMarker.style.left = time * scale + 'px';
   currentSpan.textContent = Math.floor(previewTime / 60) + ':' + ('0' + Math.floor(previewTime % 60)).slice(-2);
@@ -121,13 +122,22 @@ function previewTimeAt(time = previewTime, prepare = true) {
 async function rerender() {
   await previewTimeReady;
   c.clearRect(0, 0, c.canvas.width, c.canvas.height);
-  return layers.map(layer => {
+  let length = 0;
+  layers.forEach(layer => {
+    if (layer.tracks.length) {
+      const lastTrack = layer.tracks[layer.tracks.length - 1];
+      if (lastTrack.end > length) {
+        length = lastTrack.end;
+      }
+    }
     const track = layer.trackAt(previewTime);
     if (track) {
       track.render(c, previewTime - track.start);
       return track;
     }
   });
+  editorLength = length;
+  lengthSpan.textContent = Math.floor(length / 60) + ':' + ('0' + Math.floor(length % 60)).slice(-2);
 }
 
 let playing = false;
