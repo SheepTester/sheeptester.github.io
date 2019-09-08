@@ -529,7 +529,7 @@ class Track {
     const keys = this.keys[id];
     keys.elem.appendChild(key.elem);
     const index = keys.findIndex(({time}) => time > key.time);
-    key.ease = [0.25, 0.1, 0.25, 1.0]; // TEMP (change back to constant)
+    key.ease = easingEditor.fn;
     if (~index) {
       if (index > 0) key.ease = keys[index - 1].ease;
       keys.splice(index, 0, key);

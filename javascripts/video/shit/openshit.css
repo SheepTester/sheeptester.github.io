@@ -7,6 +7,7 @@
   --separator: rgba(255, 255, 255, 0.1);
   --text: rgba(255, 255, 255, 0.65);
   --text-em: #87c9c3;
+  --ease: #8e44ad;
 }
 
 html, body {
@@ -421,4 +422,109 @@ button, input {
   border-left: 10px solid transparent;
   border-right: 10px solid transparent;
   margin-left: -9.5px;
+}
+
+.ease-icon circle {
+  fill: rgba(255, 255, 255, 0.8);
+}
+.ease-icon path {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.5);
+  stroke-width: 5;
+  stroke-linecap: round;
+}
+
+.ease-editor {
+  position: fixed;
+  display: flex;
+  background-color: var(--background);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.5);
+  padding: 5px;
+}
+.ease-library {
+  padding-right: 5px;
+}
+.ease {
+  display: block;
+  font-size: 12px;
+  background-color: var(--btn);
+  text-align: left;
+  margin-bottom: 5px;
+  width: 100%;
+  cursor: pointer;
+  box-sizing: border-box;
+  padding: 5px;
+}
+.ease .ease-icon {
+  width: 10px;
+  padding: 3px;
+  margin-right: 5px;
+  vertical-align: middle;
+}
+.ease-name {
+  vertical-align: middle;
+}
+.ease-row {
+  display: flex;
+  align-items: center;
+}
+.ease-label {
+  display: inline-block;
+  width: 50px;
+  font-size: 12px;
+  text-align: right;
+  margin-right: 5px;
+}
+.ease-item {
+  padding: 5px;
+  cursor: pointer;
+}
+.ease-item .ease-icon {
+  width: 20px;
+  padding: 3px;
+}
+.ease-heading {
+  display: inline-block;
+  width: 36px;
+  font-size: 10px;
+  text-transform: uppercase;
+  text-align: center;
+}
+.ease-text {
+  font-size: 12px;
+}
+.ease-paste {
+  font-family: monospace;
+  color: white;
+  width: 22ch;
+}
+.ease-square {
+  background-color: var(--layer);
+  position: relative;
+}
+.ease-disabled { /* only visually disabled because clicking will reenable it */
+  opacity: 0.5;
+}
+.ease-control {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  background-color: var(--btn-hover);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+  border-radius: 50%;
+  cursor: pointer;
+  margin: -10px;
+}
+.ease-curve {
+  fill: none;
+  stroke: var(--text);
+  stroke-width: 2;
+}
+.ease-control-line {
+  fill: none;
+  stroke: var(--separator);
+  stroke-width: 1;
+}
+.ease-animation {
+  margin-top: 5px;
 }

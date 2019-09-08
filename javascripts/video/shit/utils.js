@@ -5,6 +5,7 @@ function isDragTrigger(elem, ondown, ...fns) {
     controller = fns;
     if (ondown) ondown(e, newController => controller = newController);
   });
+  return elem;
 }
 document.addEventListener('mousemove', e => {
   if (controller && controller[0]) controller[0](e);
