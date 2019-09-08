@@ -33,12 +33,7 @@ class Track {
         if (e.shiftKey) {
           this.dragStart(e, true);
         } else if (e.target.classList.contains('key-dot')) {
-          if (e.target.classList.contains('select')) {
-            this.dragStart(e, false);
-          } else {
-            setPreviewTime(this.start + +e.target.dataset.time);
-            switchControls([]);
-          }
+          this.dragStart(e, false);
         } else {
           switchControls(null);
         }
@@ -107,6 +102,12 @@ class Track {
       if (offsets) {
         this.elem.appendChild(this.selectBox);
       } else {
+        if (!this.selectInit.fromSelected) {
+          target.classList.add('select');
+          if (!this.selectedKeys) this.selectedKeys = [];
+          const time = +target.dataset.time;
+          this.selectedKeys.push(this.keys[target.dataset.id].find(key => key.time === time));
+        }
         this.jumpPoints = getAllJumpPoints();
         this.keyDragData = {dTime: 0, snappables: []};
         this.selectedKeys.forEach(({time}) => {
@@ -291,17 +292,21 @@ class Track {
         }
       } else {
         const elem = this.selectInit.target;
-        if (this.selectInit.isSelecting && elem.classList.contains('key-dot')) {
-          const keyTime = +elem.dataset.time;
-          const key = this.keys[elem.dataset.id].find(({time}) => time === keyTime);
-          if (key.elem.classList.contains('select')) {
-            key.elem.classList.remove('select');
-            this.selectedKeys.splice(this.selectedKeys.indexOf(key), 1);
-            if (!this.selectedKeys.length) this.selectedKeys = null;
+        if (elem.classList.contains('key-dot')) {
+          if (this.selectInit.isSelecting) {
+            const keyTime = +elem.dataset.time;
+            const key = this.keys[elem.dataset.id].find(({time}) => time === keyTime);
+            if (key.elem.classList.contains('select')) {
+              key.elem.classList.remove('select');
+              this.selectedKeys.splice(this.selectedKeys.indexOf(key), 1);
+              if (!this.selectedKeys.length) this.selectedKeys = null;
+            } else {
+              if (!this.selectedKeys) this.selectedKeys = [];
+              key.elem.classList.add('select');
+              this.selectedKeys.push(key);
+            }
           } else {
-            if (!this.selectedKeys) this.selectedKeys = [];
-            key.elem.classList.add('select');
-            this.selectedKeys.push(key);
+            setPreviewTime(this.start + +elem.dataset.time);
           }
         } else {
           this.selectedKeys.forEach(key => {
