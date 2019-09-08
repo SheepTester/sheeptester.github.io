@@ -90,6 +90,9 @@ button, input {
   display: inline-block;
   margin-right: 15px;
 }
+.censored .logo {
+  visibility: hidden;
+}
 .menu-btn {
   cursor: pointer;
   font-size: 14px;
@@ -362,6 +365,22 @@ button, input {
   font-size: 12px;
   padding-right: 5px;
   white-space: nowrap;
+  top: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+}
+.key-ease {
+  width: 16px;
+  padding: 0;
+  height: 16px;
+  background-color: var(--ease);
+  margin-left: 5px;
+  cursor: pointer;
+}
+.key-ease .ease-icon {
+  width: 10px;
+  pointer-events: none;
 }
 .key-dot {
   background-image: url('./keyed.svg');
@@ -440,6 +459,8 @@ button, input {
   background-color: var(--background);
   box-shadow: 0 3px 10px rgba(0, 0, 0, 0.5);
   padding: 5px;
+  z-index: 40;
+  left: 20px;
 }
 .ease-library {
   padding-right: 5px;

@@ -25,6 +25,7 @@ class EasingEditor {
 
   constructor() {
     this.animate = this.animate.bind(this);
+    this.close = this.close.bind(this);
 
     const svg = document.createElementNS(NS, 'svg');
     svg.setAttributeNS(null, 'viewBox', `${-PAD} ${-PAD} ${TOTAL} ${TOTAL}`);
@@ -140,23 +141,38 @@ class EasingEditor {
     ];
   }
 
-  open() {
-    this.elem.style.left = '100px';
-    this.elem.style.top = '150px';
-    document.body.appendChild(this.elem);
+  open(rect) {
+    if (rect) {
+      if (rect.top > windowHeight / 2) {
+        this.elem.style.bottom = windowHeight - rect.top + 'px';
+      } else {
+        this.elem.style.top = rect.bottom + 'px';
+      }
+    }
     this.animate();
+    document.body.appendChild(this.elem);
+    document.addEventListener('mousedown', this.close);
   }
 
-  close() {
+  close(e) {
+    if (e && this.elem.contains(e.target)) {
+      return;
+    }
+    this.onchange = null;
+    this.elem.style.left = null;
+    this.elem.style.right = null;
+    this.elem.style.top = null;
+    this.elem.style.bottom = null;
     window.cancelAnimationFrame(this.animateID);
     document.body.removeChild(this.elem);
+    document.removeEventListener('mousedown', this.close);
   }
 
   set(fn) {
     if (typeof fn === 'string') {
       if (!this.lastFn) this.lastFn = this.fn;
       this.square.classList.add('ease-disabled');
-    } else {
+    } else if (Array.isArray(fn) && fn.length === 4) {
       this.lastFn = null;
       fn[0] = clamp(fn[0], 0, 1);
       fn[2] = clamp(fn[2], 0, 1);
@@ -176,8 +192,13 @@ class EasingEditor {
         `M 0 ${SIZE} L ${fn[0] * SIZE} ${(1 - fn[1]) * SIZE} M ${fn[2] * SIZE} ${(1 - fn[3]) * SIZE} ${SIZE} 0`
       );
       this.text.value = fn.map(a => a.toFixed(2)).join(', ');
+    } else {
+      throw new Error('what kind of timing function is this lol: ' + fn);
     }
     this.fn = fn;
+    if (this.onchange) {
+      this.onchange(fn);
+    }
   }
 
   animate() {
@@ -234,7 +255,11 @@ class EaseIcon {
     if (init) this.set(init);
   }
 
-  set(fn) {
+  set(fn, metadata = this.metadata) {
+    this.fn = fn;
+    // "I can keep metadata for you, Gamepro5-chan!"
+    // just too lazy to store `key` elsewhere
+    this.metadata = metadata;
     switch (fn) {
       case 'linear':
         this.path.setAttributeNS(null, 'd', `M 0 ${SCALE} L ${SCALE} 0`);
@@ -251,6 +276,9 @@ class EaseIcon {
         this.path.setAttributeNS(null, 'd', `M 0 0 L ${SCALE} ${SCALE}`); // TODO
         break;
       default:
+        if (!Array.isArray(fn) || fn.length !== 4) {
+          throw new Error('what kind of timing function is this lol: ' + fn);
+        }
         this.path.setAttributeNS(
           null,
           'd',

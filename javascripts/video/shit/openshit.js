@@ -1,5 +1,8 @@
 'use strict';
 
+const params = new URL(location).searchParams;
+const censored = params.get('censored');
+
 const saveBtn = document.getElementById('save');
 const loadBtn = document.getElementById('load');
 const exportBtn = document.getElementById('export');
@@ -210,3 +213,10 @@ document.addEventListener('keydown', e => {
 document.addEventListener('contextmenu', e => {
   e.preventDefault();
 });
+
+if (censored) {
+  document.body.classList.add('censored');
+  exportBtn.disabled = true;
+  window.history.replaceState({}, '', '../censored.html');
+  document.title = '';
+}

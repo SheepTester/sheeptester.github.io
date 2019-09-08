@@ -30,7 +30,9 @@ class Track {
     ]);
     isDragTrigger(this.elem, (e, switchControls) => {
       if (Track.selected === this) {
-        if (e.shiftKey) {
+        if (e.target.classList.contains('key-ease')) {
+          switchControls([]);
+        } else if (e.shiftKey) {
           this.dragStart(e, true);
         } else if (e.target.classList.contains('key-dot')) {
           this.dragStart(e, false);
@@ -416,19 +418,20 @@ class Track {
     const returnVal = this.showChange(prop, value, isFinal);
     if (returnVal !== undefined) value = returnVal;
     this[prop] = value;
-    rerender();
-    if (isFinal) {
-      if (this.keys[prop] && this.keys[prop].length) {
-        const relTime = clamp(previewTime - this.start, 0, this.length);
-        const key = this.keys[prop].find(({time}) => time === relTime);
-        if (key) {
-          key.value = value;
-        } else {
-          this.insertKey(prop, this.createKey(prop, {value, time: relTime}));
-          this.props.keys[prop].classList.add('active');
-        }
+    if (this.keys[prop] && this.keys[prop].length) {
+      const relTime = clamp(previewTime - this.start, 0, this.length);
+      const key = this.keys[prop].find(({time}) => time === relTime);
+      if (key) {
+        key.value = value;
+      } else {
+        const key = this.createKey(prop, {value, time: relTime});
+        this.insertKey(prop, key);
+        this.props.keys[prop].classList.add('active');
+        this.keys[prop].icon.set(key.ease, key);
+        this.keys[prop].iconBtn.disabled = false;
       }
     }
+    rerender();
     return returnVal;
   }
 
@@ -497,8 +500,23 @@ class Track {
   }
 
   createKeyRow(id, keys = []) {
+    keys.icon = new EaseIcon();
     keys.elem = Elem('div', {className: 'key-row'}, [
-      Elem('div', {className: 'key-label'}, [this.props.props.find(p => p.id === id).label]),
+      Elem('div', {className: 'key-label'}, [
+        this.props.props.find(p => p.id === id).label,
+        keys.iconBtn = Elem('button', {
+          className: 'key-ease',
+          onclick(e) {
+            const rect = this.getBoundingClientRect();
+            easingEditor.set(keys.icon.fn);
+            easingEditor.onchange = fn => {
+              keys.icon.metadata.ease = fn;
+              keys.icon.set(fn);
+            };
+            easingEditor.open(rect);
+          }
+        }, [keys.icon.svg])
+      ]),
       ...keys.map(({elem}) => elem)
     ]);
     return keys;
@@ -508,7 +526,10 @@ class Track {
     log();
     const relTime = clamp(previewTime - this.start, 0, this.length);
     if (keyed) {
-      this.insertKey(id, this.createKey(id, {value: this[id], time: relTime}));
+      const key = this.createKey(id, {value: this[id], time: relTime});
+      this.insertKey(id, key);
+      this.keys[id].icon.set(key.ease, key);
+      this.keys[id].iconBtn.disabled = false;
     } else {
       const index = this.keys[id].findIndex(({time}) => time === relTime);
       if (~index) {
@@ -517,6 +538,7 @@ class Track {
       } else {
         console.log('could not find key yet it said there was key');
       }
+      this.keys[id].iconBtn.disabled = true;
     }
   }
 
@@ -564,10 +586,16 @@ class Track {
       this.props.setValues(this);
       this.props.props.forEach(({id, animatable}) => {
         if (animatable) {
-          if (this.keys[id] && this.keys[id].find(({time}) => time === relTime)) {
-            this.props.keys[id].classList.add('active');
-          } else {
-            this.props.keys[id].classList.remove('active');
+          if (this.keys[id]) {
+            const key = this.keys[id].find(({time}) => time === relTime);
+            if (key) {
+              this.props.keys[id].classList.add('active');
+              this.keys[id].icon.set(key.ease, key);
+              this.keys[id].iconBtn.disabled = false;
+            } else {
+              this.props.keys[id].classList.remove('active');
+              this.keys[id].iconBtn.disabled = true;
+            }
           }
         }
       });
