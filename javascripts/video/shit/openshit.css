@@ -348,6 +348,14 @@ button, input {
   margin-left: -12px;
   top: 0;
 }
+.selection {
+  position: absolute;
+  border: 1px solid rgba(0, 255, 255, 0.5);
+  background-color: rgba(0, 255, 255, 0.5);
+}
+.select {
+  filter: drop-shadow(0 0 3px rgba(0, 255, 255, 1));
+}
 
 .trim {
   position: absolute;

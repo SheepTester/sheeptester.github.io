@@ -1,6 +1,7 @@
 const SNAP_DIST = 10; // px
 const MIN_LENGTH = 0.1; // s
 const DRAG_MIN_DIST = 5; // px
+const SELECT_PADDING = 12; // px
 
 class Track {
 
@@ -29,8 +30,15 @@ class Track {
     ]);
     isDragTrigger(this.elem, (e, switchControls) => {
       if (Track.selected === this) {
-        if (e.target.classList.contains('key-dot')) {
-          switchControls([]);
+        if (e.shiftKey) {
+          this.dragStart(e, true);
+        } else if (e.target.classList.contains('key-dot')) {
+          if (e.target.classList.contains('select')) {
+            this.dragStart(e, false);
+          } else {
+            setPreviewTime(this.start + +e.target.dataset.time);
+            switchControls([]);
+          }
         } else {
           switchControls(null);
         }
@@ -39,6 +47,7 @@ class Track {
       }
     }, this.dragMove, this.dragEnd);
     this.placeholder = Elem('div', {className: 'track placeholder'});
+    this.selectBox = Elem('div', {className: 'selection'});
     this.updateScale();
   }
 
@@ -69,6 +78,12 @@ class Track {
   }
 
   dragStart({clientX, clientY, target}, offsets, dragImmediately = false) {
+    if (Track.selected === this) {
+      this.selectInit = {
+        isSelecting: offsets,
+        target
+      };
+    }
     if (dragImmediately) {
       this.startDragging(clientX, clientY, target, offsets);
     } else {
@@ -80,19 +95,39 @@ class Track {
   startDragging(clientX, clientY, target, offsets) {
     this.dragging = true;
     this.timelineLeft = layersWrapper.getBoundingClientRect().left + scrollX;
+    if (Track.selected === this) {
+      // `offsets` means if shift key is down in this context oof
+      this.selectInit = {
+        x: clientX + scrollX - this.timelineLeft - this.start * scale,
+        y: clientY + scrollY - this.elem.getBoundingClientRect().top,
+        time: (clientX + scrollX - this.timelineLeft) / scale - this.start,
+        fromSelected: target.classList.contains('select'),
+        isSelecting: offsets
+      };
+      if (offsets) {
+        this.elem.appendChild(this.selectBox);
+      } else {
+        this.jumpPoints = getAllJumpPoints();
+        this.keyDragData = {dTime: 0, snappables: []};
+        this.selectedKeys.forEach(({time}) => {
+          if (!this.keyDragData.snappables.includes(time)) {
+            this.keyDragData.snappables.push(time);
+          }
+        });
+      }
+      return;
+    }
     this.currentState = getEntry();
     if (target.classList.contains('trim')) {
       this.trimming = true;
       document.body.classList.add('trimming');
       this.trimmingStart = target.classList.contains('trim-start');
       if (this.trimmingStart) {
-        this.init = this.start;
         this.trimMin = this.index > 0
           ? this.layer.tracks[this.index - 1].end
           : 0;
         this.trimMax = this.end - MIN_LENGTH;
       } else {
-        this.init = this.end;
         this.trimMin = this.start + MIN_LENGTH;
         this.trimMax = this.index < this.layer.tracks.length - 1
           ? this.layer.tracks[this.index + 1].start
@@ -130,6 +165,31 @@ class Track {
       } else {
         return;
       }
+    }
+    if (Track.selected === this) {
+      const x = clientX + scrollX - this.timelineLeft - this.start * scale;
+      const y = clientY + scrollY - this.elem.getBoundingClientRect().top;
+      if (this.selectInit.isSelecting) {
+        const left = Math.min(x, this.selectInit.x);
+        const top = Math.min(y, this.selectInit.y);
+        this.selectBox.style.left = left + 'px';
+        this.selectBox.style.top = top + 'px';
+        this.selectBox.style.width = Math.max(x, this.selectInit.x) - left + 'px';
+        this.selectBox.style.height = Math.max(y, this.selectInit.y) - top + 'px';
+      } else {
+        this.keyDragData.dTime = x / scale - this.selectInit.time;
+        if (!shiftKey) {
+          this.keyDragData.dTime = Track.snapPoint(
+            this.jumpPoints,
+            ...this.keyDragData.snappables
+              .map(time => this.start + time + this.keyDragData.dTime)
+          ) - this.keyDragData.snappables[0] - this.start;
+        }
+        this.selectedKeys.forEach(key => {
+          key.elem.style.left = (key.time + this.keyDragData.dTime) * scale + 'px';
+        });
+      }
+      return;
     }
     if (this.trimming) {
       let cursor = (clientX + scrollX - this.timelineLeft) / scale;
@@ -174,12 +234,89 @@ class Track {
     this.elem.style.top = clientY - this.dragOffsets[1] + 'px';
   }
 
-  dragEnd(e) {
-    this.init = null;
+  dragEnd({clientX, clientY}) {
+    this.dragStartData = null;
+    if (Track.selected === this) {
+      const trackTop = this.elem.getBoundingClientRect().top;
+      const x = clientX + scrollX - this.timelineLeft - this.start * scale;
+      const y = clientY + scrollY - trackTop;
+      if (this.dragging) {
+        if (this.selectInit.isSelecting) {
+          const minTime = (Math.min(x, this.selectInit.x) - SELECT_PADDING) / scale;
+          const minRow = Math.min(y, this.selectInit.y);
+          const maxTime = (Math.max(x, this.selectInit.x) + SELECT_PADDING) / scale;
+          const maxRow = Math.max(y, this.selectInit.y);
+          const recruits = [];
+          Object.values(this.keys).forEach(keys => {
+            const rect = keys.elem.getBoundingClientRect();
+            const top = rect.top + scrollY - trackTop;
+            const bottom = rect.bottom + scrollY - trackTop;
+            if (top <= maxRow && bottom >= minRow) {
+              recruits.push(...keys.filter(({time}) => time >= minTime && time <= maxTime));
+            }
+          });
+          if (!this.selectedKeys) this.selectedKeys = [];
+          if (this.selectInit.fromSelected) {
+            recruits.forEach(key => {
+              if (key.elem.classList.contains('select')) {
+                key.elem.classList.remove('select');
+                this.selectedKeys.splice(this.selectedKeys.indexOf(key), 1);
+              }
+            });
+          } else {
+            recruits.forEach(key => {
+              if (!key.elem.classList.contains('select')) {
+                key.elem.classList.add('select');
+                this.selectedKeys.push(key);
+              }
+            });
+          }
+          if (!this.selectedKeys.length) this.selectedKeys = null;
+          this.elem.removeChild(this.selectBox);
+        } else {
+          log();
+          this.selectedKeys.forEach(key => {
+            key.time += this.keyDragData.dTime;
+            key.elem.style.left = key.time * scale + 'px';
+            key.elem.dataset.time = key.time;
+          });
+          Object.values(this.keys).forEach(keys => {
+            keys.sort((a, b) => a.time - b.time);
+          });
+          this.removeOutOfBoundKeys();
+          rerender();
+          this.displayProperties();
+          this.jumpPoints = null;
+          this.keyDragData = null;
+        }
+      } else {
+        const elem = this.selectInit.target;
+        if (this.selectInit.isSelecting && elem.classList.contains('key-dot')) {
+          const keyTime = +elem.dataset.time;
+          const key = this.keys[elem.dataset.id].find(({time}) => time === keyTime);
+          if (key.elem.classList.contains('select')) {
+            key.elem.classList.remove('select');
+            this.selectedKeys.splice(this.selectedKeys.indexOf(key), 1);
+            if (!this.selectedKeys.length) this.selectedKeys = null;
+          } else {
+            if (!this.selectedKeys) this.selectedKeys = [];
+            key.elem.classList.add('select');
+            this.selectedKeys.push(key);
+          }
+        } else {
+          this.selectedKeys.forEach(key => {
+            key.elem.classList.remove('select');
+          });
+          this.selectedKeys = null;
+        }
+      }
+      this.selectInit = null;
+      return;
+    }
     if (!this.dragging) {
       if (Track.selected) Track.selected.unselected();
       this.selected();
-      setPreviewTime(Math.max((e.clientX + scrollX - LEFT) / scale, 0));
+      setPreviewTime(Math.max((clientX + scrollX - LEFT) / scale, 0));
       return;
     }
     this.timelineLeft = null;
@@ -188,15 +325,7 @@ class Track {
       log(this.currentState);
       this.trimming = false;
       document.body.classList.remove('trimming');
-      Object.values(this.keys).forEach(keys => {
-        const outOfBound = keys.findIndex(({time}) => time > this.length);
-        if (~outOfBound) {
-          keys.splice(outOfBound, keys.length - outOfBound)
-            .forEach(key => {
-              keys.elem.removeChild(key.elem);
-            });
-        }
-      });
+      this.removeOutOfBoundKeys();
       rerender();
       return;
     }
@@ -291,7 +420,7 @@ class Track {
         if (key) {
           key.value = value;
         } else {
-          this.insertKey(prop, {value, time: relTime});
+          this.insertKey(prop, this.createKey(id, {value, time: relTime}));
           this.props.keys[prop].classList.add('active');
         }
       }
@@ -328,15 +457,7 @@ class Track {
               value = returnVal = this.layer.tracks[this.index + 1].start - this.start;
             }
           }
-          Object.values(this.keys).forEach(keys => {
-            const outOfBound = keys.findIndex(({time}) => time > value);
-            if (~outOfBound) {
-              keys.splice(outOfBound, keys.length - outOfBound)
-                .forEach(key => {
-                  keys.elem.removeChild(key.elem);
-                });
-            }
-          });
+          this.removeOutOfBoundKeys();
         }
         this.length = value;
         this.updateLength();
@@ -345,11 +466,45 @@ class Track {
     return returnVal;
   }
 
+  removeOutOfBoundKeys() {
+    Object.values(this.keys).forEach(keys => {
+      const outOfBound = keys.findIndex(({time}) => time > this.length || time < 0);
+      if (~outOfBound) {
+        keys.splice(outOfBound, keys.length - outOfBound)
+          .forEach(key => {
+            keys.elem.removeChild(key.elem);
+          });
+      }
+    });
+  }
+
+  createKey(id, key) {
+    key.elem = Elem('div', {
+      className: 'key-dot',
+      style: {
+        left: key.time * scale + 'px'
+      },
+      data: {
+        id,
+        time: key.time
+      }
+    });
+    return key;
+  }
+
+  createKeyRow(id, keys = []) {
+    keys.elem = Elem('div', {className: 'key-row'}, [
+      Elem('div', {className: 'key-label'}, [this.props.props.find(p => p.id === id).label]),
+      ...keys.map(({elem}) => elem)
+    ]);
+    return keys;
+  }
+
   keyChange(id, keyed) {
     log();
     const relTime = clamp(previewTime - this.start, 0, this.length);
     if (keyed) {
-      this.insertKey(id, {value: this[id], time: relTime});
+      this.insertKey(id, this.createKey(id, {value: this[id], time: relTime}));
     } else {
       const index = this.keys[id].findIndex(({time}) => time === relTime);
       if (~index) {
@@ -362,24 +517,32 @@ class Track {
   }
 
   insertKey(id, key) {
-    key.elem = Elem('div', {
-      className: 'key-dot',
-      style: {
-        left: key.time * scale + 'px'
-      },
-      onclick: e => setPreviewTime(key.time + this.start)
-    });
     if (!this.keys[id]) {
-      this.keys[id] = [];
-      this.keys[id].elem = Elem('div', {className: 'key-row'}, [
-        Elem('div', {className: 'key-label'}, [this.props.props.find(p => p.id === id).label])
-      ]);
+      this.keys[id] = this.createKeyRow(id);
       this.keyWrapper.appendChild(this.keys[id].elem);
     }
     this.keys[id].elem.appendChild(key.elem);
     const index = this.keys[id].findIndex(({time}) => time > key.time);
     if (~index) this.keys[id].splice(index, 0, key);
     else this.keys[id].push(key);
+  }
+
+  deleteSelected() {
+    if (this.selectedKeys) {
+      log();
+      Object.keys(this.keys).forEach(id => {
+        const keys = this.keys[id];
+        for (let i = keys.length; i--;) {
+          if (this.selectedKeys.includes(keys[i])) {
+            keys.elem.removeChild(keys[i].elem);
+            keys.splice(i, 1);
+          }
+        }
+      });
+      this.selectedKeys = null;
+      rerender();
+      this.displayProperties();
+    }
   }
 
   displayProperties() {
@@ -439,20 +602,7 @@ class Track {
       }
     });
     Object.keys(values.keys).forEach(id => {
-      this.keys[id] = values.keys[id];
-      this.keys[id].elem = Elem('div', {className: 'key-row'}, [
-        Elem('div', {className: 'key-label'}, [this.props.props.find(p => p.id === id).label])
-      ]);
-      this.keys[id].forEach(key => {
-        key.elem = Elem('div', {
-          className: 'key-dot',
-          style: {
-            left: key.time * scale + 'px'
-          },
-          onclick: e => setPreviewTime(key.time + this.start)
-        });
-        this.keys[id].elem.appendChild(key.elem);
-      });
+      this.keys[id] = this.createKeyRow(id, values.keys[id].map(key => this.createKey(id, key)));
       this.keyWrapper.appendChild(this.keys[id].elem);
     });
   }
@@ -473,20 +623,17 @@ class Track {
     return obj;
   }
 
-  // returns jumpPoint relative to currentTime, even if it snaps
-  // according to altTime
-  static snapPoint(jumpPoints, currentTime, altTime) {
-    let jumpPoint = currentTime, minDist = Infinity;
-    jumpPoints.forEach(time => {
-      const dist = Math.abs(time - currentTime);
-      const altDist = Math.abs(time - altTime);
-      if (dist < SNAP_DIST / scale && dist < minDist) {
-        jumpPoint = time;
-        minDist = dist;
-      } else if (altDist < SNAP_DIST / scale && altDist < minDist) {
-        jumpPoint = time - (altTime - currentTime);
-        minDist = altDist;
-      }
+  // returns jumpPoint relative to currentTime regardless of point it snaps to
+  static snapPoint(jumpPoints, ...times) {
+    let jumpPoint = times[0], minDist = Infinity;
+    jumpPoints.forEach(point => {
+      times.forEach(time => {
+        const dist = Math.abs(time - point);
+        if (dist < SNAP_DIST / scale && dist < minDist) {
+          jumpPoint = point - (time - times[0]);
+          minDist = dist;
+        }
+      });
     });
     return jumpPoint;
   }
