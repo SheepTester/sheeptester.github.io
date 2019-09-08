@@ -45,7 +45,7 @@ class Layer {
     this.tracks.forEach(track => {
       arr.push(track.start);
       arr.push(track.end);
-      arr.push(...track.keys.map(({time}) => track.start + time)); // TODO: is key.time relative or absolute?
+      Object.values(track.keys).forEach(keys => arr.push(...keys.map(({time}) => track.start + time)));
     });
     return arr;
   }
@@ -101,9 +101,11 @@ function updateScale(newScale) {
 }
 
 let previewTimeReady;
+// use `setPreviewTime` if you want to set it while playing
 function previewTimeAt(time = previewTime, prepare = true) {
   previewTime = time;
   playheadMarker.style.left = time * scale + 'px';
+  currentSpan.textContent = Math.floor(previewTime / 60) + ':' + ('0' + Math.floor(previewTime % 60)).slice(-2);
   if (prepare) {
     previewTimeReady = Promise.all(layers.map(layer => {
       const track = layer.trackAt(time);
@@ -113,6 +115,7 @@ function previewTimeAt(time = previewTime, prepare = true) {
     }));
     previewTimeReady.then(rerender);
   }
+  if (Track.selected) Track.selected.displayProperties();
 }
 
 async function rerender() {
@@ -147,9 +150,10 @@ async function play() {
   playIcon.textContent = 'pause';
   paint();
 }
+let nextAnimationFrame;
 function paint() {
   if (!playing) return;
-  window.requestAnimationFrame(paint);
+  nextAnimationFrame = window.requestAnimationFrame(paint);
   previewTimeAt((Date.now() - playing.start) / 1000 + playing.startTime, false);
   c.clearRect(0, 0, c.canvas.width, c.canvas.height);
   layers.forEach(layer => {
@@ -177,6 +181,7 @@ function stop() {
   });
   playing = false;
   playIcon.textContent = 'play_arrow';
+  window.cancelAnimationFrame(nextAnimationFrame);
 }
 
 function clearLayers() {
@@ -200,4 +205,5 @@ function setEntry(entry) {
     });
     addLayer(layer);
   });
+  rerender();
 }

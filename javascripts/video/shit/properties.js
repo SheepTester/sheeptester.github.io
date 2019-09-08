@@ -29,7 +29,7 @@ const mediaProps = [
   {
     id: 'volume',
     label: 'Volume',
-    units: '%',
+    unit: '%',
     digits: 0,
     range: 100,
     defaultVal: 100,
@@ -40,7 +40,7 @@ const graphicalProps = [
   {
     id: 'opacity',
     label: 'Opacity',
-    units: '%',
+    unit: '%',
     digits: 0,
     range: 100,
     defaultVal: 100,
@@ -65,6 +65,7 @@ const graphicalProps = [
   {
     id: 'xScale',
     label: 'Scale X',
+    unit: 'x',
     digits: 3,
     range: 1,
     defaultVal: 1,
@@ -73,6 +74,7 @@ const graphicalProps = [
   {
     id: 'yScale',
     label: 'Scale Y',
+    unit: 'x',
     digits: 3,
     range: 1,
     defaultVal: 1,
@@ -127,14 +129,17 @@ class Properties {
           onchange: e => this.change(id, true)
         }), () => this.change(id, true), () => this.change(id, false)),
         Elem('span', {className: 'unit'}, [unit || ' ']),
-        animatable && (this.keys[id] = Elem('button', {className: 'key'}))
+        animatable && (this.keys[id] = Elem('button', {
+          className: 'key',
+          onclick: e => this.keyChange(id)
+        }))
       ])
     ])));
   }
 
   setValues(values) {
     this.props.forEach(({id, digits}) => {
-      this.values[id].value = digits ? values[id].toFixed(digits) : values[id];
+      this.values[id].value = digits !== undefined ? values[id].toFixed(digits) : values[id];
     });
   }
 
@@ -142,10 +147,17 @@ class Properties {
     if (this.handler) {
       const {digits} = this.props.find(prop => id === prop.id);
       const input = this.values[id];
-      const newValue = this.handler(id, digits ? +input.value : input.value, isFinal);
+      const newValue = this.handler(id, digits !== undefined ? +input.value : input.value, isFinal);
       if (isFinal && newValue !== undefined) {
-        input.value = digits ? newValue.toFixed(digits) : newValue;
+        input.value = digits !== undefined ? newValue.toFixed(digits) : newValue;
       }
+    }
+  }
+
+  keyChange(id) {
+    if (this.keyHandler) {
+      this.keys[id].classList.toggle('active');
+      this.keyHandler(id, this.keys[id].classList.contains('active'));
     }
   }
 

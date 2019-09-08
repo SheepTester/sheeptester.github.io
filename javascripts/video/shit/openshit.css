@@ -2,7 +2,6 @@
   --background: #253137;
   --layer: #1F292E;
   --metalayer: #1B2327;
-  --metalayer-translucent: rgba(27, 35, 39, 0.8);
   --btn: #1F292E;
   --btn-hover: #324149;
   --separator: rgba(255, 255, 255, 0.1);
@@ -211,7 +210,7 @@ button, input {
   display: flex;
   align-items: center;
   padding: 5px 0;
-  background-color: var(--metalayer);
+  background-color: var(--layer);
 }
 .flex {
   flex: auto;
@@ -235,22 +234,11 @@ button, input {
   position: relative;
   height: 200px;
   overflow: auto;
-}
-.timeline-wrapper {
-  display: flex;
-  align-items: stretch;
-  min-height: 100%;
-}
-.timing-functions {
-  position: relative;
-  width: 150px;
-  flex: none;
-  background-color: var(--metalayer-translucent);
-  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.5);
-  z-index: 30;
+  background-color: var(--metalayer);
 }
 .timeline {
   flex: auto;
+  padding-left: 100px;
 }
 .time-markers {
   position: relative;
@@ -316,7 +304,6 @@ button, input {
 }
 .text.track {
   background-color: #725287;
-  box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.3);
 }
 .track .name {
   white-space: pre;
@@ -329,15 +316,37 @@ button, input {
   position: relative;
   margin: 0;
   z-index: 10;
+  box-shadow: 0 0 5px var(--text-em);
+  overflow: visible;
 }
 .keys {
-  display: none;
-  background-color: var(--metalayer);
-  padding: 5px;
-  min-height: 10px; /* TEMP-orary?? */
+  background-color: var(--background);
 }
 .selected .keys {
   display: block;
+  min-height: 20px;
+}
+.selected .key-row {
+  position: relative;
+  height: 20px;
+}
+.key-label {
+  position: absolute;
+  right: 100%;
+  font-size: 12px;
+  padding-right: 5px;
+  white-space: nowrap;
+}
+.key-dot {
+  background-image: url('./keyed.svg');
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 12px;
+  position: absolute;
+  height: 100%;
+  width: 24px;
+  margin-left: -12px;
+  top: 0;
 }
 
 .trim {
@@ -355,16 +364,20 @@ button, input {
   right: 0;
   background-image: linear-gradient(-90deg, rgba(0, 0, 0, 0.7), transparent);
 }
+.selected .trim {
+  display: none;
+}
 
 .playhead {
   position: absolute;
   top: 0;
   bottom: 0;
-  margin-left: 149.5px;
+  margin-left: 100px;
   left: 0;
   width: 1px;
   background-color: var(--text-em);
   z-index: 20;
+  pointer-events: none;
 }
 .playhead::before {
   content: '';
@@ -372,5 +385,5 @@ button, input {
   border-top: 10px solid var(--text-em);
   border-left: 10px solid transparent;
   border-right: 10px solid transparent;
-  margin-left: -10px;
+  margin-left: -9.5px;
 }

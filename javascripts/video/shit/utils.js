@@ -53,7 +53,16 @@ function isAdjustableInput(elem, onchange, oninput) {
   return elem;
 }
 
+// time - [0, 1]
+function interpolate(time, timingFn) {
+  return time; // TEMP
+}
+
 // https://stackoverflow.com/a/17323608
 function mod(n, m) {
   return ((n % m) + m) % m;
+}
+
+function clamp(val, min, max) {
+  return Math.max(Math.min(val, max), min);
 }

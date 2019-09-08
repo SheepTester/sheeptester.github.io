@@ -8,9 +8,10 @@ class Track {
     this.dragMove = this.dragMove.bind(this);
     this.dragEnd = this.dragEnd.bind(this);
     this.change = this.change.bind(this);
+    this.keyChange = this.keyChange.bind(this);
 
     this.source = source;
-    this.keys = [];
+    this.keys = {};
     this.props = props;
     props.props.forEach(({id, defaultVal}) => {
       if (defaultVal !== undefined) this[id] = defaultVal;
@@ -24,9 +25,19 @@ class Track {
       Elem('span', {className: 'trim trim-start'}),
       this.name = Elem('span', {className: 'name'}, [source.name]),
       Elem('span', {className: 'trim trim-end'}),
-      Elem('div', {className: 'keys'})
+      this.keyWrapper = Elem('div', {className: 'keys'})
     ]);
-    isDragTrigger(this.elem, e => this.dragStart(e), this.dragMove, this.dragEnd);
+    isDragTrigger(this.elem, (e, switchControls) => {
+      if (Track.selected === this) {
+        if (e.target.classList.contains('key-dot')) {
+          switchControls([]);
+        } else {
+          switchControls(null);
+        }
+      } else {
+        this.dragStart(e);
+      }
+    }, this.dragMove, this.dragEnd);
     this.placeholder = Elem('div', {className: 'track placeholder'});
     this.updateScale();
   }
@@ -52,9 +63,11 @@ class Track {
 
   updateScale() {
     this.updateLength();
+    Object.values(this.keys).forEach(keys => keys.forEach(key => {
+      key.elem.style.left = key.time * scale + 'px';
+    }));
   }
 
-  // TODO: don't start dragging immediately unless otherwise specified
   dragStart({clientX, clientY, target}, offsets, dragImmediately = false) {
     if (dragImmediately) {
       this.startDragging(clientX, clientY, target, offsets);
@@ -130,9 +143,7 @@ class Track {
         this.end = cursor;
       }
       this.updateLength();
-      if (Track.selected === this) {
-        this.props.setValues(this);
-      }
+      this.displayProperties();
       return;
     }
     const placeholder = this.placeholder;
@@ -163,15 +174,12 @@ class Track {
     this.elem.style.top = clientY - this.dragOffsets[1] + 'px';
   }
 
-  dragEnd() {
+  dragEnd(e) {
     this.init = null;
     if (!this.dragging) {
-      if (Track.selected === this) {
-        this.unselected();
-      } else {
-        if (Track.selected) Track.selected.unselected();
-        this.selected();
-      }
+      if (Track.selected) Track.selected.unselected();
+      this.selected();
+      setPreviewTime(Math.max((e.clientX + scrollX - LEFT) / scale, 0));
       return;
     }
     this.timelineLeft = null;
@@ -180,6 +188,15 @@ class Track {
       log(this.currentState);
       this.trimming = false;
       document.body.classList.remove('trimming');
+      Object.values(this.keys).forEach(keys => {
+        const outOfBound = keys.findIndex(({time}) => time > this.length);
+        if (~outOfBound) {
+          keys.splice(outOfBound, keys.length - outOfBound)
+            .forEach(key => {
+              keys.elem.removeChild(key.elem);
+            });
+        }
+      });
       rerender();
       return;
     }
@@ -212,9 +229,7 @@ class Track {
     this.possibleStart = null;
     this.currentState = null;
     rerender();
-    if (Track.selected === this) {
-      this.props.setValues(this);
-    }
+    this.displayProperties();
   }
 
   selected() {
@@ -222,8 +237,15 @@ class Track {
     document.body.classList.add('has-selection');
     this.layer.elem.classList.add('has-selected');
     this.elem.classList.add('selected');
-    this.props.setValues(this);
+    Object.keys(this.keys).forEach(id => {
+      if (!this.keys[id].length) {
+        this.keyWrapper.removeChild(this.keys[id].elem);
+        delete this.keys[id];
+      }
+    });
+    this.displayProperties();
     this.props.handler = this.change;
+    this.props.keyHandler = this.keyChange;
     propertiesList.appendChild(this.props.elem);
   }
 
@@ -262,6 +284,18 @@ class Track {
     if (returnVal !== undefined) value = returnVal;
     this[prop] = value;
     rerender();
+    if (isFinal) {
+      if (this.keys[prop] && this.keys[prop].length) {
+        const relTime = clamp(previewTime - this.start, 0, this.length);
+        const key = this.keys[prop].find(({time}) => time === relTime);
+        if (key) {
+          key.value = value;
+        } else {
+          this.insertKey(prop, {value, time: relTime});
+          this.props.keys[prop].classList.add('active');
+        }
+      }
+    }
     return returnVal;
   }
 
@@ -294,6 +328,15 @@ class Track {
               value = returnVal = this.layer.tracks[this.index + 1].start - this.start;
             }
           }
+          Object.values(this.keys).forEach(keys => {
+            const outOfBound = keys.findIndex(({time}) => time > value);
+            if (~outOfBound) {
+              keys.splice(outOfBound, keys.length - outOfBound)
+                .forEach(key => {
+                  keys.elem.removeChild(key.elem);
+                });
+            }
+          });
         }
         this.length = value;
         this.updateLength();
@@ -302,12 +345,87 @@ class Track {
     return returnVal;
   }
 
-  prepare() {
-    // do nothing
+  keyChange(id, keyed) {
+    log();
+    const relTime = clamp(previewTime - this.start, 0, this.length);
+    if (keyed) {
+      this.insertKey(id, {value: this[id], time: relTime});
+    } else {
+      const index = this.keys[id].findIndex(({time}) => time === relTime);
+      if (~index) {
+        this.keys[id].elem.removeChild(this.keys[id][index].elem);
+        this.keys[id].splice(index, 1);
+      } else {
+        console.log('could not find key yet it said there was key');
+      }
+    }
   }
 
-  render() {
-    // TODO: interpolate between keys
+  insertKey(id, key) {
+    key.elem = Elem('div', {
+      className: 'key-dot',
+      style: {
+        left: key.time * scale + 'px'
+      },
+      onclick: e => setPreviewTime(key.time + this.start)
+    });
+    if (!this.keys[id]) {
+      this.keys[id] = [];
+      this.keys[id].elem = Elem('div', {className: 'key-row'}, [
+        Elem('div', {className: 'key-label'}, [this.props.props.find(p => p.id === id).label])
+      ]);
+      this.keyWrapper.appendChild(this.keys[id].elem);
+    }
+    this.keys[id].elem.appendChild(key.elem);
+    const index = this.keys[id].findIndex(({time}) => time > key.time);
+    if (~index) this.keys[id].splice(index, 0, key);
+    else this.keys[id].push(key);
+  }
+
+  displayProperties() {
+    if (Track.selected === this) {
+      const relTime = clamp(previewTime - this.start, 0, this.length);
+      this.interpolate(relTime);
+      this.props.setValues(this);
+      this.props.props.forEach(({id, animatable}) => {
+        if (animatable) {
+          if (this.keys[id] && this.keys[id].find(({time}) => time === relTime)) {
+            this.props.keys[id].classList.add('active');
+          } else {
+            this.props.keys[id].classList.remove('active');
+          }
+        }
+      });
+    }
+  }
+
+  prepare() {
+    return Promise.resolve();
+  }
+
+  interpolate(relTime) {
+    Object.keys(this.keys).forEach(id => {
+      const keys = this.keys[id];
+      if (keys.length === 1) {
+        this[id] = keys[0].value;
+      } else if (keys.length > 1) {
+        const index = keys.findIndex(({time}) => time >= relTime);
+        if (!~index) {
+          this[id] = keys[keys.length - 1].value;
+        } else if (keys[index].time === relTime || index === 0) {
+          this[id] = keys[index].value;
+        } else {
+          this[id] = keys[index - 1].value + interpolate(
+            (relTime - keys[index - 1].time) / (keys[index].time - keys[index - 1].time),
+            keys[index].ease
+          ) * (keys[index].value - keys[index - 1].value);
+        }
+      }
+    });
+  }
+
+  render(ctx, time) {
+    this.interpolate(time);
   }
 
   stop() {
@@ -320,10 +438,37 @@ class Track {
         this[id] = values[id];
       }
     });
+    Object.keys(values.keys).forEach(id => {
+      this.keys[id] = values.keys[id];
+      this.keys[id].elem = Elem('div', {className: 'key-row'}, [
+        Elem('div', {className: 'key-label'}, [this.props.props.find(p => p.id === id).label])
+      ]);
+      this.keys[id].forEach(key => {
+        key.elem = Elem('div', {
+          className: 'key-dot',
+          style: {
+            left: key.time * scale + 'px'
+          },
+          onclick: e => setPreviewTime(key.time + this.start)
+        });
+        this.keys[id].elem.appendChild(key.elem);
+      });
+      this.keyWrapper.appendChild(this.keys[id].elem);
+    });
   }
 
   toJSON() {
-    const obj = {source: this.source.id, selected: Track.selected === this};
+    const keys = {};
+    Object.keys(this.keys).forEach(id => {
+      if (this.keys[id].length) {
+        keys[id] = this.keys[id].map(({time, value}) => ({time, value}));
+      }
+    });
+    const obj = {
+      source: this.source.id,
+      selected: Track.selected === this,
+      keys
+    };
     this.props.props.forEach(({id}) => obj[id] = this[id]);
     return obj;
   }
@@ -442,10 +587,22 @@ class VideoTrack extends MediaTrack {
     });
   }
 
+  showChange(prop, value, isFinal) {
+    let returnVal;
+    switch (prop) {
+      case 'opacity':
+        if (value > 100) return 100;
+        else if (value < 0) return 0;
+      default:
+        return super.showChange(prop, value, isFinal);
+    }
+    return returnVal;
+  }
+
   render(ctx, time, play = false) {
     super.render(ctx, time, play);
     ctx.save();
-    ctx.translate(ctx.canvas.width * (this.xPos + 1) / 2, ctx.canvas.height * (this.yPos + 1) / 2);
+    ctx.translate(ctx.canvas.width * (this.xPos + 1) / 2, ctx.canvas.height * (1 - this.yPos) / 2);
     ctx.rotate(this.rotation * Math.PI / 180);
     ctx.scale(this.xScale, this.yScale);
     ctx.globalAlpha = this.opacity / 100;
@@ -498,9 +655,22 @@ class ImageTrack extends Track {
     this.elem.classList.add('image');
   }
 
+  showChange(prop, value, isFinal) {
+    let returnVal;
+    switch (prop) {
+      case 'opacity':
+        if (value > 100) return 100;
+        else if (value < 0) return 0;
+      default:
+        return super.showChange(prop, value, isFinal);
+    }
+    return returnVal;
+  }
+
   render(ctx, time) {
+    super.render(ctx, time);
     ctx.save();
-    ctx.translate(ctx.canvas.width * (this.xPos + 1) / 2, ctx.canvas.height * (this.yPos + 1) / 2);
+    ctx.translate(ctx.canvas.width * (this.xPos + 1) / 2, ctx.canvas.height * (1 - this.yPos) / 2);
     ctx.rotate(this.rotation * Math.PI / 180);
     ctx.scale(this.xScale, this.yScale);
     ctx.globalAlpha = this.opacity / 100;
@@ -536,22 +706,25 @@ class TextTrack extends Track {
       {
         id: 'hColour',
         label: 'Hue',
+        unit: '°',
         digits: 0,
         range: 360,
-        defaultVal: 0,
+        defaultVal: 180,
         animatable: true
       },
       {
         id: 'sColour',
         label: 'Saturation',
+        unit: '%',
         digits: 0,
         range: 100,
-        defaultVal: 0,
+        defaultVal: 100,
         animatable: true
       },
       {
         id: 'lColour',
         label: 'Lightness',
+        unit: '%',
         digits: 0,
         range: 100,
         defaultVal: 100,
@@ -584,8 +757,9 @@ class TextTrack extends Track {
   }
 
   render(ctx, time) {
+    super.render(ctx, time);
     ctx.save();
-    ctx.translate(ctx.canvas.width * (this.xPos + 1) / 2, ctx.canvas.height * (this.yPos + 1) / 2);
+    ctx.translate(ctx.canvas.width * (this.xPos + 1) / 2, ctx.canvas.height * (1 - this.yPos) / 2);
     ctx.rotate(this.rotation * Math.PI / 180);
     ctx.scale(this.xScale, this.yScale);
     ctx.fillStyle = `hsla(${mod(this.hColour, 360)}, ${this.sColour}%, ${this.lColour}%, ${this.opacity / 100})`;

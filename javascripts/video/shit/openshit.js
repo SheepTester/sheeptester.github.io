@@ -16,8 +16,10 @@ const zoomInBtn = document.getElementById('in');
 
 const propertiesList = document.getElementById('properties');
 const playIcon = document.getElementById('icon');
+const currentSpan = document.getElementById('current');
+const lengthSpan = document.getElementById('length');
+
 const scrollWrapper = document.getElementById('scroll');
-const timingFunctions = document.getElementById('ease');
 const timeMarkers = document.getElementById('axis');
 const layersWrapper = document.getElementById('layers');
 const playheadMarker = document.getElementById('playhead');
@@ -25,7 +27,7 @@ const playheadMarker = document.getElementById('playhead');
 const preview = document.getElementById('preview');
 const c = preview.getContext('2d');
 
-const LEFT = 150;
+const LEFT = 100;
 
 const BASE_SCALE = 3;
 const MAX_SCALE = 5;
@@ -61,7 +63,6 @@ let scrollX = scrollWrapper.scrollLeft, scrollY = scrollWrapper.scrollTop;
 scrollWrapper.addEventListener('scroll', e => {
   scrollX = scrollWrapper.scrollLeft;
   scrollY = scrollWrapper.scrollTop;
-  timingFunctions.style.left = scrollX + 'px';
   renderScale();
 });
 
@@ -74,8 +75,9 @@ window.addEventListener('resize', e => {
 
 let previewTime, wasPlaying;
 isDragTrigger(scrollWrapper, (e, switchControls) => {
-  if (e.target.closest('.track, .timing-functions')) {
-    switchControls([]);
+  const closest = e.target.closest('.track');
+  if (closest && !closest.classList.contains('selected')) {
+    switchControls(null);
   } else {
     if (playing) {
       wasPlaying = true;
@@ -83,16 +85,22 @@ isDragTrigger(scrollWrapper, (e, switchControls) => {
     } else {
       wasPlaying = false;
     }
-    previewTimeAt(Math.max((e.clientX + scrollX - LEFT) / scale, 0));
-    if (Track.selected) {
+    if (Track.selected && !closest) {
       Track.selected.unselected();
     }
+    previewTimeAt(Math.max((e.clientX + scrollX - LEFT) / scale, 0));
   }
 }, e => {
   previewTimeAt(Math.max((e.clientX + scrollX - LEFT) / scale, 0));
 }, e => {
   if (wasPlaying) play();
 });
+function setPreviewTime(time) {
+  let wasPlaying = playing;
+  if (wasPlaying) stop();
+  previewTimeAt(time);
+  if (wasPlaying) play();
+}
 previewTimeAt(0);
 
 addLayer();
@@ -147,6 +155,22 @@ redoBtn.addEventListener('click', e => {
 playBtn.addEventListener('click', e => {
   if (playing) stop();
   else play();
+});
+
+startBtn.addEventListener('click', e => {
+  setPreviewTime(0);
+});
+prevBtn.addEventListener('click', e => {
+  const jumpPoints = getAllJumpPoints();
+  const goodTime = jumpPoints.findIndex(t => t >= previewTime);
+  if (goodTime === 0) setPreviewTime(0);
+  else if (~goodTime) setPreviewTime(jumpPoints[goodTime - 1]);
+  else setPreviewTime(jumpPoints[jumpPoints.length - 1]);
+});
+nextBtn.addEventListener('click', e => {
+  const jumpPoints = getAllJumpPoints();
+  const goodTime = jumpPoints.find(t => t > previewTime);
+  if (goodTime) setPreviewTime(goodTime);
 });
 
 document.addEventListener('contextmenu', e => {
