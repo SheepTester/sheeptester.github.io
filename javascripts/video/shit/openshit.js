@@ -134,11 +134,13 @@ addBtn.addEventListener('change', async e => {
 
 const undoHistory = [];
 const redoHistory = [];
+let saved = false;
 function log(entry = getEntry()) {
   undoHistory.push(entry);
   redoHistory.splice(0, redoHistory.length);
   undoBtn.disabled = !undoHistory.length;
   redoBtn.disabled = !redoHistory.length;
+  saved = false;
 }
 undoBtn.addEventListener('click', e => {
   if (undoHistory.length) {
@@ -249,6 +251,7 @@ saveBtn.addEventListener('click', e => {
     document.body.removeChild(saveLink);
     URL.revokeObjectURL(url);
     saveBtn.disabled = false;
+    saved = true;
   });
 });
 loadBtn.addEventListener('change', e => {
@@ -273,6 +276,13 @@ loadBtn.addEventListener('change', e => {
         console.log(e);
         loadBtn.disabled = false;
       });
+  }
+});
+
+window.addEventListener('beforeunload', e => {
+  if (!saved && (undoHistory.length || redoHistory.length)) {
+    e.preventDefault();
+    e.returnValue = '';
   }
 });
 
