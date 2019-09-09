@@ -23,6 +23,9 @@
     - How to use
     - Keyboard shortcuts
     - About
+- snap to loop borders
+- snap to playhead as well?
+- icon for elastic and bounce easing functions
 
 ## Other possibilities
 
