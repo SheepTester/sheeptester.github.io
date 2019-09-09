@@ -121,7 +121,7 @@ isDragTrigger(textBtn, (e, switchControls) => {
 addBtn.addEventListener('change', async e => {
   addBtn.disabled = true;
   for (const file of addBtn.files) {
-    const source = toSource(file);
+    const source = new (toSource(file.type))(file);
     if (source) {
       addBtn.parentNode.insertBefore(source.elem, addBtn);
       await source.ready;
@@ -225,6 +225,55 @@ document.addEventListener('keydown', e => {
 
 exportBtn.addEventListener('click', e => {
   exportVideo();
+});
+
+saveBtn.addEventListener('click', e => {
+  saveBtn.disabled = true;
+  const zip = new JSZip();
+  zip.file('project.json', JSON.stringify({
+    version: 1,
+    entry: getEntry(),
+    src: Object.values(sources).filter(({file}) => file),
+    fonts: [] // TODO: store fonts too
+  }));
+  Object.values(sources).forEach(({id, file}) => {
+    if (file) zip.file(id, file);
+  })
+  zip.generateAsync({type: 'blob'}).then(blob => {
+    const url = URL.createObjectURL(blob);
+    const saveLink = document.createElement('a');
+    saveLink.href = url;
+    saveLink.download = 'project.oshit';
+    document.body.appendChild(saveLink);
+    saveLink.click();
+    document.body.removeChild(saveLink);
+    URL.revokeObjectURL(url);
+    saveBtn.disabled = false;
+  });
+});
+loadBtn.addEventListener('change', e => {
+  if (loadBtn.files[0]) {
+    loadBtn.disabled = true;
+    JSZip.loadAsync(loadBtn.files[0])
+      .then(zip =>
+        zip.file('project.json').async('text')
+          .then(async json => {
+            const {entry, src} = JSON.parse(json);
+            addBtn.disabled = true;
+            for (const {id, type} of src) {
+              const blob = new Blob([await zip.file(id).async('arraybuffer')], {type});
+              sources[id] = new (toSource(type))(blob, id);
+              addBtn.parentNode.insertBefore(sources[id].elem, addBtn);
+              await sources[id].ready;
+            }
+            addBtn.disabled = false;
+            setEntry(entry);
+          }))
+      .catch(e => {
+        console.log(e);
+        loadBtn.disabled = false;
+      });
+  }
 });
 
 document.addEventListener('contextmenu', e => {

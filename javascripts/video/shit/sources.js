@@ -15,12 +15,17 @@ const sources = {
 
 class Source {
 
-  constructor(file) {
+  constructor(file, id) {
     this.file = file;
     this.url = URL.createObjectURL(file);
-    this.name = file.name;
-    this.id = file.name + Math.random().toString(36).slice(2);
-    sources[this.id] = this;
+    if (id) {
+      this.id = id;
+      this.name = id.slice(id.indexOf('-') + 1);
+    } else {
+      this.name = file.name;
+      this.id = Math.random().toString(36).slice(2) + '-' + file.name;
+      sources[this.id] = this;
+    }
     this.elem = Elem('div', {
       className: 'source disabled',
       tabIndex: 0
@@ -40,21 +45,32 @@ class Source {
       });
   }
 
+  toJSON() {
+    return {id: this.id, type: this.file.type};
+  }
+
 }
 
 class VideoSource extends Source {
 
-  constructor(file) {
-    super(file);
+  constructor(...args) {
+    super(...args);
     this.elem.classList.add('video');
     this.onVideoLoad = this.onVideoLoad.bind(this);
-    thumbnailVideo.addEventListener('loadeddata', this.onVideoLoad);
+    thumbnailVideo.addEventListener('loadedmetadata', this.onVideoLoad);
     thumbnailVideo.src = this.url;
   }
 
   onVideoLoad() {
     if (thumbnailVideo.readyState < 2) return;
-    thumbnailVideo.removeEventListener('loadeddata', this.onVideoLoad);
+    thumbnailVideo.removeEventListener('loadedmetadata', this.onVideoLoad);
+    if (thumbnailVideo.duration === Infinity) {
+      // https://victorblog.com/2018/02/14/get-video-and-audio-blob-duration-in-html5/
+      // https://stackoverflow.com/a/39971175
+      thumbnailVideo.currentTime = 1e101;
+      thumbnailVideo.addEventListener('timeupdate', this.onVideoLoad, {once: true});
+      return;
+    }
     this.length = thumbnailVideo.duration;
     thumbnailVideo.addEventListener('timeupdate', e => {
       this.width = thumbnailCanvas.width = thumbnailVideo.videoWidth;
@@ -74,8 +90,8 @@ class VideoSource extends Source {
 
 class ImageSource extends Source {
 
-  constructor(file) {
-    super(file);
+  constructor(...args) {
+    super(...args);
     this.elem.classList.add('image');
     this.thumbnail = this.url;
     this.image = new Image();
@@ -97,8 +113,8 @@ const HEIGHT = 100;
 const CHUNK_SIZE = 1024;
 class AudioSource extends Source {
 
-  constructor(file) {
-    super(file);
+  constructor(...args) {
+    super(...args);
     this.elem.classList.add('audio');
     fetch(this.url)
       .then(r => r.arrayBuffer())
@@ -131,14 +147,14 @@ class AudioSource extends Source {
 
 }
 
-function toSource(file) {
-  const [type] = file.type.split('/');
+function toSource(mime) {
+  const [type] = mime.split('/');
   switch (type) {
     case 'video':
-      return new VideoSource(file);
+      return VideoSource;
     case 'image':
-      return new ImageSource(file);
+      return ImageSource;
     case 'audio':
-      return new AudioSource(file);
+      return AudioSource;
   }
 }

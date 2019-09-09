@@ -516,6 +516,7 @@ class Track {
             const rect = this.getBoundingClientRect();
             easingEditor.set(keys.icon.fn);
             easingEditor.onchange = fn => {
+              log();
               keys.icon.metadata.ease = fn;
               keys.icon.set(fn);
             };
