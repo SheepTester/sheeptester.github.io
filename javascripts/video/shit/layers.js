@@ -93,6 +93,7 @@ function getLayerBounds() {
 function getAllJumpPoints() {
   const arr = [];
   layers.forEach(layer => arr.push(...layer.getJumpPoints()));
+  if (!playing) arr.push(previewTime);
   arr.sort((a, b) => a - b);
   return arr.filter((t, i) => t !== arr[i + 1]);
 }

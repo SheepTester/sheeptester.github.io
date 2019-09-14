@@ -512,13 +512,16 @@ class Track {
         this.props.props.find(p => p.id === id).label,
         keys.iconBtn = Elem('button', {
           className: 'key-ease',
-          onclick(e) {
-            const rect = this.getBoundingClientRect();
+          onclick: e => {
+            const rect = keys.iconBtn.getBoundingClientRect();
             easingEditor.set(keys.icon.fn);
             easingEditor.onchange = fn => {
               log();
               keys.icon.metadata.ease = fn;
-              keys.icon.set(fn);
+              if (this.selectedKeys) {
+                this.selectedKeys.forEach(key => key.ease = fn);
+              }
+              this.displayProperties();
             };
             easingEditor.open(rect);
           }
@@ -919,7 +922,7 @@ class TextTrack extends Track {
       {
         id: 'content',
         label: 'Text',
-        defaultVal: 'Xi Jinping eats, shoots, and [removed]!'
+        defaultVal: 'Intentionally ambiguous text'
       },
       ...baseProps,
       lengthProp,

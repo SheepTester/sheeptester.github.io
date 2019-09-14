@@ -1,7 +1,6 @@
 # OpenShit to-do
 
 - properly keep keys in place when left side is trimmed
-- let user paste in their own cubic-bezier
 - fix the layers not stretching all the way
 - if source/text button clicked, allow them to drag out a region in the track thing maybe
 - scroll to playhead when using arrows if out of view
@@ -24,10 +23,11 @@
     - Keyboard shortcuts
     - About
 - snap to loop borders
-- snap to playhead as well?
 - icon for elastic and bounce easing functions
-- changing ease function should change it for all selected keys
 - resize panels
+- ~~changing ease function should change it for all selected keys~~
+- ~~snap to playhead as well?~~
+- ~~let user paste in their own cubic-bezier~~
 
 ## Other possibilities
 

@@ -2,6 +2,7 @@
 
 const params = new URL(location).searchParams;
 const censored = params.get('censored');
+const warnBeforeClosing = !params.get('easy-reload');
 
 const saveBtn = document.getElementById('save');
 const loadBtn = document.getElementById('load');
@@ -279,12 +280,14 @@ loadBtn.addEventListener('change', e => {
   }
 });
 
-window.addEventListener('beforeunload', e => {
-  if (!saved && (undoHistory.length || redoHistory.length)) {
-    e.preventDefault();
-    e.returnValue = '';
-  }
-});
+if (warnBeforeClosing) {
+  window.addEventListener('beforeunload', e => {
+    if (!saved && (undoHistory.length || redoHistory.length)) {
+      e.preventDefault();
+      e.returnValue = '';
+    }
+  });
+}
 
 document.addEventListener('contextmenu', e => {
   e.preventDefault();

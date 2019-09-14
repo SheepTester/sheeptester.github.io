@@ -21,6 +21,7 @@ const TOTAL = SIZE + PAD * 2;
 const DURATION = 500;
 const PAUSE = 250;
 const STAMPS = 20;
+const crudeNumberRegex = /\d+\.?\d*|\d*\.\d+/g;
 class EasingEditor {
 
   constructor() {
@@ -82,7 +83,12 @@ class EasingEditor {
           this.text = Elem('input', {
             type: 'text',
             className: 'ease-paste',
-            value: '0.25, 0.10, 0.25, 1.00'
+            onchange: e => {
+              const fn = (this.text.value.match(crudeNumberRegex) || []).map(Number);
+              if (fn.length === 4 && !~fn.findIndex(isNaN)) {
+                this.set(fn);
+              }
+            }
           }),
           ')'
         ]),
