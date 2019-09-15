@@ -8,6 +8,7 @@
   --text: rgba(255, 255, 255, 0.65);
   --text-em: #87c9c3;
   --ease: #8e44ad;
+  --danger: #e65864;
 }
 
 html, body {
@@ -578,4 +579,90 @@ button, input {
 }
 .exporting .exporting-msg {
   display: block;
+}
+
+.modal-cover {
+  display: none;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 50;
+}
+.modal {
+  display: none;
+  flex-direction: column;
+  width: 100%;
+  max-width: 800px;
+  max-height: 60%;
+  margin: 10px;
+  background-color: var(--background);
+}
+.show {
+  display: flex;
+}
+.header {
+  background-color: var(--metalayer);
+  display: flex;
+}
+.title {
+  display: inline-block;
+  font-size: 20px;
+  font-weight: normal;
+  margin: 5px 10px;
+  flex: auto;
+}
+.close {
+  cursor: pointer;
+}
+.content {
+  flex: auto;
+  overflow: auto;
+  padding: 10px;
+}
+.text-content {
+  font-size: 14px;
+  line-height: 1.8;
+  user-select: text;
+}
+.text-content :first-child {
+  margin-top: 0;
+}
+.text-content :last-child {
+  margin-bottom: 0;
+}
+.text-content h2, .text-content h3 {
+  font-weight: normal;
+}
+.text-content a {
+  color: var(--text-em);
+  text-decoration: none;
+}
+.text-content a:hover {
+  text-decoration: underline;
+}
+
+.menu {
+  position: fixed;
+  background-color: var(--metalayer);
+  z-index: 60;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.5);
+  padding: 5px 0;
+}
+.menu-item {
+  display: block;
+  font-size: 14px;
+  cursor: pointer;
+  padding: 0 5px;
+  width: 100%;
+  text-align: left;
+  box-sizing: border-box;
+}
+.menu-item:hover {
+  background-color: var(--btn-hover);
+}
+.danger {
+  color: var(--danger);
 }

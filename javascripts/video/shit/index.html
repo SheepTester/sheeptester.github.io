@@ -14,6 +14,7 @@
     <script src="./easingFunctions.js" charset="utf-8"></script>
 
     <script src="./utils.js" charset="utf-8"></script>
+    <script src="./menu.js" charset="utf-8"></script>
     <script src="./sources.js" charset="utf-8"></script>
     <script src="./properties.js" charset="utf-8"></script>
     <script src="./tracks.js" charset="utf-8"></script>
@@ -25,10 +26,9 @@
       <div class="panel">
         <div class="menubar">
           <div class="logo">OpenShit</div>
-          <button type="button" class="menu-btn" id="save">Save</button>
           <input type="file" accept=".oshit" class="hidden-accessible" id="load">
-          <label for="load" class="menu-btn">Load</label>
-          <button type="button" class="menu-btn" id="export">Export</button>
+          <button type="button" class="menu-btn" id="file">File</button>
+          <button type="button" class="menu-btn" id="help">Help</button>
         </div>
         <div class="side-panel">
           <div class="sources">
@@ -66,7 +66,50 @@
         <div class="playhead" id="playhead"></div>
       </div>
     </div>
+
+    <div class="modal-cover" id="modal-cover">
+      <div class="modal" id="vid-settings-modal">
+        <div class="header">
+          <h1 class="title">Video settings</h1>
+          <button type="button" class="close" title="Close (esc)"><i class="material-icons">close</i></button>
+        </div>
+        <div class="content text-content">
+          <p>OpenShit is not in the mood of being usable today.</p>
+        </div>
+      </div>
+      <div class="modal" id="help-modal">
+        <div class="header">
+          <h1 class="title">How to use</h1>
+          <button type="button" class="close" title="Close (esc)"><i class="material-icons">close</i></button>
+        </div>
+        <div class="content text-content">
+          <p>OpenShit is not in the mood of being usable today.</p>
+        </div>
+      </div>
+      <div class="modal" id="shortcuts-modal">
+        <div class="header">
+          <h1 class="title">Keyboard shortcuts</h1>
+          <button type="button" class="close" title="Close (esc)"><i class="material-icons">close</i></button>
+        </div>
+        <div class="content text-content">
+          <p>OpenShit is not in the mood of being usable today.</p>
+        </div>
+      </div>
+      <div class="modal" id="about-modal">
+        <div class="header">
+          <h1 class="title">About OpenShit</h1>
+          <button type="button" class="close" title="Close (esc)"><i class="material-icons">close</i></button>
+        </div>
+        <div class="content text-content">
+          <p>OpenShit is a free open source HTML5 online video editor software application with limited functionality and incomprehensible code.</p>
+          <p><strong>Please do not refer to OpenShit by any name other than OpenShit</strong>; alterations to the name, such as replacing vowels with asterisks, are assumed to be references to an unrelated project <a href="../os.html">O*S*</a>.</p>
+          <p>OpenShit was made by <a href="https://sheeptester.github.io/">Sean</a> and is open source <a href="https://github.com/SheepTester/sheeptester.github.io/tree/master/javascripts/video/shit">here</a>.</p>
+        </div>
+      </div>
+    </div>
+
     <p class="exporting-msg">Leave this tab open while the video is playing; press escape to cancel exporting.</p>
+
     <script src="./openshit.js" charset="utf-8"></script>
   </body>
 </html>

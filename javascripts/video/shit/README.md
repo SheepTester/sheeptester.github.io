@@ -11,23 +11,14 @@
 - right click on layer > move up, move down, insert above, insert below, delete
 - right click on track > split (ctrl + X), duplicate, delete
 - set video width/height/frame rate?/bitrate/export format
-- help menu
-- rearrange menubar:
-  - File
-    - Open
-    - Save
-    - Video settings
-    - Export
-  - Help
-    - How to use
-    - Keyboard shortcuts
-    - About
 - snap to loop borders
 - icon for elastic and bounce easing functions
 - resize panels
 - ~~changing ease function should change it for all selected keys~~
 - ~~snap to playhead as well?~~
 - ~~let user paste in their own cubic-bezier~~
+- ~~rearrange menubar~~
+- ~~help menu~~
 
 ## Other possibilities
 

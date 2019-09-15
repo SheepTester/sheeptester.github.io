@@ -4,9 +4,9 @@ const params = new URL(location).searchParams;
 const censored = params.get('censored');
 const warnBeforeClosing = !params.get('easy-reload');
 
-const saveBtn = document.getElementById('save');
 const loadBtn = document.getElementById('load');
-const exportBtn = document.getElementById('export');
+const fileBtn = document.getElementById('file');
+const helpBtn = document.getElementById('help');
 const addBtn = document.getElementById('add');
 const startBtn = document.getElementById('start');
 const prevBtn = document.getElementById('prev');
@@ -27,6 +27,8 @@ const scrollWrapper = document.getElementById('scroll');
 const timeMarkers = document.getElementById('axis');
 const layersWrapper = document.getElementById('layers');
 const playheadMarker = document.getElementById('playhead');
+
+const modalCover = document.getElementById('modal-cover');
 
 const preview = document.getElementById('preview');
 const c = preview.getContext('2d');
@@ -183,6 +185,24 @@ nextBtn.addEventListener('click', e => {
   if (goodTime) setPreviewTime(goodTime);
 });
 
+let currentModal = null;
+function modal(modal) {
+  const closeBtn = modal.querySelector('.close');
+  closeBtn.addEventListener('click', e => {
+    modalCover.classList.remove('show');
+    modal.classList.remove('show');
+    currentModal = null;
+  });
+  return () => {
+    modalCover.classList.add('show');
+    modal.classList.add('show');
+    currentModal = closeBtn;
+  };
+}
+modalCover.addEventListener('click', e => {
+  if (currentModal && e.target === modalCover) currentModal.click();
+});
+
 document.addEventListener('keydown', e => {
   if (playing && playing.exporting) {
     if (e.key === 'Escape') playing.exporting(false);
@@ -220,18 +240,40 @@ document.addEventListener('keydown', e => {
     zoomInBtn.click();
   } else if (e.key === 'Delete') {
     if (Track.selected) Track.deleteSelected();
+  } else if (e.key === 'Escape') {
+    if (currentModal) {
+      currentModal.click();
+    } else {
+      preventDefault = false;
+    }
   } else {
     preventDefault = false;
   }
   if (preventDefault) e.preventDefault();
 });
 
-exportBtn.addEventListener('click', e => {
-  exportVideo();
+const fileMenu = new Menu([
+  {elem: Elem('label', {for: 'load'}, ['Open'])},
+  {label: 'Save', fn: saveProject},
+  {label: 'Video settings', fn: modal(document.getElementById('vid-settings-modal'))},
+  {label: 'Export', fn: censored && exportVideo}
+]);
+fileBtn.addEventListener('click', e => {
+  const {left, bottom} = fileBtn.getBoundingClientRect();
+  fileMenu.open(left, bottom);
+});
+const helpMenu = new Menu([
+  {label: 'How to use', fn: modal(document.getElementById('help-modal'))},
+  {label: 'Keyboard shortcuts', fn: modal(document.getElementById('shortcuts-modal'))},
+  {label: 'About', fn: modal(document.getElementById('about-modal'))}
+]);
+helpBtn.addEventListener('click', e => {
+  const {left, bottom} = helpBtn.getBoundingClientRect();
+  helpMenu.open(left, bottom);
 });
 
-saveBtn.addEventListener('click', e => {
-  saveBtn.disabled = true;
+function saveProject() {
+  fileMenu.items[1].disabled = true;
   const zip = new JSZip();
   zip.file('project.json', JSON.stringify({
     version: 1,
@@ -251,10 +293,10 @@ saveBtn.addEventListener('click', e => {
     saveLink.click();
     document.body.removeChild(saveLink);
     URL.revokeObjectURL(url);
-    saveBtn.disabled = false;
+    fileMenu.items[1].disabled = false;
     saved = true;
   });
-});
+}
 loadBtn.addEventListener('change', e => {
   if (loadBtn.files[0]) {
     loadBtn.disabled = true;
@@ -295,7 +337,7 @@ document.addEventListener('contextmenu', e => {
 
 if (censored) {
   document.body.classList.add('censored');
-  exportBtn.disabled = true;
+  fileMenu.items[3].disabled = true;
   window.history.replaceState({}, '', '../censored.html');
   document.title = '';
 }
