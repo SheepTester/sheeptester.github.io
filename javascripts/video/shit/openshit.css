@@ -645,6 +645,10 @@ button, input {
 .text-content a:hover {
   text-decoration: underline;
 }
+.text-content code {
+  background-color: var(--layer);
+  border: 1px solid var(--separator);
+}
 
 .menu {
   position: fixed;
