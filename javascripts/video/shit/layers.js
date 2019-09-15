@@ -219,12 +219,25 @@ function clearLayers() {
 }
 
 function getEntry() {
-  return layers.map(layer => layer.tracks.map(track => track.toJSON()));
+  return {
+    layers: layers.map(layer => layer.tracks.map(track => track.toJSON())),
+    type: currentVideoType === 'custom' ? {
+      name: 'custom',
+      width: preview.width,
+      height: preview.height,
+      bitrate: exportBitrate,
+    } : currentVideoType,
+    format: usingExportType
+  };
 }
 
 function setEntry(entry) {
+  const {layers, type, format} = entry.layers ? entry : {
+    ...getEntry(),
+    layers: entry
+  };
   clearLayers();
-  entry.forEach(tracks => {
+  layers.forEach(tracks => {
     const layer = new Layer();
     tracks.forEach(data => {
       const track = sources[data.source].createTrack();
@@ -235,6 +248,9 @@ function setEntry(entry) {
     });
     addLayer(layer);
   });
+  setVideoType(type, false);
+  usingExportType = format;
+  selectEncode.textContent = format;
   rerender();
 }
 

@@ -1,7 +1,5 @@
 # OpenShit to-do
 
-- undo for changing width/height/etc
-- save such data
 - properly keep keys in place when left side is trimmed
 - fix the layers not stretching all the way
 - if source/text button clicked, allow them to drag out a region in the track thing maybe

@@ -55,25 +55,30 @@ const videoTypes = [
   {name: '360p', bitrate: 1.5, width: 640, height: 360},
   {name: '240p', bitrate: 1, width: 426, height: 240}
 ];
-// TODO: make this undoable
+let currentVideoType = videoTypes[4];
+function setVideoType(type, userChange = true) {
+  if (type !== 'custom') {
+    if (userChange) log();
+    selectPreset.textContent = type.name;
+    customSizeWrapper.classList.add('hidden');
+    exportBitrate = type.bitrate;
+    preview.width = type.width;
+    preview.height = type.height;
+    currentVideoType = type;
+    rerender();
+  }
+  if (type === 'custom' || type.name === 'custom') {
+    selectPreset.textContent = 'Custom';
+    customSizeWrapper.classList.remove('hidden');
+    bitrateInput.value = exportBitrate;
+    widthInput.value = preview.width;
+    heightInput.value = preview.height;
+    currentVideoType = 'custom';
+  }
+}
 const videoTypeMenu = new Menu(
   [...videoTypes.map(type => ({label: type.name, value: type})), {label: 'Custom', value: 'custom'}],
-  type => {
-    if (type === 'custom') {
-      selectPreset.textContent = 'Custom';
-      customSizeWrapper.classList.remove('hidden');
-      widthInput.value = preview.width;
-      heightInput.value = preview.height;
-      bitrateInput.value = exportBitrate;
-    } else {
-      selectPreset.textContent = type.name;
-      customSizeWrapper.classList.add('hidden');
-      exportBitrate = type.bitrate;
-      preview.width = type.width;
-      preview.height = type.height;
-      rerender();
-    }
-  }
+  setVideoType
 );
 selectPreset.parentNode.addEventListener('click', e => {
   const {left, bottom} = selectPreset.parentNode.getBoundingClientRect();
@@ -82,6 +87,7 @@ selectPreset.parentNode.addEventListener('click', e => {
 widthInput.addEventListener('change', e => {
   const val = +widthInput.value;
   if (val > 0) {
+    log();
     preview.width = val;
     rerender();
   } else {
@@ -91,6 +97,7 @@ widthInput.addEventListener('change', e => {
 heightInput.addEventListener('change', e => {
   const val = +heightInput.value;
   if (val > 0) {
+    log();
     preview.height = val;
     rerender();
   } else {
@@ -99,8 +106,12 @@ heightInput.addEventListener('change', e => {
 });
 bitrateInput.addEventListener('change', e => {
   const val = +bitrateInput.value;
-  if (val > 0) exportBitrate = val;
-  else bitrateInput.value = exportBitrate;
+  if (val > 0) {
+    log();
+    exportBitrate = val;
+  } else {
+    bitrateInput.value = exportBitrate;
+  }
 });
 const exportTypes = [
   // https://developer.mozilla.org/en-US/docs/Web/API/MediaRecorder/isTypeSupported
@@ -115,6 +126,7 @@ selectEncode.textContent = usingExportType;
 const exportTypeMenu = new Menu(
   exportTypes.map(type => ({label: type, value: type})),
   type => {
+    log();
     selectEncode.textContent = type;
     usingExportType = type;
   }
