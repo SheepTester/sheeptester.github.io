@@ -40,7 +40,7 @@
       </div>
       <div class="player">
         <div class="preview">
-          <canvas id="preview" width="1600" height="900"></canvas>
+          <canvas id="preview" width="1280" height="720"></canvas>
         </div>
         <div class="toolbar">
           <button type="button" class="tool-btn" id="start" title="Jump to beginning (ctrl + shift + left arrow)"><i class="material-icons">first_page</i></button>
@@ -73,8 +73,14 @@
           <h1 class="title">Video settings</h1>
           <button type="button" class="close" title="Close (esc)"><i class="material-icons">close</i></button>
         </div>
-        <div class="content text-content">
-          <p>OpenShit is not in the mood of being usable today.</p>
+        <div class="content">
+          <p><button type="button" class="dropdown"><span id="select-preset">720p</span><i class="material-icons">arrow_drop_down</i></button></p>
+          <div class="custom-size hidden" id="custom-size">
+            <p><label>Width: <input type="number" id="width"></label></p>
+            <p><label>Height: <input type="number" id="height"></label></p>
+            <p><label>Bitrate (Mbps): <input type="number" id="bitrate"></label></p>
+          </div>
+          <p><button type="button" class="dropdown"><span id="select-encode"></span><i class="material-icons">arrow_drop_down</i></button></p>
         </div>
       </div>
       <div class="modal" id="help-modal">

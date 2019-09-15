@@ -32,6 +32,9 @@ body {
   opacity: 0.5;
   pointer-events: none;
 }
+.hidden {
+  display: none;
+}
 .hidden-accessible {
   width: 0.1px;
 	height: 0.1px;
@@ -594,7 +597,6 @@ button, input {
 .modal {
   display: none;
   flex-direction: column;
-  width: 100%;
   max-width: 800px;
   max-height: 60%;
   margin: 10px;
@@ -665,4 +667,26 @@ button, input {
 }
 .danger {
   color: var(--danger);
+}
+
+.dropdown {
+  font-size: 14px;
+  cursor: pointer;
+  background-color: var(--btn);
+}
+.dropdown span, .dropdown .material-icons {
+  vertical-align: middle;
+}
+.custom-size {
+  font-size: 14px;
+}
+.custom-size input {
+  background-color: var(--btn);
+  padding: 5px 10px;
+  font-family: monospace;
+  width: 10ch;
+  margin-left: 10px;
+}
+.custom-size input:focus {
+  background-color: var(--btn-hover);
 }

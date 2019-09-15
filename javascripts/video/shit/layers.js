@@ -249,8 +249,8 @@ function exportVideo() {
   const stream = preview.captureStream();
   layers.forEach(layer => layer.addAudioTracksTo(stream));
   const recorder = new MediaRecorder(stream, {
-    mimeType: 'video/webm;codecs=h264',
-    videoBitsPerSecond: 8000000
+    mimeType: usingExportType,
+    videoBitsPerSecond: exportBitrate * 1000000
   });
 
   let download = true;

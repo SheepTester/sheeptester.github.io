@@ -1,6 +1,6 @@
 class Menu {
 
-  constructor(options) {
+  constructor(options, onchoose) {
     this.close = this.close.bind(this);
 
     this.isOpen = false;
@@ -11,6 +11,7 @@ class Menu {
         if (item) {
           const fn = options[item.dataset.item].fn;
           if (fn) fn();
+          if (onchoose) onchoose(options[item.dataset.item].value);
           window.requestAnimationFrame(() => this.close());
         }
       }

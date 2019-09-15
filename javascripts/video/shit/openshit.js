@@ -30,10 +30,99 @@ const playheadMarker = document.getElementById('playhead');
 
 const modalCover = document.getElementById('modal-cover');
 
+const selectPreset = document.getElementById('select-preset');
+const customSizeWrapper = document.getElementById('custom-size');
+const widthInput = document.getElementById('width');
+const heightInput = document.getElementById('height');
+const bitrateInput = document.getElementById('bitrate');
+const selectEncode = document.getElementById('select-encode');
+
 const preview = document.getElementById('preview');
 const c = preview.getContext('2d');
 
 const easingEditor = new EasingEditor();
+
+let exportBitrate = 7.5;
+const videoTypes = [
+  // https://support.google.com/youtube/answer/1722171
+  // https://support.google.com/youtube/answer/6375112
+  {name: '2160p (4k) extreme', bitrate: 68, width: 3840, height: 2160},
+  {name: '2160p (4k)', bitrate: 53, width: 3840, height: 2160},
+  {name: '1440p (4k)', bitrate: 24, width: 2560, height: 1440},
+  {name: '1080p', bitrate: 12, width: 1920, height: 1080},
+  {name: '720p', bitrate: 7.5, width: 1280, height: 720},
+  {name: '480p', bitrate: 4, width: 854, height: 480},
+  {name: '360p', bitrate: 1.5, width: 640, height: 360},
+  {name: '240p', bitrate: 1, width: 426, height: 240}
+];
+// TODO: make this undoable
+const videoTypeMenu = new Menu(
+  [...videoTypes.map(type => ({label: type.name, value: type})), {label: 'Custom', value: 'custom'}],
+  type => {
+    if (type === 'custom') {
+      selectPreset.textContent = 'Custom';
+      customSizeWrapper.classList.remove('hidden');
+      widthInput.value = preview.width;
+      heightInput.value = preview.height;
+      bitrateInput.value = exportBitrate;
+    } else {
+      selectPreset.textContent = type.name;
+      customSizeWrapper.classList.add('hidden');
+      exportBitrate = type.bitrate;
+      preview.width = type.width;
+      preview.height = type.height;
+      rerender();
+    }
+  }
+);
+selectPreset.parentNode.addEventListener('click', e => {
+  const {left, bottom} = selectPreset.parentNode.getBoundingClientRect();
+  videoTypeMenu.open(left, bottom);
+});
+widthInput.addEventListener('change', e => {
+  const val = +widthInput.value;
+  if (val > 0) {
+    preview.width = val;
+    rerender();
+  } else {
+    widthInput.value = preview.width;
+  }
+});
+heightInput.addEventListener('change', e => {
+  const val = +heightInput.value;
+  if (val > 0) {
+    preview.height = val;
+    rerender();
+  } else {
+    heightInput.value = preview.height;
+  }
+});
+bitrateInput.addEventListener('change', e => {
+  const val = +bitrateInput.value;
+  if (val > 0) exportBitrate = val;
+  else bitrateInput.value = exportBitrate;
+});
+const exportTypes = [
+  // https://developer.mozilla.org/en-US/docs/Web/API/MediaRecorder/isTypeSupported
+  'video/webm',
+  'video/webm;codecs=vp8',
+  'video/webm;codecs=daala',
+  'video/webm;codecs=h264',
+  'video/mpeg'
+].filter(MediaRecorder.isTypeSupported);
+let usingExportType = exportTypes[exportTypes.length - 1];
+selectEncode.textContent = usingExportType;
+const exportTypeMenu = new Menu(
+  exportTypes.map(type => ({label: type, value: type})),
+  type => {
+    selectEncode.textContent = type;
+    usingExportType = type;
+  }
+);
+selectEncode.parentNode.addEventListener('click', e => {
+  const {left, bottom} = selectEncode.parentNode.getBoundingClientRect();
+  exportTypeMenu.open(left, bottom);
+});
 
 const LEFT = 100;
 
