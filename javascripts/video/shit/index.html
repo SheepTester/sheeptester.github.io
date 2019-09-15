@@ -23,7 +23,7 @@
   </head>
   <body>
     <div class="main">
-      <div class="panel">
+      <div class="panel" id="panel">
         <div class="menubar">
           <div class="logo">OpenShit</div>
           <input type="file" accept=".oshit" class="hidden-accessible" id="load">
@@ -38,6 +38,7 @@
           <div class="properties" id="properties"></div>
         </div>
       </div>
+      <div class="resizer horizontal" id="resize-panel"></div>
       <div class="player">
         <div class="preview">
           <canvas id="preview" width="1280" height="720"></canvas>
@@ -59,6 +60,7 @@
         </div>
       </div>
     </div>
+    <div class="resizer vertical" id="resize-timeline"></div>
     <div class="timeline-scroller" id="scroll">
       <div class="timeline">
         <div class="time-markers" id="axis"></div>

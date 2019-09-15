@@ -692,3 +692,18 @@ button, input {
 .custom-size input:focus {
   background-color: var(--btn-hover);
 }
+
+.resizer {
+  position: relative;
+  z-index: 1;
+}
+.resizer.horizontal {
+  cursor: ew-resize;
+  width: 20px;
+  margin: 0 -10px;
+}
+.resizer.vertical {
+  cursor: ns-resize;
+  height: 20px;
+  margin: -10px 0;
+}

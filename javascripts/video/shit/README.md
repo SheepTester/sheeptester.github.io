@@ -12,13 +12,13 @@
 - right click on track > split (ctrl + X), duplicate, delete
 - snap to loop borders
 - icon for elastic and bounce easing functions
-- resize panels
 - ~~changing ease function should change it for all selected keys~~
 - ~~snap to playhead as well?~~
 - ~~let user paste in their own cubic-bezier~~
 - ~~rearrange menubar~~
 - ~~help menu~~
 - ~~set video width/height/frame rate?/bitrate/export format~~
+- ~~resize panels~~
 
 ## Other possibilities
 

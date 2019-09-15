@@ -18,6 +18,7 @@ const redoBtn = document.getElementById('redo');
 const zoomOutBtn = document.getElementById('out');
 const zoomInBtn = document.getElementById('in');
 
+const panelWrapper = document.getElementById('panel');
 const propertiesList = document.getElementById('properties');
 const playIcon = document.getElementById('icon');
 const currentSpan = document.getElementById('current');
@@ -167,6 +168,13 @@ function renderScale() {
   }
 }
 window.requestAnimationFrame(renderScale);
+
+isDragTrigger(document.getElementById('resize-panel'), null, ({clientX}) => {
+  panelWrapper.style.width = clientX + 'px';
+});
+isDragTrigger(document.getElementById('resize-timeline'), null, ({clientY}) => {
+  scrollWrapper.style.height = windowHeight - clientY + 'px';
+});
 
 let scrollX = scrollWrapper.scrollLeft, scrollY = scrollWrapper.scrollTop;
 scrollWrapper.addEventListener('scroll', e => {
