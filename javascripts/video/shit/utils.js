@@ -62,7 +62,7 @@ function interpolate(time, timingFn) {
     case 'linear':
       return time;
     case 'constant':
-      return 1;
+      return 0;
     case 'easeInElastic':
     case 'easeOutElastic':
     case 'easeInOutElastic':

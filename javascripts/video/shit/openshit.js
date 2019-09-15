@@ -242,6 +242,7 @@ addBtn.addEventListener('change', async e => {
     }
   }
   addBtn.disabled = false;
+  addBtn.value = null;
 });
 
 const undoHistory = [];
@@ -423,6 +424,7 @@ loadBtn.addEventListener('change', e => {
             }
             addBtn.disabled = false;
             setEntry(entry);
+            loadBtn.value = null;
           }))
       .catch(e => {
         console.log(e);

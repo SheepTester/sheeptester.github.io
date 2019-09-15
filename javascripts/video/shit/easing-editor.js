@@ -112,7 +112,7 @@ class EasingEditor {
     ]);
     this.c = this.canvas.getContext('2d');
 
-    this.lastFn = [0.25, 0.1, 0.25, 1.0];
+    this.set([0.25, 0.1, 0.25, 1.0]);
     this.set('constant');
   }
 
@@ -124,8 +124,7 @@ class EasingEditor {
         width *= SIZE / TOTAL;
         height *= SIZE / TOTAL;
         if (typeof this.fn === 'string') {
-          this.fn = this.lastFn;
-          this.lastFn = null;
+          this.set(this.lastFn);
         }
       },
       ({clientX, clientY}) => {
@@ -274,7 +273,7 @@ class EaseIcon {
         this.path.setAttributeNS(null, 'd', `M 0 ${SCALE} L ${SCALE} 0`);
         break;
       case 'constant':
-        this.path.setAttributeNS(null, 'd', `M 0 0 H ${SCALE}`);
+        this.path.setAttributeNS(null, 'd', `M 0 ${SCALE} H ${SCALE}`);
         break;
       case 'easeInElastic':
       case 'easeOutElastic':

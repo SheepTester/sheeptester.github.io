@@ -3,15 +3,15 @@ class Menu {
   constructor(options, onchoose) {
     this.close = this.close.bind(this);
 
-    this.isOpen = false;
+    this.metadata = null;
     this.elem = Elem('div', {
       className: 'menu',
       onclick: e => {
         const item = e.target.closest('.menu-item');
         if (item) {
           const fn = options[item.dataset.item].fn;
-          if (fn) fn();
-          if (onchoose) onchoose(options[item.dataset.item].value);
+          if (fn) fn(this.metadata);
+          if (onchoose) onchoose(options[item.dataset.item].value, this.metadata);
           window.requestAnimationFrame(() => this.close());
         }
       }
@@ -30,20 +30,20 @@ class Menu {
     }));
   }
 
-  open(x, y) {
+  open(x, y, metadata = true) {
     this.elem.style.left = x + 'px';
     this.elem.style.top = y + 'px';
-    if (this.isOpen) return;
-    this.isOpen = true;
-    document.body.appendChild(this.elem);
-    window.requestAnimationFrame(() => document.addEventListener('click', this.close));
+    this.metadata = metadata;
+    if (!this.elem.parentNode) {
+      document.body.appendChild(this.elem);
+      window.requestAnimationFrame(() => document.addEventListener('click', this.close));
+    }
   }
 
   close(e) {
     if (e && this.elem.contains(e.target)) return;
     document.removeEventListener('click', this.close);
-    if (!this.isOpen) return;
-    this.isOpen = false;
+    this.metadata = null;
     if (this.elem.parentNode) this.elem.parentNode.removeChild(this.elem);
   }
 

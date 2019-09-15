@@ -7,11 +7,28 @@ const audioContext = new AudioContext();
 const sources = {
   text: {
     id: 'text',
+    tracks: [],
     createTrack() {
       return new TextTrack();
     }
   }
 };
+
+const sourceMenu = new Menu([
+  {label: 'download', fn: id => {
+    const url = URL.createObjectURL(sources[id].file);
+    const saveLink = document.createElement('a');
+    saveLink.href = url;
+    saveLink.download = sources[id].name;
+    document.body.appendChild(saveLink);
+    saveLink.click();
+    document.body.removeChild(saveLink);
+    URL.revokeObjectURL(url);
+  }},
+  {label: 'remove', danger: true, fn: id => {
+    sources[id].remove();
+  }}
+]);
 
 class Source {
 
@@ -26,9 +43,14 @@ class Source {
       this.id = Math.random().toString(36).slice(2) + '-' + file.name;
       sources[this.id] = this;
     }
+    this.tracks = [];
     this.elem = Elem('div', {
       className: 'source disabled',
-      tabIndex: 0
+      tabIndex: 0,
+      oncontextmenu: e => {
+        sourceMenu.items[1].disabled = this.tracks.length;
+        sourceMenu.open(e.clientX, e.clientY, this.id);
+      }
     }, [
       Elem('span', {className: 'name'}, [this.name])
     ]);
@@ -43,6 +65,13 @@ class Source {
         this.elem.classList.remove('disabled');
         this.elem.style.backgroundImage = `url(${encodeURI(this.thumbnail)})`;
       });
+  }
+
+  remove() {
+    delete sources[this.id];
+    if (this.elem.parentNode) this.elem.parentNode.removeChild(this.elem);
+    // this class tends to have big data in it, so this tries to get rid of them just in case
+    for (const prop in this) this[prop] = null;
   }
 
   toJSON() {
@@ -122,16 +151,17 @@ class AudioSource extends Source {
       .then(audioBuffer => {
         this.length = audioBuffer.duration;
         const samples = audioBuffer.getChannelData(0);
-        thumbnailCanvas.width = Math.ceil(samples.length / CHUNK_SIZE);
+        let chunk = samples.length / CHUNK_SIZE > 1000 ? Math.floor(samples.length / 1000) : CHUNK_SIZE;
+        thumbnailCanvas.width = Math.ceil(samples.length / chunk);
         thumbnailCanvas.height = HEIGHT;
         thumbnailContext.fillStyle = 'rgba(255, 255, 255, 0.5)';
         // calculates an RMS, according to Wikipedia
         // why RMS? idk, that's what Scratch did though
         // I don't even know what an RMS is
-        for (let i = 0; i * CHUNK_SIZE < samples.length; i++) {
+        for (let i = 0; i * chunk < samples.length; i++) {
           let sum = 0, n;
-          for (n = 0; n < CHUNK_SIZE && i * CHUNK_SIZE + n < samples.length; n++) {
-            sum += samples[i * CHUNK_SIZE + n] * samples[i * CHUNK_SIZE + n];
+          for (n = 0; n < chunk && i * chunk + n < samples.length; n++) {
+            sum += samples[i * chunk + n] * samples[i * chunk + n];
           }
           const rms = Math.sqrt(sum / n);
           thumbnailContext.fillRect(i, (1 - rms) * HEIGHT, 1, rms * HEIGHT);

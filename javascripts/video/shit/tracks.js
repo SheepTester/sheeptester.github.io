@@ -12,6 +12,7 @@ class Track {
     this.keyChange = this.keyChange.bind(this);
 
     this.source = source;
+    source.tracks.push(this);
     this.keys = {};
     this.props = props;
     props.props.forEach(({id, defaultVal}) => {
@@ -412,6 +413,8 @@ class Track {
     if (Track.selected === this) {
       this.unselected();
     }
+    const index = this.source.tracks.indexOf(this);
+    if (~index) this.source.tracks.splice(index, 1);
   }
 
   change(prop, value, isFinal) {

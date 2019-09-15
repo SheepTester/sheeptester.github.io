@@ -6,7 +6,6 @@
 - scroll to playhead when using arrows if out of view
 - load fonts from Google Fonts
 - rearrange layers
-- right click on source > download?, remove
 - right click on time markers > go to...
 - right click on layer > move up, move down, insert above, insert below, delete
 - right click on track > split (ctrl + X), duplicate, delete
@@ -19,6 +18,7 @@
 - ~~help menu~~
 - ~~set video width/height/frame rate?/bitrate/export format~~
 - ~~resize panels~~
+- ~~right click on source > download?, remove~~
 
 ## Other possibilities
 
