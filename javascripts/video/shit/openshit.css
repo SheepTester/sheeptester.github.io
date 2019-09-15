@@ -673,12 +673,10 @@ button, input {
   font-size: 14px;
   cursor: pointer;
   background-color: var(--btn);
+  margin-left: 10px;
 }
 .dropdown span, .dropdown .material-icons {
   vertical-align: middle;
-}
-.custom-size {
-  font-size: 14px;
 }
 .custom-size input {
   background-color: var(--btn);
