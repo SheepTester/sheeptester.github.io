@@ -5,7 +5,7 @@ const SELECT_PADDING = 12; // px
 
 const trackMenu = new Menu([
   {label: 'Split', fn: track => {
-    //
+    track.splitAt(previewTime - track.start);
   }},
   {label: 'Duplicate', fn: track => {
     log();
@@ -15,10 +15,8 @@ const trackMenu = new Menu([
     newTrack.updateLength();
     const neighbourTrack = track.layer.tracks[track.index + 1];
     if (neighbourTrack && neighbourTrack.start < track.end + track.length) {
-      if (track.layer.index === layers.length - 1) {
-        addLayer();
-      }
-      layers[track.layer.index + 1].addTrack(newTrack);
+      track.layer.insertBefore();
+      layers[track.layer.index - 1].addTrack(newTrack);
     } else {
       track.layer.addTrack(newTrack);
     }
@@ -51,6 +49,7 @@ class Track {
       },
       oncontextmenu: e => {
         trackMenu.open(e.clientX, e.clientY, this);
+        previewTimeAt(Math.max((e.clientX + scrollX - LEFT) / scale, 0));
       }
     }, [
       Elem('span', {className: 'trim trim-start'}),
@@ -88,8 +87,16 @@ class Track {
 
   // sets this.start while keeping this.end constant
   setLeftSide(start) {
+    this.shiftAllKeys(this.start - start);
     this.length = this.end - start;
     this.start = start;
+  }
+
+  shiftAllKeys(time) {
+    Object.values(this.keys).forEach(keys => keys.forEach(key => {
+      key.time += time;
+      key.elem.style.left = key.time * scale + 'px';
+    }));
   }
 
   updateLength() {
@@ -428,6 +435,20 @@ class Track {
     }
   }
 
+  splitAt(time, logThis = true) {
+    if (time < MIN_LENGTH || time >= this.length - MIN_LENGTH) return;
+    if (logThis) log();
+    const newTrack = this.source.createTrack();
+    newTrack.setProps(this.toJSON());
+    newTrack.setLeftSide(this.start + time);
+    newTrack.removeOutOfBoundKeys();
+    newTrack.updateLength();
+    this.layer.addTrack(newTrack);
+    this.length = time;
+    this.updateLength();
+    this.removeOutOfBoundKeys();
+  }
+
   remove(reason) {
     if (reason !== 'layer-removal') {
       if (this.elem.parentNode) {
@@ -742,6 +763,7 @@ class MediaTrack extends Track {
   }
 
   setLeftSide(start) {
+    this.shiftAllKeys(this.start - start);
     this.trimStart = this.trimStart + start - this.start;
     this.start = start;
   }

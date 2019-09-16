@@ -1,13 +1,11 @@
 # OpenShit to-do
 
-- properly keep keys in place when left side is trimmed
 - fix the layers not stretching all the way
 - if source/text button clicked, allow them to drag out a region in the track thing maybe
 - scroll to playhead when using arrows if out of view
 - load fonts from Google Fonts
-- rearrange layers
-- right click on track > split (ctrl + X), duplicate, delete
 - snap to loop borders
+- hold shift and drag to delete tracks in range
 - ~~changing ease function should change it for all selected keys~~
 - ~~snap to playhead as well?~~
 - ~~let user paste in their own cubic-bezier~~
@@ -19,6 +17,9 @@
 - ~~icon for elastic and bounce easing functions~~
 - ~~right click on time markers > go to...~~
 - ~~right click on layer > move up, move down, insert above, insert below, delete~~
+- ~~rearrange layers~~
+- ~~right click on track > split (ctrl + X), duplicate, delete~~
+- ~~properly keep keys in place when left side is trimmed~~
 
 ## Other possibilities
 

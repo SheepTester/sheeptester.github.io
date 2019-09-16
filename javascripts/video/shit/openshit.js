@@ -206,7 +206,7 @@ isDragTrigger(scrollWrapper, (e, switchControls) => {
       Track.selected.unselected();
     }
     window.requestAnimationFrame(() => {
-      previewTimeAt(Math.max((e.clientX + scrollX - LEFT) / scale, 0))
+      previewTimeAt(Math.max((e.clientX + scrollX - LEFT) / scale, 0));
     });
   }
 }, e => {
@@ -352,6 +352,12 @@ document.addEventListener('keydown', e => {
       undoBtn.click();
     } else if (e.key === 'Z' || e.key === 'y') {
       redoBtn.click();
+    } else if (e.key === 'x') {
+      log();
+      layers.forEach(layer => {
+        const track = layer.trackAt(previewTime);
+        if (track) track.splitAt(previewTime - track.start, false);
+      });
     } else {
       preventDefault = false;
     }
