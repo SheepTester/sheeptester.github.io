@@ -36,13 +36,13 @@ class Menu {
     this.metadata = metadata;
     if (!this.elem.parentNode) {
       document.body.appendChild(this.elem);
-      window.requestAnimationFrame(() => document.addEventListener('click', this.close));
+      document.addEventListener('mousedown', this.close);
     }
   }
 
   close(e) {
     if (e && this.elem.contains(e.target)) return;
-    document.removeEventListener('click', this.close);
+    document.removeEventListener('mousedown', this.close);
     this.metadata = null;
     if (this.elem.parentNode) this.elem.parentNode.removeChild(this.elem);
   }

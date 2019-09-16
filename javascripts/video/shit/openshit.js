@@ -30,13 +30,13 @@ const layersWrapper = document.getElementById('layers');
 const playheadMarker = document.getElementById('playhead');
 
 const modalCover = document.getElementById('modal-cover');
-
 const selectPreset = document.getElementById('select-preset');
 const customSizeWrapper = document.getElementById('custom-size');
 const widthInput = document.getElementById('width');
 const heightInput = document.getElementById('height');
 const bitrateInput = document.getElementById('bitrate');
 const selectEncode = document.getElementById('select-encode');
+const goToTime = document.getElementById('time');
 
 const preview = document.getElementById('preview');
 const c = preview.getContext('2d');
@@ -311,6 +311,27 @@ function modal(modal) {
 }
 modalCover.addEventListener('click', e => {
   if (currentModal && e.target === modalCover) currentModal.click();
+});
+
+const goToModal = modal(document.getElementById('go-to-modal'));
+const goToMenu = new Menu([{label: 'Jump to time', fn() {
+  goToModal();
+  goToTime.value = previewTime;
+  goToTime.focus();
+}}]);
+timeMarkers.addEventListener('contextmenu', e => {
+  goToMenu.open(e.clientX, e.clientY);
+});
+goToTime.addEventListener('keydown', e => {
+  if (e.key === 'Enter') {
+    const time = +goToTime.value;
+    if (time >= 0) {
+      setPreviewTime(time);
+      currentModal.click();
+    }
+  } else if (e.key === 'Escape') {
+    currentModal.click();
+  }
 });
 
 document.addEventListener('keydown', e => {

@@ -6,7 +6,6 @@
 - scroll to playhead when using arrows if out of view
 - load fonts from Google Fonts
 - rearrange layers
-- right click on time markers > go to...
 - right click on layer > move up, move down, insert above, insert below, delete
 - right click on track > split (ctrl + X), duplicate, delete
 - snap to loop borders
@@ -19,6 +18,7 @@
 - ~~resize panels~~
 - ~~right click on source > download?, remove~~
 - ~~icon for elastic and bounce easing functions~~
+- ~~right click on time markers > go to...~~
 
 ## Other possibilities
 

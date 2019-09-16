@@ -683,14 +683,17 @@ button, input {
 .dropdown span, .dropdown .material-icons {
   vertical-align: middle;
 }
-.custom-size input {
+.number {
+  font-size: 14px;
+}
+.number input {
   background-color: var(--btn);
   padding: 5px 10px;
   font-family: monospace;
   width: 10ch;
   margin-left: 10px;
 }
-.custom-size input:focus {
+.number input:focus {
   background-color: var(--btn-hover);
 }
 
@@ -705,6 +708,7 @@ button, input {
 }
 .resizer.vertical {
   cursor: ns-resize;
-  height: 20px;
-  margin: -10px 0;
+  height: 10px;
+  margin-top: -10px;
+  /* doesn't extend downwards because time markers are already too thin */
 }
