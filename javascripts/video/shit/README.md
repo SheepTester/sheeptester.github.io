@@ -10,7 +10,6 @@
 - right click on layer > move up, move down, insert above, insert below, delete
 - right click on track > split (ctrl + X), duplicate, delete
 - snap to loop borders
-- icon for elastic and bounce easing functions
 - ~~changing ease function should change it for all selected keys~~
 - ~~snap to playhead as well?~~
 - ~~let user paste in their own cubic-bezier~~
@@ -19,6 +18,7 @@
 - ~~set video width/height/frame rate?/bitrate/export format~~
 - ~~resize panels~~
 - ~~right click on source > download?, remove~~
+- ~~icon for elastic and bounce easing functions~~
 
 ## Other possibilities
 

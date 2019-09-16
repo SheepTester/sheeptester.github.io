@@ -281,7 +281,11 @@ class EaseIcon {
       case 'easeInBounce':
       case 'easeOutBounce':
       case 'easeInOutBounce':
-        this.path.setAttributeNS(null, 'd', `M 0 0 L ${SCALE} ${SCALE}`); // TODO
+        let path = `M 0 ${SCALE}`;
+        for (let i = 1; i < 10; i++) {
+          path += `L ${i / 10 * SCALE} ${(1 - easingsFunctions[fn](i / 10)) * SCALE}`;
+        }
+        this.path.setAttributeNS(null, 'd', path + `L ${SCALE} 0`);
         break;
       default:
         if (!Array.isArray(fn) || fn.length !== 4) {
