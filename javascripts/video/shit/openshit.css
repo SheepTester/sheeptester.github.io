@@ -555,6 +555,7 @@ button, input {
   fill: none;
   stroke: var(--text);
   stroke-width: 2;
+  stroke-linecap: round;
 }
 .ease-control-line {
   fill: none;
