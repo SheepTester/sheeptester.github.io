@@ -49,7 +49,7 @@ class Track {
       },
       oncontextmenu: e => {
         trackMenu.open(e.clientX, e.clientY, this);
-        previewTimeAt(Math.max((e.clientX + scrollX - LEFT) / scale, 0));
+        if (!e.shiftKey) previewTimeAt(Math.max((e.clientX + scrollX - LEFT) / scale, 0));
       }
     }, [
       Elem('span', {className: 'trim trim-start'}),
@@ -274,7 +274,7 @@ class Track {
     this.elem.style.top = clientY - this.dragOffsets[1] + 'px';
   }
 
-  dragEnd({clientX, clientY}) {
+  dragEnd({clientX, clientY, shiftKey}) {
     this.dragStartData = null;
     if (Track.selected === this) {
       const trackTop = this.elem.getBoundingClientRect().top;
@@ -360,7 +360,7 @@ class Track {
     if (!this.dragging) {
       if (Track.selected) Track.selected.unselected();
       this.selected();
-      setPreviewTime(Math.max((clientX + scrollX - LEFT) / scale, 0));
+      if (!shiftKey) setPreviewTime(Math.max((clientX + scrollX - LEFT) / scale, 0));
       return;
     }
     this.timelineLeft = null;
