@@ -15,18 +15,18 @@ const sources = {
 };
 
 const sourceMenu = new Menu([
-  {label: 'download', fn: id => {
-    const url = URL.createObjectURL(sources[id].file);
+  {label: 'download', fn: source => {
+    const url = URL.createObjectURL(source.file);
     const saveLink = document.createElement('a');
     saveLink.href = url;
-    saveLink.download = sources[id].name;
+    saveLink.download = source.name;
     document.body.appendChild(saveLink);
     saveLink.click();
     document.body.removeChild(saveLink);
     URL.revokeObjectURL(url);
   }},
-  {label: 'remove', danger: true, fn: id => {
-    sources[id].remove();
+  {label: 'remove', danger: true, fn: source => {
+    source.remove();
   }}
 ]);
 
@@ -49,7 +49,7 @@ class Source {
       tabIndex: 0,
       oncontextmenu: e => {
         sourceMenu.items[1].disabled = this.tracks.length;
-        sourceMenu.open(e.clientX, e.clientY, this.id);
+        sourceMenu.open(e.clientX, e.clientY, this);
       }
     }, [
       Elem('span', {className: 'name'}, [this.name])

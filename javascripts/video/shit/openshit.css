@@ -657,6 +657,9 @@ button, input {
   z-index: 60;
   box-shadow: 0 3px 8px rgba(0, 0, 0, 0.5);
   padding: 5px 0;
+  overflow: auto;
+  white-space: nowrap;
+  box-sizing: border-box;
 }
 .menu-item {
   display: block;
@@ -686,14 +689,14 @@ button, input {
 .number {
   font-size: 14px;
 }
-.number input {
+.number-input input {
   background-color: var(--btn);
   padding: 5px 10px;
   font-family: monospace;
   width: 10ch;
   margin-left: 10px;
 }
-.number input:focus {
+.number-input input:focus {
   background-color: var(--btn-hover);
 }
 

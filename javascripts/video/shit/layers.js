@@ -1,9 +1,62 @@
 const layers = [];
 
+const layerMenu = new Menu([
+  {label: 'Move up', fn: layer => {
+    if (layer.index > 0) {
+      log();
+      if (layer.index === layers.length - 1 && layers[layer.index - 1].tracks.length) {
+        addLayer();
+      }
+      layer.remove(false);
+      layers[layer.index - 1].insertBefore(layer);
+    }
+  }},
+  {label: 'Move down', fn: layer => {
+    if (layer.index < layers.length - 1) {
+      log();
+      layer.remove(false);
+      if (layer.index === layers.length - 1) {
+        addLayer(layer);
+        if (layer.tracks.length) addLayer();
+      } else {
+        layers[layer.index + 1].index--;
+        layers[layer.index + 1].insertBefore(layer);
+      }
+    }
+  }},
+  {label: 'Insert above', fn: layer => {
+    log();
+    layer.insertBefore();
+  }},
+  {label: 'Insert below', fn: layer => {
+    log();
+    if (layer.index === layers.length - 1) {
+      addLayer();
+    } else {
+      layers[layer.index + 1].insertBefore();
+    }
+  }},
+  {label: 'Delete', danger: true, fn: layer => {
+    log();
+    layer.remove();
+    updateLayers();
+  }}
+]);
+
 class Layer {
 
   constructor() {
-    this.elem = Elem('div', {className: 'layer'});
+    this.elem = Elem('div', {
+      className: 'layer',
+      oncontextmenu: e => {
+        if (e.target === this.elem) {
+          layerMenu.items[0].disabled = this.index === 0;
+          layerMenu.items[1].disabled = this.index === layers.length - 1;
+          layerMenu.items[4].disabled = this.index === layers.length - 1 && !this.tracks.length;
+          layerMenu.open(e.clientX, e.clientY, this);
+        }
+      }
+    });
     this.tracks = [];
   }
 
@@ -50,7 +103,7 @@ class Layer {
     return arr;
   }
 
-  insertBefore(layer) {
+  insertBefore(layer = new Layer()) {
     layersWrapper.insertBefore(layer.elem, this.elem);
     layers.splice(this.index, 0, layer);
     updateLayers();
@@ -68,8 +121,8 @@ class Layer {
     });
   }
 
-  remove() {
-    this.tracks.forEach(track => track.remove('layer-removal'));
+  remove(removeTracks = true) {
+    if (removeTracks) this.tracks.forEach(track => track.remove('layer-removal'));
     layers.splice(this.index, 1);
     layersWrapper.removeChild(this.elem);
   }

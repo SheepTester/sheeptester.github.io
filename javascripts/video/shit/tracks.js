@@ -3,6 +3,32 @@ const MIN_LENGTH = 0.1; // s
 const DRAG_MIN_DIST = 5; // px
 const SELECT_PADDING = 12; // px
 
+const trackMenu = new Menu([
+  {label: 'Split', fn: track => {
+    //
+  }},
+  {label: 'Duplicate', fn: track => {
+    log();
+    const newTrack = track.source.createTrack();
+    newTrack.setProps(track.toJSON());
+    newTrack.start = track.end;
+    newTrack.updateLength();
+    const neighbourTrack = track.layer.tracks[track.index + 1];
+    if (neighbourTrack && neighbourTrack.start < track.end + track.length) {
+      if (track.layer.index === layers.length - 1) {
+        addLayer();
+      }
+      layers[track.layer.index + 1].addTrack(newTrack);
+    } else {
+      track.layer.addTrack(newTrack);
+    }
+  }},
+  {label: 'Delete', danger: true, fn: track => {
+    log();
+    track.remove('delete');
+  }}
+]);
+
 class Track {
 
   constructor(source, props) {
@@ -22,6 +48,9 @@ class Track {
       className: 'track',
       style: {
         backgroundImage: source.thumbnail && `url(${encodeURI(source.thumbnail)})`
+      },
+      oncontextmenu: e => {
+        trackMenu.open(e.clientX, e.clientY, this);
       }
     }, [
       Elem('span', {className: 'trim trim-start'}),

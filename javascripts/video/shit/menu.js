@@ -33,6 +33,7 @@ class Menu {
   open(x, y, metadata = true) {
     this.elem.style.left = x + 'px';
     this.elem.style.top = y + 'px';
+    this.elem.style.maxHeight = (windowHeight - y) + 'px';
     this.metadata = metadata;
     if (!this.elem.parentNode) {
       document.body.appendChild(this.elem);
