@@ -1,0 +1,26 @@
+UGWA https://orbiit.github.io/gunn-web-app/
+  Used by many (but not all) students at Gunn to check alternate schedules and see when the a period ends; only took about a month to make.
+
+OlamREEE https://sheeptester.github.io/olamreee/
+  All the classes ended up using this digital version of the fictional element cards for our periodic trends project in chemistry.
+
+Gunn Student Simulator https://sheeptester.github.io/gunn-student-sim/
+  Blew up in both Gunn and Paly.
+
+Trig Drill Generator https://sheeptester.github.io/hello-world/drills.html
+  Was extremely useful for trig students in my grade.
+
+Underground Schoology https://github.com/SheepTester/hello-world/raw/master/underground-schoology.user.js
+  A userscript that uses Schoology portfolios to store post and comment data for this secondary social media on top of Schoology; news of it was spread, but only a few used it.
+
+HTMLifier https://sheeptester.github.io/words-go-here/htmlifier/
+  Used by some Scratchers to package their projects into an independent HTML file.
+
+Unofficial extensions mod https://sheeptester.github.io/scratch-gui/
+  Referenced by a few Japanese Scratchers for loading unofficial extensions until Scratch 3.0 gets official support for them.
+
+Ovinus Real https://www.facebook.com/ovinus.genuine
+  Not a programming project, but known by some students for the dumb comments made by the joint Facebook account.
+
+Budget: $0
+Profit: $0
