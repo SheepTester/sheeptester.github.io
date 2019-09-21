@@ -393,7 +393,7 @@ const fileMenu = new Menu([
   {elem: Elem('label', {for: 'load'}, ['Open'])},
   {label: 'Save', fn: saveProject},
   {label: 'Video settings', fn: modal(document.getElementById('vid-settings-modal'))},
-  {label: 'Export', fn: censored && exportVideo}
+  {label: 'Export', fn: !censored && exportVideo}
 ]);
 fileBtn.addEventListener('click', e => {
   const {left, bottom} = fileBtn.getBoundingClientRect();
