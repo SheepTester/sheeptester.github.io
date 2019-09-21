@@ -4,6 +4,33 @@ const params = new URL(location).searchParams;
 const censored = params.get('censored');
 const warnBeforeClosing = !params.get('easy-reload');
 
+const actions = {
+  VIDEO_TYPE: 'change export type',
+  VIDEO_WIDTH: 'change video width',
+  VIDEO_HEIGHT: 'change video height',
+  VIDEO_BITRATE: 'change export bitrate',
+  VIDEO_FORMAT: 'change export format',
+  SPLIT: 'split tracks',
+  MOVE_UP: 'move layer up',
+  MOVE_DOWN: 'move layer down',
+  INSERT_ABOVE: 'insert layer above',
+  INSERT_BELOW: 'insert layer below',
+  DELETE_LAYER: 'delete layer',
+  RANGE_DELETE: 'delete tracks in range',
+  DUPLICATE: 'duplicate track',
+  DELETE: 'delete track',
+  MOVE_KEYS: 'move keys',
+  TRIM: 'trim track',
+  MOVE: 'move track',
+  SPLIT: 'split track',
+  REMOVE: 'delete track',
+  PROP_CHANGE: 'change track property',
+  EASE_CHANGE: 'change property easing function',
+  KEY: 'add key',
+  UNKEY: 'remove key',
+  DELETE_KEYS: 'delete keys'
+};
+
 const loadBtn = document.getElementById('load');
 const fileBtn = document.getElementById('file');
 const helpBtn = document.getElementById('help');
@@ -59,7 +86,7 @@ const videoTypes = [
 let currentVideoType = videoTypes[4];
 function setVideoType(type, userChange = true) {
   if (type !== 'custom') {
-    if (userChange) log();
+    if (userChange) log(actions.VIDEO_TYPE);
     selectPreset.textContent = type.name;
     customSizeWrapper.classList.add('hidden');
     exportBitrate = type.bitrate;
@@ -88,7 +115,7 @@ selectPreset.parentNode.addEventListener('click', e => {
 widthInput.addEventListener('change', e => {
   const val = +widthInput.value;
   if (val > 0) {
-    log();
+    log(actions.VIDEO_WIDTH);
     preview.width = val;
     rerender();
   } else {
@@ -98,7 +125,7 @@ widthInput.addEventListener('change', e => {
 heightInput.addEventListener('change', e => {
   const val = +heightInput.value;
   if (val > 0) {
-    log();
+    log(actions.VIDEO_HEIGHT);
     preview.height = val;
     rerender();
   } else {
@@ -108,7 +135,7 @@ heightInput.addEventListener('change', e => {
 bitrateInput.addEventListener('change', e => {
   const val = +bitrateInput.value;
   if (val > 0) {
-    log();
+    log(actions.VIDEO_BITRATE);
     exportBitrate = val;
   } else {
     bitrateInput.value = exportBitrate;
@@ -127,7 +154,7 @@ selectEncode.textContent = usingExportType;
 const exportTypeMenu = new Menu(
   exportTypes.map(type => ({label: type, value: type})),
   type => {
-    log();
+    log(actions.VIDEO_FORMAT);
     selectEncode.textContent = type;
     usingExportType = type;
   }
@@ -248,29 +275,32 @@ addBtn.addEventListener('change', async e => {
 const undoHistory = [];
 const redoHistory = [];
 let saved = false;
-function log(entry = getEntry()) {
-  undoHistory.push(entry);
-  redoHistory.splice(0, redoHistory.length);
+function updateUndoButtons() {
   undoBtn.disabled = !undoHistory.length;
+  undoBtn.title = undoHistory.length ? `undo ${undoHistory[0].message}` : null;
   redoBtn.disabled = !redoHistory.length;
+  redoBtn.title = redoHistory.length ? `redo ${redoHistory[0].message}` : null;
+}
+function log(message, entry = getEntry()) {
+  undoHistory.unshift({message, entry});
+  redoHistory.splice(0, redoHistory.length);
+  updateUndoButtons();
   saved = false;
 }
 undoBtn.addEventListener('click', e => {
   if (undoHistory.length) {
-    redoHistory.push(getEntry());
-    const entry = undoHistory.pop();
+    const {message, entry} = undoHistory.shift();
+    redoHistory.unshift({message, entry: getEntry()});
     setEntry(entry);
-    undoBtn.disabled = !undoHistory.length;
-    redoBtn.disabled = !redoHistory.length;
+    updateUndoButtons();
   }
 });
 redoBtn.addEventListener('click', e => {
   if (redoHistory.length) {
-    undoHistory.push(getEntry());
-    const entry = redoHistory.pop();
+    const {message, entry} = redoHistory.shift();
+    undoHistory.unshift({message, entry: getEntry()});
     setEntry(entry);
-    undoBtn.disabled = !undoHistory.length;
-    redoBtn.disabled = !redoHistory.length;
+    updateUndoButtons();
   }
 });
 
@@ -353,7 +383,7 @@ document.addEventListener('keydown', e => {
     } else if (e.key === 'Z' || e.key === 'y') {
       redoBtn.click();
     } else if (e.key === 'x') {
-      log();
+      log(actions.SPLIT);
       layers.forEach(layer => {
         const track = layer.trackAt(previewTime);
         if (track) track.splitAt(previewTime - track.start, false);

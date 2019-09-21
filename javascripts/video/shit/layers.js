@@ -3,7 +3,7 @@ const layers = [];
 const layerMenu = new Menu([
   {label: 'Move up', fn: layer => {
     if (layer.index > 0) {
-      log();
+      log(actions.MOVE_UP);
       if (layer.index === layers.length - 1 && layers[layer.index - 1].tracks.length) {
         addLayer();
       }
@@ -13,7 +13,7 @@ const layerMenu = new Menu([
   }},
   {label: 'Move down', fn: layer => {
     if (layer.index < layers.length - 1) {
-      log();
+      log(actions.MOVE_DOWN);
       layer.remove(false);
       if (layer.index === layers.length - 1) {
         addLayer(layer);
@@ -25,11 +25,11 @@ const layerMenu = new Menu([
     }
   }},
   {label: 'Insert above', fn: layer => {
-    log();
+    log(actions.INSERT_ABOVE);
     layer.insertBefore();
   }},
   {label: 'Insert below', fn: layer => {
-    log();
+    log(actions.INSERT_BELOW);
     if (layer.index === layers.length - 1) {
       addLayer();
     } else {
@@ -37,7 +37,7 @@ const layerMenu = new Menu([
     }
   }},
   {label: 'Delete', danger: true, fn: layer => {
-    log();
+    log(actions.DELETE_LAYER);
     layer.remove();
     updateLayers();
   }}
@@ -84,7 +84,7 @@ class Layer {
       this.elem.removeChild(this.removeBox);
       const tracks = this.tracksBetween(min, max);
       if (tracks.length) {
-        log();
+        log(actions.RANGE_DELETE);
         tracks.forEach(track => {
           if (track.start >= min && track.end < max) {
             track.remove('range-delete');

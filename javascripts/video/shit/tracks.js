@@ -8,7 +8,7 @@ const trackMenu = new Menu([
     track.splitAt(previewTime - track.start);
   }},
   {label: 'Duplicate', fn: track => {
-    log();
+    log(actions.DUPLICATE);
     const newTrack = track.source.createTrack();
     newTrack.setProps(track.toJSON());
     newTrack.start = track.end;
@@ -22,7 +22,7 @@ const trackMenu = new Menu([
     }
   }},
   {label: 'Delete', danger: true, fn: track => {
-    log();
+    log(actions.DELETE);
     track.remove('delete');
   }}
 ]);
@@ -316,7 +316,7 @@ class Track {
           if (!this.selectedKeys.length) this.selectedKeys = null;
           this.elem.removeChild(this.selectBox);
         } else {
-          log();
+          log(actions.MOVE_KEYS);
           this.selectedKeys.forEach(key => {
             key.time += this.keyDragData.dTime;
             key.elem.style.left = key.time * scale + 'px';
@@ -368,7 +368,7 @@ class Track {
     this.timelineLeft = null;
     this.jumpPoints = null;
     if (this.trimming) {
-      log(this.currentState);
+      log(actions.TRIM, this.currentState);
       this.trimming = false;
       document.body.classList.remove('trimming');
       this.removeOutOfBoundKeys();
@@ -382,7 +382,7 @@ class Track {
     this.elem.style.top = null;
     const layer = this.possibleLayer;
     if (layer) {
-      log(this.currentState);
+      log(actions.MOVE, this.currentState);
       this.placeholder.parentNode.removeChild(this.placeholder);
       this.start = this.possibleStart;
       this.updateLength();
@@ -441,7 +441,7 @@ class Track {
   // `time` is relative to track start
   splitAt(time, logThis = true) {
     if (time < MIN_LENGTH || time >= this.length - MIN_LENGTH) return;
-    if (logThis) log();
+    if (logThis) log(actions.SPLIT);
     const newTrack = this.source.createTrack();
     newTrack.setProps(this.toJSON());
     newTrack.setLeftSide(this.start + time);
@@ -459,7 +459,7 @@ class Track {
         this.elem.parentNode.removeChild(this.elem);
       }
       if (this.layer) {
-        if (reason !== 'range-delete') log(this.currentState || getEntry());
+        if (reason !== 'range-delete') log(actions.REMOVE, this.currentState || getEntry());
         this.layer.tracks.splice(this.index, 1);
         this.layer.updateTracks();
       }
@@ -473,7 +473,7 @@ class Track {
 
   change(prop, value, isFinal) {
     if (isFinal) {
-      log(this.propChangesLog);
+      log(actions.PROP_CHANGE, this.propChangesLog);
       this.propChangesLog = null;
     } else if (!this.propChangesLog) {
       this.propChangesLog = getEntry();
@@ -573,7 +573,7 @@ class Track {
             const rect = keys.iconBtn.getBoundingClientRect();
             easingEditor.set(keys.icon.fn);
             easingEditor.onchange = fn => {
-              log();
+              log(actions.EASE_CHANGE);
               keys.icon.metadata.ease = fn;
               if (this.selectedKeys) {
                 this.selectedKeys.forEach(key => key.ease = fn);
@@ -590,7 +590,7 @@ class Track {
   }
 
   keyChange(id, keyed) {
-    log();
+    log(keyed ? actions.KEY : actions.UNKEY);
     const relTime = clamp(previewTime - this.start, 0, this.length);
     if (keyed) {
       const key = this.createKey(id, {value: this[id], time: relTime});
@@ -630,7 +630,7 @@ class Track {
 
   deleteSelected() {
     if (this.selectedKeys) {
-      log();
+      log(actions.DELETE_KEYS);
       Object.keys(this.keys).forEach(id => {
         const keys = this.keys[id];
         for (let i = keys.length; i--;) {
