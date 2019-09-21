@@ -68,6 +68,8 @@ class Track {
         } else {
           switchControls(null);
         }
+      } else if (e.ctrlKey || e.shiftKey) {
+        switchControls(null);
       } else {
         this.dragStart(e);
       }
@@ -435,6 +437,8 @@ class Track {
     }
   }
 
+  // new track is to right of split point
+  // `time` is relative to track start
   splitAt(time, logThis = true) {
     if (time < MIN_LENGTH || time >= this.length - MIN_LENGTH) return;
     if (logThis) log();
@@ -455,7 +459,7 @@ class Track {
         this.elem.parentNode.removeChild(this.elem);
       }
       if (this.layer) {
-        log(this.currentState || getEntry());
+        if (reason !== 'range-delete') log(this.currentState || getEntry());
         this.layer.tracks.splice(this.index, 1);
         this.layer.updateTracks();
       }
@@ -784,6 +788,7 @@ class MediaTrack extends Track {
       case 'volume':
         if (value > 100) return 100;
         else if (value < 0) return 0;
+        break;
       case 'trimStart':
         if (value > this.trimEnd - MIN_LENGTH) this.trimStart = returnVal = this.trimEnd - MIN_LENGTH;
         if (isFinal) {

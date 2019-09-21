@@ -7,8 +7,8 @@
   --separator: rgba(255, 255, 255, 0.1);
   --text: rgba(255, 255, 255, 0.65);
   --text-em: #87c9c3;
-  --ease: #8e44ad;
   --danger: #e65864;
+  --danger-layer: rgba(230, 88, 100, 0.3);
 }
 
 html, body {
@@ -306,6 +306,16 @@ button, input {
   background-color: var(--layer);
 }
 
+.remove {
+  position: absolute;
+  border: 1px solid var(--danger);
+  background-color: var(--danger-layer);
+  top: 5px;
+  bottom: 5px;
+  z-index: 1;
+  box-sizing: border-box;
+}
+
 .track {
   display: flex;
   justify-content: center;
@@ -387,7 +397,7 @@ button, input {
   width: 16px;
   padding: 0;
   height: 16px;
-  background-color: var(--ease);
+  background-color: #8e44ad;
   margin-left: 5px;
   cursor: pointer;
   z-index: 1;

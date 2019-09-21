@@ -57,6 +57,51 @@ class Layer {
         }
       }
     });
+    this.removeBox = Elem('div', {
+      className: 'remove'
+    });
+    let timelineLeft, initX, min, max, jumpPoints;
+    isDragTrigger(this.elem, (e, switchControls) => {
+      if (e.ctrlKey) {
+        jumpPoints = getAllJumpPoints();
+        timelineLeft = layersWrapper.getBoundingClientRect().left + scrollX;
+        initX = (e.clientX + scrollX - timelineLeft) / scale;
+        min = max = initX;
+        this.removeBox.style.left = initX * scale + 'px';
+        this.removeBox.style.width = 0;
+        this.elem.appendChild(this.removeBox);
+      } else {
+        switchControls(null);
+      }
+    }, e => {
+      let point = (e.clientX + scrollX - timelineLeft) / scale;
+      if (!e.shiftKey) point = Track.snapPoint(jumpPoints, point);
+      min = Math.min(point, initX);
+      max = Math.max(point, initX);
+      this.removeBox.style.left = min * scale + 'px';
+      this.removeBox.style.width = (max - min) * scale + 'px';
+    }, e => {
+      this.elem.removeChild(this.removeBox);
+      const tracks = this.tracksBetween(min, max);
+      if (tracks.length) {
+        log();
+        tracks.forEach(track => {
+          if (track.start >= min && track.end < max) {
+            track.remove('range-delete');
+          } else {
+            if (track.start < min) {
+              if (track.end > max) {
+                track.splitAt(max - track.start, false);
+              }
+              track.length = Math.max(min, track.start + MIN_LENGTH) - track.start;
+            } else {
+              track.setLeftSide(Math.min(max, track.end - MIN_LENGTH));
+            }
+            track.updateLength();
+          }
+        });
+      }
+    });
     this.tracks = [];
   }
 

@@ -5,7 +5,6 @@
 - scroll to playhead when using arrows if out of view
 - load fonts from Google Fonts
 - snap to loop borders
-- hold shift and drag to delete tracks in range
 - undo/redo messages (ie store the type of action it was)
 - ~~changing ease function should change it for all selected keys~~
 - ~~snap to playhead as well?~~
@@ -21,6 +20,7 @@
 - ~~rearrange layers~~
 - ~~right click on track > split (ctrl + X), duplicate, delete~~
 - ~~properly keep keys in place when left side is trimmed~~
+- ~~hold shift and drag to delete tracks in range~~
 
 ## Other possibilities
 
