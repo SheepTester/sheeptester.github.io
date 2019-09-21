@@ -49,7 +49,7 @@ class Track {
       },
       oncontextmenu: e => {
         trackMenu.open(e.clientX, e.clientY, this);
-        if (!e.shiftKey) previewTimeAt(Math.max((e.clientX + scrollX - LEFT) / scale, 0));
+        if (!e.shiftKey) setPreviewTime(Math.max((e.clientX + scrollX - LEFT) / scale, 0), false);
       }
     }, [
       Elem('span', {className: 'trim trim-start'}),
@@ -130,13 +130,12 @@ class Track {
 
   startDragging(clientX, clientY, target, offsets) {
     this.dragging = true;
-    this.timelineLeft = layersWrapper.getBoundingClientRect().left + scrollX;
     if (Track.selected === this) {
       // `offsets` means if shift key is down in this context oof
       this.selectInit = {
-        x: clientX + scrollX - this.timelineLeft - this.start * scale,
+        x: clientX + scrollX - LEFT - this.start * scale,
         y: clientY + scrollY - this.elem.getBoundingClientRect().top,
-        time: (clientX + scrollX - this.timelineLeft) / scale - this.start,
+        time: (clientX + scrollX - LEFT) / scale - this.start,
         fromSelected: target.classList.contains('select'),
         isSelecting: offsets
       };
@@ -209,7 +208,7 @@ class Track {
       }
     }
     if (Track.selected === this) {
-      const x = clientX + scrollX - this.timelineLeft - this.start * scale;
+      const x = clientX + scrollX - LEFT - this.start * scale;
       const y = clientY + scrollY - this.elem.getBoundingClientRect().top;
       if (this.selectInit.isSelecting) {
         const left = Math.min(x, this.selectInit.x);
@@ -234,7 +233,7 @@ class Track {
       return;
     }
     if (this.trimming) {
-      let cursor = (clientX + scrollX - this.timelineLeft) / scale;
+      let cursor = (clientX + scrollX - LEFT) / scale;
       // TODO: snapping for loop borders
       if (!shiftKey) cursor = Track.snapPoint(this.jumpPoints, cursor);
       if (cursor < this.trimMin) cursor = this.trimMin;
@@ -261,7 +260,7 @@ class Track {
         this.possibleLayer = layer;
         layer.elem.appendChild(placeholder);
       }
-      this.possibleStart = (clientX - this.dragOffsets[0] + scrollX - this.timelineLeft) / scale;
+      this.possibleStart = (clientX - this.dragOffsets[0] + scrollX - LEFT) / scale;
       if (!shiftKey) {
         this.possibleStart = Track.snapPoint(
           this.jumpPoints,
@@ -280,7 +279,7 @@ class Track {
     this.dragStartData = null;
     if (Track.selected === this) {
       const trackTop = this.elem.getBoundingClientRect().top;
-      const x = clientX + scrollX - this.timelineLeft - this.start * scale;
+      const x = clientX + scrollX - LEFT - this.start * scale;
       const y = clientY + scrollY - trackTop;
       if (this.dragging) {
         if (this.selectInit.isSelecting) {
@@ -347,7 +346,7 @@ class Track {
               this.selectedKeys.push(key);
             }
           } else {
-            setPreviewTime(this.start + +elem.dataset.time);
+            setPreviewTime(this.start + +elem.dataset.time, false);
           }
         } else {
           this.selectedKeys.forEach(key => {
@@ -362,10 +361,9 @@ class Track {
     if (!this.dragging) {
       if (Track.selected) Track.selected.unselected();
       this.selected();
-      if (!shiftKey) setPreviewTime(Math.max((clientX + scrollX - LEFT) / scale, 0));
+      if (!shiftKey) setPreviewTime(Math.max((clientX + scrollX - LEFT) / scale, 0), false);
       return;
     }
-    this.timelineLeft = null;
     this.jumpPoints = null;
     if (this.trimming) {
       log(actions.TRIM, this.currentState);
@@ -403,7 +401,7 @@ class Track {
     this.possibleLayer = null;
     this.possibleStart = null;
     this.currentState = null;
-    setPreviewTime(previewTime);
+    rerender();
   }
 
   selected() {

@@ -60,12 +60,11 @@ class Layer {
     this.removeBox = Elem('div', {
       className: 'remove'
     });
-    let timelineLeft, initX, min, max, jumpPoints;
+    let initX, min, max, jumpPoints;
     isDragTrigger(this.elem, (e, switchControls) => {
       if (e.ctrlKey) {
         jumpPoints = getAllJumpPoints();
-        timelineLeft = layersWrapper.getBoundingClientRect().left + scrollX;
-        initX = (e.clientX + scrollX - timelineLeft) / scale;
+        initX = (e.clientX + scrollX - LEFT) / scale;
         min = max = initX;
         this.removeBox.style.left = initX * scale + 'px';
         this.removeBox.style.width = 0;
@@ -74,7 +73,7 @@ class Layer {
         switchControls(null);
       }
     }, e => {
-      let point = (e.clientX + scrollX - timelineLeft) / scale;
+      let point = (e.clientX + scrollX - LEFT) / scale;
       if (!e.shiftKey) point = Track.snapPoint(jumpPoints, point);
       min = Math.min(point, initX);
       max = Math.max(point, initX);
@@ -203,12 +202,11 @@ function addLayer(layer = new Layer()) {
 }
 
 function updateScale(newScale) {
-  const oldScale = scale;
   scale = newScale;
   layers.forEach(layer => layer.updateScale());
   renderScale();
   playheadMarker.style.left = previewTime * scale + 'px';
-  scrollWrapper.scrollLeft = (scrollX + windowWidth / 2) / oldScale * scale - windowWidth / 2; // could improve
+  scrollWrapper.scrollLeft = previewTime * scale - (windowWidth - LEFT) / 2; // could improve
   zoomOutBtn.disabled = logScale === 0;
   zoomInBtn.disabled = logScale === MAX_SCALE;
 }

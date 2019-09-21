@@ -241,10 +241,17 @@ isDragTrigger(scrollWrapper, (e, switchControls) => {
 }, e => {
   if (wasPlaying) play();
 });
-function setPreviewTime(time) {
+const OFFSCREEN_PADDING = 20;
+function setPreviewTime(time, scrollTo = true) {
   let wasPlaying = playing;
   if (wasPlaying) stop();
   previewTimeAt(time);
+  if (scrollTo) {
+    if (previewTime < (scrollX - LEFT + OFFSCREEN_PADDING) / scale
+      || previewTime > (scrollX + windowWidth - LEFT - OFFSCREEN_PADDING) / scale) {
+      scrollWrapper.scrollLeft = previewTime * scale - (windowWidth - LEFT) / 2;
+    }
+  }
   if (wasPlaying) play();
 }
 previewTimeAt(0);
