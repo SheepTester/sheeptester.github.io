@@ -973,7 +973,7 @@ class TextTrack extends Track {
       {
         id: 'font',
         label: 'Font',
-        defaultVal: 'Open Sans'
+        defaultVal: 'Open Sans Condensed:300'
       },
       {
         id: 'content',
@@ -1017,11 +1017,24 @@ class TextTrack extends Track {
     super(sources.text, TextTrack.props);
     this.elem.classList.add('text');
     this.name.textContent = this.content;
+
+    const [font, weight = '400'] = this.font.split(':');
+    if (!fonts[font]) fonts[font] = {};
+    fonts[font][weight] = (fonts[font][weight] || 0) + 1;
+    updateFonts();
   }
 
   showChange(prop, value, isFinal) {
     let returnVal;
     switch (prop) {
+      case 'font':
+        const [oldFont, oldWeight = '400'] = this.font.split(':');
+        const [font, weight = '400'] = value.split(':');
+        fonts[oldFont][oldWeight]--;
+        if (!fonts[font]) fonts[font] = {};
+        fonts[font][weight] = (fonts[font][weight] || 0) + 1;
+        updateFonts();
+        break;
       case 'content':
         this.name.textContent = value;
         break;
@@ -1043,7 +1056,8 @@ class TextTrack extends Track {
     ctx.rotate(this.rotation * Math.PI / 180);
     ctx.scale(this.xScale, this.yScale);
     ctx.fillStyle = `hsla(${mod(this.hColour, 360)}, ${this.sColour}%, ${this.lColour}%, ${this.opacity / 100})`;
-    ctx.font = `50px "${this.font.replace(/"/g, '\\"')}"`;
+    const [font, weight = '400'] = this.font.split(':');
+    ctx.font = `${weight} 50px ${font.includes(' ') ? `"${font.replace(/"/g, '\\"')}"` : font}`;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.fillText(this.content, 0, 0);

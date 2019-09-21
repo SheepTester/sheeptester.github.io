@@ -188,3 +188,25 @@ function toSource(mime) {
       return AudioSource;
   }
 }
+
+const fontLink = Elem('link', {
+  rel: 'stylesheet'
+});
+document.head.appendChild(fontLink);
+const fonts = {};
+let prevHref;
+function updateFonts() {
+  let href = '';
+  Object.keys(fonts).forEach(font => {
+    let weightStr = '';
+    Object.keys(fonts[font]).forEach(weight => {
+      if (fonts[font][weight]) weightStr += ',' + weight;
+      else delete fonts[font][weight];
+    });
+    if (weightStr) href += `|${font.replace(/ /g, '+')}:${weightStr.slice(1)}`;
+    else delete fonts[font];
+  });
+  if (href && prevHref !== href) {
+    fontLink.href = 'https://fonts.googleapis.com/css?family=' + href.slice(1);
+  }
+}

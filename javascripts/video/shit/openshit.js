@@ -452,8 +452,7 @@ function saveProject() {
   zip.file('project.json', JSON.stringify({
     version: 1,
     entry: getEntry(),
-    src: Object.values(sources).filter(({file}) => file),
-    fonts: [] // TODO: store fonts too
+    src: Object.values(sources).filter(({file}) => file)
   }));
   Object.values(sources).forEach(({id, file}) => {
     if (file) zip.file(id, file);
@@ -482,13 +481,18 @@ loadBtn.addEventListener('change', e => {
             addBtn.disabled = true;
             for (const {id, type} of src) {
               const blob = new Blob([await zip.file(id).async('arraybuffer')], {type});
-              sources[id] = new (toSource(type))(blob, id);
-              addBtn.parentNode.insertBefore(sources[id].elem, addBtn);
-              await sources[id].ready;
+              if (sources[id]) {
+                console.warn('ignoring duplicate source ' + id);
+              } else {
+                sources[id] = new (toSource(type))(blob, id);
+                addBtn.parentNode.insertBefore(sources[id].elem, addBtn);
+                await sources[id].ready;
+              }
             }
             addBtn.disabled = false;
             setEntry(entry);
             loadBtn.value = null;
+            loadBtn.disabled = false;
           }))
       .catch(e => {
         console.log(e);
