@@ -113,19 +113,15 @@ class Track {
     }));
   }
 
-  dragStart({clientX, clientY, target}, offsets, dragImmediately = false) {
+  dragStart({clientX, clientY, target}, offsets, isNew = false) {
     if (Track.selected === this) {
       this.selectInit = {
         isSelecting: offsets,
         target
       };
     }
-    if (dragImmediately) {
-      this.startDragging(clientX, clientY, target, offsets);
-    } else {
-      this.dragStartData = [clientX, clientY, target, offsets];
-      this.dragging = false;
-    }
+    this.dragStartData = [clientX, clientY, target, offsets, isNew];
+    this.dragging = false;
   }
 
   startDragging(clientX, clientY, target, offsets) {
@@ -274,7 +270,9 @@ class Track {
     this.elem.style.top = clientY - this.dragOffsets[1] + 'px';
   }
 
-  dragEnd({clientX, clientY, shiftKey}) {
+  dragEnd({clientX, clientY, shiftKey}, continueDragging) {
+    // if `this.dragStartData` exists, then see if `isNew` is true, and if so return `this.dragStartData`
+    let isNew = this.dragStartData && this.dragStartData[4] && this.dragStartData;
     this.dragStartData = null;
     if (Track.selected === this) {
       const trackTop = this.elem.getBoundingClientRect().top;
@@ -358,9 +356,14 @@ class Track {
       return;
     }
     if (!this.dragging) {
-      if (Track.selected) Track.selected.unselected();
-      this.selected();
-      if (!shiftKey) setPreviewTime(Math.max((clientX + scrollX - LEFT) / scale, 0), false);
+      if (isNew) {
+        continueDragging();
+        this.startDragging(...isNew);
+      } else {
+        if (Track.selected) Track.selected.unselected();
+        this.selected();
+        if (!shiftKey) setPreviewTime(Math.max((clientX + scrollX - LEFT) / scale, 0), false);
+      }
       return;
     }
     this.jumpPoints = null;

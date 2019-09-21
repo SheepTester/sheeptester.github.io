@@ -12,8 +12,11 @@ document.addEventListener('mousemove', e => {
 });
 document.addEventListener('mouseup', e => {
   if (controller) {
-    if (controller[1]) controller[1](e);
+    let oldController = controller;
     controller = null;
+    if (oldController[1]) {
+      oldController[1](e, () => controller = oldController);
+    }
   }
 });
 
