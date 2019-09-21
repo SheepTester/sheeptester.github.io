@@ -143,6 +143,13 @@ class Layer {
       arr.push(track.start);
       arr.push(track.end);
       Object.values(track.keys).forEach(keys => arr.push(...keys.map(({time}) => track.start + time)));
+      if (track.trimEnd !== undefined) {
+        const start = Math.ceil(track.trimStart / track.source.length);
+        const end = Math.floor(track.trimEnd / track.source.length);
+        for (let i = start; i <= end; i++) {
+          arr.push(track.start + i * track.source.length - track.trimStart);
+        }
+      }
     });
     return arr;
   }

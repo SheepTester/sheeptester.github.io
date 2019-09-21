@@ -3,7 +3,6 @@
 - fix the layers not stretching all the way
 - if source/text button clicked, allow them to drag out a region in the track thing maybe
 - load fonts from Google Fonts
-- snap to loop borders
 - ~~changing ease function should change it for all selected keys~~
 - ~~snap to playhead as well?~~
 - ~~let user paste in their own cubic-bezier~~
@@ -21,6 +20,7 @@
 - ~~hold shift and drag to delete tracks in range~~
 - ~~undo/redo messages (ie store the type of action it was)~~
 - ~~scroll to playhead when using arrows if out of view~~
+- ~~snap to loop borders~~
 
 ## Other possibilities
 

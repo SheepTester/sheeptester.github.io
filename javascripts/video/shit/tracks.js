@@ -234,7 +234,6 @@ class Track {
     }
     if (this.trimming) {
       let cursor = (clientX + scrollX - LEFT) / scale;
-      // TODO: snapping for loop borders
       if (!shiftKey) cursor = Track.snapPoint(this.jumpPoints, cursor);
       if (cursor < this.trimMin) cursor = this.trimMin;
       else if (cursor > this.trimMax) cursor = this.trimMax;
