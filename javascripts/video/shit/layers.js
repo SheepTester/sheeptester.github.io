@@ -160,14 +160,15 @@ class Layer {
     updateLayers();
   }
 
-  addAudioTracksTo(stream) {
-    this.tracks.forEach(track => {
+  addAudioTracksTo(dest) {
+    return this.tracks.map(track => {
       if (track.media) {
-        const dest = audioContext.createMediaStreamDestination();
-        const source = audioContext.createMediaElementSource(track.media);
-        source.connect(dest);
-        source.connect(audioContext.destination);
-        dest.stream.getAudioTracks().forEach(track => stream.addTrack(track));
+        if (!track.audioSource) {
+          track.audioSource = audioContext.createMediaElementSource(track.media);
+          track.audioSource.connect(audioContext.destination);
+        }
+        track.audioSource.connect(dest);
+        return track.audioSource;
       }
     });
   }
@@ -366,7 +367,9 @@ function exportVideo() {
   document.body.classList.add('exporting');
 
   const stream = preview.captureStream();
-  layers.forEach(layer => layer.addAudioTracksTo(stream));
+  const dest = audioContext.createMediaStreamDestination();
+  const sources = layers.map(layer => layer.addAudioTracksTo(dest));
+  dest.stream.getAudioTracks().forEach(track => stream.addTrack(track));
   const recorder = new MediaRecorder(stream, {
     mimeType: usingExportType,
     videoBitsPerSecond: exportBitrate * 1000000
@@ -395,5 +398,8 @@ function exportVideo() {
     download = successful;
     recorder.stop();
     document.body.classList.remove('exporting');
+    sources.forEach(sources => sources.forEach(source => {
+      source.disconnect(dest);
+    }));
   });
 }

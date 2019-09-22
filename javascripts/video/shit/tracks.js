@@ -1027,6 +1027,18 @@ class TextTrack extends Track {
     updateFonts();
   }
 
+  setProps(values) {
+    if (values.font) {
+      const [oldFont, oldWeight = '400'] = this.font.split(':');
+      const [font, weight = '400'] = values.font.split(':');
+      fonts[oldFont][oldWeight]--;
+      if (!fonts[font]) fonts[font] = {};
+      fonts[font][weight] = (fonts[font][weight] || 0) + 1;
+      updateFonts();
+    }
+    super.setProps(values);
+  }
+
   showChange(prop, value, isFinal) {
     let returnVal;
     switch (prop) {
@@ -1065,6 +1077,13 @@ class TextTrack extends Track {
     ctx.textBaseline = 'middle';
     ctx.fillText(this.content, 0, 0);
     ctx.restore();
+  }
+
+  remove(reason) {
+    super.remove(reason);
+    const [font, weight = '400'] = this.font.split(':');
+    fonts[font][weight]--;
+    updateFonts();
   }
 
 }
