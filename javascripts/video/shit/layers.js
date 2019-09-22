@@ -399,7 +399,7 @@ function exportVideo() {
     recorder.stop();
     document.body.classList.remove('exporting');
     sources.forEach(sources => sources.forEach(source => {
-      source.disconnect(dest);
+      if (source) source.disconnect(dest);
     }));
   });
 }
