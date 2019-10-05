@@ -59,6 +59,7 @@ document.addEventListener('DOMContentLoaded', e => {
         titleElem.textContent = defaultTitle;
         descElem.textContent = defaultDesc;
         openBtn.style.backgroundImage = null;
+        openBtn.href = '#!';
       } else {
         if (selected) {
           selected.classList.remove('selected');
@@ -69,6 +70,7 @@ document.addEventListener('DOMContentLoaded', e => {
         titleElem.textContent = title;
         descElem.textContent = desc;
         openBtn.style.backgroundImage = `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(${encodeURI(link.dataset.image)})`;
+        openBtn.href = link.href;
       }
       e.preventDefault();
     });
