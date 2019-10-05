@@ -44,12 +44,12 @@
     <script src="/sheep3.js"></script>
     <script src="/main.js"></script>
   </head>
-  <body class="list-view tabkeyfocus">
+  <body class="grid-view tabkeyfocus">
     <!-- <script>document.body.classList.add('blank');</script> -->
 
     <div class="pane">
       <div class="about">
-        <div class="title">What is this</div>
+        <div class="title">What is this<button type="button" aria-label="close" id="close-about" disabled></button></div>
         <div class="description">A high school student graduating in 2021 who finds <strong id="happy"><span>s</span><span>h</span><span>e</span><span>e</span><span>p</span></strong>, front-end web development, and constructed languages interesting.</div>
         <div class="socials">
           <a class="social" id="github" href="https://github.com/SheepTester"><span class="ball">gh</span></a>
@@ -84,8 +84,9 @@
         </p>
       </div>
       <div class="link-info">
-        <div class="title">Hmm!</div>
-        <div class="description">Hmm</div>
+        <div class="title" id="title">What is this</div>
+        <div class="description" id="desc">Click "Open" to entertain yourself with my characteristics.</div>
+        <a href="#!" class="open" id="open"><span>Open</span></a>
       </div>
     </div>
 
@@ -173,7 +174,7 @@
         <span class="desc">A proof-of-concept connect 3 game.</span>
         <span class="tags"><span class="game"></span></span>
       </a>
-      <a href="/gunn-student-sim/" data-image="img/gunn%20student%20simulator-smaller.png">
+      <a href="/gunn-student-sim/" data-image="img/gunn student simulator-smaller.png">
         <span class="name">Gunn student simulator</span>
         <span class="desc">A game satirizing the lives of students at my school.</span>
         <span class="tags"><span class="game"></span><span class="school"></span></span>
@@ -196,7 +197,7 @@
 
       <!-- DIRECTORIES -->
       <a href="/javascripts/" data-image="img/js-smaller.png">
-        <span class="name">Javascripts</span>
+        <span class="name">Java&shy;scripts</span>
         <span class="desc">Things I made.</span>
         <span class="tags"><span class="directory"></span></span>
       </a>
@@ -253,12 +254,12 @@
         <span class="tags"><span class="school"></span></span>
       </a>
       <a href="/happynumbers/sieve/" data-image="img/sieve-smaller.png">
-        <span class="name">Sieve of Eranthoses</span>
+        <span class="name">Sieve of Eran&shy;thoses</span>
         <span class="desc">A prime number and factor finder.</span>
         <span class="tags"><span class="utility"></span><span class="school"></span></span>
       </a>
       <a href="/animations/" data-image="img/anima.png">
-        <span class="name">Animations</span>
+        <span class="name">An&shy;i&shy;ma&shy;tions</span>
         <span class="desc">Some CSS-based animations.</span>
         <span class="tags"><span class="visual"></span><span class="directory"></span></span>
       </a>

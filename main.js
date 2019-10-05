@@ -32,7 +32,15 @@ if ('serviceWorker' in navigator) {
 }
 
 document.addEventListener('DOMContentLoaded', e => {
-  return;
+  // return;
+  const closeAboutBtn = document.getElementById('close-about');
+  const titleElem = document.getElementById('title');
+  const descElem = document.getElementById('desc');
+  const openBtn = document.getElementById('open');
+  const defaultTitle = titleElem.textContent;
+  const defaultDesc = descElem.textContent;
+  let selected = false;
+
   for (const link of document.getElementById('links').children) {
     const image = document.createElement('img');
     image.addEventListener('load', e => {
@@ -40,7 +48,42 @@ document.addEventListener('DOMContentLoaded', e => {
     });
     image.src = link.dataset.image;
     link.appendChild(image);
+
+    const title = link.querySelector('.name').textContent;
+    const desc = link.querySelector('.desc').textContent;
+    link.addEventListener('click', e => {
+      if (link.classList.contains('selected')) {
+        selected = false;
+        link.classList.remove('selected');
+        document.body.classList.remove('selected-link');
+        titleElem.textContent = defaultTitle;
+        descElem.textContent = defaultDesc;
+        openBtn.style.backgroundImage = null;
+      } else {
+        if (selected) {
+          selected.classList.remove('selected');
+        }
+        selected = link;
+        link.classList.add('selected');
+        document.body.classList.add('selected-link');
+        titleElem.textContent = title;
+        descElem.textContent = desc;
+        openBtn.style.backgroundImage = `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(${encodeURI(link.dataset.image)})`;
+      }
+      e.preventDefault();
+    });
   }
+
+  openBtn.addEventListener('click', e => {
+    if (!selected) {
+      document.body.classList.add('show-about');
+      closeAboutBtn.disabled = false;
+    }
+  });
+  closeAboutBtn.addEventListener('click', e => {
+    document.body.classList.remove('show-about');
+    closeAboutBtn.disabled = true;
+  });
   return;
   // MAKE SHEEP APPEAR
   window.requestAnimationFrame(function() {
