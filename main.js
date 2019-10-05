@@ -106,6 +106,7 @@ document.addEventListener('DOMContentLoaded', e => {
     const title = link.querySelector('.name').textContent;
     const desc = link.querySelector('.desc').textContent;
     link.addEventListener('click', e => {
+      if (e.shiftKey || e.ctrlKey || e.altKey || e.metaKey || e.which !== 1) return;
       if (link.classList.contains('selected')) {
         selected = null;
         link.classList.remove('selected');
