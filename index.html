@@ -44,12 +44,40 @@
     <script src="/sheep3.js"></script>
     <script src="/main.js"></script>
   </head>
-  <body class="grid-view tabkeyfocus">
-    <!-- <script>document.body.classList.add('blank');</script> -->
+  <body class="list-view tabkeyfocus maybe-old-js">
+    <script type="text/javascript">
+      (() => {
+        const params = new URL(window.location).searchParams;
+        if (params.get('from') && params.get('from').startsWith('sheep')) {
+          window.history.replaceState({}, '', '/');
+          document.body.classList.add('reveal-sheep-immediately');
+        } else {
+          document.body.classList.add('reveal-sheep');
+        }
+        document.body.classList.add('blank');
+
+        document.body.classList.remove('maybe-old-js');
+
+        if (!localStorage.getItem('preferences') || !localStorage.getItem('preferences').includes('list')) {
+          document.body.classList.remove('list-view');
+          document.body.classList.add('grid-view');
+        }
+      })();
+    </script>
+
+    <noscript>
+      <style>
+        .maybe-old-js .old-js {
+          display: none;
+        }
+      </style>
+      <div class="notice">The rest of this site requires JavaScript. Please turn it on.</div>
+    </noscript>
+    <div class="old-js notice">Your stubbornness in not updating your browser will not be welcome on this site.</div>
 
     <div class="pane">
       <div class="about">
-        <div class="title">What is this<button type="button" aria-label="close" id="close-about" disabled></button></div>
+        <div class="title">What is this?<button type="button" aria-label="close" id="close-about" disabled></button></div>
         <div class="description">A high school student graduating in 2021 who finds <strong id="happy"><span>s</span><span>h</span><span>e</span><span>e</span><span>p</span></strong>, front-end web development, and constructed languages interesting.</div>
         <div class="socials">
           <a class="social" id="github" href="https://github.com/SheepTester"><span class="ball">gh</span></a>
@@ -57,7 +85,7 @@
           <a class="social" id="instagram" href="https://www.instagram.com/sheeptester/"><span class="ball">in</span></a>
           <a class="social" id="reddit" href="https://www.reddit.com/user/Sheep_Tester"><span class="ball">rd</span></a>
           <a class="social" id="scratch" href="https://scratch.mit.edu/users/Sheep_maker/"><span class="ball">sc</span></a>
-          <a class="social" id="youtube" href="https://www.youtube.com/channel/UCI8DtrWZvGNsXxUNkW53FAg">yt<span class="ball"></span></a>
+          <a class="social" id="youtube" href="https://www.youtube.com/c/SeanYentheHumansperson">yt<span class="ball"></span></a>
           <a class="social" id="jsfiddle" href="https://jsfiddle.net/user/SheepTester/"><span class="ball">js</span></a>
           <a class="social" id="twitch" href="https://www.twitch.tv/sheeptester"><span class="ball">tt</span></a>
           <a class="social" id="google" href="https://plus.google.com/u/0/+SeanYentheHumansperson"><span class="ball">gg</span></a>
@@ -79,18 +107,16 @@
         <p class="usernames">
           <span><span class="mini-social" id="minecraft" title="Minecraft"><span class="ball">mc </span></span>SeanICUP</span>
           <span><span class="mini-social" id="discord" title="Discord"><span class="ball">dc </span></span>Sean#2422</span>
-          <span><span class="mini-social" id="gmail" title="Gmail"><span class="ball">em </span></span><span id="email">:)</span></span>
+          <span><span class="mini-social" id="gmail" title="Gmail"><span class="ball">gm </span></span><span id="email">:)</span></span>
           <span><span class="mini-social" id="outlook" title="Outlook"><span class="ball">ol </span></span>seanthesheep22</span>
         </p>
       </div>
       <div class="link-info">
-        <div class="title" id="title">What is this</div>
-        <div class="description" id="desc">Click "Open" to entertain yourself with my characteristics.</div>
+        <div class="title" id="title">What is this?</div>
+        <div class="description" id="desc">Click/tap "Open" for more words.</div>
         <a href="#!" class="open" id="open"><span>Open</span></a>
       </div>
     </div>
-
-    <noscript>The rest of this site requires JavaScript. Please turn it on.</noscript>
 
     <div class="tag-key">
       <span class="tag"><span class="recommend"></span> Commendable</span>
@@ -101,252 +127,253 @@
       <span class="tag"><span class="school"></span> For school</span>
       <span class="tag"><span class="incomplete"></span> Incomplete</span>
       <span class="tag"><span class="unintuitive"></span> Unintuitive</span>
+      <label class="tag switch-mode"><button type="button" class="toggle-switch" id="toggle-view"></button> List view?</label>
     </div>
 
     <div class="list" id="links">
       <!-- Hierarchy: game, recommend, utility, visual, directory, school, incomplete, unintuitive -->
       <a href="/all/" data-image="img/all2-smaller.png">
-        <span class="name">Almost everything</span>
+        <strong class="name">Almost everything</strong>
         <span class="desc">A sitemap of effectively all the files on this site.</span>
         <span class="tags"><span class="directory"></span></span>
       </a>
 
       <!-- FEATURED -->
       <a href="/platformre/" data-image="img/plat.svg">
-        <span class="name">Platformre</span>
+        <strong class="name">Platformre</strong>
         <span class="desc">A tile-based platformer with a random level generator.</span>
         <span class="tags"><span class="game"></span><span class="recommend"></span></span>
       </a>
       <a href="/platformre/a/" data-image="img/aplat-smaller.png">
-        <span class="name">A Platformer</span>
+        <strong class="name">A Platformer</strong>
         <span class="desc">A series of platformer levels translated from my Scratch project.</span>
         <span class="tags"><span class="game"></span><span class="recommend"></span></span>
       </a>
       <a href="https://orbiit.github.io/gunn-web-app/" data-image="img/ugwa-smaller.png">
-        <span class="name">Unofficial Gunn Web App</span>
+        <strong class="name">Unofficial Gunn Web App</strong>
         <span class="desc">A web app that displays the schedule for my school.</span>
         <span class="tags"><span class="recommend"></span><span class="utility"></span><span class="school"></span></span>
       </a>
       <a href="/javascripts/shepform/colour.html" data-image="img/colourpick-smaller.png">
-        <span class="name">Color input II</span>
+        <strong class="name">Color input II</strong>
         <span class="desc">A colour input translated from a Scratch project.</span>
         <span class="tags"><span class="recommend"></span><span class="utility"></span></span>
       </a>
 
       <!-- GAMES -->
       <a href="/platformre/maker/" data-image="img/platmakre-smaller.png">
-        <span class="name">Level editor</span>
+        <strong class="name">Level editor</strong>
         <span class="desc">A level creator and editor for the Platformre.</span>
         <span class="tags"><span class="game"></span><span class="utility"></span></span>
       </a>
       <a href="/platformre/nova/penland/" data-image="img/newpenland.png">
-        <span class="name">Penland Nova</span>
+        <strong class="name">Penland Nova</strong>
         <span class="desc">A tile-based 2D world simulator.</span>
         <span class="tags"><span class="game"></span><span class="incomplete"></span><span class="unintuitive"></span></span>
       </a>
       <a href="/gamepro5/minigames/turkeys/" data-image="img/turkeys.png">
-        <span class="name">Turkeys</span>
+        <strong class="name">Turkeys</strong>
         <span class="desc">A turkey collection game.</span>
         <span class="tags"><span class="game"></span><span class="incomplete"></span></span>
       </a>
       <a href="/telegraph/" data-image="img/tele-smaller.png">
-        <span class="name">Telegraph</span>
+        <strong class="name">Telegraph</strong>
         <span class="desc">A morse code game for a history project.</span>
         <span class="tags"><span class="game"></span><span class="school"></span></span>
       </a>
       <a href="/javascripts/clicker" data-image="img/click-smaller.png">
-        <span class="name">Clicker Game</span>
+        <strong class="name">Clicker Game</strong>
         <span class="desc">A basic clicker game.</span>
         <span class="tags"><span class="game"></span></span>
       </a>
       <a href="/gamepro5/minigames/dodgedots.html" data-image="img/reds-smaller.png">
-        <span class="name">Dodge dots game thing</span>
+        <strong class="name">Dodge dots game thing</strong>
         <span class="desc">A minimalist dodging game translated from a Scratch project.</span>
         <span class="tags"><span class="game"></span></span>
       </a>
       <a href="/gamepro5/minigames/color.html" data-image="img/color.png">
-        <span class="name">Color fight thing</span>
+        <strong class="name">Color fight thing</strong>
         <span class="desc">A simple two-player game based on a Scratch project.</span>
         <span class="tags"><span class="game"></span></span>
       </a>
       <a href="https://orbiit.github.io/gunn-web-app/games/connect4.html" data-image="img/connect4-smaller.png">
-        <span class="name">Connect 3</span>
+        <strong class="name">Connect 3</strong>
         <span class="desc">A proof-of-concept connect 3 game.</span>
         <span class="tags"><span class="game"></span></span>
       </a>
       <a href="/gunn-student-sim/" data-image="img/gunn student simulator-smaller.png">
-        <span class="name">Gunn student simulator</span>
+        <strong class="name">Gunn student simulator</strong>
         <span class="desc">A game satirizing the lives of students at my school.</span>
         <span class="tags"><span class="game"></span><span class="school"></span></span>
       </a>
       <a href="/fun-gunn-run/" data-image="img/fgr-smaller.png">
-        <span class="name">"Fun" Gunn Run</span>
+        <strong class="name">"Fun" Gunn Run</strong>
         <span class="desc">A Temple Run clone set at my school.</span>
         <span class="tags"><span class="game"></span><span class="school"></span></span>
       </a>
       <a href="/thingkingland/bookmarklets/theHouse.html" data-image="img/house-smaller.png">
-        <span class="name">The House</span>
+        <strong class="name">The House</strong>
         <span class="desc">A choose-your-own adventure game.</span>
         <span class="tags"><span class="game"></span></span>
       </a>
       <a href="/thingkingland/the-hotel/" data-image="img/hotel-smaller.png">
-        <span class="name">The Hotel</span>
+        <strong class="name">The Hotel</strong>
         <span class="desc">The sequel to the House.</span>
         <span class="tags"><span class="game"></span></span></span>
       </a>
 
       <!-- DIRECTORIES -->
       <a href="/javascripts/" data-image="img/js-smaller.png">
-        <span class="name">Java&shy;scripts</span>
+        <strong class="name">Java&shy;scripts</strong>
         <span class="desc">Things I made.</span>
         <span class="tags"><span class="directory"></span></span>
       </a>
       <a href="/words-go-here/misc/" data-image="img/misc-smaller.png">
-        <span class="name">Mis&shy;cel&shy;la&shy;ne&shy;ous</span>
+        <strong class="name">Mis&shy;cel&shy;la&shy;ne&shy;ous</strong>
         <span class="desc">Things I made and didn't put in JavaScripts for some reason.</span>
         <span class="tags"><span class="directory"></span></span>
       </a>
       <a href="/thingkingland/sitemap.html" data-image="img/thingkingland-smaller.png">
-        <span class="name">Thing&shy;king&shy;land</span>
+        <strong class="name">Thing&shy;king&shy;land</strong>
         <span class="desc">The pages I made while learning HTML/CSS/JS.</span>
         <span class="tags"><span class="directory"></span></span>
       </a>
       <a href="/javascripts/particles/" data-image="img/particles-smaller.png">
-        <span class="name">Particles</span>
+        <strong class="name">Particles</strong>
         <span class="desc">Some cool particle effects.</span>
         <span class="tags"><span class="visual"></span><span class="directory"></span></span>
       </a>
       <a href="/gamepro5/minigames/" data-image="img/minigames-smaller.png">
-        <span class="name">Minigames</span>
+        <strong class="name">Minigames</strong>
         <span class="desc">Simple but usually boring little game ideas.</span>
         <span class="tags"><span class="game"></span><span class="directory"></span></span>
       </a>
       <a href="/hello-world/" data-image="img/helloworlddir-smaller.png">
-        <span class="name">Chrome&shy;book creations</span>
+        <strong class="name">Chrome&shy;book creations</strong>
         <span class="desc">HTML files I made on and uploaded from my Chromebook.</span>
         <span class="tags"><span class="directory"></span></span>
       </a>
 
       <!-- OTHER THINGS -->
       <a href="/trumpdays/" data-image="img/trumpdays-smaller.png">
-        <span class="name">Trump days</span>
+        <strong class="name">Trump days</strong>
         <span class="desc">A countdown for Trump's first term.</span>
         <span class="tags"><span class="visual"></span></span>
       </a>
       <a href="/javascripts/audio-editor/" data-image="img/audio-editor-smaller.png">
-        <span class="name">Audio Editor</span>
+        <strong class="name">Audio Editor</strong>
         <span class="desc">An audio editor based on stolen code from Scratch.</span>
         <span class="tags"><span class="utility"></span></span>
       </a>
       <a href="/hello-world/drills.html" data-image="img/drills-smaller.png">
-        <span class="name">Trig Drill Generator</span>
+        <strong class="name">Trig Drill Generator</strong>
         <span class="desc">A generator of sine and cosine problems with basic angles.</span>
         <span class="tags"><span class="utility"></span><span class="school"></span></span>
       </a>
       <a href="/roots/" data-image="img/roots-smaller.png">
-        <span class="name">Roots and Affixes</span>
+        <strong class="name">Roots and Affixes</strong>
         <span class="desc">Some Greek and Latin roots.</span>
         <span class="tags"><span class="school"></span><span class="incomplete"></span></span>
       </a>
       <a href="/happynumbers/" data-image="img/mems-smaller.png">
-        <span class="name">Happy Number Finder</span>
+        <strong class="name">Happy Number Finder</strong>
         <span class="desc">A calculator for happy numbers.</span>
         <span class="tags"><span class="school"></span></span>
       </a>
       <a href="/happynumbers/sieve/" data-image="img/sieve-smaller.png">
-        <span class="name">Sieve of Eran&shy;thoses</span>
+        <strong class="name">Sieve of Eran&shy;thoses</strong>
         <span class="desc">A prime number and factor finder.</span>
         <span class="tags"><span class="utility"></span><span class="school"></span></span>
       </a>
       <a href="/animations/" data-image="img/anima.png">
-        <span class="name">An&shy;i&shy;ma&shy;tions</span>
+        <strong class="name">An&shy;i&shy;ma&shy;tions</strong>
         <span class="desc">Some CSS-based animations.</span>
         <span class="tags"><span class="visual"></span><span class="directory"></span></span>
       </a>
       <a href="/sentence/" data-image="img/sentence-smaller.png">
-        <span class="name">Sentence Generator</span>
+        <strong class="name">Sentence Generator</strong>
         <span class="desc">A primitive and gibberish sentence generator.</span>
         <span class="tags"><span class="visual"></span></span>
       </a>
       <a href="/contextmenutest.html" data-image="img/rightclick-smaller.png">
-        <span class="name">Context Menu Test</span>
+        <strong class="name">Context Menu Test</strong>
         <span class="desc">An infuriating custom context menu design.</span>
         <span class="tags"><span class="visual"></span></span>
       </a>
       <a href="/longer-tweets/" data-image="img/longtweets-smaller.png">
-        <span class="name">Longer Tweets</span>
+        <strong class="name">Longer Tweets</strong>
         <span class="desc">A blog because every website owner has one.</span>
         <span class="tags"><span class="directory"></span></span>
       </a>
       <a href="/themes/billy-goat/index-dark.html" data-image="img/billy-goat-smaller.png">
-        <span class="name">Billy Goat Blog Theme</span>
+        <strong class="name">Billy Goat Blog Theme</strong>
         <span class="desc">A blog website design.</span>
         <span class="tags"><span class="visual"></span></span>
       </a>
       <a href="/javascripts/carecalc.html" data-image="img/carecalc-smaller.png">
-        <span class="name">Grade Care Calculator</span>
+        <strong class="name">Grade Care Calculator</strong>
         <span class="desc">A minimum necessary grade calculator.</span>
         <span class="tags"><span class="utility"></span><span class="school"></span></span>
       </a>
       <a href="/words-go-here/f-word/" data-image="img/fword-smaller.png">
-        <span class="name">F Word</span>
+        <strong class="name">F Word</strong>
         <span class="desc">A primitive social medium based on Firebase, of course.</span>
         <span class="tags"><span class="utility"></span></span>
       </a>
 
       <!-- CONFUSING THINGS -->
       <a href="/platformre/nova/paint.html" data-image="img/mspaint-smaller.png">
-        <span class="name">Platformer Paint</span>
+        <strong class="name">Platformer Paint</strong>
         <span class="desc">Two-player Splatoon using the Platformre engine.</span>
         <span class="tags"><span class="game"></span></span>
       </a>
       <a href="/olamreee/" data-image="img/olamreee-smaller.png">
-        <span class="name">OlamREEE</span>
+        <strong class="name">OlamREEE</strong>
         <span class="desc">Digital cards for fictional elements for a school project.</span>
         <span class="tags"><span class="utility"></span><span class="school"></span></span>
       </a>
       <a href="/javascripts/imagetoscheme.html" data-image="img/scheme-smaller.png">
-        <span class="name">Image to ASCII</span>
+        <strong class="name">Image to ASCII</strong>
         <span class="desc">A converter based on the average lightness of pixels.</span>
         <span class="tags"><span class="utility"></span></span>
       </a>
       <a href="/javascripts/cyrillic-finder.html" data-image="img/cyrillic-smaller.png">
-        <span class="name">Special character finder</span>
+        <strong class="name">Special character finder</strong>
         <span class="desc">A detector of non-US-keyboard characters.</span>
         <span class="tags"><span class="utility"></span></span>
       </a>
       <a href="/javascripts/terminal/" data-image="img/terminal-smaller.png">
-        <span class="name">Terminal</span>
+        <strong class="name">Terminal</strong>
         <span class="desc">A terminal design with primitive commands.</span>
         <span class="tags"><span class="visual"></span></span>
       </a>
       <a href="?penland" data-image="img/penland-smaller.png">
-        <span class="name">Penland</span>
+        <strong class="name">Penland</strong>
         <span class="desc">A 2D sandbox game translated from my Scratch project.</span>
         <span class="tags"><span class="game"></span><span class="unintuitive"></span></span>
       </a>
       <a href="/javascripts/mutate.html" data-image="img/life.png">
-        <span class="name">Cell Simulation</span>
+        <strong class="name">Cell Simulation</strong>
         <span class="desc">A cellular automata attempting to simulate evolution.</span>
         <span class="tags"><span class="visual"></span></span>
       </a>
       <a href="/mars/" data-image="img/mars-smaller.png">
-        <span class="name">Mars</span>
+        <strong class="name">Mars</strong>
         <span class="desc">An attempt at an incremental game.</span>
         <span class="tags"><span class="game"></span><span class="incomplete"></span></span>
       </a>
       <a href="/ovinetopia/" data-image="img/ovinetopia-smaller.png">
-        <span class="name">Ovinetopia</span>
+        <strong class="name">Ovinetopia</strong>
         <span class="desc">Another attempt at an incremental game.</span>
         <span class="tags"><span class="visual"></span><span class="incomplete"></span></span>
       </a>
       <a href="/eyo-dictionary/" data-image="img/eyo-smaller.png">
-        <span class="name">Eyo Dictionary</span>
+        <strong class="name">Eyo Dictionary</strong>
         <span class="desc">A searchable list of words in my first constructed language.</span>
         <span class="tags"><span class="utility"></span><span class="unintuitive"></span></span>
       </a>
       <a href="/eyo-dictionary/validator.html" data-image="img/die-smaller.png">
-        <span class="name">Eyo Word Validator</span>
+        <strong class="name">Eyo Word Validator</strong>
         <span class="desc">A validator for the minimalist alphabet in my first constructed language.</span>
         <span class="tags"><span class="utility"></span><span class="unintuitive"></span></span>
       </a>

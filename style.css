@@ -3,7 +3,7 @@ body {
   font-size: 0;
   color: rgba(255, 255, 255, 0.6);
   font-family: 'Roboto Condensed', sans-serif;
-  background-color: black;
+  background-color: #272f2f;
   margin-right: 380px;
 }
 a {
@@ -11,8 +11,27 @@ a {
   text-decoration: inherit;
   -webkit-tap-highlight-color: transparent;
 }
+strong {
+  font-weight: normal;
+}
 :focus {
   outline: none;
+}
+::selection {
+  background: rgba(0, 188, 212, 0.4);
+}
+
+.notice {
+  font-size: 24px;
+  background-color: #f44336;
+  color: white;
+  padding: 20px;
+}
+.old-js {
+  display: none;
+}
+.maybe-old-js .old-js {
+  display: block;
 }
 
 .pane {
@@ -214,11 +233,55 @@ a {
   margin-bottom: 5px;
   margin-right: 5px;
 }
+.switch-mode {
+  cursor: pointer;
+}
+.maybe-old-js .switch-mode {
+  display: none;
+}
+.switch-mode button {
+  -webkit-appearance: none;
+  border: 2px solid white;
+  background: none;
+  -webkit-tap-highlight-color: transparent;
+  width: 18px;
+  height: 12px;
+  border-radius: 24px;
+  vertical-align: middle;
+  position: relative;
+  margin-right: 5px;
+  transition: box-shadow .2s;
+  cursor: pointer;
+}
+.tabkeyfocus .switch-mode button:focus {
+  box-shadow: 0 0 0 5px rgba(79, 161, 167, 0.3);
+}
+.switch-mode button::after {
+  content: '';
+  display: block;
+  width: 4px;
+  height: 4px;
+  margin: 2px;
+  background-color: white;
+  border-radius: 50%;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+.grid-view .switch-mode button {
+  opacity: 0.7;
+}
+.grid-view .switch-mode button::after {
+  left: 0;
+  right: auto;
+}
 
 .grid-view .list a {
   position: relative;
   display: inline-block;
   width: 100%;
+  background-color: #3a5052;
+  z-index: 0;
 }
 @media (min-width: 760px) { .grid-view .list a { width: 50%; } }
 @media (min-width: 1000px) { .grid-view .list a { width: calc(100% / 3); } }
@@ -236,6 +299,7 @@ a {
   position: absolute;
 }
 .grid-view .name {
+  position: absolute;
   top: 0;
   left: 0;
   right: 0;
@@ -297,6 +361,7 @@ a {
 .list-view .name {
   font-size: 24px;
   display: block;
+  margin-right: 90px;
 }
 .list-view .desc {
   font-size: 16px;
@@ -436,7 +501,6 @@ a {
   background-color: black;
   background-image: none;
   pointer-events: none;
-  opacity: 0;
   overflow: hidden;
 }
 .blank sheep-btn {
@@ -452,29 +516,42 @@ a {
   transition: all .5s, background-position 0s;
 }
 .reveal-sheep {
-  transition: opacity .5s;
-  opacity: 1;
+  animation: fade-in 1.5s cubic-bezier(1, 0, 0.25, 1);
 }
-.reveal-sheep-immediately {
-  opacity: 1;
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    background-color: black;
+    pointer-events: none;
+  }
+  to {
+    opacity: 1;
+    background-color: black;
+    pointer-events: none;
+  }
+}
+.reveal-sheep sheep-btn {
+  animation: pop-in 1.5s cubic-bezier(0.25, 0.1, 0.2, 1.4) forwards, minimize .5s 2s forwards;
+}
+@keyframes pop-in {
+  from { background-size: 0; }
+  to { background-size: 70px; }
+}
+/* the pop-in animation overrides the background-size transition, so here's this hack */
+@keyframes minimize {
+  from { background-size: 70px; }
+  to { background-size: 45px; }
+}
+.sheep-minimize {
+  overflow: hidden;
 }
 .sheep-minimize sheep-btn {
   transition: all .5s;
-  transition-delay: .5s;
+  transition-delay: 2s;
   pointer-events: none;
 }
-
-noscript {
-  font-size: 24px;
-  background-color: #f44336;
-  color: white;
-  padding: 20px;
-  display: block;
-}
-
-/* SHADY DEFAULT CHANGING */
-::selection {
-  background: rgba(0, 188, 212, 0.4);
+.sheep-minimize.reveal-sheep-immediately sheep-btn {
+  transition-delay: .5s;
 }
 
 sarcasm {

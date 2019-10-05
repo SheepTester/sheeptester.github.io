@@ -1,10 +1,3 @@
-// detect if user is from l'sxafeto (TODO: use CSS and #from-sheep)
-let revealClass = 'reveal-sheep';
-if (window.location.search.slice(0, 11) === '?from=sheep') {
-  window.history.replaceState({}, '', '/');
-  revealClass = 'reveal-sheep-immediately';
-}
-
 // TAB KEY FOCUS
 let tabFocus = false;
 document.addEventListener('keydown', e => {
@@ -32,14 +25,75 @@ if ('serviceWorker' in navigator) {
 }
 
 document.addEventListener('DOMContentLoaded', e => {
-  // return;
+  window.requestAnimationFrame(() => {
+    document.body.classList.add('sheep-minimize');
+    document.body.classList.remove('blank');
+    document.body.addEventListener('transitionend', function transitionend(e) {
+      if (e.target.tagName === 'SHEEP-BTN') {
+        document.body.classList.remove('sheep-minimize');
+        document.body.classList.remove('reveal-sheep');
+        document.body.removeEventListener('transitionend', transitionend);
+      }
+    });
+  });
+
+  const sheepLetters = document.getElementById('happy');
+  const letters = [{pos: 0, vel: 0}, {pos: 0, vel: 0}, {pos: 0, vel: 0}, {pos: 0, vel: 0}, {pos: 0, vel: 0}];
+  let animating = false;
+  function bounceLetters(args) {
+    let stop = true;
+    for (let i = 0; i < 5; i++) {
+      const letter = letters[i];
+      letter.vel = -letter.pos / 10 + letter.vel * 0.9;
+      letter.pos += letter.vel;
+      sheepLetters.children[i].style.transform = `translateY(${letter.pos}px)`;
+      if (Math.abs(letter.vel) > 0.01 || Math.abs(letter.pos) > 0.01) stop = false;
+    }
+    if (stop) {
+      animating = false;
+      for (let i = 0; i < 5; i++) {
+        sheepLetters.children[i].style.transform = null;
+      }
+    } else {
+      window.requestAnimationFrame(bounceLetters);
+    }
+  }
+  sheepLetters.addEventListener('mouseenter', e => {
+    sheepLetters.click();
+  });
+  sheepLetters.addEventListener('click', e => {
+    for (const letter of letters) {
+      letter.vel += (Math.random() < 0.5 ? 1 : -1) * (Math.random() * 5 + 4);
+    }
+    if (!animating) {
+      animating = true;
+      bounceLetters();
+    }
+  });
+
+  document.getElementById('toggle-view').addEventListener('click', e => {
+    localStorage.setItem('preferences', document.body.classList.contains('grid-view') ? 'list' : 'grid');
+    window.location.reload();
+  });
+
+  if (!document.body.classList.contains('grid-view')) return;
+  const tags = {
+    game: 'Game',
+    recommend: 'Commendable',
+    utility: 'Utility',
+    visual: 'Visually pleasing',
+    directory: 'Directory',
+    school: 'For school',
+    incomplete: 'Incomplete',
+    unintuitive: 'Unintuitive'
+  };
   const closeAboutBtn = document.getElementById('close-about');
   const titleElem = document.getElementById('title');
   const descElem = document.getElementById('desc');
   const openBtn = document.getElementById('open');
   const defaultTitle = titleElem.textContent;
   const defaultDesc = descElem.textContent;
-  let selected = false;
+  let selected = null;
 
   for (const link of document.getElementById('links').children) {
     const image = document.createElement('img');
@@ -53,7 +107,7 @@ document.addEventListener('DOMContentLoaded', e => {
     const desc = link.querySelector('.desc').textContent;
     link.addEventListener('click', e => {
       if (link.classList.contains('selected')) {
-        selected = false;
+        selected = null;
         link.classList.remove('selected');
         document.body.classList.remove('selected-link');
         titleElem.textContent = defaultTitle;
@@ -74,100 +128,21 @@ document.addEventListener('DOMContentLoaded', e => {
       }
       e.preventDefault();
     });
+
+    for (const tag of link.querySelector('.tags').children) {
+      tag.title = tags[tag.className];
+    }
   }
 
   openBtn.addEventListener('click', e => {
     if (!selected) {
       document.body.classList.add('show-about');
       closeAboutBtn.disabled = false;
+      e.preventDefault();
     }
   });
   closeAboutBtn.addEventListener('click', e => {
     document.body.classList.remove('show-about');
     closeAboutBtn.disabled = true;
-  });
-  return;
-  // MAKE SHEEP APPEAR
-  window.requestAnimationFrame(function() {
-    document.body.classList.add(revealClass);
-    document.body.classList.add('sheep-minimize');
-  });
-
-  // MAKE GRID (as opposed to no-js list)
-  document.body.classList.remove('list-view');
-  var places = document.querySelectorAll('.places a');
-  for (var i = 0; i < places.length; i++) {
-    places[i].className = 'place';
-    var wrapper = document.createElement('span');
-    wrapper.className = 'place-box';
-    var name = document.createElement('span');
-    name.className = 'place-name';
-    name.textContent = places[i].textContent;
-    wrapper.appendChild(name);
-    var image = document.createElement('img');
-    image.src = places[i].dataset.image;
-    wrapper.appendChild(image);
-    places[i].textContent = '';
-    places[i].appendChild(wrapper);
-  }
-
-  // UPDATE AGE DISPLAY
-  var BIRTHDAY = 1049933280000;
-  var MS_PER_YEAR = 365.25 * 24 * 60 * 60 * 1000;
-  var msAge = document.getElementById('milliage');
-  var yearAge = document.getElementById('yage');
-  function displayAge() {
-    var age = new Date().getTime() - BIRTHDAY;
-    msAge.textContent = age;
-    var str = (age / MS_PER_YEAR).toString();
-    while (str.length < 18) str += '0';
-    yearAge.textContent = str;
-    window.requestAnimationFrame(displayAge);
-  }
-  displayAge();
-
-  var sheepLetters = document.getElementById('happy');
-  var varters = [{pos: 0, vel: 0}, {pos: 0, vel: 0}, {pos: 0, vel: 0}, {pos: 0, vel: 0}, {pos: 0, vel: 0}];
-  var animating = false;
-  function bounceLetters(args) {
-    var stop = true;
-    for (var i = 0; i < 5; i++) {
-      varters[i].vel = -varters[i].pos / 10 + varters[i].vel * 0.9;
-      varters[i].pos += varters[i].vel;
-      sheepLetters.children[i].style.transform = 'translateY(' + varters[i].pos + 'px)';
-      if (Math.abs(varters[i].vel) > 0.01 || Math.abs(varters[i].pos) > 0.01) stop = false;
-    }
-    if (stop) {
-      animating = false;
-      for (var i = 0; i < 5; i++) {
-        sheepLetters.children[i].style.transform = null;
-      }
-    }
-    else window.requestAnimationFrame(bounceLetters);
-  }
-  sheepLetters.addEventListener('mouseenter', function(e) {
-    sheepLetters.click();
-  });
-  sheepLetters.addEventListener('click', function(e) {
-    for (var i = 0; i < 5; i++) {
-      varters[i].vel += (Math.random() < 0.5 ? 1 : -1) * (Math.random() * 5 + 4);
-    }
-    if (!animating) {
-      animating = true;
-      bounceLetters();
-    }
-  });
-});
-
-// SHEEP CAN HIDE NOW
-window.addEventListener('load', e => {
-  return;
-  document.body.classList.remove('blank');
-  document.body.classList.remove(revealClass);
-  document.body.addEventListener('transitionend', function transitionend(e) {
-    if (e.target.tagName === 'SHEEP-BTN') {
-      document.body.classList.remove('sheep-minimize');
-      document.body.removeEventListener('transitionend', transitionend);
-    }
   });
 });

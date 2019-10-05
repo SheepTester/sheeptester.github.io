@@ -5,7 +5,9 @@ document.addEventListener("DOMContentLoaded", function(e) {
   homeButton.addEventListener('click', function(e) {
     document.body.classList.add('sheep-blockscreen');
     homeButton.addEventListener('transitionend', function(e) {
-      window.location = '/?from=sheep3';
+      setTimeout(function() {
+        window.location = '/?from=sheep3';
+      }, 100);
     });
   });
   homeButton.addEventListener('keydown', function(e) {
