@@ -57,8 +57,19 @@ const images = [
   // 'eyo.png',
   // 'die.png',
   // 'drills.png',
-  'house.png',
-  'hotel.png',
+  // 'house.png',
+  // 'hotel.png',
+  // 'charcopy.png',
+  // 'combining.png',
+  // 'crypto.png',
+  // 'htmlifier.png',
+  // 'openshit.png',
+  // 'smothered.png',
+  // 'svgtopng.png',
+  // 'text-save.png',
+  // 'tile-editor.png',
+  // 'weird-flex-but-ok.png',
+  // 'yesnt.png',
 ].map(img => path.resolve(__dirname, img));
 
 console.log('Starting...');
