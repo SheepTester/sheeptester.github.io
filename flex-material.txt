@@ -1,4 +1,5 @@
 UGWA https://orbiit.github.io/gunn-web-app/
+Ugwisha https://orbiit.github.io/ugwisha/
   Used by many (but not all) students at Gunn to check alternate schedules and see when the a period ends; only took about a month to make.
 
 OlamREEE https://sheeptester.github.io/olamreee/
@@ -20,7 +21,7 @@ Unofficial extensions mod https://sheeptester.github.io/scratch-gui/
   Referenced by a few Japanese Scratchers for loading unofficial extensions until Scratch 3.0 gets official support for them.
 
 Ovinus Real https://www.facebook.com/ovinus.genuine
-  Not a programming project, but known by some students for the dumb comments made by the joint Facebook account.
+  Not a programming project, but known by some students for the dumb comments made by the joint Facebook account on Gunn Confessions.
 
 Budget: $0
 Profit: $0
