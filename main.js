@@ -124,7 +124,7 @@ document.addEventListener('DOMContentLoaded', e => {
         document.body.classList.add('selected-link');
         titleElem.textContent = title;
         descElem.textContent = desc;
-        openBtn.style.backgroundImage = `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(${encodeURI(link.dataset.image)})`;
+        openBtn.style.backgroundImage = `radial-gradient(circle, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.7)), url(${encodeURI(link.dataset.image)})`;
         openBtn.href = link.href;
       }
       e.preventDefault();

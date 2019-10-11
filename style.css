@@ -50,6 +50,7 @@ strong {
 .description {
   font-size: 20px;
   padding: 0 20px;
+  margin-bottom: 50px;
 }
 .selected-link .pane {
   position: fixed;
@@ -62,15 +63,15 @@ strong {
   display: none;
 }
 .selected-link .link-info {
-  display: block;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 .open {
   display: flex;
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  height: 300px;
+  max-height: 380px;
+  margin-top: auto;
+  flex: auto;
   justify-content: center;
   align-items: center;
   font-size: 36px;
@@ -192,12 +193,13 @@ strong {
     font-size: 16px;
   }
   .open {
-    left: auto;
-    height: auto;
+    position: absolute;
     top: 0;
+    bottom: 0;
+    right: 0;
     width: 100px;
     font-size: 24px;
-    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('./img/social-icon.svg');
+    background-image: radial-gradient(circle, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.7)), url('./img/social-icon.svg');
   }
 }
 
