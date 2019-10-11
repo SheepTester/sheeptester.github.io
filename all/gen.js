@@ -73,7 +73,7 @@ const customPaths = [
       tempPath.pop();
     } else {
       const extension = line.slice(line.lastIndexOf('.') + 1);
-      const url = tempPath.join('/') + '/' + (line === 'index.html' ? '' : line);
+      const url = tempPath.join('/') + '/' + (line === 'index.html' || line === 'index.md' ? '' : line);
       let type;
       switch (extension) {
         case 'html':
@@ -92,6 +92,12 @@ const customPaths = [
         case 'gif':
         case 'jpg':
           type = 'img';
+          break;
+        case 'md':
+          if (line === 'index.md') {
+            type = 'index';
+            htmlURLs.push(BASE_URL + url);
+          }
           break;
       }
       type = type ? ` class="${type}"` : '';

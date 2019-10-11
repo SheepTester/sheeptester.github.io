@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "all": "node ./all/makermakermaker.js && node ./all/gen.js",
+    "all": "node ./all/file-getter.js && node ./all/gen.js",
     "compress": "node ./img/compress.js"
   },
   "dependencies": {
