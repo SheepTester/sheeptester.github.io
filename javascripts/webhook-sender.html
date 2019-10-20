@@ -474,20 +474,20 @@ class Embed {
       }
     }, ['Add field'])
 
-    this._timestamp = Elem('input', {className: 'native', type: 'datetime-local', title: 'Set timestamp'})
+    const timeStampTrigger = Elem('button', {title: 'Set timestamp'})
+    this._timestamp = flatpickr(
+      timeStampTrigger,
+      {
+        enableTime: true,
+        onChange: ([date]) => {
+          timeStampTrigger.textContent = date ? date.toLocaleString() : 'Unset'
+        }
+      }
+    )
     if (timestamp) {
-      const date = new Date(timestamp)
-      this._timestamp.value = `${
-        (date.getFullYear() + '').padStart(4, '0')
-      }-${
-        ((date.getMonth() + 1) + '').padStart(2, '0')
-      }-${
-        (date.getDate() + '').padStart(2, '0')
-      }T${
-        (date.getHours() + '').padStart(2, '0')
-      }:${
-        (date.getMinutes() + '').padStart(2, '0')
-      }`
+      this._timestamp.setDate(timestamp, true)
+    } else {
+      timeStampTrigger.textContent = 'Unset'
     }
 
     const initColourStr = colour ? '#' + colour.toString(16).padStart(6, '0') : null
@@ -563,7 +563,15 @@ class Embed {
           Elem('span', {className: 'embed-footer-text'}, [
             this._footer.elem,
             Elem('span', {className: 'embed-footer-separator', innerHTML: '&bull;'}),
-            this._timestamp
+            timeStampTrigger,
+            ' ',
+            Elem('button', {
+              title: 'Clear timestamp',
+              innerHTML: '&times;',
+              onclick: e => {
+                this._timestamp.clear()
+              }
+            })
           ])
         ])
       ])
@@ -587,7 +595,7 @@ class Embed {
       title: this._title,
       description: this._description,
       url: this._link,
-      timestamp: this._timestamp.value ? new Date(this._timestamp.value).toISOString() : null,
+      timestamp: this._timestamp.selectedDates[0] ? this._timestamp.selectedDates[0].toISOString() : null,
       color: this._colourValue,
       footer: {
         text: this._footer,
