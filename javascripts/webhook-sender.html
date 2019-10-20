@@ -22,6 +22,7 @@
         background: none;
         padding: 0;
         font: inherit;
+        color: inherit;
         box-sizing: border-box;
       }
       input {
@@ -32,6 +33,7 @@
         height: 0;
         overflow: hidden;
         display: block;
+        width: 100%;
       }
       button {
         cursor: pointer;
@@ -104,11 +106,18 @@
         position: relative;
       }
       .close {
-        /* opacity: 0; */
+        opacity: 0;
         position: absolute;
         top: -2px;
         right: -20px;
-        /* padding: 2px; */
+        padding: 2px;
+        color: #72767d;
+      }
+      .embed:hover > .close {
+        opacity: 1;
+      }
+      .close:hover {
+        color: #dcddde;
       }
       .embed-pill {
         background-color: #4f545c;
@@ -137,6 +146,7 @@
         height: 20px;
         /* background-size: contain; */
         border-radius: 50%;
+        flex-shrink: 0;
       }
       .embed-author-name {
         color: white;
@@ -193,6 +203,28 @@
         border-radius: 3px;
         margin-top: 8px;
       }
+      .embed-footer {
+        display: flex;
+        align-items: center;
+      }
+      .embed-footer-icon {
+        margin-right: 8px;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+      }
+      .embed-footer-text {
+        color: rgba(255, 255, 255, 0.6);
+        font-size: 0.75rem;
+        font-weight: 400;
+        letter-spacing: 0;
+      }
+      .embed-footer-separator {
+        color: #4f545c;
+        font-weight: 700;
+        display: inline-block;
+        margin: 0 4px;
+      }
       .add-btn {
         box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06);
         color: #7289da;
@@ -202,6 +234,9 @@
         font-weight: 500;
         border-radius: 3px;
         text-transform: uppercase;
+      }
+      .add-btn:hover {
+        background-color: rgba(79, 84, 92, 0.16);
       }
       .add-field-btn {
         margin-top: 4px;
@@ -219,30 +254,30 @@
 document.body.appendChild(
   Elem('div', {className: 'message'}, [
     Elem('div', {className: 'header'}, [
-      Elem('button', {className: 'avatar image'}),
+      Elem('button', {className: 'avatar image', title: 'Set avatar URL'}),
       Elem('div', {}, [
         Elem('input', {className: 'username', type: 'text', value: 'yeet', placeholder: 'Username'}),
         Elem('span', {className: 'bot'}, ['BOT']),
-        Elem('span', {className: 'timestamp'}, ['Today at 12:60'])
+        Elem('span', {className: 'timestamp'}, ['Today at 15:60'])
       ])
     ]),
     Elem('div', {className: 'content'}, [
       Elem('textarea', {className: 'markup', value: 'wowzers\ntext', placeholder: 'Message content'}),
       Elem('div', {className: 'embeds'}, [
         Elem('div', {className: 'embed'}, [
-          Elem('button', {className: 'close'}),
-          Elem('button', {className: 'embed-pill'}),
+          Elem('button', {className: 'close', title: 'Remove embed', innerHTML: `<svg width="16" height="16" viewBox="0 0 12 12"><path class="fill" fill="currentColor" d="M9.5 3.205L8.795 2.5 6 5.295 3.205 2.5l-.705.705L5.295 6 2.5 8.795l.705.705L6 6.705 8.795 9.5l.705-.705L6.705 6"></path></svg>`}),
+          Elem('button', {className: 'embed-pill', title: 'Set colour'}),
           Elem('div', {className: 'embed-inner'}, [
             Elem('div', {className: 'embed-content'}, [
               Elem('div', {className: 'embed-content-inner'}, [
                 Elem('div', {className: 'embed-author'}, [
-                  Elem('button', {className: 'embed-author-icon image'}),
+                  Elem('button', {className: 'embed-author-icon image', title: 'Set author icon URL'}),
                   Elem('textarea', {className: 'embed-author-name', value: 'woza\ntext', placeholder: 'Author name'}),
-                  Elem('a', {className: 'embed-author-link link'})
+                  Elem('a', {className: 'embed-author-link link', title: 'Set author URL'})
                 ]),
                 Elem('div', {className: 'embed-margin'}, [
                   Elem('textarea', {className: 'embed-title', value: 'dsf\ntext', placeholder: 'Embed title'}),
-                  Elem('a', {className: 'embed-link link'})
+                  Elem('a', {className: 'embed-link link', title: 'Set embed URL'})
                 ]),
                 Elem('textarea', {className: 'embed-description embed-margin', value: 'sdfgh\ntext', placeholder: 'Embed description'}),
                 Elem('div', {className: 'embed-fields embed-margin'}, [
@@ -263,7 +298,15 @@ document.body.appendChild(
               ]),
               Elem('button', {className: 'embed-thumbnail image'})
             ]),
-            Elem('button', {className: 'embed-image image'})
+            Elem('button', {className: 'embed-image image'}),
+            Elem('div', {className: 'embed-footer embed-margin'}, [
+              Elem('button', {className: 'embed-footer-icon image'}),
+              Elem('span', {className: 'embed-footer-text'}, [
+                Elem('input', {type: 'text', value: 'Footer content', placeholder: 'Footer text'}),
+                Elem('span', {className: 'embed-footer-separator', innerHTML: '&bull;'}),
+                Elem('button', {title: 'Set timestamp'}, ['Today at 13:60'])
+              ])
+            ])
           ])
         ]),
         Elem('button', {className: 'add-embed-btn add-btn'}, ['Add embed'])
