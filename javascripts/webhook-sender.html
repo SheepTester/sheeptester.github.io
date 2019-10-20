@@ -29,9 +29,9 @@
       }
       textarea {
         resize: none;
-        width: 0;
         height: 0;
         overflow: hidden;
+        display: block;
       }
       button {
         cursor: pointer;
@@ -87,58 +87,121 @@
         color: #72767d;
         margin-left: .3rem;
       }
+      .content {
+        margin-left: 80px;
+      }
+      .markup {
+        font-size: 1rem;
+        line-height: 1.375;
+        word-wrap: break-word;
+        color: #dcddde;
+        font-weight: 400;
+      }
+      .embed {
+        max-width: 426px;
+        margin-top: 8px;
+        display: flex;
+        position: relative;
+      }
+      .close {
+        /* opacity: 0; */
+        position: absolute;
+        top: -2px;
+        right: -20px;
+        /* padding: 2px; */
+      }
+      .embed-pill {
+        background-color: #4f545c;
+        width: 4px;
+        border-radius: 3px 0 0 3px;
+        flex-shrink: 0;
+      }
+      .embed-inner {
+        padding: 8px 10px;
+        box-sizing: border-box;
+        background-color: rgba(46, 48, 54, .3);
+        border: 1px solid rgba(46,48,54,.6);
+        border-radius: 0 3px 3px 0;
+        overflow: hidden;
+      }
+      .embed-content {
+        display: flex;
+      }
+      .embed-author {
+        display: flex;
+        align-items: center;
+      }
+      .embed-author-icon {
+        margin-right: 8px;
+        width: 20px;
+        height: 20px;
+        /* background-size: contain; */
+        border-radius: 50%;
+      }
+      .embed-author-name {
+        color: white;
+      }
+      .embed-margin {
+        margin-top: 4px;
+      }
+      .embed-title {
+        color: #00b0f4;
+      }
+      .embed-description {
+        color: rgba(255, 255, 255, 0.6);
+        font-size: 0.875rem;
+        line-height: 1rem;
+        font-weight: 400;
+        letter-spacing: 0;
+      }
+      .embed-margin {
+        display: flex;
+        flex-wrap: wrap;
+      }
+      .embed-field {
+        margin-top: 4px;
+        flex: 0;
+        min-width: 100%;
+      }
+      .embed-field-inline {
+        flex: 1;
+        min-width: 150px;
+        flex-basis: auto;
+      }
+      .embed-field-name {
+        color: white;
+        margin-bottom: 4px;
+        font-size: 0.875rem;
+        font-weight: 400;
+      }
+      .embed-field-value {
+        color: rgba(255, 255, 255, 0.6);
+        font-size: 0.875rem;
+        font-weight: 400;
+        white-space: pre-line;
+      }
+      .add-btn {
+        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+        color: #7289da;
+        text-align: center;
+        font-size: 12px;
+        line-height: 32px;
+        font-weight: 500;
+        border-radius: 3px;
+        text-transform: uppercase;
+      }
+      .add-field-btn {
+        margin-top: 4px;
+        flex: 0;
+        min-width: 100%;
+      }
+      .add-embed-btn {
+        width: 426px;
+        margin-top: 8px;
+      }
     </style>
   </head>
   <body>
-    <div class="message">
-      <div class="header">
-        <button class="avatar image"></button>
-        <div>
-          <input class="username" type="text" value="yeet" placeholder="username">
-          <span class="bot">BOT</span>
-          <span class="timestamp">Today at 12:60</span>
-        </div>
-      </div>
-      <div class="content">
-        <textarea class="markup">wowzers</textarea>
-        <div class="embeds">
-          <div class="embed">
-            <button class="close"></button>
-            <button class="embed-pill"></button>
-            <div class="embed-inner">
-              <div class="embed-content">
-                <div class="embed-author">
-                  <button class="embed-author-icon image"></button>
-                  <textarea class="embed-author-name">wowzers</textarea>
-                  <a class="embed-author-link link"></a>
-                </div>
-                <div class="embed-margin">
-                  <textarea class="embed-title">wowzers</textarea>
-                  <a class="embed-link link"></a>
-                </div>
-                <textarea class="embed-description">wowzers</textarea>
-                <div class="embed-fields">
-                  <div class="embed-field">
-                    <textarea class="embed-field-name">wowzers</textarea>
-                    <textarea class="embed-field-value">wowzers</textarea>
-                  </div>
-                  <div class="embed-field embed-field-inline">
-                    <textarea class="embed-field-name">wowzers</textarea>
-                    <textarea class="embed-field-value">wowzers</textarea>
-                  </div>
-                  <div class="embed-field embed-field-inline">
-                    <textarea class="embed-field-name">wowzers</textarea>
-                    <textarea class="embed-field-value">wowzers</textarea>
-                  </div>
-                  <button class="add-btn">Add field</button>
-                </div>
-              </div>
-            </div>
-          </div>
-          <button class="add-btn">Add embed</button>
-        </div>
-      </div>
-    </div>
     <script>
 document.body.appendChild(
   Elem('div', {className: 'message'}, [
@@ -153,38 +216,42 @@ document.body.appendChild(
     Elem('div', {className: 'content'}, [
       Elem('textarea', {className: 'markup', value: 'wowzers\ntext', placeholder: 'Message content'}),
       Elem('div', {className: 'embeds'}, [
-        Elem('button', {className: 'close'}),
-        Elem('button', {className: 'embed-pill'}),
-        Elem('div', {className: 'embed-inner'}, [
-          Elem('div', {className: 'embed-content'}, [
-            Elem('div', {className: 'embed-author'}, [
-              Elem('button', {className: 'embed-author-icon image'}),
-              Elem('textarea', {className: 'embed-author-name', value: 'woza\ntext', placeholder: 'Author name'}),
-              Elem('a', {className: 'embed-author-link link'})
-            ]),
-            Elem('div', {className: 'embed-margin'}, [
-              Elem('textarea', {className: 'embed-title', value: 'dsf\ntext', placeholder: 'Embed title'}),
-              Elem('a', {className: 'embed-link link'})
-            ]),
-            Elem('textarea', {className: 'embed-description', value: 'sdfgh\ntext', placeholder: 'Embed description'}),
-            Elem('div', {className: 'embed-fields'}, [
-              Elem('div', {className: 'embed-field'}, [
-                Elem('textarea', {className: 'embed-field-name', value: 'wowzers\ntext', placeholder: 'Field name'}),
-                Elem('textarea', {className: 'embed-field-value', value: 'wowzers\ntext', placeholder: 'Field value'})
-              ]),
-              Elem('div', {className: 'embed-field embed-field-inline'}, [
-                Elem('textarea', {className: 'embed-field-name', value: 'wowzers\ntext', placeholder: 'Field name'}),
-                Elem('textarea', {className: 'embed-field-value', value: 'wowzers\ntext', placeholder: 'Field value'})
-              ]),
-              Elem('div', {className: 'embed-field embed-field-inline'}, [
-                Elem('textarea', {className: 'embed-field-name', value: 'wowzers\ntext', placeholder: 'Field name'}),
-                Elem('textarea', {className: 'embed-field-value', value: 'wowzers\ntext', placeholder: 'Field value'})
-              ]),
-              Elem('button', {className: 'add-btn'}, ['Add field'])
+        Elem('div', {className: 'embed'}, [
+          Elem('button', {className: 'close'}),
+          Elem('button', {className: 'embed-pill'}),
+          Elem('div', {className: 'embed-inner'}, [
+            Elem('div', {className: 'embed-content'}, [
+              Elem('div', {className: 'embed-content-inner'}, [
+                Elem('div', {className: 'embed-author'}, [
+                  Elem('button', {className: 'embed-author-icon image'}),
+                  Elem('textarea', {className: 'embed-author-name', value: 'woza\ntext', placeholder: 'Author name'}),
+                  Elem('a', {className: 'embed-author-link link'})
+                ]),
+                Elem('div', {className: 'embed-margin'}, [
+                  Elem('textarea', {className: 'embed-title', value: 'dsf\ntext', placeholder: 'Embed title'}),
+                  Elem('a', {className: 'embed-link link'})
+                ]),
+                Elem('textarea', {className: 'embed-description embed-margin', value: 'sdfgh\ntext', placeholder: 'Embed description'}),
+                Elem('div', {className: 'embed-fields embed-margin'}, [
+                  Elem('div', {className: 'embed-field'}, [
+                    Elem('textarea', {className: 'embed-field-name', value: 'wowzers\ntext', placeholder: 'Field name'}),
+                    Elem('textarea', {className: 'embed-field-value', value: 'wowzers\ntext', placeholder: 'Field value'})
+                  ]),
+                  Elem('div', {className: 'embed-field embed-field-inline'}, [
+                    Elem('textarea', {className: 'embed-field-name', value: 'wowzers\ntext', placeholder: 'Field name'}),
+                    Elem('textarea', {className: 'embed-field-value', value: 'wowzers\ntext', placeholder: 'Field value'})
+                  ]),
+                  Elem('div', {className: 'embed-field embed-field-inline'}, [
+                    Elem('textarea', {className: 'embed-field-name', value: 'wowzers\ntext', placeholder: 'Field name'}),
+                    Elem('textarea', {className: 'embed-field-value', value: 'wowzers\ntext', placeholder: 'Field value'})
+                  ]),
+                  Elem('button', {className: 'add-field-btn add-btn'}, ['Add field'])
+                ])
+              ])
             ])
           ])
         ]),
-        Elem('button', {className: 'add-btn'}, ['Add embed'])
+        Elem('button', {className: 'add-embed-btn add-btn'}, ['Add embed'])
       ])
     ])
   ])
