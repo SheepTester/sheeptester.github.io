@@ -180,6 +180,19 @@
         font-weight: 400;
         white-space: pre-line;
       }
+      .embed-thumbnail {
+        width: 80px;
+        height: 80px;
+        margin-left: 16px;
+        flex-shrink: 0;
+        border-radius: 3px;
+      }
+      .embed-image {
+        width: 300px;
+        height: 300px;
+        border-radius: 3px;
+        margin-top: 8px;
+      }
       .add-btn {
         box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06);
         color: #7289da;
@@ -247,8 +260,10 @@ document.body.appendChild(
                   ]),
                   Elem('button', {className: 'add-field-btn add-btn'}, ['Add field'])
                 ])
-              ])
-            ])
+              ]),
+              Elem('button', {className: 'embed-thumbnail image'})
+            ]),
+            Elem('button', {className: 'embed-image image'})
           ])
         ]),
         Elem('button', {className: 'add-embed-btn add-btn'}, ['Add embed'])
