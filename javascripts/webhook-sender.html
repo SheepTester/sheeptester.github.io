@@ -5,7 +5,11 @@
     <title>Discord webhook sender</title>
     <meta name="description" content="A WYSIWYG editor for Discord webhooks"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@simonwep/pickr/dist/themes/monolith.min.css"/>
     <link rel="stylesheet" type="text/css" href="/sheep3.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@simonwep/pickr/dist/pickr.es5.min.js"></script>
     <script src="/sheep3.js" charset="utf-8"></script>
     <script src="./_dom2.js" charset="utf-8"></script>
     <style>
@@ -25,7 +29,7 @@
         color: inherit;
         box-sizing: border-box;
       }
-      input {
+      input[type=text] {
         width: 0;
       }
       textarea {
@@ -303,7 +307,7 @@ class ImageInput {
         backgroundImage: url ? `url("${encodeURI(url)}")` : null
       },
       onclick: e => {
-        const url = prompt('Image URL (leave blank to clear image):')
+        const url = prompt('Image URL (leave blank to clear image):', this.url)
         if (url !== null) {
           if (url) {
             this.elem.style.backgroundImage = `url("${encodeURI(url)}")`
@@ -387,7 +391,7 @@ class LinkInput {
       title: label,
       href: url || '#',
       onclick: e => {
-        const url = prompt('URL (leave blank to remove link):')
+        const url = prompt('URL (leave blank to remove link):', this.url)
         if (url !== null) {
           if (url) {
             this.elem.href = url
@@ -470,6 +474,57 @@ class Embed {
       }
     }, ['Add field'])
 
+    this._timestamp = Elem('input', {className: 'native', type: 'datetime-local', title: 'Set timestamp'})
+    if (timestamp) {
+      const date = new Date(timestamp)
+      this._timestamp.value = `${
+        (date.getFullYear() + '').padStart(4, '0')
+      }-${
+        ((date.getMonth() + 1) + '').padStart(2, '0')
+      }-${
+        (date.getDate() + '').padStart(2, '0')
+      }T${
+        (date.getHours() + '').padStart(2, '0')
+      }:${
+        (date.getMinutes() + '').padStart(2, '0')
+      }`
+    }
+
+    const initColourStr = colour ? '#' + colour.toString(16).padStart(6, '0') : null
+    const colourTrigger = Elem('button', {
+      className: 'embed-pill',
+      title: 'Set colour',
+      style: {
+        backgroundColor: initColourStr
+      }
+    })
+    this._colourValue = colour
+    this._colour = new Pickr({
+      el: colourTrigger,
+      theme: 'monolith',
+      useAsButton: true,
+      default: initColourStr || '#7289DA',
+      position: 'right-middle',
+      components: {
+        preview: true,
+        hue: true,
+        interaction: {
+          input: true,
+          clear: true
+        },
+      }
+    })
+      .on('change', colour => {
+        colourTrigger.style.backgroundColor = colour.toRGBA()
+      })
+      .on('changestop', () => {
+        this._colourValue = parseInt(this._colour.getColor().toHEXA().toString().slice(1), 16)
+      })
+      .on('clear', () => {
+        colourTrigger.style.backgroundColor = null
+        this._colourValue = null
+      })
+
     this.elem = Elem('div', {className: 'embed'}, [
       Elem('button', {
         className: 'close',
@@ -481,8 +536,7 @@ class Embed {
           }
         }
       }),
-      // TODO: set colour
-      Elem('button', {className: 'embed-pill', title: 'Set colour'}),
+      colourTrigger,
       Elem('div', {className: 'embed-inner'}, [
         Elem('div', {className: 'embed-content'}, [
           Elem('div', {className: 'embed-content-inner'}, [
@@ -509,8 +563,7 @@ class Embed {
           Elem('span', {className: 'embed-footer-text'}, [
             this._footer.elem,
             Elem('span', {className: 'embed-footer-separator', innerHTML: '&bull;'}),
-            // TODO: set timestamp
-            Elem('button', {title: 'Set timestamp'}, ['Today at 13:60'])
+            this._timestamp
           ])
         ])
       ])
@@ -525,13 +578,17 @@ class Embed {
     this._addFieldBtn.parentElement.removeChild(field.elem)
   }
 
+  remove () {
+    this._colour.destroyAndRemove()
+  }
+
   toJSON () {
     return {
       title: this._title,
       description: this._description,
       url: this._link,
-      timestamp: this._timestamp,
-      color: this._colour,
+      timestamp: this._timestamp.value ? new Date(this._timestamp.value).toISOString() : null,
+      color: this._colourValue,
       footer: {
         text: this._footer,
         icon_url: this._footerImage
@@ -545,7 +602,7 @@ class Embed {
       author: {
         name: this._author,
         url: this._authorLink,
-        icon_url: this.authorImage
+        icon_url: this._authorImage
       },
       fields: this._fields
     }
@@ -593,8 +650,10 @@ function removeEmbed (embed) {
     embeds.splice(index, 1)
   }
   addEmbedBtn.parentElement.removeChild(embed.elem)
+  embed.remove()
 }
-const embeds = [{"title":"uhiuhiu","description":"hiuhiu","url":"https://gamepro5.github.io","footer":{"text":"iuiuhihui","icon_url":"https://fwi-wp-assets-live.s3-eu-west-1.amazonaws.com/sites/1/2019/06/1-Scald-has-been-brought-under-control-by-footbathing-and-ensuring-grass-isnt-too-long-c-no-credit.jpg"},"image":{"url":"https://fwi-wp-assets-live.s3-eu-west-1.amazonaws.com/sites/1/2019/06/1-Scald-has-been-brought-under-control-by-footbathing-and-ensuring-grass-isnt-too-long-c-no-credit.jpg"},"thumbnail":{"url":"https://fwi-wp-assets-live.s3-eu-west-1.amazonaws.com/sites/1/2019/06/1-Scald-has-been-brought-under-control-by-footbathing-and-ensuring-grass-isnt-too-long-c-no-credit.jpg"},"author":{"name":"hiuhiuhi","url":"https://gamepro5.github.io"},"fields":[{"name":"c","value":"ccc","inline":true},{"name":"435","value":"tryh","inline":true}]}].map(embed => Embed.fromJSON(embed, removeEmbed))
+const embeds = [{"title":"uhiuhiu","description":"hiuhiu","url":"https://gamepro5.github.io","timestamp":"2019-10-15T10:04:00.000Z","color":3098525,"footer":{"text":"iuiuhihui","icon_url":"https://fwi-wp-assets-live.s3-eu-west-1.amazonaws.com/sites/1/2019/06/1-Scald-has-been-brought-under-control-by-footbathing-and-ensuring-grass-isnt-too-long-c-no-credit.jpg"},"image":{"url":"https://fwi-wp-assets-live.s3-eu-west-1.amazonaws.com/sites/1/2019/06/1-Scald-has-been-brought-under-control-by-footbathing-and-ensuring-grass-isnt-too-long-c-no-credit.jpg"},"thumbnail":{"url":"https://fwi-wp-assets-live.s3-eu-west-1.amazonaws.com/sites/1/2019/06/1-Scald-has-been-brought-under-control-by-footbathing-and-ensuring-grass-isnt-too-long-c-no-credit.jpg"},"author":{"name":"hiuhiuhi","url":"https://gamepro5.github.io","icon_url":"https://fwi-wp-assets-live.s3-eu-west-1.amazonaws.com/sites/1/2019/06/1-Scald-has-been-brought-under-control-by-footbathing-and-ensuring-grass-isnt-too-long-c-no-credit.jpg"},"fields":[{"name":"c","value":"ccc","inline":true},{"name":"435","value":"tryh","inline":true}]}]
+  .map(embed => Embed.fromJSON(embed, removeEmbed))
 const addEmbedBtn = Elem('button', {
   className: 'add-embed-btn add-btn',
   onclick: e => {
