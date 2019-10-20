@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>Discord webhook sender</title>
+    <meta name="description" content="A WYSIWYG editor for Discord webhooks"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link rel="stylesheet" type="text/css" href="/sheep3.css">
+    <script src="/sheep3.js" charset="utf-8"></script>
+    <script src="./_dom2.js" charset="utf-8"></script>
+    <style>
+      body {
+        font-family: 'Whitney', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        background-color: #36393f;
+        margin: 0;
+      }
+      input,
+      textarea,
+      button {
+        -webkit-appearance: none;
+        border: none;
+        background: none;
+        padding: 0;
+        font: inherit;
+        box-sizing: border-box;
+      }
+      input {
+        width: 0;
+      }
+      textarea {
+        resize: none;
+        width: 0;
+        height: 0;
+        overflow: hidden;
+      }
+      button {
+        cursor: pointer;
+      }
+
+      .image {
+        background-image: linear-gradient(30deg, #bc5090, #ff6361);
+      }
+
+      /* from Discord */
+      .message {
+        padding: 20px 0;
+      }
+      .header {
+        height: 1.375em;
+        display: flex;
+        align-items: flex-start;
+      }
+      .avatar {
+        position: relative;
+        top: 2px;
+        margin-right: 20px;
+        margin-left: 20px;
+        margin-bottom: 20px;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+      }
+      .username {
+        font-weight: 500;
+        font-size: 1rem;
+        line-height: 1.375em;
+        color: white;
+      }
+      .bot {
+        margin-left: .3rem;
+        position: relative;
+        top: -.1em;
+        background: #7289da;
+        color: #fff;
+        font-size: .625em;
+        font-weight: 500;
+        height: 1.28em;
+        padding: .072rem .275rem;
+        margin-top: .075em;
+        border-radius: 3px;
+        vertical-align: baseline;
+        line-height: 1.3;
+      }
+      .timestamp {
+        font-size: 0.75rem;
+        font-weight: 500;
+        color: #72767d;
+        margin-left: .3rem;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="message">
+      <div class="header">
+        <button class="avatar image"></button>
+        <div>
+          <input class="username" type="text" value="yeet" placeholder="username">
+          <span class="bot">BOT</span>
+          <span class="timestamp">Today at 12:60</span>
+        </div>
+      </div>
+      <div class="content">
+        <textarea class="markup">wowzers</textarea>
+        <div class="embeds">
+          <div class="embed">
+            <button class="close"></button>
+            <button class="embed-pill"></button>
+            <div class="embed-inner">
+              <div class="embed-content">
+                <div class="embed-author">
+                  <button class="embed-author-icon image"></button>
+                  <textarea class="embed-author-name">wowzers</textarea>
+                  <a class="embed-author-link link"></a>
+                </div>
+                <div class="embed-margin">
+                  <textarea class="embed-title">wowzers</textarea>
+                  <a class="embed-link link"></a>
+                </div>
+                <textarea class="embed-description">wowzers</textarea>
+                <div class="embed-fields">
+                  <div class="embed-field">
+                    <textarea class="embed-field-name">wowzers</textarea>
+                    <textarea class="embed-field-value">wowzers</textarea>
+                  </div>
+                  <div class="embed-field embed-field-inline">
+                    <textarea class="embed-field-name">wowzers</textarea>
+                    <textarea class="embed-field-value">wowzers</textarea>
+                  </div>
+                  <div class="embed-field embed-field-inline">
+                    <textarea class="embed-field-name">wowzers</textarea>
+                    <textarea class="embed-field-value">wowzers</textarea>
+                  </div>
+                  <button class="add-btn">Add field</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <button class="add-btn">Add embed</button>
+        </div>
+      </div>
+    </div>
+    <script>
+document.body.appendChild(
+  Elem('div', {className: 'message'}, [
+    Elem('div', {className: 'header'}, [
+      Elem('button', {className: 'avatar image'}),
+      Elem('div', {}, [
+        Elem('input', {className: 'username', type: 'text', value: 'yeet', placeholder: 'Username'}),
+        Elem('span', {className: 'bot'}, ['BOT']),
+        Elem('span', {className: 'timestamp'}, ['Today at 12:60'])
+      ])
+    ]),
+    Elem('div', {className: 'content'}, [
+      Elem('textarea', {className: 'markup', value: 'wowzers\ntext', placeholder: 'Message content'}),
+      Elem('div', {className: 'embeds'}, [
+        Elem('button', {className: 'close'}),
+        Elem('button', {className: 'embed-pill'}),
+        Elem('div', {className: 'embed-inner'}, [
+          Elem('div', {className: 'embed-content'}, [
+            Elem('div', {className: 'embed-author'}, [
+              Elem('button', {className: 'embed-author-icon image'}),
+              Elem('textarea', {className: 'embed-author-name', value: 'woza\ntext', placeholder: 'Author name'}),
+              Elem('a', {className: 'embed-author-link link'})
+            ]),
+            Elem('div', {className: 'embed-margin'}, [
+              Elem('textarea', {className: 'embed-title', value: 'dsf\ntext', placeholder: 'Embed title'}),
+              Elem('a', {className: 'embed-link link'})
+            ]),
+            Elem('textarea', {className: 'embed-description', value: 'sdfgh\ntext', placeholder: 'Embed description'}),
+            Elem('div', {className: 'embed-fields'}, [
+              Elem('div', {className: 'embed-field'}, [
+                Elem('textarea', {className: 'embed-field-name', value: 'wowzers\ntext', placeholder: 'Field name'}),
+                Elem('textarea', {className: 'embed-field-value', value: 'wowzers\ntext', placeholder: 'Field value'})
+              ]),
+              Elem('div', {className: 'embed-field embed-field-inline'}, [
+                Elem('textarea', {className: 'embed-field-name', value: 'wowzers\ntext', placeholder: 'Field name'}),
+                Elem('textarea', {className: 'embed-field-value', value: 'wowzers\ntext', placeholder: 'Field value'})
+              ]),
+              Elem('div', {className: 'embed-field embed-field-inline'}, [
+                Elem('textarea', {className: 'embed-field-name', value: 'wowzers\ntext', placeholder: 'Field name'}),
+                Elem('textarea', {className: 'embed-field-value', value: 'wowzers\ntext', placeholder: 'Field value'})
+              ]),
+              Elem('button', {className: 'add-btn'}, ['Add field'])
+            ])
+          ])
+        ]),
+        Elem('button', {className: 'add-btn'}, ['Add embed'])
+      ])
+    ])
+  ])
+)
+
+window.requestAnimationFrame(() => {
+  for (const input of document.querySelectorAll('input, textarea')) {
+    if (input.tagName === 'TEXTAREA') {
+      const height = input.scrollHeight
+      Promise.resolve().then(() => {
+        input.style.height = height + 'px'
+      })
+    } else {
+      const width = input.scrollWidth
+      Promise.resolve().then(() => {
+        input.style.width = width + 'px'
+      })
+    }
+  }
+})
+    </script>
+  </body>
+</html>
