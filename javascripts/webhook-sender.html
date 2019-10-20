@@ -40,7 +40,44 @@
       }
 
       .image {
+        position: relative;
         background-image: linear-gradient(30deg, #bc5090, #ff6361);
+        background-size: cover;
+        background-position: center;
+      }
+      .image::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        right: 0;
+        background-image: url('./webhook-add-img.svg');
+        background-size: auto 75%;
+        background-repeat: no-repeat;
+        background-position: center;
+        opacity: 0.3;
+      }
+      .image:hover::before {
+        opacity: 0.7;
+      }
+
+      .link {
+        display: inline-block;
+        width: 1em;
+        height: 1em;
+        background-image: url('./material-link.svg');
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center;
+        opacity: 0.6;
+        flex-shrink: 0;
+      }
+      .link[href='#'] {
+        opacity: 0.3;
+      }
+      .link:hover {
+        opacity: 0.7;
       }
 
       /* from Discord */
@@ -91,6 +128,7 @@
       }
       .content {
         margin-left: 80px;
+        padding-right: 10px;
       }
       .markup {
         font-size: 1rem;
@@ -144,7 +182,7 @@
         margin-right: 8px;
         width: 20px;
         height: 20px;
-        /* background-size: contain; */
+        background-size: contain;
         border-radius: 50%;
         flex-shrink: 0;
       }
@@ -152,10 +190,15 @@
         color: white;
       }
       .embed-margin {
+        display: flex;
+        flex-wrap: wrap;
         margin-top: 4px;
+        align-items: center;
       }
       .embed-title {
         color: #00b0f4;
+        width: 0;
+        flex: auto;
       }
       .embed-description {
         color: rgba(255, 255, 255, 0.6);
@@ -163,10 +206,6 @@
         line-height: 1rem;
         font-weight: 400;
         letter-spacing: 0;
-      }
-      .embed-margin {
-        display: flex;
-        flex-wrap: wrap;
       }
       .embed-field {
         margin-top: 4px;
@@ -192,14 +231,14 @@
       }
       .embed-thumbnail {
         width: 80px;
-        height: 80px;
+        height: 53px;
         margin-left: 16px;
         flex-shrink: 0;
         border-radius: 3px;
       }
       .embed-image {
-        width: 300px;
-        height: 300px;
+        width: 400px;
+        height: 225px;
         border-radius: 3px;
         margin-top: 8px;
       }
@@ -212,6 +251,7 @@
         width: 20px;
         height: 20px;
         border-radius: 50%;
+        background-size: contain;
       }
       .embed-footer-text {
         color: rgba(255, 255, 255, 0.6);
@@ -251,85 +291,273 @@
   </head>
   <body>
     <script>
+class ImageInput {
+  constructor ({className, label, url = null} = {}) {
+    this.elem = Elem('button', {
+      className: [className, 'image'],
+      title: label,
+      style: {
+        backgroundImage: url ? `url("${encodeURI(url)}")` : null
+      },
+      onclick: e => {
+        const url = prompt('Image URL (leave blank to clear image):')
+        if (url !== null) {
+          if (url) {
+            this.elem.style.backgroundImage = `url("${encodeURI(url)}")`
+            this.url = url
+          } else {
+            this.elem.style.backgroundImage = null
+            this.url = null
+          }
+        }
+      }
+    })
+    this.url = url
+  }
+
+  toJSON () {
+    return this.url
+  }
+}
+
+class TextInput {
+  constructor ({className, value = '', placeholder, multiline = true} = {}) {
+    let willCalculate = true
+    if (multiline) {
+      this.elem = Elem('textarea', {
+        className,
+        value,
+        placeholder,
+        cols: 1,
+        oninput: e => {
+          this.elem.style.height = 0
+          if (!willCalculate) {
+            willCalculate = true
+            window.requestAnimationFrame(() => {
+              this.elem.style.height = (this.elem.scrollHeight + 1) + 'px'
+              willCalculate = false
+            })
+          }
+        }
+      })
+      window.requestAnimationFrame(() => {
+        this.elem.style.height = (this.elem.scrollHeight + 1) + 'px'
+        willCalculate = false
+      })
+    } else {
+      this.elem = Elem('input', {
+        className,
+        type: 'text',
+        value,
+        placeholder,
+        oninput: e => {
+          this.elem.style.width = 0
+          if (!willCalculate) {
+            willCalculate = true
+            window.requestAnimationFrame(() => {
+              this.elem.style.width = (this.elem.value ? this.elem.scrollWidth + 1 : 100) + 'px'
+              willCalculate = false
+            })
+          }
+        }
+      })
+      window.requestAnimationFrame(() => {
+        this.elem.style.width = (this.elem.value ? this.elem.scrollWidth + 1 : 100) + 'px'
+        willCalculate = false
+      })
+    }
+  }
+
+  get value () {
+    return this.elem.value
+  }
+
+  toJSON () {
+    return this.value
+  }
+}
+
+class LinkInput {
+  constructor ({className, label, url = null} = {}) {
+    this.elem = Elem('a', {
+      className: [className, 'link'],
+      title: label,
+      href: url || '#',
+      onclick: e => {
+        const url = prompt('URL (leave blank to remove link):')
+        if (url !== null) {
+          if (url) {
+            this.elem.href = url
+            this.url = url
+          } else {
+            this.elem.href = '#'
+            this.url = null
+          }
+        }
+        e.preventDefault();
+      }
+    })
+    this.url = url
+  }
+
+  toJSON () {
+    return this.url
+  }
+}
+
+class Embed {
+  constructor ({
+    title,
+    description,
+    link,
+    footer,
+    footerImage,
+    image,
+    thumbnail,
+    author,
+    authorLink,
+    authorImage
+  } = {}) {
+    this._authorImage = new ImageInput({className: 'embed-author-icon', url: authorImage, label: 'Set author icon URL'})
+    this._author = new TextInput({className: 'embed-author-name', value: author, placeholder: 'Author name'})
+    this._authorLink = new LinkInput({className: 'embed-author-link', url: authorLink, label: 'Set author URL'})
+
+    this._title = new TextInput({className: 'embed-title', value: title, placeholder: 'Embed title'})
+    this._link = new LinkInput({className: 'embed-link', url: link, label: 'Set embed URL'})
+    this._description = new TextInput({className: 'embed-description', value: description, placeholder: 'Embed discription'})
+    this._thumbnail = new ImageInput({className: 'embed-thumbnail', url: thumbnail, label: 'Set thumbnail image URL'})
+    this._image = new ImageInput({className: 'embed-image', url: image, label: 'Set image URL'})
+
+    this._footerImage = new ImageInput({className: 'embed-footer-icon', url: footerImage, label: 'Set footer icon URL'})
+    this._footer = new TextInput({className: 'embed-footer-text', value: footer, placeholder: 'Footer text', multiline: false})
+
+    this.elem = Elem('div', {className: 'embed'}, [
+      Elem('button', {
+        className: 'close',
+        title: 'Remove embed',
+        innerHTML: `<svg width="16" height="16" viewBox="0 0 12 12"><path class="fill" fill="currentColor" d="M9.5 3.205L8.795 2.5 6 5.295 3.205 2.5l-.705.705L5.295 6 2.5 8.795l.705.705L6 6.705 8.795 9.5l.705-.705L6.705 6"></path></svg>`
+      }),
+      Elem('button', {className: 'embed-pill', title: 'Set colour'}),
+      Elem('div', {className: 'embed-inner'}, [
+        Elem('div', {className: 'embed-content'}, [
+          Elem('div', {className: 'embed-content-inner'}, [
+            Elem('div', {className: 'embed-author'}, [
+              this._authorImage.elem,
+              this._author.elem,
+              this._authorLink.elem
+            ]),
+            Elem('div', {className: 'embed-margin'}, [
+              this._title.elem,
+              this._link.elem
+            ]),
+            this._description.elem,
+            Elem('div', {className: 'embed-fields embed-margin'}, [
+              Elem('div', {className: 'embed-field'}, [
+                Elem('textarea', {className: 'embed-field-name', value: 'wowzers\ntext', placeholder: 'Field name', cols: 1}),
+                Elem('textarea', {className: 'embed-field-value', value: 'wowzers\ntext', placeholder: 'Field value', cols: 1})
+              ]),
+              Elem('div', {className: 'embed-field embed-field-inline'}, [
+                Elem('textarea', {className: 'embed-field-name', value: 'wowzers\ntext', placeholder: 'Field name', cols: 1}),
+                Elem('textarea', {className: 'embed-field-value', value: 'wowzers\ntext', placeholder: 'Field value', cols: 1})
+              ]),
+              Elem('div', {className: 'embed-field embed-field-inline'}, [
+                Elem('textarea', {className: 'embed-field-name', value: 'wowzers\ntext', placeholder: 'Field name', cols: 1}),
+                Elem('textarea', {className: 'embed-field-value', value: 'wowzers\ntext', placeholder: 'Field value', cols: 1})
+              ]),
+              Elem('button', {className: 'add-field-btn add-btn'}, ['Add field'])
+            ])
+          ]),
+          this._thumbnail.elem
+        ]),
+        this._image.elem,
+        Elem('div', {className: 'embed-footer embed-margin'}, [
+          this._footerImage.elem,
+          Elem('span', {className: 'embed-footer-text'}, [
+            this._footer.elem,
+            Elem('span', {className: 'embed-footer-separator', innerHTML: '&bull;'}),
+            Elem('button', {title: 'Set timestamp'}, ['Today at 13:60'])
+          ])
+        ])
+      ])
+    ])
+  }
+
+  toJSON () {
+    return {
+      title: this._title,
+      description: this._description,
+      url: this._link,
+      // timestamp
+      // colour
+      footer: {
+        text: this._footer,
+        icon_url: this._footerImage
+      },
+      image: {
+        url: this._image
+      },
+      thumbnail: {
+        url: this._thumbnail
+      },
+      author: {
+        name: this._author,
+        url: this._authorLink,
+        icon_url: this.authorImage
+      },
+      // fields
+    }
+  }
+
+  static fromJSON ({
+    title,
+    description,
+    url: link,
+    footer: {text: footer, icon_url: footerImage} = {},
+    image: {url: image} = {},
+    thumbnail: {url: thumbnail} = {},
+    author: {name: author, url: authorLink, icon_url: authorImage}
+  } = {}) {
+    return new Embed({
+      title,
+      description,
+      link,
+      footer,
+      footerImage,
+      image,
+      thumbnail,
+      author,
+      authorLink,
+      authorImage
+    })
+  }
+}
+
+const avatar = new ImageInput({className: 'avatar image', label: 'Set avatar URL'})
+const username = new TextInput({className: 'username', placeholder: 'Username', multiline: false})
+const message = new TextInput({className: 'markup', placeholder: 'Message content'})
+
+// TEMP
+const embed = Embed.fromJSON({"title":"uhiuhiu","description":"hiuhiu","url":"https://gamepro5.github.io","footer":{"text":"iuiuhihui","icon_url":"https://fwi-wp-assets-live.s3-eu-west-1.amazonaws.com/sites/1/2019/06/1-Scald-has-been-brought-under-control-by-footbathing-and-ensuring-grass-isnt-too-long-c-no-credit.jpg"},"image":{"url":"https://fwi-wp-assets-live.s3-eu-west-1.amazonaws.com/sites/1/2019/06/1-Scald-has-been-brought-under-control-by-footbathing-and-ensuring-grass-isnt-too-long-c-no-credit.jpg"},"thumbnail":{"url":"https://fwi-wp-assets-live.s3-eu-west-1.amazonaws.com/sites/1/2019/06/1-Scald-has-been-brought-under-control-by-footbathing-and-ensuring-grass-isnt-too-long-c-no-credit.jpg"},"author":{"name":"hiuhiuhi","url":"https://gamepro5.github.io"}})
+
 document.body.appendChild(
   Elem('div', {className: 'message'}, [
     Elem('div', {className: 'header'}, [
-      Elem('button', {className: 'avatar image', title: 'Set avatar URL'}),
+      avatar.elem,
       Elem('div', {}, [
-        Elem('input', {className: 'username', type: 'text', value: 'yeet', placeholder: 'Username'}),
+        username.elem,
         Elem('span', {className: 'bot'}, ['BOT']),
         Elem('span', {className: 'timestamp'}, ['Today at 15:60'])
       ])
     ]),
     Elem('div', {className: 'content'}, [
-      Elem('textarea', {className: 'markup', value: 'wowzers\ntext', placeholder: 'Message content'}),
+      message.elem,
       Elem('div', {className: 'embeds'}, [
-        Elem('div', {className: 'embed'}, [
-          Elem('button', {className: 'close', title: 'Remove embed', innerHTML: `<svg width="16" height="16" viewBox="0 0 12 12"><path class="fill" fill="currentColor" d="M9.5 3.205L8.795 2.5 6 5.295 3.205 2.5l-.705.705L5.295 6 2.5 8.795l.705.705L6 6.705 8.795 9.5l.705-.705L6.705 6"></path></svg>`}),
-          Elem('button', {className: 'embed-pill', title: 'Set colour'}),
-          Elem('div', {className: 'embed-inner'}, [
-            Elem('div', {className: 'embed-content'}, [
-              Elem('div', {className: 'embed-content-inner'}, [
-                Elem('div', {className: 'embed-author'}, [
-                  Elem('button', {className: 'embed-author-icon image', title: 'Set author icon URL'}),
-                  Elem('textarea', {className: 'embed-author-name', value: 'woza\ntext', placeholder: 'Author name'}),
-                  Elem('a', {className: 'embed-author-link link', title: 'Set author URL'})
-                ]),
-                Elem('div', {className: 'embed-margin'}, [
-                  Elem('textarea', {className: 'embed-title', value: 'dsf\ntext', placeholder: 'Embed title'}),
-                  Elem('a', {className: 'embed-link link', title: 'Set embed URL'})
-                ]),
-                Elem('textarea', {className: 'embed-description embed-margin', value: 'sdfgh\ntext', placeholder: 'Embed description'}),
-                Elem('div', {className: 'embed-fields embed-margin'}, [
-                  Elem('div', {className: 'embed-field'}, [
-                    Elem('textarea', {className: 'embed-field-name', value: 'wowzers\ntext', placeholder: 'Field name'}),
-                    Elem('textarea', {className: 'embed-field-value', value: 'wowzers\ntext', placeholder: 'Field value'})
-                  ]),
-                  Elem('div', {className: 'embed-field embed-field-inline'}, [
-                    Elem('textarea', {className: 'embed-field-name', value: 'wowzers\ntext', placeholder: 'Field name'}),
-                    Elem('textarea', {className: 'embed-field-value', value: 'wowzers\ntext', placeholder: 'Field value'})
-                  ]),
-                  Elem('div', {className: 'embed-field embed-field-inline'}, [
-                    Elem('textarea', {className: 'embed-field-name', value: 'wowzers\ntext', placeholder: 'Field name'}),
-                    Elem('textarea', {className: 'embed-field-value', value: 'wowzers\ntext', placeholder: 'Field value'})
-                  ]),
-                  Elem('button', {className: 'add-field-btn add-btn'}, ['Add field'])
-                ])
-              ]),
-              Elem('button', {className: 'embed-thumbnail image'})
-            ]),
-            Elem('button', {className: 'embed-image image'}),
-            Elem('div', {className: 'embed-footer embed-margin'}, [
-              Elem('button', {className: 'embed-footer-icon image'}),
-              Elem('span', {className: 'embed-footer-text'}, [
-                Elem('input', {type: 'text', value: 'Footer content', placeholder: 'Footer text'}),
-                Elem('span', {className: 'embed-footer-separator', innerHTML: '&bull;'}),
-                Elem('button', {title: 'Set timestamp'}, ['Today at 13:60'])
-              ])
-            ])
-          ])
-        ]),
+        embed.elem,
         Elem('button', {className: 'add-embed-btn add-btn'}, ['Add embed'])
       ])
     ])
   ])
 )
-
-window.requestAnimationFrame(() => {
-  for (const input of document.querySelectorAll('input, textarea')) {
-    if (input.tagName === 'TEXTAREA') {
-      const height = input.scrollHeight
-      Promise.resolve().then(() => {
-        input.style.height = height + 'px'
-      })
-    } else {
-      const width = input.scrollWidth
-      Promise.resolve().then(() => {
-        input.style.width = width + 'px'
-      })
-    }
-  }
-})
     </script>
   </body>
 </html>
