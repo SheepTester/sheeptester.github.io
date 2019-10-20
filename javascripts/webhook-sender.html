@@ -174,6 +174,9 @@
       .embed-content {
         display: flex;
       }
+      .embed-content-inner {
+        flex: 1;
+      }
       .embed-author {
         display: flex;
         align-items: center;
@@ -394,7 +397,7 @@ class LinkInput {
             this.url = null
           }
         }
-        e.preventDefault();
+        e.preventDefault()
       }
     })
     this.url = url
@@ -405,19 +408,45 @@ class LinkInput {
   }
 }
 
+class Field {
+  constructor({name, value, inline = true} = {}, removeFn) {
+    // TODO: remove btn and inline toggle
+
+    this._name = new TextInput({className: 'embed-field-name', value: name, placeholder: 'Field name'})
+    this._value = new TextInput({className: 'embed-field-value', value, placeholder: 'Field value'})
+    this._inline = inline
+
+    this.elem = Elem('div', {className: ['embed-field', inline && 'embed-field-inline']}, [
+      this._name.elem,
+      this._value.elem
+    ])
+  }
+
+  toJSON () {
+    return {
+      name: this._name,
+      value: this._value,
+      inline: this._inline
+    }
+  }
+}
+
 class Embed {
   constructor ({
     title,
     description,
     link,
+    timestamp,
+    colour,
     footer,
     footerImage,
     image,
     thumbnail,
     author,
     authorLink,
-    authorImage
-  } = {}) {
+    authorImage,
+    fields = []
+  } = {}, removeFn = null) {
     this._authorImage = new ImageInput({className: 'embed-author-icon', url: authorImage, label: 'Set author icon URL'})
     this._author = new TextInput({className: 'embed-author-name', value: author, placeholder: 'Author name'})
     this._authorLink = new LinkInput({className: 'embed-author-link', url: authorLink, label: 'Set author URL'})
@@ -431,12 +460,28 @@ class Embed {
     this._footerImage = new ImageInput({className: 'embed-footer-icon', url: footerImage, label: 'Set footer icon URL'})
     this._footer = new TextInput({className: 'embed-footer-text', value: footer, placeholder: 'Footer text', multiline: false})
 
+    this._fields = fields.map(field => new Field(field, this.removeField))
+    this._addFieldBtn = Elem('button', {
+      className: 'add-field-btn add-btn',
+      onclick: e => {
+        const field = new Field({}, this.removeField)
+        this._fields.push(field)
+        this._addFieldBtn.parentElement.insertBefore(field.elem, this._addFieldBtn)
+      }
+    }, ['Add field'])
+
     this.elem = Elem('div', {className: 'embed'}, [
       Elem('button', {
         className: 'close',
         title: 'Remove embed',
-        innerHTML: `<svg width="16" height="16" viewBox="0 0 12 12"><path class="fill" fill="currentColor" d="M9.5 3.205L8.795 2.5 6 5.295 3.205 2.5l-.705.705L5.295 6 2.5 8.795l.705.705L6 6.705 8.795 9.5l.705-.705L6.705 6"></path></svg>`
+        innerHTML: `<svg width="16" height="16" viewBox="0 0 12 12"><path class="fill" fill="currentColor" d="M9.5 3.205L8.795 2.5 6 5.295 3.205 2.5l-.705.705L5.295 6 2.5 8.795l.705.705L6 6.705 8.795 9.5l.705-.705L6.705 6"></path></svg>`,
+        onclick: e => {
+          if (removeFn) {
+            removeFn(this)
+          }
+        }
       }),
+      // TODO: set colour
       Elem('button', {className: 'embed-pill', title: 'Set colour'}),
       Elem('div', {className: 'embed-inner'}, [
         Elem('div', {className: 'embed-content'}, [
@@ -452,19 +497,8 @@ class Embed {
             ]),
             this._description.elem,
             Elem('div', {className: 'embed-fields embed-margin'}, [
-              Elem('div', {className: 'embed-field'}, [
-                Elem('textarea', {className: 'embed-field-name', value: 'wowzers\ntext', placeholder: 'Field name', cols: 1}),
-                Elem('textarea', {className: 'embed-field-value', value: 'wowzers\ntext', placeholder: 'Field value', cols: 1})
-              ]),
-              Elem('div', {className: 'embed-field embed-field-inline'}, [
-                Elem('textarea', {className: 'embed-field-name', value: 'wowzers\ntext', placeholder: 'Field name', cols: 1}),
-                Elem('textarea', {className: 'embed-field-value', value: 'wowzers\ntext', placeholder: 'Field value', cols: 1})
-              ]),
-              Elem('div', {className: 'embed-field embed-field-inline'}, [
-                Elem('textarea', {className: 'embed-field-name', value: 'wowzers\ntext', placeholder: 'Field name', cols: 1}),
-                Elem('textarea', {className: 'embed-field-value', value: 'wowzers\ntext', placeholder: 'Field value', cols: 1})
-              ]),
-              Elem('button', {className: 'add-field-btn add-btn'}, ['Add field'])
+              ...this._fields.map(({elem}) => elem),
+              this._addFieldBtn
             ])
           ]),
           this._thumbnail.elem
@@ -475,6 +509,7 @@ class Embed {
           Elem('span', {className: 'embed-footer-text'}, [
             this._footer.elem,
             Elem('span', {className: 'embed-footer-separator', innerHTML: '&bull;'}),
+            // TODO: set timestamp
             Elem('button', {title: 'Set timestamp'}, ['Today at 13:60'])
           ])
         ])
@@ -482,13 +517,21 @@ class Embed {
     ])
   }
 
+  removeField (field) {
+    const index = this._fields.indexOf(field)
+    if (~index) {
+      this._fields.splice(index, 1)
+    }
+    this._addFieldBtn.parentElement.removeChild(field.elem)
+  }
+
   toJSON () {
     return {
       title: this._title,
       description: this._description,
       url: this._link,
-      // timestamp
-      // colour
+      timestamp: this._timestamp,
+      color: this._colour,
       footer: {
         text: this._footer,
         icon_url: this._footerImage
@@ -504,7 +547,7 @@ class Embed {
         url: this._authorLink,
         icon_url: this.authorImage
       },
-      // fields
+      fields: this._fields
     }
   }
 
@@ -512,32 +555,54 @@ class Embed {
     title,
     description,
     url: link,
+    timestamp,
+    color: colour,
     footer: {text: footer, icon_url: footerImage} = {},
     image: {url: image} = {},
     thumbnail: {url: thumbnail} = {},
-    author: {name: author, url: authorLink, icon_url: authorImage}
-  } = {}) {
+    author: {name: author, url: authorLink, icon_url: authorImage},
+    fields
+  } = {}, removeFn) {
     return new Embed({
       title,
       description,
       link,
+      timestamp,
+      colour,
       footer,
       footerImage,
       image,
       thumbnail,
       author,
       authorLink,
-      authorImage
-    })
+      authorImage,
+      fields
+    }, removeFn)
   }
 }
+
+// TODO: load from URL, etc.
 
 const avatar = new ImageInput({className: 'avatar image', label: 'Set avatar URL'})
 const username = new TextInput({className: 'username', placeholder: 'Username', multiline: false})
 const message = new TextInput({className: 'markup', placeholder: 'Message content'})
 
-// TEMP
-const embed = Embed.fromJSON({"title":"uhiuhiu","description":"hiuhiu","url":"https://gamepro5.github.io","footer":{"text":"iuiuhihui","icon_url":"https://fwi-wp-assets-live.s3-eu-west-1.amazonaws.com/sites/1/2019/06/1-Scald-has-been-brought-under-control-by-footbathing-and-ensuring-grass-isnt-too-long-c-no-credit.jpg"},"image":{"url":"https://fwi-wp-assets-live.s3-eu-west-1.amazonaws.com/sites/1/2019/06/1-Scald-has-been-brought-under-control-by-footbathing-and-ensuring-grass-isnt-too-long-c-no-credit.jpg"},"thumbnail":{"url":"https://fwi-wp-assets-live.s3-eu-west-1.amazonaws.com/sites/1/2019/06/1-Scald-has-been-brought-under-control-by-footbathing-and-ensuring-grass-isnt-too-long-c-no-credit.jpg"},"author":{"name":"hiuhiuhi","url":"https://gamepro5.github.io"}})
+function removeEmbed (embed) {
+  const index = embeds.indexOf(embed)
+  if (~index) {
+    embeds.splice(index, 1)
+  }
+  addEmbedBtn.parentElement.removeChild(embed.elem)
+}
+const embeds = [{"title":"uhiuhiu","description":"hiuhiu","url":"https://gamepro5.github.io","footer":{"text":"iuiuhihui","icon_url":"https://fwi-wp-assets-live.s3-eu-west-1.amazonaws.com/sites/1/2019/06/1-Scald-has-been-brought-under-control-by-footbathing-and-ensuring-grass-isnt-too-long-c-no-credit.jpg"},"image":{"url":"https://fwi-wp-assets-live.s3-eu-west-1.amazonaws.com/sites/1/2019/06/1-Scald-has-been-brought-under-control-by-footbathing-and-ensuring-grass-isnt-too-long-c-no-credit.jpg"},"thumbnail":{"url":"https://fwi-wp-assets-live.s3-eu-west-1.amazonaws.com/sites/1/2019/06/1-Scald-has-been-brought-under-control-by-footbathing-and-ensuring-grass-isnt-too-long-c-no-credit.jpg"},"author":{"name":"hiuhiuhi","url":"https://gamepro5.github.io"},"fields":[{"name":"c","value":"ccc","inline":true},{"name":"435","value":"tryh","inline":true}]}].map(embed => Embed.fromJSON(embed, removeEmbed))
+const addEmbedBtn = Elem('button', {
+  className: 'add-embed-btn add-btn',
+  onclick: e => {
+    const embed = new Embed({}, removeEmbed)
+    embeds.push(embed)
+    addEmbedBtn.parentElement.insertBefore(embed.elem, addEmbedBtn)
+  }
+}, ['Add embed'])
 
 document.body.appendChild(
   Elem('div', {className: 'message'}, [
@@ -552,8 +617,8 @@ document.body.appendChild(
     Elem('div', {className: 'content'}, [
       message.elem,
       Elem('div', {className: 'embeds'}, [
-        embed.elem,
-        Elem('button', {className: 'add-embed-btn add-btn'}, ['Add embed'])
+        ...embeds.map(({elem}) => elem),
+        addEmbedBtn
       ])
     ])
   ])
