@@ -13,10 +13,29 @@
     <script src="/sheep3.js" charset="utf-8"></script>
     <script src="./_dom2.js" charset="utf-8"></script>
     <style>
+      /* https://leovoel.github.io/embed-visualizer/ */
+      @font-face {
+        font-family: 'Whitney';
+        font-style: normal;
+        font-weight: 400;
+        src: url(https://discordapp.com/assets/e8acd7d9bf6207f99350ca9f9e23b168.woff) format("woff")
+      }
+      @font-face {
+        font-family: 'Whitney';
+        font-style: medium;
+        font-weight: 500;
+        src: url(https://discordapp.com/assets/3bdef1251a424500c1b3a78dea9b7e57.woff) format("woff")
+      }
+
+      html, body {
+        height: 100%;
+      }
       body {
         font-family: 'Whitney', 'Helvetica Neue', Helvetica, Arial, sans-serif;
         background-color: #36393f;
         margin: 0;
+        display: flex;
+        flex-direction: column;
       }
       input,
       textarea,
@@ -48,6 +67,7 @@
         background-image: linear-gradient(30deg, #bc5090, #ff6361);
         background-size: cover;
         background-position: center;
+        background-repeat: no-repeat;
       }
       .image::before {
         content: '';
@@ -85,8 +105,14 @@
       }
 
       /* from Discord */
+      .textArea-2Spzkt::placeholder {
+        text-overflow: ellipsis;
+        overflow: hidden;
+        color: #72767d;
+      }
       .message {
         padding: 20px 0;
+        flex-grow: 1;
       }
       .header {
         height: 1.375em;
@@ -295,12 +321,56 @@
         width: 426px;
         margin-top: 8px;
       }
+      .channel-textarea {
+        position: relative;
+        flex-shrink: 0;
+        padding: 20px;
+        border-top: 1px solid rgba(255, 255, 255, 0.06);
+        padding-bottom: 30px;
+      }
+      .inner {
+        display: flex;
+        background-color: #40444b;
+        border-radius: 8px;
+      }
+      .permalink {
+        display: inline-block;
+        padding: 10px;
+        width: 24px;
+        height: 24px;
+        opacity: 0.73;
+        background-image: url('./material-link.svg');
+        background-size: 24px;
+        background-repeat: no-repeat;
+        background-position: center;
+      }
+      .permalink:hover {
+        opacity: 0.87;
+      }
+      .textarea {
+        border-left: 1px solid #36393f;
+        font-weight: 400;
+        font-size: 1rem;
+        line-height: 1.25rem;
+        max-height: 144px;
+        width: 100%;
+        min-height: 20px;
+        margin: 2px 2px 2px 0;
+        padding: 10px;
+        color: #dcddde;
+      }
+      .failed {
+        color: #f04747;
+      }
 
+      .embed-field:hover {
+        box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.1);
+      }
       .field-remove,
       .field-inline {
         position: absolute;
         opacity: 0;
-        right: 0;
+        right: 2px;
         color: white;
       }
       .embed-field:hover .field-remove,
@@ -318,6 +388,43 @@
         bottom: 0;
         font-size: 0.5em;
         line-height: 2;
+      }
+
+      .status {
+        position: absolute;
+        bottom: 100%;
+        left: 0;
+        right: 0;
+        margin-left: 80px;
+        padding-right: 10px;
+        padding-bottom: 20px;
+        opacity: 0;
+        animation: appear .5s forwards;
+      }
+      .hidden {
+        pointer-events: none;
+        user-select: none;
+        animation: disappear .5s forwards;
+      }
+      @keyframes appear {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      @keyframes disappear {
+        from {
+          opacity: 1;
+          transform: translateY(0);
+        }
+        to {
+          opacity: 0;
+          transform: translateY(-10px);
+        }
       }
     </style>
   </head>
@@ -342,6 +449,7 @@ class ImageInput {
             this.url = null
           }
         }
+        if (window.onChange) window.onChange()
       }
     })
     this.url = url
@@ -370,6 +478,9 @@ class TextInput {
               willCalculate = false
             })
           }
+        },
+        onchange: e => {
+          if (window.onChange) window.onChange()
         }
       })
       window.requestAnimationFrame(() => {
@@ -391,6 +502,9 @@ class TextInput {
               willCalculate = false
             })
           }
+        },
+        onchange: e => {
+          if (window.onChange) window.onChange()
         }
       })
       window.requestAnimationFrame(() => {
@@ -426,6 +540,7 @@ class LinkInput {
             this.url = null
           }
         }
+        if (window.onChange) window.onChange()
         e.preventDefault()
       }
     })
@@ -460,6 +575,7 @@ class Field {
         onclick: e => {
           this._inline = !this._inline
           this.elem.classList.toggle('embed-field-inline')
+          if (window.onChange) window.onChange()
         }
       }, ['inline?'])
     ])
@@ -498,7 +614,7 @@ class Embed {
 
     this._title = new TextInput({className: 'embed-title', value: title, placeholder: 'Embed title'})
     this._link = new LinkInput({className: 'embed-link', url: link, label: 'Set embed URL'})
-    this._description = new TextInput({className: 'embed-description', value: description, placeholder: 'Embed discription'})
+    this._description = new TextInput({className: 'embed-description', value: description, placeholder: 'Embed discription (supports markdown and inline links)'})
     this._thumbnail = new ImageInput({className: 'embed-thumbnail', url: thumbnail, label: 'Set thumbnail image URL'})
     this._image = new ImageInput({className: 'embed-image', url: image, label: 'Set image URL'})
 
@@ -512,6 +628,7 @@ class Embed {
         const field = new Field({}, this.removeField)
         this._fields.push(field)
         this._addFieldBtn.parentElement.insertBefore(field.elem, this._addFieldBtn)
+        if (window.onChange) window.onChange()
       }
     }, ['Add field'])
 
@@ -522,6 +639,7 @@ class Embed {
         enableTime: true,
         onChange: ([date]) => {
           timeStampTrigger.textContent = date ? date.toLocaleString() : 'Unset'
+          if (window.onChange) window.onChange()
         }
       }
     )
@@ -560,6 +678,7 @@ class Embed {
       })
       .on('changestop', () => {
         this._colourValue = parseInt(this._colour.getColor().toHEXA().toString().slice(1), 16)
+        if (window.onChange) window.onChange()
       })
       .on('clear', () => {
         colourTrigger.style.backgroundColor = null
@@ -625,6 +744,7 @@ class Embed {
       this._fields.splice(index, 1)
     }
     this._addFieldBtn.parentElement.removeChild(field.elem)
+    if (window.onChange) window.onChange()
   }
 
   remove () {
@@ -688,11 +808,25 @@ class Embed {
   }
 }
 
-// TODO: load from URL, etc.
+const params = new URL(window.location).searchParams
+let json
+try {
+  json = JSON.parse(params.get('json'))
+  if (json === null || typeof json !== 'object') throw json
+} catch (e) {
+  json = {}
+}
+const {
+  content,
+  username: usernameText,
+  avatar_url,
+  tts,
+  embeds: embedsArray = []
+} = json
 
-const avatar = new ImageInput({className: 'avatar image', label: 'Set avatar URL'})
-const username = new TextInput({className: 'username', placeholder: 'Username', multiline: false})
-const message = new TextInput({className: 'markup', placeholder: 'Message content'})
+const avatar = new ImageInput({className: 'avatar image', url: avatar_url, label: 'Set avatar URL'})
+const username = new TextInput({className: 'username', value: usernameText, placeholder: 'Username', multiline: false})
+const message = new TextInput({className: 'markup', value: content, placeholder: 'Message content (supports markdown; 2000 character maximum)'})
 
 function removeEmbed (embed) {
   const index = embeds.indexOf(embed)
@@ -701,15 +835,16 @@ function removeEmbed (embed) {
   }
   addEmbedBtn.parentElement.removeChild(embed.elem)
   embed.remove()
+  if (window.onChange) window.onChange()
 }
-const embeds = [{"title":"uhiuhiu","description":"hiuhiu","url":"https://gamepro5.github.io","timestamp":"2019-10-15T10:04:00.000Z","color":3098525,"footer":{"text":"iuiuhihui","icon_url":"https://fwi-wp-assets-live.s3-eu-west-1.amazonaws.com/sites/1/2019/06/1-Scald-has-been-brought-under-control-by-footbathing-and-ensuring-grass-isnt-too-long-c-no-credit.jpg"},"image":{"url":"https://fwi-wp-assets-live.s3-eu-west-1.amazonaws.com/sites/1/2019/06/1-Scald-has-been-brought-under-control-by-footbathing-and-ensuring-grass-isnt-too-long-c-no-credit.jpg"},"thumbnail":{"url":"https://fwi-wp-assets-live.s3-eu-west-1.amazonaws.com/sites/1/2019/06/1-Scald-has-been-brought-under-control-by-footbathing-and-ensuring-grass-isnt-too-long-c-no-credit.jpg"},"author":{"name":"hiuhiuhi","url":"https://gamepro5.github.io","icon_url":"https://fwi-wp-assets-live.s3-eu-west-1.amazonaws.com/sites/1/2019/06/1-Scald-has-been-brought-under-control-by-footbathing-and-ensuring-grass-isnt-too-long-c-no-credit.jpg"},"fields":[{"name":"c","value":"ccc","inline":true},{"name":"435","value":"tryh","inline":true}]}]
-  .map(embed => Embed.fromJSON(embed, removeEmbed))
+const embeds = embedsArray.map(embed => Embed.fromJSON(embed, removeEmbed))
 const addEmbedBtn = Elem('button', {
   className: 'add-embed-btn add-btn',
   onclick: e => {
     const embed = new Embed({}, removeEmbed)
     embeds.push(embed)
     addEmbedBtn.parentElement.insertBefore(embed.elem, addEmbedBtn)
+    if (window.onChange) window.onChange()
   }
 }, ['Add embed'])
 
@@ -729,6 +864,76 @@ document.body.appendChild(
         ...embeds.map(({elem}) => elem),
         addEmbedBtn
       ])
+    ])
+  ])
+)
+
+function getJSON () {
+  return {
+    content: message,
+    username,
+    avatar_url: avatar,
+    tts: false,
+    embeds
+  }
+}
+
+const permalink = Elem('a', {
+  className: 'permalink',
+  title: 'Get permalink',
+  href: ''
+})
+window.onChange = () => {
+  console.log('change')
+  params.set('json', JSON.stringify(getJSON()))
+  permalink.href = '?' + params
+}
+const status = Elem('div', {className: 'markup status hidden'})
+let hideStatusTimeout
+function displayStatus() {
+  if (hideStatusTimeout) clearTimeout(hideStatusTimeout)
+  status.classList.remove('hidden')
+  hideStatusTimeout = setTimeout(() => {
+    status.classList.add('hidden')
+  }, 3000)
+}
+document.body.appendChild(
+  Elem('div', {className: 'channel-textarea'}, [
+    status,
+    Elem('div', {className: 'inner'}, [
+      permalink,
+      Elem('input', {
+        className: 'textarea',
+        type: 'url',
+        value: params.get('webhook'),
+        placeholder: 'Paste Discord webhook URL here (press enter to send)',
+        onkeydown (e) {
+          if (e.key === 'Enter') {
+            fetch(this.value + '?wait=true', {
+              method: 'POST',
+              body: JSON.stringify(getJSON()),
+              headers: {'Content-Type': 'application/json'}
+            })
+              .then(r => r.ok ? r.json() : Promise.reject(r))
+              .then(json => {
+                console.log(json)
+                status.textContent = 'Webhook executed!'
+                status.classList.remove('failed')
+                displayStatus()
+              })
+              .catch(err => {
+                console.log(err)
+                status.textContent = 'Problem executing webhook'
+                status.classList.add('failed')
+                displayStatus()
+              })
+          }
+        },
+        onchange(e) {
+          params.set('webhook', this.value)
+          permalink.href = '?' + params
+        }
+      })
     ])
   ])
 )
