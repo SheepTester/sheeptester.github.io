@@ -218,6 +218,7 @@
         margin-top: 4px;
         flex: 0;
         min-width: 100%;
+        position: relative;
       }
       .embed-field-inline {
         flex: 1;
@@ -293,6 +294,30 @@
       .add-embed-btn {
         width: 426px;
         margin-top: 8px;
+      }
+
+      .field-remove,
+      .field-inline {
+        position: absolute;
+        opacity: 0;
+        right: 0;
+        color: white;
+      }
+      .embed-field:hover .field-remove,
+      .embed-field:hover .field-inline {
+        opacity: 0.5;
+      }
+      .field-remove:hover,
+      .field-inline:hover {
+        opacity: 1;
+      }
+      .field-remove {
+        top: 0;
+      }
+      .field-inline {
+        bottom: 0;
+        font-size: 0.5em;
+        line-height: 2;
       }
     </style>
   </head>
@@ -414,15 +439,29 @@ class LinkInput {
 
 class Field {
   constructor({name, value, inline = true} = {}, removeFn) {
-    // TODO: remove btn and inline toggle
-
     this._name = new TextInput({className: 'embed-field-name', value: name, placeholder: 'Field name'})
     this._value = new TextInput({className: 'embed-field-value', value, placeholder: 'Field value'})
     this._inline = inline
 
     this.elem = Elem('div', {className: ['embed-field', inline && 'embed-field-inline']}, [
       this._name.elem,
-      this._value.elem
+      this._value.elem,
+      Elem('button', {
+        className: 'field-remove',
+        title: 'Remove field',
+        innerHTML: '&times;',
+        onclick: e => {
+          removeFn(this)
+        }
+      }),
+      Elem('button', {
+        className: 'field-inline',
+        title: 'Toggle inline field',
+        onclick: e => {
+          this._inline = !this._inline
+          this.elem.classList.toggle('embed-field-inline')
+        }
+      }, ['inline?'])
     ])
   }
 
@@ -451,6 +490,8 @@ class Embed {
     authorImage,
     fields = []
   } = {}, removeFn = null) {
+    this.removeField = this.removeField.bind(this)
+
     this._authorImage = new ImageInput({className: 'embed-author-icon', url: authorImage, label: 'Set author icon URL'})
     this._author = new TextInput({className: 'embed-author-name', value: author, placeholder: 'Author name'})
     this._authorLink = new LinkInput({className: 'embed-author-link', url: authorLink, label: 'Set author URL'})
@@ -587,6 +628,7 @@ class Embed {
   }
 
   remove () {
+    this._timestamp.destroy()
     this._colour.destroyAndRemove()
   }
 
