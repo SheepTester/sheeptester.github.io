@@ -70,6 +70,7 @@ const images = [
   // 'tile-editor.png',
   // 'weird-flex-but-ok.png',
   // 'yesnt.png',
+  'pistole.png',
 ].map(img => path.resolve(__dirname, img));
 
 console.log('Starting...');
