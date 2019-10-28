@@ -243,7 +243,6 @@ strong {
 }
 .interactive-tags .tag.selected {
   --back: rgba(255, 255, 255, 0.2);
-  cursor: default;
 }
 .tag span {
   vertical-align: middle;
