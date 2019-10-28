@@ -224,15 +224,30 @@ strong {
 .tag-key {
   padding: 10px;
   background-color: #111;
+  line-height: 2;
 }
 .tag {
   font-size: 16px;
   margin-right: 20px;
   white-space: nowrap;
+  border-radius: 10px;
+}
+.interactive-tags .tag {
+  cursor: pointer;
+  --back: transparent;
+  background-color: var(--back);
+  box-shadow: 0 0 0 5px var(--back);
+}
+.interactive-tags .tag:hover {
+  --back: rgba(255, 255, 255, 0.1);
+}
+.interactive-tags .tag.selected {
+  --back: rgba(255, 255, 255, 0.2);
+  cursor: default;
 }
 .tag span {
   vertical-align: middle;
-  margin-bottom: 5px;
+  margin-bottom: 2px;
   margin-right: 5px;
 }
 .switch-mode {
@@ -254,6 +269,7 @@ strong {
   margin-right: 5px;
   transition: box-shadow .2s;
   cursor: pointer;
+  margin-bottom: 2px;
 }
 .tabkeyfocus .switch-mode button:focus {
   box-shadow: 0 0 0 5px rgba(79, 161, 167, 0.3);
