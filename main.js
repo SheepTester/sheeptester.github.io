@@ -84,6 +84,8 @@ document.addEventListener('DOMContentLoaded', e => {
     const tagID = tag.querySelector('span').className;
     const tagName = tag.textContent.trim();
     tags[tagID] = tagName;
+    tag.tabIndex = 0;
+    tag.setAttribute('role', 'button');
     tag.addEventListener('click', e => {
       if (tag === selectedTag) {
         tag.classList.remove('selected');
@@ -121,7 +123,8 @@ document.addEventListener('DOMContentLoaded', e => {
       const title = link.querySelector('.name').textContent;
       const desc = link.querySelector('.desc').textContent;
       link.addEventListener('click', e => {
-        if (e.shiftKey || e.ctrlKey || e.altKey || e.metaKey || e.which !== 1) return;
+        if (e.shiftKey || e.ctrlKey || e.altKey || e.metaKey || e.which !== 1
+          || document.body.classList.contains('tabkeyfocus')) return;
         if (link.classList.contains('selected')) {
           selected = null;
           link.classList.remove('selected');

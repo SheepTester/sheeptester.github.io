@@ -222,27 +222,30 @@ strong {
 .unintuitive { background-color: #6C5B47; background-position-y: 87.5%; }
 
 .tag-key {
-  padding: 10px;
+  padding: 5px;
   background-color: #111;
   line-height: 2;
 }
 .tag {
   font-size: 16px;
-  margin-right: 20px;
+  margin-right: 15px;
   white-space: nowrap;
-  border-radius: 10px;
+  border-radius: 20px;
+  padding: 5px;
 }
 .interactive-tags .tag {
   cursor: pointer;
-  --back: transparent;
-  background-color: var(--back);
-  box-shadow: 0 0 0 5px var(--back);
 }
-.interactive-tags .tag:hover {
-  --back: rgba(255, 255, 255, 0.1);
+.interactive-tags .tag:hover,
+.tabkeyfocus .tag:focus {
+  background-color: rgba(255, 255, 255, 0.1);
 }
 .interactive-tags .tag.selected {
-  --back: rgba(255, 255, 255, 0.2);
+  background-color: rgba(255, 255, 255, 0.2);
+}
+.interactive-tags .tag.selected:hover,
+.tabkeyfocus .tag.selected:focus {
+  background-color: rgba(255, 255, 255, 0.3);
 }
 .tag span {
   vertical-align: middle;
