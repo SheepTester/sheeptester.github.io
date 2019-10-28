@@ -50,7 +50,7 @@ strong {
 .description {
   font-size: 20px;
   padding: 0 20px;
-  margin-bottom: 50px;
+  margin-bottom: 10px;
 }
 .selected-link .pane {
   position: fixed;
@@ -506,13 +506,6 @@ strong {
 #outlook .ball {border: 2px solid white; background-color: transparent;}
 #snap {background-color: #E6A822;}
 #snap .ball {background-color: #4A6CD4;}
-#email {
-  font-size: 0;
-}
-#email::after {
-  content: 'ussa.say';
-  font-size: 20px;
-}
 
 /* SHEEP INTRO ANIMATION */
 .blank {
