@@ -1,15 +1,15 @@
 // TAB KEY FOCUS
 let tabFocus = false;
 document.addEventListener('keydown', e => {
-  if (e.keyCode === 9) {
+  if (e.key === 'Tab') {
     document.body.classList.add('tabkeyfocus');
     tabFocus = true;
-  } else if (e.target.tagName === 'SPAN' && e.keyCode === 13) {
+  } else if (e.target.tagName === 'SPAN' && e.key === 'Enter') {
     e.target.click();
   }
 });
 document.addEventListener('keyup', e => {
-  if (e.keyCode === 9) {
+  if (e.key === 'Tab') {
     tabFocus = false;
   }
 });
@@ -77,29 +77,39 @@ document.addEventListener('DOMContentLoaded', e => {
   });
 
   const tags = {};
+  const selectedTags = [];
   const filter = document.createElement('style');
   document.head.appendChild(filter);
-  let selectedTag = null;
   for (const tag of document.querySelectorAll('span.tag')) {
     const tagID = tag.querySelector('span').className;
     const tagName = tag.textContent.trim();
     tags[tagID] = tagName;
     tag.tabIndex = 0;
-    tag.setAttribute('role', 'button');
+    tag.setAttribute('role', 'checkbox');
     tag.addEventListener('click', e => {
-      if (tag === selectedTag) {
+      if (tag.classList.contains('selected')) {
         tag.classList.remove('selected');
-        filter.textContent = '';
-        selectedTag = null;
+        tag.setAttribute('aria-checked', 'false');
+        selectedTags.splice(selectedTags.indexOf(tagID), 1);
       } else {
-        if (selectedTag) {
-          selectedTag.classList.remove('selected');
-        }
         tag.classList.add('selected');
-        filter.textContent = `.list a:not(.is-${tagID}) { display: none; }`;
-        selectedTag = tag;
+        tag.setAttribute('aria-checked', 'false');
+        selectedTags.push(tagID);
+      }
+      if (selectedTags.length) {
+        filter.textContent = `${
+          selectedTags.map(tag => `.list a:not(.is-${tag})`).join(', ')
+        } { display: none; }`;
+      } else {
+        filter.textContent = '';
       }
     });
+    tag.addEventListener('keypress', e => {
+      if (e.key === ' ') {
+        tag.click();
+        e.preventDefault();
+      }
+    })
   }
   document.body.classList.add('interactive-tags');
 
