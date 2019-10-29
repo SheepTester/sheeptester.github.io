@@ -97,13 +97,19 @@ strong {
 }
 .usernames {
   padding: 0 10px;
-  color: rgba(255, 255, 255, 0.8);
-  margin-bottom: 20px;
+  color: rgba(255, 255, 255, 0.6);
 }
 .usernames > span {
   margin: 0 10px;
   white-space: nowrap;
   font-size: 20px;
+  transition: color .2s;
+}
+.usernames > span:hover {
+  color: rgba(255, 255, 255, 0.8);
+}
+.usernames > span:hover .mini-social {
+  opacity: 1;
 }
 #happy {
   cursor: pointer;
@@ -114,6 +120,59 @@ strong {
 }
 #happy span {
   display: inline-block;
+}
+
+.gp5-discord {
+  display: flex;
+  padding: 20px;
+  align-items: center;
+  transition: background-color .2s;
+}
+.gp5-discord:hover,
+.tabkeyfocus .gp5-discord:focus {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+.gp5-title {
+  display: block;
+  font-size: 24px;
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 10px;
+}
+.gp5-desc {
+  display: block;
+  font-size: 16px;
+}
+#gamepro5 {
+  flex: none;
+  background-image: linear-gradient(135deg, #AAA8AD 50%, #7289DA 50%);
+  margin: 0;
+  margin-left: 20px;
+  opacity: 1;
+}
+#gamepro5 .ball {
+  border: 5px solid;
+  border-color: black white white black;
+  background-color: transparent;
+}
+#gamepro5 .ball::before {
+  content: '';
+  position: absolute;
+  top: -7px;
+  left: -7px;
+  border: 2px solid black;
+  background-color: #FF0000;
+  border-radius: 50%;
+  width: 10px;
+  height: 10px;
+}
+.gp5-discord:hover #gamepro5,
+.tabkeyfocus .gp5-discord:focus #gamepro5 {
+  opacity: 1;
+  transform: scale(1.1);
+}
+.gp5-discord:hover #gamepro5 .ball,
+.tabkeyfocus .gp5-discord:focus #gamepro5 .ball {
+  transform: scale(1.2);
 }
 
 @media (max-width: 700px) {
@@ -168,9 +227,6 @@ strong {
   }
   .usernames {
     text-align: center;
-  }
-  .show-about .usernames {
-    margin-bottom: 70px;
   }
 
   .grid-view .link-info {
@@ -424,6 +480,17 @@ strong {
   vertical-align: top;
   opacity: 0.5;
 }
+.mini-social {
+  cursor: auto;
+  height: 30px;
+  width: 30px;
+  border-radius: 3px;
+  margin: 5px 0;
+  margin-right: 10px;
+  position: relative;
+  vertical-align: middle;
+  opacity: 0.8;
+}
 .social:hover,
 .tabkeyfocus .social:focus {
   opacity: 1;
@@ -445,24 +512,13 @@ strong {
   box-sizing: border-box;
   transition: transform .2s;
 }
-.social:hover .ball,
-.tabkeyfocus .social:focus .ball {
-  transform: scale(1.2);
-}
-.mini-social {
-  cursor: auto;
-  height: 30px;
-  width: 30px;
-  border-radius: 3px;
-  margin: 5px 0;
-  margin-right: 10px;
-  position: relative;
-  vertical-align: middle;
-  opacity: 1;
-}
 .mini-social .ball {
   height: 15px;
   width: 15px;
+}
+.social:hover .ball,
+.tabkeyfocus .social:focus .ball {
+  transform: scale(1.2);
 }
 #scratch {background-color: #25AFF4;}
 #scratch .ball {border: 5px solid white; background-color: #F8A839;}
