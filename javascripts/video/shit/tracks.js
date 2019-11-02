@@ -846,7 +846,8 @@ class VideoTrack extends MediaTrack {
     return this._props || (this._props = new Properties([
       ...baseProps,
       ...mediaProps,
-      ...graphicalProps
+      ...graphicalProps,
+      fitProp
     ]));
   }
 
@@ -884,11 +885,27 @@ class VideoTrack extends MediaTrack {
     ctx.rotate(this.rotation * Math.PI / 180);
     ctx.scale(this.xScale, this.yScale);
     ctx.globalAlpha = this.opacity / 100;
-    let width, height;
-    if (this.source.width / this.source.height > ctx.canvas.width / ctx.canvas.height) {
-      width = ctx.canvas.height / this.source.height * this.source.width, height = ctx.canvas.height;
-    } else {
-      width = ctx.canvas.width, height = ctx.canvas.width / this.source.width * this.source.height;
+    let width = ctx.canvas.width, height = ctx.canvas.height;
+    if (this.fit !== 'stretch') {
+      if (this.source.width / this.source.height > ctx.canvas.width / ctx.canvas.height) {
+        // source is wider
+        if (this.fit === 'cover') {
+          width = ctx.canvas.height / this.source.height * this.source.width;
+          height = ctx.canvas.height;
+        } else {
+          width = ctx.canvas.width;
+          height = ctx.canvas.width / this.source.width * this.source.height;
+        }
+      } else {
+        // source is taller
+        if (this.fit === 'cover') {
+          width = ctx.canvas.width;
+          height = ctx.canvas.width / this.source.width * this.source.height;
+        } else {
+          width = ctx.canvas.height / this.source.height * this.source.width;
+          height = ctx.canvas.height;
+        }
+      }
     }
     ctx.drawImage(this.media, -width / 2, -height / 2, width, height);
     ctx.restore();
@@ -926,7 +943,8 @@ class ImageTrack extends Track {
     return this._props || (this._props = new Properties([
       ...baseProps,
       lengthProp,
-      ...graphicalProps
+      ...graphicalProps,
+      fitProp
     ]));
   }
 
@@ -957,11 +975,27 @@ class ImageTrack extends Track {
     ctx.rotate(this.rotation * Math.PI / 180);
     ctx.scale(this.xScale, this.yScale);
     ctx.globalAlpha = this.opacity / 100;
-    let width, height;
-    if (this.source.width / this.source.height > ctx.canvas.width / ctx.canvas.height) {
-      width = ctx.canvas.height / this.source.height * this.source.width, height = ctx.canvas.height;
-    } else {
-      width = ctx.canvas.width, height = ctx.canvas.width / this.source.width * this.source.height;
+    let width = ctx.canvas.width, height = ctx.canvas.height;
+    if (this.fit !== 'stretch') {
+      if (this.source.width / this.source.height > ctx.canvas.width / ctx.canvas.height) {
+        // source is wider
+        if (this.fit === 'cover') {
+          width = ctx.canvas.height / this.source.height * this.source.width;
+          height = ctx.canvas.height;
+        } else {
+          width = ctx.canvas.width;
+          height = ctx.canvas.width / this.source.width * this.source.height;
+        }
+      } else {
+        // source is taller
+        if (this.fit === 'cover') {
+          width = ctx.canvas.width;
+          height = ctx.canvas.width / this.source.width * this.source.height;
+        } else {
+          width = ctx.canvas.height / this.source.height * this.source.width;
+          height = ctx.canvas.height;
+        }
+      }
     }
     ctx.drawImage(this.source.image, -width / 2, -height / 2, width, height);
     ctx.restore();
@@ -976,12 +1010,14 @@ class TextTrack extends Track {
       {
         id: 'font',
         label: 'Font',
-        defaultVal: 'Open Sans Condensed:300'
+        defaultVal: 'Open Sans Condensed:300',
+        type: 'text'
       },
       {
         id: 'content',
         label: 'Text',
-        defaultVal: 'Intentionally ambiguous text'
+        defaultVal: 'Intentionally ambiguous text',
+        type: 'text'
       },
       ...baseProps,
       lengthProp,

@@ -175,6 +175,17 @@ button, input {
   padding-right: 30px;
   font-family: monospace;
 }
+.prop-select {
+  padding: 0;
+  padding-left: 10px;
+  cursor: pointer;
+}
+.prop-select span, .prop-select .material-icons {
+  vertical-align: middle;
+}
+.prop-select .material-icons {
+  padding: 3px;
+}
 .input-wrapper:focus-within {
   background-color: var(--btn-hover);
 }
@@ -236,6 +247,7 @@ button, input {
 #preview {
   max-width: 100%;
   max-height: 100%;
+  background-color: rgba(255, 255, 255, 0.05);
 }
 
 .toolbar {
