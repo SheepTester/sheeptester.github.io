@@ -1007,48 +1007,11 @@ class TextTrack extends Track {
 
   static get props() {
     return this._props || (this._props = new Properties([
-      {
-        id: 'font',
-        label: 'Font',
-        defaultVal: 'Open Sans Condensed:300',
-        type: 'text'
-      },
-      {
-        id: 'content',
-        label: 'Text',
-        defaultVal: 'Intentionally ambiguous text',
-        type: 'text'
-      },
+      ...textProps,
       ...baseProps,
       lengthProp,
       ...graphicalProps,
-      {
-        id: 'hColour',
-        label: 'Hue',
-        unit: '°',
-        digits: 0,
-        range: 360,
-        defaultVal: 180,
-        animatable: true
-      },
-      {
-        id: 'sColour',
-        label: 'Saturation',
-        unit: '%',
-        digits: 0,
-        range: 100,
-        defaultVal: 100,
-        animatable: true
-      },
-      {
-        id: 'lColour',
-        label: 'Lightness',
-        unit: '%',
-        digits: 0,
-        range: 100,
-        defaultVal: 100,
-        animatable: true
-      }
+      ...colourProps
     ]));
   }
 
@@ -1120,6 +1083,50 @@ class TextTrack extends Track {
     const [font, weight = '400'] = this.font.split(':');
     fonts[font][weight]--;
     updateFonts();
+  }
+
+}
+
+class RectTrack extends Track {
+
+  static get props() {
+    return this._props || (this._props = new Properties([
+      ...baseProps,
+      lengthProp,
+      ...graphicalProps,
+      ...colourProps
+    ]));
+  }
+
+  constructor() {
+    super(sources.rect, RectTrack.props);
+    this.elem.classList.add('rect');
+    this.name.textContent = 'Rectangle';
+  }
+
+  showChange(prop, value, isFinal) {
+    let returnVal;
+    switch (prop) {
+      case 'sColour':
+      case 'lColour':
+      case 'opacity':
+        if (value > 100) return 100;
+        else if (value < 0) return 0;
+      default:
+        return super.showChange(prop, value, isFinal);
+    }
+    return returnVal;
+  }
+
+  render(ctx, time) {
+    super.render(ctx, time);
+    ctx.save();
+    ctx.translate(ctx.canvas.width * (this.xPos + 1) / 2, ctx.canvas.height * (1 - this.yPos) / 2);
+    ctx.rotate(this.rotation * Math.PI / 180);
+    ctx.scale(this.xScale, this.yScale);
+    ctx.fillStyle = `hsla(${mod(this.hColour, 360)}, ${this.sColour}%, ${this.lColour}%, ${this.opacity / 100})`;
+    ctx.fillRect(-ctx.canvas.width / 2, -ctx.canvas.height / 2, ctx.canvas.width, ctx.canvas.height);
+    ctx.restore();
   }
 
 }

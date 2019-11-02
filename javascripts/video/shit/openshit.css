@@ -366,6 +366,9 @@ button, input {
 .text.track {
   background-color: #725287;
 }
+.rect.track {
+  background-color: #925455;
+}
 .track .name {
   white-space: pre;
   text-overflow: ellipsis;

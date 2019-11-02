@@ -40,6 +40,7 @@ const prevBtn = document.getElementById('prev');
 const playBtn = document.getElementById('play');
 const nextBtn = document.getElementById('next');
 const textBtn = document.getElementById('text');
+const rectBtn = document.getElementById('rect');
 const undoBtn = document.getElementById('undo');
 const redoBtn = document.getElementById('redo');
 const zoomOutBtn = document.getElementById('out');
@@ -260,6 +261,11 @@ addLayer();
 
 isDragTrigger(textBtn, (e, switchControls) => {
   const track = new TextTrack();
+  track.dragStart(e, [5, 5], true);
+  switchControls([track.dragMove, track.dragEnd]);
+});
+isDragTrigger(rectBtn, (e, switchControls) => {
+  const track = new RectTrack();
   track.dragStart(e, [5, 5], true);
   switchControls([track.dragMove, track.dragEnd]);
 });

@@ -11,6 +11,13 @@ const sources = {
     createTrack() {
       return new TextTrack();
     }
+  },
+  rect: {
+    id: 'rect',
+    tracks: [],
+    createTrack() {
+      return new RectTrack();
+    }
   }
 };
 

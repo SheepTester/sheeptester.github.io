@@ -36,6 +36,7 @@ const mediaProps = [
     animatable: true
   }
 ];
+
 const graphicalProps = [
   {
     id: 'opacity',
@@ -111,6 +112,51 @@ const fitProp = {
   defaultVal: 'contain',
   type: 'select'
 };
+
+const textProps = [
+  {
+    id: 'font',
+    label: 'Font',
+    defaultVal: 'Open Sans Condensed:300',
+    type: 'text'
+  },
+  {
+    id: 'content',
+    label: 'Text',
+    defaultVal: 'Intentionally ambiguous text',
+    type: 'text'
+  }
+];
+
+const colourProps = [
+  {
+    id: 'hColour',
+    label: 'Hue',
+    unit: '°',
+    digits: 0,
+    range: 360,
+    defaultVal: 180,
+    animatable: true
+  },
+  {
+    id: 'sColour',
+    label: 'Saturation',
+    unit: '%',
+    digits: 0,
+    range: 100,
+    defaultVal: 50,
+    animatable: true
+  },
+  {
+    id: 'lColour',
+    label: 'Lightness',
+    unit: '%',
+    digits: 0,
+    range: 100,
+    defaultVal: 100,
+    animatable: true
+  }
+];
 
 class Properties {
 
