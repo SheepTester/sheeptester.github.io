@@ -264,19 +264,47 @@ isDragTrigger(textBtn, (e, switchControls) => {
   switchControls([track.dragMove, track.dragEnd]);
 });
 
+function importFiles(files) {
+  return Promise.all(
+    [...files].map(file => {
+      const sourceType = toSource(file.type);
+      if (sourceType) {
+        const source = new sourceType(file);
+        addBtn.parentNode.insertBefore(source.elem, addBtn);
+        return source.ready;
+      }
+    })
+  );
+}
 addBtn.addEventListener('change', async e => {
   addBtn.disabled = true;
-  for (const file of addBtn.files) {
-    const source = new (toSource(file.type))(file);
-    if (source) {
-      addBtn.parentNode.insertBefore(source.elem, addBtn);
-      await source.ready;
-    } else {
-      console.log(file);
-    }
-  }
+  await importFiles(addBtn.files);
   addBtn.disabled = false;
   addBtn.value = null;
+});
+document.addEventListener('paste', e => {
+  importFiles(e.clipboardData.files);
+});
+// https://css-tricks.com/drag-and-drop-file-uploading/
+window.addEventListener('drop', e => {
+  // https://developer.mozilla.org/en-US/docs/Web/API/HTML_Drag_and_Drop_API/File_drag_and_drop#Process_the_drop
+  const files = e.dataTransfer.items
+    ? [...e.dataTransfer.items].filter(item => item.kind === 'file').map(item => item.getAsFile())
+    : e.dataTransfer.files;
+  if (files.length) {
+    if (files[0].name.toLowerCase().endsWith('.oshit')) {
+      loadFile(files[0]);
+    } else {
+      importFiles(files);
+    }
+  }
+  e.preventDefault();
+});
+['drag', 'dragstart', 'dragend', 'dragover', 'dragenter', 'dragleave'].forEach(eventType => {
+  window.addEventListener(eventType, e => {
+    e.preventDefault();
+    e.stopPropagation();
+  });
 });
 
 const undoHistory = [];
@@ -470,34 +498,36 @@ function saveProject() {
     saved = true;
   });
 }
+function loadFile(file) {
+  return JSZip.loadAsync(file)
+    .then(zip =>
+      zip.file('project.json').async('text')
+        .then(async json => {
+          const {entry, src} = JSON.parse(json);
+          addBtn.disabled = true;
+          for (const {id, type} of src) {
+            const blob = new Blob([await zip.file(id).async('arraybuffer')], {type});
+            if (sources[id]) {
+              console.warn('ignoring duplicate source ' + id);
+            } else {
+              sources[id] = new (toSource(type))(blob, id);
+              addBtn.parentNode.insertBefore(sources[id].elem, addBtn);
+              await sources[id].ready;
+            }
+          }
+          addBtn.disabled = false;
+          setEntry(entry);
+          loadBtn.value = null;
+          loadBtn.disabled = false;
+        }));
+}
 loadBtn.addEventListener('change', e => {
   if (loadBtn.files[0]) {
     loadBtn.disabled = true;
-    JSZip.loadAsync(loadBtn.files[0])
-      .then(zip =>
-        zip.file('project.json').async('text')
-          .then(async json => {
-            const {entry, src} = JSON.parse(json);
-            addBtn.disabled = true;
-            for (const {id, type} of src) {
-              const blob = new Blob([await zip.file(id).async('arraybuffer')], {type});
-              if (sources[id]) {
-                console.warn('ignoring duplicate source ' + id);
-              } else {
-                sources[id] = new (toSource(type))(blob, id);
-                addBtn.parentNode.insertBefore(sources[id].elem, addBtn);
-                await sources[id].ready;
-              }
-            }
-            addBtn.disabled = false;
-            setEntry(entry);
-            loadBtn.value = null;
-            loadBtn.disabled = false;
-          }))
-      .catch(e => {
-        console.log(e);
-        loadBtn.disabled = false;
-      });
+    loadFile(loadBtn.files[0]).catch(e => {
+      console.log(e);
+      loadBtn.disabled = false;
+    });
   }
 });
 
