@@ -69,7 +69,7 @@
         height: 100%;
         background-color: rgba(0, 0, 255, 0.5);
         top: 0;
-        font-size: 0.8em;
+        font-size: 12px;
         color: rgba(255, 0, 0, 0.5);
       }
       .selection-range::before { left: -0.5px; content: attr(data-left-time); justify-content: flex-end; }
@@ -129,7 +129,7 @@
     </style>
   </head>
   <body>
-    <p>MP3s require more time to encode but result in a smaller file size. Scroll to zoom, shift + scroll to scroll. Assembled by <a href="https://scratch.mit.edu/users/Sheep_maker/">Sheep_maker</a> on Scratch.</p>
+    <p>MP3s require more time to encode but result in a smaller file size. Ctrl + scroll to zoom. Assembled by <a href="https://scratch.mit.edu/users/Sheep_maker/">Sheep_maker</a> on Scratch.</p>
     <p><label for="add-sound">Add sound: </label><input type="file" id="add-sound" accept=".mp3,.wav"> <button id="new-sound">Add empty sound</button> <a href="about.html">About</a></p>
     <p><button id="record-sound">record sound</button><button id="stop-record" disabled>stop recording</button><span id="record-display"></span></p>
   </body>

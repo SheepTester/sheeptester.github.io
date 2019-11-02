@@ -669,13 +669,14 @@ class SoundEditor {
       elems.preview = Elem('div', {
         className: 'preview',
         onwheel: e => {
-          if (!e.shiftKey) {
+          if (e.ctrlKey || e.metaKey) {
             if (e.deltaY > 0) {
               this.state.zoom *= e.deltaY / 500 + 1;
             } else {
               this.state.zoom /= -e.deltaY / 500 + 1;
             }
             this.handleUpdateZoom();
+            e.preventDefault();
           }
         }
       }, [Elem('div', {
