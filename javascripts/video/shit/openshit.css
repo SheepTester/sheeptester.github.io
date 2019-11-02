@@ -80,6 +80,7 @@ button, input {
   display: flex;
   width: 286px;
   flex-direction: column;
+  flex: none;
 }
 .menubar {
   background-color: var(--layer);
@@ -714,11 +715,12 @@ button, input {
 .resizer {
   position: relative;
   z-index: 1;
+  flex: none;
 }
 .resizer.horizontal {
   cursor: ew-resize;
-  width: 20px;
-  margin: 0 -10px;
+  width: 10px;
+  margin: 0 -5px;
 }
 .resizer.vertical {
   cursor: ns-resize;

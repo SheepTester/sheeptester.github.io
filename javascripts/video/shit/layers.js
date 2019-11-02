@@ -368,8 +368,12 @@ function exportVideo() {
 
   const stream = preview.captureStream();
   const dest = audioContext.createMediaStreamDestination();
-  const sources = layers.map(layer => layer.addAudioTracksTo(dest));
-  dest.stream.getAudioTracks().forEach(track => stream.addTrack(track));
+  const sources = [].concat(...layers.map(layer => layer.addAudioTracksTo(dest)))
+    .filter(source => source);
+  // exporting doesn't work if there's no audio and it adds the tracks
+  if (sources.length) {
+    dest.stream.getAudioTracks().forEach(track => stream.addTrack(track));
+  }
   const recorder = new MediaRecorder(stream, {
     mimeType: usingExportType,
     videoBitsPerSecond: exportBitrate * 1000000
@@ -398,8 +402,8 @@ function exportVideo() {
     download = successful;
     recorder.stop();
     document.body.classList.remove('exporting');
-    sources.forEach(sources => sources.forEach(source => {
-      if (source) source.disconnect(dest);
-    }));
+    sources.forEach(source => {
+      source.disconnect(dest);
+    });
   });
 }
