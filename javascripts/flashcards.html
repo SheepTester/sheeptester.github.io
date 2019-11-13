@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>Flashcards</title>
+    <meta name="description" content="Simple flashcard web app lol"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link rel="stylesheet" type="text/css" href="/sheep3.css">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300&display=swap" rel="stylesheet">
+    <script src="/sheep3.js" charset="utf-8"></script>
+    <style>
+      /* Colours: https://colorhunt.co/palette/162867 */
+      :root {
+        --colour1: #1b2a49;
+        --colour2: #465881;
+        --colour3: #00909e;
+        --colour4: #c9d1d3;
+      }
+
+      html,
+      body {
+        height: 100%;
+      }
+      body {
+        margin: 0;
+        font-size: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: var(--colour1);
+        color: var(--colour4);
+        font-family: 'Roboto', sans-serif;
+        box-sizing: border-box;
+        padding: 30px;
+        overflow: hidden;
+      }
+
+      .card {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 100%;
+        max-width: 600px;
+        max-height: 350px;
+        background-color: var(--colour2);
+        box-shadow: 0 3px 15px rgba(0, 0, 0, 0.5);
+        box-sizing: border-box;
+        padding: 20px;
+        text-align: center;
+      }
+      .card-content {
+        display: none;
+      }
+      .display-word .word,
+      .display-definition .definition {
+        display: block;
+      }
+      .word {
+        font-size: 60px;
+      }
+      .definition {
+        font-size: 24px;
+      }
+
+      .hidden {
+        display: none;
+      }
+      .flip-out {
+        animation: flip-out .3s cubic-bezier(0, 0, 1, 0) forwards;
+      }
+      @keyframes flip-out {
+        0% {
+          transform: perspective(1000px) rotateX(0deg);
+        }
+        100% {
+          transform: perspective(1000px) rotateX(-90deg);
+        }
+      }
+      .flip-in {
+        animation: flip-in .3s cubic-bezier(0, 0, 0, 1);
+      }
+      @keyframes flip-in {
+        0% {
+          transform: perspective(1000px) rotateX(90deg);
+        }
+        100% {
+          transform: perspective(1000px) rotateX(0deg);
+        }
+      }
+      .fall-out {
+        z-index: -1;
+        animation: fall-out .3s cubic-bezier(0, 0, 1, 0) forwards;
+      }
+      .fall-in {
+        z-index: -1;
+        animation: fall-out .3s cubic-bezier(0, 0, 1, 0) reverse;
+      }
+      @keyframes fall-out {
+        0% {
+          transform: scale(1);
+          opacity: 1;
+        }
+        100% {
+          transform: scale(0.5);
+          opacity: 0;
+        }
+      }
+      .slide-in {
+        animation: slide-in .3s cubic-bezier(0, 0, 0, 1);
+      }
+      .slide-out {
+        animation: slide-in .3s cubic-bezier(0, 0, 0, 1) reverse forwards;
+      }
+      @keyframes slide-in {
+        0% {
+          transform: translateX(100vw);
+        }
+        100% {
+          transform: translateX(0);
+        }
+      }
+
+      .controls {
+        font-size: 16px;
+        position: fixed;
+        top: 0;
+        left: 0;
+        margin: 10px;
+        color: var(--colour3);
+      }
+      .key {
+        color: var(--colour4);
+      }
+
+      .status {
+        font-size: 16px;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        margin: 10px;
+        color: var(--colour3);
+      }
+      .emph {
+        color: var(--colour4);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="card hidden" id="card">
+      <span class="card-content word" id="word">specious</span>
+      <span class="card-content definition" id="definition">superficially plausible, but actually wrong; misleading in appearance</span>
+    </div>
+    <div class="controls">
+      <div class="control"><span class="key">Space</span> to flip</div>
+      <div class="control"><span class="key">Left arrow</span> if wrong</div>
+      <div class="control"><span class="key">Right arrow</span> if right</div>
+      <div class="control"><span class="key">Z</span> to undo</div>
+    </div>
+    <span class="status"><span class="emph" id="emph"></span><span id="status">Loading</span></span>
+    <script>
+const defaultSource = 'https://sheeptester.github.io/hello-world/flashcards/*.json'
+const params = new URL(window.location).searchParams
+
+const card = document.getElementById('card')
+const wordSpan = document.getElementById('word')
+const defSpan = document.getElementById('definition')
+
+const emphSpan = document.getElementById('emph')
+const statusSpan = document.getElementById('status')
+
+let currentDelay = null
+function delay (time) {
+  if (currentDelay) {
+    clearTimeout(currentDelay.id)
+    currentDelay.res(true)
+  }
+  return new Promise(res => {
+    currentDelay = {
+      res,
+      id: setTimeout(() => {
+        currentDelay = null
+        res(false)
+      }, time)
+    }
+  })
+}
+
+async function flipCard () {
+  card.classList.add('flip-out')
+  // If another animation interrupted this one, then stop
+  const interrupted = await delay(300)
+  card.classList.remove('flip-out')
+  if (interrupted) return true
+  card.classList.toggle('display-word')
+  card.classList.toggle('display-definition')
+  card.classList.add('flip-in')
+  await delay(300)
+  card.classList.remove('flip-in')
+  return false
+}
+
+async function changeCard (remove, newWord, newDef, reverse = false) {
+  const removeAnim = reverse ? 'slide-out' : remove ? 'fall-out' : 'slide-out'
+  const addAnim = reverse ? (remove ? 'fall-in' : 'slide-in') : 'slide-in'
+  let interrupted = false
+  if (!card.classList.contains('hidden')) {
+    card.classList.add(removeAnim)
+    // If this animation was interrupted, take note of it (so its word and def
+    // can still be set)
+    if (await delay(300)) interrupted = true
+    card.classList.remove(removeAnim)
+
+    card.classList.add('hidden')
+    // If this animation was interrupted, take note of it
+    // Am checking if it hasn't already been interrupted because `await delay`
+    // will cause another unnecessary delay otherwise
+    if (!interrupted && await delay(100)) interrupted = true
+  }
+  if (newWord !== undefined) {
+    card.classList.remove('hidden')
+
+    card.classList.add('display-word')
+    card.classList.remove('display-definition')
+    wordSpan.textContent = newWord
+    defSpan.textContent = newDef
+
+    if (interrupted) return true
+
+    card.classList.add(addAnim)
+    await delay(300)
+    card.classList.remove(addAnim)
+  }
+  return interrupted
+}
+
+const protocolRegex = /^https?:\/\//
+const rangeSepRegex = /\s*,\s*/
+const rangeRegex = /(\d+)(?:\s*-\s*(\d+))?/
+let interact
+Promise.all(params.get('set').split(' ')
+  .map(url => {
+    const flip = url[0] === '*'
+    url = flip ? url.slice(1) : url
+    return fetch(protocolRegex.test(url) ? url : defaultSource.replace('*', url))
+      .then(r => r.ok ? r.json() : Promise.reject())
+      .then(obj => {
+        if (flip) {
+          const newObj = {}
+          Object.entries(obj).forEach(([key, value]) => {
+            newObj[value] = key
+          })
+          return [newObj, true]
+        } else {
+          return [obj, true]
+        }
+      })
+      .catch(() => {
+        return [{}, false]
+      })
+      .then(result => [...result, url])
+  }))
+  .then(results => {
+    // TODO: make sidebar
+    const cards = [].concat(...results.map(([obj]) => Object.entries(obj)))
+    const cardRange = []
+    if (params.get('range') && params.get('range').trim() !== '*') {
+      params.get('range').split(rangeSepRegex).forEach(range => {
+        const exec = rangeRegex.exec(range)
+        if (exec) {
+          const [, minStr, maxStr = minStr] = exec
+          const min = +minStr
+          const max = +maxStr
+          for (let i = min; i <= max; i++) {
+            if (!cardRange.includes(i)) {
+              cardRange.push(i)
+            }
+          }
+        }
+      })
+    } else {
+      for (let i = 1; i <= cardRange.length; i++) {
+        cardRange.push(i)
+      }
+    }
+
+    // This contains the indices of the beginning of the next round.
+    const ends = [cardRange.length, 0]
+    // The index of the current card in cardRange.
+    let card = 0
+    // Randomizes cardRange after (and including) the given index.
+    function randomizeRange (start = 0) {
+      for (let i = cardRange.length - start; i--;) {
+        const [item] = cardRange.splice((Math.random() * i >> 0) + start, 1)
+        cardRange.push(item)
+      }
+    }
+    window.c = cardRange
+    // Called in a keydown listener.
+    interact = type => {
+      if (type === 'flip') {
+        flipCard()
+        return
+      } else if (type === 'undo') {
+        if (card > 1) {
+          card--
+          // If this will cause the app to think the user has started a next round,
+          // then allow the app to start a new next round by deleting evience
+          // of the previous iteration of that next round, if you get what I'm saying.
+          // Put a different way, if this sends the user back to the previous round,
+          // then the current round should be forgotten; it will be recreated later,
+          // possibly with a new set of wrong cards, so this is necessary to prevent
+          // duplicates etc.
+          if (card === ends[1]) {
+            ends.shift()
+          }
+          // `card` now represents the card after the one that should be shown
+          // (as it always does)
+          let right = true
+          // If the last item in cardRange is the same as the card being shown,
+          // (assuming that the last item is for the next round)
+          if (cardRange.length > ends[0] && cardRange[card - 1] === cardRange[cardRange.length - 1]) {
+            // it must have been added because the user marked it wrong. Remove it.
+            cardRange.pop()
+            right = false
+          }
+          changeCard(right, cards[cardRange[card - 1]][0], cards[cardRange[card - 1]][1], true)
+        }
+      } else {
+        // The round has ended! Don't try to proceed!
+        if (ends[0] === null) return
+        // If the card has reached the next round but there aren't cards for next round
+        if (card >= ends[0] && cardRange.length <= ends[0]) {
+          // If not, then this is the last card.
+          changeCard(type === 'right')
+          emphSpan.textContent = ''
+          statusSpan.textContent = 'Done'
+          // Pad `ends` with a dummy value and increment card as to please the undo feature.
+          ends.unshift(null)
+          card++
+          return
+        } else {
+          if (type === 'wrong') cardRange.push(cardRange[card - 1])
+          // If the card has reached the next round
+          if (card >= ends[0]) {
+            // Shuffle the next round and add its end to ends
+            randomizeRange(ends[0])
+            ends.unshift(cardRange.length)
+          }
+          changeCard(type === 'right', cards[cardRange[card]][0], cards[cardRange[card]][1])
+          // Prepare for next card.
+          card++
+        }
+      }
+      // `card` by now should have the next card, so + 1 is dealt with that way.
+      emphSpan.textContent = card - ends[1]
+      statusSpan.textContent = ` / ${ends[0] - ends[1]}${cardRange.length > ends[0] ? ` (${cardRange.length - ends[0]} to review)` : ''}`
+      console.log(card, ends, cardRange);
+    }
+    randomizeRange()
+    interact()
+  })
+
+document.addEventListener('keydown', e => {
+  switch (e.key.toLowerCase()) {
+    case ' ':
+      interact('flip')
+      break
+    case 'arrowleft':
+      interact('wrong')
+      break
+    case 'arrowright':
+      interact('right')
+      break
+    case 'z':
+      interact('undo')
+      break
+  }
+})
+    </script>
+  </body>
+</html>
