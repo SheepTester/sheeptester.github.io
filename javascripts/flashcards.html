@@ -189,9 +189,8 @@ function delay (time) {
 async function flipCard () {
   card.classList.add('flip-out')
   // If another animation interrupted this one, then stop
-  const interrupted = await delay(300)
+  if (await delay(300)) return true
   card.classList.remove('flip-out')
-  if (interrupted) return true
   card.classList.toggle('display-word')
   card.classList.toggle('display-definition')
   card.classList.add('flip-in')
@@ -200,7 +199,7 @@ async function flipCard () {
   return false
 }
 
-async function changeCard (remove, newWord, newDef, reverse = false) {
+async function changeCard (remove, newWord, newDef, showDef = false, reverse = false) {
   const removeAnim = reverse ? 'slide-out' : remove ? 'fall-out' : 'slide-out'
   const addAnim = reverse ? (remove ? 'fall-in' : 'slide-in') : 'slide-in'
   let interrupted = false
@@ -220,8 +219,13 @@ async function changeCard (remove, newWord, newDef, reverse = false) {
   if (newWord !== undefined) {
     card.classList.remove('hidden')
 
-    card.classList.add('display-word')
-    card.classList.remove('display-definition')
+    if (showDef) {
+      card.classList.remove('display-word')
+      card.classList.add('display-definition')
+    } else {
+      card.classList.add('display-word')
+      card.classList.remove('display-definition')
+    }
     wordSpan.textContent = newWord
     defSpan.textContent = newDef
 
@@ -244,25 +248,21 @@ Promise.all(params.get('set').split(' ')
     url = flip ? url.slice(1) : url
     return fetch(protocolRegex.test(url) ? url : defaultSource.replace('*', url))
       .then(r => r.ok ? r.json() : Promise.reject())
-      .then(obj => {
-        if (flip) {
-          const newObj = {}
-          Object.entries(obj).forEach(([key, value]) => {
-            newObj[value] = key
-          })
-          return [newObj, true]
-        } else {
-          return [obj, true]
-        }
-      })
+      .then(obj => [
+        flip
+          ? Object.entries(obj)
+            .map(([key, value]) => [key, value, true])
+          : Object.entries(obj),
+        true
+      ])
       .catch(() => {
-        return [{}, false]
+        return [[], false]
       })
       .then(result => [...result, url])
   }))
   .then(results => {
     // TODO: make sidebar
-    const cards = [].concat(...results.map(([obj]) => Object.entries(obj)))
+    const cards = [].concat(...results.map(([obj]) => obj))
     const cardRange = []
     if (params.get('range') && params.get('range').trim() !== '*') {
       params.get('range').split(rangeSepRegex).forEach(range => {
@@ -279,7 +279,7 @@ Promise.all(params.get('set').split(' ')
         }
       })
     } else {
-      for (let i = 1; i <= cardRange.length; i++) {
+      for (let i = 1; i <= cards.length; i++) {
         cardRange.push(i)
       }
     }
@@ -320,7 +320,7 @@ Promise.all(params.get('set').split(' ')
           if (!right) {
             wrong.pop()
           }
-          changeCard(right, cards[cardRange[card - 1]][0], cards[cardRange[card - 1]][1], true)
+          changeCard(right, cards[current[card - 1]][0], cards[current[card - 1]][1], cards[current[card - 1]][2], true)
         }
       } else {
         // The round has ended! Don't try to proceed!
@@ -354,7 +354,7 @@ Promise.all(params.get('set').split(' ')
             card = 0
             randomizeRange()
           }
-          changeCard(type === 'right', cards[cardRange[card]][0], cards[cardRange[card]][1])
+          changeCard(type === 'right', cards[current[card]][0], cards[current[card]][1], cards[current[card]][2])
           // Prepare for next card.
           card++
         }
@@ -362,7 +362,6 @@ Promise.all(params.get('set').split(' ')
       // `card` by now should have the next card, so + 1 is dealt with that way.
       emphSpan.textContent = card
       statusSpan.textContent = ` / ${current.length}${wrong.length ? ` (${wrong.length} to review)` : ''}`
-      console.log(card, current, wrong, history);
     }
     randomizeRange()
     interact()
