@@ -242,7 +242,7 @@ const protocolRegex = /^https?:\/\//
 const rangeSepRegex = /\s*,\s*/
 const rangeRegex = /(\d+)(?:\s*-\s*(\d+))?/
 let interact
-Promise.all(params.get('set').split(' ')
+Promise.all((params.get('set') || '').split(' ').filter(str => str)
   .map(url => {
     const flip = url[0] === '*'
     url = flip ? url.slice(1) : url
@@ -263,6 +263,7 @@ Promise.all(params.get('set').split(' ')
   .then(results => {
     // TODO: make sidebar
     const cards = [].concat(...results.map(([obj]) => obj))
+    console.log(cards) // for people like me to use
     const cardRange = []
     if (params.get('range') && params.get('range').trim() !== '*') {
       params.get('range').split(rangeSepRegex).forEach(range => {
@@ -321,6 +322,8 @@ Promise.all(params.get('set').split(' ')
             wrong.pop()
           }
           changeCard(right, cards[current[card - 1]][0], cards[current[card - 1]][1], cards[current[card - 1]][2], true)
+        } else {
+          return
         }
       } else {
         // The round has ended! Don't try to proceed!
