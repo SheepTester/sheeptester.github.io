@@ -284,68 +284,75 @@ Promise.all(params.get('set').split(' ')
       }
     }
 
-    // This contains the indices of the beginning of the next round.
-    const ends = [cardRange.length, 0]
-    // The index of the current card in cardRange.
+    // Current round's card indices (0-indexed)
+    let current = cardRange.map(index => index - 1)
+    // Next round's wrong cards
+    let wrong = []
+    // List of all undoable actions
+    const history = []
+    // Index of NEXT card in `current` (this is just so that it doesn't have
+    // to start at -1 when I first call `interact`)
     let card = 0
-    // Randomizes cardRange after (and including) the given index.
-    function randomizeRange (start = 0) {
-      for (let i = cardRange.length - start; i--;) {
-        const [item] = cardRange.splice((Math.random() * i >> 0) + start, 1)
-        cardRange.push(item)
+    // Randomizes `current`
+    function randomizeRange () {
+      for (let i = current.length; i--;) {
+        const [item] = current.splice(Math.random() * i >> 0, 1)
+        current.push(item)
       }
     }
-    window.c = cardRange
     // Called in a keydown listener.
     interact = type => {
       if (type === 'flip') {
         flipCard()
         return
       } else if (type === 'undo') {
-        if (card > 1) {
-          card--
-          // If this will cause the app to think the user has started a next round,
-          // then allow the app to start a new next round by deleting evience
-          // of the previous iteration of that next round, if you get what I'm saying.
-          // Put a different way, if this sends the user back to the previous round,
-          // then the current round should be forgotten; it will be recreated later,
-          // possibly with a new set of wrong cards, so this is necessary to prevent
-          // duplicates etc.
-          if (card === ends[1]) {
-            ends.shift()
-          }
+        if (history.length) {
           // `card` now represents the card after the one that should be shown
-          // (as it always does)
-          let right = true
-          // If the last item in cardRange is the same as the card being shown,
-          // (assuming that the last item is for the next round)
-          if (cardRange.length > ends[0] && cardRange[card - 1] === cardRange[cardRange.length - 1]) {
-            // it must have been added because the user marked it wrong. Remove it.
-            cardRange.pop()
-            right = false
+          // right now.
+          card--
+          const {right, current: oldCurrent, wrong: oldWrong, roundChange} = history.pop()
+          if (roundChange) {
+            current = oldCurrent
+            wrong = oldWrong
+            card = current.length
+          }
+          // If this was marked as wrong, undo that.
+          if (!right) {
+            wrong.pop()
           }
           changeCard(right, cards[cardRange[card - 1]][0], cards[cardRange[card - 1]][1], true)
         }
       } else {
         // The round has ended! Don't try to proceed!
-        if (ends[0] === null) return
-        // If the card has reached the next round but there aren't cards for next round
-        if (card >= ends[0] && cardRange.length <= ends[0]) {
-          // If not, then this is the last card.
+        if (!current) return
+        // Does a new round need to be started?
+        const nextRound = card >= current.length
+        // Only store a history entry if `type` was specified (ie not the first time)
+        if (type) {
+          history.push({
+            right: type === 'right',
+            current,
+            wrong,
+            roundChange: nextRound
+          })
+        }
+        // Add previous card to wrong cards list
+        if (type === 'wrong') wrong.push(current[card - 1])
+        // If the card has reached the next round but there aren't wrong cards for next round
+        if (nextRound && !wrong.length) {
           changeCard(type === 'right')
           emphSpan.textContent = ''
           statusSpan.textContent = 'Done'
-          // Pad `ends` with a dummy value and increment card as to please the undo feature.
-          ends.unshift(null)
-          card++
+          current = null
           return
         } else {
-          if (type === 'wrong') cardRange.push(cardRange[card - 1])
           // If the card has reached the next round
-          if (card >= ends[0]) {
-            // Shuffle the next round and add its end to ends
-            randomizeRange(ends[0])
-            ends.unshift(cardRange.length)
+          if (nextRound) {
+            // Start a new round from the wrong cards and shuffle it
+            current = [...wrong]
+            wrong = []
+            card = 0
+            randomizeRange()
           }
           changeCard(type === 'right', cards[cardRange[card]][0], cards[cardRange[card]][1])
           // Prepare for next card.
@@ -353,9 +360,9 @@ Promise.all(params.get('set').split(' ')
         }
       }
       // `card` by now should have the next card, so + 1 is dealt with that way.
-      emphSpan.textContent = card - ends[1]
-      statusSpan.textContent = ` / ${ends[0] - ends[1]}${cardRange.length > ends[0] ? ` (${cardRange.length - ends[0]} to review)` : ''}`
-      console.log(card, ends, cardRange);
+      emphSpan.textContent = card
+      statusSpan.textContent = ` / ${current.length}${wrong.length ? ` (${wrong.length} to review)` : ''}`
+      console.log(card, current, wrong, history);
     }
     randomizeRange()
     interact()
