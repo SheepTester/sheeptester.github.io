@@ -189,8 +189,9 @@ function delay (time) {
 async function flipCard () {
   card.classList.add('flip-out')
   // If another animation interrupted this one, then stop
-  if (await delay(300)) return true
+  const interrupted = await delay(300)
   card.classList.remove('flip-out')
+  if (interrupted) return true
   card.classList.toggle('display-word')
   card.classList.toggle('display-definition')
   card.classList.add('flip-in')
@@ -297,7 +298,7 @@ Promise.all((params.get('set') || '').split(' ').filter(str => str)
     // Randomizes `current`
     function randomizeRange () {
       for (let i = current.length; i--;) {
-        const [item] = current.splice(Math.random() * i >> 0, 1)
+        const [item] = current.splice(Math.random() * (i + 1) >> 0, 1)
         current.push(item)
       }
     }
