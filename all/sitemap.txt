@@ -16,6 +16,7 @@ https://sheeptester.github.io/animations/kjlsintro2.html
 https://sheeptester.github.io/animations/seanintro.html
 https://sheeptester.github.io/animations/seanoutro.html
 https://sheeptester.github.io/animations/sheep.html
+https://sheeptester.github.io/ascended-cat/blocks/playground.html
 https://sheeptester.github.io/blockly/SHEEP/tset.html
 https://sheeptester.github.io/blog/ABOUT/
 https://sheeptester.github.io/blog/HELLO-WORLD/
@@ -175,6 +176,7 @@ https://sheeptester.github.io/javascripts/discord-transformer.html
 https://sheeptester.github.io/javascripts/easing.html
 https://sheeptester.github.io/javascripts/events.html
 https://sheeptester.github.io/javascripts/fill-perf.html
+https://sheeptester.github.io/javascripts/flashcards.html
 https://sheeptester.github.io/javascripts/fontmaker.html
 https://sheeptester.github.io/javascripts/footer.html
 https://sheeptester.github.io/javascripts/french.html
@@ -275,6 +277,7 @@ https://sheeptester.github.io/sentence/
 https://sheeptester.github.io/sentence/mspllesier.html
 https://sheeptester.github.io/sentence/sean.html
 https://sheeptester.github.io/sentence/word.html
+https://sheeptester.github.io/skejl/
 https://sheeptester.github.io/stalk/
 https://sheeptester.github.io/telegraph/cited.html
 https://sheeptester.github.io/telegraph/
@@ -343,6 +346,7 @@ https://sheeptester.github.io/thingkingland/
 https://sheeptester.github.io/thingkingland/sitemap.html
 https://sheeptester.github.io/toastia/editor/
 https://sheeptester.github.io/toastia/
+https://sheeptester.github.io/toki-pona/
 https://sheeptester.github.io/trumpdays/inseconds/
 https://sheeptester.github.io/trumpdays/
 https://sheeptester.github.io/unclear-target-w-very-confusing-critique/
@@ -403,7 +407,10 @@ https://sheeptester.github.io/words-go-here/attempt2.html
 https://sheeptester.github.io/words-go-here/
 https://sheeptester.github.io/words-go-here/savefiletest.html
 https://sheeptester.github.io/yesnt/
+https://sheeptester.github.io/yesnt/leaderboard.html
+https://sheeptester.github.io/yesnt/settings.html
 https://sheeptester.github.io/yesnt/simple-reverb-test.html
+https://sheeptester.github.io/yesnt/source.html
 https://sheeptester.github.io/yesnt/squiggly-line-maker.html
 https://sheeptester.github.io/yesnt/timing-thing.html
 https://sheeptester.github.io/404.html
