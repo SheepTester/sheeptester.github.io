@@ -566,6 +566,18 @@ strong {
 #snap .ball {background-color: #4A6CD4;}
 
 /* SHEEP INTRO ANIMATION */
+/**
+ * 1. Start: blank, reveal-sheep
+ *    - stay hidden, init. CSS transition
+ * 2. Transition: reveal-sheep, sheep-minimize
+ *    a. Fade in, expand
+ *    b. Shrink slightly, black -> a circle
+ *    c. Pause
+ *    d. Transition to normal sheep
+ *       - use CSS animations for animated properties since you can't both
+ *         animate a property and transition it later with a delayed transition
+ * 3. End
+ */
 .blank {
   background-color: black;
   background-image: none;
@@ -573,8 +585,9 @@ strong {
   overflow: hidden;
 }
 .blank sheep-btn {
-  right: 0;
-  bottom: 0;
+  right: 50%;
+  bottom: 50%;
+  transform: translate(50%, 50%);
   border-radius: 0;
   width: 100vw;
   height: 100vh;
@@ -584,36 +597,52 @@ strong {
   box-shadow: none;
   transition: all .5s, background-position 0s;
 }
+
 .reveal-sheep {
   animation: fade-in 1.5s cubic-bezier(1, 0, 0.25, 1);
 }
-@keyframes fade-in {
+.reveal-sheep sheep-btn {
+  background-size: 0;
+  animation:
+    sheep-pops-in 1.5s cubic-bezier(0.65, 0.65, 0.2, 2) forwards,
+    circleify .5s 1s forwards,
+    transition-the-animated .5s 2s forwards;
+}
+@keyframes sheep-pops-in {
   from {
-    opacity: 0;
-    background-color: black;
-    pointer-events: none;
+    background-size: 0;
   }
   to {
-    opacity: 1;
-    background-color: black;
-    pointer-events: none;
+    background-size: 70px;
   }
 }
-.reveal-sheep sheep-btn {
-  animation: pop-in 1.5s cubic-bezier(0.25, 0.1, 0.2, 1.4) forwards, minimize .5s 2s forwards;
+@keyframes circleify {
+  from {
+    width: 100vw;
+    height: 100vh;
+    border-radius: 0;
+  }
+  to {
+    width: 120px;
+    height: 120px;
+    border-radius: 100px;
+  }
 }
-@keyframes pop-in {
-  from { background-size: 0; }
-  to { background-size: 70px; }
+/* Properties that were animated during a transition delay cannot be
+   transitioned; this is a workaround. */
+@keyframes transition-the-animated {
+  from {
+    background-size: 70px;
+    width: 120px;
+    height: 120px;
+  }
+  to {
+    background-size: 45px;
+    width: 50px;
+    height: 50px;
+  }
 }
-/* the pop-in animation overrides the background-size transition, so here's this hack */
-@keyframes minimize {
-  from { background-size: 70px; }
-  to { background-size: 45px; }
-}
-.sheep-minimize {
-  overflow: hidden;
-}
+
 .sheep-minimize sheep-btn {
   transition: all .5s;
   transition-delay: 2s;
