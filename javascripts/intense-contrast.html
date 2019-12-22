@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>Intense contrast</title>
+    <meta name="description" content="Maximizes the differences between pixels to reveal badly smudged out names"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link rel="stylesheet" type="text/css" href="/sheep3.css">
+    <script src="/sheep3.js" charset="utf-8"></script>
+    <style>
+      .preview {
+        display: inline-block;
+        position: relative;
+        cursor: crosshair;
+        overflow: hidden;
+        touch-action: none;
+      }
+      .no-data .preview {
+        display: none;
+      }
+      #contrast {
+        display: none;
+        position: absolute;
+        top: 0;
+        left: 0;
+        box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.3);
+      }
+    </style>
+  </head>
+  <body class="no-data">
+    <p>Exaggerate differences between pixels. Works best if you select a region of similarly coloured pixels. It usually reveals compression artefacts but it may also reveal poorly (eg with a translucent pen texture) smudged out names in screenshots.</p>
+    <p>This gets the minimum and maximum R, G, and B values in the region and scales each channel up, so one differently coloured pixel can skew results quite a bit.</p>
+    <fieldset>
+      <legend>Method</legend>
+      <p><label><input type="radio" name="method" value="0"> Primitive&mdash;Each channel of each pixel is scaled such that the darkest colour in the region becomes black and the lightest becomes white (but each channel is independent, so the hue will change)</label></p>
+      <p><label><input type="radio" name="method" value="1" checked> Lightened&mdash;Like primitive, but a square root function is applied to make differences in dark pixels more obvious by making the pixels lighter.</label></p>
+      <p><label><input type="radio" name="method" value="2"> Accentuated&mdash;Each channel value is multiplied by 7 so that the differences in pixel colours are exaggerated. To prevent lighter colours from being capped at white, mod 255 is applied so they'll just wrap around to black; since this is independent of the other channels, the hue will change.</label></p>
+      <p><label><input type="radio" name="method" value="3"> Unique&mdash;Like accentuated, but the values are multiplied by 50, so each coloured pixel effectively has a unique colour that is very different from a similar one. A chunk of the same colour indicates that all the pixels in that chunk are the exact same.</label></p>
+    </fieldset>
+    <p><label>Target image: <input type="file" id="image" accept="image/*"></label> (you can also paste an image)</p>
+    <div class="preview" id="preview-div">
+      <canvas id="preview"></canvas>
+      <canvas id="contrast"></canvas>
+    </div>
+    <script>
+const previewDiv = document.getElementById('preview-div')
+const preview = document.getElementById('preview')
+const pc = preview.getContext('2d')
+const contrast = document.getElementById('contrast')
+const cc = contrast.getContext('2d')
+
+let imageData = null
+
+function getImageData (image) {
+  preview.width = image.width
+  preview.height = image.height
+  pc.drawImage(image, 0, 0)
+  imageData = pc.getImageData(0, 0, image.width, image.height)
+  document.body.classList.remove('no-data')
+}
+
+function setImage (image) {
+  if (!image) return
+  if (image.type === 'image/svg+xml') {
+    const img = document.createElement('img')
+    img.addEventListener('load', e => {
+      getImageData(img)
+    }, { once: true })
+    img.src = URL.createObjectURL(file)
+  } else {
+    createImageBitmap(image).then(getImageData)
+  }
+}
+
+const funcs = [
+  (channel, min, max) => {
+    return (channel - min) / (max - min) * 255
+  },
+  (channel, min, max) => {
+    return Math.sqrt((channel - min) / (max - min)) * 255
+  },
+  (channel, min, max) => {
+    return (channel * 7) % 255
+  },
+  (channel, min, max) => {
+    return (channel * 50) % 255
+  }
+]
+
+function processImage (func, startX, startY) {
+  const data = cc.createImageData(contrast.width, contrast.height)
+  const endX = startX + contrast.width
+  const endY = startY + contrast.height
+  let minR = 255, maxR = 0, minG = 255, maxG = 0, minB = 255, maxB = 0
+  for (let x = startX; x < endX; x++) {
+    for (let y = startY; y < endY; y++) {
+      const index = (y * preview.width + x) * 4
+      if (imageData.data[index] < minR) minR = imageData.data[index]
+      if (imageData.data[index] > maxR) maxR = imageData.data[index]
+      if (imageData.data[index + 1] < minG) minG = imageData.data[index + 1]
+      if (imageData.data[index + 1] > maxG) maxG = imageData.data[index + 1]
+      if (imageData.data[index + 2] < minB) minB = imageData.data[index + 2]
+      if (imageData.data[index + 2] > maxB) maxB = imageData.data[index + 2]
+    }
+  }
+  for (let x = 0; x < contrast.width; x++) {
+    for (let y = 0; y < contrast.height; y++) {
+      const index = ((startY + y) * preview.width + startX + x) * 4
+      const newIndex = (y * contrast.width + x) * 4
+      data.data[newIndex] = func(imageData.data[index], minR, maxR)
+      data.data[newIndex + 1] = func(imageData.data[index + 1], minG, maxG)
+      data.data[newIndex + 2] = func(imageData.data[index + 2], minB, maxB)
+      data.data[newIndex + 3] = 255
+    }
+  }
+  cc.putImageData(data, 0, 0)
+}
+
+let regionSetter
+previewDiv.addEventListener('pointerdown', e => {
+  if (!regionSetter && e.which === 1) {
+    regionSetter = {
+      pointer: e.pointerId,
+      initX: e.clientX,
+      initY: e.clientY,
+      dragging: false,
+      rect: preview.getBoundingClientRect()
+    }
+    previewDiv.setPointerCapture(e.pointerId)
+  }
+})
+previewDiv.addEventListener('pointermove', e => {
+  if (regionSetter && regionSetter.pointer === e.pointerId) {
+    if (!regionSetter.dragging) {
+      regionSetter.dragging = true
+      contrast.style.display = 'block'
+    }
+    const minX = Math.max(Math.min(e.clientX, regionSetter.initX), 0)
+    const minY = Math.max(Math.min(e.clientY, regionSetter.initY))
+    regionSetter.minX = Math.floor(minX - regionSetter.rect.left)
+    regionSetter.minY = Math.floor(minY - regionSetter.rect.top)
+    contrast.style.left = regionSetter.minX + 'px'
+    contrast.style.top = regionSetter.minY + 'px'
+    contrast.width = Math.min(Math.ceil(Math.max(e.clientX, regionSetter.initX) - minX), preview.width)
+    contrast.height = Math.min(Math.ceil(Math.max(e.clientY, regionSetter.initY) - minY), preview.height)
+  }
+})
+previewDiv.addEventListener('pointerup', e => {
+  if (regionSetter && regionSetter.pointer === e.pointerId) {
+    if (regionSetter.dragging) {
+      processImage(funcs[document.querySelector('[name=method]:checked').value], regionSetter.minX, regionSetter.minY)
+    }
+    regionSetter = null
+  }
+})
+previewDiv.addEventListener('pointercancel', e => {
+  if (regionSetter && regionSetter.pointer === e.pointerId) {
+    regionSetter = null
+    contrast.style.display = null
+  }
+})
+
+const imageFile = document.getElementById('image')
+imageFile.addEventListener('change', e => {
+  setImage(imageFile.files[0])
+})
+
+document.addEventListener('paste', e => {
+  setImage(e.clipboardData.files[0])
+})
+    </script>
+  </body>
+</html>
