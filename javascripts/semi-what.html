@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>Semi-what&#894;</title>
+    <meta name="description" content="Encoding using semicolons and Greek question marks; this probably won't work well for some computers."/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link rel="stylesheet" type="text/css" href="/sheep3.css">
+    <script src="/sheep3.js" charset="utf-8"></script>
+  </head>
+  <body>
+    <textarea id="to-encode" rows="8" cols="80" placeholder="Text to encode"></textarea>
+    <textarea id="to-decode" rows="8" cols="80" placeholder="&#59;&#894;&#59;&#894;&#59;&#894;&#59;&#59;&#59;&#894;&#894;&#59;&#59;&#894;&#59;&#894;&#59;&#894;&#894;&#894;&#894;&#59;&#59;&#59;&#59;&#894;&#894;&#894;&#59;&#894;&#59;&#59;&#59;&#59;&#894;&#59;&#59;&#59;&#59;&#59;&#59;&#894;&#894;&#894;&#59;&#894;&#59;&#59;&#59;&#894;&#894;&#59;&#894;&#894;&#894;&#894;&#59;&#59;&#894;&#59;&#59;&#59;&#59;&#59;&#59;&#894;&#894;&#59;&#59;&#894;&#59;&#894;&#59;&#894;&#894;&#59;&#894;&#894;&#894;&#59;&#59;&#894;&#894;&#59;&#59;&#59;&#894;&#894;&#59;&#894;&#894;&#59;&#894;&#894;&#894;&#894;&#59;&#894;&#894;&#59;&#59;&#894;&#59;&#59;&#59;&#894;&#894;&#59;&#59;&#894;&#59;&#894;"></textarea>
+    <script>
+const semi = '\u003b'
+const what = '\u037e'
+
+const encode = str => str.split('')
+  .map(char =>
+    char.charCodeAt().toString(2).padStart(8, '0').replace(/0/g, semi)
+    .replace(/1/g, what))
+  .join('')
+
+const decode = code => {
+  code = code.replace(/[^\u003b\u037e]/g, '')
+  let str = ''
+  for (let i = 0; i < code.length; i += 8) {
+    str += String.fromCharCode(parseInt(code.slice(i, i + 8)
+      .replace(/\u003b/g, '0').replace(/\u037e/g, '1'), 2))
+  }
+  return str
+}
+
+const toEncode = document.getElementById('to-encode')
+const toDecode = document.getElementById('to-decode')
+toEncode.addEventListener('input', e => {
+  toDecode.value = encode(toEncode.value)
+})
+toDecode.addEventListener('input', e => {
+  toEncode.value = decode(toDecode.value)
+})
+    </script>
+  </body>
+</html>
