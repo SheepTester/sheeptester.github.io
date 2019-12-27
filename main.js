@@ -71,9 +71,16 @@ document.addEventListener('DOMContentLoaded', e => {
     }
   });
 
-  document.getElementById('toggle-view').addEventListener('click', e => {
+  const toggleViewBtn = document.getElementById('toggle-view');
+  toggleViewBtn.appendChild(document.createTextNode(`Change to ${
+    document.body.classList.contains('grid-view') ? 'list' : 'grid'
+  } view`));
+  toggleViewBtn.addEventListener('click', e => {
     localStorage.setItem('preferences', document.body.classList.contains('grid-view') ? 'list' : 'grid');
-    window.location.reload();
+    document.body.classList.toggle('list-view');
+    document.body.classList.toggle('grid-view');
+    toggleViewBtn.disabled = true;
+    window.location = '?from=view-change';
   });
 
   const tags = {};

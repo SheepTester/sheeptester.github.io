@@ -48,13 +48,17 @@
     <script type="text/javascript">
       (() => {
         const params = new URL(window.location).searchParams;
-        if (params.get('from') && params.get('from').startsWith('sheep')) {
+        const from = params.get('from') || ''
+        if (from.startsWith('sheep')) {
           window.history.replaceState({}, '', '/');
           document.body.classList.add('reveal-sheep-immediately');
+          document.body.classList.add('blank');
+        } else if (from === 'view-change') {
+          window.history.replaceState({}, '', '/');
         } else {
           document.body.classList.add('reveal-sheep');
+          document.body.classList.add('blank');
         }
-        document.body.classList.add('blank');
 
         document.body.classList.remove('maybe-old-js');
 
@@ -134,7 +138,7 @@
       <span class="tag"><span class="school"></span> For school</span>
       <span class="tag"><span class="incomplete"></span> Incomplete</span>
       <span class="tag"><span class="unintuitive"></span> Unintuitive</span>
-      <label class="tag switch-mode"><button type="button" class="toggle-switch" id="toggle-view"></button> List view?</label>
+      <button type="button" class="tag switch-mode" id="toggle-view"><span></span></button>
     </div>
 
     <div class="list" id="links">

@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 24" stroke="#fff" fill="none" stroke-linejoin="round" stroke-linecap="round">
+  <!-- grid view -->
+  <path d="M 4 4 h 6 v 6 h -6 z M 14 4 h 6 v 6 h -6 z M 4 14 h 6 v 6 h -6 z M 14 14 h 6 v 6 h -6 z"/>
+  <!-- list view -->
+  <circle cx="30" cy="6" r="2"/>
+  <circle cx="30" cy="12" r="2"/>
+  <circle cx="30" cy="18" r="2"/>
+  <path d="M 36 6 H 44 M 36 12 H 44 M 36 18 H 44 "/>
+</svg>
