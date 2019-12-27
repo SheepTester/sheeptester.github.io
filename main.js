@@ -130,11 +130,18 @@ document.addEventListener('DOMContentLoaded', e => {
       image.src = link.dataset.image;
       link.appendChild(image);
 
+      // Not accessible since this is only needed for fancy input methods
+      const openDirectly = document.createElement('div');
+      openDirectly.classList.add('open-directly');
+      openDirectly.title = 'Open page';
+      link.appendChild(openDirectly);
+
       const title = link.querySelector('.name').textContent;
       const desc = link.querySelector('.desc').textContent;
       link.addEventListener('click', e => {
         if (e.shiftKey || e.ctrlKey || e.altKey || e.metaKey || e.which !== 1
-          || document.body.classList.contains('tabkeyfocus')) return;
+          || document.body.classList.contains('tabkeyfocus')
+          || openDirectly.contains(e.target)) return;
         if (link.classList.contains('selected')) {
           selected = null;
           link.classList.remove('selected');

@@ -423,6 +423,27 @@ strong {
   filter: grayscale(0%);
   transition-duration: .5s;
 }
+.grid-view .open-directly {
+  position: absolute;
+  padding: 5px;
+  width: 24px;
+  height: 24px;
+  background-image: url('./img/open-directly.svg');
+  background-repeat: no-repeat;
+  background-size: 24px;
+  background-position: center;
+  bottom: 0;
+  right: 0;
+  opacity: 0;
+  transition: opacity .2s;
+}
+/* :hover only because this is only needed for mouse users */
+.grid-view .list a:hover .open-directly {
+  opacity: 0.5;
+}
+.grid-view .list a .open-directly:hover {
+  opacity: 1;
+}
 
 .list-view .list a {
   display: block;
