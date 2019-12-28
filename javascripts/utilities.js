@@ -252,7 +252,6 @@ class Utilities {
   fetchFrom({URL}) {
     return fetch(URL).then(res => res.text())
       .catch(err => '');
-    });
   }
 
   parseJSON({PATH, JSON_STRING}) {
