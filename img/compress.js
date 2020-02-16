@@ -78,8 +78,10 @@ const images = [
   // 'userscripts.png',
   // 'attitude.png',
   // 'eyangicques.png',
-  'ugwisha.png',
-  'elimination.png',
+  // 'ugwisha.png',
+  // 'elimination.png',
+  'khwvahy.png',
+  'flappy.png',
 ].map(img => path.resolve(__dirname, img));
 
 console.log('Starting...');
