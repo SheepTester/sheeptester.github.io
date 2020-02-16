@@ -1,3 +1,5 @@
+// npm run compress
+
 const fs = require('fs');
 const path = require('path');
 const execFile = require('child_process').execFile;
@@ -70,7 +72,12 @@ const images = [
   // 'tile-editor.png',
   // 'weird-flex-but-ok.png',
   // 'yesnt.png',
-  'pistole.png',
+  // 'pistole.png',
+  'pfpfpf.png',
+  'roshambo.png',
+  'userscripts.png',
+  'attitude.png',
+  'eyangicques.png',
 ].map(img => path.resolve(__dirname, img));
 
 console.log('Starting...');
