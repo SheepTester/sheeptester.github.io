@@ -283,6 +283,11 @@ strong {
   line-height: 2;
 }
 .tag {
+  border: none;
+  background: none;
+  -webkit-appearance: none;
+  font: inherit;
+  color: inherit;
   display: inline-flex;
   align-items: center;
   font-size: 16px;
@@ -555,6 +560,8 @@ strong {
 #facebook {background-color: #3B5998;}
 #duolingo {background-color: #30A7E4;}
 #duolingo .ball {background-color: #77C700;}
+#codingame {background-color: #FCD207;}
+#codingame .ball {background-color: #1F2528;}
 #jsperf {background-image: linear-gradient(#6ca5dd, #1a6ab9);}
 #jsperf .ball {background-color: white;}
 #gravatar {background-color: #1E8CBE;}

@@ -87,7 +87,7 @@ document.addEventListener('DOMContentLoaded', e => {
   const selectedTags = [];
   const filter = document.createElement('style');
   document.head.appendChild(filter);
-  for (const tag of document.querySelectorAll('span.tag')) {
+  for (const tag of document.getElementsByClassName('tag')) {
     const tagID = tag.querySelector('span').className;
     const tagName = tag.textContent.trim();
     tags[tagID] = tagName;
