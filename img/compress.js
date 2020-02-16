@@ -73,11 +73,13 @@ const images = [
   // 'weird-flex-but-ok.png',
   // 'yesnt.png',
   // 'pistole.png',
-  'pfpfpf.png',
-  'roshambo.png',
-  'userscripts.png',
-  'attitude.png',
-  'eyangicques.png',
+  // 'pfpfpf.png',
+  // 'roshambo.png',
+  // 'userscripts.png',
+  // 'attitude.png',
+  // 'eyangicques.png',
+  'ugwisha.png',
+  'elimination.png',
 ].map(img => path.resolve(__dirname, img));
 
 console.log('Starting...');
