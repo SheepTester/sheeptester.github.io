@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>Image translucentifier</title>
+    <meta name="description" content="Specify the foreground and background colour, and it'll make the background transparent"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@simonwep/pickr/dist/themes/monolith.min.css"/>
+    <link rel="stylesheet" type="text/css" href="/sheep3.css">
+    <script src="https://cdn.jsdelivr.net/npm/@simonwep/pickr/dist/pickr.es5.min.js"></script>
+    <script src="/sheep3.js" charset="utf-8"></script>
+    <style>
+      .pick-from-preview {
+        touch-action: none;
+        user-select: none;
+      }
+      .pick-from-preview .cover {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 1;
+        background-color: rgba(0, 0, 0, 0.8);
+        cursor: crosshair;
+      }
+      .pick-from-preview .preview-canvas {
+        position: relative;
+        z-index: 2;
+        cursor: crosshair;
+      }
+
+      .trigger {
+        -webkit-appearance: none;
+        border: none;
+        background: none;
+        font-size: 0;
+        width: 40px;
+        height: 40px;
+        border-radius: 5px;
+        box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.3);
+      }
+      .picker {
+        cursor: crosshair;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="cover"></div>
+    <p id="file-input-wrapper"></p>
+    <p><label>Foreground colour <span class="colour" id="foreground"></span></label></p>
+    <p><label>Background colour <span class="colour" id="background"></span></label></p>
+    <script type="module">
+import { AcceptImage } from './accept-image.mjs'
+import { ImageTransformer } from './image-transformer.mjs'
+
+function pixelToRGBA (pixel) {
+  return `rgba(${pixel.slice(0, 3).join(',')}, ${pixel[3] / 255})`
+}
+
+class ColourPicker {
+  constructor (previewCanvas, wrapper, onChange, defaultColour = '#000') {
+    const trigger = document.createElement('button')
+    trigger.className = 'trigger'
+    trigger.textContent = 'Pick a colour'
+    wrapper.appendChild(trigger)
+    this._pickr = new Pickr({
+      el: trigger,
+      theme: 'monolith',
+      useAsButton: true,
+      default: defaultColour,
+      components: {
+        preview: true,
+        hue: true,
+        interaction: {
+          input: true
+        }
+      }
+    })
+      .on('change', colour => {
+        this._setColourFromPickr(colour)
+      })
+      .on('changestop', () => {
+        onChange(this.colour)
+      })
+      .on('init', () => {
+        this._setColourFromPickr(this._pickr.getColor())
+      })
+    const picker = document.createElement('button')
+    picker.className = 'picker'
+    picker.textContent = 'Pick a colour from the image'
+    wrapper.appendChild(picker)
+    const c = previewCanvas.getContext('2d')
+    let pointer = null
+    picker.addEventListener('pointerdown', e => {
+      if (pointer !== null) return
+      pointer = e.pointerId
+      document.body.classList.add('pick-from-preview')
+      picker.setPointerCapture(pointer)
+    })
+    picker.addEventListener('pointermove', e => {
+      if (e.pointerId !== pointer) return
+      const { left, top, width, height } = previewCanvas.getBoundingClientRect()
+      const x = Math.floor(e.clientX - left)
+      const y = Math.floor(e.clientY - top)
+      if (x >= 0 && x < width && y >= 0 && y < height) {
+        this.colour = c.getImageData(x, y, 1, 1).data
+        trigger.style.backgroundColor = pixelToRGBA(this.colour)
+      }
+    })
+    const onEnd = e => {
+      if (e.pointerId !== pointer) return
+      onChange(this.colour)
+      picker.releasePointerCapture(pointer)
+      pointer = null
+      document.body.classList.remove('pick-from-preview')
+      this._pickr.setColor(trigger.style.backgroundColor)
+    }
+    picker.addEventListener('pointerup', onEnd)
+    picker.addEventListener('pointercancel', onEnd)
+
+    this._trigger = trigger
+    this._picker = picker
+  }
+
+  _setColourFromPickr (pickrColour) {
+    const rgba = pickrColour.toRGBA()
+    this._trigger.style.backgroundColor = rgba
+    const [r, g, b] = rgba.map(Math.floor)
+    this.colour = [r, g, b, Math.floor(rgba[3] * 255)]
+  }
+}
+
+const transformer = new ImageTransformer((canvas, c) => {
+  const image = imageInput.image
+  if (image) {
+    c.drawImage(image, 0, 0)
+    c.fillStyle = pixelToRGBA(background.colour)
+    c.fillRect(0, 0, 100, 100)
+    c.fillStyle = pixelToRGBA(foreground.colour)
+    c.fillRect(30, 30, 40, 40)
+  }
+})
+document.body.appendChild(transformer.preview)
+document.body.appendChild(transformer.output)
+transformer.preview.className = 'preview-canvas'
+
+const foreground = new ColourPicker(
+  transformer.preview,
+  document.getElementById('foreground'),
+  () => transformer.update(),
+  '#000'
+)
+const background = new ColourPicker(
+  transformer.preview,
+  document.getElementById('background'),
+  () => transformer.update(),
+  '#fff'
+)
+
+const imageInput = new AcceptImage()
+  .addFileInputTo(document.getElementById('file-input-wrapper'), 'Select an image (or paste): ')
+  .listen()
+  .onImage(image => {
+    transformer.useImage(image)
+    transformer.update()
+  })
+    </script>
+  </body>
+</html>
