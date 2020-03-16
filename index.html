@@ -62,7 +62,7 @@
 
         document.body.classList.remove('maybe-old-js');
 
-        if (!localStorage.getItem('preferences') || !localStorage.getItem('preferences').includes('list')) {
+        if (!localStorage.getItem('index.preferences') || !localStorage.getItem('index.preferences').includes('list')) {
           document.body.classList.remove('list-view');
           document.body.classList.add('grid-view');
         }

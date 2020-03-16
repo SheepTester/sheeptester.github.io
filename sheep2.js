@@ -15,7 +15,6 @@ try {
 }
 window.SHEEP = {
   version: 2,
-  preferences: JSON.parse(cookie.preferences||'{}'),
   getPref(name, defaultValue) {
     if (this.preferences[name] !== undefined) return this.preferences[name];
     else return defaultValue;
@@ -72,6 +71,11 @@ window.SHEEP = {
     return width;
   }
 };
+try {
+  window.SHEEP.preferences = JSON.parse(cookie.preferences || '{}')
+} catch (e) {
+  window.SHEEP.preferences = {}
+}
 
 document.addEventListener("DOMContentLoaded", e => {
   let homeButton = document.createElement("sheep-btn"),

@@ -76,7 +76,7 @@ document.addEventListener('DOMContentLoaded', e => {
     document.body.classList.contains('grid-view') ? 'list' : 'grid'
   } view`));
   toggleViewBtn.addEventListener('click', e => {
-    localStorage.setItem('preferences', document.body.classList.contains('grid-view') ? 'list' : 'grid');
+    localStorage.setItem('index.preferences', document.body.classList.contains('grid-view') ? 'list' : 'grid');
     document.body.classList.toggle('list-view');
     document.body.classList.toggle('grid-view');
     toggleViewBtn.disabled = true;
