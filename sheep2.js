@@ -72,9 +72,9 @@ window.SHEEP = {
   }
 };
 try {
-  window.SHEEP.preferences = JSON.parse(cookie.preferences || '{}')
+  window.SHEEP.preferences = JSON.parse(cookie.preferences || '{}');
 } catch (e) {
-  window.SHEEP.preferences = {}
+  window.SHEEP.preferences = {};
 }
 
 document.addEventListener("DOMContentLoaded", e => {

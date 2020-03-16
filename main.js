@@ -1,3 +1,5 @@
+'use strict';
+
 // TAB KEY FOCUS
 let tabFocus = false;
 document.addEventListener('keydown', e => {
@@ -71,16 +73,23 @@ document.addEventListener('DOMContentLoaded', e => {
     }
   });
 
+  let gridView = document.body.classList.contains('grid-view');
+
   const toggleViewBtn = document.getElementById('toggle-view');
-  toggleViewBtn.appendChild(document.createTextNode(`Change to ${
-    document.body.classList.contains('grid-view') ? 'list' : 'grid'
-  } view`));
+  const toggleViewLabel = document.createTextNode(`Change to ${gridView ? 'list' : 'grid'} view`);
+  toggleViewBtn.appendChild(toggleViewLabel);
   toggleViewBtn.addEventListener('click', e => {
-    localStorage.setItem('index.preferences', document.body.classList.contains('grid-view') ? 'list' : 'grid');
+    gridView = !gridView;
+    localStorage.setItem('index.preferences', gridView ? 'grid' : 'list');
+    toggleViewLabel.nodeValue = `Change to ${gridView ? 'list' : 'grid'} view`;
     document.body.classList.toggle('list-view');
     document.body.classList.toggle('grid-view');
-    toggleViewBtn.disabled = true;
-    window.location = '?from=view-change';
+    if (gridView) {
+      prepGridView();
+    } else {
+      deselectLink();
+      closeAboutBtn.click();
+    }
   });
 
   const tags = {};
@@ -88,6 +97,7 @@ document.addEventListener('DOMContentLoaded', e => {
   const filter = document.createElement('style');
   document.head.appendChild(filter);
   for (const tag of document.getElementsByClassName('tag')) {
+    if (tag === toggleViewBtn) continue;
     const tagID = tag.querySelector('span').className;
     const tagName = tag.textContent.trim();
     tags[tagID] = tagName;
@@ -120,16 +130,36 @@ document.addEventListener('DOMContentLoaded', e => {
   }
   document.body.classList.add('interactive-tags');
 
-  if (document.body.classList.contains('grid-view')) {
-    const closeAboutBtn = document.getElementById('close-about');
-    const titleElem = document.getElementById('title');
-    const descElem = document.getElementById('desc');
-    const openBtn = document.getElementById('open');
-    const defaultTitle = titleElem.textContent;
-    const defaultDesc = descElem.textContent;
-    let selected = null;
+  const links = document.getElementById('links').children;
+  for (const link of links) {
+    for (const tag of link.querySelector('.tags').children) {
+      tag.title = tags[tag.className];
+      link.classList.add('is-' + tag.className);
+    }
+  }
 
-    for (const link of document.getElementById('links').children) {
+  const closeAboutBtn = document.getElementById('close-about');
+  const titleElem = document.getElementById('title');
+  const descElem = document.getElementById('desc');
+  const openBtn = document.getElementById('open');
+  const defaultTitle = titleElem.textContent;
+  const defaultDesc = descElem.textContent;
+  let selected = null;
+  function deselectLink() {
+    if (selected === null) return;
+    selected.classList.remove('selected');
+    selected = null;
+    document.body.classList.remove('selected-link');
+    titleElem.textContent = defaultTitle;
+    descElem.textContent = defaultDesc;
+    openBtn.style.backgroundImage = null;
+    openBtn.href = '#!';
+  }
+
+  let gridViewPrepped = false;
+  function prepGridView() {
+    if (gridViewPrepped) return;
+    for (const link of links) {
       const image = document.createElement('img');
       image.addEventListener('load', e => {
         image.classList.add('loaded');
@@ -147,16 +177,11 @@ document.addEventListener('DOMContentLoaded', e => {
       const desc = link.querySelector('.desc').textContent;
       link.addEventListener('click', e => {
         if (e.shiftKey || e.ctrlKey || e.altKey || e.metaKey || e.which !== 1
+          || !gridView
           || document.body.classList.contains('tabkeyfocus')
           || openDirectly.contains(e.target)) return;
         if (link.classList.contains('selected')) {
-          selected = null;
-          link.classList.remove('selected');
-          document.body.classList.remove('selected-link');
-          titleElem.textContent = defaultTitle;
-          descElem.textContent = defaultDesc;
-          openBtn.style.backgroundImage = null;
-          openBtn.href = '#!';
+          deselectLink();
         } else {
           if (selected) {
             selected.classList.remove('selected');
@@ -171,30 +196,22 @@ document.addEventListener('DOMContentLoaded', e => {
         }
         e.preventDefault();
       });
-
-      for (const tag of link.querySelector('.tags').children) {
-        tag.title = tags[tag.className];
-        link.classList.add('is-' + tag.className);
-      }
     }
-
-    openBtn.addEventListener('click', e => {
-      if (!selected) {
-        document.body.classList.add('show-about');
-        closeAboutBtn.disabled = false;
-        e.preventDefault();
-      }
-    });
-    closeAboutBtn.addEventListener('click', e => {
-      document.body.classList.remove('show-about');
-      closeAboutBtn.disabled = true;
-    });
-  } else {
-    for (const link of document.getElementById('links').children) {
-      for (const tag of link.querySelector('.tags').children) {
-        tag.title = tags[tag.className];
-        link.classList.add('is-' + tag.className);
-      }
-    }
+    gridViewPrepped = true;
   }
+  if (gridView) {
+    prepGridView();
+  }
+
+  openBtn.addEventListener('click', e => {
+    if (!selected) {
+      document.body.classList.add('show-about');
+      closeAboutBtn.disabled = false;
+      e.preventDefault();
+    }
+  });
+  closeAboutBtn.addEventListener('click', e => {
+    document.body.classList.remove('show-about');
+    closeAboutBtn.disabled = true;
+  });
 });
