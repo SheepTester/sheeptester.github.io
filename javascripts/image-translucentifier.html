@@ -43,6 +43,13 @@
       .picker {
         cursor: crosshair;
       }
+
+      canvas {
+        image-rendering: pixelated;
+        background-color: #eee;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 2 2' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M 0 0 H 1 V 1 H 0 z M 1 1 H 2 V 2 H 1 z' fill='%23fff'/%3E%3C/svg%3E");
+        background-size: 10px;
+      }
     </style>
   </head>
   <body>
@@ -73,6 +80,7 @@ class ColourPicker {
         preview: true,
         hue: true,
         interaction: {
+          hex: true,
           input: true
         }
       }
@@ -135,10 +143,16 @@ const transformer = new ImageTransformer((canvas, c) => {
   const image = imageInput.image
   if (image) {
     c.drawImage(image, 0, 0)
-    c.fillStyle = pixelToRGBA(background.colour)
-    c.fillRect(0, 0, 100, 100)
-    c.fillStyle = pixelToRGBA(foreground.colour)
-    c.fillRect(30, 30, 40, 40)
+    const imageData = c.getImageData(0, 0, image.width, image.height)
+    for (let i = 0; i < imageData.data.length; i += 4) {
+      let opacity = 0
+      for (let c = 0; c < 3; c++) {
+        opacity += (imageData.data[i + c] - background.colour[c]) / (foreground.colour[c] - background.colour[c])
+        imageData.data[i + c] = foreground.colour[c]
+      }
+      imageData.data[i + 3] = opacity / 3 * 255
+    }
+    c.putImageData(imageData, 0, 0)
   }
 })
 document.body.appendChild(transformer.preview)

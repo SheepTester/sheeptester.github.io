@@ -12,10 +12,14 @@ export class ImageTransformer {
   }
 
   useImage (image) {
-    if (!image) return
-    this.preview.width = this.output.width = image.width
-    this.preview.height = this.output.height = image.height
-    this._previewCtx.drawImage(image, 0, 0)
+    if (image) {
+      this.preview.width = this.output.width = image.width
+      this.preview.height = this.output.height = image.height
+      this._previewCtx.drawImage(image, 0, 0)
+    } else {
+      this.preview.width = this.output.width = 0
+      this.preview.height = this.output.height = 0
+    }
   }
 
   update (...args) {
