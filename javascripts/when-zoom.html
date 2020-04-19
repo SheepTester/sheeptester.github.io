@@ -188,7 +188,7 @@ async function main () {
     zooms.innerHTML = ''
     for (const notification of notifications) {
       const { title, data } = notification
-      const { madeLazily, intendedTime } = data ?? {}
+      const { madeLazily, intendedTime } = data || {}
       if (!madeLazily) continue
       if (intendedTime < now) {
         // If it has been like a minute then get rid of it lol
