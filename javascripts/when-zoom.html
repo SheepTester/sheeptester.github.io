@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+
+    <title>When be my ZOOM??</title>
+    <meta name="description" content="Thanck to ol' corono, time zones are no longer a thing. this makes it hard to remember when your teachers' zoomy-zooms are. sometimes you do remember, but you forget the time. why do work when computer can for you?"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+    <!-- <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet"> -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" type="text/css" href="/sheep3.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="/sheep3.js" charset="utf-8"></script>
+    <style>
+      html,
+      body {
+        height: 100%;
+      }
+      body {
+        display: flex;
+        flex-direction: column;
+        font-family: 'Comic Neue', 'Comic Sans MS', 'Comic Sans', 'Papyrus', cursive, sans-serif;
+        margin: 0;
+        background-color: black;
+      }
+
+      ::selection {
+        text-decoration: underline;
+        color: lime;
+        background-color: magenta;
+      }
+
+      a {
+        color: inherit;
+      }
+      button,
+      input,
+      select,
+      textarea {
+        -webkit-appearance: none;
+        font: inherit;
+        color: inherit;
+        background: none;
+        border: none;
+      }
+      button {
+        cursor: pointer;
+      }
+
+      .cannot {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        flex: auto;
+        background-color: yellow;
+        color: blue;
+      }
+      .cannot h1 {
+        font-weight: normal
+      }
+      .future {
+        font-style: italic;
+        font-size: 1.5em;
+        letter-spacing: 5px;
+      }
+
+      .loading {
+        color: magenta;
+      }
+
+      .not-ready {
+        display: none;
+      }
+
+      .main {
+        color: white;
+        background-image: linear-gradient(45deg, purple, green);
+        justify-content: center;
+        align-items: center;
+      }
+      .uau {
+        font-style: italic;
+        font-size: 1.5em;
+        letter-spacing: 5px;
+      }
+
+      .flatpickr-calendar {
+        box-shadow: 0 3px 10px magenta;
+        background-color: blue;
+      }
+      .flatpickr-calendar span {
+        color: red;
+      }
+
+      input {
+        color: orange;
+        background-color: lavender;
+      }
+      button {
+        border: 2px solid darkgoldenrod;
+        background-color: lightgoldenrodyellow;
+        color: palevioletred;
+      }
+    </style>
+  </head>
+  <body>
+    <span class="loading">loading lol</span>
+    <h1 class="not-ready">when are your <span class="uau">zoom</span></h1>
+    <p class="not-ready">formulate a notification for it</p>
+    <p class="not-ready"><label>notification message: <input type="text" id="title" placeholder="if you see this then you need to type something here" value="some zoom meeting lol"></label></p>
+    <p class="not-ready"><label>when to send?: <input type="datetime" id="time"></label></p>
+    <p class="not-ready"><button id="schedule">schedule!</button></p>
+    <h2 class="not-ready">you'r scheduled <span class="uau">zoom-zoms</span></h2>
+    <ul class="not-ready" id="zooms"></ul>
+    <p class="not-ready">feel free to DESTROY this tab and notifications should still send! that is because this new experimental api is cool</p>
+    <script>
+async function main () {
+  if (!('serviceWorker' in navigator)) {
+    document.body.classList.add('cannot')
+    document.body.innerHTML = `
+      <h1>alarm</h1>
+      <p>you're (you are) browser is so old it cannot SERVICE WORKER. now that is purely unacceptable</p>
+      <p>(need for sending notifications)</p>
+    `
+    return
+  }
+
+  if (!('showTrigger' in Notification.prototype)) {
+    document.body.classList.add('cannot')
+    document.body.innerHTML = `
+      <h1>Your browser is required to be <span class="future">future</span>!</h1>
+      <p>This uses <span class="future">future</span> technologies for scheduling notifications. Oof</p>
+      <p>to enable on Chrom,e, you need at least Chrome 80 and then go to <strong>chrome://flags#enable-experimental-web-platform-features</strong> and select <em>Enabled</em></p>
+      <p><a href="https://web.dev/notification-triggers/">(this is a really new thing lol)</a></p>
+    `
+    return
+  }
+
+  const registration = await navigator.serviceWorker.register('/sw.js')
+
+  const permission = await Notification.requestPermission()
+  if (permission !== 'granted') {
+    document.body.classList.add('cannot')
+    document.body.innerHTML = `
+      <h1>uh</h1>
+      <p>whats the point of notification-sending web app if you want no notifications?</p>
+      <p>(if you didn't intend this, go to site settings and ENABLE NOTIFICIATIONS for this sign thanks)</p>
+    `
+    return
+  }
+
+  function schedule (title, time) {
+    return registration.showNotification(
+      title,
+      {
+        body: 'lol a zoom meeting imagine having those', // content of the push notification
+        showTrigger: new TimestampTrigger(time), // set the time for the push notification
+        data: {
+          madeLazily: true,
+          intendedTime: time
+        }
+      }
+    )
+  }
+
+  document.querySelector('.loading').remove()
+  for (const main of document.querySelectorAll('.not-ready')) {
+    main.classList.remove('not-ready')
+  }
+  document.body.classList.add('main')
+
+  const titleInput = document.getElementById('title')
+  const timeInput = flatpickr('#time', {
+    enableTime: true
+  })
+  timeInput.setDate(new Date())
+
+  const zooms = document.getElementById('zooms')
+  async function displayZooms () {
+    const notifications = await registration.getNotifications({
+      includeTriggered: true
+    })
+    const now = Date.now()
+    zooms.innerHTML = ''
+    for (const notification of notifications) {
+      const { title, data } = notification
+      const { madeLazily, intendedTime } = data ?? {}
+      if (!madeLazily) continue
+      if (intendedTime < now) {
+        // If it has been like a minute then get rid of it lol
+        if (intendedTime < now - 60000) notification.close()
+        continue
+      }
+
+      const li = document.createElement('li')
+      zooms.append(li)
+
+      const em = document.createElement('em')
+      em.textContent = title
+
+      const btn = document.createElement('button')
+      btn.textContent = 'cancelations'
+      btn.addEventListener('click', async e => {
+        btn.disabled = true
+        await notification.close()
+        await displayZooms()
+      })
+
+      li.append(em, ` on ${new Date(intendedTime).toLocaleString()} `, btn)
+    }
+  }
+
+  await displayZooms()
+
+  const scheduleBtn = document.getElementById('schedule')
+  scheduleBtn.addEventListener('click', async e => {
+    if (!timeInput.selectedDates[0] || !titleInput.value) return
+    scheduleBtn.disabled = true
+    console.log(timeInput.selectedDates[0])
+    await schedule(titleInput.value, timeInput.selectedDates[0].getTime())
+    scheduleBtn.disabled = false
+    await displayZooms()
+  })
+}
+
+main()
+  .catch(err => {
+    document.body.classList.add('cannot')
+    document.body.innerHTML = `
+      <h1>the code did a wucky</h1>
+      <p>${err.stack}</p>
+      <p>whatever that means</p>
+    `
+    console.error(err);
+  })
+    </script>
+  </body>
+</html>
