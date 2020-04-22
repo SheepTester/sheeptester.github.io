@@ -189,6 +189,7 @@ async function main () {
     zooms.innerHTML = ''
     const elems = []
     for (const notification of notifications) {
+      // `data` can be null
       const { title, data } = notification
       const { madeLazily, intendedTime } = data || {}
       if (!madeLazily) continue

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>Render image in Minecraft</title>
+    <meta name="description" content="20w17a adds support for hexadecimal colours in raw JSON. You know what that means!"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link rel="stylesheet" type="text/css" href="/sheep3.css">
+    <script src="/sheep3.js" charset="utf-8"></script>
+    <style>
+      canvas {
+        width: 50vw;
+        height: 50vh;
+        object-fit: contain;
+        image-rendering: pixelated;
+      }
+    </style>
+  </head>
+  <body>
+    <p id="file-input-wrapper"></p>
+    <canvas id="canvas"></canvas>
+    <script type="module">
+import { AcceptImage } from './accept-image.mjs'
+
+const canvas = document.getElementById('canvas')
+const c = canvas.getContext('2d')
+
+const block = '\u2588'
+let width = 12
+let height = 14
+let image = null
+
+function updateImage ({ image, width, height, fit = 'stretch' } = {}) {
+  if (fit === 'stretch' || width / height === image.width / image.height) {
+    canvas.width = width
+    canvas.height = height
+    c.drawImage(image, 0, 0, canvas.width, canvas.height)
+  } else if (fit === 'cover') {
+    canvas.width = width
+    canvas.height = height
+    if (image.width / image.height > width / height) {
+      // Image is wider
+      const offset = height / image.height * image.width - width
+      c.drawImage(image, -offset / 2, 0, canvas.width + offset, canvas.height)
+    } else {
+      // Image is taller
+      const offset = width / image.width * image.height - height
+      c.drawImage(image, 0, -offset / 2, canvas.width, canvas.height + offset)
+    }
+  } else if (fit === 'contain') {
+    if (image.width / image.height > width / height) {
+      // Image is wider
+      canvas.width = width
+      canvas.height = width / image.width * image.height
+    } else {
+      // Image is taller
+      canvas.height = height
+      canvas.width = height / image.height * image.width
+    }
+    c.drawImage(image, 0, 0, canvas.width, canvas.height)
+  } else {
+    throw new Error(`Unknown fit ${JSON.stringify(fit)}`)
+  }
+}
+
+function getRawJSON ({ context: c, interpreted = false } = {}) {
+  const { width, height, data } = c.getImageData(0, 0, c.canvas.width, c.canvas.height)
+  const components = ['']
+  const rowLength = width * 4
+  for (let i = 0; i < data.length; i += 4) {
+    components.push({
+      text: block,
+      color: '#' + (data[i] << 16 | data[i + 1] << 8 | data[i + 2])
+        .toString(16)
+        .padStart(6, '0')
+    })
+    if (i > 0 && i % rowLength === 0) {
+      components.push('\n')
+    }
+  }
+  return interpreted
+    ? JSON.stringify(JSON.stringify(components))
+    : JSON.stringify(components)
+}
+
+const imageInput = new AcceptImage()
+  .addFileInputTo(document.getElementById('file-input-wrapper'), 'Select an image (or paste): ')
+  .listen()
+  .onImage(imageFile => {
+    image = imageFile
+    updateImage({ image, width, height, fit: 'cover' })
+    console.log(getRawJSON({ context: c, interpreted: true }))
+  })
+    </script>
+  </body>
+</html>
