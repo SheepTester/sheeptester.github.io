@@ -19,11 +19,15 @@
   <body>
     <p id="file-input-wrapper"></p>
     <canvas id="canvas"></canvas>
+    <textarea id="output" rows="8" cols="80" readonly></textarea>
+    <p>(Use a command block)</p>
     <script type="module">
 import { AcceptImage } from './accept-image.mjs'
 
 const canvas = document.getElementById('canvas')
 const c = canvas.getContext('2d')
+
+const output = document.getElementById('output')
 
 const block = '\u2588'
 let width = 12
@@ -89,7 +93,9 @@ const imageInput = new AcceptImage()
   .onImage(imageFile => {
     image = imageFile
     updateImage({ image, width, height, fit: 'cover' })
-    console.log(getRawJSON({ context: c, interpreted: true }))
+    output.value = `give @p minecraft:written_book{ pages: [${
+      getRawJSON({ context: c, interpreted: true })
+    }], title: "Image", author: "20w17a" }`
   })
     </script>
   </body>
