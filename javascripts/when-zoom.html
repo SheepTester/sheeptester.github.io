@@ -175,7 +175,8 @@ async function main () {
 
   const titleInput = document.getElementById('title')
   const timeInput = flatpickr('#time', {
-    enableTime: true
+    enableTime: true,
+    time_24hr: true
   })
   timeInput.setDate(new Date())
 
@@ -186,6 +187,7 @@ async function main () {
     })
     const now = Date.now()
     zooms.innerHTML = ''
+    const elems = []
     for (const notification of notifications) {
       const { title, data } = notification
       const { madeLazily, intendedTime } = data ?? {}
@@ -197,7 +199,7 @@ async function main () {
       }
 
       const li = document.createElement('li')
-      zooms.append(li)
+      elems.push({ time: intendedTime, li })
 
       const em = document.createElement('em')
       em.textContent = title
@@ -212,6 +214,7 @@ async function main () {
 
       li.append(em, ` on ${new Date(intendedTime).toLocaleString()} `, btn)
     }
+    zooms.append(...elems.sort((a, b) => a.time - b.time).map(({ li }) => li))
   }
 
   await displayZooms()
