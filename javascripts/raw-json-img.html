@@ -14,28 +14,182 @@
         object-fit: contain;
         image-rendering: pixelated;
       }
+
+      .textarea-wrapper {
+        display: flex;
+        width: 100%:
+      }
+      .textarea-wrapper textarea {
+        flex: auto;
+        height: 100px;
+        resize: vertical;
+      }
+
+      #custom-size {
+        display: none;
+      }
     </style>
   </head>
   <body>
     <p id="file-input-wrapper"></p>
-    <canvas id="canvas"></canvas>
-    <textarea id="output" rows="8" cols="80" readonly></textarea>
-    <p>(Use a command block)</p>
+    <canvas id="canvas" width="1" height="1"></canvas>
+    <p><label>Fit: <select id="fit">
+      <option value="stretch">Stretch</option>
+      <option value="contain">Contain</option>
+      <option value="cover" selected>Cover</option>
+    </select></label></p>
+    <p><label>Dimensions: <select id="size">
+      <option value="book" selected>Book (12x14)</option>
+      <option value="chat">Chat (35x10) - May vary</option>
+      <option value="openChat">Open chat (35x20) - May vary</option>
+      <option value="custom">Custom</option>
+    </select></label></p>
+    <fieldset id="custom-size">
+      <legend>Custom size</legend>
+      <p><label>Width: <input type="number" id="width"></label></p>
+      <p><label>Height: <input type="number" id="height"></label></p>
+    </fieldset>
+    <h2>Output</h2>
+    <fieldset id="output-tellraw">
+      <legend>/tellraw</legend>
+    </fieldset>
+    <fieldset id="output-book">
+      <legend>Book</legend>
+    </fieldset>
     <script type="module">
 import { AcceptImage } from './accept-image.mjs'
+
+const block = '\u2588'
 
 const canvas = document.getElementById('canvas')
 const c = canvas.getContext('2d')
 
-const output = document.getElementById('output')
-
-const block = '\u2588'
-let width = 12
-let height = 14
 let image = null
 
+class Input {
+  constructor (labelText, value = '', type = 'text') {
+    const input = document.createElement('input')
+    this._input = input
+    input.type = type
+    input.value = value
+
+    this._isNumber = type === 'number'
+
+    const label = document.createElement('label')
+    label.appendChild(document.createTextNode(labelText))
+    label.appendChild(input)
+
+    const p = document.createElement('p')
+    this._wrapper = p
+    p.appendChild(label)
+  }
+
+  onChange (fn) {
+    this._input.addEventListener('change', fn)
+    return this
+  }
+
+  addTo (parent) {
+    parent.appendChild(this._wrapper)
+    return this
+  }
+
+  value () {
+    return this._isNumber ? +this._input.value : this._input.value
+  }
+}
+
+class Output {
+  constructor (onUpdate, onInit = null) {
+    this.meta = {}
+
+    this._onUpdate = onUpdate
+
+    const textarea = document.createElement('textarea')
+    this._textarea = textarea
+
+    const wrapper = document.createElement('div')
+    wrapper.className = 'textarea-wrapper'
+    wrapper.appendChild(textarea)
+
+    const elems = document.createDocumentFragment()
+    this._elems = elems
+    if (onInit) onInit(elems, this.meta)
+    elems.appendChild(wrapper)
+  }
+
+  update (json) {
+    this._textarea.value = this._onUpdate(json, this.meta)
+    return this
+  }
+
+  addTo (parent) {
+    parent.appendChild(this._elems)
+    return this
+  }
+}
+
+const outputs = [
+  new Output((json, { target }) => {
+    return `tellraw ${target.value()} ${json}`
+  }, (wrapper, meta) => {
+    meta.target = new Input('Target: ', '@a')
+      .onChange(updateInput).addTo(wrapper)
+  })
+    .addTo(document.getElementById('output-tellraw')),
+  new Output((json, { target, title, author }) => {
+    return `give ${target.value()} minecraft:written_book{ pages: [${
+      makeInterpretedable(json)
+    }], title: ${
+      JSON.stringify(title.value())
+    }, author: ${
+      JSON.stringify(author.value())
+    } }`
+  }, (wrapper, meta) => {
+    meta.target = new Input('Target: ', '@p')
+      .onChange(updateInput).addTo(wrapper)
+    meta.title = new Input('Title: ', 'Image')
+      .onChange(updateInput).addTo(wrapper)
+    meta.author = new Input('Author: ', '20w17a')
+      .onChange(updateInput).addTo(wrapper)
+  })
+    .addTo(document.getElementById('output-book'))
+]
+
+const fitSelect = document.getElementById('fit')
+const sizeSelect = document.getElementById('size')
+const customSizeWrapper = document.getElementById('custom-size')
+const widthInput = document.getElementById('width')
+const heightInput = document.getElementById('height')
+const sizes = {
+  book: { width: 12, height: 14 },
+  chat: { width: 35, height: 10 },
+  openChat: { width: 35, height: 20 },
+  custom: { width: 1, height: 1 }
+}
+function updateInput () {
+  customSizeWrapper.style.display = sizeSelect.value === 'custom' ? 'block' : null
+  sizes.custom.width = +widthInput.value
+  sizes.custom.height = +heightInput.value
+
+  updateImage({ image, ...sizes[sizeSelect.value], fit: fitSelect.value })
+
+  const json = getRawJSON({ context: c })
+  for (const output of outputs) {
+    output.update(json)
+  }
+}
+for (const input of [fitSelect, sizeSelect, widthInput, heightInput]) {
+  input.addEventListener('change', updateInput)
+}
+updateInput()
+
 function updateImage ({ image, width, height, fit = 'stretch' } = {}) {
+  if (!image) return
+  if (width < 1) width = 1
+  if (height < 1) height = 1
   if (fit === 'stretch' || width / height === image.width / image.height) {
+    // BUG: Going from contain -> stretch produces a different result?
     canvas.width = width
     canvas.height = height
     c.drawImage(image, 0, 0, canvas.width, canvas.height)
@@ -62,29 +216,30 @@ function updateImage ({ image, width, height, fit = 'stretch' } = {}) {
       canvas.width = height / image.height * image.width
     }
     c.drawImage(image, 0, 0, canvas.width, canvas.height)
-  } else {
-    throw new Error(`Unknown fit ${JSON.stringify(fit)}`)
   }
 }
 
-function getRawJSON ({ context: c, interpreted = false } = {}) {
+function getRawJSON ({ context: c } = {}) {
   const { width, height, data } = c.getImageData(0, 0, c.canvas.width, c.canvas.height)
   const components = ['']
   const rowLength = width * 4
   for (let i = 0; i < data.length; i += 4) {
+    if (i > 0 && i % rowLength === 0) {
+      components.push('\n')
+    }
     components.push({
       text: block,
       color: '#' + (data[i] << 16 | data[i + 1] << 8 | data[i + 2])
         .toString(16)
         .padStart(6, '0')
     })
-    if (i > 0 && i % rowLength === 0) {
-      components.push('\n')
-    }
   }
-  return interpreted
-    ? JSON.stringify(JSON.stringify(components))
-    : JSON.stringify(components)
+  const json = JSON.stringify(components)
+  return json
+}
+
+function makeInterpretedable (json) {
+  return `'${json.replace(/\\/g, '\\\\').replace(/'/g, '\\\'')}'`
 }
 
 const imageInput = new AcceptImage()
@@ -92,10 +247,7 @@ const imageInput = new AcceptImage()
   .listen()
   .onImage(imageFile => {
     image = imageFile
-    updateImage({ image, width, height, fit: 'cover' })
-    output.value = `give @p minecraft:written_book{ pages: [${
-      getRawJSON({ context: c, interpreted: true })
-    }], title: "Image", author: "20w17a" }`
+    updateInput()
   })
     </script>
   </body>

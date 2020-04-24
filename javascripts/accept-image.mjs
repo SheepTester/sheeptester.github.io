@@ -63,6 +63,9 @@ export class AcceptImage {
     input.className = 'file-input'
     input.type = 'file'
     input.accept = 'image/*'
+    input.addEventListener('change', e => {
+      this._acceptImage(input.files[0])
+    })
     label.appendChild(input)
     elem.appendChild(label)
     return this
