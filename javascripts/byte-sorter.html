@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>Byte sorter</title>
+    <meta name="description" content="Ruins a file by sorting its bytes"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link rel="stylesheet" type="text/css" href="/sheep3.css">
+    <script src="/sheep3.js" charset="utf-8"></script>
+    <style>
+      html,
+      body {
+        height: 100%;
+      }
+      body {
+        margin: 0;
+
+        display: flex;
+        flex-direction: column;
+      }
+      #file {
+        flex: auto;
+      }
+    </style>
+  </head>
+  <body>
+    <input type="file" id="file">
+    <script>
+document.getElementById('file').addEventListener('change', async function (e) {
+  if (this.files[0]) {
+    const url = URL.createObjectURL(new Blob([new Uint8Array(await this.files[0].arrayBuffer()).sort()]))
+    // https://stackoverflow.com/a/30832210
+    const downloader = document.createElement('a')
+    downloader.href = url
+    downloader.download = this.files[0].name
+    document.body.appendChild(downloader)
+    downloader.click()
+    setTimeout(() => {
+      URL.revokeObjectURL(url)
+      document.body.removeChild(downloader)
+    })
+  }
+})
+    </script>
+  </body>
+</html>
