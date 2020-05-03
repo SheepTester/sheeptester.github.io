@@ -4,7 +4,7 @@ import SharedAudioContext from './shared-audio-context.js';
 import {computeRMS} from './audio-util.js';
 
 class AudioRecorder {
-    constructor () {
+    constructor (type = 'microphone') {
         this.audioContext = new SharedAudioContext();
         this.bufferLength = 1024;
 
@@ -19,11 +19,20 @@ class AudioRecorder {
         this.buffers = [];
 
         this.disposed = false;
+
+        this.type = type;
     }
 
     startListening (onStarted, onUpdate, onError) {
         try {
-            navigator.mediaDevices.getUserMedia({audio: true})
+            let getMediaStream;
+            if (this.type === 'screen') {
+                // "Audio only requests are not supported"
+                getMediaStream = navigator.mediaDevices.getDisplayMedia({video: true, audio: true});
+            } else {
+                getMediaStream = navigator.mediaDevices.getUserMedia({audio: true});
+            }
+            getMediaStream
                 .then(userMediaStream => {
                     if (!this.disposed) {
                         this.started = true;
@@ -131,6 +140,9 @@ class AudioRecorder {
             this.sourceNode.disconnect();
             this.mediaStreamSource.disconnect();
             this.userMediaStream.getAudioTracks()[0].stop();
+            if (this.type === 'screen') {
+                this.userMediaStream.getVideoTracks()[0].stop();
+            }
         }
         this.disposed = true;
     }

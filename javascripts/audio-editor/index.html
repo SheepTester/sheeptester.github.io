@@ -109,7 +109,8 @@
       .select-option {
         display: block;
       }
-      #record-sound {
+      #record-sound,
+      #record-desktop {
         color: #d74e4a;
       }
       #record-display {
@@ -126,11 +127,20 @@
         height: 100%;
         display: block;
       }
+      .hidden {
+        display: none;
+      }
     </style>
   </head>
   <body>
-    <p>MP3s require more time to encode but result in a smaller file size. Ctrl + scroll to zoom. Assembled by <a href="https://scratch.mit.edu/users/Sheep_maker/">Sheep_maker</a> on Scratch.</p>
+    <p>MP3s require more time to encode but result in a smaller file size. Ctrl + scroll to zoom. Assembled by <a href="https://scratch.mit.edu/users/Sheep_maker/">Sheep_maker</a> on Scratch. <button id="open-desktop-audio">Try recording desktop audio</button> </p>
     <p><label for="add-sound">Add sound: </label><input type="file" id="add-sound" accept=".mp3,.wav"> <button id="new-sound">Add empty sound</button> <a href="about.html">About</a></p>
+    <fieldset id="desktop-audio" class="hidden">
+      <legend>Record desktop audio</legend>
+      <p>Recording desktop audio is only supported on <a href="https://caniuse.com/#feat=mdn-api_mediadevices_getdisplaymedia_audio-capture-support">Windows or ChromeOS in Edge or Chrome</a>.</p>
+      <p>Clicking the below button will open a dialogue prompting you to share your screen. Make sure that you check "Share audio."</p>
+      <button id="record-desktop">record desktop audio</button>
+    </fieldset>
     <p><button id="record-sound">record sound</button><button id="stop-record" disabled>stop recording</button><span id="record-display"></span></p>
   </body>
 </html>

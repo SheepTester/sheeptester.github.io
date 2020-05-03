@@ -51,6 +51,7 @@ document.addEventListener('DOMContentLoaded', e => {
     addSound(randomName('sound'), new Float32Array(1), 48000);
   });
   const recordSound = document.getElementById('record-sound');
+  const recordDesktop = document.getElementById('record-desktop');
   const stopRecord = document.getElementById('stop-record');
   const recordingDisplay = document.getElementById('record-display');
   recordingDisplay.style.display = 'none';
@@ -59,27 +60,51 @@ document.addEventListener('DOMContentLoaded', e => {
     recordingDisplay.style.setProperty('--level', level * 100 + '%');
     recordingDisplay.dataset.time = (Date.now() - recordingStartTime) / 1000 + 's';
   }
-  recordSound.addEventListener('click', e => {
-    if (audioRecorder) return;
+  function startRecording(recorder) {
     recordSound.disabled = true;
+    recordDesktop.disabled = true;
     stopRecord.disabled = false;
-    audioRecorder = new AudioRecorder();
+
+    audioRecorder = recorder;
     audioRecorder.startListening(() => {
       recordingDisplay.style.display = null;
       recordingStartTime = Date.now();
       audioRecorder.startRecording();
-    }, levelUpdate, () => {
-      alert('recording problem');
+    }, levelUpdate, err => {
+      console.error(err);
+      try {
+        stopRecording();
+      } catch (err) {
+        console.error(err);
+      }
+      alert('There was a problem with getting access to the recording source.');
     });
-  });
-  stopRecord.addEventListener('click', e => {
-    if (!audioRecorder) return;
+  }
+  function stopRecording() {
     recordSound.disabled = false;
+    recordDesktop.disabled = false;
     stopRecord.disabled = true;
-    const {samples, sampleRate} = audioRecorder.stop();
-    addSound(randomName('recording'), samples, sampleRate);
+
     audioRecorder.dispose();
     audioRecorder = null;
     recordingDisplay.style.display = 'none';
+  }
+  recordSound.addEventListener('click', e => {
+    if (audioRecorder) return;
+    startRecording(new AudioRecorder());
+  });
+  recordDesktop.addEventListener('click', e => {
+    if (audioRecorder) return;
+    startRecording(new AudioRecorder('screen'));
+  });
+  stopRecord.addEventListener('click', e => {
+    if (!audioRecorder) return;
+    const {samples, sampleRate} = audioRecorder.stop();
+    addSound(randomName('recording'), samples, sampleRate);
+    stopRecording();
+  });
+  const desktopAudioWrapper = document.getElementById('desktop-audio');
+  document.getElementById('open-desktop-audio').addEventListener('click', e => {
+    desktopAudioWrapper.classList.toggle('hidden');
   });
 });
