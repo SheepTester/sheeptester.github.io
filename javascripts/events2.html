@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>Events 2.0</title>
+    <meta name="description" content="Using a for-in loop to expose all events of an EventTarget."/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link rel="stylesheet" type="text/css" href="/sheep3.css">
+    <script src="/sheep3.js" charset="utf-8"></script>
+    <style>
+      html,
+      body {
+        height: 100%;
+      }
+      body {
+        display: flex;
+
+        margin: 0;
+        background-color: #eee;
+      }
+
+      textarea {
+        -webkit-appearance: none;
+        border: none;
+        background: none;
+        font: inherit;
+        color: inherit;
+      }
+
+      .demo-area {
+        padding: 20px;
+        flex: auto;
+      }
+      .card {
+        padding: 20px;
+        border-radius: 5px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+        margin: 0;
+      }
+      .card:not(:last-child) {
+        margin-bottom: 20px;
+      }
+      /* https://colorhunt.co/palette/172856 */
+      .wrapper-card {
+        background-color: #f3d4d4;
+      }
+      .textarea {
+        background-color: #4f3961;
+        color: white;
+      }
+      .contenteditable {
+        background-color: #ea728c;
+      }
+      .separate-card {
+        background-color: #fc9d9d;
+      }
+
+      .statistics {
+        max-height: 100%;
+        overflow: auto;
+        padding: 0 10px;
+      }
+      .target-heading {
+        font-weight: normal;
+        cursor: pointer;
+      }
+      .event {
+        display: flex;
+        justify-content: space-between;
+      }
+      .never-fired {
+        opacity: 0.5;
+      }
+      .closed .target-heading {
+        font-style: italic;
+      }
+      .closed .event {
+        display: none;
+      }
+
+      .flash1,
+      .flash2 {
+        animation-duration: 0.5s;
+        animation-fill-mode: forwards;
+      }
+      .flash1 {
+        animation-name: flash1;
+      }
+      .flash2 {
+        animation-name: flash2;
+      }
+      /* Two flash animations to quickly replay? */
+      @keyframes flash1 {
+        from {
+          background-color: yellow;
+        }
+        to {
+          background-color: transparent;
+        }
+      }
+      @keyframes flash2 {
+        from {
+          background-color: yellow;
+        }
+        to {
+          background-color: transparent;
+        }
+      }
+    </style>
+    <script type="text/javascript">
+function trackEvents (target, update) {
+  const discovered = new Set()
+  const fires = new Map()
+  function listener ({ type }) {
+    fires.set(type, fires.get(type) + 1)
+    discovered.add(type)
+    update(type)
+  }
+  for (const property in target) {
+    if (property.startsWith('on')) {
+      const name = property.slice(2)
+      fires.set(name, 0)
+      target.addEventListener(name, listener)
+    }
+  }
+  return { discovered, fires }
+}
+
+const statistics = document.createElement('div')
+statistics.className = 'statistics'
+
+function startTracking (name, target) {
+  const { discovered, fires } = trackEvents(target, update)
+
+  const discoveredCount = document.createElement('span')
+  discoveredCount.className = 'discovered'
+  discoveredCount.textContent = '0'
+
+  const heading = document.createElement('h2')
+  heading.className = 'target-heading'
+  heading.tabIndex = 0
+  heading.appendChild(document.createTextNode(`${name} (`))
+  heading.appendChild(discoveredCount)
+  heading.appendChild(document.createTextNode(` / ${fires.size})`))
+
+  const wrapper = document.createElement('div')
+  wrapper.className = 'target-wrapper closed'
+  wrapper.appendChild(heading)
+
+  const eventEntries = new Map()
+  for (const eventName of fires.keys()) {
+    const name = document.createElement('span')
+    name.className = 'event-name'
+    name.textContent = eventName
+
+    const count = document.createElement('span')
+    count.className = 'event-count'
+    count.textContent = '0'
+
+    const entry = document.createElement('div')
+    entry.className = 'event never-fired'
+    entry.dataset.count = 0
+    entry.appendChild(name)
+    entry.appendChild(document.createTextNode(' '))
+    entry.appendChild(count)
+
+    eventEntries.set(eventName, { count, entry })
+    wrapper.appendChild(entry)
+  }
+  function update (name) {
+    discoveredCount.textContent = discovered.size
+
+    const { entry, count } = eventEntries.get(name)
+    if (entry.classList.contains('never-fired')) {
+      entry.classList.remove('never-fired')
+    }
+    if (entry.classList.contains('flash2')) {
+      entry.classList.add('flash1')
+      entry.classList.remove('flash2')
+    } else {
+      entry.classList.remove('flash1')
+      entry.classList.add('flash2')
+    }
+    const fireCount = fires.get(name)
+    count.textContent = fireCount
+    entry.dataset.count = fireCount
+
+    // Move entry up
+    let elem = entry
+    while (+elem.dataset.count <= fireCount && elem.classList.contains('event')) {
+      elem = elem.previousElementSibling
+    }
+    wrapper.insertBefore(entry, elem.nextElementSibling)
+  }
+
+  heading.addEventListener('click', e => {
+    wrapper.classList.toggle('closed')
+  })
+
+  statistics.appendChild(wrapper)
+}
+
+startTracking('window', window)
+startTracking('document', document)
+    </script>
+  </head>
+  <body>
+    <script type="text/javascript">
+startTracking('<body>', document.body)
+    </script>
+    <div class="demo-area">
+      <p>Try to get them all!</p>
+      <div class="card wrapper-card">
+        <textarea class="card textarea" id="textarea">Edit me!</textarea>
+        <div class="card contenteditable" contenteditable="true" id="contenteditable">Edit me too!</div>
+      </div>
+      <div class="card separate-card">I am a card.</div>
+    </div>
+    <script type="text/javascript">
+startTracking('<textarea>', document.getElementById('textarea'))
+startTracking('contenteditable <div>', document.getElementById('contenteditable'))
+
+document.body.appendChild(statistics)
+    </script>
+  </body>
+</html>
