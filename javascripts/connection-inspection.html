@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>Connection inspection</title>
+    <meta name="description" content="Uses the Network Inspection API, which is only supported in Chromium browsers."/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link href="https://fonts.googleapis.com/css2?family=Questrial&display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="/sheep3.css">
+    <script src="/sheep3.js" charset="utf-8"></script>
+    <style>
+      html,
+      body {
+        height: 100%;
+      }
+      body {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+
+        margin: 0;
+        padding: 20px;
+        box-sizing: border-box;
+        background-color: rgba(0, 0, 0, 0.05);
+        font-family: 'Questrial', sans-serif;
+      }
+
+      .online-status span {
+        display: none;
+        font-size: 40px;
+        color: white;
+        padding: 5px 20px;
+        border-radius: 100px;
+      }
+      .online .online-text,
+      .offline .offline-text {
+        display: block;
+      }
+      /* https://colorhunt.co/palette/171720 */
+      .online .online-text {
+        background-color: #50bda1;
+      }
+      .offline .offline-text {
+        background-color: #e85f99;
+      }
+
+      .info {
+        border-collapse: collapse;
+        margin: 20px 0;
+      }
+      .info td {
+        border: 1px solid rgba(0, 0, 0, 0.3);
+        padding: 10px;
+      }
+      .name {
+        background-color: rgba(0, 0, 0, 0.1);
+      }
+
+      .has-badge span {
+        color: white;
+        background-color: black;
+        text-transform: uppercase;
+        padding: 2px 5px;
+        border-radius: 3px;
+      }
+
+      /* https://colorhunt.co/palette/179350 */
+      .value .effectiveType-slow-2g {
+        background-color: #511845;
+      }
+      .value .effectiveType-2g {
+        background-color: #900c3f;
+      }
+      .value .effectiveType-3g {
+        background-color: #c70039;
+      }
+      .value .effectiveType-4g {
+        background-color: #ff5733;
+      }
+
+      /* https://colorhunt.co/palette/171392 */
+      .value .type-bluetooth {
+        background-color: #142850;
+      }
+      .value .type-cellular {
+        background-color: #27496d;
+      }
+      .value .type-ethernet {
+        background-color: #0c7b93;
+      }
+      .value .type-wifi {
+        background-color: #00a8cc;
+      }
+      /* https://colorhunt.co/palette/175336 */
+      .value .type-wimax {
+        background-color: #721b65;
+      }
+      .value .type-none {
+        background-color: #b80d57;
+      }
+      .value .type-other {
+        background-color: #f8615a;
+      }
+      .value .type-unknown {
+        background-color: #ffd868;
+      }
+
+      .learn-more {
+        color: rgba(0, 0, 0, 0.5);
+        font-size: 0.8em;
+        margin: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="online-status">
+      <span class="online-text">Online</span>
+      <span class="offline-text">Offline</span>
+    </div>
+    <table class="info">
+      <tr>
+        <td class="name">Bandwidth estimate</td>
+        <td class="value"><span data-insert="downlink"></span><span data-insert="downlinkMaxMaybe"></span> Mbps</td>
+      </tr>
+      <tr>
+        <td class="name">Effective type</td>
+        <td class="value has-badge"><span data-insert="effectiveType"></span></td>
+      </tr>
+      <tr>
+        <td class="name">Round-trip time</td>
+        <td class="value"><span data-insert="rtt"></span> ms</td>
+      </tr>
+      <tr>
+        <td class="name">Should reduce data usage?</td>
+        <td class="value" data-insert="saveData"></td>
+      </tr>
+      <tr>
+        <td class="name">Type of connection</td>
+        <td class="value has-badge"><span data-insert="type"></span> </td>
+      </tr>
+    </table>
+    <p class="learn-more">Learn more about the <a href="https://developer.mozilla.org/en-US/docs/Web/API/NetworkInformation">Network Information API</a>.</p>
+    <script>
+function update () {
+  const info = navigator.connection
+  for (const element of document.querySelectorAll('[data-insert]')) {
+    switch (element.dataset.insert) {
+      case 'downlinkMaxMaybe':
+        if (Number.isFinite(info.downlinkMax)) {
+          element.textContent = ` / ${info.downlinkMax}`
+        } else {
+          element.textContent = ''
+        }
+        break
+      default:
+        element.textContent = info[element.dataset.insert]
+        element.className = `${element.dataset.insert}-${info[element.dataset.insert]}`
+    }
+  }
+}
+update()
+navigator.connection.addEventListener('change', update)
+
+function updateOnlineStatus () {
+  // Not Scratch-friendly
+  const isOnline = navigator.onLine
+  for (const element of document.getElementsByClassName('online-status')) {
+    if (isOnline) {
+      element.classList.add('online')
+      element.classList.remove('offline')
+    } else {
+      element.classList.add('offline')
+      element.classList.remove('online')
+    }
+  }
+}
+updateOnlineStatus()
+window.addEventListener('online', updateOnlineStatus)
+window.addEventListener('offline', updateOnlineStatus)
+    </script>
+  </body>
+</html>
