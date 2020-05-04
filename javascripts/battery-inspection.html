@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>Battery inspection</title>
+    <meta name="description" content="Uses the Battery Status API to inspect your battery. Only supported in Chrome."/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech&display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="/sheep3.css">
+    <script src="/sheep3.js" charset="utf-8"></script>
+    <style>
+      /* https://colorhunt.co/palette/179373 */
+      :root {
+        --background: #222831;
+        --container: #30475e;
+        --charge: #f2a365;
+        --foreground: #ececec;
+      }
+      html,
+      body {
+        height: 100%;
+      }
+      body {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+
+        margin: 0 20px;
+        background-color: var(--background);
+        color: var(--foreground);
+        font-family: 'Share Tech', monospace;
+        font-size: 36px;
+        text-align: center;
+      }
+      strong {
+        font-weight: normal;
+        color: var(--charge);
+      }
+      .battery-svg {
+        max-width: 200px;
+      }
+      .battery,
+      .charging-icon {
+        stroke: var(--foreground);
+        stroke-width: 5px;
+        stroke-linejoin: round;
+        stroke-linecap: round;
+        fill: none;
+      }
+      .charge {
+        fill: var(--charge);
+        height: calc(160px * var(--level));
+        y: calc(170px - 160px * var(--level));
+      }
+      .charging-icon {
+        visibility: hidden;
+      }
+      .charging .charging-icon {
+        visibility: visible;
+      }
+    </style>
+  </head>
+  <body>
+    <svg class="battery-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 180">
+      <defs>
+        <clipPath id="battery-shape">
+          <path d="
+            M 10 20
+            h 20
+            l 10 -10
+            h 20
+            l 10 10
+            h 20
+            v 150
+            h -80
+            z
+          "/>
+        </clipPath>
+      </defs>
+      <rect class="charge" clip-path="url(#battery-shape)" x="10" y="10" width="80" height="160"/>
+      <path class="battery" d="
+        M 10 20
+        h 20
+        l 10 -10
+        h 20
+        l 10 10
+        h 20
+        v 150
+        h -80
+        z
+      "/>
+      <path class="charging-icon" d="
+        M 50 75
+        l -10 20
+        h 20
+        l -10 20
+      ">
+    </svg>
+    <p><strong id="time"></strong> until <span id="until"></span> (<strong id="charge"></strong>)</p>
+    <script>
+const time = document.getElementById('time')
+const until = document.getElementById('until')
+const charge = document.getElementById('charge')
+function toTime (seconds) {
+  if (!Number.isFinite(seconds)) {
+    return 'Some time'
+  } else if (seconds < 60) {
+    return `${seconds} second${seconds === 1 ? '' : 's'}`
+  } else if (seconds < 60 * 60) {
+    return `${seconds / 60 | 0}:${(seconds % 60).toFixed(0).padStart(2, '0')}`
+  } else {
+    return `${seconds / 60 / 60 | 0}:${(seconds / 60 % 60 | 0).toFixed(0).padStart(2, '0')}:${(seconds % 60).toFixed(0).padStart(2, '0')}`
+  }
+}
+async function updateDisplay () {
+  const manager = await navigator.getBattery()
+  const { charging, chargingTime, dischargingTime, level } = manager
+  document.body.style.setProperty('--level', level)
+  charge.textContent = (level * 100).toFixed(0) + '%'
+  if (charging) {
+    document.body.classList.add('charging')
+    time.textContent = toTime(chargingTime)
+    until.textContent = 'full charge'
+  } else {
+    document.body.classList.remove('charging')
+    time.textContent = toTime(dischargingTime)
+    until.textContent = 'death'
+  }
+  return manager
+}
+updateDisplay()
+  .then(manager => {
+    manager.addEventListener('chargingchange', updateDisplay)
+    manager.addEventListener('chargingtimechange', updateDisplay)
+    manager.addEventListener('dischargingtimechange', updateDisplay)
+    manager.addEventListener('levelchange', updateDisplay)
+  })
+
+    </script>
+  </body>
+</html>
