@@ -32,7 +32,7 @@ class SelectTool {
       Math.abs(this.initX - this.lastX),
       Math.abs(this.initY - this.lastY)
     );
-    this.parent.mc.clearRect(this.lastX, this.lastY, this.initX - this.lastX + 1, this.initY - this.lastY + 1);
+    // this.parent.mc.clearRect(this.lastX, this.lastY, this.initX - this.lastX + 1, this.initY - this.lastY + 1);
     return {
       select: true,
       data: data,

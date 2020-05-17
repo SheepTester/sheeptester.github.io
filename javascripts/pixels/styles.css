@@ -25,7 +25,7 @@ canvas {
   background-size: 20px 20px;
 }
 .transparent {
-  background-image: linear-gradient(45deg, #2B2B2B 25%, transparent 25%, transparent 75%, #2B2B2B 75%, #2B2B2B 100%), linear-gradient(45deg, #2B2B2B 25%, black 25%, black 75%, #2B2B2B 75%, #2B2B2B 100%);
+  background-image: linear-gradient(45deg, #2B2B2B 25%, transparent 25%, transparent 75%, #2B2B2B 75%, #2B2B2B 100%), linear-gradient(45deg, #2B2B2B 25%, #212121 25%, #212121 75%, #2B2B2B 75%, #2B2B2B 100%);
 }
 .toolbar {
   position: fixed;
@@ -329,4 +329,5 @@ input[type=checkbox]:focus {
 }
 #preview {
   pointer-events: none;
+  filter: drop-shadow(0 0 3px red);
 }
