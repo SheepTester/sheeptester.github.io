@@ -15,8 +15,13 @@ export default function main (token) {
   })
 
   client.on('message', message => {
-    // If the message is "how to embed"
-    if (message.content === 'how to embed') {
+    if (message.content === 'ping') {
+      // Send "pong" to the same channel
+      message.channel.send('pong')
+    } else if (message.content === 'what is my avatar') {
+      // Send the user's avatar URL
+      message.reply(message.author.displayAvatarURL())
+    } else if (message.content === 'how to embed') {
       // We can create embeds using the MessageEmbed constructor
       // Read more about all that you can do with the constructor
       // over at https://discord.js.org/#/docs/main/master/class/MessageEmbed
