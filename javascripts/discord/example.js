@@ -2,7 +2,7 @@ import Discord from './discord.js'
 
 const { Client, MessageEmbed } = Discord
 
-export default function main () {
+export default function main (token) {
   // Create an instance of a Discord client
   const client = new Client()
 
