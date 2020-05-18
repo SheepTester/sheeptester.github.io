@@ -49,7 +49,15 @@ export default function main (token) {
             await msg.react('👍').catch(() => 'whatever')
             break
           default:
-            await msg.reply(`${CODE}js\n${JSON.stringify(output, null, 2)}\n${CODE}`)
+            await msg.reply(`${CODE}js\n${JSON.stringify(output, (key, value) => {
+              if (typeof value === 'function') {
+                return value.toString()
+              } else if (typeof value === 'symbol') {
+                return `Symbol(${value.description})`
+              } else {
+                return value
+              }
+            }, 2)}\n${CODE}`)
         }
       } catch (err) {
         msg.reply(`${CODE}js\n${err.stack}\n${CODE}`)
