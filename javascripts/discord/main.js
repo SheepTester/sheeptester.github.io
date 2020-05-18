@@ -47,6 +47,8 @@ if (script) {
         empty(document.body)
         import(new URL(script, window.location)).then(({ default: main }) => {
           main(tokenInput.value)
+        }).catch(() => {
+          document.body.appendChild(Elem('p', {}, ['There was a problem. Check the console?']))
         })
       }
     }, ['Start'])

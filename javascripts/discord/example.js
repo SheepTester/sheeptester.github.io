@@ -11,7 +11,7 @@ export default function main (token) {
    * received from Discord
    */
   client.on('ready', () => {
-    console.log('I am ready!');
+    console.log('I am ready!')
   })
 
   client.on('message', message => {
