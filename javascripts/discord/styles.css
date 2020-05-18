@@ -1,0 +1,50 @@
+@import url('https://fonts.googleapis.com/css2?family=Balsamiq+Sans&display=swap');
+
+body {
+  background-color: black;
+  color: white;
+  font-family: 'Balsamiq Sans', cursive;
+}
+button,
+input {
+  -webkit-appearance: none;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  background: none;
+  color: inherit;
+  font: inherit;
+}
+button:not(:disabled) {
+  cursor: pointer;
+}
+button:focus,
+input:focus {
+  border-color: white;
+  outline: none;
+}
+
+input[type=checkbox] {
+  width: 15px;
+  height: 15px;
+  position: relative;
+  vertical-align: bottom;
+}
+input[type=checkbox]:not(:disabled) {
+  cursor: pointer;
+}
+input[type=checkbox]:checked {
+  background-color: rgba(255, 255, 255, 0.3);
+}
+input[type=checkbox]:checked::after {
+  content: '';
+  position: absolute;
+  width: 5px;
+  height: 5px;
+  top: 0;
+  left: 0;
+  margin: 4px;
+  background-color: white;
+}
+
+:disabled {
+  opacity: 0.5;
+}
