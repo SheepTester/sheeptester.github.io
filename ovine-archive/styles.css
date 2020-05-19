@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Raleway:wght@300&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Raleway:ital@0;1&family=Roboto+Slab:wght@400;700&display=swap');
 
 html,
 body {
@@ -12,6 +12,7 @@ body {
 
   display: flex;
   flex-direction: column;
+  font-family: 'Raleway', sans-serif;
 }
 
 button,
@@ -40,6 +41,10 @@ a {
 h1,
 h2,
 h3 {
+  font-family: 'Roboto Slab', serif;
+  margin: 0;
+}
+h3 {
   font-weight: normal;
 }
 
@@ -65,7 +70,6 @@ h3 {
   background-position: center;
   flex-direction: column;
   z-index: 1;
-  font-family: 'Raleway', sans-serif;
   color: white;
 }
 .title-wrapper {
@@ -73,19 +77,22 @@ h3 {
   align-items: center;
   flex-direction: column;
 }
-.title {
-  margin: 0;
-  font-size: 60px;
-  background-color: black;
-}
+.title,
 .author {
   margin: 0;
+  background-color: black;
+  color: white;
+  font-weight: 300;
+  font-family: 'Raleway', sans-serif;
+}
+.title {
+  font-size: 60px;
+}
+.author {
   margin-top: 20px;
   text-transform: uppercase;
   font-size: 24px;
   padding: 0 5px;
-  background-color: black;
-  color: white;
 }
 .scroll-down {
   position: absolute;
@@ -140,22 +147,40 @@ h3 {
 .table-of-contents {
   position: sticky;
   top: 0;
-  padding: 20px;
   white-space: nowrap;
+  color: rgba(0, 0, 0, 0.8);
+  z-index: 1;
+}
+.contents-heading {
+  font-size: 24px;
+  margin: 20px;
+  margin-bottom: 5px;
 }
 .contents-main {
+  display: flex;
+  flex-direction: column;
   margin: 0;
   padding: 0;
   list-style: none;
 }
-
-@media (max-width: 600px) {
-  .content-wrapper {
-    flex-direction: column;
-  }
-  .table-of-contents {
-    position: static;
-  }
+.piece-link {
+  display: flex;
+  flex-direction: column;
+  padding: 5px 20px;
+}
+.piece-link:not(.selected):hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+.piece-link.selected {
+  background-image: linear-gradient(90deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.05));
+  cursor: default;
+}
+.link-title {
+  font-family: 'Roboto Slab', serif;
+}
+.link-type {
+  font-style: italic;
+  color: rgba(0, 0, 0, 0.6);
 }
 
 .content {
@@ -169,6 +194,20 @@ h3 {
   margin: 0 auto;
   max-width: 800px;
 }
+.piece hgroup {
+  margin-bottom: 20px;
+}
+.piece-title {
+  font-size: 48px;
+}
+.piece-type {
+  font-size: 24px;
+}
+.piece p {
+  margin: 0;
+  text-indent: 0.5in;
+  line-height: 1.8;
+}
 .separator {
   height: 100vh;
   background-image: url('./sheep.png');
@@ -177,12 +216,49 @@ h3 {
   background-repeat: no-repeat;
   opacity: 0.1;
 }
-@media not all and (max-width: 600px) {
-  .return-to-toc:not(:focus) {
-    color: transparent;
-    font-size: 0;
+.return-to-toc:not(:focus) {
+  color: transparent;
+  font-size: 0;
+  position: absolute;
+  z-index: -1;
+}
+
+@media (max-width: 600px) {
+  html {
+    scroll-padding-top: 120px;
+  }
+  .content-wrapper {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .table-of-contents {
+    background-color: #E6DDCE;
+  }
+  .table-of-contents::after {
+    content: '';
     position: absolute;
-    z-index: -1;
+    top: 100%;
+    left: 0;
+    right: 0;
+    height: 100vh;
+    box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.5);
+    pointer-events: none;
+  }
+  .contents-heading {
+    margin-top: 15px;
+  }
+  .contents-main {
+    flex-direction: row;
+    overflow-x: auto;
+  }
+  .contents-main li {
+    flex: 1 0 0;
+  }
+  .piece-link.selected {
+    background-image: linear-gradient(180deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.05));
+  }
+  .content {
+    box-shadow: none;
   }
 }
 
