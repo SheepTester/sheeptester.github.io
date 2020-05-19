@@ -48,6 +48,10 @@ h3 {
   font-weight: normal;
 }
 
+::selection {
+  background-color: rgba(255, 255, 0, 0.5);
+}
+
 .centre-flex {
   display: flex;
   align-items: center;
@@ -257,9 +261,13 @@ h3 {
   .contents-main {
     flex-direction: row;
     overflow-x: auto;
+    padding: 0 10px;
   }
   .contents-main li {
     flex: 1 0 0;
+  }
+  .piece-link {
+    padding: 5px 10px;
   }
   .piece-link.selected {
     background-image: linear-gradient(180deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.05));
@@ -291,10 +299,19 @@ h3 {
   background-color: rgba(0, 0, 0, 0.2);
   font-size: 20px;
   padding: 10px 20px;
-  transition: background-color .2s;
+  background-image: url('./go.svg');
+  background-position: 150% 50%;
+  background-size: 20px;
+  background-repeat: no-repeat;
+  transition: all .2s;
 }
 .expert-play-btn:hover {
+  background-position-x: calc(100% - 15px);
+  padding-right: 50px;
   background-color: black;
+}
+.expert-play-btn:active {
+  border-color: rgba(255, 255, 255, 0.7);
 }
 
 :disabled {
