@@ -47,6 +47,7 @@ h3 {
   display: flex;
   align-items: center;
   justify-content: center;
+  text-align: center;
 }
 .pixelated {
   image-rendering: crisp-edges;
@@ -92,6 +93,26 @@ h3 {
   left: 0;
   right: 0;
   text-align: center;
+  font-size: 0;
+  display: block;
+  width: 50px;
+  height: 50px;
+  margin: 20px auto;
+  background-image: url('./down.svg');
+  background-position: 50%;
+  background-size: contain;
+  animation: scroll-down-please 1.5s cubic-bezier(0.7, 0, 0.3, 1) infinite;
+}
+@keyframes scroll-down-please {
+  0% {
+    background-position-y: 0;
+  }
+  80% {
+    background-position-y: 50px;
+  }
+  100% {
+    background-position-y: 50px;
+  }
 }
 
 .shadow {
@@ -128,6 +149,15 @@ h3 {
   list-style: none;
 }
 
+@media (max-width: 600px) {
+  .content-wrapper {
+    flex-direction: column;
+  }
+  .table-of-contents {
+    position: static;
+  }
+}
+
 .content {
   flex: auto;
   padding: 20px;
@@ -146,6 +176,14 @@ h3 {
   background-position: center;
   background-repeat: no-repeat;
   opacity: 0.1;
+}
+@media not all and (max-width: 600px) {
+  .return-to-toc:not(:focus) {
+    color: transparent;
+    font-size: 0;
+    position: absolute;
+    z-index: -1;
+  }
 }
 
 :disabled {
