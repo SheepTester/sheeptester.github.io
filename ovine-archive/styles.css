@@ -147,9 +147,9 @@ h3 {
 .table-of-contents {
   position: sticky;
   top: 0;
-  white-space: nowrap;
   color: rgba(0, 0, 0, 0.8);
   z-index: 1;
+  max-width: 300px;
 }
 .contents-heading {
   font-size: 24px;
@@ -163,17 +163,22 @@ h3 {
   padding: 0;
   list-style: none;
 }
+.selected {
+  background-image: linear-gradient(90deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.05));
+}
 .piece-link {
   display: flex;
   flex-direction: column;
   padding: 5px 20px;
 }
-.piece-link:not(.selected):hover {
+.piece-link:hover {
   background-color: rgba(0, 0, 0, 0.05);
 }
-.piece-link.selected {
-  background-image: linear-gradient(90deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.05));
+.selected .piece-link {
   cursor: default;
+}
+.selected .piece-link:hover {
+  background-color: transparent;
 }
 .link-title {
   font-family: 'Roboto Slab', serif;
@@ -193,6 +198,7 @@ h3 {
 .piece {
   margin: 0 auto;
   max-width: 800px;
+  padding: 20px 0;
 }
 .piece hgroup {
   margin-bottom: 20px;
@@ -233,6 +239,8 @@ h3 {
   }
   .table-of-contents {
     background-color: #E6DDCE;
+    white-space: nowrap;
+    max-width: none;
   }
   .table-of-contents::after {
     content: '';
@@ -254,7 +262,7 @@ h3 {
   .contents-main li {
     flex: 1 0 0;
   }
-  .piece-link.selected {
+  .selected {
     background-image: linear-gradient(180deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.05));
   }
   .content {
