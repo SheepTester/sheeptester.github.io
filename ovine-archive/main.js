@@ -31,8 +31,9 @@ function getCurrentSection () {
 
 let previousSection
 
-function updateCurrentSection () {
+async function updateCurrentSection (then = Promise.resolve()) {
   const piece = getCurrentSection()
+  await then
   if (piece !== previousSection) {
     if (previousSection) {
       previousSection.link.classList.remove('selected')
@@ -42,16 +43,34 @@ function updateCurrentSection () {
   }
 }
 
+const titleWrapper = document.getElementById('title-wrapper')
+
+async function fadeTitleWrapper (then = Promise.resolve()) {
+  const scrollY = window.scrollY
+  const height = window.innerHeight
+  await then
+  if (scrollY < height) {
+    titleWrapper.style.setProperty('--black', `rgba(0, 0, 0, ${1 - scrollY / height})`)
+  }
+}
+
+function updateScroll () {
+  let measurementsDone
+  const afterMeasurements = new Promise(resolve => (measurementsDone = resolve))
+  updateCurrentSection(afterMeasurements)
+  fadeTitleWrapper(afterMeasurements)
+  measurementsDone()
+}
+
 window.addEventListener('scroll', e => {
-  updateCurrentSection()
+  updateScroll()
 })
 
 window.addEventListener('resize', e => {
   getSectionRects()
-  updateCurrentSection()
 })
 
 getSectionRects()
-updateCurrentSection()
+updateScroll()
 
 export { pieces, getCurrentSection, getSectionRects }
