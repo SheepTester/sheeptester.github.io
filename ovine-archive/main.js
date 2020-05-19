@@ -68,6 +68,7 @@ window.addEventListener('scroll', e => {
 
 window.addEventListener('resize', e => {
   getSectionRects()
+  updateScroll()
 })
 
 getSectionRects()
