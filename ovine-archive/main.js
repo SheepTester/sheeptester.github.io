@@ -10,32 +10,48 @@ const pieces = Array.from(document.querySelectorAll('.piece-link'), link => {
 })
 
 function getSectionRects () {
+  const scrollY = window.scrollY
   for (const piece of pieces) {
-    piece.rect = piece.section.getBoundingClientRect()
+    const { top, bottom } = piece.section.getBoundingClientRect()
+    piece.top = top + scrollY
+    piece.bottom = bottom + scrollY
   }
 }
 
 function getCurrentSection () {
-  let lookingAt = document.elementFromPoint(window.innerWidth / 2, window.innerHeight / 2)
-    .closest('.piece, .separator')
-  if (lookingAt) {
-    if (lookingAt.classList.contains('separator')) {
-      lookingAt = lookingAt.previousElementSibling
-    }
-    const piece = getItemByProperty(pieces, 'section', lookingAt)
-    if (piece) {
+  const halfSeparator = window.innerHeight / 2
+  const view = window.scrollY + halfSeparator
+  for (const piece of pieces) {
+    if (view < piece.bottom + halfSeparator) {
       return piece
     }
   }
-  return null
+  return pieces[pieces.length - 1]
+}
+
+let previousSection
+
+function updateCurrentSection () {
+  const piece = getCurrentSection()
+  if (piece !== previousSection) {
+    if (previousSection) {
+      previousSection.link.classList.remove('selected')
+    }
+    previousSection = piece
+    piece.link.classList.add('selected')
+  }
 }
 
 window.addEventListener('scroll', e => {
-  console.log(getCurrentSection()?.id)
+  updateCurrentSection()
 })
 
 window.addEventListener('resize', e => {
   getSectionRects()
+  updateCurrentSection()
 })
 
 getSectionRects()
+updateCurrentSection()
+
+export { pieces, getCurrentSection, getSectionRects }
