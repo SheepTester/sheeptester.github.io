@@ -215,11 +215,6 @@ h3 {
 .piece-type {
   font-size: 24px;
 }
-.piece p {
-  margin: 0;
-  text-indent: 0.5in;
-  line-height: 1.8;
-}
 .separator {
   height: 100vh;
   background-image: url('./sheep.png');
@@ -282,6 +277,46 @@ h3 {
   .content {
     box-shadow: none;
   }
+}
+
+.piece p {
+  margin: 0;
+  text-indent: 0.5in;
+  line-height: 1.8;
+}
+.piece .no-indent {
+  text-indent: 0;
+}
+.piece .space-before {
+  margin-top: 20px;
+}
+.piece .space-after {
+  margin-bottom: 20px;
+}
+.piece .space-around {
+  margin: 20px 0;
+}
+.piece .letter-date {
+  text-align: right;
+}
+.piece .small-caps {
+  font-weight: normal;
+  font-size: 0.8em;
+  text-transform: uppercase;
+}
+.piece h3 {
+  margin: 15px 0;
+}
+.piece .independent-times-subtitle {
+  font-weight: normal;
+  font-size: 0.8em;
+}
+.piece .snippet-divider {
+  border: none;
+  margin-top: 40px;
+}
+.piece li {
+  margin: 15px 0;
 }
 
 .expert-link {
