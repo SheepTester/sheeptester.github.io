@@ -318,6 +318,9 @@ h3 {
 .piece li {
   margin: 15px 0;
 }
+.piece .emoji-title {
+  font-size: 2em;
+}
 
 .expert-link {
   position: relative;
