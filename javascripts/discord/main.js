@@ -1,4 +1,5 @@
 import '../_dom2.js'
+import Discord from './discord.js'
 
 const TOKEN_KEY = '[javascripts] discord.token'
 const NO_STORE = 'please do not store token in localStorage thank'
@@ -46,7 +47,7 @@ if (script) {
       onclick: () => {
         empty(document.body)
         import(new URL(script, window.location)).then(({ default: main }) => {
-          main(tokenInput.value)
+          main(tokenInput.value, Discord)
         }).catch(() => {
           document.body.appendChild(Elem('p', {}, ['There was a problem. Check the console?']))
         })

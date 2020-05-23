@@ -4,6 +4,7 @@
     "compress": "node ./img/compress.js"
   },
   "dependencies": {
+    "discord.js": "^12.2.0",
     "pngquant-bin": "^5.0.2"
   }
 }
