@@ -1,7 +1,14 @@
 import Discord from 'discord.js'
-import main from './anyone-speaks.mjs'
+import { promises as fs } from 'fs'
 
 // https://stackoverflow.com/a/5767589
-const [token] = process.argv.slice(2)
+const [script] = process.argv.slice(2)
 
-main(token, Discord)
+Promise.all([
+  import(script),
+  fs.readFile(new URL('./token.json', import.meta.url), 'utf8')
+    .then(file => JSON.parse(file))
+]).then(([{ default: main }, { token }]) => {
+  main(token, Discord)
+})
+
