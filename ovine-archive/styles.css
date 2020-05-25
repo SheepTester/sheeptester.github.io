@@ -335,7 +335,7 @@ h3 {
   z-index: 1;
   flex: none;
   height: 100vh;
-  background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('../img/penland-smaller.png');
+  background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('./thirty-eight.png');
   background-size: cover;
   background-position: center;
   font-family: 'Roboto Slab', serif;
