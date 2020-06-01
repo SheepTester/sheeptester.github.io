@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>crypt</title>
+    <meta name="description" content="Uses a very sophisticated proprietary encryption technique based on base64."/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="/sheep3.css">
+    <script src="/sheep3.js" charset="utf-8"></script>
+    <style>
+      html,
+      body {
+        height: 100%;
+      }
+      body {
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        font-family: 'Roboto', sans-serif;
+      }
+      .main {
+        display: flex;
+        flex: auto;
+      }
+      .panel {
+        display: flex;
+        flex-direction: column;
+        flex: auto;
+      }
+      .label {
+        font-size: 16px;
+        padding: 10px;
+        color: white;
+      }
+      .to-encrypt .label {
+        background-color: #4CAF50;
+      }
+      .to-decrypt .label {
+        background-color: #9C27B0;
+      }
+      .textarea {
+        flex: auto;
+        resize: none;
+        padding: 20px;
+        -webkit-appearance: none;
+        border: none;
+        background: none;
+        font: inherit;
+        color: inherit;
+        box-sizing: border-box;
+        width: 100%;
+      }
+      .line {
+        width: 1px;
+        background-color: rgba(0, 0, 0, 0.1);
+      }
+      .help {
+        padding: 20px;
+        margin: 0;
+        background-color: rgba(0, 0, 0, 0.8);
+        color: white;
+        padding-right: 70px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="main">
+      <div class="panel to-encrypt">
+        <label class="label" for="to-encrypt">To encrypt:</label>
+        <textarea class="textarea" id="to-encrypt" placeholder="Text to be encrypted here" disabled></textarea>
+      </div>
+      <span class="line"></span>
+      <div class="panel to-decrypt">
+        <label class="label" for="to-decrypt">To decrypt:</label>
+        <textarea class="textarea" id="to-decrypt" placeholder="Text to be decrypted here" disabled></textarea>
+      </div>
+    </div>
+    <p class="help">
+      To the URL, add <code>?vary-more=true</code> for more variability, and <code>?special-chars=true</code> to support special characters. If decryption isn't working, try using the latter flag.
+    </p>
+    <script type="module">
+const identity = value => value
+
+const toEncrypt = document.getElementById('to-encrypt')
+const toDecrypt = document.getElementById('to-decrypt')
+
+const params = new URL(window.location).searchParams
+
+async function main () {
+  const raw = await fetch('./base64-base.txt').then(r => r.text())
+  const data = {}
+  const reverse = {}
+  let longest = 0
+  for (const [char, ...sequence] of raw.split(/\r?\n/).filter(identity)) {
+    data[char] = sequence
+    reverse[sequence.join('')] = char
+    if (sequence.length > longest) longest = sequence.length
+  }
+
+  const randomLength = params.get('vary-more')
+  const codonLength = params.get('special-chars') ? 16 : 8
+  function decrypt (text) {
+    const stream = [].concat(...Array.from(text.toUpperCase().replace(/[^A-Z0-9]/g, ''), char => data[char]))
+    let str = ''
+    for (let i = 0; i < stream.length; i += codonLength) {
+      str += String.fromCharCode(parseInt(stream.slice(i, i + codonLength).join(''), 2))
+    }
+    return str
+  }
+  function encrypt (text) {
+    const stream = [...Array.from(text, char => char.charCodeAt().toString(2).padStart(codonLength, '0')).join('')]
+    let out = ''
+    while (stream.length) {
+      let length = Math.min(randomLength ? Math.floor((longest - 1) * Math.random() + 1) : longest, stream.length)
+      let found
+      while (!found && length > 0) {
+        found = reverse[stream.slice(0, length).join('')]
+        length--
+      }
+      if (!found) throw new Error('what')
+      out += Math.random() < 0.5 ? found.toLowerCase() : found.toUpperCase()
+      stream.splice(0, length + 1)
+    }
+    for (let i = Math.random() * 3 | 0; i--;) out += '='
+    return out
+  }
+
+  toEncrypt.addEventListener('input', e => {
+    toDecrypt.value = encrypt(toEncrypt.value)
+  })
+  toDecrypt.addEventListener('input', e => {
+    toEncrypt.value = decrypt(toDecrypt.value)
+  })
+
+  toEncrypt.disabled = false
+  toDecrypt.disabled = false
+}
+main()
+    </script>
+  </body>
+</html>
