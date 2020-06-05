@@ -11,4 +11,3 @@ Promise.all([
 ]).then(([{ default: main }, { token }]) => {
   main(token, Discord)
 })
-
