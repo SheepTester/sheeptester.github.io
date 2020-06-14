@@ -50,36 +50,38 @@
     <textarea id="ascended" readonly></textarea>
     <label for="emojify">Emojified</label>
     <textarea id="emojify" readonly></textarea>
+    <label for="emojify-no-space">Emojified (with flags)</label>
+    <textarea id="emojify-no-space" readonly></textarea>
     <label for="invisibles">Insert invisibles</label>
     <textarea id="invisibles" readonly></textarea>
     <script>
 const input = document.getElementById('input');
+const chars = {'!': '❗', '?': '❓', '#': '#️⃣', '*': '*️⃣', '+': '➕', '-': '➖', '$': '💲'};
+const offsetChar = (base, offset) => String.fromCodePoint(base.codePointAt() + offset);
+for (let i = 0; i < 26; i++) chars[offsetChar('a', i)] = offsetChar('🇦', i);
+for (let i = 0; i < 10; i++) chars[i] = i + '0️⃣'.slice(1)
 const transformers = [
   (output => input => {
-    output.value = input.split('').map(c => `||${c}||`).join('');
+    output.value = [...input].map(c => `||${c}||`).join('');
   })(document.getElementById('percharspoiler')),
   (output => input => {
     output.value = input.toLowerCase().replace(/\w+/g, word => {
       let capital = true;
-      return word.split('').map((l, i) => (i === 0 || l === 'i' || (capital = !capital))
+      return [...word].map((l, i) => (i === 0 || l === 'i' || (capital = !capital))
         && l !== 'l' ? l : l.toUpperCase()).join('')
     });
   })(document.getElementById('exasperated')),
   (output => input => {
-    output.value = `***${input.toUpperCase().split('').join(' ')}***`;
+    output.value = `***${[...input.toUpperCase()].join(' ')}***`;
   })(document.getElementById('ascended')),
   (output => input => {
-    const chars = {
-      '!': 'exclamation', '?': 'question', '#': 'hash', '*': 'asterisk',
-      0: 'zero', 1: 'one', 2: 'two', 3: 'three', 4: 'four',
-      5: 'five', 6: 'six', 7: 'seven', 8: 'eight', 9: 'nine'
-    };
-    const alphabet = 'abcdefghijklmnopqrstuvwxyz';
-    output.value = input.toLowerCase('').split('').map(c => alphabet.includes(c)
-      ? `:regional_indicator_${c}:` : chars[c] ? `:${chars[c]}:` : c).join(' ');
+    output.value = [...input.toLowerCase('')].map(c => chars[c] || c).join(' ');
   })(document.getElementById('emojify')),
   (output => input => {
-    output.value = input.split('').join('\u200B');
+    output.value = [...input.toLowerCase('')].map(c => chars[c] || c).join('');
+  })(document.getElementById('emojify-no-space')),
+  (output => input => {
+    output.value = [...input].join('\u200B');
   })(document.getElementById('invisibles'))
 ];
 input.addEventListener('input', e => {
