@@ -1,0 +1,40 @@
+html,
+body {
+  height: 100%;
+}
+body {
+  margin: 0;
+}
+
+.flex-body {
+  display: flex;
+  flex-direction: column;
+}
+
+button,
+input,
+select,
+textarea {
+  -webkit-appearance: none;
+  border: none;
+  padding: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+}
+
+button:not(:disabled):hover {
+  cursor: pointer;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+.link:hover {
+  text-decoration: underline;
+}
+
+:disabled {
+  opacity: 0.5;
+}

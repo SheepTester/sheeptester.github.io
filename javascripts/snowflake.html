@@ -5,17 +5,189 @@
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
 
     <title>Snowflake analyser</title>
-    <meta name="description" content="Snowflakes, conceptualized by Twitter, are unique IDs generated from a timestamp and a looping incremental ID."/>
+    <meta name="description" content="Snowflakes, conceptualized by Twitter, are unique IDs generated from a timestamp and a looping incremental ID. This tool can expose when an ID was generated."/>
 
     <link rel="stylesheet" type="text/css" href="/sheep3.css">
     <script src="/sheep3.js" charset="utf-8"></script>
 
+    <!-- https://fonts.google.com/specimen/Inconsolata?sidebar.open&selection.family=Inconsolata:wght@300|Open+Sans:wght@300&query=incon -->
+    <link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@300&family=Open+Sans:wght@300&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./_base.css">
     <style>
-      /* TEMP */
+      :root {
+        --error: #f74d4d;
+      }
+      body {
+        background-color: #302f33;
+        color: rgba(255, 255, 255, 0.7);
+        font-family: 'Open Sans', sans-serif;
+        text-align: center;
+      }
+
+      ::-webkit-input-placeholder {
+        color: currentColor;
+        opacity: 0.5;
+      }
+
+      .discord {
+        --colour: #7289DA;
+      }
+      .twitter {
+        --colour: #1DA1F2;
+      }
+      .sony {
+        --colour: black;
+      }
+
+      .part-5 {
+        --part: #2196F3;
+      }
+      .part-4 {
+        --part: #FF9800;
+      }
+      .part-3 {
+        --part: #E91E63;
+      }
+      .part-2 {
+        --part: #9C27B0;
+      }
+      .part-1 {
+        --part: #8BC34A;
+      }
+
+      .view {
+        flex: auto;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        padding: 20px;
+      }
+
+      .select-modes {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+      .select-mode {
+        background-color: var(--colour);
+        color: white;
+        padding: 10px 20px;
+        margin: 10px;
+        transition: box-shadow .2s;
+      }
+      .select-mode:hover {
+        box-shadow: 0 0 0 1px white;
+      }
+
+      .analyser-wrapper {
+        border-top: 5px solid var(--colour);
+      }
+
+      .snowflake-input {
+        padding: 10px 20px;
+        border-radius: 5px;
+        box-shadow: 0 5px 10px rgba(0, 0, 0, 0.5);
+        background-color: #232325;
+        font-size: 1.5em;
+        width: 25ch;
+        max-width: 100%;
+        box-sizing: border-box;
+        text-align: center;
+        border: 1px solid transparent;
+        transition: border-color .2s, color .2s;
+      }
+      .error {
+        border-color: var(--error);
+        color: var(--error);
+      }
+
+      .binary {
+        margin: 20px 0;
+        padding-top: 20px;
+        word-break: break-all;
+        font-family: 'Inconsolata', monospace;
+        font-size: 1.2em;
+        line-height: 3;
+      }
+      .binary-slice {
+        color: var(--part);
+      }
+      .binary-marker {
+        position: relative;
+        border-left: 1px solid rgba(255, 255, 255, 0.1);
+        margin: 0 -0.5px;
+      }
+      .binary-marker-label {
+        font-size: 0.5em;
+        position: absolute;
+        bottom: 100%;
+        left: 0;
+        transform: translateX(-50%);
+        white-space: nowrap;
+        margin-bottom: 2px;
+      }
+
+      .table {
+        border-collapse: collapse;
+        text-align: left;
+      }
+      .component-row {
+        border-left: 5px solid var(--part);
+      }
+      .component-entry {
+        border: 1px solid #3f3d44;
+        padding: 5px 10px;
+      }
+      .component-heading {
+        background-color: rgba(0, 0, 0, 0.1);
+      }
+
+      .unsupported {
+        background-color: var(--error);
+        color: white;
+      }
+      h1 {
+        font-weight: normal;
+      }
+      .return-main {
+        padding: 10px 20px;
+        border: 1px solid currentColor;
+        transition: background-color .2s;
+      }
+      .return-main:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+      }
+
+      .show-choose-mode .choose-mode,
+      .show-analyser .analyser-wrapper,
+      .show-unsupported .unsupported {
+        display: flex;
+      }
     </style>
   </head>
-  <body>
-    <script type="module">
+  <body class="flex-body show-choose-mode">
+    <div class="view choose-mode">
+      <p>Select snowflake type:</p>
+      <div class="select-modes">
+        <a class="select-mode discord" href="?mode=discord">Discord</a>
+        <a class="select-mode twitter" href="?mode=twitter">Twitter</a>
+        <a class="select-mode sony" href="?mode=sony">Sony</a>
+      </div>
+    </div>
+    <div class="view analyser-wrapper">
+      <input type="text" name="snowflake" id="snowflake" placeholder="Snowflake" class="snowflake-input">
+      <p class="binary" id="binary"></p>
+      <table class="table" id="table"></table>
+    </div>
+    <div class="view unsupported">
+      <h1>:(</h1>
+      <p>Unsupported mode</p>
+      <a href="?" class="return-main">Return to main</a>
+    </div>
+
+    <script src="./_dom2.js" charset="utf-8"></script>
+    <script>
       const types = {
         // https://discord.com/developers/docs/reference#snowflakes
         discord: {
@@ -64,10 +236,82 @@
           }
           totalBits += bits
         }
-        return components
+        return { totalBits, components }
       }
 
-      Object.assign(window, { types, analyseSnowflake })
+      const binaryPreview = document.getElementById('binary')
+      const table = document.getElementById('table')
+
+      function update (structure, snowflakeString) {
+        empty(binaryPreview)
+        empty(table)
+
+        const snowflake = BigInt(snowflakeString)
+        const { totalBits, components } = analyseSnowflake(structure, snowflake)
+
+        const binary = snowflake.toString(2).padStart(Number(totalBits), '0')
+        let bitStep = 0n
+        let part = 0
+        binaryPreview.appendChild(Elem('span', { className: 'binary-marker' }, [
+          Elem('span', { className: 'binary-marker-label' }, [totalBits])
+        ]))
+        for (const { bits } of structure) {
+          const slice = binary.slice(Number(bitStep), Number(bitStep + bits))
+          binaryPreview.appendChild(Elem('span', { className: `binary-slice part-${++part}` }, [slice]))
+          bitStep += bits
+          binaryPreview.appendChild(Elem('span', { className: 'binary-marker' }, [
+            Elem('span', { className: 'binary-marker-label' }, [totalBits - bitStep])
+          ]))
+        }
+
+        table.appendChild(Fragment([
+          Elem('tr', {
+            className: `component-row component-heading-row`
+          }, [
+            Elem('td', { className: 'component-entry component-heading' }, ['Field']),
+            Elem('td', { className: 'component-entry component-heading' }, ['Value'])
+          ]),
+          ...components.map(([name, value], i) => Elem('tr', {
+            className: `component-row part-${i + 1}`
+          }, [
+            Elem('td', { className: 'component-entry component-name' }, [name]),
+            Elem('td', {
+              className: [
+                'component-entry',
+                'component-value',
+                value instanceof Date && 'component-date'
+              ]
+            }, [value instanceof Date ? value.toLocaleString() : value])
+          ]))
+        ]))
+      }
+
+      const params = new URL(window.location).searchParams
+      const mode = params.get('mode')
+      if (mode) {
+        const structure = types[mode] && types[mode].structure
+        if (structure) {
+          document.body.classList.replace('show-choose-mode', 'show-analyser')
+          document.body.classList.add(mode)
+
+          const snowflakeInput = document.getElementById('snowflake')
+          if (params.get('snowflake')) snowflakeInput.value = params.get('snowflake')
+          snowflakeInput.focus()
+          const onInput = () => {
+            try {
+              if (snowflakeInput.value) update(structure, snowflakeInput.value)
+              snowflakeInput.classList.remove('error')
+            } catch (err) {
+              console.warn(err)
+              snowflakeInput.classList.add('error')
+            }
+          }
+          snowflakeInput.addEventListener('input', onInput)
+          onInput()
+        } else {
+          document.body.classList.replace('show-choose-mode', 'show-unsupported')
+        }
+      }
     </script>
   </body>
 </html>
