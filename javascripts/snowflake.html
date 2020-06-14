@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+    <title>Snowflake analyser</title>
+    <meta name="description" content="Snowflakes, conceptualized by Twitter, are unique IDs generated from a timestamp and a looping incremental ID."/>
+
+    <link rel="stylesheet" type="text/css" href="/sheep3.css">
+    <script src="/sheep3.js" charset="utf-8"></script>
+
+    <style>
+      /* TEMP */
+    </style>
+  </head>
+  <body>
+    <script type="module">
+      const types = {
+        // https://discord.com/developers/docs/reference#snowflakes
+        discord: {
+          name: 'Discord',
+          structure: [
+            { name: 'Timestamp', bits: 42n, epoch: 1420070400000 },
+            { name: 'Worker ID', bits: 5n },
+            { name: 'Process ID', bits: 5n },
+            { name: 'Increment within process', bits: 12n }
+          ]
+        },
+
+        // https://github.com/twitter-archive/snowflake/tree/snowflake-2010#solution
+        twitter: {
+          name: 'Twitter',
+          structure: [
+            { name: 'Time', bits: 41n, epoch: 1288834974657 },
+            // https://github.com/client9/snowflake2time
+            { name: 'Data centre ID', bits: 5n },
+            { name: 'Machine ID', bits: 5n },
+            { name: 'Sequence number', bits: 12n }
+          ]
+        },
+
+        // https://github.com/sony/sonyflake
+        sony: {
+          name: 'Sony',
+          structure: [
+            { name: 'Time', bits: 39n, epoch: 1409529600000, scale: 10n },
+            { name: 'Sequence number', bits: 8n },
+            { name: 'Machine ID', bits: 16n }
+          ]
+        }
+      }
+
+      function analyseSnowflake (structure = [], snowflake = 0n) {
+        const components = []
+        let totalBits = 0n
+        for (let i = structure.length; i--;) {
+          const { name, bits, epoch, scale = 1n } = structure[i]
+          const value = snowflake >> totalBits & (1n << bits) - 1n
+          if (epoch) {
+            components.unshift([name, new Date(Number(value * scale) + epoch)])
+          } else {
+            components.unshift([name, value])
+          }
+          totalBits += bits
+        }
+        return components
+      }
+
+      Object.assign(window, { types, analyseSnowflake })
+    </script>
+  </body>
+</html>
