@@ -82,6 +82,81 @@ body {
   --height: 0.280;
 }
 
+.numbers {
+  display: inline-block;
+  --size: 100px;
+  --xsize: calc(var(--size) * calc(1631 / 438));
+  --x: 0;
+  --y: 0;
+  --width: calc(1631 / 438);
+  --height: 0.28;
+  background-image: url('./numbers-4.png');
+  background-position: calc(var(--size) * var(--x)) calc(var(--size) * var(--y));
+  background-size: var(--xsize) var(--size);
+  width: calc(var(--size) * var(--width));
+  height: calc(var(--size) * var(--height));
+}
+.number-0 {
+  --x: -0.04;
+  --y: -0.35;
+  --width: 0.30;
+}
+.number-1 {
+  --x: -0.43;
+  --y: -0.35;
+  --width: 0.09;
+}
+.number-2 {
+  --x: -0.60;
+  --y: -0.35;
+  --width: 0.20;
+}
+.number-3 {
+  --x: -0.91;
+  --y: -0.02;
+  --width: 0.20;
+}
+.number-4 {
+  --x: -1.20;
+  --y: -0.02;
+  --width: 0.21;
+}
+.number-5 {
+  --x: -1.56;
+  --y: -0.02;
+  --width: 0.30;
+}
+.number-6 {
+  --x: -1.89;
+  --y: -0.02;
+  --width: 0.22;
+}
+.number-7 {
+  --x: -2.21;
+  --y: -0.02;
+  --width: 0.21;
+}
+.number-8 {
+  --x: -2.50;
+  --y: -0.00;
+  --width: 0.22;
+}
+.number-9 {
+  --x: -2.85;
+  --y: -0.02;
+  --width: 0.19;
+}
+.number-hash {
+  --x: -3.15;
+  --y: -0.64;
+  --width: 0.36;
+}
+.number-unknown {
+  --x: -3.11;
+  --y: -0.32;
+  --width: 0.55;
+}
+
 .temp-div {
   border: 1px solid rgba(255, 0, 0, 0.5);
   box-sizing: border-box;
