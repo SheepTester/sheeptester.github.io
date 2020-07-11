@@ -13,30 +13,73 @@
     <link rel="stylesheet" href="./style.css">
   </head>
   <body>
-    <div class="sheep sheep-standing"></div>
-    <div class="sheep sheep-cake"></div>
-    <div class="sheep sheep-eat1"></div>
-    <div class="sheep sheep-eat2"></div>
-    <div class="sheep sheep-fancy"></div>
-    <div class="sheep sheep-hyperbola"></div>
-    <div class="sheep sheep-right"></div>
-    <div class="sheep sheep-left"></div>
-    <div class="sheep sheep-hybridized"></div>
-    <div class="sheep sheep-box-and-pointer"></div>
-    <div class="numbers number-0"></div>
-    <div class="numbers number-1"></div>
-    <div class="numbers number-2"></div>
-    <div class="numbers number-3"></div>
-    <div class="numbers number-4"></div>
-    <div class="numbers number-5"></div>
-    <div class="numbers number-6"></div>
-    <div class="numbers number-7"></div>
-    <div class="numbers number-8"></div>
-    <div class="numbers number-9"></div>
-    <div class="numbers number-hash"></div><div class="numbers number-unknown"></div>
-    <div class="temp-div" style="left: 100px; top: 100px; width: 100px; height: 280px;"></div>
+    <div class="main" id="main">
+      <div class="sheep sheep-drawing" id="sheep"></div>
+      <div class="sign-number" id="numbers"><div class="numbers number-hash"></div></div>
+    </div>
+    <div class="cover"></div>
     <script type="module">
-      // TEMP
+      const COUNTER_HOST = 'https://sheep.thingkingland.app/counter/yearbook-signing/'
+
+      const sheep = [
+        'sheep-standing',
+        'sheep-cake',
+        'sheep-eat2',
+        'sheep-fancy',
+        'sheep-hyperbola',
+        'sheep-right',
+        'sheep-left',
+        'sheep-hybridized',
+        'sheep-box-and-pointer'
+      ]
+      const directions = [
+        'row',
+        'row-reverse',
+        'column',
+        'column-reverse'
+      ]
+
+      function random (list) {
+        return list[Math.floor(Math.random() * list.length)]
+      }
+
+      function rejectIfNotOk (request) {
+        return request.ok
+          ? request
+          : Promise.reject(new Error(`${request.statusCode} HTTP error`))
+      }
+
+      async function getNumber () {
+        const number = await fetch(COUNTER_HOST)
+          .then(rejectIfNotOk)
+          .then(r => r.text())
+          .then(Number)
+        await fetch(COUNTER_HOST + 'increment', { method: 'POST' })
+          .then(rejectIfNotOk)
+        return number
+      }
+
+      const mainWrapper = document.getElementById('main')
+      const sheepDrawing = document.getElementById('sheep')
+      const numbersWrapper = document.getElementById('numbers')
+      async function main () {
+        const digits = await getNumber()
+          .then(number => [...number.toString().padStart(2, '0')])
+          .catch(() => ['unknown'])
+        for (const digit of digits) {
+          const elem = document.createElement('div')
+          elem.className = `numbers number-${digit}`
+          numbersWrapper.appendChild(elem)
+        }
+        mainWrapper.style.flexDirection = random(directions)
+        sheepDrawing.classList.add(random(sheep))
+      }
+
+      document.body.classList.add('loading')
+      main()
+        .then(() => {
+          document.body.classList.remove('loading')
+        })
     </script>
   </body>
 </html>
