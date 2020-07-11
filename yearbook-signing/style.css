@@ -1,0 +1,89 @@
+html,
+body {
+  height: 100%;
+}
+body {
+  margin: 0;
+  background-image: url('./paper-background-smaller2.jpg');
+  background-size: cover;
+  background-attachment: fixed;
+}
+
+.sheep {
+  --size: 400px;
+  --x: 0;
+  --y: 0;
+  --width: 1;
+  --height: 1;
+  background-image: url('./sheep-collage3.png');
+  background-position: calc(var(--size) * var(--x)) calc(var(--size) * var(--y));
+  background-size: var(--size) var(--size);
+  width: calc(var(--size) * var(--width));
+  height: calc(var(--size) * var(--height));
+}
+.sheep-standing {
+  --x: -0.010;
+  --y: -0.005;
+  --width: 0.215;
+  --height: 0.205;
+}
+.sheep-cake {
+  --x: -0.225;
+  --y: -0.000;
+  --width: 0.315;
+  --height: 0.240;
+}
+.sheep-eat1 {
+  --x: -0.545;
+  --y: -0.000;
+  --width: 0.350;
+  --height: 0.180;
+}
+.sheep-fancy {
+  --x: -0.000;
+  --y: -0.245;
+  --width: 0.240;
+  --height: 0.225;
+}
+.sheep-hyperbola {
+  --x: -0.245;
+  --y: -0.245;
+  --width: 0.510;
+  --height: 0.270;
+}
+.sheep-right {
+  --x: -0.005;
+  --y: -0.505;
+  --width: 0.290;
+  --height: 0.180;
+}
+.sheep-left {
+  --x: -0.300;
+  --y: -0.515;
+  --width: 0.280;
+  --height: 0.200;
+}
+.sheep-eat2 {
+  --x: -0.580;
+  --y: -0.510;
+  --width: 0.420;
+  --height: 0.225;
+}
+.sheep-hybridized {
+  --x: -0.600;
+  --y: -0.750;
+  --width: 0.400;
+  --height: 0.245;
+}
+.sheep-box-and-pointer {
+  --x: -0.000;
+  --y: -0.720;
+  --width: 0.510;
+  --height: 0.280;
+}
+
+.temp-div {
+  border: 1px solid rgba(255, 0, 0, 0.5);
+  box-sizing: border-box;
+  position: absolute;
+}
