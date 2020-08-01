@@ -7,6 +7,8 @@ body {
   font-size: 0;
   background-color: #eee;
   font-family: 'Open Sans', sans-serif;
+  touch-action: none;
+  user-select: none;
 }
 #vignette {
   position: fixed;
@@ -25,18 +27,21 @@ body {
   left: 0;
   width: 100%;
   height: 50vh;
+  z-index: -1;
 }
-#elements {
+.elements-3d {
   position: fixed;
   top: 50vh;
   left: 50vw;
   height: 0;
   width: 0;
+}
+#elements {
   margin: 0;
   padding: 0;
   list-style: none;
 }
-#elements > li {
+.elements-3d > li {
   position: absolute;
   margin-top: -100px;
   margin-left: -100px;
@@ -44,8 +49,10 @@ body {
   left: 0;
   width: 200px;
   height: 200px;
+}
+#elements > li {
   box-shadow: 0 0 0 0 rgba(0,0,0,0.1);
-  overflow: hidden;
+  border-radius: 10px;
   transition: box-shadow .2s;
 }
 #elements > li:hover {
@@ -57,15 +64,16 @@ body {
   display: block;
   text-decoration: none;
 }
-#elements > li img {
+.elements-3d > li img {
   height: 100%;
   width: 100%;
 }
+#elements > li img {
+  border-radius: 10px;
+  font-size: 16px;
+}
 .circle {
   border-radius: 50%;
-}
-.roundrect {
-  border-radius: 10px;
 }
 #red {
   background-color: #f44336;
@@ -85,6 +93,7 @@ body {
   box-sizing: border-box;
   padding: 0 10px;
   animation: fadein .5s forwards, fadeoutabit .5s 3s forwards;
+  transform-origin: bottom;
 }
 @keyframes fadein {
   from {
@@ -99,13 +108,46 @@ body {
 }
 @keyframes fadeoutabit {
   from {
-    color: rgba(0,0,0,0.7);
-    font-size: 24px;
+    opacity: 1;
+    transform: scale(1);
     margin-bottom: 30px;
   }
   to {
-    color: rgba(0,0,0,0.3);
-    font-size: 16px;
+    opacity: 0.3;
+    transform: scale(0.7);
     margin-bottom: 34px;
   }
+}
+#joystick {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  margin: 50px;
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  background-color: rgba(0, 0, 0, 0.5);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+}
+#joystick.show {
+  display: block;
+}
+.bubble {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 50px;
+  height: 50px;
+  background-color: rgba(230, 230, 230, 0.8);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1;
+  opacity: 0.3;
+}
+.moving .bubble {
+  opacity: 1;
+  left: var(--x);
+  top: var(--y);
 }
