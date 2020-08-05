@@ -87,3 +87,97 @@ export async function camTest () {
   await once(video, 'loadedmetadata')
   await video.requestPictureInPicture()
 }
+
+const elems = {
+  videoWrapper: document.getElementById('video-wrapper'),
+  video: document.getElementById('video'),
+  recordScreen: document.getElementById('record-screen'),
+  recordCamera: document.getElementById('record-cam'),
+  controlBtns: document.getElementById('control-btns'),
+  recordBtn: document.getElementById('record'),
+  pause: document.getElementById('pause'),
+  resume: document.getElementById('resume'),
+  stopRecord: document.getElementById('stop-record'),
+  stopStream: document.getElementById('disable-cam')
+}
+let stream
+let recorder
+function setStream (newStream) {
+  stream = newStream
+  document.body.classList.remove('no-video-source')
+  elems.video.srcObject = stream
+  elems.video.play()
+  elems.recordBtn.disabled = false
+}
+elems.recordScreen.addEventListener('click', async e => {
+  if (!stream) {
+    setStream(await navigator.mediaDevices.getDisplayMedia({
+      audio: true,
+      video: true
+    }))
+  }
+})
+elems.recordCamera.addEventListener('click', async e => {
+  if (!stream) {
+    setStream(await navigator.mediaDevices.getUserMedia({
+      video: true
+    }))
+  }
+})
+elems.recordBtn.addEventListener('click', e => {
+  if (!recorder) {
+    recorder = new MediaRecorder(stream, {
+      // Possible list of supported MIME types
+      // Chrome: https://stackoverflow.com/a/42307926
+      // Firefox, maybe: https://developer.mozilla.org/en-US/docs/Web/API/MediaRecorder/isTypeSupported#Example
+      mimeType: 'video/webm'
+    })
+    recorder.addEventListener('dataavailable', e => {
+      recorder = null
+      const url = URL.createObjectURL(e.data)
+      const link = document.createElement('a')
+      link.href = url
+      link.download = `recording ${new Date().toLocaleString()}.webm`
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+      URL.revokeObjectURL(url)
+    })
+    recorder.start()
+    document.body.classList.add('recording')
+    document.body.classList.remove('paused')
+    elems.stopRecord.disabled = false
+  }
+})
+elems.pause.addEventListener('click', e => {
+  if (recorder) {
+    recorder.pause()
+    document.body.classList.add('paused')
+  }
+})
+elems.resume.addEventListener('click', e => {
+  if (recorder) {
+    recorder.resume()
+    document.body.classList.remove('paused')
+  }
+})
+elems.stopRecord.addEventListener('click', e => {
+  if (recorder) {
+    recorder.stop()
+    document.body.classList.remove('recording')
+    elems.stopRecord.disabled = true
+  }
+})
+elems.stopStream.addEventListener('click', e => {
+  if (stream) {
+    if (recorder) {
+      elems.stopRecord.click()
+    }
+    stopStream(stream)
+    stream = null
+    elems.video.srcObject = null
+    elems.video.pause()
+    document.body.classList.add('no-video-source')
+    elems.recordBtn.disabled = true
+  }
+})
