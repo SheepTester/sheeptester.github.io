@@ -895,12 +895,28 @@ window.onChange = () => {
 }
 const status = Elem('div', {className: 'markup status hidden'})
 let hideStatusTimeout
-function displayStatus() {
+function displayStatus () {
   if (hideStatusTimeout) clearTimeout(hideStatusTimeout)
   status.classList.remove('hidden')
   hideStatusTimeout = setTimeout(() => {
     status.classList.add('hidden')
   }, 3000)
+}
+async function sendToWebhooks (webhookUrls, msgJson) {
+  status.classList.remove('failed')
+  let count = 0
+  for (const url of webhookUrls) {
+    count++
+    const json = await fetch(url + '?wait=true', {
+      method: 'POST',
+      body: msgJson,
+      headers: {'Content-Type': 'application/json'}
+    })
+      .then(r => r.ok ? r.json() : r.json().then(err => Promise.reject(err)))
+    status.textContent = 'Webhook executed!' +
+      (webhookUrls.length > 1 ? ` (${count}/${webhookUrls.length})` : '')
+    displayStatus()
+  }
 }
 document.body.appendChild(
   Elem('div', {className: 'channel-textarea'}, [
@@ -914,20 +930,11 @@ document.body.appendChild(
         placeholder: 'Paste Discord webhook URL here (press enter to send)',
         onkeydown (e) {
           if (e.key === 'Enter') {
-            fetch(this.value + '?wait=true', {
-              method: 'POST',
-              body: JSON.stringify(getJSON()),
-              headers: {'Content-Type': 'application/json'}
-            })
-              .then(r => r.ok ? r.json() : Promise.reject(r))
-              .then(json => {
-                console.log(json)
-                status.textContent = 'Webhook executed!'
-                status.classList.remove('failed')
-                displayStatus()
-              })
+            // Send to multiple webhook URLs at once by separating them with
+            // spaces
+            sendToWebhooks(this.value.split(/\s+/), JSON.stringify(getJSON()))
               .catch(err => {
-                console.log(err)
+                console.error(err)
                 status.textContent = 'Problem executing webhook'
                 status.classList.add('failed')
                 displayStatus()
