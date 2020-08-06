@@ -21,6 +21,43 @@ function stopStream (stream) {
   }
 }
 
+async function getSources () {
+  const devices = {
+    audio: [],
+    video: []
+  }
+  for (const { kind, label, deviceId } of await navigator.mediaDevices.enumerateDevices()) {
+    if (kind === 'audioinput') {
+      devices.audio.push({ label, deviceId })
+    } else if (kind === 'videoinput') {
+      devices.video.push({ label, deviceId })
+    }
+  }
+  return devices
+}
+
+function analyse (stream) {
+  const audioCtx = getAudioCtx()
+  let source
+  try {
+    source = audioCtx.createMediaStreamSource(stream)
+  } catch (err) {
+    // Failed to execute 'createMediaStreamSource' on 'AudioContext':
+    // MediaStream has no audio track
+    return null
+  }
+  const analyser = audioCtx.createAnalyser()
+  source.connect(analyser)
+  analyser.fftSize = 2048
+  const bufferLength = analyser.frequencyBinCount
+  const dataArray = new Float32Array(bufferLength)
+  return () => {
+    analyser.getFloatTimeDomainData(dataArray)
+    const rms = Math.sqrt(dataArray.reduce((acc, curr) => acc + curr * curr, 0) / dataArray.length)
+    return Math.sqrt(rms / 0.55)
+  }
+}
+
 export async function start () {
   const video = document.createElement('video')
   const stream = await navigator.mediaDevices.getDisplayMedia({
@@ -95,19 +132,31 @@ const elems = {
   recordCamera: document.getElementById('record-cam'),
   controlBtns: document.getElementById('control-btns'),
   recordBtn: document.getElementById('record'),
-  pause: document.getElementById('pause'),
-  resume: document.getElementById('resume'),
   stopRecord: document.getElementById('stop-record'),
-  stopStream: document.getElementById('disable-cam')
+  stopStream: document.getElementById('disable-cam'),
+  toggleMic: document.getElementById('toggle-mic'),
+  micVolume: document.getElementById('mic-volume'),
+  screenVolume: document.getElementById('screen-volume')
 }
-let stream
-let recorder
+let stream = null
+let streamAudioAnalyse = null
+let recorder = null
+let mic = null
 function setStream (newStream) {
   stream = newStream
   document.body.classList.remove('no-video-source')
   elems.video.srcObject = stream
   elems.video.play()
   elems.recordBtn.disabled = false
+  stream.getTracks()[0].addEventListener('ended', e => {
+    elems.stopStream.click()
+  })
+  streamAudioAnalyse = analyse(stream)
+  // Returns null if there is no audio track
+  if (streamAudioAnalyse) {
+    elems.screenVolume.classList.add('active')
+  }
+  elems.stopStream.disabled = false
 }
 elems.recordScreen.addEventListener('click', async e => {
   if (!stream) {
@@ -125,7 +174,22 @@ elems.recordCamera.addEventListener('click', async e => {
   }
 })
 elems.recordBtn.addEventListener('click', e => {
-  if (!recorder) {
+  if (recorder) {
+    if (recorder.state === 'paused') {
+      recorder.resume()
+      document.body.classList.remove('paused')
+      elems.recordBtn.title = 'Pause recording'
+    } else {
+      recorder.pause()
+      document.body.classList.add('paused')
+      elems.recordBtn.title = 'Resume recording'
+    }
+  } else {
+    // if (mic) {
+    //   for (const track of mic.stream.getTracks()) {
+    //     stream.addTrack(track)
+    //   }
+    // }
     recorder = new MediaRecorder(stream, {
       // Possible list of supported MIME types
       // Chrome: https://stackoverflow.com/a/42307926
@@ -147,18 +211,7 @@ elems.recordBtn.addEventListener('click', e => {
     document.body.classList.add('recording')
     document.body.classList.remove('paused')
     elems.stopRecord.disabled = false
-  }
-})
-elems.pause.addEventListener('click', e => {
-  if (recorder) {
-    recorder.pause()
-    document.body.classList.add('paused')
-  }
-})
-elems.resume.addEventListener('click', e => {
-  if (recorder) {
-    recorder.resume()
-    document.body.classList.remove('paused')
+    elems.recordBtn.title = 'Pause recording'
   }
 })
 elems.stopRecord.addEventListener('click', e => {
@@ -166,6 +219,7 @@ elems.stopRecord.addEventListener('click', e => {
     recorder.stop()
     document.body.classList.remove('recording')
     elems.stopRecord.disabled = true
+    elems.recordBtn.title = 'Start recording'
   }
 })
 elems.stopStream.addEventListener('click', e => {
@@ -178,6 +232,37 @@ elems.stopStream.addEventListener('click', e => {
     elems.video.srcObject = null
     elems.video.pause()
     document.body.classList.add('no-video-source')
+    elems.stopStream.disabled = true
     elems.recordBtn.disabled = true
+    streamAudioAnalyse = null
+    elems.screenVolume.classList.remove('active')
   }
 })
+elems.toggleMic.addEventListener('click', async e => {
+  if (mic) {
+    stopStream(mic.stream)
+    document.body.classList.add('mic-is-off')
+    elems.micVolume.classList.remove('active')
+    mic = null
+    elems.toggleMic.title = 'Turn on microphone'
+  } else {
+    mic = {
+      stream: await navigator.mediaDevices.getUserMedia({ audio: true })
+    }
+    mic.analyse = analyse(mic.stream)
+    document.body.classList.remove('mic-is-off')
+    elems.micVolume.classList.add('active')
+    elems.toggleMic.title = 'Turn off microphone'
+  }
+})
+
+function updateVolume () {
+  if (mic) {
+    elems.micVolume.style.setProperty('--volume', mic.analyse() * 100 + '%')
+  }
+  if (streamAudioAnalyse) {
+    elems.screenVolume.style.setProperty('--volume', streamAudioAnalyse() * 100 + '%')
+  }
+  window.requestAnimationFrame(updateVolume)
+}
+updateVolume()
