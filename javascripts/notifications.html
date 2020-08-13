@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>notifications</title>
+    <meta name="description" content="notifs" />
+
+    <link rel="stylesheet" type="text/css" href="/sheep3.css">
+    <script src="/sheep3.js" charset="utf-8"></script>
+
+    <style>
+      label {
+        font-weight: bold;
+      }
+    </style>
+  </head>
+  <body>
+    <p><a href="https://developer.mozilla.org/en-US/docs/Web/API/Notification/Notification">descriptions from MDN</a></p>
+    <form method="get">
+      <p><label>title <input type="text" name="title"></label> Defines a title for the notification, which is shown at the top of the notification window.</p>
+      <p><label>dir <select name="dir">
+        <option value="ltr">ltr</option>
+        <option value="rtl">rtl</option>
+        <option value="auto" selected>auto</option>
+      </select></label> The direction in which to display the notification. It defaults to <code>auto</code>, which just adopts the browser's language setting behavior, but you can override that behaviour by setting values of <code>ltr</code> and <code>rtl</code> (although most browsers seem to ignore these settings.)</p>
+  <p><label>lang <input type="text" name="lang"></label> The notification's language, as specified using a <a href="https://developer.mozilla.org/en-US/docs/Web/API/DOMString"><code>DOMString</code></a> representing a <a href="http://www.rfc-editor.org/rfc/bcp/bcp47.txt">BCP 47 language tag</a>. See the Sitepoint <a href="http://www.sitepoint.com/web-foundations/iso-2-letter-language-codes/">ISO 2 letter language codes</a> page for a simple reference.</p>
+      <p><label>badge <input type="url" name="badge"></label> A <a href="https://developer.mozilla.org/en-US/docs/Web/API/USVString"><code>USVString</code></a> containing the URL of the image used to represent the notification when there isn't enough space to display the notification itself.</p>
+      <p><label>body <input type="text" name="body"></label> A <a href="https://developer.mozilla.org/en-US/docs/Web/API/DOMString"><code>DOMString</code></a> representing the body text of the notification, which is displayed below the title.</p>
+      <p><label>tag <input type="text" name="tag"></label> A <a href="https://developer.mozilla.org/en-US/docs/Web/API/DOMString"><code>DOMString</code></a> representing an identifying tag for the notification.</p>
+      <p><label>icon <input type="url" name="icon"></label> A <a href="https://developer.mozilla.org/en-US/docs/Web/API/USVString"><code>USVString</code></a> containing the URL of an icon to be displayed in the notification.</p>
+      <p><label>image <input type="url" name="image"></label> a <a href="https://developer.mozilla.org/en-US/docs/Web/API/USVString"><code>USVString</code></a> containing the URL of an image to be displayed in the notification.</p>
+      <p><label>renotify <input type="checkbox" name="renotify"></label> A <a href="https://developer.mozilla.org/en-US/docs/Web/API/Boolean"><code>Boolean</code></a> specifying whether the user should be notified after a new notification replaces an old one. The default is <code>false</code>, which means they won't be notified.</p>
+      <p><label>requireInteraction <input type="checkbox" name="requireInteraction"></label> Indicates that a notification should remain active until the user clicks or dismisses it, rather than closing automatically. The default value is <code>false</code>.</p>
+      <p><label>silent <input type="checkbox" name="silent"></label> A <a href="https://developer.mozilla.org/en-US/docs/Web/API/Boolean"><code>Boolean</code></a> specifying whether the notification is silent (no sounds or vibrations issued), regardless of the device settings. The default is <code>false</code>, which means it won't be silent.</p>
+      <input type="submit" value="spawn">
+    </form>
+    <script type="module">
+      const params = [...new URL(window.location).searchParams.entries()]
+
+      if (params.length) {
+        const { title, ...options } = Object.fromEntries(params)
+        async function main () {
+          await Notification.requestPermission()
+          console.log(new Notification(title, options))
+        }
+        main()
+
+        for (const [name, value] of params) {
+          const input = document.querySelector(`[name=${JSON.stringify(name)}]`)
+          input.value = value
+          input.checked = value
+        }
+      }
+    </script>
+  </body>
+</html>
