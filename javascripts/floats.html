@@ -1,16 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <title>Float explorer</title>
     <meta name="description" content="" />
 
-    <link rel="stylesheet" type="text/css" href="/sheep3.css">
+    <link rel="stylesheet" type="text/css" href="/sheep3.css" />
     <script src="/sheep3.js" charset="utf-8"></script>
 
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300&display=swap" rel="stylesheet">
+    <link
+      href="https://fonts.googleapis.com/css2?family=Nunito:wght@300&display=swap"
+      rel="stylesheet"
+    />
     <style>
       html {
         height: 100%;
@@ -61,7 +64,7 @@
         margin: 5px;
         padding: 10px 20px;
         border: 1px solid rgba(255, 255, 255, 0.3);
-        transition: border-color .2s;
+        transition: border-color 0.2s;
       }
       .choose-precision a:hover {
         border-color: white;
@@ -70,19 +73,19 @@
       .float-preview {
         font-size: 24px;
         border-radius: 2px;
-        transition: background-color .2s;
+        transition: background-color 0.2s;
       }
       .float-preview:hover {
         background-color: rgba(255, 255, 255, 0.1);
       }
       .nan {
-        background-color: #FF5722;
+        background-color: #ff5722;
         color: white;
         font-size: 20px;
         text-transform: uppercase;
       }
       .nan:hover {
-        background-color: #FF9800;
+        background-color: #ff9800;
       }
       .bit-editor {
         line-height: 1;
@@ -118,11 +121,11 @@
         vertical-align: middle;
       }
       .off {
-        color: #E91E63;
+        color: #e91e63;
         background-color: rgba(233, 30, 99, 0.1);
       }
       .on {
-        color: #03A9F4;
+        color: #03a9f4;
         background-color: rgba(3, 169, 244, 0.1);
       }
       .instructions {
@@ -141,7 +144,13 @@
     <div class="editor-wrapper">
       <button class="float-preview" id="preview">0</button>
       <div class="bit-editor" id="bit-editor"></div>
-      <p class="instructions">Click on bits to toggle them. Press up/down arrows to change the float <abbr title="Hold ctrl/command to change by 100, shift by 10, alt by 0.1">(hover for more info)</abbr>. Press left/right arrows to change the bits.</p>
+      <p class="instructions">
+        Click on bits to toggle them. Press up/down arrows to change the float
+        <abbr
+          title="Hold ctrl/command to change by 100, shift by 10, alt by 0.1"
+          >(hover for more info)</abbr
+        >. Press left/right arrows to change the bits.
+      </p>
     </div>
     <script>
       const floatData = {
@@ -188,6 +197,8 @@
               this.bytes[byte] |= 1 << bit
             } else {
               this.bytes[byte] &= ~(1 << bit)
+              // Hi Gavin, your mom is a float conforming to the IEEE 754
+              // standards. She's about as useful as the fraction bits for NaN.
             }
           }
           return this
@@ -319,7 +330,14 @@
             }
             updateFloat()
           } else if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
-            const step = e.ctrlKey || e.metaKey ? 100 : e.shiftKey ? 10 : e.altKey ? 0.1 : 1
+            const step =
+              e.ctrlKey || e.metaKey
+                ? 100
+                : e.shiftKey
+                ? 10
+                : e.altKey
+                ? 0.1
+                : 1
             if (e.key === 'ArrowDown') {
               view.float -= step
             } else {
@@ -349,7 +367,8 @@
             preview.textContent = '−0'
           } else {
             const [main, exponent] = float.toString().split('e')
-            preview.textContent = main + (exponent ? timesTen + superscript(exponent) : '')
+            preview.textContent =
+              main + (exponent ? timesTen + superscript(exponent) : '')
           }
           window.history.replaceState('', {}, '#' + view.serialize())
         }
