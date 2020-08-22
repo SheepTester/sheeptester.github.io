@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Float explorer</title>
+    <meta name="description" content="" />
+
+    <link rel="stylesheet" type="text/css" href="/sheep3.css">
+    <script src="/sheep3.js" charset="utf-8"></script>
+
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300&display=swap" rel="stylesheet">
+    <style>
+      html {
+        height: 100%;
+        display: flex;
+      }
+      body {
+        flex: auto;
+        margin: 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        text-align: center;
+        font-family: 'Oswald', sans-serif;
+        background-color: #201f21;
+        color: #d2d0d4;
+      }
+
+      button,
+      input {
+        -webkit-appearance: none;
+        border: none;
+        background: none;
+        color: inherit;
+        font: inherit;
+      }
+      button:not(:disabled) {
+        cursor: pointer;
+      }
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      .editor-wrapper,
+      .choose-wrapper {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      .show-choose .editor-wrapper,
+      .show-editor .choose-wrapper {
+        display: none;
+      }
+
+      .choose-precision a {
+        display: inline-block;
+        margin: 5px;
+        padding: 10px 20px;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        transition: border-color .2s;
+      }
+      .choose-precision a:hover {
+        border-color: white;
+      }
+
+      .float-preview {
+        font-size: 24px;
+        border-radius: 2px;
+        transition: background-color .2s;
+      }
+      .float-preview:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+      }
+      .nan {
+        background-color: #FF5722;
+        color: white;
+        font-size: 20px;
+        text-transform: uppercase;
+      }
+      .nan:hover {
+        background-color: #FF9800;
+      }
+      .bit-editor {
+        line-height: 1;
+        margin: 24px 0;
+      }
+      .marker {
+        position: relative;
+        display: inline-block;
+        width: 1px;
+        height: 26px;
+        padding: 5px 0;
+        vertical-align: middle;
+        background-color: rgba(255, 255, 255, 0.5);
+        color: rgba(255, 255, 255, 0.2);
+        font-size: 14px;
+      }
+      .pos {
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+        margin-top: 2px;
+        font-size: 10px;
+      }
+      .label {
+        position: absolute;
+        bottom: 100%;
+        right: 0;
+        margin-bottom: 5px;
+      }
+      .bit-edit {
+        padding: 5px 2px;
+        vertical-align: middle;
+      }
+      .off {
+        color: #E91E63;
+        background-color: rgba(233, 30, 99, 0.1);
+      }
+      .on {
+        color: #03A9F4;
+        background-color: rgba(3, 169, 244, 0.1);
+      }
+      .instructions {
+        max-width: 500px;
+      }
+    </style>
+  </head>
+  <body class="show-choose">
+    <div class="choose-wrapper">
+      <p class="choose-label">Choose a float precision:</p>
+      <div class="choose-precision">
+        <a href="?precision=32">Single-precision</a>
+        <a href="?precision=64">Double-precision</a>
+      </div>
+    </div>
+    <div class="editor-wrapper">
+      <button class="float-preview" id="preview">0</button>
+      <div class="bit-editor" id="bit-editor"></div>
+      <p class="instructions">Click on bits to toggle them. Press up/down arrows to change the float <abbr title="Hold ctrl/command to change by 100, shift by 10, alt by 0.1">(hover for more info)</abbr>. Press left/right arrows to change the bits.</p>
+    </div>
+    <script>
+      const floatData = {
+        32: {
+          bytes: 4,
+          // https://en.wikipedia.org/wiki/Single-precision_floating-point_format#IEEE_754_single-precision_binary_floating-point_format:_binary32
+          format: [
+            [23, 'Fraction'],
+            [8, 'Exponent'],
+            [1, 'Sign']
+          ],
+          Array: Float32Array,
+          IntArray: Uint32Array
+        },
+        64: {
+          bytes: 8,
+          // https://en.wikipedia.org/wiki/Double-precision_floating-point_format#IEEE_754_double-precision_binary_floating-point_format:_binary64
+          format: [
+            [52, 'Fraction'],
+            [11, 'Exponent'],
+            [1, 'Sign']
+          ],
+          Array: Float64Array,
+          IntArray: BigUint64Array
+        }
+      }
+
+      class FloatView {
+        constructor (precision) {
+          this.precision = precision
+
+          const { bytes, Array: FloatArray, IntArray } = floatData[precision]
+          this.buffer = new ArrayBuffer(bytes)
+          this.bytes = new Uint8Array(this.buffer)
+          this.floatArr = new FloatArray(this.buffer)
+          this.int = new IntArray(this.buffer)
+        }
+
+        editBit (position, value) {
+          if (position >= 0 && position < this.precision) {
+            const byte = position >> 3
+            const bit = position & 0b111
+            if (value) {
+              this.bytes[byte] |= 1 << bit
+            } else {
+              this.bytes[byte] &= ~(1 << bit)
+            }
+          }
+          return this
+        }
+
+        bit (position) {
+          if (position >= 0 && position < this.precision) {
+            const byte = position >> 3
+            const bit = position & 0b111
+            return !!(this.bytes[byte] & (1 << bit))
+          } else {
+            return false
+          }
+        }
+
+        get float () {
+          return this.floatArr[0]
+        }
+
+        set float (float) {
+          this.floatArr[0] = float
+        }
+
+        toString () {
+          let str = ''
+          for (const byte of this.bytes) {
+            str = byte.toString(2).padStart(8, '0') + str
+          }
+          return str
+        }
+
+        serialize () {
+          let temp = ''
+          for (const byte of this.bytes) {
+            temp += byte.toString(16).padStart(2, '0')
+          }
+          return temp
+        }
+
+        deserialize (hex) {
+          for (let i = 0; i < hex.length; i += 2) {
+            this.bytes[i / 2] = parseInt(hex.slice(i, i + 2), 16)
+          }
+          return this
+        }
+      }
+
+      class BitBtn {
+        constructor (view, position, onUpdate) {
+          this.view = view
+          this.position = position
+          this.onUpdate = onUpdate
+
+          this.button = document.createElement('button')
+          this.button.className = 'bit-edit'
+          this.button.addEventListener('click', this._onClick.bind(this))
+
+          this.state = view.bit(position)
+          this.updateState()
+        }
+
+        updateState () {
+          this.button.textContent = this.state ? '1' : '0'
+          if (this.state) {
+            this.button.classList.add('on')
+            this.button.classList.remove('off')
+          } else {
+            this.button.classList.remove('on')
+            this.button.classList.add('off')
+          }
+        }
+
+        _onClick () {
+          this.state = !this.state
+          this.view.editBit(this.position, this.state)
+          this.updateState()
+          this.onUpdate()
+        }
+      }
+
+      const timesTen = ' × 10'
+      const superscripted = {
+        '-': '⁻',
+        '0': '⁰',
+        '1': '¹',
+        '2': '²',
+        '3': '³',
+        '4': '⁴',
+        '5': '⁵',
+        '6': '⁶',
+        '7': '⁷',
+        '8': '⁸',
+        '9': '⁹'
+      }
+      function superscript (digits) {
+        return [...digits].map(n => superscripted[n] || '').join('')
+      }
+
+      const params = new URL(window.location).searchParams
+      const precision = +params.get('precision')
+      if (precision && floatData[precision]) {
+        document.body.classList.replace('show-choose', 'show-editor')
+
+        const preview = document.getElementById('preview')
+        const editor = document.getElementById('bit-editor')
+
+        const { format } = floatData[precision]
+        const view = new FloatView(precision)
+
+        if (window.location.hash) {
+          view.deserialize(window.location.hash.slice(1))
+        }
+
+        preview.addEventListener('click', e => {
+          const value = prompt('Set float:')
+          if (value !== null) {
+            view.float = +value
+            updateFloat()
+          }
+        })
+
+        document.addEventListener('keydown', e => {
+          if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+            if (e.ctrlKey || e.metaKey || e.shiftKey || e.altKey) return
+            if (e.key === 'ArrowLeft') {
+              view.int[0]--
+            } else {
+              view.int[0]++
+            }
+            updateFloat()
+          } else if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+            const step = e.ctrlKey || e.metaKey ? 100 : e.shiftKey ? 10 : e.altKey ? 0.1 : 1
+            if (e.key === 'ArrowDown') {
+              view.float -= step
+            } else {
+              view.float += step
+            }
+            updateFloat()
+          }
+        })
+
+        function updateFloat () {
+          updatePreview()
+          btns.forEach((btn, i) => {
+            btn.state = view.bit(i)
+            btn.updateState()
+          })
+        }
+
+        function updatePreview () {
+          const float = view.float
+          preview.classList.remove('nan')
+          if (Number.isNaN(float)) {
+            preview.textContent = 'not a number'
+            preview.classList.add('nan')
+          } else if (!Number.isFinite(float)) {
+            preview.textContent = float === Infinity ? '∞' : '−∞'
+          } else if (float === 0 && 1 / float === -Infinity) {
+            preview.textContent = '−0'
+          } else {
+            const [main, exponent] = float.toString().split('e')
+            preview.textContent = main + (exponent ? timesTen + superscript(exponent) : '')
+          }
+          window.history.replaceState('', {}, '#' + view.serialize())
+        }
+
+        function makeMarker (pos, label) {
+          const marker = document.createElement('span')
+          marker.className = 'marker'
+          const labelSpan = document.createElement('span')
+          labelSpan.className = 'label'
+          labelSpan.textContent = label
+          const posSpan = document.createElement('span')
+          posSpan.className = 'pos'
+          posSpan.textContent = pos
+          marker.append(labelSpan, ' ', posSpan)
+          return marker
+        }
+
+        const markers = {}
+        let pos = 0
+        for (const [length, label] of format) {
+          markers[pos] = label
+          pos += length
+        }
+
+        const btns = []
+        for (let i = 0; i < precision; i++) {
+          if (markers[i]) {
+            editor.prepend(makeMarker(i, markers[i]))
+          }
+          const btn = new BitBtn(view, i, updatePreview)
+          editor.prepend(btn.button)
+          btns.push(btn)
+        }
+        editor.prepend(makeMarker(precision))
+
+        updatePreview()
+      }
+    </script>
+  </body>
+</html>
