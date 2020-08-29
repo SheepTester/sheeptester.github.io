@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Unicode character explorer</title>
+    <meta name="description" content="Unicode is divided into planes containing blocks of characters." />
+
+    <link rel="stylesheet" type="text/css" href="/sheep3.css">
+    <script src="/sheep3.js" charset="utf-8"></script>
+
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://sheeptester.github.io/sheep-sim/src/css/common.css">
+    <link rel="stylesheet" href="https://sheeptester.github.io/sheep-sim/src/css/canvas.css">
+
+    <style media="screen">
+      body {
+        font-family: 'Noto Sans', sans-serif;
+      }
+      .view {
+        flex: auto;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="view" id="canvas-wrapper"></div>
+    <script type="module">
+      import { Canvas } from 'https://sheeptester.github.io/sheep-sim/src/view/canvas.mjs'
+
+      class Grid {
+        constructor (size = 16) {
+          this.size = size
+          this.grid = new Array(size * size)
+          this.gap = 0.1
+          this.padding = 50
+        }
+
+        drawCell (c, value) {
+          c.fillStyle = '#eee'
+          c.fillRect(0, 0, 1, 1)
+          c.fillStyle = 'black'
+          c.fillText(value, 0.5, 0.5)
+        }
+
+        * _loopGrid () {
+          for (let i = 0; i < this.grid.length; i++) {
+            yield {
+              i,
+              x: i % this.size,
+              y: Math.floor(i / this.size),
+              value: this.grid[i]
+            }
+          }
+        }
+
+        draw ({ context: c, size: { x: width, y: height } }) {
+          const { padding, size, gap, grid } = this
+
+          c.save()
+          c.font = '0.5px "Noto Sans", sans-serif'
+          c.textAlign = 'center'
+          c.textBaseline = 'middle'
+
+          if (width > height) {
+            // Landscape mode
+            c.translate((width - height) / 2, 0)
+          } else {
+            c.translate(0, (height - width) / 2)
+          }
+          c.translate(padding, padding)
+          const cellSize = (Math.min(width, height) - padding * 2) / (size + gap * (size - 1))
+          c.scale(cellSize, cellSize)
+
+          const gridScale = 1 + gap
+          c.fillStyle = '#eee'
+          for (const { x, y } of this._loopGrid()) {
+            c.fillRect(x * gridScale, y * gridScale, 1, 1)
+          }
+          c.fillStyle = 'black'
+          for (const { x, y, value } of this._loopGrid()) {
+            c.fillText(value, x * gridScale + 0.5, y * gridScale + 0.5)
+          }
+
+          c.restore()
+        }
+      }
+
+      class Plane extends Grid {
+        constructor () {
+          super(16)
+          for (let i = 0; i < this.grid.length; i++) {
+            this.grid[i] = i.toString(16).padStart(2, '0').toUpperCase()
+          }
+        }
+      }
+
+      class Box extends Grid {
+        constructor (position) {
+          super(16)
+          for (let i = 0; i < this.grid.length; i++) {
+            this.grid[i] = String.fromCodePoint(position << 8 | i)
+          }
+        }
+      }
+
+      async function main () {
+        const url = new URL(window.location)
+
+        const canvas = new Canvas()
+          .setWrapper(document.getElementById('canvas-wrapper'))
+        window.addEventListener('resize', async () => {
+          await canvas.resize()
+          new Plane().draw(canvas)
+        })
+        await canvas.resize()
+
+        console.time()
+        // new Plane().draw(canvas)
+        new Box(0x1F3).draw(canvas)
+        console.timeEnd()
+      }
+      main()
+    </script>
+  </body>
+</html>
