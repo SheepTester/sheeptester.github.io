@@ -117,6 +117,22 @@
       .character {
         outline: 1px dashed rgba(0, 255, 255, 0.1);
       }
+      .hex-col {
+        justify-content: center;
+        align-items: center;
+      }
+      .hex-row {
+        justify-content: flex-end;
+        align-items: center;
+        font-size: 0.8em;
+        padding-right: 5px;
+      }
+      .prefix {
+        opacity: 0.3;
+      }
+      .suffix {
+        opacity: 0.5;
+      }
     </style>
   </head>
   <body>
@@ -159,13 +175,15 @@
         }
       }
 
-      const size = 16
+      const size = 16 // cells
       const gridSize = 40 // px
       const maxSize = 1000 // px
-      const padding = 20 // px
+      const padding = 1 // cells
 
       const normalSize = gridSize * size
-      const maxScale = maxSize / normalSize
+      const paddingPx = gridSize * padding
+      const normalTotalSize = normalSize + 2 * paddingPx
+      const maxScale = maxSize / normalTotalSize
 
       class Grid16 {
         constructor () {
@@ -194,7 +212,7 @@
 
         _onClick (e) {
           const item = e.target.closest('.grid-item')
-          if (item) {
+          if (item && item.dataset.index) {
             this.onClick(+item.dataset.index)
           }
         }
@@ -204,22 +222,21 @@
         }
 
         resize (width, height) {
-          width -= 2 * padding
-          height -= 2 * padding
           let scale
           if (width > height) {
-            scale = height / normalSize
+            scale = height / normalTotalSize
           } else {
-            scale = width / normalSize
+            scale = width / normalTotalSize
           }
           if (scale > maxScale) {
             scale = maxScale
           }
-          this.wrapper.style.transform = `translate(${(width -
-            normalSize * scale) /
-            2 +
-            padding}px, ${(height - normalSize * scale) / 2 +
-            padding}px) scale(${scale})`
+          const translateX = (width - normalSize * scale) / 2
+          const translateY = (height - normalSize * scale) / 2
+          this.wrapper.style.transform = [
+            `translate(${translateX}px, ${translateY}px)`,
+            `scale(${scale})`
+          ].join(' ')
           return this
         }
 
@@ -259,6 +276,7 @@
         constructor () {
           super()
           this.characters = new Array(size * size)
+          this.rowLabels = new Array(size)
           for (const child of this.wrapper.children) {
             const index = +child.dataset.index
             this.characters[index] = Elem('span', {
@@ -270,11 +288,43 @@
               ])
             )
           }
+          for (let i = 0; i < size; i++) {
+            const columnLabel = Elem('div', {
+              className: 'grid-item hex-col',
+              style: {
+                transform: `translate3d(${i * gridSize}px, ${-gridSize}px, 0)`
+              }
+            }, [
+              i.toString(16).toUpperCase()
+            ])
+            const rowLabelText = document.createTextNode('')
+            const rowLabel = Elem('div', {
+              className: 'grid-item hex-row',
+              style: {
+                transform: `translate3d(${-gridSize}px, ${i * gridSize}px, 0)`
+              }
+            }, [
+              Elem('span', {}, [
+                Elem('span', { className: 'prefix' }, ['U+']),
+                rowLabelText,
+                Elem('span', { className: 'suffix' }, ['x'])
+              ])
+            ])
+            this.rowLabels[i] = rowLabelText
+            this.wrapper.append(columnLabel, rowLabel)
+          }
         }
 
         setLocation (location) {
           this.location = location
-          location <<= 8
+          location <<= 4
+          this.rowLabels.forEach((rowLabel, index) => {
+            rowLabel.nodeValue = (location | index)
+              .toString(16)
+              .toUpperCase()
+              .padStart(4, '0')
+          })
+          location <<= 4
           this.characters.forEach((char, index) => {
             char.textContent = String.fromCodePoint(location | index)
           })
