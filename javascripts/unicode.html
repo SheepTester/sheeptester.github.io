@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Unicode characters</title>
+    <meta name="description" content="Unicode is divided into planes of 65536 characters, which are further divided into blocks." />
+
+    <link rel="stylesheet" type="text/css" href="/sheep3.css">
+    <script src="/sheep3.js" charset="utf-8"></script>
+
+    <script src="./_dom2.js" charset="utf-8"></script>
+
+    <style>
+      html,
+      body {
+        height: 100%;
+      }
+      body {
+        display: flex;
+        flex-direction: column;
+        margin: 0;
+        overflow: hidden;
+      }
+      button,
+      input,
+      select,
+      textarea {
+        -webkit-appearance: none;
+        border: none;
+        background: none;
+        font: inherit;
+        color: inherit;
+      }
+      button:not(:disabled),
+      select:not(:disabled) {
+        cursor: pointer;
+      }
+      .wrapper {
+        flex: auto;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      .grid-16 {
+        display: grid;
+        grid-template-columns: repeat(16, 1fr);
+        gap: 0.5%;
+
+        width: 100vmin;
+        height: 100vmin;
+        max-width: 1000px;
+        max-height: 1000px;
+        padding: 20px;
+        box-sizing: border-box;
+      }
+      .grid-item {
+        background-color: #eee;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-radius: 2px;
+        position: relative;
+        transition: transform .2s;
+      }
+      .grid-item:hover {
+        transform: scale(1.5);
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+        z-index: 1;
+      }
+      .character {
+        outline: 1px dashed rgba(0, 0, 255, 0.1);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrapper" id="wrapper"></div>
+    <script>
+      const size = 16
+
+      class Grid16 {
+        constructor () {
+          this.wrapper = Elem('div', {
+            className: 'grid-16'
+          }, Array.from({ length: size * size }, (_, i) => Elem('button', {
+            className: 'grid-item',
+            data: { index: i }
+          })))
+        }
+      }
+
+      class Plane extends Grid16 {
+        constructor () {
+          super()
+          for (const child of this.wrapper.children) {
+            child.textContent = (+child.dataset.index)
+              .toString(16)
+              .toUpperCase()
+              .padStart(2, '0')
+          }
+        }
+      }
+
+      class Box extends Grid16 {
+        constructor (location) {
+          super()
+          this.location = location
+          location <<= 8
+          for (const child of this.wrapper.children) {
+            const span = document.createElement('span')
+            span.className = 'character'
+            span.textContent = String.fromCodePoint(location | +child.dataset.index)
+            child.appendChild(span)
+          }
+        }
+      }
+
+      // document.getElementById('wrapper').append(new Box(0xFD).wrapper)
+      document.getElementById('wrapper').append(new Box(0x1F3).wrapper)
+      // document.getElementById('wrapper').append(new Plane().wrapper)
+    </script>
+  </body>
+</html>

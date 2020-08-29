@@ -1,18 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <title>Unicode character explorer</title>
-    <meta name="description" content="Unicode is divided into planes containing blocks of characters." />
+    <meta
+      name="description"
+      content="Unicode is divided into planes containing blocks of characters."
+    />
 
-    <link rel="stylesheet" type="text/css" href="/sheep3.css">
+    <link rel="stylesheet" type="text/css" href="/sheep3.css" />
     <script src="/sheep3.js" charset="utf-8"></script>
 
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://sheeptester.github.io/sheep-sim/src/css/common.css">
-    <link rel="stylesheet" href="https://sheeptester.github.io/sheep-sim/src/css/canvas.css">
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://sheeptester.github.io/sheep-sim/src/css/common.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://sheeptester.github.io/sheep-sim/src/css/canvas.css"
+    />
 
     <style media="screen">
       body {
@@ -34,6 +46,7 @@
           this.grid = new Array(size * size)
           this.gap = 0.1
           this.padding = 50
+          this.showSize = false
         }
 
         drawCell (c, value) {
@@ -55,7 +68,7 @@
         }
 
         draw ({ context: c, size: { x: width, y: height } }) {
-          const { padding, size, gap, grid } = this
+          const { padding, size, gap, grid, showSize } = this
 
           c.save()
           c.font = '0.5px "Noto Sans", sans-serif'
@@ -69,13 +82,49 @@
             c.translate(0, (height - width) / 2)
           }
           c.translate(padding, padding)
-          const cellSize = (Math.min(width, height) - padding * 2) / (size + gap * (size - 1))
+          const cellSize =
+            (Math.min(width, height) - padding * 2) / (size + gap * (size - 1))
           c.scale(cellSize, cellSize)
 
           const gridScale = 1 + gap
           c.fillStyle = '#eee'
           for (const { x, y } of this._loopGrid()) {
             c.fillRect(x * gridScale, y * gridScale, 1, 1)
+          }
+          if (this.showSize) {
+            c.save()
+            c.globalAlpha = 0.3
+            function vert (cx, cy, value, colour) {
+              c.strokeStyle = colour
+              c.beginPath()
+              c.moveTo(cx + value, cy - 0.5)
+              c.lineTo(cx + value, cy + 0.5)
+              c.stroke()
+            }
+            function horiz (cx, cy, value, colour) {
+              c.strokeStyle = colour
+              c.beginPath()
+              c.moveTo(cx - 0.5, cy + value)
+              c.lineTo(cx + 0.5, cy + value)
+              c.stroke()
+            }
+            c.lineWidth = 0.03
+            c.setLineDash([0.07, 0.07])
+            for (const { x, y, value } of this._loopGrid()) {
+              const cx = x * gridScale
+              const cy = y * gridScale + 0.5
+              const {
+                actualBoundingBoxAscent,
+                actualBoundingBoxDescent,
+                actualBoundingBoxLeft,
+                actualBoundingBoxRight
+              } = c.measureText(value)
+              vert(cx, cy, actualBoundingBoxLeft, 'firebrick')
+              vert(cx, cy, actualBoundingBoxRight, 'seagreen')
+              // horiz(cx, cy, -actualBoundingBoxAscent, 'darkblue')
+              // horiz(cx, cy, actualBoundingBoxDescent, 'goldenrod')
+            }
+            c.restore()
           }
           c.fillStyle = 'black'
           for (const { x, y, value } of this._loopGrid()) {
@@ -90,7 +139,10 @@
         constructor () {
           super(16)
           for (let i = 0; i < this.grid.length; i++) {
-            this.grid[i] = i.toString(16).padStart(2, '0').toUpperCase()
+            this.grid[i] = i
+              .toString(16)
+              .padStart(2, '0')
+              .toUpperCase()
           }
         }
       }
@@ -98,8 +150,9 @@
       class Box extends Grid {
         constructor (position) {
           super(16)
+          this.showSize = true
           for (let i = 0; i < this.grid.length; i++) {
-            this.grid[i] = String.fromCodePoint(position << 8 | i)
+            this.grid[i] = String.fromCodePoint((position << 8) | i)
           }
         }
       }
@@ -107,17 +160,20 @@
       async function main () {
         const url = new URL(window.location)
 
-        const canvas = new Canvas()
-          .setWrapper(document.getElementById('canvas-wrapper'))
+        const canvas = new Canvas().setWrapper(
+          document.getElementById('canvas-wrapper')
+        )
         window.addEventListener('resize', async () => {
           await canvas.resize()
           new Plane().draw(canvas)
         })
         await canvas.resize()
 
+        // canvas.context.font = '100px "Noto Sans", sans-serif'
+        // console.log(canvas.context.measureText('sfg'))
         console.time()
         // new Plane().draw(canvas)
-        new Box(0x1F3).draw(canvas)
+        new Box(0x1f3).draw(canvas)
         console.timeEnd()
       }
       main()
