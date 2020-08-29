@@ -14,6 +14,7 @@
     <script src="/sheep3.js" charset="utf-8"></script>
 
     <script src="./_dom2.js" charset="utf-8"></script>
+    <script src="./clipboard.min.js" charset="utf-8"></script>
 
     <style>
       html,
@@ -51,7 +52,7 @@
         display: flex;
         align-items: center;
         height: 48px;
-        padding: 0 20px;
+        padding: 0 5px;
         background-color: #0d0b0e;
       }
       .planes {
@@ -61,6 +62,24 @@
         background-repeat: no-repeat;
         background-position: right;
         padding: 10px;
+      }
+      .showing-box .planes {
+        display: none;
+      }
+      .back-btn {
+        display: none;
+        font-size: 0;
+        background-image: url('./material-arrow_back.svg');
+        background-size: 24px;
+        background-repeat: no-repeat;
+        background-position: center;
+        width: 24px;
+        height: 24px;
+        padding: 10px;
+        box-sizing: content-box;
+      }
+      .showing-box .back-btn {
+        display: block;
       }
 
       .wrapper {
@@ -85,6 +104,13 @@
       .hidden {
         display: none;
       }
+      .fade {
+        opacity: 0;
+        pointer-events: none;
+      }
+      .animating {
+        transition: transform 0.5s, opacity 0.5s;
+      }
       .grid-item {
         position: absolute;
         top: 0;
@@ -95,6 +121,10 @@
         padding: 2px;
         display: flex;
         transform: translateZ(0);
+      }
+      .zooming-in .grid-item:not(.target) {
+        visibility: hidden;
+        /* animation: hide-early .5s forwards; */
       }
       .grid-btn {
         flex: auto;
@@ -133,10 +163,29 @@
       .suffix {
         opacity: 0.5;
       }
+      @keyframes hide-early {
+        0% {
+          opacity: 1;
+          visibility: visible;
+        }
+        5% {
+          opacity: 0;
+          visibility: visible;
+        }
+        5.1% {
+          opacity: 0;
+          visibility: hidden;
+        }
+        100% {
+          opacity: 0;
+          visibility: hidden;
+        }
+      }
     </style>
   </head>
   <body>
     <div class="header">
+      <button class="back-btn" id="back">Back</button>
       <select class="planes" id="planes"></select>
     </div>
     <div class="wrapper" id="wrapper"></div>
@@ -175,6 +224,14 @@
         }
       }
 
+      function delay (time) {
+        return new Promise(resolve => setTimeout(resolve, time))
+      }
+
+      function frame () {
+        return new Promise(resolve => window.requestAnimationFrame(resolve))
+      }
+
       const size = 16 // cells
       const gridSize = 40 // px
       const maxSize = 1000 // px
@@ -208,6 +265,8 @@
               })
             })
           )
+          this.mode = 'full'
+          this.baseTransform = []
         }
 
         _onClick (e) {
@@ -219,6 +278,36 @@
 
         onClick (index) {
           console.log(index)
+        }
+
+        containIn (x, y) {
+          this.mode = 'contained'
+          this.wrapper.style.setProperty('--contained-x', x * gridSize + 'px')
+          this.wrapper.style.setProperty('--contained-y', y * gridSize + 'px')
+          this.wrapper.style.transform = [
+            ...this.baseTransform,
+            'translate(var(--contained-x), var(--contained-y))',
+            `scale(${1 / size})`
+          ].join(' ')
+          return this
+        }
+
+        fullSize () {
+          this.mode = 'full'
+          this.wrapper.style.transform = this.baseTransform.join(' ')
+          return this
+        }
+
+        fromCell (x, y) {
+          this.mode = 'cell'
+          this.wrapper.style.setProperty('--as-cell-x', -x * gridSize + 'px')
+          this.wrapper.style.setProperty('--as-cell-y', -y * gridSize + 'px')
+          this.wrapper.style.transform = [
+            ...this.baseTransform,
+            `scale(${size})`,
+            'translate(var(--as-cell-x), var(--as-cell-y))'
+          ].join(' ')
+          return this
         }
 
         resize (width, height) {
@@ -233,10 +322,28 @@
           }
           const translateX = (width - normalSize * scale) / 2
           const translateY = (height - normalSize * scale) / 2
-          this.wrapper.style.transform = [
+          this.baseTransform = [
             `translate(${translateX}px, ${translateY}px)`,
             `scale(${scale})`
-          ].join(' ')
+          ]
+          switch (this.mode) {
+            case 'contained':
+              this.wrapper.style.transform = [
+                ...this.baseTransform,
+                'translate(var(--contained-x), var(--contained-y))',
+                `scale(${1 / size})`
+              ].join(' ')
+              break
+            case 'cell':
+              this.wrapper.style.transform = [
+                ...this.baseTransform,
+                `scale(${size})`,
+                'translate(var(--as-cell-x), var(--as-cell-y))'
+              ].join(' ')
+              break
+            default:
+              this.fullSize()
+          }
           return this
         }
 
@@ -249,11 +356,95 @@
           this.wrapper.classList.add('hidden')
           return this
         }
+
+        fade () {
+          this.wrapper.disabled = true
+          this.wrapper.classList.add('fade')
+          return this
+        }
+
+        unfade () {
+          this.wrapper.disabled = false
+          this.wrapper.classList.remove('fade')
+          return this
+        }
+
+        _animate () {
+          this.wrapper.classList.add('animating')
+          this.wrapper.getBoundingClientRect() // Force repaint
+          return this
+        }
+
+        _zoomingIn () {
+          this.wrapper.classList.add('zooming-in')
+          return this
+        }
+
+        _animateStop () {
+          this.wrapper.classList.remove('animating')
+          this.wrapper.classList.remove('zooming-in')
+          return this
+        }
+
+        // contained -> full (show)
+        async zoomFromContained (x, y) {
+          this.fade()
+            .containIn(x, y)
+            .show()
+            ._animate()
+            .unfade()
+            .fullSize()
+          await delay(500)
+          return this._animateStop()
+        }
+
+        // full -> contained (hide)
+        async zoomToContained (x, y) {
+          this.unfade()
+            .fullSize()
+            .show()
+            ._animate()
+            .fade()
+            .containIn(x, y)
+          await delay(500)
+          return this.hide()._animateStop()
+        }
+
+        // cell -> full (show)
+        async zoomFromCell (x, y) {
+          this.wrapper.children[x + y * size].classList.add('target')
+          this.fade()
+            .fromCell(x, y)
+            .show()
+            ._zoomingIn()
+            ._animate()
+            .unfade()
+            .fullSize()
+          await delay(500)
+          this.wrapper.children[x + y * size].classList.remove('target')
+          return this._animateStop()
+        }
+
+        // full -> cell (hide)
+        async zoomToCell (x, y) {
+          this.wrapper.children[x + y * size].classList.add('target')
+          this.unfade()
+            .fullSize()
+            .show()
+            ._zoomingIn()
+            ._animate()
+            .fade()
+            .fromCell(x, y)
+          await delay(500)
+          this.wrapper.children[x + y * size].classList.remove('target')
+          return this.hide()._animateStop()
+        }
       }
 
       class Plane extends Grid16 {
-        constructor () {
+        constructor (box) {
           super()
+          this.box = box
           for (const child of this.wrapper.children) {
             child.append(
               Elem('button', { className: 'grid-btn' }, [
@@ -267,8 +458,27 @@
         }
 
         setPlane (plane) {
+          // url.searchParams.set('char', )
+          // window.history.pushState({}, '', url)
           this.plane = plane
           return this
+        }
+
+        onClick (index) {
+          document.body.classList.add('showing-box')
+          this.box.setLocation((this.plane << 8) | index)
+          const { x, y } = this.wrapper.children[index].dataset
+          this.box.zoomFromContained(+x, +y)
+          this.zoomToCell(+x, +y)
+        }
+
+        closeBox () {
+          document.body.classList.remove('showing-box')
+          const { x, y } = this.wrapper.children[
+            this.box.location & 0xff
+          ].dataset
+          this.box.zoomToContained(+x, +y)
+          this.zoomFromCell(+x, +y)
         }
       }
 
@@ -283,33 +493,39 @@
               className: 'character'
             })
             child.append(
-              Elem('button', { className: 'grid-btn' }, [
+              Elem('button', { className: 'grid-btn copy-text' }, [
                 this.characters[index]
               ])
             )
           }
           for (let i = 0; i < size; i++) {
-            const columnLabel = Elem('div', {
-              className: 'grid-item hex-col',
-              style: {
-                transform: `translate3d(${i * gridSize}px, ${-gridSize}px, 0)`
-              }
-            }, [
-              i.toString(16).toUpperCase()
-            ])
+            const columnLabel = Elem(
+              'div',
+              {
+                className: 'grid-item hex-col',
+                style: {
+                  transform: `translate3d(${i * gridSize}px, ${-gridSize}px, 0)`
+                }
+              },
+              [i.toString(16).toUpperCase()]
+            )
             const rowLabelText = document.createTextNode('')
-            const rowLabel = Elem('div', {
-              className: 'grid-item hex-row',
-              style: {
-                transform: `translate3d(${-gridSize}px, ${i * gridSize}px, 0)`
-              }
-            }, [
-              Elem('span', {}, [
-                Elem('span', { className: 'prefix' }, ['U+']),
-                rowLabelText,
-                Elem('span', { className: 'suffix' }, ['x'])
-              ])
-            ])
+            const rowLabel = Elem(
+              'div',
+              {
+                className: 'grid-item hex-row',
+                style: {
+                  transform: `translate3d(${-gridSize}px, ${i * gridSize}px, 0)`
+                }
+              },
+              [
+                Elem('span', {}, [
+                  Elem('span', { className: 'prefix' }, ['U+']),
+                  rowLabelText,
+                  Elem('span', { className: 'suffix' }, ['x'])
+                ])
+              ]
+            )
             this.rowLabels[i] = rowLabelText
             this.wrapper.append(columnLabel, rowLabel)
           }
@@ -322,15 +538,32 @@
             rowLabel.nodeValue = (location | index)
               .toString(16)
               .toUpperCase()
-              .padStart(4, '0')
+              .padStart(3, '0')
           })
           location <<= 4
-          this.characters.forEach((char, index) => {
-            char.textContent = String.fromCodePoint(location | index)
+          this.characters.forEach((span, index) => {
+            const char = String.fromCodePoint(location | index)
+            span.parentNode.dataset.clipboardText = char
+            span.textContent = char
           })
           return this
         }
       }
+
+      const url = new URL(window.location)
+      window.addEventListener('popstate', e => {
+        console.log(window.location)
+      })
+
+      const clipboard = new ClipboardJS('.copy-text')
+      clipboard.on('error', console.error)
+
+      const wrapper = document.getElementById('wrapper')
+      const box = new Box()
+      const plane = new Plane(box).setPlane(0).show()
+      // .setLocation(0x1f3)
+      // box.setLocation(0xFD)
+      wrapper.append(plane.wrapper, box.wrapper)
 
       const planes = document.getElementById('planes')
       planes.append(
@@ -345,12 +578,13 @@
           )
         })
       )
+      planes.addEventListener('change', e => {
+        plane.setPlane(+planes.value)
+      })
 
-      const wrapper = document.getElementById('wrapper')
-      const plane = new Plane().setPlane(0)
-      const box = new Box().setLocation(0x1f3).show()
-      // box.setLocation(0xFD)
-      wrapper.append(plane.wrapper, box.wrapper)
+      document.getElementById('back').addEventListener('click', e => {
+        plane.closeBox()
+      })
 
       function resize () {
         const { width, height } = wrapper.getBoundingClientRect()
