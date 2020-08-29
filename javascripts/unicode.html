@@ -5,9 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <title>Unicode characters</title>
-    <meta name="description" content="Unicode is divided into planes of 65536 characters, which are further divided into blocks." />
+    <meta
+      name="description"
+      content="Unicode is divided into planes of 65536 characters, which are further divided into blocks."
+    />
 
-    <link rel="stylesheet" type="text/css" href="/sheep3.css">
+    <link rel="stylesheet" type="text/css" href="/sheep3.css" />
     <script src="/sheep3.js" charset="utf-8"></script>
 
     <script src="./_dom2.js" charset="utf-8"></script>
@@ -19,9 +22,15 @@
       }
       body {
         display: flex;
-        flex-direction: column;
+        flex-direction: column-reverse;
         margin: 0;
         overflow: hidden;
+        background-color: #19171b;
+        color: #dddcde;
+        /* Font list stolen from https://paly.win/ */
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+          Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+          'Segoe UI Symbol';
       }
       button,
       input,
@@ -37,56 +46,191 @@
       select:not(:disabled) {
         cursor: pointer;
       }
+
+      .header {
+        display: flex;
+        align-items: center;
+        height: 48px;
+        padding: 0 20px;
+        background-color: #0d0b0e;
+      }
+      .planes {
+        background-color: #0d0b0e;
+        background-image: url('./material-arrow_drop_up.svg');
+        background-size: 24px;
+        background-repeat: no-repeat;
+        background-position: right;
+        padding: 10px;
+      }
+
       .wrapper {
         flex: auto;
-        display: flex;
-        justify-content: center;
-        align-items: center;
+        position: relative;
+        /* Fixes resizing issues in mobile, but won't be able to show the hex
+        /* headers? */
+        overflow: hidden;
       }
       .grid-16 {
-        display: grid;
-        grid-template-columns: repeat(16, 1fr);
-        gap: 0.5%;
-
-        width: 100vmin;
-        height: 100vmin;
-        max-width: 1000px;
-        max-height: 1000px;
-        padding: 20px;
-        box-sizing: border-box;
+        position: absolute;
+        top: 0;
+        left: 0;
+        touch-action: none;
+        margin: 0;
+        border: none;
+        padding: 0;
+      }
+      .grid-16:disabled {
+        pointer-events: none;
+      }
+      .hidden {
+        display: none;
       }
       .grid-item {
-        background-color: #eee;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 40px;
+        height: 40px;
+        box-sizing: border-box;
+        padding: 2px;
+        display: flex;
+        transform: translateZ(0);
+      }
+      .grid-btn {
+        flex: auto;
+        max-width: 100%;
+        background-color: #312f35;
         display: flex;
         justify-content: center;
         align-items: center;
         border-radius: 2px;
         position: relative;
-        transition: transform .2s;
+        transition: transform 0.2s, box-shadow 0.2s;
       }
       .grid-item:hover {
-        transform: scale(1.5);
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
         z-index: 1;
       }
+      .grid-item:hover .grid-btn {
+        transform: scale(1.5);
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+      }
       .character {
-        outline: 1px dashed rgba(0, 0, 255, 0.1);
+        outline: 1px dashed rgba(0, 255, 255, 0.1);
       }
     </style>
   </head>
   <body>
+    <div class="header">
+      <select class="planes" id="planes"></select>
+    </div>
     <div class="wrapper" id="wrapper"></div>
     <script>
+      const data = {
+        // https://en.wikipedia.org/wiki/Plane_(Unicode)#Overview
+        planes: {
+          0: {
+            name: 'Basic Multilingual Plane',
+            initialism: 'BMP'
+          },
+          1: {
+            name: 'Supplementary Multilingual Plane',
+            initialism: 'SMP'
+          },
+          2: {
+            name: 'Supplementary Ideographic Plane',
+            initialism: 'SIP'
+          },
+          3: {
+            name: 'Tertiary Ideographic Plane',
+            initialism: 'TIP'
+          },
+          14: {
+            name: 'Supplement­ary Special-purpose Plane',
+            initialism: 'SSP'
+          },
+          15: {
+            name: 'Supplement­ary Private Use Area-A',
+            initialism: 'SPUA-A'
+          },
+          16: {
+            name: 'Supplement­ary Private Use Area-B',
+            initialism: 'SPUA-B'
+          }
+        }
+      }
+
       const size = 16
+      const gridSize = 40 // px
+      const maxSize = 1000 // px
+      const padding = 20 // px
+
+      const normalSize = gridSize * size
+      const maxScale = maxSize / normalSize
 
       class Grid16 {
         constructor () {
-          this.wrapper = Elem('div', {
-            className: 'grid-16'
-          }, Array.from({ length: size * size }, (_, i) => Elem('button', {
-            className: 'grid-item',
-            data: { index: i }
-          })))
+          this.wrapper = Elem(
+            'fieldset',
+            {
+              className: 'grid-16 hidden',
+              onclick: this._onClick.bind(this)
+            },
+            Array.from({ length: size * size }, (_, i) => {
+              const x = i % size
+              const y = Math.floor(i / size)
+              return Elem('div', {
+                className: 'grid-item',
+                data: { index: i, x, y },
+                style: {
+                  // Set translateZ to 0 so it renders on a new layer
+                  // https://stackoverflow.com/a/54294386
+                  transform: `translate3d(${x * gridSize}px, ${y *
+                    gridSize}px, 0)`
+                }
+              })
+            })
+          )
+        }
+
+        _onClick (e) {
+          const item = e.target.closest('.grid-item')
+          if (item) {
+            this.onClick(+item.dataset.index)
+          }
+        }
+
+        onClick (index) {
+          console.log(index)
+        }
+
+        resize (width, height) {
+          width -= 2 * padding
+          height -= 2 * padding
+          let scale
+          if (width > height) {
+            scale = height / normalSize
+          } else {
+            scale = width / normalSize
+          }
+          if (scale > maxScale) {
+            scale = maxScale
+          }
+          this.wrapper.style.transform = `translate(${(width -
+            normalSize * scale) /
+            2 +
+            padding}px, ${(height - normalSize * scale) / 2 +
+            padding}px) scale(${scale})`
+          return this
+        }
+
+        show () {
+          this.wrapper.classList.remove('hidden')
+          return this
+        }
+
+        hide () {
+          this.wrapper.classList.add('hidden')
+          return this
         }
       }
 
@@ -94,31 +238,77 @@
         constructor () {
           super()
           for (const child of this.wrapper.children) {
-            child.textContent = (+child.dataset.index)
-              .toString(16)
-              .toUpperCase()
-              .padStart(2, '0')
+            child.append(
+              Elem('button', { className: 'grid-btn' }, [
+                (+child.dataset.index)
+                  .toString(16)
+                  .toUpperCase()
+                  .padStart(2, '0')
+              ])
+            )
           }
+        }
+
+        setPlane (plane) {
+          this.plane = plane
+          return this
         }
       }
 
       class Box extends Grid16 {
-        constructor (location) {
+        constructor () {
           super()
+          this.characters = new Array(size * size)
+          for (const child of this.wrapper.children) {
+            const index = +child.dataset.index
+            this.characters[index] = Elem('span', {
+              className: 'character'
+            })
+            child.append(
+              Elem('button', { className: 'grid-btn' }, [
+                this.characters[index]
+              ])
+            )
+          }
+        }
+
+        setLocation (location) {
           this.location = location
           location <<= 8
-          for (const child of this.wrapper.children) {
-            const span = document.createElement('span')
-            span.className = 'character'
-            span.textContent = String.fromCodePoint(location | +child.dataset.index)
-            child.appendChild(span)
-          }
+          this.characters.forEach((char, index) => {
+            char.textContent = String.fromCodePoint(location | index)
+          })
+          return this
         }
       }
 
-      // document.getElementById('wrapper').append(new Box(0xFD).wrapper)
-      document.getElementById('wrapper').append(new Box(0x1F3).wrapper)
-      // document.getElementById('wrapper').append(new Plane().wrapper)
+      const planes = document.getElementById('planes')
+      planes.append(
+        ...Array.from({ length: 17 }, (_, plane) => {
+          const { name = 'unassigned' } = data.planes[plane] || {}
+          return Elem(
+            'option',
+            {
+              value: plane
+            },
+            [`${plane} ${name}`]
+          )
+        })
+      )
+
+      const wrapper = document.getElementById('wrapper')
+      const plane = new Plane().setPlane(0)
+      const box = new Box().setLocation(0x1f3).show()
+      // box.setLocation(0xFD)
+      wrapper.append(plane.wrapper, box.wrapper)
+
+      function resize () {
+        const { width, height } = wrapper.getBoundingClientRect()
+        plane.resize(width, height)
+        box.resize(width, height)
+      }
+      window.addEventListener('resize', resize)
+      resize()
     </script>
   </body>
 </html>
