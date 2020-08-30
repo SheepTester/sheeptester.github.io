@@ -190,6 +190,10 @@
     </div>
     <div class="wrapper" id="wrapper"></div>
     <script>
+      // Links
+      // Blocks: https://en.wikipedia.org/wiki/Unicode_block
+      // Planes: https://en.wikipedia.org/wiki/Plane_(Unicode)
+
       const data = {
         // https://en.wikipedia.org/wiki/Plane_(Unicode)#Overview
         planes: {
@@ -445,6 +449,7 @@
         constructor (box) {
           super()
           this.box = box
+          this.showingBox = false
           for (const child of this.wrapper.children) {
             child.append(
               Elem('button', { className: 'grid-btn' }, [
@@ -458,27 +463,38 @@
         }
 
         setPlane (plane) {
-          // url.searchParams.set('char', )
-          // window.history.pushState({}, '', url)
           this.plane = plane
           return this
         }
 
         onClick (index) {
+          this.showingBox = true
           document.body.classList.add('showing-box')
           this.box.setLocation((this.plane << 8) | index)
           const { x, y } = this.wrapper.children[index].dataset
           this.box.zoomFromContained(+x, +y)
           this.zoomToCell(+x, +y)
+          url.searchParams.set(
+            'char',
+            this.box.location.toString(16).padStart(2, '0') + 'xx'
+          )
+          window.history.pushState({}, '', url)
         }
 
         closeBox () {
+          this.showingBox = false
           document.body.classList.remove('showing-box')
           const { x, y } = this.wrapper.children[
             this.box.location & 0xff
           ].dataset
           this.box.zoomToContained(+x, +y)
           this.zoomFromCell(+x, +y)
+          if (this.plane) {
+            url.searchParams.set('char', this.plane.toString(16) + 'xxxx')
+          } else {
+            url.searchParams.delete('char')
+          }
+          window.history.pushState({}, '', url)
         }
       }
 
@@ -550,10 +566,47 @@
         }
       }
 
-      const url = new URL(window.location)
+      let url = new URL(window.location)
       window.addEventListener('popstate', e => {
-        console.log(window.location)
+        url = new URL(window.location)
+        setStateFromURL()
       })
+      function setStateFromURL () {
+        let charLoc = url.searchParams.get('char') || 'xxxx'
+        const chars = [...charLoc]
+        if (chars.length === 1) {
+          charLoc = chars[0]
+            .codePointAt()
+            .toString(16)
+            .toUpperCase()
+            .padStart(4, '0')
+        }
+        if (charLoc.slice(-2) === 'xx') {
+          const boxLoc = charLoc.slice(0, -2)
+          if (plane.showingBox) {
+            plane.closeBox()
+          }
+          let planeIndex,
+            boxIndex = null
+          if (boxLoc.slice(-2) === 'xx') {
+            planeIndex = parseInt(boxLoc.slice(0, -2) || 0, 16)
+          } else {
+            const boxLocNum = parseInt(boxLoc, 16)
+            boxIndex = boxLocNum & 0xff
+            planeIndex = boxLocNum >> 8
+          }
+          planes.value = planeIndex
+          plane.setPlane(planeIndex)
+          if (boxIndex !== null) {
+            plane.onClick(boxIndex)
+          }
+        } else {
+          // TEMP: Showing a character currently isn't supported
+          url.searchParams.set('char', charLoc.slice(0, -2) + 'xx')
+          window.history.replaceState({}, '', url)
+          setStateFromURL()
+        }
+      }
 
       const clipboard = new ClipboardJS('.copy-text')
       clipboard.on('error', console.error)
@@ -580,6 +633,19 @@
       )
       planes.addEventListener('change', e => {
         plane.setPlane(+planes.value)
+        if (plane.showingBox) {
+          url.searchParams.set(
+            'char',
+            box.location.toString(16).padStart(2, '0') + 'xx'
+          )
+        } else {
+          if (plane.plane) {
+            url.searchParams.set('char', plane.plane.toString(16) + 'xxxx')
+          } else {
+            url.searchParams.delete('char')
+          }
+        }
+        window.history.pushState({}, '', url)
       })
 
       document.getElementById('back').addEventListener('click', e => {
@@ -593,6 +659,8 @@
       }
       window.addEventListener('resize', resize)
       resize()
+
+      setStateFromURL()
     </script>
   </body>
 </html>
