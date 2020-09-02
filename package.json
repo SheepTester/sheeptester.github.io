@@ -4,7 +4,22 @@
     "compress": "node ./img/compress.js"
   },
   "dependencies": {
-    "discord.js": "^12.2.0",
+    "discord.js": "^12.3.1",
     "pngquant-bin": "^5.0.2"
-  }
+  },
+  "name": "sheeptester.github.io",
+  "description": "GitHub pages",
+  "version": "1.0.0",
+  "main": "main.js",
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SheepTester/sheeptester.github.io.git"
+  },
+  "author": "SheepTester",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/SheepTester/sheeptester.github.io/issues"
+  },
+  "homepage": "https://github.com/SheepTester/sheeptester.github.io#readme"
 }
