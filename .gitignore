@@ -3,4 +3,5 @@ node_modules/
 
 # other stuff
 all/more-everything.json
+all/basic-gh-auth.json
 javascripts/discord/token.json

@@ -18,18 +18,7 @@ const folderSymbol = Symbol('folder');
 
 const BASE_URL = 'https://sheeptester.github.io'
 const customPaths = [
-  // eg the scratch-x repos that have pretty cool pages but have a lot of dumb files
-  '/scratch-gui/index.html',
-  '/scratch-blocks/playgrounds/tests/vertical_playground.html',
-  '/blockly/SHEEP/tset.html',
-  '/blog/index.html',
-  '/blog/ABOUT/index.html',
-  '/blog/HELLO-WORLD/index.html',
-  '/blog/SECOND-POST/index.html',
-  '/blog/SHOWBALL-PROBLEM-JOURNAL/index.html',
-  '/blog/images/image09.png',
-  '/blog/images/image11.png',
-  '/blog/images/image10.png'
+  // Manually add paths to the sitemap
 ];
 
 (async () => {
