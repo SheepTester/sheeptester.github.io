@@ -69,7 +69,8 @@ a.img::before {
   cursor: pointer;
   border: 1px solid transparent;
   border-radius: 2px;
-  padding: 0 2px;
+  padding: 2px 2px;
+  margin: 10px 0;
 }
 .head:hover, .dir a:hover {
   background-color: hsl(214, 91%, 97%);
@@ -131,12 +132,12 @@ button, .button {
   background-color: rgba(0,0,0,0.05);
   font: inherit;
   border-radius: 2px;
-  margin: 2px;
+  margin: 5px;
   cursor: pointer;
   text-decoration: none;
   color: black;
   display: inline-block;
-  padding: 0 3px;
+  padding: 5px 10px;
   text-align: center;
 }
 button:hover, .button:hover {
@@ -169,6 +170,9 @@ label {
 }
 input[type=checkbox] {
   vertical-align: middle;
+  width: 16px;
+  height: 16px;
+  margin: 10px;
 }
 input[type=checkbox]:focus {
   filter: drop-shadow(0 0 3px rgb(125, 162, 206));
@@ -176,18 +180,21 @@ input[type=checkbox]:focus {
 :focus {
   outline: none;
 }
-@media (hover: none) {
+@media (hover: hover) {
   .btn-wrapper {
-    margin: 10px auto;
+    margin: 0 auto;
   }
   .head, .dir a {
-    padding: 5px 2px;
+    padding: 0 2px;
+    margin: 0;
   }
   button, .button {
-    padding: 5px 10px;
+    padding: 0 3px;
+    margin: 2px;
   }
   input[type=checkbox] {
-    width: 16px;
-    height: 16px;
+    width: auto;
+    height: auto;
+    margin: 3px;
   }
 }

@@ -31,18 +31,18 @@ function matchesPattern (path, pattern) {
   const allowDirectories = pattern.includes('**')
   if (pattern.startsWith('/')) {
     // Absolute paths: /all/index.html
-    if (path.startsWith(pattern)) path = path.slice(pattern.length)
+    if (path.startsWith(start)) path = path.slice(start.length)
     else return false
   } else {
     // Relative paths: .gitignore
-    const index = path.indexOf(pattern)
+    const index = path.indexOf(start)
     if (index === -1) return false
-    path = path.slice(index + pattern.length)
+    path = path.slice(index + start.length)
   }
   // Wildcards (only useful for file extensions): *.md
   if (end !== undefined) {
     if (end) {
-      if (pattern.endsWith(end)) {
+      if (path.endsWith(end)) {
         path = path.slice(0, -end.length)
       } else {
         return false
@@ -120,11 +120,10 @@ async function main () {
       // CSS.
       if (path.endsWith(`.scss`)) return path.replace(/\.scss$/g, '.css')
       return path
-    }).filter(path => path))
+    }).filter(path => path && !paths.includes(path)))
   }
 
-  // for (const repoBranch of ghPagesRepos) {
-  for (const repoBranch of ['scratch-blocks#gh-pages', 'scratch-gui#gh-pages', 'scratch-vm#gh-pages']) {
+  for (const repoBranch of ghPagesRepos) {
     console.log(`Getting ${repoBranch}`)
     const [repo, branch] = repoBranch.split('#')
     paths.push(...await getRepoFiles(repo, branch))
