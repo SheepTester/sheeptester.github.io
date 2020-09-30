@@ -15,6 +15,7 @@ sheep-btn {
   transition: all .2s;
   right: 10px;
   bottom: 10px;
+  transform: translateZ(0);
 }
 sheep-btn, .sheep-blockscreen sheep-btn:hover {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 480 480' stroke='white' stroke-opacity='0.7' stroke-width='20' fill='none'%3E%3Cpath d='M90 90a50 50 0 0 0 0 100H98.579A150 150 0 1 0 381.421 190H390a50 50 0 0 0 0 -100a50 50 0 1 1 -100 0a50 50 0 1 1 -100 0a50 50 0 1 1 -100 0z'/%3E%3C/svg%3E");
@@ -26,7 +27,7 @@ sheep-btn:hover {
 }
 sheep-btn:active {
   box-shadow: 0 0 2px rgba(0,0,0,0.5);
-  transform: scale(0.9);
+  transform: translateZ(0) scale(0.9);
 }
 sheep-btn:focus {
   outline: none;
