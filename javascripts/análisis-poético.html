@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Análisis Poético</title>
+    <meta name="description" content="Analisar poemas en español" />
+
+    <link rel="stylesheet" type="text/css" href="/sheep3.css">
+    <script src="/sheep3.js" charset="utf-8"></script>
+
+    <style>
+      /* TEMP */
+    </style>
+  </head>
+  <body>
+    <script type="module">
+      class Palabra {
+        #sílabas = null
+
+        constructor (texto, siguiente = '') {
+          this.palabra = texto
+          this.siguiente = siguiente
+        }
+
+        #generarSílabas () {
+          if (!this.#sílabas) {
+            this.#sílabas = this.palabra.match(Palabra.#obtenerSílabas) || []
+          }
+          return this.#sílabas
+        }
+
+        // 1 => aguda
+        // 2 => llana/grave
+        // 3 => esdrújula
+        // 4 => sobreesdrújula
+        get acentuación () {
+          const sílabas = this.#generarSílabas()
+          if (sílabas.length <= 1) return 1
+          const índice = sílabas.findIndex(sílaba => Palabra.#esTiltado.test(sílaba))
+          let acentuación
+          if (índice !== -1) {
+            acentuación = sílabas.length - índice
+          } else {
+            acentuación = Palabra.#noTerminaConVocalONS.test(this.palabra) ? 1 : 2
+            if (this.palabra.toLowerCase().endsWith('mente')) {
+              acentuación += 2
+            }
+          }
+          return acentuación
+        }
+
+        get sílabas () {
+          // "maestra" y "caía" tienen tres sílabas y son llanas
+          // La regex no encuentra palabras como "y" así que hay un mínimo de
+          // una sílaba.
+          return Math.max(this.#generarSílabas().length || 1)
+        }
+
+        get empiezaConVocal () {
+          return Palabra.#empiezaConVocal.test(this.palabra)
+        }
+
+        get terminaConVocal () {
+          return Palabra.#terminaConVocal.test(this.palabra)
+        }
+
+        #hayVocalesEntre (próxima) {
+          return this.terminaConVocal && próxima.empiezaConVocal
+        }
+
+        haySinalefaCon (próxima) {
+          // ¿Hay una sinalefa entre...
+          // - "que" y "huele"? (actualmente no)
+          // - "de" y "él"? (actualmente sí)
+          return (this.sílabas === 1 || this.acentuación !== 1) &&
+            (próxima.sílabas === 1 || próxima.acentuación !== próxima.sílabas) &&
+            this.#hayVocalesEntre(próxima)
+        }
+
+        hayHiatoCon (próxima) {
+          return this.#hayVocalesEntre(próxima) && !this.haySinalefaCon(próxima)
+        }
+
+        toString () {
+          return this.palabra
+        }
+
+        static obtenerPalabra = /[a-záéíóúüñ]+/gi
+
+        // Casos:
+        // mA.Estra
+        // cA.Í.A
+        // qUIEre
+        // gUArdar
+        // pengÜIno
+        // qUIUbo
+        // Solo es importante que el número de encuentros = el de sílabas. Por
+        // eso, no es importante encontrar las y.
+        static #obtenerSílabas = /(?:u|u?i)?[aeoáéó]|[uü]?[ií]u?|[uú]/gi
+
+        static #noTerminaConVocalONS = /[^aeiouáéíóúns](?:mente)?$/i
+
+        static #esTiltado = /[áéíóú]/i
+
+        static #empiezaConVocal = /^h?[aeiouáéíóú]/i
+        static #terminaConVocal = /[aeiouáéíóú]$/i
+      }
+
+      class Verso extends Array {
+        get sílabas () {
+          let sílabas = 0
+          for (let i = 0; i < this.length; i++) {
+            const palabra = this[i]
+            const próximaPalabra = this[i + 1]
+            sílabas += palabra.sílabas
+            if (próximaPalabra && palabra.haySinalefaCon(próximaPalabra)) {
+              // Las sílabas combinan
+              sílabas--
+            }
+          }
+          return sílabas
+        }
+
+        static nuevo (textoDeVerso) {
+          const palabras = new Verso()
+          let encuentro
+          let índiceAnterior = 0
+          while ((encuentro = Palabra.obtenerPalabra.exec(textoDeVerso))) {
+            const [palabra] = encuentro
+            palabras.push(new Palabra(palabra))
+
+            if (palabras.length > 0) {
+              palabras[palabras.length - 1].siguiente = textoDeVerso.slice(índiceAnterior, encuentro.index)
+            }
+            índiceAnterior = encuentro.index + palabra.length
+          }
+          return palabras
+        }
+      }
+
+      class Estrofa extends Array {
+        static nuevo (textoDeEstrofa) {
+          return Estrofa.from(
+            textoDeEstrofa.split(/\r?\n/),
+            Verso.nuevo
+          )
+        }
+      }
+
+      class Poema extends Array {
+        static nuevo (textoDePoema) {
+          return Poema.from(
+            textoDePoema
+              .normalize()
+              .trim()
+              .split(/(?:\r?\n){2,}/),
+            Estrofa.nuevo
+          )
+        }
+      }
+
+      // https://scalar.usc.edu/works/literalia/mir-los-muros-de-la-patria-ma-1648
+      const poema = Poema.nuevo(`Miré los muros de la patria mía,
+si un tiempo fuertes ya desmoronados,
+de la carrera de la edad cansados,
+por quien caduca ya su valentía.
+
+Salime al campo. Vi que el sol bebía
+los arroyos del hielo desatados,
+y del monte quejosos los ganados
+que con sombras hurtó su luz al día.
+
+Entré en mi casa. Vi que, amancillada,
+de anciana habitación era despojos;
+mi báculo, más corvo y menos fuerte.
+
+Vencida de la edad sentí mi espada,
+y no hallé cosa en que poner los ojos
+que no fuese recuerdo de la muerte.`)
+      console.log(poema)
+
+      Object.assign(window, { Palabra, poema })
+    </script>
+  </body>
+</html>
