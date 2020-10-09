@@ -186,24 +186,46 @@ que no fuese recuerdo de la muerte.</textarea>
           return this.#hayVocalesEntre(próxima) && !this.haySinalefaCon(próxima)
         }
 
+        #haySinéresis ([consonantes, vocales]) {
+          return vocales[0] === 'u' &&
+            'gq'.includes(consonantes[consonantes.length - 1]?.toLowerCase()) &&
+            'ieíé'.includes(vocales[1]?.toLowerCase())
+            // qUIEre, averigUAr y pengÜIno pero no qUErer
+            ? vocales.length > 2
+            : vocales.length > 1
+        }
+
         analisar (próxima) {
           this.#generarSílabas()
 
           const partes = []
           if (this.#partes.length > 1) {
             let primero = true
-            for (const [consonantes, vocales] of this.#partes) {
-              const sinéresis = vocales[0] === 'u' &&
-                'gq'.includes(consonantes[consonantes.length - 1]?.toLowerCase()) &&
-                'ieíé'.includes(vocales[1]?.toLowerCase())
-                // qUIEre, averigUAr y pengÜIno pero no qUErer
-                ? vocales.length > 2
-                : vocales.length > 1
+            for (let i = 0; i < this.#partes.length; i++) {
+              const [consonantes, vocales] = this.#partes[i]
+              const sinéresis = this.#haySinéresis([consonantes, vocales])
+              // Para considerar: La frase "aho bahuevo" (no son palabras
+              // reales) tiene cinco sílabas en total pero hay una sinéresis en
+              // "aho". No sé si es importante. ¡Ya veremos!
+              // actualmente si es verdad: Aho
+              const sinéresisConHPróxima = !sinéresis &&
+                this.#partes[i + 1]?.[0].toLowerCase() === 'h' &&
+                !this.#haySinéresis(this.#partes[i + 1])
+              // actualmente si es verdad: ahO
+              const sinéresisConHAnterior = i > 0 && !sinéresis &&
+                consonantes.toLowerCase() === 'h' &&
+                !this.#haySinéresis(this.#partes[i - 1])
               partes.push(
-                consonantes || vocales && !primero && { texto: 'diéresis', tipo: 'diéresis' },
-                { texto: vocales, tipo: sinéresis ? 'sílaba-con-sinéresis' : 'sílaba' }
+                consonantes || vocales && !primero &&
+                  { texto: 'diéresis', tipo: 'diéresis' },
+                {
+                  texto: vocales,
+                  tipo: sinéresis || sinéresisConHPróxima || sinéresisConHAnterior
+                    ? 'sílaba-con-sinéresis'
+                    : 'sílaba'
+                }
               )
-              if (sinéresis) {
+              if (sinéresis || sinéresisConHAnterior) {
                 partes.push({ texto: 'sinéresis', tipo: 'sinéresis' })
               }
               if (primero) primero = false
@@ -257,6 +279,8 @@ que no fuese recuerdo de la muerte.</textarea>
       }
 
       class Verso extends Array {
+        prefacio = ''
+
         get sílabas () {
           let sílabas = 0
           for (let i = 0; i < this.length; i++) {
@@ -275,6 +299,7 @@ que no fuese recuerdo de la muerte.</textarea>
           const número = ++contador.cuenta
           return [
             { texto: `${número}. `, tipo: 'verso' },
+            this.prefacio,
             ...this.map((palabra, i) => palabra.analisar(this[i + 1])),
             { texto: ` (${this.sílabas})`, tipo: 'sílabas' },
             '\n'
@@ -294,10 +319,17 @@ que no fuese recuerdo de la muerte.</textarea>
 
             if (palabras.length > 0) {
               palabras[palabras.length - 1].siguiente = textoDeVerso.slice(índiceAnterior, encuentro.index)
+            } else {
+              palabras.prefacio = textoDeVerso.slice(0, encuentro.index)
             }
             índiceAnterior = encuentro.index + palabra.length
 
             palabras.push(new Palabra(palabra))
+          }
+          if (palabras.length > 0) {
+            palabras[palabras.length - 1].siguiente = textoDeVerso.slice(índiceAnterior)
+          } else {
+            palabras.prefacio = textoDeVerso
           }
           return palabras
         }
@@ -350,18 +382,6 @@ que no fuese recuerdo de la muerte.</textarea>
       }
 
       class Poema extends Array {
-        static nuevo (textoDePoema) {
-          return Poema.from(
-            textoDePoema
-              .normalize()
-              .trim()
-              .split(/(?:\r?\n){2,}/)
-              // Eliminar estrofas vacías
-              .filter(estrofa => estrofa),
-            Estrofa.nuevo
-          )
-        }
-
         analisar () {
           const fragmento = document.createDocumentFragment()
           const contador = { cuenta: 0 }
@@ -390,6 +410,18 @@ que no fuese recuerdo de la muerte.</textarea>
 
         toString () {
           return this.join('\n\n')
+        }
+
+        static nuevo (textoDePoema) {
+          return Poema.from(
+            textoDePoema
+              .normalize()
+              .trim()
+              .split(/(?:\r?\n){2,}/)
+              // Eliminar estrofas vacías
+              .filter(estrofa => estrofa),
+            Estrofa.nuevo
+          )
         }
       }
 
