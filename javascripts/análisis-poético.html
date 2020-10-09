@@ -4,17 +4,88 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Análisis Poético</title>
+    <title>Análisis poético</title>
     <meta name="description" content="Analisar poemas en español" />
 
     <link rel="stylesheet" type="text/css" href="/sheep3.css">
     <script src="/sheep3.js" charset="utf-8"></script>
 
     <style>
-      /* TEMP */
+      html,
+      body {
+        height: 100%;
+      }
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica,
+          Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji';
+        display: flex;
+        margin: 0;
+        white-space: pre-wrap;
+        background-color: #1b1821;
+        color: rgba(255, 255, 255, 0.8);
+      }
+
+      textarea {
+        -webkit-appearance: none;
+        border: none;
+        background: none;
+        font: inherit;
+        color: inherit;
+      }
+
+      .poema,
+      .resultado {
+        flex: 1 0 0;
+        padding: 40px;
+      }
+      .poema {
+        resize: none;
+      }
+
+      .análisis-verso {
+        color: rgba(255, 255, 255, 0.3);
+      }
+      .análisis-sílabas {
+        color: rgba(255, 255, 255, 0.3);
+      }
+      .análisis-sinalefa,
+      .análisis-hiato {
+        font-weight: bold;
+        font-size: 0.6em;
+        text-transform: uppercase;
+        padding: 0 2px;
+        border-radius: 2px;
+      }
+      .análisis-sinalefa {
+        background-color: #f1d677;
+        color: rgba(0, 0, 0, 0.8);
+      }
+      .análisis-hiato {
+        background-color: #f19177;
+        color: rgba(0, 0, 0, 0.8);
+      }
     </style>
   </head>
   <body>
+    <!-- https://scalar.usc.edu/works/literalia/mir-los-muros-de-la-patria-ma-1648 -->
+    <textarea class="poema" id="poema" placeholder="Poner el poema aquí" autofocus>Miré los muros de la patria mía,
+si un tiempo fuertes ya desmoronados,
+de la carrera de la edad cansados,
+por quien caduca ya su valentía.
+
+Salime al campo. Vi que el sol bebía
+los arroyos del hielo desatados,
+y del monte quejosos los ganados
+que con sombras hurtó su luz al día.
+
+Entré en mi casa. Vi que, amancillada,
+de anciana habitación era despojos;
+mi báculo, más corvo y menos fuerte.
+
+Vencida de la edad sentí mi espada,
+y no hallé cosa en que poner los ojos
+que no fuese recuerdo de la muerte.</textarea>
+    <div class="resultado" id="resultado"></div>
     <script type="module">
       class Palabra {
         #sílabas = null
@@ -83,8 +154,23 @@
           return this.#hayVocalesEntre(próxima) && !this.haySinalefaCon(próxima)
         }
 
+        analisar (próxima) {
+          const interpalabras = []
+          if (próxima && this.haySinalefaCon(próxima)) {
+            interpalabras.push(' ', { texto: 'sinalefa', tipo: 'sinalefa' })
+          }
+          if (próxima && this.hayHiatoCon(próxima)) {
+            interpalabras.push(' ', { texto: 'hiato', tipo: 'hiato' })
+          }
+          return [
+            this.palabra,
+            ...interpalabras,
+            this.siguiente
+          ]
+        }
+
         toString () {
-          return this.palabra
+          return this.palabra + this.siguiente
         }
 
         static obtenerPalabra = /[a-záéíóúüñ]+/gi
@@ -104,8 +190,11 @@
 
         static #esTiltado = /[áéíóú]/i
 
-        static #empiezaConVocal = /^h?[aeiouáéíóú]/i
-        static #terminaConVocal = /[aeiouáéíóú]$/i
+        // Excepción: la palabra "y"
+        // PREGUNTA: ¿Qué ocurriría si hay "lobo y agua"? ¿Hay una sinalefa
+        // GRANDE?
+        static #empiezaConVocal = /^h?[aeiouáéíóú]|^y$/i
+        static #terminaConVocal = /^y$|[aeiouáéíóú]$/i
       }
 
       class Verso extends Array {
@@ -123,18 +212,33 @@
           return sílabas
         }
 
+        analisar (contador) {
+          const número = ++contador.cuenta
+          return [
+            { texto: `${número}. `, tipo: 'verso' },
+            ...this.map((palabra, i) => palabra.analisar(this[i + 1])),
+            { texto: ` (${this.sílabas})`, tipo: 'sílabas' },
+            '\n'
+          ]
+        }
+
+        toString () {
+          return this.join('')
+        }
+
         static nuevo (textoDeVerso) {
           const palabras = new Verso()
           let encuentro
           let índiceAnterior = 0
           while ((encuentro = Palabra.obtenerPalabra.exec(textoDeVerso))) {
             const [palabra] = encuentro
-            palabras.push(new Palabra(palabra))
 
             if (palabras.length > 0) {
               palabras[palabras.length - 1].siguiente = textoDeVerso.slice(índiceAnterior, encuentro.index)
             }
             índiceAnterior = encuentro.index + palabra.length
+
+            palabras.push(new Palabra(palabra))
           }
           return palabras
         }
@@ -147,6 +251,17 @@
             Verso.nuevo
           )
         }
+
+        analisar (contador) {
+          return [
+            ...this.map(verso => verso.analisar(contador)),
+            '\n'
+          ]
+        }
+
+        toString () {
+          return this.join('\n')
+        }
       }
 
       class Poema extends Array {
@@ -155,31 +270,59 @@
             textoDePoema
               .normalize()
               .trim()
-              .split(/(?:\r?\n){2,}/),
+              .split(/(?:\r?\n){2,}/)
+              // Eliminar estrofas vacías
+              .filter(estrofa => estrofa),
             Estrofa.nuevo
           )
         }
+
+        analisar () {
+          const fragmento = document.createDocumentFragment()
+          const contador = { cuenta: 0 }
+          const partes = this.map(estrofa => estrofa.analisar(contador)).flat(3)
+          let textoAnterior = null
+          for (const parte of partes) {
+            if (!parte) continue
+            if (parte.tipo) {
+              const span = document.createElement('span')
+              span.className = 'análisis-' + parte.tipo
+              span.textContent = parte.texto
+              fragmento.append(span)
+              textoAnterior = null
+            } else if (textoAnterior) {
+              textoAnterior.nodeValue += parte
+            } else {
+              const nodoDeTexto = document.createTextNode(parte)
+              textoAnterior = nodoDeTexto
+              fragmento.append(nodoDeTexto)
+            }
+          }
+          return fragmento
+        }
+
+        toString () {
+          return this.join('\n\n')
+        }
       }
 
-      // https://scalar.usc.edu/works/literalia/mir-los-muros-de-la-patria-ma-1648
-      const poema = Poema.nuevo(`Miré los muros de la patria mía,
-si un tiempo fuertes ya desmoronados,
-de la carrera de la edad cansados,
-por quien caduca ya su valentía.
+      function pintar (poema, salida) {
+        while (salida.firstChild) salida.removeChild(salida.firstChild)
+        salida.append(poema.analisar())
+        console.log(poema)
+      }
 
-Salime al campo. Vi que el sol bebía
-los arroyos del hielo desatados,
-y del monte quejosos los ganados
-que con sombras hurtó su luz al día.
+      function principio () {
+        const entrada = document.getElementById('poema')
+        const salida = document.getElementById('resultado')
 
-Entré en mi casa. Vi que, amancillada,
-de anciana habitación era despojos;
-mi báculo, más corvo y menos fuerte.
+        entrada.addEventListener('input', e => {
+          pintar(Poema.nuevo(entrada.value), salida)
+        })
+        pintar(Poema.nuevo(entrada.value), salida)
+      }
+      principio()
 
-Vencida de la edad sentí mi espada,
-y no hallé cosa en que poner los ojos
-que no fuese recuerdo de la muerte.`)
-      console.log(poema)
 
       Object.assign(window, { Palabra, poema })
     </script>
