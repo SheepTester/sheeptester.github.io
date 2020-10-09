@@ -47,22 +47,42 @@
       }
       .análisis-sílabas {
         color: rgba(255, 255, 255, 0.3);
+        font-size: 0.8em;
       }
       .análisis-sinalefa,
-      .análisis-hiato {
+      .análisis-hiato,
+      .análisis-diéresis,
+      .análisis-sinéresis {
         font-weight: bold;
         font-size: 0.6em;
         text-transform: uppercase;
         padding: 0 2px;
         border-radius: 2px;
+        color: rgba(0, 0, 0, 0.8);
+        background-color: white;
       }
       .análisis-sinalefa {
         background-color: #f1d677;
-        color: rgba(0, 0, 0, 0.8);
       }
       .análisis-hiato {
         background-color: #f19177;
-        color: rgba(0, 0, 0, 0.8);
+      }
+      .análisis-diéresis {
+        background-color: #99d29a;
+      }
+      .análisis-sinéresis {
+        background-color: #dca9f3;
+      }
+      .análisis-sílaba,
+      .análisis-sílaba-con-sinéresis {
+        border-bottom: 1px solid #452c50;
+      }
+      .análisis-sílaba-con-sinéresis {
+        border-bottom-color: #dca9f3;
+      }
+      .análisis-datos-de-estrofa {
+        font-size: 0.8em;
+        color: rgba(255, 255, 255, 0.5);
       }
     </style>
   </head>
@@ -89,6 +109,7 @@ que no fuese recuerdo de la muerte.</textarea>
     <script type="module">
       class Palabra {
         #sílabas = null
+        #partes = null
 
         constructor (texto, siguiente = '') {
           this.palabra = texto
@@ -97,7 +118,18 @@ que no fuese recuerdo de la muerte.</textarea>
 
         #generarSílabas () {
           if (!this.#sílabas) {
-            this.#sílabas = this.palabra.match(Palabra.#obtenerSílabas) || []
+            this.#partes = []
+            this.#sílabas = []
+            let encuentro
+            let índiceAnterior = 0
+            while ((encuentro = Palabra.#obtenerSílabas.exec(this.palabra))) {
+              const [vocales] = encuentro
+              const consonantes = this.palabra.slice(índiceAnterior, encuentro.index)
+              índiceAnterior = encuentro.index + vocales.length
+              this.#partes.push([consonantes, vocales])
+              this.#sílabas.push(vocales)
+            }
+            this.#partes.push([this.palabra.slice(índiceAnterior), ''])
           }
           return this.#sílabas
         }
@@ -155,6 +187,32 @@ que no fuese recuerdo de la muerte.</textarea>
         }
 
         analisar (próxima) {
+          this.#generarSílabas()
+
+          const partes = []
+          if (this.#partes.length > 1) {
+            let primero = true
+            for (const [consonantes, vocales] of this.#partes) {
+              const sinéresis = vocales[0] === 'u' &&
+                'gq'.includes(consonantes[consonantes.length - 1]?.toLowerCase()) &&
+                'ieíé'.includes(vocales[1]?.toLowerCase())
+                // qUIEre, averigUAr y pengÜIno pero no qUErer
+                ? vocales.length > 2
+                : vocales.length > 1
+              partes.push(
+                consonantes || vocales && !primero && { texto: 'diéresis', tipo: 'diéresis' },
+                { texto: vocales, tipo: sinéresis ? 'sílaba-con-sinéresis' : 'sílaba' }
+              )
+              if (sinéresis) {
+                partes.push({ texto: 'sinéresis', tipo: 'sinéresis' })
+              }
+              if (primero) primero = false
+            }
+          } else {
+            // Palabras como "y" sin "vocales" (AEIOU)
+            partes.push({ texto: this.palabra, tipo: 'sílaba' })
+          }
+
           const interpalabras = []
           if (próxima && this.haySinalefaCon(próxima)) {
             interpalabras.push(' ', { texto: 'sinalefa', tipo: 'sinalefa' })
@@ -162,8 +220,9 @@ que no fuese recuerdo de la muerte.</textarea>
           if (próxima && this.hayHiatoCon(próxima)) {
             interpalabras.push(' ', { texto: 'hiato', tipo: 'hiato' })
           }
+
           return [
-            this.palabra,
+            ...partes,
             ...interpalabras,
             this.siguiente
           ]
@@ -242,18 +301,37 @@ que no fuese recuerdo de la muerte.</textarea>
           }
           return palabras
         }
+
+        static tiposDeSílabas = {
+          2: 'bisílabo',
+          3: 'trisílabo',
+          4: 'tetrasílabo',
+          5: 'pentasílabo',
+          6: 'hexasílabo',
+          7: 'heptasílabo',
+          8: 'octosílabo',
+          9: 'eneasílabo',
+          10: 'decasílabo',
+          11: 'endecasílabo',
+          12: 'dodecasílabo',
+          14: 'alejandrino'
+        }
       }
 
       class Estrofa extends Array {
-        static nuevo (textoDeEstrofa) {
-          return Estrofa.from(
-            textoDeEstrofa.split(/\r?\n/),
-            Verso.nuevo
-          )
+        get sílabas () {
+          return Math.round(this.reduce((acumulado, verso) => acumulado + verso.sílabas, 0) / this.length)
         }
 
         analisar (contador) {
+          const { sílabas } = this
           return [
+            { texto: `${sílabas} sílabas (${
+              Verso.tiposDeSílabas[sílabas]
+                ? `${Verso.tiposDeSílabas[sílabas]}; `
+                : ''
+            }arte ${sílabas > 8 ? 'mayor' : 'menor'}) · ${this.length} versos`, tipo: 'datos-de-estrofa' },
+            '\n',
             ...this.map(verso => verso.analisar(contador)),
             '\n'
           ]
@@ -261,6 +339,13 @@ que no fuese recuerdo de la muerte.</textarea>
 
         toString () {
           return this.join('\n')
+        }
+
+        static nuevo (textoDeEstrofa) {
+          return Estrofa.from(
+            textoDeEstrofa.split(/\r?\n/),
+            Verso.nuevo
+          )
         }
       }
 
@@ -285,11 +370,13 @@ que no fuese recuerdo de la muerte.</textarea>
           for (const parte of partes) {
             if (!parte) continue
             if (parte.tipo) {
-              const span = document.createElement('span')
-              span.className = 'análisis-' + parte.tipo
-              span.textContent = parte.texto
-              fragmento.append(span)
-              textoAnterior = null
+              if (parte.texto) {
+                const span = document.createElement('span')
+                span.className = 'análisis-' + parte.tipo
+                span.textContent = parte.texto
+                fragmento.append(span)
+                textoAnterior = null
+              }
             } else if (textoAnterior) {
               textoAnterior.nodeValue += parte
             } else {
