@@ -23,12 +23,45 @@ function cameraFromHash() {
 window.addEventListener('hashchange', cameraFromHash, false);
 cameraFromHash();
 
-for (let i = objects.children.length; i--;) {
-  let elem = objects.children[i];
+let row = 0, col = 0;
+for (const elem of objects.children) {
+  let {special} = elem.dataset;
+  let x = 0, z = 0;
+  switch (special) {
+    case 'sheeptester':
+      z = -1000;
+      break;
+    case 'julien':
+      // Gamepro5 is assumed to be right before
+      ({x, z} = items[items.length - 1]);
+      z += 10;
+      break;
+    default:
+      switch (col) {
+        case 0:
+          x = -200;
+          break;
+        case 1:
+          x = 200;
+          break;
+        case 2:
+          x = -600 - row * 200;
+          break;
+        case 3:
+          x = 600 + row * 200;
+          break;
+      }
+      z = row * 400 - 200;
+      col++;
+      if (col > 3) {
+        col = 0;
+        row++;
+      }
+  }
   items.push({
     elem: elem,
-    x: +elem.dataset.x,
-    z: +elem.dataset.z,
+    x: x,
+    z: z,
     visible: true
   });
 }
@@ -176,4 +209,7 @@ draw();
 objects.classList.add('elements-3d');
 for (let draggable of document.querySelectorAll('a[href], img')) {
   draggable.draggable = false;
+  if (draggable.alt) {
+    draggable.title = draggable.alt;
+  }
 }

@@ -52,6 +52,8 @@ body {
 }
 #elements > li {
   box-shadow: 0 0 0 0 rgba(0,0,0,0.1);
+  /* Uncomment for offline development */
+  /* box-shadow: 0 0 0 1px rgba(0,0,0,0.1); */
   border-radius: 10px;
   transition: box-shadow .2s;
 }
