@@ -56,7 +56,7 @@
     <textarea id="invisibles" readonly></textarea>
     <script>
 const input = document.getElementById('input');
-const chars = {'!': '❗', '?': '❓', '#': '#️⃣', '*': '*️⃣', '+': '➕', '-': '➖', '$': '💲'};
+const chars = {'!': '❗', '?': '❓', '#': '#️⃣', '*': '*️⃣', '+': '➕', '-': '➖', '$': '💲', '.': '⏺️'};
 const offsetChar = (base, offset) => String.fromCodePoint(base.codePointAt() + offset);
 for (let i = 0; i < 26; i++) chars[offsetChar('a', i)] = offsetChar('🇦', i);
 for (let i = 0; i < 10; i++) chars[i] = i + '0️⃣'.slice(1)
