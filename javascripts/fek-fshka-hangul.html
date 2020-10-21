@@ -13,6 +13,10 @@
       src="https://unpkg.com/hangul-js@0.2.6/hangul.min.js"
       charset="utf-8"
     ></script>
+    <script
+      src="https://unpkg.com/aromanize@0.1.5/aromanize.js"
+      charset="utf-8"
+    ></script>
 
     <style>
       html,
@@ -22,33 +26,82 @@
       body {
         margin: 0;
         display: flex;
+        flex-direction: column;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+          'Helvetica Neue', Arial, sans-serif, 'Apple Color Emoji',
+          'Segoe UI Emoji', 'Segoe UI Symbol';
       }
-      textarea {
+      textarea,
+      button {
         -webkit-appearance: none;
         background: none;
         border: none;
         color: inherit;
         font: inherit;
+      }
+      a {
+        text-decoration: none;
+        color: inherit;
+      }
+      button:not(:disabled) {
+        cursor: pointer;
+      }
 
+      .gonten {
+        flex: auto;
+        display: flex;
+      }
+      .babeben {
         flex: auto;
         padding: 40px;
+      }
+
+      .ni-ane {
+        background-color: #3f51b5;
+        color: white;
+        display: flex;
+        justify-content: flex-end;
+        padding-right: 100px;
+      }
+      .pingu {
+        padding: 10px 20px;
+      }
+      .pingu:hover {
+        background-color: rgba(0, 0, 0, 0.3);
+      }
+      a.pingu:not(:link),
+      .pingu:disabled {
+        opacity: 0.5;
+        pointer-events: none;
       }
     </style>
   </head>
   <body>
-    <textarea
-      id="roma-sinke-babeben"
-      placeholder="Roma sinke babeben"
-      autofocus
-    ></textarea>
-    <textarea
-      id="hangul-sinke-babeben"
-      placeholder="한굴 신케 바베벤"
-      readonly
-    ></textarea>
+    <div class="gonten">
+      <textarea
+        class="babeben"
+        id="roma-sinke-babeben"
+        placeholder="Roma sinke babeben"
+        autofocus
+      ></textarea>
+      <textarea
+        class="babeben"
+        id="hangul-sinke-babeben"
+        placeholder="한굴 신케 바베벤"
+        readonly
+      ></textarea>
+    </div>
+    <div class="ni-ane">
+      <a class="pingu" id="paer" target="_blank" rel="noopener noreferrer"
+        >Paer</a
+      >
+      <button class="pingu" id="roma" disabled>Roma sinke babeben</button>
+    </div>
     <script>
       const roma = document.getElementById('roma-sinke-babeben')
       const hangul = document.getElementById('hangul-sinke-babeben')
+      const paer = document.getElementById('paer')
+      const niHangul = document.getElementById('roma')
       const babebenNiAeiou = {
         '': 'ㅇ',
         g: 'ㄱ',
@@ -148,14 +201,22 @@
                 // console.log(usino, ui, babebeAeiou, sepat)
                 return (
                   babebenNiAeiou[usino] +
-                    (ui ? babebenUi[ui][babebeAeiou] : bababenAeiou[babebeAeiou]) +
+                    (ui
+                      ? babebenUi[ui][babebeAeiou]
+                      : bababenAeiou[babebeAeiou]) +
                     (sepat ? babebenNiAeiou[sepat] : '') || arebabebe
                 )
               }
             )
-        ])
-          .replace(regexRo, (a, b) => babebenRo[b] || a)
-          // .replace(/ +/g, '　')
+        ]).replace(regexRo, (a, b) => babebenRo[b] || a)
+        // .replace(/ +/g, '　')
+        paer.href = `https://synthesis-service.scratch.mit.edu/synth?locale=ko-KR&gender=female&text=${encodeURIComponent(
+          hangul.value
+        )}`
+        niHangul.disabled = false
+      })
+      niHangul.addEventListener('click', e => {
+        alert(Aromanize.romanize(hangul.value))
       })
     </script>
   </body>
