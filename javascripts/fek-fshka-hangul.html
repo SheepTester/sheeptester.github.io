@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Hangul sinke babeben</title>
+    <meta name="description" content="Si no noi. Si no ki?" />
+
+    <link rel="stylesheet" type="text/css" href="/sheep3.css" />
+    <script src="/sheep3.js" charset="utf-8"></script>
+    <script
+      src="https://unpkg.com/hangul-js@0.2.6/hangul.min.js"
+      charset="utf-8"
+    ></script>
+
+    <style>
+      html,
+      body {
+        height: 100%;
+      }
+      body {
+        margin: 0;
+        display: flex;
+      }
+      textarea {
+        -webkit-appearance: none;
+        background: none;
+        border: none;
+        color: inherit;
+        font: inherit;
+
+        flex: auto;
+        padding: 40px;
+      }
+    </style>
+  </head>
+  <body>
+    <textarea
+      id="roma-sinke-babeben"
+      placeholder="Roma sinke babeben"
+      autofocus
+    ></textarea>
+    <textarea
+      id="hangul-sinke-babeben"
+      placeholder="한굴 신케 바베벤"
+      readonly
+    ></textarea>
+    <script>
+      const roma = document.getElementById('roma-sinke-babeben')
+      const hangul = document.getElementById('hangul-sinke-babeben')
+      const babebenNiAeiou = {
+        '': 'ㅇ',
+        g: 'ㄱ',
+        n: 'ㄴ',
+        d: 'ㄷ',
+        l: 'ㄹ',
+        r: 'ㄹ',
+        m: 'ㅁ',
+        b: 'ㅂ',
+        v: 'ㅂ', // *
+        f: 'ㅃ', // *
+        s: 'ㅅ',
+        z: 'ㅆ', // *
+        j: 'ㅈ',
+        sh: 'ㅉ', // *
+        kh: 'ㅊ', // (ch)
+        k: 'ㅋ',
+        q: 'ㅋ',
+        t: 'ㅌ',
+        p: 'ㅍ',
+        h: 'ㅎ'
+      }
+      const bababenAeiou = {
+        '': 'ㅡ', // *
+        a: 'ㅏ',
+        o: 'ㅗ',
+        u: 'ㅜ',
+        i: 'ㅣ',
+        y: 'ㅣ', // *
+        yi: 'ㅣ', // *
+        ae: 'ㅐ', // *
+        æ: 'ㅐ', // *
+        e: 'ㅔ',
+        wi: 'ㅟ',
+        ui: 'ㅢ'
+      }
+      const babebenUi = {
+        i: {
+          a: 'ㅑ',
+          o: 'ㅛ',
+          u: 'ㅠ',
+          ae: 'ㅒ', // *
+          æ: 'ㅒ', // *
+          e: 'ㅖ'
+        },
+        u: {
+          a: 'ㅘ',
+          o: 'ㅝ',
+          u: 'ㅜ',
+          ae: 'ㅙ',
+          æ: 'ㅙ', // *
+          e: 'ㅞ'
+        }
+      }
+      const babebenRo = {
+        '.': '。',
+        ',': '，',
+        '!': '！',
+        '?': '？',
+        ';': '；',
+        ':': '：',
+        '(': '（',
+        ')': '）',
+        '[': '【',
+        ']': '】',
+        '“': '「',
+        '”': '」'
+      }
+      babebenUi.w = babebenUi.u
+      const regex = /([sk]h|[fgndlrmbvfszjkqtph])?(?:(([uwi]?)(?:ae|[aeouæ])|[yuw]?[iy])([sk]h|[gndrlmbvszjktph](?![aeiou]))?)?/gi
+      const regexRo = / *([.,!?;:()[\]“”]) */g
+      roma.addEventListener('input', e => {
+        const babeben = [...roma.value]
+        for (let c = 0; c < babeben.length; c++) {
+          if (babeben[c].toLowerCase() === 'c') {
+            babeben[c] = 'ei'.includes(babeben[c + 1].toLowerCase()) ? 's' : 'k'
+          }
+        }
+        hangul.value = Hangul.assemble([
+          ...babeben
+            .join('')
+            .replace(
+              regex,
+              (
+                arebabebe,
+                usino = '',
+                babebeAeiou = '',
+                ui = '',
+                sepat = ''
+              ) => {
+                if (!arebabebe) return ''
+                usino = usino.toLowerCase()
+                ui = ui.toLowerCase()
+                babebeAeiou = babebeAeiou.toLowerCase()
+                if (ui) babebeAeiou = babebeAeiou.replace(ui, '')
+                sepat = sepat.toLowerCase()
+                // console.log(usino, ui, babebeAeiou, sepat)
+                return (
+                  babebenNiAeiou[usino] +
+                    (ui ? babebenUi[ui][babebeAeiou] : '') +
+                    bababenAeiou[babebeAeiou] +
+                    (sepat ? babebenNiAeiou[sepat] : '') || arebabebe
+                )
+              }
+            )
+        ])
+          .replace(regexRo, (a, b) => babebenRo[b] || a)
+          // .replace(/ +/g, '　')
+      })
+    </script>
+  </body>
+</html>
