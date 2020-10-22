@@ -30,6 +30,8 @@
         font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
           'Helvetica Neue', Arial, sans-serif, 'Apple Color Emoji',
           'Segoe UI Emoji', 'Segoe UI Symbol';
+        background-color: #1a1229;
+        color: rgba(255, 255, 255, 0.7);
       }
       textarea,
       button {
@@ -46,28 +48,39 @@
       button:not(:disabled) {
         cursor: pointer;
       }
+      ::-webkit-input-placeholder {
+        color: inherit;
+        opacity: 0.3;
+      }
 
       .gonten {
         flex: auto;
         display: flex;
+        flex-wrap: wrap;
       }
       .babeben {
-        flex: auto;
+        flex: 1 0 150px;
         padding: 40px;
+        resize: none;
+      }
+      .babeben:focus {
+        outline: none;
+        background-color: rgba(255, 255, 255, 0.05);
+        color: white;
       }
 
       .ni-ane {
-        background-color: #3f51b5;
+        background-color: #0e0521;
         color: white;
         display: flex;
         justify-content: flex-end;
-        padding-right: 100px;
+        padding-right: 70px;
       }
       .pingu {
         padding: 10px 20px;
       }
       .pingu:hover {
-        background-color: rgba(0, 0, 0, 0.3);
+        background-color: rgba(255, 255, 255, 0.1);
       }
       a.pingu:not(:link),
       .pingu:disabled {
@@ -119,8 +132,11 @@
         sh: 'ㅉ', // *
         kh: 'ㅊ', // (ch)
         k: 'ㅋ',
-        q: 'ㅋ',
+        q: 'ㅋ', // *
+        qq: 'ㅋ', // * (raqq)
+        kk: 'ㅋ', // * (cack -> kakk)
         t: 'ㅌ',
+        th: 'ㅌ', // *
         p: 'ㅍ',
         h: 'ㅎ'
       }
@@ -130,19 +146,16 @@
         o: 'ㅗ',
         u: 'ㅜ',
         i: 'ㅣ',
-        y: 'ㅣ', // *
-        yi: 'ㅣ', // *
         ae: 'ㅐ', // *
         æ: 'ㅐ', // *
-        e: 'ㅔ',
-        wi: 'ㅟ',
-        ui: 'ㅢ'
+        e: 'ㅔ'
       }
       const babebenUi = {
         i: {
           a: 'ㅑ',
           o: 'ㅛ',
           u: 'ㅠ',
+          i: 'ㅣ',
           ae: 'ㅒ', // *
           æ: 'ㅒ', // *
           e: 'ㅖ'
@@ -151,11 +164,17 @@
           a: 'ㅘ',
           o: 'ㅝ',
           u: 'ㅜ',
+          i: 'ㅢ',
           ae: 'ㅙ',
           æ: 'ㅙ', // *
           e: 'ㅞ'
         }
       }
+      babebenUi.y = babebenUi.i
+      babebenUi.w = babebenUi.u
+      babebenUi.w.i = 'ㅟ'
+      babebenUi.o = babebenUi.u
+      babebenUi.o.i = 'ㅚ' // *
       const babebenRo = {
         '.': '。',
         ',': '，',
@@ -168,16 +187,18 @@
         '[': '【',
         ']': '】',
         '“': '「',
-        '”': '」'
+        '”': '」',
+        '-': '－',
+        '{': '｛',
+        '}': '｝'
       }
-      babebenUi.w = babebenUi.u
-      const regex = /([sk]h|[fgndlrmbvfszjkqtph])?(?:(([uwi]?)(?:ae|[aeouæ])|[yuw]?[iy])([sk]h|[gndrlmbvszjktph](?![aeiou]))?)?/gi
-      const regexRo = / *([.,!?;:()[\]“”]) */g
-      roma.addEventListener('input', e => {
+      const regex = /(qq|kk|[skt]h|[fgndlrmbvfszjkqtph])?(?:(([uwiyo]?)(?:ae|[aeiouæy]))((?:qq|kk|[skt]h|[gndrlmbvszjktph])(?![aeiou]))?)?/gi
+      const regexRo = / *([.,!?;:()[\]“”-]) */g
+      function fshka () {
         const babeben = [...roma.value]
         for (let c = 0; c < babeben.length; c++) {
           if (babeben[c].toLowerCase() === 'c') {
-            babeben[c] = 'ei'.includes(babeben[c + 1].toLowerCase()) ? 's' : 'k'
+            babeben[c] = 'ei'.includes((babeben[c + 1] || '').toLowerCase()) ? 's' : 'k'
           }
         }
         hangul.value = Hangul.assemble([
@@ -197,6 +218,7 @@
                 ui = ui.toLowerCase()
                 babebeAeiou = babebeAeiou.toLowerCase()
                 if (ui) babebeAeiou = babebeAeiou.replace(ui, '')
+                if (babebeAeiou === 'y') babebeAeiou = 'i'
                 sepat = sepat.toLowerCase()
                 // console.log(usino, ui, babebeAeiou, sepat)
                 return (
@@ -214,10 +236,19 @@
           hangul.value
         )}`
         niHangul.disabled = false
-      })
+        quo.set('arebabeben', roma.value)
+        const quoB = quo.toString()
+        window.history.replaceState({}, '', quoB ? '?' + quoB : '')
+      }
+      roma.addEventListener('input', fshka)
       niHangul.addEventListener('click', e => {
         alert(Aromanize.romanize(hangul.value))
       })
+      const quo = new URL(window.location).searchParams
+      if (quo.get('arebabeben')) {
+        roma.value = quo.get('arebabeben')
+        fshka()
+      }
     </script>
   </body>
 </html>
