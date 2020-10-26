@@ -31,8 +31,8 @@ for (const elem of objects.children) {
     case 'sheeptester':
       z = -1000;
       break;
-    case 'julien':
-      // Gamepro5 is assumed to be right before
+    case 'oljayjay':
+      // Gamepro5 is assumed to be right before by mere coincidence
       ({x, z} = items[items.length - 1]);
       z += 10;
       break;
