@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Greedy meshing</title>
+    <meta
+      name="description"
+      content=
+        "Following some random almost decade old blog post for meshing tiles."
+    />
+
+    <link rel="stylesheet" type="text/css" href="/sheep3.css">
+    <script src="/sheep3.js" charset="utf-8"></script>
+
+    <style>
+      #canvas {
+        border: 1px solid #eee;
+        cursor: crosshair;
+        image-rendering: pixelated;
+        touch-action: none;
+      }
+      .wrapper {
+        position: relative;
+      }
+      #quads {
+        position: absolute;
+        top: 0;
+        left: 0;
+        transform: scale(10);
+        transform-origin: top left;
+        pointer-events: none;
+      }
+      .rect {
+        position: absolute;
+        box-shadow: inset 0 0 0.2px 0.1px white;
+        box-sizing: border-box;
+        background-color: rgba(255, 0, 255, 0.2);
+      }
+    </style>
+  </head>
+  <body>
+    <p>
+      You are <strong id="status">painting a 10</strong>. Use your mouse or
+      finger to draw somewhere on the black canvas!
+    </p>
+    <p>
+      <label>
+        Line width:
+        <input type="range" id="width" min="1" max="20" value="10">
+      </label>
+    </p>
+    <p>
+      <button type="button" id="paint">Pen</button> (erasable)
+      <button type="button" id="erase">Eraser</button>
+    </p>
+    <div class="wrapper">
+      <canvas id="canvas"></canvas>
+      <div id="quads"></div>
+    </div>
+    <p>
+      <label>
+        Minimum "redness" required for inclusion:
+        <input type="range" id="threshold" min="0" max="255" value="150">
+      </label>
+    </p>
+    <p id="stats"></p>
+    <p>
+      Thank you,
+      <a
+        href="https://0fps.net/2012/06/30/meshing-in-a-minecraft-game/"
+      >Meshing in a Minecraft Game</a>!
+    </p>
+    <script>
+      const canvas = document.getElementById('canvas')
+      const c = canvas.getContext('2d', { alpha: false })
+      canvas.width = 100
+      canvas.height = 100
+      const SCALE = 10
+      canvas.style.width = canvas.width * SCALE + 'px'
+      canvas.style.height = canvas.height * SCALE + 'px'
+      c.lineCap = 'round'
+      c.lineJoin = 'round'
+      let width = 10
+      let colour = 'red'
+      const pointers = {}
+      function get ({ clientX, clientY }) {
+        const rect = canvas.getBoundingClientRect()
+        return {
+          x: (clientX - rect.left) / rect.width * canvas.width,
+          y: (clientY - rect.top) / rect.height * canvas.height
+        }
+      }
+      canvas.addEventListener('pointerdown', e => {
+        if (pointers[e.pointerId]) return
+        const { x, y } = get(e)
+        canvas.setPointerCapture(e.pointerId)
+        pointers[e.pointerId] = {
+          lastX: x,
+          lastY: y,
+          width,
+          colour
+        }
+        c.fillStyle = colour
+        c.beginPath()
+        c.moveTo(x + width / 2, y)
+        c.arc(x, y, width / 2, 0, 2 * Math.PI)
+        c.fill()
+      })
+      canvas.addEventListener('pointermove', e => {
+        if (!pointers[e.pointerId]) return
+        const { x, y } = get(e)
+        const { width, colour, lastX, lastY } = pointers[e.pointerId]
+        c.lineWidth = width
+        c.strokeStyle = colour
+        c.beginPath()
+        c.moveTo(lastX, lastY)
+        c.lineTo(x, y)
+        c.stroke()
+        pointers[e.pointerId].lastX = x
+        pointers[e.pointerId].lastY = y
+      })
+      canvas.addEventListener('pointerup', e => {
+        if (!pointers[e.pointerId]) return
+        delete pointers[e.pointerId]
+        updateQuads()
+      })
+
+      const status = document.getElementById('status')
+      function setStatus () {
+        status.textContent = `using a ${colour} pen with width ${width}`
+      }
+      setStatus()
+      document.getElementById('width').addEventListener('input', e => {
+        width = +e.srcElement.value
+        setStatus()
+      })
+      document.getElementById('paint').addEventListener('click', e => {
+        colour = 'red'
+        setStatus()
+      })
+      document.getElementById('erase').addEventListener('click', e => {
+        colour = 'black'
+        setStatus()
+      })
+
+      // Minimum alpha value to be counted for "meshing"
+      let threshold = 150
+      document.getElementById('threshold').addEventListener('input', e => {
+        threshold = +e.srcElement.value
+        updateQuads()
+      })
+      const quadsWrapper = document.getElementById('quads')
+      const stats = document.getElementById('stats')
+      function updateQuads () {
+        const {
+          data,
+          width,
+          height
+        } = c.getImageData(0, 0, canvas.width, canvas.height)
+        const reds = data.filter((_, i) => i % 4 === 0)
+        const { rectangles, time } = quads({ width, height, data: reds })
+        quadsWrapper.innerHTML = ''
+        const fragment = document.createDocumentFragment()
+        for (const { x, y, width, height } of rectangles) {
+          const rect = document.createElement('div')
+          rect.className = 'rect'
+          rect.style.left = x + 'px'
+          rect.style.top = y + 'px'
+          rect.style.width = width + 'px'
+          rect.style.height = height + 'px'
+          fragment.appendChild(rect)
+        }
+        quadsWrapper.appendChild(fragment)
+        const redCount = reds.filter(red => red >= threshold).length
+        const rectArea = rectangles.reduce((acc, curr) => acc + curr.width * curr.height, 0)
+        stats.textContent = [
+          `Relevant cells: ${redCount}.`,
+          `Rectangles: ${rectangles.length} (area: ${rectArea}).`,
+          `Took ${time}ms.`
+        ].join(' ')
+      }
+      function quads ({ width, height, data }) {
+        // https://0fps.net/2012/06/30/meshing-in-a-minecraft-game/
+        // I think what they mean is,
+        // 1. Get the rectangles with the lowest Y, then of those the lowest X,
+        // then the greatest width then height.
+        // 2. Remove that rectangle for the mesh. Repeat.
+        // I think for JS, this means to loop row by row lowest Y first, then in
+        // each row from lowest X first, then try to get the widest rectangle
+        // from the first relevant tile, then see how high that rectangle can
+        // go. Then, purge the rectangle from the data and continue looping.
+        const startTime = performance.now()
+        // My comments here assume that +Y is in the upwards direction, which
+        // isn't true for Canvas2D
+        const rectangles = []
+        // Check each row
+        for (let y = 0; y < height; y++) {
+          // Check each tile of the row
+          for (let x = 0; x < width; x++) {
+            // If the tile is relevant (ie filled)
+            if (data[y * width + x] >= threshold) {
+              // Maybe a rectangle has already been found and contains this
+              // tile! Look for it.
+              const inRect = rectangles
+                .find(rect => y < rect.y + rect.height && x >= rect.x &&
+                  x < rect.x + rect.width)
+              if (inRect) {
+                // Skip to the right edge of the rectangle to continue searching
+                x = inRect.x + inRect.width - 1
+                continue
+              }
+              const baseX = x
+              // Keep going along the row to collect tiles for the Great
+              // Rectangle
+              const nextRectX = rectangles
+                .filter(rect => y < rect.y + rect.height && rect.x > x)
+                .reduce((acc, curr) => Math.min(acc, curr.x), width)
+              while (data[y * width + x] >= threshold && x < nextRectX) {
+                x++
+              }
+              const rectWidth = x - baseX
+              // Check the range of X's in later rows (to see how tall the Great
+              // Rectangle can be)
+              // Fortunately, there shouldn't be any rectangles above it. Free
+              // real estate!
+              let y2 = y
+              checkLaterRows: // OMG a label
+              while (y2 < height) {
+                y2++
+                for (let x2 = baseX; x2 < x; x2++) {
+                  if (data[y2 * width + x2] < threshold) {
+                    break checkLaterRows
+                  }
+                }
+              }
+              const rectHeight = y2 - y
+              rectangles.push({
+                x: baseX,
+                y,
+                width: rectWidth,
+                height: rectHeight
+              })
+              // In later rows, I can be sure that any Great Rectangles
+              // discovered have a base below, but it is possible that their
+              // heights intersect.
+              // Is it worth mutating the data and marking the discovered
+              // Rectangles? Perhaps it is just as speedy to loop through all
+              // the rectangles, and if a rectangle is found, skip to its right
+              // edge. I will do that.
+            }
+          }
+        }
+        const endTime = performance.now()
+        return { rectangles, time: endTime - startTime }
+      }
+    </script>
+  </body>
+</html>
