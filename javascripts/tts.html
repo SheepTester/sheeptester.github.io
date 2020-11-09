@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Speech synthesis (Text-to-speech)</title>
+    <meta name="description" content="The good browsers have text-to-speech built in!" />
+
+    <link rel="stylesheet" type="text/css" href="/sheep3.css">
+    <script src="/sheep3.js" charset="utf-8"></script>
+
+    <style>
+      html,
+      body,
+      #speak {
+        height: 100%;
+      }
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica,
+          Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji';
+        margin: 0;
+        background-color: #1e1923;
+        color: #d1ced4;
+      }
+      #speak {
+        display: flex;
+        flex-direction: column-reverse;
+      }
+      textarea,
+      select,
+      button,
+      input {
+        background: none;
+        border: none;
+        font: inherit;
+        color: inherit;
+      }
+      button:not(:disabled),
+      select:not(:disabled),
+      input[type=submit]:not(:disabled) {
+        cursor: pointer;
+      }
+      #text {
+        flex: auto;
+        padding: 40px;
+        resize: none;
+      }
+      .toolbar {
+        display: flex;
+        align-items: center;
+        padding: 5px 20px;
+        background-color: #151219;
+        flex-wrap: wrap;
+        min-height: 60px;
+      }
+      ::-webkit-input-placeholder {
+        color: inherit;
+        opacity: 0.5;
+      }
+      .button {
+        background-color: #9d2eb9;
+        padding: 5px 10px;
+        margin: 5px;
+      }
+      #voices {
+        border: 1px solid currentColor;
+        padding: 5px 5px;
+        max-width: calc(100vw - 40px);
+        text-overflow: ellipsis;
+      }
+      #voices option {
+        background-color: #151219;
+        color: inherit;
+      }
+      :disabled {
+        opacity: 0.5;
+      }
+      .flex {
+        flex: auto;
+      }
+    </style>
+  </head>
+  <body>
+    <form id="speak">
+      <textarea id="text" placeholder="Text to say here..." autofocus></textarea>
+      <div class="toolbar">
+        <label>Select a voice: <select id="voices"></select></label>
+        <span class="flex"></span>
+        <input type="submit" class="button" value="Speak" id="speak-btn">
+        <button type="button" class="button" id="stop" disabled>Stop</button>
+      </div>
+    </form>
+    <script>
+      const textInput = document.getElementById('text')
+      const voiceSelect = document.getElementById('voices')
+      const speakForm = document.getElementById('speak')
+      const speakBtn = document.getElementById('speak-btn')
+      const stopBtn = document.getElementById('stop')
+
+      let voices = []
+      window.speechSynthesis.addEventListener('voiceschanged', e => {
+        voices = window.speechSynthesis.getVoices()
+        const oldValue = voiceSelect.value
+        voiceSelect.innerHTML = ''
+        voices.forEach((voice, i) => {
+          const option = document.createElement('option')
+          option.value = i
+          option.textContent = voice.name
+          voiceSelect.appendChild(option)
+        })
+        if (oldValue) voiceSelect.value = oldValue
+      })
+
+      speakForm.addEventListener('submit', async e => {
+        e.preventDefault()
+        speakBtn.disabled = true
+        stopBtn.disabled = false
+        const utterance = new SpeechSynthesisUtterance(textInput.value)
+        utterance.voice = voices[voiceSelect.value]
+        utterance.lang = voices[voiceSelect.value].lang
+        window.speechSynthesis.speak(utterance)
+        utterance.addEventListener('end', e => {
+          speakBtn.disabled = false
+          stopBtn.disabled = true
+          console.log('end')
+        })
+        utterance.addEventListener('error', e => {
+          speakBtn.disabled = false
+          stopBtn.disabled = true
+          console.log('error')
+        })
+        utterance.addEventListener('start', e => console.log('start'))
+        utterance.addEventListener('boundary', e => console.log('boundary'))
+        utterance.addEventListener('mark', e => console.log('mark'))
+        utterance.addEventListener('pause', e => console.log('pause'))
+        utterance.addEventListener('resume', e => console.log('resume'))
+      })
+      stopBtn.addEventListener('click', e => {
+        stopBtn.disabled = true
+        window.speechSynthesis.cancel()
+      })
+    </script>
+  </body>
+</html>
