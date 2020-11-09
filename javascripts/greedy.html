@@ -82,6 +82,9 @@
       canvas.style.height = canvas.height * SCALE + 'px'
       c.lineCap = 'round'
       c.lineJoin = 'round'
+      c.fillStyle = 'black'
+      // Safari doesn't use black in alpha: false mode :/
+      c.fillRect(0, 0, canvas.width, canvas.height)
       let width = 10
       let colour = 'red'
       const pointers = {}
