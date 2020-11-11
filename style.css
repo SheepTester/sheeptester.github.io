@@ -122,6 +122,47 @@ strong {
   display: inline-block;
 }
 
+.server-discord {
+  display: flex;
+  padding: 20px;
+  align-items: center;
+  transition: background-color .2s;
+}
+.server-discord:hover,
+.tabkeyfocus .server-discord:focus {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+.server-title {
+  display: block;
+  font-size: 24px;
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 10px;
+}
+.server-desc {
+  display: block;
+  font-size: 16px;
+}
+#my-server {
+  flex: none;
+  background-color: #7289DA;
+  margin: 0;
+  margin-left: 20px;
+  opacity: 1;
+}
+#my-server .ball {
+  border: 10px solid white;
+  background-color: transparent;
+}
+.server-discord:hover #my-server,
+.tabkeyfocus .server-discord:focus #my-server {
+  opacity: 1;
+  transform: scale(1.1);
+}
+.server-discord:hover #my-server .ball,
+.tabkeyfocus .server-discord:focus #my-server .ball {
+  transform: scale(1.2);
+}
+
 @media (max-width: 700px) {
   body {
     margin-right: 0;
