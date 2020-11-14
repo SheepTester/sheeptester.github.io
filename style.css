@@ -99,16 +99,16 @@ strong {
   padding: 0 10px;
   color: rgba(255, 255, 255, 0.6);
 }
-.usernames > span {
+.usernames .username {
   margin: 0 10px;
   white-space: nowrap;
   font-size: 20px;
   transition: color .2s;
 }
-.usernames > span:hover {
+.usernames a.username:hover {
   color: rgba(255, 255, 255, 0.8);
 }
-.usernames > span:hover .mini-social {
+.usernames a.username:hover .mini-social {
   opacity: 1;
 }
 #happy {
