@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Bitmap to vector</title>
+    <meta name="description" content="Convert PNG to SVG by adding it as an image" />
+
+    <link rel="stylesheet" type="text/css" href="/sheep3.css">
+    <script src="/sheep3.js" charset="utf-8"></script>
+
+    <style>
+      body {
+        font-family: sans-serif;
+        background-color: #eee;
+        margin: 50px;
+      }
+      div {
+        background-color: white;
+        border-radius: 5px;
+        padding: 20px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+        margin: 20px 0;
+      }
+      img {
+        display: block;
+        max-width: 100%;
+        border: 1px solid rgba(0, 0, 0, 0.05);
+        border-radius: 2px;
+      }
+      a {
+        display: inline-block;
+        text-decoration: none;
+        border: 1px solid currentColor;
+        padding: 10px 20px;
+        border-radius: 5px;
+        margin-top: 20px;
+      }
+      .error {
+        color: red;
+        white-space: pre-wrap;
+      }
+      input[type=number] {
+        text-align: right;
+      }
+    </style>
+  </head>
+  <body>
+    <p><label>Image (ideally a PNG): <input type="file" id="image" accept="image/*" autofocus></label>(you can also paste in an image)</p>
+    <p><label>Scale <input type="number" id="scale" value="1">x</label></p>
+    <script>
+      function svgify ({ url, width, height, scale = 1 }) {
+        return new Blob([
+          `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="${width * scale}" height="${height * scale}" viewBox="0 0 ${width * scale} ${height * scale}"><image x="0" y="0" width="${width}" height="${height}" transform="scale(${scale}, ${scale})" xlink:href="${url}" /></svg>`
+        ], { type: 'image/svg+xml' })
+      }
+
+      function dataUrlify (blob) {
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader()
+          reader.addEventListener('load', () => {
+            resolve(reader.result)
+          })
+          reader.addEventListener('error', () => {
+            reject(reader.error)
+          })
+          reader.readAsDataURL(blob)
+        })
+      }
+
+      // `createImageBitmap` exists for PNGs etc, but using an <img> works with
+      // SVGs /shrug
+      function getImageSize (blob) {
+        return new Promise((resolve, reject) => {
+          const image = document.createElement('img')
+          const url = URL.createObjectURL(blob)
+          image.addEventListener('load', () => {
+            resolve({ width: image.width, height: image.height })
+            URL.revokeObjectURL(url)
+          })
+          image.addEventListener('error', () => {
+            reject(new TypeError('Image failed to load. (This might mean the image is invalid.)'))
+          })
+          image.src = url
+        })
+      }
+
+      let lastOutput = null
+      let lastFile
+      async function handleFile (file) {
+        if (!file) return
+        const { width, height } = await getImageSize(file)
+        const url = await dataUrlify(file)
+        const scale = +scaleInput.value
+        const svg = svgify({ url, width, height, scale })
+        const svgUrl = URL.createObjectURL(svg)
+
+        const outputWrapper = document.createElement('div')
+        const outputPreview = document.createElement('img')
+        outputPreview.src = svgUrl
+        const outputDownload = document.createElement('a')
+        outputDownload.textContent = 'Download'
+        outputDownload.href = svgUrl
+        outputDownload.download = (file.name || 'vector') + '.svg'
+        outputWrapper.append(
+          outputPreview,
+          outputDownload,
+          `${width * scale} by ${height * scale}`
+        )
+        if (lastOutput) {
+          lastOutput.before(outputWrapper)
+        } else {
+          document.body.append(outputWrapper)
+        }
+        lastOutput = outputWrapper
+        lastFile = file
+      }
+
+      function reportError (error) {
+        const report = document.createElement('div')
+        report.className = 'error'
+        report.textContent = error
+        if (lastOutput) {
+          lastOutput.before(report)
+        } else {
+          document.body.append(report)
+        }
+        lastOutput = report
+      }
+
+      const imageFile = document.getElementById('image')
+      imageFile.addEventListener('change', () => {
+        handleFile(imageFile.files[0]).catch(reportError)
+      })
+      document.addEventListener('paste', e => {
+        handleFile(e.clipboardData.files[0]).catch(reportError)
+      })
+      const scaleInput = document.getElementById('scale')
+      scaleInput.addEventListener('change', () => {
+        handleFile(lastFile).catch(reportError)
+      })
+    </script>
+  </body>
+</html>
