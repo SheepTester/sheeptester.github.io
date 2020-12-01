@@ -11,28 +11,206 @@
     <script src="/sheep3.js" charset="utf-8"></script>
 
     <style>
-      /* TEMP */
+      html,
+      body {
+        height: 100%;
+      }
+      body {
+        margin: 0;
+        display: flex;
+      }
+      .side {
+        flex: 1 0 0;
+        display: flex;
+        flex-direction: column;
+      }
+      .flex {
+        height: 0;
+        flex: auto;
+      }
+      .no-flex {
+        flex: none;
+      }
+      .parts {
+        margin: 0;
+        padding: 0;
+        overflow: auto;
+      }
+      .image {
+        max-width: 100%;
+      }
+      .preview {
+        border: none;
+      }
     </style>
   </head>
   <body>
+    <div class="side parts-side">
+      <div class="add no-flex">
+        <input type="file" id="file" accept="image/*" class="visually-hidden" multiple>
+        <label class="add-btn" for="file">Add image</label>
+        <button class="add-btn" id="text">Add text</button>
+      </div>
+      <ul class="parts flex" id="parts"></ul>
+    </div>
+    <div class="side preview-side">
+      <iframe class="preview flex" id="preview"></iframe>
+      <a class="download no-flex" download="thank-you.pdf" id="download">Download</a>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.12.0/dist/sortable.umd.min.js" charset="utf-8"></script>
     <script src="./blob-stream.min.js" charset="utf-8"></script>
     <script src="./pdfkit.standalone.min.js" charset="utf-8"></script>
-    <iframe id="iframe"></iframe>
     <script>
-const doc = new PDFDocument({
-  autoFirstPage: false
+const addFileInput = document.getElementById('file')
+const addTextBtn = document.getElementById('text')
+const partsList = document.getElementById('parts')
+const previewFrame = document.getElementById('preview')
+const downloadLink = document.getElementById('download')
+
+const sortable = Sortable.create(partsList)
+
+const reader = new FileReader()
+let lastPromise = Promise.resolve()
+let currentJob = null
+reader.addEventListener('load', e => {
+  const { resolve } = currentJob
+  currentJob = null
+  resolve(reader.result)
 })
-const stream = doc.pipe(blobStream())
-doc.on('pageAdded', () => doc.text('Page Title'))
-doc.addPage({
-  margin: 0,
-  size: [100, 100]
+reader.addEventListener('error', e => {
+  const { reject } = currentJob
+  currentJob = null
+  reject(reader.error)
 })
-doc.addPage()
-doc.end()
-stream.on('finish', () => {
+async function blobToDataUrl (blob) {
+  let res, rej
+  const prom = new Promise((resolve, reject) => {
+    res = resolve
+    rej = reject
+  })
+  lastPromise = lastPromise
+    .then(() => {
+      currentJob = { resolve: res, reject: rej }
+      reader.readAsDataURL(blob)
+      return prom
+    })
+    // Ignore any error for the next blobToDataUrl
+    .catch(() => {})
+  return prom
+}
+
+let id = 0
+function newId () {
+  id++
+  return id + ''
+}
+const getParts = {}
+
+const DPI = 72 // PDF points per inch
+const WIDTH = 8.5 * DPI // 8.5 in (letter size)
+function makePdf (parts) {
+  const doc = new PDFDocument({
+    autoFirstPage: false
+  })
+  const stream = doc.pipe(blobStream())
+  for (const { type, ...data } of parts) {
+    switch (type) {
+      case 'text': {
+        const { text } = data
+        doc
+          .addPage({
+            margin: 0.5 * DPI,
+            size: [
+              WIDTH,
+              // Measure height of string with line wrapping
+              doc.heightOfString(text, {
+                width: WIDTH - 1 * DPI
+              }) + 1 * DPI
+            ]
+          })
+          .text(text)
+        break
+      }
+      case 'image': {
+        const { url, width, height } = data
+        doc
+          .addPage({
+            margin: 0,
+            size: [width, height]
+          })
+          .image(url, 0, 0, { width, height })
+        break
+      }
+    }
+  }
+  doc.end()
+  return new Promise(resolve => {
+    stream.on('finish', () => resolve(stream))
+  })
+}
+async function update () {
+  const parts = []
+  for (const part of partsList.children) {
+    if (getParts[part.dataset.id]) {
+      parts.push(getParts[part.dataset.id]())
+    }
+  }
+  const stream = await makePdf(parts)
   const url = stream.toBlobURL('application/pdf')
-  iframe.src = url
+  previewFrame.src = url
+  downloadLink.href = url
+}
+
+addFileInput.addEventListener('change', async () => {
+  for (const file of addFileInput.files) {
+    const id = newId()
+    const url = await blobToDataUrl(file)
+
+    const img = document.createElement('img')
+    img.className = 'image'
+    img.src = url
+
+    const li = document.createElement('li')
+    li.className = 'part part-image'
+    li.dataset.id = id
+    li.append(img)
+    partsList.append(li)
+
+    getParts[id] = () => {
+      return {
+        type: 'image',
+        url,
+        width: img.width,
+        height: img.height
+      }
+    }
+  }
+  update()
+})
+
+addTextBtn.addEventListener('click', () => {
+  const id = newId()
+
+  const textarea = document.createElement('textarea')
+  textarea.className = 'text'
+
+  const li = document.createElement('li')
+  li.className = 'part part-text'
+  li.dataset.id = id
+  li.append(textarea)
+  partsList.append(li)
+
+  textarea.focus()
+
+  getParts[id] = () => {
+    return {
+      type: 'text',
+      text: textarea.value
+    }
+  }
+
+  update()
 })
     </script>
   </body>
