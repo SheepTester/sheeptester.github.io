@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>One PDF</title>
+    <meta name="description" content="Combine multiple images into one PDF to make your teachers' lives easier." />
+
+    <link rel="stylesheet" type="text/css" href="/sheep3.css">
+    <script src="/sheep3.js" charset="utf-8"></script>
+
+    <style>
+      /* TEMP */
+    </style>
+  </head>
+  <body>
+    <script src="./blob-stream.min.js" charset="utf-8"></script>
+    <script src="./pdfkit.standalone.min.js" charset="utf-8"></script>
+    <iframe id="iframe"></iframe>
+    <script>
+const doc = new PDFDocument({
+  autoFirstPage: false
+})
+const stream = doc.pipe(blobStream())
+doc.on('pageAdded', () => doc.text('Page Title'))
+doc.addPage({
+  margin: 0,
+  size: [100, 100]
+})
+doc.addPage()
+doc.end()
+stream.on('finish', () => {
+  const url = stream.toBlobURL('application/pdf')
+  iframe.src = url
+})
+    </script>
+  </body>
+</html>
