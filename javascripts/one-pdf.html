@@ -18,6 +18,29 @@
       body {
         margin: 0;
         display: flex;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+          'Helvetica Neue', Arial, sans-serif, 'Apple Color Emoji',
+          'Segoe UI Emoji', 'Segoe UI Symbol';
+        background-color: #1a1021;
+        color: rgba(255, 255, 255, 0.8);
+      }
+      input,
+      button,
+      textarea {
+        border: none;
+        background: none;
+        font: inherit;
+        color: inherit;
+      }
+      .visually-hidden {
+        /* https://www.a11yproject.com/posts/2013-01-11-how-to-hide-content/ */
+        clip: rect(0 0 0 0);
+        clip-path: inset(50%);
+        height: 1px;
+        overflow: hidden;
+        position: absolute;
+        white-space: nowrap;
+        width: 1px;
       }
       .side {
         flex: 1 0 0;
@@ -31,16 +54,79 @@
       .no-flex {
         flex: none;
       }
+      .add {
+        display: flex;
+        height: 48px;
+      }
+      .add-btn {
+        cursor: pointer;
+        flex: 1 0 0;
+        text-align: center;
+        padding: 0 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .add-btn:hover {
+        background-color: rgba(255, 255, 255, 0.05);
+      }
+      .icon {
+        font-size: 24px;
+        margin: 10px;
+      }
       .parts {
         margin: 0;
         padding: 0;
+        list-style: none;
         overflow: auto;
+        background-color: #110e13;
+      }
+      .part {
+        display: flex;
+        background-color: #261631;
+        margin: 10px;
+      }
+      .text {
+        flex: auto;
+        resize: vertical;
+        padding: 10px;
+      }
+      .text:focus {
+        outline: none;
+        background-color: rgba(255, 255, 255, 0.05);
+      }
+      .image-wrapper {
+        flex: auto;
+        display: flex;
+        flex-direction: column;
       }
       .image {
-        max-width: 100%;
+        width: 100%;
+      }
+      .size-label {
+        margin: 10px;
+        margin-left: 0;
+      }
+      .remove {
+        color: #ff006a;
+        cursor: pointer;
+        align-self: flex-start;
       }
       .preview {
         border: none;
+        background-color: black;
+      }
+      .download {
+        display: inline-block;
+        text-decoration: none;
+        padding: 10px;
+        text-align: center;
+        color: white;
+        background-color: #dc711d;
+      }
+      .download:not([href]) {
+        pointer-events: none;
+        opacity: 0.5;
       }
     </style>
   </head>
@@ -48,8 +134,8 @@
     <div class="side parts-side">
       <div class="add no-flex">
         <input type="file" id="file" accept="image/*" class="visually-hidden" multiple>
-        <label class="add-btn" for="file">Add image</label>
-        <button class="add-btn" id="text">Add text</button>
+        <label class="add-btn" for="file"><span class="icon">🖼</span> Add image</label>
+        <button class="add-btn" id="text"><span class="icon">𝕋</span> Add note</button>
       </div>
       <ul class="parts flex" id="parts"></ul>
     </div>
@@ -68,7 +154,9 @@ const partsList = document.getElementById('parts')
 const previewFrame = document.getElementById('preview')
 const downloadLink = document.getElementById('download')
 
-const sortable = Sortable.create(partsList)
+const sortable = Sortable.create(partsList, {
+  onSort: update
+})
 
 const reader = new FileReader()
 let lastPromise = Promise.resolve()
@@ -118,28 +206,37 @@ function makePdf (parts) {
     switch (type) {
       case 'text': {
         const { text } = data
-        doc
-          .addPage({
-            margin: 0.5 * DPI,
-            size: [
-              WIDTH,
-              // Measure height of string with line wrapping
-              doc.heightOfString(text, {
-                width: WIDTH - 1 * DPI
-              }) + 1 * DPI
-            ]
-          })
-          .text(text)
+        // Measure height of string with line wrapping
+        const textHeight = doc.heightOfString(text, {
+          width: WIDTH - 1 * DPI
+        })
+        doc.addPage({
+          margin: 0.5 * DPI,
+          size: [
+            WIDTH,
+            textHeight + 1 * DPI
+          ]
+        })
+        // Doing doc.text with an empty string creates a new page for some
+        // reason (probably not enough space on current page)
+        if (text) {
+          doc.text(text, { height: textHeight })
+        }
         break
       }
       case 'image': {
-        const { url, width, height } = data
-        doc
-          .addPage({
-            margin: 0,
-            size: [width, height]
-          })
-          .image(url, 0, 0, { width, height })
+        const { url, width, height, pageWidth } = data
+        doc.addPage({
+          margin: 0,
+          size: pageWidth
+            ? [WIDTH, WIDTH / width * height]
+            : [width, height]
+        })
+        try {
+          doc.image(url, 0, 0, pageWidth ? { width: WIDTH } : { width, height })
+        } catch (err) {
+          doc.text(err.message, 0, 0, { lineBreak: false })
+        }
         break
       }
     }
@@ -162,42 +259,74 @@ async function update () {
   downloadLink.href = url
 }
 
+function makeLi () {
+  const removeBtn = document.createElement('button')
+  removeBtn.className = 'remove'
+  removeBtn.textContent = '×'
+  removeBtn.addEventListener('click', e => {
+    li.remove()
+    update()
+  })
+
+  const id = newId()
+  const li = document.createElement('li')
+  li.className = 'part'
+  li.dataset.id = id
+  li.append(removeBtn)
+  return { id, li }
+}
 addFileInput.addEventListener('change', async () => {
   for (const file of addFileInput.files) {
-    const id = newId()
+    const { id, li } = makeLi()
     const url = await blobToDataUrl(file)
 
     const img = document.createElement('img')
     img.className = 'image'
     img.src = url
 
-    const li = document.createElement('li')
-    li.className = 'part part-image'
-    li.dataset.id = id
-    li.append(img)
+    const sizeCheckbox = document.createElement('input')
+    sizeCheckbox.type = 'checkbox'
+    sizeCheckbox.checked = true
+    sizeCheckbox.addEventListener('change', update)
+
+    const sizeLabel = document.createElement('label')
+    sizeLabel.className = 'size-label'
+    sizeLabel.append(sizeCheckbox, ' Resize to width of page?')
+
+    const div = document.createElement('div')
+    div.className = 'image-wrapper'
+    div.append(img, sizeLabel)
+
+    li.classList.add('part-image')
+    li.append(div)
     partsList.append(li)
 
     getParts[id] = () => {
       return {
         type: 'image',
         url,
-        width: img.width,
-        height: img.height
+        width: img.naturalWidth,
+        height: img.naturalHeight,
+        pageWidth: sizeCheckbox.checked
       }
     }
+
+    await new Promise((resolve, reject) => {
+      img.addEventListener('load', resolve)
+      img.addEventListener('error', reject)
+    })
   }
+  addFileInput.value = null
   update()
 })
-
 addTextBtn.addEventListener('click', () => {
-  const id = newId()
+  const { id, li } = makeLi()
 
   const textarea = document.createElement('textarea')
   textarea.className = 'text'
+  textarea.addEventListener('change', update)
 
-  const li = document.createElement('li')
-  li.className = 'part part-text'
-  li.dataset.id = id
+  li.classList.add('part-text')
   li.append(textarea)
   partsList.append(li)
 
