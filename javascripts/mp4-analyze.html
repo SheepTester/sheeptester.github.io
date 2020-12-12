@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Analyze MP4s</title>
+    <meta name="description" content="Binary files are powerful" />
+
+    <link rel="stylesheet" type="text/css" href="/sheep3.css">
+    <script src="/sheep3.js" charset="utf-8"></script>
+
+    <script src="https://unpkg.com/react@17/umd/react.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js" crossorigin></script>
+
+    <style>
+    body {
+      background-color: #eee;
+      color: rgba(0, 0, 0, 0.8);
+      font-family: sans-serif;
+    }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script>
+const { useState } = React
+const e = React.createElement
+
+const LOADING = Symbol('Loading')
+
+// http://www.cimarronsystems.com/wp-content/uploads/2017/04/Elements-of-the-H.264-VideoAAC-Audio-MP4-Movie-v2_0.pdf
+const mp4Structure = [
+  ['ftyp', 'File type'],
+  ['free', 'Free space'],
+  ['mdat', 'Media data'],
+  [
+    'moov',
+    'Movie',
+    ['mvhd', 'Movie header'],
+    [
+      'trak',
+      'Track',
+      ['tkhd', 'Track header'],
+      [
+        'mdia',
+        'Media',
+        ['mdhd', 'Media header'],
+        ['hdlr', 'Handler description'],
+        [
+          'Minf',
+          'Media information',
+          ['vmhd', 'Video media header'],
+          // or
+          ['smhd', 'Sound media header'],
+          [
+            'dinf',
+            'Data information',
+            [
+              'dref', 'Data reference',
+              ['url ', 'URL']
+            ]
+          ],
+          [
+            'stbl',
+            'Sample table',
+            ['stsd', 'Sample descriptions'],
+            ['stts', 'Sample to time'],
+            ['stss', 'Sync samples'],
+            ['stsc', 'Sample to chunk'],
+            ['stsz', 'Sample sizes'],
+            ['stco', 'Chunk offset table']
+          ]
+        ]
+      ]
+    ],
+    [
+      'udta',
+      'User data',
+      ['meta', 'Metadata']
+    ]
+  ]
+]
+// [name, bytes = 4, interpreted as = 'uint']
+const defaultFields = [
+  ['Size', 'A 32-bit unsigned integer that specifies the number of bytes in this atom.'],
+  ['Type', 'A 32-bit unsigned integer that identifies the atom type, represented as a four-character code.', 4, 'ascii']
+]
+const versionFlags = [
+  ...defaultFields,
+  ['Version', 'A 1-byte specification of the version of this header atom', 1, 'hex'],
+  ['Flags', 'Three bytes of space for future header flags', 3, 'hex']
+]
+const headerFields = [
+  ...versionFlags,
+  ['Creation time', 'A 32-bit integer that specifies the calendar date and time (in seconds since midnight, January 1, 1904) when the movie atom was created in coordinated universal time (UTC).', 4, 'datetime'],
+  ['Modification time', 'A 32-bit integer that specifies the calendar date and time (in seconds since midnight, January 1, 1904) when the movie atom was created in coordinated universal time (UTC)', 4, 'datetime']
+]
+const numEntries = [
+  'Number of entries',
+  'A 32-bit integer containing the count of items that follow.'
+]
+const structures = {
+  ftyp: [
+    ...defaultFields,
+    ['Major brand', 'A 32-bit unsigned integer that identifies the movie file type, represented as a fourcharacter code.', 4, 'ascii'],
+    ['Minor version', 'A 32-bit unsigned integer that identifies the movie file type Minor Version, represented as a four-byte number represented in binary coded decimal (BCD) form.'],
+    ['Compatible brands', 'A series of unsigned 32-bit integers listing compatible file formats.', 4, 'ascii', { repeatable: true }]
+  ],
+  free: [
+    ...defaultFields,
+    ['Free space', 'The number of bytes of free space.', 'rest']
+  ],
+  mvhd: [
+    ...headerFields,
+    ['Time scale', 'A time value that indicates the time scale for this movie—that is, the number of time units that pass per second in its time coordinate system.'],
+    ['Duration', 'A time value that indicates the duration of the movie in time scale units, derived from the movie’s tracks, corresponding to the duration of the longest track in the movie.'],
+    ['Preferred rate', 'A 32-bit fixed-point number that specifies the rate at which to play this movie (a value of 1.0 indicates normal rate).', 4, 'fixedpt'],
+    ['Preferred volume', 'A 16-bit fixed-point number that specifies how loud to play this movie’s sound (a value of 1.0 indicates full volume)', 2, 'fixedpt'],
+    ['Reserved', 'Ten reserved bytes.', 10, 'hex'],
+    // https://developer.apple.com/library/archive/documentation/QuickTime/QTFF/QTFFChap2/qtff2.html#//apple_ref/doc/uid/TP40000939-CH204-32947
+    ['Matrix', 'A transformation matrix that defines how to map points from one coordinate space into another coordinate space (please reference to the QuickTime File Format Specification for details).', 36, 'omit'],
+    ['Predefines', 'Media Header predefines (please refer to the QuickTime File Format Specification for details).', 6 * 4, 'omit'],
+    ['Next track ID', 'The number of the next track ID.']
+  ],
+  tkhd: [
+    ...headerFields,
+    ['Track ID', 'A 32-bit integer that uniquely identifies the track; the value 0 cannot be used.'],
+    ['Reserved', 'A 32-bit integer that is reserved.'],
+    ['Duration', 'A time value that indicates the duration of this track (in the movie’s time coordinate system). Note that this property is derived from the track’s edits: the value of this field is equal to the sum of the durations of all of the track’s edits and that if there is no edit list, the duration is the sum of the sample durations, converted into the movie timescale.'],
+    ['Reserved', 'An 8-byte value that is reserved.', 8, 'hex'],
+    ['Layer', 'A 16-bit integer that indicates this track’s spatial priority in its movie (the QuickTime Movie Toolbox uses this value to determine how tracks overlay one another). Tracks with lower layer values are displayed in front of tracks with higher layer values.', 2],
+    ['Alternative group', 'A 16-bit integer that specifies a collection of movie tracks that contain alternate data for one another.', 2],
+    ['Volume', 'A 16-bit fixed-point value that indicates how loudly this track’s audio is to be played; a value of 1.0 indicates normal volume.', 2, 'fixedpt'],
+    ['Reserved', 'A 16-bit integer that is reserved.', 2],
+    ['Matrix structure', 'The matrix structure associated with this track (please refer to the QuickTime File Format Specification for details).', 36, 'omit'],
+    ['Track width', 'A 32-bit fixed-point number that specifies the width of this track in pixels.', 4, 'fixedpt'],
+    ['Track height', 'A 32-bit fixed-point number that specifies the height of this track in pixels.', 4, 'fixedpt']
+  ],
+  mdhd: [
+    ...headerFields,
+    ['Time scale', 'A time value that indicates the time scale for this media—that is, the number of time units that pass per second in its time coordinate system.'],
+    ['Duration', 'Duration of the media in Time Scale units.'],
+    ['Language', 'A 16-bit integer that specifies the language code for this media.', 2, 'ascii']
+  ],
+  hdlr: [
+    ...versionFlags,
+    ['Component type', 'A four-character code that identifies the type of the handler (normally only two values are valid for this field: "mhlr" for media handlers and "dhlr" for data handlers).', 4, 'ascii'],
+    ['Component subtype', 'A four-character code that identifies the type of the media handler or data handler. For media handlers, this field defines the type of data—for example, "vide" for video data or "soun" for sound data.', 4, 'ascii'],
+    ['Component name', 'A (counted) string that specifies the name of the component.', 'rest', 'string']
+  ],
+  vmhd: [
+    ...versionFlags,
+    ['Graphics mode', 'A 16-bit integer that specifies the transfer mode.', 2],
+    ['Opcolor', 'Three 16-bit values that specify the red, green, and blue colors for the transfer mode operation indicated in the graphics mode field.', 6, 'colour']
+  ],
+  dref: [
+    ...defaultFields,
+    ['Version', 'A 1-byte specification of the version of this Data Reference.', 1],
+    numEntries,
+    ['Data references', 'An array of data references: Each data reference is formatted like an atom and contains the following data elements.', 'array']
+  ],
+  'url ': versionFlags,
+  stsd: [
+    ...versionFlags,
+    numEntries,
+    ['', '', [
+      ['Sample description size', 'A 32-bit integer indicating the number of bytes in the sample description.']
+      ['Data format/type', 'A 32-bit value indicating the format of the stored data: this depends on the media type, but is usually either the compression format or the media type.', 4, 'ascii'],
+      ['Reserved', 'Six bytes that must be set to "0x00000000".', 6],
+      ['Data reference index', 'A 16-bit integer that contains the index of the data reference to use to retrieve data associated with samples that use this sample description (data references are stored in data reference atoms).', 2],
+      ['Predefines', '', 'TODO'],
+      ['Reserved', '', 'TODO'],
+      ['Media width', '', 'TODO'],
+      ['Media height', '', 'TODO'],
+      ['Horizontal resolution', '', 'TODO'],
+      ['Vertical resolution', '', 'TODO'],
+      ['Reserved', '', 'TODO'],
+      ['Frame count', 'A 16-bit integer that indicates how many frames of compressed data are stored in each sample.', 2]
+    ]]
+  ],
+  stts: [
+    ...versionFlags,
+    numEntries,
+    ['Sample duration', 'A 32-bit integer that specifies the duration of each sample.'],
+    ['Sample count', 'A 32-bit integer that specifies the number of consecutive samples that have the same duration.']
+  ],
+  stss: [
+    ...versionFlags,
+    numEntries,
+    ['Sample duration', 'A 32-bit integer that specifies the duration of each sample.']
+  ],
+  stsc: [
+    ...versionFlags,
+    numEntries,
+    ['Sample-to-chunk table', 'The table that maps samples to chunks. Each sample-to-chunk atom contains such a table, which identifies the chunk for each sample in a media. Each entry in the table contains a first chunk field, a samples per chunk field, and a sample description ID field. From this information, you can ascertain where samples reside in the media data.', 'rest']
+  ],
+  stsz: [
+    ...versionFlags,
+    ['Sample size', 'A 32-bit integer specifying the sample size: if all the samples are the same size, this field contains that size value. If this field is set to 0, then the samples have different sizes, and those sizes are stored in the sample size table.'],
+    numEntries,
+    ['Sample-to-Chunk Table', 'The table that maps samples to chunks. Each sample-to-chunk atom contains such a table, which identifies the chunk for each sample in a media. Each entry in the table contains a first chunk field, a samples per chunk field, and a sample description ID field. From this information, you can ascertain where samples reside in the media data.']
+  ],
+  stco: [
+    ...versionFlags,
+    numEntries
+  ],
+  udta: [
+    ...versionFlags,
+    ['User data list', 'A user data list that is formatted as a series of atoms. Each data element in the user data list contains size and type information along with its data. For historical reasons, the data list is optionally terminated by a 32-bit integer set to 0. If you are writing a program to read user data atoms, you should allow for the terminating 0. However, if you are writing a program to create user data atoms, you can safely leave out the trailing 0.', 'rest']
+  ]
+}
+
+function toAscii (int) {
+  let str = ''
+  while (int) {
+    // Take last two hexadecimal digits and get the character
+    str = String.fromCharCode(int & 0xff) + str
+    // Shift right by 2 hexadecimal places
+    int >>= 8
+  }
+  return str
+}
+
+const MP4_EPOCH = Date.UTC(1904, 0, 1) // 1904-01-01 midnight UTC
+function readField (view, pos, [name, description, bytes = 4, interpretation = 'uint']) {
+  const field = { name, description, type: interpretation }
+  switch (interpretation) {
+    case 'uint': {
+      if (bytes === 4) {
+        field.read = () => view.getUint32(pos, false)
+        field.write = int => view.setUint32(pos, int, false)
+      } else if (bytes === 2) {
+        field.read = () => view.getUint16(pos, false)
+        field.write = int => view.setUint16(pos, int, false)
+      } else if (bytes === 2) {
+        field.read = () => view.getUint8(pos, false)
+        field.write = int => view.setUint8(pos, int, false)
+      } else {
+        // throw new Error(`idk how to interpret a uint with ${bytes} bytes`)
+        console.error(`idk how to interpret a uint with ${bytes} bytes`)
+      }
+      break
+    }
+    case 'fixedpt': {
+      if (bytes === 4) {
+        field.read = () => view.getUint32(pos, false) / 0x10000
+        field.write = int => view.setUint32(pos, int * 0x10000, false)
+      } else if (bytes === 2) {
+        field.read = () => view.getUint16(pos, false) / 0x100
+        field.write = int => view.setUint16(pos, int * 0x100, false)
+      } else if (bytes === 2) {
+        field.read = () => view.getUint8(pos, false) / 0x10
+        field.write = int => view.setUint8(pos, int * 0x10, false)
+      } else {
+        // throw new Error(`idk how to interpret a fixedpt with ${bytes} bytes`)
+        console.error(`idk how to interpret a fixedpt with ${bytes} bytes`)
+      }
+      break
+    }
+    case 'datetime': {
+      if (bytes === 4) {
+        field.read = () => new Date(view.getUint32(pos, false) * 1000 + MP4_EPOCH)
+        field.write = datetime => view.setUint32(pos, datetime.getTime() / 1000 - MP4_EPOCH, false)
+      } else {
+        throw new Error(`idk how to interpret a datetime with ${bytes} bytes`)
+      }
+      break
+    }
+    case 'hex': {
+      field.read = () => {
+        let hex = ''
+        for (let i = 0; i < bytes; i++) {
+          hex += view.getUint8(pos + i, false).toString(16).padStart(2, '0')
+        }
+        return hex
+      }
+      field.write = hex => {
+        hex = hex.slice(-bytes * 2).padStart(bytes * 2, '0')
+        for (let i = 0; i < bytes; i++) {
+          view.setUint8(pos + i, parseInt(hex.slice(i * 2, i * 2 + 2), 16), false)
+        }
+      }
+      break
+    }
+    case 'ascii': {
+      field.read = () => {
+        let string = ''
+        for (let i = 0; i < bytes; i++) {
+          string += String.fromCharCode(view.getUint8(pos + i, false))
+        }
+        return string
+      }
+      field.write = str => {
+        for (let i = 0; i < bytes; i++) {
+          view.setUint8(pos + i, str.charCodeAt(i) || 0, false)
+        }
+      }
+      break
+    }
+    case 'omit': {
+      field.omitted = bytes
+      break
+    }
+    default: {
+      console.error(`idk how to interpret a ${interpretation}`)
+      // throw new TypeError(`idk how to interpret a ${interpretation}`)
+    }
+  }
+  return field
+}
+function readRestField (view, pos, length, name, description, interpretation = null) {
+  const field = { name, description }
+  switch (interpretation) {
+    case null: {
+      field.omitted = length - pos
+      break
+    }
+    default: {
+      console.error(`idk how to interpret a (rest) ${interpretation}`)
+      // throw new TypeError(`idk how to interpret a (rest) ${interpretation}`)
+    }
+  }
+  return field
+}
+function readFields (buffer, spec = defaultFields, start = 0, length = buffer.byteLength) {
+  const view = new DataView(buffer, start, length)
+  const fields = []
+  let bytePos = 0
+  for (const fieldSpec of spec) {
+    const [name, description, bytes = 4, interpretation] = fieldSpec
+    if (bytes == 'rest' ? bytePos > length : bytePos + bytes > length) {
+      throw new RangeError('Went out of bounds')
+    }
+    if (bytes === 'rest') {
+      fields.push(readRestField(view, bytePos, length, name, description, interpretation))
+      bytePos = length
+    } else {
+      fields.push(readField(view, bytePos, fieldSpec))
+      bytePos += bytes
+    }
+  }
+  const lastFieldSpec = spec[spec.length - 1]
+  const [, , bytes = 4, , options = {}] = lastFieldSpec
+  if (options.repeatable) {
+    if (bytes === 'rest') {
+      throw new TypeError('rest fields cannot be repeated')
+    }
+    while (bytePos + bytes < length) {
+      fields.push(readField(view, bytePos, lastFieldSpec))
+      bytePos += bytes
+    }
+  }
+  return {
+    fields,
+    readBytes: Math.min(bytePos, length)
+  }
+}
+function readMp4 (buffer, spec, start = 0, length = buffer.byteLength) {
+  const atoms = []
+  let bytePos = start
+  while (bytePos < start + length) {
+    // Using DataView because MP4s are big-endian and typed arrays are platform
+    // dependent.
+    const view = new DataView(buffer, bytePos, 8)
+    const size = view.getUint32(0, false)
+    const type = toAscii(view.getUint32(4, false))
+
+    const { fields, readBytes } = readFields(buffer, structures[type], bytePos, size)
+
+    const atomSpec = spec.find(field => field[0] === type)
+    if (atomSpec) {
+      const [, name, ...childAtoms] = atomSpec
+      const atom = {
+        name,
+        fields
+      }
+      if (childAtoms.length) {
+        atom.atoms = readMp4(buffer, childAtoms, bytePos + readBytes, size - readBytes)
+      } else {
+        atom.omitted = size - readBytes
+      }
+      atoms.push(atom)
+    } else {
+      atoms.push({
+        name: 'unknown',
+        fields
+      })
+    }
+    bytePos += size
+  }
+  console.log('done', atoms)
+  return atoms
+}
+
+function readFile (file) {
+  return file.arrayBuffer()
+    .then(buffer => readMp4(buffer, mp4Structure))
+    .catch(err => {
+      console.error(err)
+      return err
+    })
+}
+
+function Field ({ field }) {
+  const [open, setOpen] = useState(true)
+
+  const { name, description } = field
+  return e(
+    'div',
+    { className: 'field' },
+    e('h3', { className: 'field-name' }, name),
+    e('p', { className: 'field-desc' }, description),
+    field.read ? e(
+      'input',
+      {
+        value: field.read()
+      }
+    ) : e(
+      'p',
+      { className: 'omitted' },
+      `${field.omitted}b omitted`
+    )
+  )
+}
+
+function Atom ({ atom: { name, fields, atoms, omitted } }) {
+  const [open, setOpen] = useState(true)
+  return e(
+    'div',
+    { className: 'atom' },
+    e('h2', { className: 'atom-name' }),
+    open && fields.map((field, i) => e(
+      Field,
+      { field, key: i }
+    )),
+    atoms ? open && atoms.map((atom, i) => e(
+      Atom,
+      { atom, key: i }
+    )) : e(
+      'p',
+      { className: 'omitted' },
+      `${omitted}b omitted`
+    )
+  )
+}
+
+function Mp4Data ({ atoms }) {
+  return e(
+    'div',
+    { className: 'mp4-data' },
+    atoms.map((atom, i) => e(Atom, { atom, key: i }))
+  )
+}
+
+function App () {
+  const [file, setFile] = useState(0)
+  const [readState, setReadState] = useState(null)
+
+  return e(
+    React.Fragment,
+    null,
+    e(
+      'input',
+      {
+        type: 'file',
+        accept: 'video/mp4',
+        onChange: e => {
+          setFile(e.target.files[0])
+          setReadState(LOADING)
+          readFile(e.target.files[0])
+            .then(output => setReadState(output))
+        }
+      }
+    ),
+    readState === null
+      ? 'No mp4 file selected.'
+      : readState === LOADING
+      ? 'Reading mp4 file...'
+      : readState instanceof Error
+      ? `Problem reading mp4 file: ${readState}`
+      : e(
+        Mp4Data,
+        { atoms: readState }
+      )
+  )
+}
+
+ReactDOM.render(e(App), document.getElementById('root'))
+    </script>
+  </body>
+</html>
