@@ -20,6 +20,8 @@
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
         'Helvetica Neue', Arial, sans-serif, 'Apple Color Emoji',
         'Segoe UI Emoji', 'Segoe UI Symbol';
+      margin: 20px;
+      margin-bottom: 70px;
     }
     button,
     input {
@@ -34,6 +36,12 @@
     a {
       text-decoration: none;
       color: inherit;
+    }
+    .download-btn {
+      border: 1px solid #673AB7;
+      padding: 5px 10px;
+      border-radius: 5px;
+      transition: all .2s;
     }
     .atom {
       border-left: 3px solid #E91E63;
@@ -53,7 +61,8 @@
       border-radius: 5px;
       transition: all .2s;
     }
-    .collapse-btn:hover {
+    .collapse-btn:hover,
+    .download-btn:hover {
       background-color: rgba(255, 255, 255, 0.5);
       box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
     }
@@ -118,6 +127,10 @@ const { useState, useEffect } = React
 const e = React.createElement
 
 const LOADING = Symbol('Loading')
+
+function isOk (state) {
+  return state !== null && state !== LOADING && !(state instanceof Error)
+}
 
 // http://www.cimarronsystems.com/wp-content/uploads/2017/04/Elements-of-the-H.264-VideoAAC-Audio-MP4-Movie-v2_0.pdf
 const mp4Structure = [
@@ -254,6 +267,7 @@ const structures = {
   stsd: [
     ...versionFlags,
     numEntries,
+    // TODO but oh well
     ['', '', [
       ['Sample description size', 'A 32-bit integer indicating the number of bytes in the sample description.']
       ['Data format/type', 'A 32-bit value indicating the format of the stored data: this depends on the media type, but is usually either the compression format or the media type.', 4, 'ascii'],
@@ -311,6 +325,31 @@ function toAscii (int) {
   }
   return str
 }
+function bytesToAscii (view, pos, bytes) {
+  let string = ''
+  for (let i = 0; i < bytes; i++) {
+    string += String.fromCharCode(view.getUint8(pos + i, false))
+  }
+  return string
+}
+function bytesToHex (view, pos, bytes) {
+  let hex = ''
+  for (let i = 0; i < bytes; i++) {
+    hex += view.getUint8(pos + i, false).toString(16).padStart(2, '0')
+  }
+  return hex
+}
+function setAsciiBytes (view, pos, bytes, string) {
+  for (let i = 0; i < bytes; i++) {
+    view.setUint8(pos + i, string.charCodeAt(i) || 0, false)
+  }
+}
+function setHexBytes (view, pos, bytes, hex) {
+  hex = hex.slice(-bytes * 2).padStart(bytes * 2, '0')
+  for (let i = 0; i < bytes; i++) {
+    view.setUint8(pos + i, parseInt(hex.slice(i * 2, i * 2 + 2), 16) || 0, false)
+  }
+}
 
 const MP4_EPOCH = Date.UTC(1904, 0, 1) // 1904-01-01 midnight UTC
 function readField (view, pos, [name, description, bytes = 4, interpretation = 'uint']) {
@@ -351,18 +390,10 @@ function readField (view, pos, [name, description, bytes = 4, interpretation = '
           }
         }
         case 'hex': {
-          let hex = ''
-          for (let i = 0; i < bytes; i++) {
-            hex += view.getUint8(pos + i, false).toString(16).padStart(2, '0')
-          }
-          return hex
+          return bytesToHex(view, pos, bytes)
         }
         case 'ascii': {
-          let string = ''
-          for (let i = 0; i < bytes; i++) {
-            string += String.fromCharCode(view.getUint8(pos + i, false))
-          }
-          return string
+          return bytesToAscii(view, pos, bytes)
         }
         case 'omit': {
           return null
@@ -388,11 +419,11 @@ function readField (view, pos, [name, description, bytes = 4, interpretation = '
         }
         case 'fixedpt': {
           if (bytes === 4) {
-            view.setUint32(pos, value * 0x10000, false)
+            view.setUint32(pos, Math.round(value * 0x10000), false)
           } else if (bytes === 2) {
-            view.setUint16(pos, value * 0x100, false)
+            view.setUint16(pos, Math.round(value * 0x100), false)
           } else if (bytes === 2) {
-            view.setUint8(pos, value * 0x10, false)
+            view.setUint8(pos, Math.round(value * 0x10), false)
           } else {
             throw new RangeError(`idk how to interpret a fixedpt with ${bytes} bytes`)
           }
@@ -400,23 +431,18 @@ function readField (view, pos, [name, description, bytes = 4, interpretation = '
         }
         case 'datetime': {
           if (bytes === 4) {
-            view.setUint32(pos, value.getTime() / 1000 - MP4_EPOCH, false)
+            view.setUint32(pos, Math.floor(value.getTime() / 1000) - MP4_EPOCH, false)
           } else {
             throw new Error(`idk how to interpret a datetime with ${bytes} bytes`)
           }
           break
         }
         case 'hex': {
-          const hex = hex.slice(-bytes * 2).padStart(bytes * 2, '0')
-          for (let i = 0; i < bytes; i++) {
-            view.setUint8(pos + i, parseInt(hex.slice(i * 2, i * 2 + 2), 16), false)
-          }
+          setHexBytes(view, pos, bytes, value)
           break
         }
         case 'ascii': {
-          for (let i = 0; i < bytes; i++) {
-            view.setUint8(pos + i, str.charCodeAt(i) || 0, false)
-          }
+          setAsciiBytes(view, pos, bytes, value)
           break
         }
         case 'omit': {
@@ -442,18 +468,10 @@ function readRestField (view, pos, length, name, description, interpretation = '
           return null
         }
         case 'hex': {
-          let hex = ''
-          for (let i = 0; i < bytes; i++) {
-            hex += view.getUint8(pos + i, false).toString(16).padStart(2, '0')
-          }
-          return hex
+          return bytesToHex(view, pos, bytes)
         }
         case 'ascii': {
-          let string = ''
-          for (let i = 0; i < bytes; i++) {
-            string += String.fromCharCode(view.getUint8(pos + i, false))
-          }
-          return string
+          return bytesToAscii(view, pos, bytes)
         }
         default: {
           throw new TypeError(`idk how to interpret a (rest) ${interpretation}`)
@@ -466,16 +484,11 @@ function readRestField (view, pos, length, name, description, interpretation = '
           break
         }
         case 'hex': {
-          const hex = hex.slice(-bytes * 2).padStart(bytes * 2, '0')
-          for (let i = 0; i < bytes; i++) {
-            view.setUint8(pos + i, parseInt(hex.slice(i * 2, i * 2 + 2), 16), false)
-          }
+          setHexBytes(view, pos, bytes, value)
           break
         }
         case 'ascii': {
-          for (let i = 0; i < bytes; i++) {
-            view.setUint8(pos + i, str.charCodeAt(i) || 0, false)
-          }
+          setAsciiBytes(view, pos, bytes, value)
           break
         }
         default: {
@@ -526,7 +539,7 @@ function readFields (buffer, spec = defaultFields, start = 0, length = buffer.by
     bodyField
   }
 }
-function readMp4 (buffer, spec, start = 0, length = buffer.byteLength) {
+function readAtoms (buffer, spec, start = 0, length = buffer.byteLength) {
   const atoms = []
   let bytePos = start
   while (bytePos < start + length) {
@@ -551,7 +564,7 @@ function readMp4 (buffer, spec, start = 0, length = buffer.byteLength) {
         atoms: []
       }
       if (childAtoms.length) {
-        atom.atoms = readMp4(buffer, childAtoms, bytePos + readBytes, size - readBytes)
+        atom.atoms = readAtoms(buffer, childAtoms, bytePos + readBytes, size - readBytes)
       } else if (bodyField) {
         fields.push(bodyField)
       }
@@ -571,13 +584,18 @@ function readMp4 (buffer, spec, start = 0, length = buffer.byteLength) {
 
 function readFile (file) {
   return file.arrayBuffer()
-    .then(buffer => readMp4(buffer, mp4Structure))
+    .then(buffer => ({ atoms: readAtoms(buffer, mp4Structure), buffer }))
     .catch(err => {
       console.error(err)
       return err
     })
 }
 
+const validations = {
+  uint: /[^0-9]/g,
+  hex: /[^0-9a-f]/gi,
+  fixedpt: /[^0-9]/g
+}
 function FieldValue ({ type, bytes, value, onChange }) {
   return e(
     'input',
@@ -603,7 +621,36 @@ function FieldValue ({ type, bytes, value, onChange }) {
       value,
       readOnly: !onChange,
       onChange (e) {
-        onChange(e.target.value)
+        const value = e.target.value
+        if (type === 'datetime' && Number.isNaN(new Date(value + 'Z'))) {
+          return // Do not change
+        }
+        if (type === 'uint') {
+          if (validations.uint.test(value)) {
+            return onChange(value.replace(validations.uint, ''))
+          } else if (+value > 256 ** bytes) {
+            return // Do not change, I guess
+          }
+        }
+        if (type === 'hex') {
+          if (validations.hex.test(value)) {
+            return onChange(value.replace(validations.hex, ''))
+          }
+        }
+        if (type === 'fixedpt') {
+          const [left, right, ...rest] = value.split('.')
+          if (validations.fixedpt.test(left) || validations.fixedpt.test(right)) {
+            return onChange(left.replace(validations.fixedpt, '')
+              + (right ? '.' + right.replace(validations.fixedpt, '') : ''))
+          } else if (rest.length) {
+            return onChange(left + (right ? '.' + right : ''))
+          } else if (+value > 16 ** bytes) {
+            return // Do not change, I guess
+          }
+        }
+        // Do not need to enforce minimum/maximum length for hex and ascii
+        // because it'll be ignored
+        onChange(value)
       }
     }
   )
@@ -615,13 +662,13 @@ const typeToggles = {
   default: ['omit', 'ascii', 'hex']
 }
 function Field ({ field: { name, description, defaultType, bytes, read, write } }) {
-  const getValue = type => {
+  const getValue = (type, value = read(type)) => {
     if (type === 'fixedpt') {
-      return read(type).toFixed(bytes + 1)
+      return value.toFixed(bytes + 1)
     } else if (type === 'datetime') {
-      return read(type).toISOString().slice(0, -1)
+      return value.toISOString().slice(0, -1)
     } else {
-      return read(type)
+      return value
     }
   }
 
@@ -644,11 +691,18 @@ function Field ({ field: { name, description, defaultType, bytes, read, write } 
           value,
           onChange: write && (value => {
             setValue(value)
+            if (type === 'uint' || type === 'fixedpt') {
+              write(type, +value)
+            } else if (type === 'datetime') {
+              write(type, new Date(value + 'Z'))
+            } else {
+              write(type, value)
+            }
           })
         }),
         e('button', {
           className: 'field-type',
-          onClick () {
+          onClick (e) {
             const toggles = typeToggles[bytes] || typeToggles.default
             const index = toggles.indexOf(type)
             if (index === -1) {
@@ -730,13 +784,35 @@ function App () {
         type: 'file',
         accept: 'video/mp4',
         onChange: e => {
-          setFile(e.target.files[0])
-          setReadState(LOADING)
-          readFile(e.target.files[0])
-            .then(output => setReadState(output))
+          const file = e.target.files[0]
+          setFile(file)
+          if (file) {
+            setReadState(LOADING)
+            readFile(file)
+              .then(output => setReadState(output))
+          } else {
+            setReadState(null)
+          }
         }
       }
     ),
+    isOk(readState) && e('button', {
+      className: 'download-btn',
+      onClick () {
+        console.log(file);
+
+        const blob = new Blob([readState.buffer], { type: 'video/mp4' })
+        const url = URL.createObjectURL(blob)
+        const link = document.createElement('a')
+        link.href = url
+        link.download = file.name
+        link.style.display = 'none'
+        document.body.appendChild(link)
+        link.click()
+        document.body.removeChild(link)
+        URL.revokeObjectURL(url)
+      }
+    }, 'Download'),
     readState === null
       ? 'No mp4 file selected.'
       : readState === LOADING
@@ -745,7 +821,7 @@ function App () {
       ? `Problem reading mp4 file: ${readState}`
       : e(
         Mp4Data,
-        { atoms: readState }
+        { atoms: readState.atoms }
       )
   )
 }
