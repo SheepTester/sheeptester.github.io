@@ -17,14 +17,104 @@
     body {
       background-color: #eee;
       color: rgba(0, 0, 0, 0.8);
-      font-family: sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+        'Helvetica Neue', Arial, sans-serif, 'Apple Color Emoji',
+        'Segoe UI Emoji', 'Segoe UI Symbol';
+    }
+    button,
+    input {
+      border: none;
+      background: none;
+      color: inherit;
+      font: inherit;
+    }
+    button:not(:disabled) {
+      cursor: pointer;
+    }
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+    .atom {
+      border-left: 3px solid #E91E63;
+      padding: 0 10px;
+      margin: 10px 0;
+      background-color: rgba(0, 0, 0, 0.03);
+    }
+    .atom-name-label {
+      display: flex;
+      justify-content: space-between;
+    }
+    .collapse-btn {
+      font-weight: normal;
+      font-size: 1rem;
+      border: 1px solid #8BC34A;
+      padding: 5px 10px;
+      border-radius: 5px;
+      transition: all .2s;
+    }
+    .collapse-btn:hover {
+      background-color: rgba(255, 255, 255, 0.5);
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+    }
+    .field {
+      border-left: 3px solid #9C27B0;
+      padding: 0 10px;
+      margin: 10px 0;
+      background-color: rgba(0, 0, 0, 0.03);
+    }
+    .field-name-label {
+      display: flex;
+      align-items: center;
+    }
+    .field-value {
+      font-family: monospace;
+      box-sizing: content-box;
+      padding: 5px 10px;
+      border-radius: 5px;
+      background-color: white;
+      margin-left: 10px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    }
+    .field-value-uint,
+    .field-value-fixedpt {
+      text-align: right;
+    }
+    .field-value-datetime {
+      flex: auto;
+    }
+    .field-type {
+      text-transform: uppercase;
+      font-size: 0.8em;
+      color: rgba(0, 0, 0, 0.7);
+      margin-left: 10px;
+    }
+    .field-type:hover {
+      color: black;
+    }
+    .omitted {
+      color: rgba(0, 0, 0, 0.5);
+      font-style: italic;
+    }
+    .link {
+      color: #2196F3;
+    }
+    .link:hover {
+      text-decoration: underline;
+    }
+    .link:visited {
+      color: #673AB7;
+    }
+    .link:active {
+      color: #f44336;
     }
     </style>
   </head>
   <body>
+    <p>Movie atom information from <a class="link" href="http://www.cimarronsystems.com/wp-content/uploads/2017/04/Elements-of-the-H.264-VideoAAC-Audio-MP4-Movie-v2_0.pdf">Cimarron Systems</a> and <a class="link" href="https://developer.apple.com/library/archive/documentation/QuickTime/QTFF/QTFFChap2/qtff2.html">Apple</a>. Made using <a class="link" href="https://reactjs.org/">React and React DOM</a>. Thanks to <a class="link" href="https://github.com/Ashvin-Ranjan">ᚣᛇᚱᚣ</a> for inspiring me to do this.</p>
     <div id="root"></div>
     <script>
-const { useState } = React
+const { useState, useEffect } = React
 const e = React.createElement
 
 const LOADING = Symbol('Loading')
@@ -147,7 +237,7 @@ const structures = {
     ...versionFlags,
     ['Component type', 'A four-character code that identifies the type of the handler (normally only two values are valid for this field: "mhlr" for media handlers and "dhlr" for data handlers).', 4, 'ascii'],
     ['Component subtype', 'A four-character code that identifies the type of the media handler or data handler. For media handlers, this field defines the type of data—for example, "vide" for video data or "soun" for sound data.', 4, 'ascii'],
-    ['Component name', 'A (counted) string that specifies the name of the component.', 'rest', 'string']
+    ['Component name', 'A (counted) string that specifies the name of the component.', 'rest', 'ascii']
   ],
   vmhd: [
     ...versionFlags,
@@ -224,101 +314,174 @@ function toAscii (int) {
 
 const MP4_EPOCH = Date.UTC(1904, 0, 1) // 1904-01-01 midnight UTC
 function readField (view, pos, [name, description, bytes = 4, interpretation = 'uint']) {
-  const field = { name, description, type: interpretation }
-  switch (interpretation) {
-    case 'uint': {
-      if (bytes === 4) {
-        field.read = () => view.getUint32(pos, false)
-        field.write = int => view.setUint32(pos, int, false)
-      } else if (bytes === 2) {
-        field.read = () => view.getUint16(pos, false)
-        field.write = int => view.setUint16(pos, int, false)
-      } else if (bytes === 2) {
-        field.read = () => view.getUint8(pos, false)
-        field.write = int => view.setUint8(pos, int, false)
-      } else {
-        // throw new Error(`idk how to interpret a uint with ${bytes} bytes`)
-        console.error(`idk how to interpret a uint with ${bytes} bytes`)
-      }
-      break
-    }
-    case 'fixedpt': {
-      if (bytes === 4) {
-        field.read = () => view.getUint32(pos, false) / 0x10000
-        field.write = int => view.setUint32(pos, int * 0x10000, false)
-      } else if (bytes === 2) {
-        field.read = () => view.getUint16(pos, false) / 0x100
-        field.write = int => view.setUint16(pos, int * 0x100, false)
-      } else if (bytes === 2) {
-        field.read = () => view.getUint8(pos, false) / 0x10
-        field.write = int => view.setUint8(pos, int * 0x10, false)
-      } else {
-        // throw new Error(`idk how to interpret a fixedpt with ${bytes} bytes`)
-        console.error(`idk how to interpret a fixedpt with ${bytes} bytes`)
-      }
-      break
-    }
-    case 'datetime': {
-      if (bytes === 4) {
-        field.read = () => new Date(view.getUint32(pos, false) * 1000 + MP4_EPOCH)
-        field.write = datetime => view.setUint32(pos, datetime.getTime() / 1000 - MP4_EPOCH, false)
-      } else {
-        throw new Error(`idk how to interpret a datetime with ${bytes} bytes`)
-      }
-      break
-    }
-    case 'hex': {
-      field.read = () => {
-        let hex = ''
-        for (let i = 0; i < bytes; i++) {
-          hex += view.getUint8(pos + i, false).toString(16).padStart(2, '0')
+  return {
+    name,
+    description,
+    bytes,
+    defaultType: interpretation,
+    read (interpretation) {
+      switch (interpretation) {
+        case 'uint': {
+          if (bytes === 4) {
+            return view.getUint32(pos, false)
+          } else if (bytes === 2) {
+            return view.getUint16(pos, false)
+          } else if (bytes === 1) {
+            return view.getUint8(pos, false)
+          } else {
+            throw new RangeError(`idk how to interpret a uint with ${bytes} bytes`)
+          }
         }
-        return hex
-      }
-      field.write = hex => {
-        hex = hex.slice(-bytes * 2).padStart(bytes * 2, '0')
-        for (let i = 0; i < bytes; i++) {
-          view.setUint8(pos + i, parseInt(hex.slice(i * 2, i * 2 + 2), 16), false)
+        case 'fixedpt': {
+          if (bytes === 4) {
+            return view.getUint32(pos, false) / 0x10000
+          } else if (bytes === 2) {
+            return view.getUint16(pos, false) / 0x100
+          } else if (bytes === 2) {
+            return view.getUint8(pos, false) / 0x10
+          } else {
+            throw new Error(`idk how to interpret a fixedpt with ${bytes} bytes`)
+          }
         }
-      }
-      break
-    }
-    case 'ascii': {
-      field.read = () => {
-        let string = ''
-        for (let i = 0; i < bytes; i++) {
-          string += String.fromCharCode(view.getUint8(pos + i, false))
+        case 'datetime': {
+          if (bytes === 4) {
+            return new Date(view.getUint32(pos, false) * 1000 + MP4_EPOCH)
+          } else {
+            throw new RangeError(`idk how to interpret a datetime with ${bytes} bytes`)
+          }
         }
-        return string
-      }
-      field.write = str => {
-        for (let i = 0; i < bytes; i++) {
-          view.setUint8(pos + i, str.charCodeAt(i) || 0, false)
+        case 'hex': {
+          let hex = ''
+          for (let i = 0; i < bytes; i++) {
+            hex += view.getUint8(pos + i, false).toString(16).padStart(2, '0')
+          }
+          return hex
+        }
+        case 'ascii': {
+          let string = ''
+          for (let i = 0; i < bytes; i++) {
+            string += String.fromCharCode(view.getUint8(pos + i, false))
+          }
+          return string
+        }
+        case 'omit': {
+          return null
+        }
+        default: {
+          throw new TypeError(`idk how to interpret a ${interpretation}`)
         }
       }
-      break
-    }
-    case 'omit': {
-      field.omitted = bytes
-      break
-    }
-    default: {
-      console.error(`idk how to interpret a ${interpretation}`)
-      // throw new TypeError(`idk how to interpret a ${interpretation}`)
+    },
+    write (interpretation, value) {
+      switch (interpretation) {
+        case 'uint': {
+          if (bytes === 4) {
+            view.setUint32(pos, value, false)
+          } else if (bytes === 2) {
+            view.setUint16(pos, value, false)
+          } else if (bytes === 2) {
+            view.setUint8(pos, value, false)
+          } else {
+            throw new RangeError(`idk how to interpret a uint with ${bytes} bytes`)
+          }
+          break
+        }
+        case 'fixedpt': {
+          if (bytes === 4) {
+            view.setUint32(pos, value * 0x10000, false)
+          } else if (bytes === 2) {
+            view.setUint16(pos, value * 0x100, false)
+          } else if (bytes === 2) {
+            view.setUint8(pos, value * 0x10, false)
+          } else {
+            throw new RangeError(`idk how to interpret a fixedpt with ${bytes} bytes`)
+          }
+          break
+        }
+        case 'datetime': {
+          if (bytes === 4) {
+            view.setUint32(pos, value.getTime() / 1000 - MP4_EPOCH, false)
+          } else {
+            throw new Error(`idk how to interpret a datetime with ${bytes} bytes`)
+          }
+          break
+        }
+        case 'hex': {
+          const hex = hex.slice(-bytes * 2).padStart(bytes * 2, '0')
+          for (let i = 0; i < bytes; i++) {
+            view.setUint8(pos + i, parseInt(hex.slice(i * 2, i * 2 + 2), 16), false)
+          }
+          break
+        }
+        case 'ascii': {
+          for (let i = 0; i < bytes; i++) {
+            view.setUint8(pos + i, str.charCodeAt(i) || 0, false)
+          }
+          break
+        }
+        case 'omit': {
+          break
+        }
+        default: {
+          throw new TypeError(`idk how to interpret a ${interpretation}`)
+        }
+      }
     }
   }
-  return field
 }
-function readRestField (view, pos, length, name, description, interpretation = null) {
-  const field = { name, description }
-  switch (interpretation) {
-    case null: {
-      field.omitted = length - pos
-      break
-    }
-    default: {
-      console.error(`idk how to interpret a (rest) ${interpretation}`)
-      // throw new TypeError(`idk how to interpret a (rest) ${interpretation}`)
+function readRestField (view, pos, length, name, description, interpretation = 'omit') {
+  const bytes = length - pos
+  return {
+    name,
+    description,
+    defaultType: interpretation || 'omit',
+    bytes,
+    read (interpretation) {
+      switch (interpretation) {
+        case 'omit': {
+          return null
+        }
+        case 'hex': {
+          let hex = ''
+          for (let i = 0; i < bytes; i++) {
+            hex += view.getUint8(pos + i, false).toString(16).padStart(2, '0')
+          }
+          return hex
+        }
+        case 'ascii': {
+          let string = ''
+          for (let i = 0; i < bytes; i++) {
+            string += String.fromCharCode(view.getUint8(pos + i, false))
+          }
+          return string
+        }
+        default: {
+          throw new TypeError(`idk how to interpret a (rest) ${interpretation}`)
+        }
+      }
+    },
+    write (interpretation, value) {
+      switch (interpretation) {
+        case 'omit': {
+          break
+        }
+        case 'hex': {
+          const hex = hex.slice(-bytes * 2).padStart(bytes * 2, '0')
+          for (let i = 0; i < bytes; i++) {
+            view.setUint8(pos + i, parseInt(hex.slice(i * 2, i * 2 + 2), 16), false)
+          }
+          break
+        }
+        case 'ascii': {
+          for (let i = 0; i < bytes; i++) {
+            view.setUint8(pos + i, str.charCodeAt(i) || 0, false)
+          }
+          break
+        }
+        default: {
+          throw new TypeError(`idk how to interpret a (rest) ${interpretation}`)
+        }
+      }
     }
   }
   return field
@@ -326,6 +489,7 @@ function readRestField (view, pos, length, name, description, interpretation = n
 function readFields (buffer, spec = defaultFields, start = 0, length = buffer.byteLength) {
   const view = new DataView(buffer, start, length)
   const fields = []
+  // Relative to view's start byte
   let bytePos = 0
   for (const fieldSpec of spec) {
     const [name, description, bytes = 4, interpretation] = fieldSpec
@@ -342,6 +506,7 @@ function readFields (buffer, spec = defaultFields, start = 0, length = buffer.by
   }
   const lastFieldSpec = spec[spec.length - 1]
   const [, , bytes = 4, , options = {}] = lastFieldSpec
+  let bodyField = null
   if (options.repeatable) {
     if (bytes === 'rest') {
       throw new TypeError('rest fields cannot be repeated')
@@ -350,10 +515,15 @@ function readFields (buffer, spec = defaultFields, start = 0, length = buffer.by
       fields.push(readField(view, bytePos, lastFieldSpec))
       bytePos += bytes
     }
+  } else {
+    if (bytePos < length) {
+      bodyField = readRestField(view, bytePos, length, 'Field body', '', 'omit')
+    }
   }
   return {
     fields,
-    readBytes: Math.min(bytePos, length)
+    readBytes: Math.min(bytePos, length),
+    bodyField
   }
 }
 function readMp4 (buffer, spec, start = 0, length = buffer.byteLength) {
@@ -366,30 +536,36 @@ function readMp4 (buffer, spec, start = 0, length = buffer.byteLength) {
     const size = view.getUint32(0, false)
     const type = toAscii(view.getUint32(4, false))
 
-    const { fields, readBytes } = readFields(buffer, structures[type], bytePos, size)
+    if (bytePos + size > start + length) {
+      throw new RangeError(`Reading this ${type} of size ${size} would bring us out of bounds.`)
+    }
+
+    const { fields, readBytes, bodyField } = readFields(buffer, structures[type], bytePos, size)
 
     const atomSpec = spec.find(field => field[0] === type)
     if (atomSpec) {
       const [, name, ...childAtoms] = atomSpec
       const atom = {
         name,
-        fields
+        fields,
+        atoms: []
       }
       if (childAtoms.length) {
         atom.atoms = readMp4(buffer, childAtoms, bytePos + readBytes, size - readBytes)
-      } else {
-        atom.omitted = size - readBytes
+      } else if (bodyField) {
+        fields.push(bodyField)
       }
       atoms.push(atom)
     } else {
+      if (bodyField) fields.push(bodyField)
       atoms.push({
-        name: 'unknown',
-        fields
+        name: `${type} (unknown)`,
+        fields,
+        atoms: []
       })
     }
     bytePos += size
   }
-  console.log('done', atoms)
   return atoms
 }
 
@@ -402,46 +578,134 @@ function readFile (file) {
     })
 }
 
-function Field ({ field }) {
-  const [open, setOpen] = useState(true)
+function FieldValue ({ type, bytes, value, onChange }) {
+  return e(
+    'input',
+    {
+      className: `field-value field-value-${type}`,
+      type: type === 'datetime' ? 'datetime-local' : 'text',
+      style: {
+        width: bytes && type !== 'datetime'
+          ? `${
+            type === 'hex'
+              ? bytes * 2
+              : type === 'uint'
+              ? (256 ** bytes + '').length
+              : type === 'fixedpt'
+              // 4 bytes: 1 / 0x10000 fixed 5
+              // 2 bytes: 1 / 0x100 fixed 3
+              // 1 byte : 1 / 0x10 fixed 2
+              ? (16 ** bytes + '').length + 1 + bytes + 1
+              : bytes
+          }ch`
+          : null
+      },
+      value,
+      readOnly: !onChange,
+      onChange (e) {
+        onChange(e.target.value)
+      }
+    }
+  )
+}
+const typeToggles = {
+  1: ['omit', 'ascii', 'hex', 'uint', 'fixedpt'],
+  2: ['omit', 'ascii', 'hex', 'uint', 'fixedpt'],
+  4: ['omit', 'ascii', 'hex', 'uint', 'fixedpt', 'datetime'],
+  default: ['omit', 'ascii', 'hex']
+}
+function Field ({ field: { name, description, defaultType, bytes, read, write } }) {
+  const getValue = type => {
+    if (type === 'fixedpt') {
+      return read(type).toFixed(bytes + 1)
+    } else if (type === 'datetime') {
+      return read(type).toISOString().slice(0, -1)
+    } else {
+      return read(type)
+    }
+  }
 
-  const { name, description } = field
+  const [type, setType] = useState(defaultType)
+  const [value, setValue] = useState(getValue(type))
+
   return e(
     'div',
     { className: 'field' },
-    e('h3', { className: 'field-name' }, name),
+    e(
+      'h3',
+      { className: 'field-name' },
+      e(
+        'label',
+        { className: 'field-name-label' },
+        name,
+        type !== 'omit' && e(FieldValue, {
+          type,
+          bytes,
+          value,
+          onChange: write && (value => {
+            setValue(value)
+          })
+        }),
+        e('button', {
+          className: 'field-type',
+          onClick () {
+            const toggles = typeToggles[bytes] || typeToggles.default
+            const index = toggles.indexOf(type)
+            if (index === -1) {
+              console.error(`${type} not in ${bytes} type toggles`)
+            } else if (e.shiftKey) {
+              const newType = toggles[(index + toggles.length - 1) % toggles.length]
+              setType(newType)
+              setValue(getValue(newType))
+            } else {
+              const newType = toggles[(index + 1) % toggles.length]
+              setType(newType)
+              setValue(getValue(newType))
+            }
+          }
+        }, type)
+      )
+    ),
     e('p', { className: 'field-desc' }, description),
-    field.read ? e(
-      'input',
-      {
-        value: field.read()
-      }
-    ) : e(
+    type === 'omit' && e(
       'p',
       { className: 'omitted' },
-      `${field.omitted}b omitted`
+      `${bytes}b omitted`
     )
   )
 }
 
 function Atom ({ atom: { name, fields, atoms, omitted } }) {
-  const [open, setOpen] = useState(true)
+  const [open, setOpen] = useState(name === 'Movie' || name === 'Movie header')
+
   return e(
     'div',
     { className: 'atom' },
-    e('h2', { className: 'atom-name' }),
+    e(
+      'h2',
+      { className: 'atom-name' },
+      e(
+        'label',
+        { className: 'atom-name-label' },
+        name,
+        e(
+          'button',
+          {
+            onClick: () => setOpen(!open),
+            className: 'collapse-btn'
+          },
+          open ? 'Collapse' : 'Open'
+        )
+      )
+    ),
     open && fields.map((field, i) => e(
       Field,
       { field, key: i }
     )),
-    atoms ? open && atoms.map((atom, i) => e(
+    open && atoms.map((atom, i) => e(
       Atom,
       { atom, key: i }
-    )) : e(
-      'p',
-      { className: 'omitted' },
-      `${omitted}b omitted`
-    )
+    ))
   )
 }
 
