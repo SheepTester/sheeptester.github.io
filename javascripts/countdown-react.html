@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Countdown</title>
+    <meta name="description" content="Visualize the days left until or since a date in a calendar-like format. Made using React, but without JSX 😎." />
+
+    <link rel="stylesheet" type="text/css" href="/sheep3.css">
+    <script src="/sheep3.js" charset="utf-8"></script>
+
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/react@17/umd/react.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/react-virtualized@9.22.3/dist/umd/react-virtualized.js" charset="utf-8"></script>
+    <script src="https://unpkg.com/classnames@2.2.6/index.js" charset="utf-8"></script>
+
+    <style>
+      html,
+      body {
+        height: 100%;
+      }
+      body {
+        margin: 0;
+        font-family: 'Montserrat', sans-serif;
+        box-sizing: border-box;
+      }
+      body,
+      #root {
+        flex: auto;
+        display: flex;
+        flex-direction: column;
+      }
+      .date-wrapper {
+        flex: auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .calendar {
+        flex: auto;
+      }
+      .calendar:focus {
+        /* fghufgsd */
+        outline: none;
+      }
+      .week {
+        display: flex;
+        padding-left: 2px;
+        box-sizing: border-box;
+      }
+      .day {
+        flex: 1 0 0;
+        border: 2px solid rgba(0, 0, 0, 0.2);
+        margin-left: -2px;
+        background-color: #e0e0e0;
+        height: 70px;
+        font-size: 12px;
+        padding: 10px;
+        color: #444;
+        word-break: break-all;
+      }
+      .odd-month {
+        background-color: #eee;
+      }
+      .hide {
+        visibility: hidden;
+      }
+      .today {
+        background-color: #407be1;
+        color: white;
+        position: relative;
+        z-index: 1;
+      }
+      .last-day {
+        background-color: #dfcc41;
+        color: #787039;
+        position: relative;
+        z-index: 1;
+      }
+      .month-label {
+        font-weight: 700;
+        text-transform: uppercase;
+      }
+      .bottom {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        background-image: linear-gradient(transparent 0%, white 50%, white 100%);
+        padding-top: 100px;
+        text-align: center;
+      }
+      .days {
+        font-weight: 700;
+        font-size: 48px;
+        color: #222;
+      }
+      .weeks {
+        font-size: 16px;
+        color: #777;
+        margin-bottom: 10px;
+      }
+      .until {
+        font-size: 24px;
+        color: #555;
+        margin-bottom: 20px;
+      }
+      .weekdays {
+        flex: none;
+        display: flex;
+        box-shadow: 0 3px rgba(0, 0, 0, 0.1);
+        height: 50px;
+        text-align: center;
+        font-weight: 700;
+        align-items: center;
+        position: relative;
+        z-index: 2;
+      }
+      .weekdays span {
+        flex: 1 0 0;
+        font-size: 15px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script>
+const { createElement: e, useState, useEffect } = React
+const { List } = ReactVirtualized
+
+const months = [
+  'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August',
+  'September', 'October', 'November', 'December'
+]
+const weekDays = ['S', 'M', 'T', 'W', 'Θ', 'F', 'S']
+const dayLength = 24 * 60 * 60 * 1000 // ms
+
+function getDateObjFromString (dateStr) {
+  if (!dateStr) return null
+  const [year, month, date] = dateStr.split('-').map(Number)
+  const timestamp = Date.UTC(year, month - 1, date)
+  return Number.isNaN(timestamp) ? null : new Date(timestamp)
+}
+function getDateObjFromURL () {
+  return getDateObjFromString(new URL(window.location).searchParams.get('date'))
+}
+
+function getWeekCount (startDate, endDate) {
+  const startDateClone = new Date(startDate)
+  // Set to Sunday
+  startDateClone.setUTCDate(startDateClone.getUTCDate() - startDateClone.getUTCDay())
+  const endDateClone = new Date(endDate)
+  // Set to Sunday
+  endDateClone.setUTCDate(endDateClone.getUTCDate() - endDateClone.getUTCDay())
+  const days = Math.floor((endDateClone - startDateClone) / dayLength)
+  const weeks = Math.floor(days / 7) + 1
+  return {
+    startWeek: startDateClone.getTime(),
+    weekCount: weeks
+  }
+}
+
+const now = new Date()
+function Calendar ({ date, size: { width, height } }) {
+  const today = Date.UTC(now.getFullYear(), now.getMonth(), now.getDate())
+  let startDate = today
+  let endDate = date.getTime()
+  let flipped = false
+  if (startDate > endDate) {
+    ;[startDate, endDate] = [endDate, startDate]
+    flipped = true
+  }
+
+  const { startWeek, weekCount } = getWeekCount(startDate, endDate)
+
+  const days = Math.floor((endDate - startDate) / dayLength)
+  const weeks = Math.floor(days / 7)
+
+  return e(
+    React.Fragment,
+    null,
+    e(
+      List,
+      {
+        height: height - 50,
+        width,
+        rowCount: weekCount + 2,
+        rowHeight: ({ index }) =>
+          index === 0
+            ? 20
+            : index === weekCount + 1
+            ? 300
+            : 92,
+        estimatedRowSize: weekCount * 92 + 320,
+        className: 'calendar',
+        rowRenderer: ({ key, style, index }) => {
+          if (index === 0 || index === weekCount + 1) {
+            return e('div', { key, style })
+          }
+          return e(
+            'div',
+            { key, style, className: 'week' },
+            weekDays.map((_, day) => {
+              const date = new Date(startWeek + ((index - 1) * 7 + day) * dayLength)
+              return e(
+                'div',
+                {
+                  key: day,
+                  className: classNames(
+                    'day',
+                    date.getMonth() % 2 === 0 ? 'even-month' : 'odd-month',
+                    (date < startDate || date > endDate) && 'hide',
+                    date.getTime() === today && 'today',
+                    date.getTime() === startDate && (flipped ? 'last-day' : 'today'),
+                    date.getTime() === endDate && (flipped ? 'today' : 'last-day')
+                  )
+                },
+                date.getUTCDate() === 1
+                  ? months[date.getUTCMonth()]
+                    + (date.getUTCMonth() === 0 ? ' ' + date.getUTCFullYear() : '')
+                  : date.getUTCDate()
+              )
+            })
+          )
+        }
+      }
+    ),
+    e(
+      'div',
+      { className: 'bottom' },
+      e('div', { className: 'days' }, days === 1 ? '1 day' : `${days} days`),
+      e('div', { className: 'weeks' }, weeks === 1 ? '1 week' : `${weeks} weeks`),
+      e(
+        'div',
+        { className: 'until' },
+        `${flipped ? 'since' : 'until'} ${
+          new Date(flipped ? startDate : endDate)
+            .toLocaleDateString(undefined, {
+              weekday: 'long',
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric'
+            })
+        }`
+      ),
+    )
+  )
+}
+
+function App () {
+  const [size, setSize] = useState({
+    width: window.innerWidth,
+    height: window.innerHeight
+  })
+  useEffect(() => {
+    function onResize () {
+      setSize({
+        width: window.innerWidth,
+        height: window.innerHeight
+      })
+    }
+    window.addEventListener('resize', onResize)
+    return () => {
+      window.removeEventListener('resize', onResize)
+    }
+  }, [])
+
+  const [dateObj, setDateObj] = useState(getDateObjFromURL())
+  useEffect(() => {
+    function onURLChange () {
+      setDateObj(getDateObjFromURL())
+    }
+    window.addEventListener('popstate', onURLChange)
+    return () => {
+      window.removeEventListener('popstate', onURLChange)
+    }
+  }, [])
+
+  const [value, setValue] = useState(dateObj ? dateObj.toISOString().slice(0, 10) : '2021-01-08')
+  function onDate (e) {
+    setValue(e.target.value)
+  }
+  function onDateSelect (e) {
+    window.history.pushState({}, '', `?date=${value}`)
+    setDateObj(getDateObjFromString(value))
+    e.preventDefault()
+  }
+
+  return e(
+    React.Fragment,
+    null,
+    e(
+      'div',
+      { className: 'week weekdays' },
+      weekDays.map(day => e('span', { key: day }, day))
+    ),
+    dateObj
+      ? e(Calendar, { date: dateObj, size })
+      : e(
+        'div',
+        { className: 'date-wrapper' },
+        e(
+          'form',
+          { method: 'GET' },
+          e(
+            'label',
+            null,
+            'Select a date to count down to: ',
+            e(
+              'input',
+              {
+                type: 'date',
+                name: 'date',
+                value,
+                autoFocus: true,
+                onChange: onDate
+              }
+            )
+          ),
+          e('input', { type: 'submit', value: '👌', onClick: onDateSelect })
+        )
+      )
+  )
+}
+
+ReactDOM.render(e(App), document.getElementById('root'))
+    </script>
+  </body>
+</html>
