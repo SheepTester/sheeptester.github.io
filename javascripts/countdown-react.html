@@ -40,6 +40,8 @@
       }
       .calendar {
         flex: auto;
+        padding-top: 20px;
+        padding-bottom: 208px;
       }
       .calendar:focus {
         /* fghufgsd */
@@ -187,23 +189,18 @@ function Calendar ({ date, size: { width, height } }) {
         height: height - 50,
         width,
         rowCount: weekCount + 2,
-        rowHeight: ({ index }) =>
-          index === 0
-            ? 20
-            : index === weekCount + 1
-            ? 300
-            : 92,
-        estimatedRowSize: weekCount * 92 + 320,
+        rowHeight: 92,
+        estimatedRowSize: 92,
         className: 'calendar',
         rowRenderer: ({ key, style, index }) => {
-          if (index === 0 || index === weekCount + 1) {
+          if (index === weekCount) {
             return e('div', { key, style })
           }
           return e(
             'div',
             { key, style, className: 'week' },
             weekDays.map((_, day) => {
-              const date = new Date(startWeek + ((index - 1) * 7 + day) * dayLength)
+              const date = new Date(startWeek + (index * 7 + day) * dayLength)
               return e(
                 'div',
                 {
@@ -241,7 +238,8 @@ function Calendar ({ date, size: { width, height } }) {
               weekday: 'long',
               year: 'numeric',
               month: 'long',
-              day: 'numeric'
+              day: 'numeric',
+              timeZone: 'UTC'
             })
         }`
       ),
