@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Abbrev.ator</title>
+    <meta name="description" content="Abbrevs. words for you" />
+
+    <link rel="stylesheet" type="text/css" href="/sheep3.css">
+    <script src="/sheep3.js" charset="utf-8"></script>
+
+    <script src="https://unpkg.com/react@17/umd/react.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js" crossorigin></script>
+
+    <style>
+      html,
+      body {
+        height: 100%;
+      }
+      body {
+        margin: 0;
+        display: flex;
+      }
+      textarea {
+        -webkit-appearance: none;
+        border: none;
+        background: none;
+        font: inherit;
+        color: inherit;
+      }
+
+      #root {
+        flex: auto;
+        display: flex;
+      }
+      .text {
+        flex: 1 0 0;
+        resize: none;
+        padding: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script>
+const { createElement: e, useState } = React
+
+const REMOVE = Symbol('remove')
+
+const replacements = {
+  the: REMOVE,
+  and: '&'
+}
+
+function abbreviate (text) {
+  const match = text.match(/[\w'’]+/g) || []
+  const words = new Map()
+  for (const word of match) {
+    const normalized = word.toLowerCase().replace(/['’]/g, '')
+    if (!normalized || /^\d+$/.test(normalized)) continue
+    words.set(normalized, (words.get(normalized) || 0) + 1)
+  }
+  const sorted = [...words]
+    .sort((a, b) => b[1] - a[1])
+    .map(entry => entry[0])
+  const abbreviations = new Map(Object.entries(replacements))
+  words:
+  for (const word of sorted) {
+    if (abbreviations.has(word)) continue
+    for (let i = 2; i < sorted.length; i++) {
+      const portion = word.slice(0, i)
+      if (!abbreviations.has(portion)) {
+        abbreviations.set(word, portion)
+        continue words
+      }
+    }
+  }
+  return text.replace(/[\w'’]+/g, word => {
+    const normalized = word.toLowerCase().replace(/['’]/g, '')
+    const abbrev = abbreviations.get(normalized)
+    return abbrev ? (abbrev === REMOVE ? '' : abbrev) : word
+  })
+}
+
+function App () {
+  const [text, setText] = useState('')
+
+  return e(
+    React.Fragment,
+    null,
+    e(
+      'textarea',
+      {
+        className: 'text',
+        placeholder: 'Put your text here',
+        value: text,
+        autoFocus: true,
+        onChange (e) {
+          setText(e.target.value)
+        }
+      }
+    ),
+    e(
+      'textarea',
+      {
+        className: 'text',
+        placeholder: 'abbrev here',
+        value: abbreviate(text),
+        readonly: true
+      }
+    )
+  )
+}
+
+ReactDOM.render(e(App), document.getElementById('root'))
+    </script>
+  </body>
+</html>
