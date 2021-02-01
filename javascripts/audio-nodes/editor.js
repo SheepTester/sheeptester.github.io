@@ -1,4 +1,4 @@
-import { Node, audioNodeParams } from './node.js'
+import { Node, audioNodeParams, audioNodeOptions } from './node.js'
 import { audioCtx } from './audio-context.js'
 
 export class Editor {
@@ -19,26 +19,31 @@ export class Editor {
     palette.append(...this.#initPalette())
   }
 
-  #addNode (AudioNodeConstructor) {
+  #addNode (audioNode) {
     const node = new Node(
       this,
-      new AudioNodeConstructor(audioCtx),
+      audioNode,
       {
-        params: audioNodeParams.get(AudioNodeConstructor)
+        options: audioNodeOptions.get(audioNode.constructor),
+        params: audioNodeParams.get(audioNode.constructor)
       }
     )
     this.#container.append(node.element)
     return node
   }
 
+  removeNode (editorNode) {
+    editorNode.destroy()
+  }
+
   #initPalette () {
     const elements = []
-    for (const audioNodeType of audioNodeParams.keys()) {
+    for (const AudioNodeType of audioNodeParams.keys()) {
       const item = document.createElement('div')
-      item.className = 'palette-item'
-      item.textContent = audioNodeType.name
+      item.className = 'palette-item mono'
+      item.textContent = AudioNodeType.name
       item.addEventListener('pointerdown', e => {
-        this.#addNode(audioNodeType).startDragging(e)
+        this.#addNode(new AudioNodeType(audioCtx)).startDragging(e)
       })
       elements.push(item)
     }
@@ -61,6 +66,10 @@ export class Editor {
     if (this.#dragging === 0) {
       this.#dragArea.classList.remove('dragging')
     }
+  }
+
+  get palette () {
+    return this.#palette
   }
 
   get container () {

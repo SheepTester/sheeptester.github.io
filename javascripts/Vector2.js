@@ -56,7 +56,7 @@ export class Vector2 {
     return this.x === x && this.y === y
   }
 
-  bounded ({ min, max }) {
+  bounded ({ min = null, max = null }) {
     if (min && (this.x < min.x || this.y < min.y)) {
       return false
     }

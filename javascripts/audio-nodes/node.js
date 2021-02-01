@@ -1,29 +1,30 @@
 import { Vector2 } from '../Vector2.js'
+import { Rectangle } from '../Rectangle.js'
 
 export const audioNodeOptions = new Map([
   [
     DelayNode,
     [
-      ['maxDelayTime', 'float']
+      ['maxDelayTime', ['float', 1]]
     ]
   ],
   [
     IIRFilterNode,
     [
-      ['feedforward', 'floatlist'],
-      ['feedback', 'floatlist']
+      ['feedforward', ['floatlist', [0.00020298, 0.0004059599, 0.00020298]]],
+      ['feedback', ['floatlist', [1.0126964558, -1.9991880801, 0.9873035442]]]
     ]
   ],
   [
     ChannelSplitterNode,
     [
-      ['numberOfOutputs', 'int']
+      ['numberOfOutputs', ['int', 6]]
     ]
   ],
   [
     ChannelMergerNode,
     [
-      ['numberOfInputs', 'int']
+      ['numberOfInputs', ['int', 6]]
     ]
   ]
 ])
@@ -80,7 +81,7 @@ export const audioNodeParams = new Map([
       ['threshold', 'param'],
       ['knee', 'param'],
       ['ratio', 'param'],
-      ['reduction', 'param'],
+      ['reduction', 'float'],
       ['attack', 'param'],
       ['release', 'param']
     ]
@@ -132,7 +133,13 @@ export class Node {
     this.#editor = editor
     this.#audioNode = audioNode
 
-    const { element, inputPoints, outputPoints } = this.#createElement(name, options, params, inputs, outputs)
+    const {
+      element,
+      inputConnections,
+      outputConnections,
+      inputPoints,
+      outputPoints
+    } = this.#createElement(name, options, params, inputs, outputs)
     this.#element = element
     this.#inputs = inputPoints
     this.#outputs = outputPoints
@@ -155,9 +162,10 @@ export class Node {
 
     const element = document.createElement('div')
     element.className = 'node mono'
+    element.style.minHeight = Math.max(inputs, outputs) * 20 + 'px'
     element.append(nameSpan, inputConnections, outputConnections)
 
-    for (const [optionName, type] of options) {
+    for (const [optionName, [type, defaultVal]] of options) {
       const { wrapper } = this.#createParam(optionName, type, true)
       element.append(wrapper)
     }
@@ -187,6 +195,8 @@ export class Node {
 
     return {
       element,
+      inputConnections,
+      outputConnections,
       inputPoints,
       outputPoints
     }
@@ -211,22 +221,44 @@ export class Node {
         this.#audioNode[name] = input.value
       }
       input.addEventListener('change', write)
-    } else if (type === 'param' || type === 'float') {
+    } else if (type === 'param' || type === 'float' || type === 'int') {
       input = document.createElement('input')
+      input.type = 'number'
+      input.step = 'any'
       if (type === 'param') {
+        input.min = this.#audioNode[name].minValue
+        input.max = this.#audioNode[name].maxValue
         read = () => {
           input.value = this.#audioNode[name].value
         }
         write = () => {
           this.#audioNode[name].setValueAtTime(audioCtx.currentTime, +input.value)
         }
-      } else {
+      } else if (type === 'float') {
         read = () => {
           input.value = this.#audioNode[name]
         }
         write = () => {
           this.#audioNode[name] = +input.value
         }
+      } else {
+        input.step = 1
+        read = () => {
+          input.value = this.#audioNode[name]
+        }
+        write = () => {
+          this.#audioNode[name] = parseInt(input.value)
+        }
+      }
+      input.addEventListener('change', write)
+    } else if (type === 'boolean') {
+      input = document.createElement('input')
+      input.type = 'checkbox'
+      read = () => {
+        input.checked = this.#audioNode[name]
+      }
+      write = () => {
+        this.#audioNode[name] = input.checked
       }
       input.addEventListener('change', write)
     } else {
@@ -270,8 +302,9 @@ export class Node {
   }
 
   #startDrag = e => {
-    const rect = this.#element.getBoundingClientRect()
-    const offset = this.#mouseDown.start.clone().sub(Vector2.fromRectPos(rect))
+    const rect = Rectangle.clientBounds(this.#element)
+    const containerRect = Rectangle.clientBounds(this.#editor.container)
+    const offset = this.#mouseDown.start.clone().sub(rect.pos)
 
     const { wrapper, stop } = this.#editor.dragStart()
     wrapper.append(this.#element)
@@ -280,6 +313,7 @@ export class Node {
 
     this.#mouseDown.dragging = {
       offset,
+      containerOffset: containerRect.pos,
       stop
     }
   }
@@ -291,7 +325,15 @@ export class Node {
         this.#startDrag(e)
       }
       if (this.#mouseDown.dragging) {
-        this.pos.set(mouse.clone().sub(this.#mouseDown.dragging.offset))
+        const base = mouse.clone()
+          .sub(this.#mouseDown.dragging.offset)
+        if (e.shiftKey) {
+          base
+            .sub(this.#mouseDown.dragging.containerOffset)
+            .map(n => Math.round(n / 10) * 10)
+            .add(this.#mouseDown.dragging.containerOffset)
+        }
+        this.pos.set(base)
         this.updatePos()
       }
     }
@@ -299,12 +341,18 @@ export class Node {
 
   #onPointerUp = e => {
     if (this.#mouseDown && this.#mouseDown.pointerId === e.pointerId) {
+      const mouse = Vector2.fromMouseEvent(e)
       if (this.#mouseDown.dragging) {
-        const containerRect = this.#editor.container.getBoundingClientRect()
-        this.pos.sub(Vector2.fromRectPos(containerRect))
-        this.updatePos()
-        this.#mouseDown.dragging.stop()
-        this.#editor.container.append(this.element)
+        const paletteRect = Rectangle.clientBounds(this.#editor.palette)
+        if (paletteRect.contains(mouse)) {
+          this.#editor.removeNode(this)
+        } else {
+          const containerRect = Rectangle.clientBounds(this.#editor.container)
+          this.pos.sub(containerRect.pos)
+          this.updatePos()
+          this.#mouseDown.dragging.stop()
+          this.#editor.container.append(this.element)
+        }
       }
       this.#mouseDown = null
     }
@@ -325,6 +373,10 @@ export class Node {
   updatePos () {
     const { x, y } = this.pos
     this.#element.style.transform = `translate3d(${x}px, ${y}px, 0)`
+  }
+
+  destroy () {
+    this.#element.remove()
   }
 
   get element () {

@@ -37,8 +37,9 @@ button:not(:disabled) {
 }
 
 .palette {
-  width: 300px;
+  width: 250px;
   flex: none;
+  overflow: auto;
 }
 .palette-item {
   display: table;
@@ -49,6 +50,23 @@ button:not(:disabled) {
   box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.5);
   user-select: none;
   cursor: grab;
+  touch-action: none;
+  font-weight: bold;
+  font-size: 14px;
+}
+@media (max-width: 600px) {
+  body {
+    flex-direction: column;
+  }
+  .palette {
+    width: unset;
+    white-space: nowrap;
+    padding: 10px;
+    padding-top: 30px;
+  }
+  .palette-item {
+    display: inline-block;
+  }
 }
 
 .node-area {
@@ -68,6 +86,7 @@ button:not(:disabled) {
   font-size: 0.875rem;
   box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.5);
   user-select: none;
+  touch-action: none;
 }
 .node-connections {
   position: absolute;
@@ -115,8 +134,9 @@ button:not(:disabled) {
   margin-right: 0;
 }
 .node-param-value-param,
-.node-param-value-float {
-  width: 5ch;
+.node-param-value-float,
+.node-param-value-int {
+  width: 7ch;
 }
 
 .drag-area {
@@ -125,6 +145,7 @@ button:not(:disabled) {
   left: 0;
   display: none;
   cursor: grabbing;
+  touch-action: none;
 }
 .drag-area.dragging {
   display: block;
