@@ -1,6 +1,11 @@
 import { Vector2 } from '../Vector2.js'
 import { Rectangle } from '../Rectangle.js'
 
+import { audioCtx } from './audio-context.js'
+
+/**
+ * @type {Map.<typeof AudioNode, Map.<string, [string | string[], *]>>}
+ */
 export const audioNodeOptions = new Map([
   [
     DelayNode,
@@ -27,8 +32,11 @@ export const audioNodeOptions = new Map([
       ['numberOfInputs', ['int', 6]]
     ]
   ]
-])
+].map(([key, value]) => [key, new Map(value)]))
 
+/**
+ * @type {Map.<typeof AudioNode, Map.<string, string | string[]>>}
+ */
 export const audioNodeParams = new Map([
   [
     OscillatorNode,
@@ -112,43 +120,121 @@ export const audioNodeParams = new Map([
   ]
 ].map(([key, value]) => [key, new Map(value)]))
 
+/**
+ * @typedef {Dragging}
+ * @property {import('../Vector2.js').Vector2} offset
+ * @property {import('../Vector2.js').Vector2} containerOffset
+ * @property {import('./editor.js').dragStopCallback} stop
+ */
+
+/**
+ * @typedef {MouseDown}
+ * @property {number} pointerId
+ * @property {import('../Vector2.js').Vector2} start
+ * @property {?Dragging} dragging
+ */
+
+/**
+ */
 export class Node {
+  /**
+   * Minimum mouse displacement to start dragging.
+   * @type {number}
+   * @const
+   */
   static MIN_DRAG = 10
 
+  /**
+   * @type {import('../Vector2.js').Vector2}
+   */
   pos = new Vector2(0, 0)
+
+  /**
+   * @type {import('./editor.js').Editor}
+   */
   #editor
+
+  /**
+   * @type {typeof AudioNode}
+   */
+  #AudioNodeType
+
+  /**
+   * @type {AudioNode}
+   */
   #audioNode
+
+  /**
+   * @type {Object.<string, *>}
+   */
+  #options = {}
+
+  /**
+   * @type {HTMLDivElement}
+   */
   #element
-  #inputs = []
-  #outputs = []
+
+  /**
+   * @type {HTMLDivElement}
+   */
+  #inputConnections
+
+  /**
+   * @type {HTMLDivElement}
+   */
+  #outputConnections
+
+  /**
+   * @type {?MouseDown}
+   */
   #mouseDown = null
 
-  constructor (editor, audioNode, {
-    name = audioNode.constructor.name,
-    options = [],
-    params = [],
-    inputs = audioNode.numberOfInputs,
-    outputs = audioNode.numberOfOutputs
+  /**
+   * @param {import('./editor.js').Editor} editor
+   * @param {typeof AudioNode} AudioNodeType
+   * @param {object} [options]
+   * @param {string} [options.name]
+   * @param {Map.<string, [string | string[], *]>} [options.options]
+   * @param {Map.<string, string | string[]>} [options.params]
+   */
+  constructor (editor, AudioNodeType, {
+    name = AudioNodeType.name,
+    options = new Map(),
+    params = new Map()
   } = {}) {
     this.#editor = editor
-    this.#audioNode = audioNode
+    this.#AudioNodeType = AudioNodeType
+    this.#options = Object.fromEntries(
+      Array.from(options, ([key, [, value]]) => [key, value])
+    )
+    this.#audioNode = this.#newAudioNode()
 
     const {
       element,
       inputConnections,
-      outputConnections,
-      inputPoints,
-      outputPoints
-    } = this.#createElement(name, options, params, inputs, outputs)
+      outputConnections
+    } = this.#createElement(name, options, params)
     this.#element = element
-    this.#inputs = inputPoints
-    this.#outputs = outputPoints
+    this.#inputConnections = inputConnections
+    this.#outputConnections = outputConnections
+    this.#updateConnectionCount()
   }
 
-  #createElement (name, options, params, inputs, outputs) {
+  /**
+   * @return {AudioNode}
+   */
+  #newAudioNode () {
+    return new this.#AudioNodeType(audioCtx, this.#options)
+  }
+
+  /**
+   * @param {string} name
+   * @param {Map.<string, [string | string[], *]>} options
+   * @param {Map.<string, string | string[]>} params
+   * @return {HTMLDivElement}
+   */
+  #createElement (name, options, params) {
     const paramInputs = {}
-    const inputPoints = []
-    const outputPoints = []
 
     const nameSpan = document.createElement('h2')
     nameSpan.className = 'node-name'
@@ -162,7 +248,6 @@ export class Node {
 
     const element = document.createElement('div')
     element.className = 'node mono'
-    element.style.minHeight = Math.max(inputs, outputs) * 20 + 'px'
     element.append(nameSpan, inputConnections, outputConnections)
 
     for (const [optionName, [type, defaultVal]] of options) {
@@ -174,20 +259,6 @@ export class Node {
       element.append(wrapper)
     }
 
-    for (let i = 0; i < inputs; i++) {
-      const connection = document.createElement('div')
-      connection.className = 'node-connection-point'
-      inputConnections.append(connection)
-      inputPoints.push(connection)
-    }
-
-    for (let i = 0; i < outputs; i++) {
-      const connection = document.createElement('div')
-      connection.className = 'node-connection-point'
-      outputConnections.append(connection)
-      outputPoints.push(connection)
-    }
-
     element.addEventListener('pointerdown', this.#onPointerDown)
     element.addEventListener('pointermove', this.#onPointerMove)
     element.addEventListener('pointerup', this.#onPointerUp)
@@ -196,13 +267,49 @@ export class Node {
     return {
       element,
       inputConnections,
-      outputConnections,
-      inputPoints,
-      outputPoints
+      outputConnections
     }
   }
 
+  /**
+   * @return {HTMLDivElement}
+   */
+  #createConnectionPoint () {
+    const connection = document.createElement('div')
+    connection.className = 'node-connection-point'
+    return connection
+  }
+
+  /**
+   */
+  #updateConnectionCount () {
+    const inputs = this.#audioNode.numberOfInputs
+    const outputs = this.#audioNode.numberOfOutputs
+    this.#element.style.minHeight = Math.max(inputs, outputs) * 20 + 'px'
+
+    for (let i = this.#inputConnections.children.length; i < inputs; i++) {
+      this.#inputConnections.append(this.#createConnectionPoint())
+    }
+    while (this.#inputConnections.children.length > inputs) {
+      this.#inputConnections.lastElementChild.remove()
+    }
+
+    for (let i = this.#outputConnections.children.length; i < outputs; i++) {
+      this.#outputConnections.append(this.#createConnectionPoint())
+    }
+    while (this.#outputConnections.children.length > outputs) {
+      this.#outputConnections.lastElementChild.remove()
+    }
+  }
+
+  /**
+   * @param {string} name
+   * @param {string | string[]} type
+   * @param {boolean} isOption
+   * @return {HTMLParagraphElement}
+   */
   #createParam = (name, type, isOption = false) => {
+    const valueSrc = isOption ? this.#options : this.#audioNode
     let input
     let read = () => {}
     let write = () => {}
@@ -215,10 +322,10 @@ export class Node {
         input.append(option)
       }
       read = () => {
-        input.value = this.#audioNode[name]
+        input.value = valueSrc[name]
       }
       write = () => {
-        this.#audioNode[name] = input.value
+        valueSrc[name] = input.value
       }
       input.addEventListener('change', write)
     } else if (type === 'param' || type === 'float' || type === 'int') {
@@ -226,28 +333,28 @@ export class Node {
       input.type = 'number'
       input.step = 'any'
       if (type === 'param') {
-        input.min = this.#audioNode[name].minValue
-        input.max = this.#audioNode[name].maxValue
+        input.min = valueSrc[name].minValue
+        input.max = valueSrc[name].maxValue
         read = () => {
-          input.value = this.#audioNode[name].value
+          input.value = valueSrc[name].value
         }
         write = () => {
-          this.#audioNode[name].setValueAtTime(audioCtx.currentTime, +input.value)
+          valueSrc[name].setValueAtTime(audioCtx.currentTime, +input.value)
         }
       } else if (type === 'float') {
         read = () => {
-          input.value = this.#audioNode[name]
+          input.value = valueSrc[name]
         }
         write = () => {
-          this.#audioNode[name] = +input.value
+          valueSrc[name] = +input.value
         }
       } else {
         input.step = 1
         read = () => {
-          input.value = this.#audioNode[name]
+          input.value = valueSrc[name]
         }
         write = () => {
-          this.#audioNode[name] = parseInt(input.value)
+          valueSrc[name] = parseInt(input.value)
         }
       }
       input.addEventListener('change', write)
@@ -255,10 +362,10 @@ export class Node {
       input = document.createElement('input')
       input.type = 'checkbox'
       read = () => {
-        input.checked = this.#audioNode[name]
+        input.checked = valueSrc[name]
       }
       write = () => {
-        this.#audioNode[name] = input.checked
+        valueSrc[name] = input.checked
       }
       input.addEventListener('change', write)
     } else {
@@ -283,6 +390,9 @@ export class Node {
     }
   }
 
+  /**
+   * @param {PointerEvent} e
+   */
   #onPointerDown = e => {
     if (e.target.closest('.node-param-value, .node-connection-point')) {
       return
@@ -301,6 +411,9 @@ export class Node {
     }
   }
 
+  /**
+   * @param {PointerEvent} e
+   */
   #startDrag = e => {
     const rect = Rectangle.clientBounds(this.#element)
     const containerRect = Rectangle.clientBounds(this.#editor.container)
@@ -318,6 +431,9 @@ export class Node {
     }
   }
 
+  /**
+   * @param {PointerEvent} e
+   */
   #onPointerMove = e => {
     if (this.#mouseDown && this.#mouseDown.pointerId === e.pointerId) {
       const mouse = Vector2.fromMouseEvent(e)
@@ -339,6 +455,9 @@ export class Node {
     }
   }
 
+  /**
+   * @param {PointerEvent} e
+   */
   #onPointerUp = e => {
     if (this.#mouseDown && this.#mouseDown.pointerId === e.pointerId) {
       const mouse = Vector2.fromMouseEvent(e)
@@ -358,6 +477,9 @@ export class Node {
     }
   }
 
+  /**
+   * @param {PointerEvent} e
+   */
   startDragging (e) {
     const mouse = Vector2.fromMouseEvent(e)
     this.#mouseDown = {
@@ -370,15 +492,22 @@ export class Node {
     this.#onPointerMove(e)
   }
 
+  /**
+   */
   updatePos () {
     const { x, y } = this.pos
     this.#element.style.transform = `translate3d(${x}px, ${y}px, 0)`
   }
 
+  /**
+   */
   destroy () {
     this.#element.remove()
   }
 
+  /**
+   * @type {HTMLDivElement}
+   */
   get element () {
     return this.#element
   }

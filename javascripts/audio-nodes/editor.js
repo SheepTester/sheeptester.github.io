@@ -1,16 +1,61 @@
 import { Node, audioNodeParams, audioNodeOptions } from './node.js'
-import { audioCtx } from './audio-context.js'
 import { SVG_NS } from './utils.js'
 
+/**
+ * @typedef Connection
+ * @type {[import('../Vector2.js').Vector2, import('../Vector2.js').Vector2]}
+ */
+
+/**
+ * @callback dragStopCallback
+ */
+
+/**
+ * @typedef DragHandle
+ * @property {HTMLDivElement} dragArea
+ * @property {dragStopCallback} stop
+ */
+
+/**
+ */
 export class Editor {
+  /**
+   * The displacement on the x-axis for the control points of the connections,
+   * hence "swoopiness."
+   * @type {number}
+   * @const
+   */
   static SWOOPINESS = 100
 
+  /**
+   * @type {HTMLElement}
+   */
   #palette
+
+  /**
+   * @type {HTMLElement}
+   */
   #container
+
+  /**
+   * @type {HTMLDivElement}
+   */
   #dragArea
+
+  /**
+   * @type {number}
+   */
   #dragging = 0
+
+  /**
+   * @type {SVGPathElement}
+   */
   #connectionsPath
 
+  /**
+   * @param {HTMLElement} palette
+   * @param {HTMLElement} container
+   */
   constructor (palette, container) {
     this.#palette = palette
     this.#container = container
@@ -32,6 +77,9 @@ export class Editor {
     palette.append(...this.#initPalette())
   }
 
+  /**
+   * @param {Connection[]} connections
+   */
   #setPath (connections) {
     this.#connectionsPath.setAttributeNS(
       null,
@@ -44,23 +92,32 @@ export class Editor {
     )
   }
 
-  #addNode (audioNode) {
+  /**
+   * @param {typeof AudioNode} connections
+   */
+  #addNode (AudioNodeType) {
     const node = new Node(
       this,
-      audioNode,
+      AudioNodeType,
       {
-        options: audioNodeOptions.get(audioNode.constructor),
-        params: audioNodeParams.get(audioNode.constructor)
+        options: audioNodeOptions.get(AudioNodeType),
+        params: audioNodeParams.get(AudioNodeType)
       }
     )
     this.#container.append(node.element)
     return node
   }
 
+  /**
+   * @param {import('./node.js').Node} editorNode
+   */
   removeNode (editorNode) {
     editorNode.destroy()
   }
 
+  /**
+   * @return {HTMLDivElement[]}
+   */
   #initPalette () {
     const elements = []
     for (const AudioNodeType of audioNodeParams.keys()) {
@@ -68,13 +125,16 @@ export class Editor {
       item.className = 'palette-item mono'
       item.textContent = AudioNodeType.name
       item.addEventListener('pointerdown', e => {
-        this.#addNode(new AudioNodeType(audioCtx)).startDragging(e)
+        this.#addNode(AudioNodeType).startDragging(e)
       })
       elements.push(item)
     }
     return elements
   }
 
+  /**
+   * @return {DragHandle}
+   */
   dragStart () {
     if (this.#dragging === 0) {
       this.#dragArea.classList.add('dragging')
@@ -86,6 +146,8 @@ export class Editor {
     }
   }
 
+  /**
+   */
   #dragEnd = () => {
     this.#dragging--
     if (this.#dragging === 0) {
@@ -93,10 +155,16 @@ export class Editor {
     }
   }
 
+  /**
+   * @type {HTMLElement}
+   */
   get palette () {
     return this.#palette
   }
 
+  /**
+   * @type {HTMLElement}
+   */
   get container () {
     return this.#container
   }
