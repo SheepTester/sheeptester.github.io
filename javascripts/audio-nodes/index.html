@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Web Audio API node explorer</title>
+    <meta name="description" content="An interactive explorer to play with audio nodes." />
+
+    <link rel="stylesheet" type="text/css" href="/sheep3.css">
+    <script src="/sheep3.js" charset="utf-8"></script>
+
+    <link rel="stylesheet" href="./styles.css">
+  </head>
+  <body class="sans">
+    <div class="node-area" id="node-area"></div>
+    <script type="module">
+      import * as module from './index.js'
+      Object.assign(window, module)
+    </script>
+  </body>
+</html>
