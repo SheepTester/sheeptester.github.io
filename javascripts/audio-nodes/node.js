@@ -1,30 +1,144 @@
 import { Vector2 } from '../Vector2.js'
 
+export const audioNodeOptions = new Map([
+  [
+    DelayNode,
+    [
+      ['maxDelayTime', 'float']
+    ]
+  ],
+  [
+    IIRFilterNode,
+    [
+      ['feedforward', 'floatlist'],
+      ['feedback', 'floatlist']
+    ]
+  ],
+  [
+    ChannelSplitterNode,
+    [
+      ['numberOfOutputs', 'int']
+    ]
+  ],
+  [
+    ChannelMergerNode,
+    [
+      ['numberOfInputs', 'int']
+    ]
+  ]
+])
+
+export const audioNodeParams = new Map([
+  [
+    OscillatorNode,
+    [
+      ['frequency', 'param'],
+      ['detune', 'param'],
+      // TODO: setPeriodicWave?
+      ['type', ['sine', 'square', 'sawtooth', 'triangle']],
+      ['periodicWave', 'periodicwave'] // TODO
+    ]
+  ],
+  [
+    AudioBufferSourceNode,
+    [
+      ['buffer', 'buffer'], // TODO
+      ['detune', 'param'],
+      ['loop', 'boolean'],
+      ['loopStart', 'float'],
+      ['loopEnd', 'float'],
+      ['playbackRate', 'param']
+    ]
+  ],
+  // MediaElementAudioSourceNode, MediaStreamAudioSourceNode, MediaStreamTrackAudioSourceNode
+  [
+    BiquadFilterNode,
+    [
+      ['frequency', 'param'],
+      ['detune', 'param'],
+      ['Q', 'param'],
+      ['gain', 'param'],
+      ['type', ['lowpass', 'highpass', 'bandpass', 'lowshelf', 'highshelf', 'peaking', 'notch', 'allpass']]
+    ]
+  ],
+  [
+    ConvolverNode,
+    [
+      ['buffer', 'buffer'],
+      ['normalize', 'boolean']
+    ]
+  ],
+  [
+    DelayNode,
+    [
+      ['delayTime', 'param']
+    ]
+  ],
+  [
+    DynamicsCompressorNode,
+    [
+      ['threshold', 'param'],
+      ['knee', 'param'],
+      ['ratio', 'param'],
+      ['reduction', 'param'],
+      ['attack', 'param'],
+      ['release', 'param']
+    ]
+  ],
+  [
+    GainNode,
+    [
+      ['gain', 'param']
+    ]
+  ],
+  [
+    WaveShaperNode,
+    [
+      ['curve', 'floatarray'], // TODO
+      ['oversample', ['none', '2x', '4x']]
+    ]
+  ],
+  [IIRFilterNode, []],
+  // MediaStreamAudioDestinationNode, AnalyserNode
+  [ChannelSplitterNode, []],
+  [ChannelMergerNode, []],
+  // PannerNode
+  [
+    StereoPannerNode,
+    [
+      ['pan', 'param']
+    ]
+  ]
+].map(([key, value]) => [key, new Map(value)]))
+
 export class Node {
+  static MIN_DRAG = 10
+
   pos = new Vector2(0, 0)
+  #editor
   #audioNode
   #element
-  #params = {}
   #inputs = []
   #outputs = []
-  #dragging = null
+  #mouseDown = null
 
-  constructor (audioNode, {
+  constructor (editor, audioNode, {
     name = audioNode.constructor.name,
+    options = [],
     params = [],
     inputs = audioNode.numberOfInputs,
     outputs = audioNode.numberOfOutputs
   } = {}) {
+    this.#editor = editor
     this.#audioNode = audioNode
 
-    const { element, paramInputs, inputPoints, outputPoints } = this.#createElement(name, params, inputs, outputs)
+    const { element, inputPoints, outputPoints } = this.#createElement(name, options, params, inputs, outputs)
     this.#element = element
-    this.#params = paramInputs
     this.#inputs = inputPoints
     this.#outputs = outputPoints
   }
 
-  #createElement (name, params, inputs, outputs) {
+  #createElement (name, options, params, inputs, outputs) {
     const paramInputs = {}
     const inputPoints = []
     const outputPoints = []
@@ -43,21 +157,13 @@ export class Node {
     element.className = 'node mono'
     element.append(nameSpan, inputConnections, outputConnections)
 
-    for (const param of params) {
-      const paramInput = document.createElement('input')
-      paramInput.className = 'node-param-value'
-      paramInput.value = this.#audioNode[param].value
-
-      const paramLabel = document.createElement('label')
-      paramLabel.className = 'node-param-label'
-      paramLabel.append(param, paramInput)
-
-      const paramWrapper = document.createElement('p')
-      paramWrapper.className = 'node-param-wrapper'
-      paramWrapper.append(paramLabel)
-
-      element.append(paramWrapper)
-      paramInputs[param] = paramInput
+    for (const [optionName, type] of options) {
+      const { wrapper } = this.#createParam(optionName, type, true)
+      element.append(wrapper)
+    }
+    for (const [paramName, type] of params) {
+      const { wrapper } = this.#createParam(paramName, type, false)
+      element.append(wrapper)
     }
 
     for (let i = 0; i < inputs; i++) {
@@ -81,34 +187,139 @@ export class Node {
 
     return {
       element,
-      paramInputs,
       inputPoints,
       outputPoints
     }
   }
 
+  #createParam = (name, type, isOption = false) => {
+    let input
+    let read = () => {}
+    let write = () => {}
+    if (Array.isArray(type)) {
+      input = document.createElement('select')
+      for (const value of type) {
+        const option = document.createElement('option')
+        option.value = value
+        option.textContent = value
+        input.append(option)
+      }
+      read = () => {
+        input.value = this.#audioNode[name]
+      }
+      write = () => {
+        this.#audioNode[name] = input.value
+      }
+      input.addEventListener('change', write)
+    } else if (type === 'param' || type === 'float') {
+      input = document.createElement('input')
+      if (type === 'param') {
+        read = () => {
+          input.value = this.#audioNode[name].value
+        }
+        write = () => {
+          this.#audioNode[name].setValueAtTime(audioCtx.currentTime, +input.value)
+        }
+      } else {
+        read = () => {
+          input.value = this.#audioNode[name]
+        }
+        write = () => {
+          this.#audioNode[name] = +input.value
+        }
+      }
+      input.addEventListener('change', write)
+    } else {
+      input = document.createElement('div')
+      console.warn('Unknown param type', type)
+    }
+    input.className = `node-param-value node-param-value-${type}`
+    read()
+
+    const label = document.createElement('label')
+    label.className = 'node-param-label'
+    label.append(name, input)
+
+    const wrapper = document.createElement('p')
+    wrapper.className = 'node-param-wrapper'
+    wrapper.append(label)
+
+    return {
+      read,
+      write,
+      wrapper
+    }
+  }
+
   #onPointerDown = e => {
-    if (!this.#dragging) {
-      const rect = this.#element.getBoundingClientRect()
-      this.#dragging = {
+    if (e.target.closest('.node-param-value, .node-connection-point')) {
+      return
+    }
+
+    if (!this.#mouseDown) {
+      const mouse = Vector2.fromMouseEvent(e)
+
+      this.#mouseDown = {
         pointerId: e.pointerId,
-        offset: Vector2.fromMouseEvent(e).sub(Vector2.fromRectPos(rect))
+        start: mouse.clone(),
+        dragging: null
       }
       this.#element.setPointerCapture(e.pointerId)
+      e.stopPropagation()
+    }
+  }
+
+  #startDrag = e => {
+    const rect = this.#element.getBoundingClientRect()
+    const offset = this.#mouseDown.start.clone().sub(Vector2.fromRectPos(rect))
+
+    const { wrapper, stop } = this.#editor.dragStart()
+    wrapper.append(this.#element)
+    // Reset pointer capture because it gets lost when parents change
+    this.#element.setPointerCapture(e.pointerId)
+
+    this.#mouseDown.dragging = {
+      offset,
+      stop
     }
   }
 
   #onPointerMove = e => {
-    if (this.#dragging && this.#dragging.pointerId === e.pointerId) {
-      this.pos.set(Vector2.fromMouseEvent(e).sub(this.#dragging.offset))
-      this.updatePos()
+    if (this.#mouseDown && this.#mouseDown.pointerId === e.pointerId) {
+      const mouse = Vector2.fromMouseEvent(e)
+      if (!this.#mouseDown.dragging && mouse.clone().sub(this.#mouseDown.start).lengthSquared > Node.MIN_DRAG ** 2) {
+        this.#startDrag(e)
+      }
+      if (this.#mouseDown.dragging) {
+        this.pos.set(mouse.clone().sub(this.#mouseDown.dragging.offset))
+        this.updatePos()
+      }
     }
   }
 
   #onPointerUp = e => {
-    if (this.#dragging && this.#dragging.pointerId === e.pointerId) {
-      this.#dragging = null
+    if (this.#mouseDown && this.#mouseDown.pointerId === e.pointerId) {
+      if (this.#mouseDown.dragging) {
+        const containerRect = this.#editor.container.getBoundingClientRect()
+        this.pos.sub(Vector2.fromRectPos(containerRect))
+        this.updatePos()
+        this.#mouseDown.dragging.stop()
+        this.#editor.container.append(this.element)
+      }
+      this.#mouseDown = null
     }
+  }
+
+  startDragging (e) {
+    const mouse = Vector2.fromMouseEvent(e)
+    this.#mouseDown = {
+      pointerId: e.pointerId,
+      start: mouse,
+      dragging: null
+    }
+    this.#startDrag(e)
+    this.#mouseDown.dragging.offset.set(new Vector2(10, 10))
+    this.#onPointerMove(e)
   }
 
   updatePos () {
