@@ -77,6 +77,18 @@ button:not(:disabled) {
   overflow: hidden;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 }
+.connections {
+  position: absolute;
+  z-index: 100;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+  stroke: white;
+  stroke-width: 3px;
+  stroke-linecap: round;
+  fill: none;
+}
 
 .node {
   position: absolute;
