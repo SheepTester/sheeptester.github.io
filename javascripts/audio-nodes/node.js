@@ -429,7 +429,11 @@ export class Node {
    * @param {PointerEvent} e
    */
   #onPointerDown = e => {
-    if (e.target.closest('.node-param-value, .node-connection-point')) {
+    const clickTarget = e.target.closest('.node-param-value, .node-connection-point, .node')
+    if (!clickTarget || clickTarget.classList.contains('node-param-value')) {
+      return
+    } else if (clickTarget.classList.contains('node-connection-point')) {
+      console.log(clickTarget)
       return
     }
 

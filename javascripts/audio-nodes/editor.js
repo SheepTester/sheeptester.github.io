@@ -28,6 +28,14 @@ export class Editor {
   static SWOOPINESS = 100
 
   /**
+   * @param {Connection} connection
+   * @return {string}
+   */
+  static #getPath ([{ x: x1, y: y1 }, { x: x2, y: y2 }]) {
+    return `M${x1} ${y1}C${x1 + Editor.SWOOPINESS} ${y1},${x2 - Editor.SWOOPINESS} ${y2},${x2} ${y2}`
+  }
+
+  /**
    * @type {HTMLElement}
    */
   #palette
@@ -53,6 +61,11 @@ export class Editor {
   #connectionsPath
 
   /**
+   * @type {SVGPathElement}
+   */
+  #activeConnectionPath
+
+  /**
    * @param {HTMLElement} palette
    * @param {HTMLElement} container
    */
@@ -65,13 +78,15 @@ export class Editor {
     document.body.append(dragArea)
     this.#dragArea = dragArea
 
-    const path = document.createElementNS(SVG_NS, 'path')
-    this.#connectionsPath = path
+    this.#connectionsPath = document.createElementNS(SVG_NS, 'path')
+    this.#connectionsPath.className.baseVal = 'connections'
+    this.#activeConnectionPath = document.createElementNS(SVG_NS, 'path')
+    this.#activeConnectionPath.className.baseVal = 'active-connection'
     // this.#setPath([[{ x: 100, y: 100 }, { x: 200, y: 300 }]])
 
     const connections = document.createElementNS(SVG_NS, 'svg')
-    connections.className.baseVal = 'connections'
-    connections.append(path)
+    connections.className.baseVal = 'connections-wrapper'
+    connections.append(this.#connectionsPath, this.#activeConnectionPath)
     container.append(connections)
 
     palette.append(...this.#initPalette())
@@ -84,11 +99,7 @@ export class Editor {
     this.#connectionsPath.setAttributeNS(
       null,
       'd',
-      connections
-        .map(([{ x: x1, y: y1 }, { x: x2, y: y2 }]) => (
-          `M${x1} ${y1}C${x1 + Editor.SWOOPINESS} ${y1},${x2 - Editor.SWOOPINESS} ${y2},${x2} ${y2}`
-        ))
-        .join('')
+      connections.map(Editor.#getPath).join('')
     )
   }
 
