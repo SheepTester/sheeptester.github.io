@@ -170,6 +170,11 @@ export class Node {
   #options = {}
 
   /**
+   * @type {string[]}
+   */
+  #paramNames = {}
+
+  /**
    * @type {HTMLDivElement}
    */
   #element
@@ -208,6 +213,7 @@ export class Node {
       Array.from(options, ([key, [, value]]) => [key, value])
     )
     this.#audioNode = this.#newAudioNode()
+    this.#paramNames = [...params.keys()]
 
     const {
       element,
@@ -281,6 +287,7 @@ export class Node {
   }
 
   /**
+   * Called whenever the number of inputs/outputs may have changed.
    */
   #updateConnectionCount () {
     const inputs = this.#audioNode.numberOfInputs
@@ -299,6 +306,30 @@ export class Node {
     }
     while (this.#outputConnections.children.length > outputs) {
       this.#outputConnections.lastElementChild.remove()
+    }
+  }
+
+  /**
+   * Called whenever the AudioNode options may have changed; reconstructs
+   * `this.#audioNode`.
+   */
+  #updateOptions () {
+    try {
+      const oldAudioNode = this.#audioNode
+      this.#audioNode = this.#newAudioNode()
+      for (const paramName of this.#paramNames) {
+        if (this.#audioNode[paramName] instanceof AudioParam) {
+          this.#audioNode[paramName].value = this.#audioNode[paramName].value
+        } else {
+          this.#audioNode[paramName] = this.#audioNode[paramName]
+        }
+      }
+      this.#updateConnectionCount()
+      this.#element.classList.remove('node-error')
+      this.#element.title = ''
+    } catch (err) {
+      this.#element.classList.add('node-error')
+      this.#element.title = err.toString()
     }
   }
 
@@ -339,7 +370,8 @@ export class Node {
           input.value = valueSrc[name].value
         }
         write = () => {
-          valueSrc[name].setValueAtTime(audioCtx.currentTime, +input.value)
+          valueSrc[name].value = +input.value
+          if (isOption) this.#updateOptions()
         }
       } else if (type === 'float') {
         read = () => {
@@ -347,6 +379,7 @@ export class Node {
         }
         write = () => {
           valueSrc[name] = +input.value
+          if (isOption) this.#updateOptions()
         }
       } else {
         input.step = 1
@@ -355,6 +388,7 @@ export class Node {
         }
         write = () => {
           valueSrc[name] = parseInt(input.value)
+          if (isOption) this.#updateOptions()
         }
       }
       input.addEventListener('change', write)
@@ -366,6 +400,7 @@ export class Node {
       }
       write = () => {
         valueSrc[name] = input.checked
+        if (isOption) this.#updateOptions()
       }
       input.addEventListener('change', write)
     } else {

@@ -100,6 +100,9 @@ button:not(:disabled) {
   user-select: none;
   touch-action: none;
 }
+.node-error {
+  box-shadow: 0 0 0 3px rgba(255, 0, 0, 0.5);
+}
 .node-connections {
   position: absolute;
   top: 0;
