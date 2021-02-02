@@ -122,9 +122,13 @@ button:not(:disabled) {
   width: 10px;
   height: 10px;
   margin: -5px;
+  box-sizing: border-box;
 }
 .node-connection-point:hover {
   background-color: rgba(255, 255, 255, 0.8);
+}
+.node-connection-point-connecting {
+  background-color: white;
 }
 .node-inputs {
   left: 0;

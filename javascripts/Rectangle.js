@@ -13,6 +13,14 @@ export class Rectangle {
     return new Vector2(this.width, this.height)
   }
 
+  get centre () {
+    return new Vector2(this.x + this.width / 2, this.y + this.height / 2)
+  }
+
+  get center () {
+    return this.centre
+  }
+
   set ({ x = this.x, y = this.y, width = this.width, height = this.height }) {
     this.x = x
     this.y = y

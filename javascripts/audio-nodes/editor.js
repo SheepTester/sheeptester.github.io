@@ -2,8 +2,7 @@ import { Node, audioNodeParams, audioNodeOptions } from './node.js'
 import { SVG_NS } from './utils.js'
 
 /**
- * @typedef Connection
- * @type {[import('../Vector2.js').Vector2, import('../Vector2.js').Vector2]}
+ * @typedef {[import('../Vector2.js').Vector2, import('../Vector2.js').Vector2]} Connection
  */
 
 /**
@@ -11,7 +10,7 @@ import { SVG_NS } from './utils.js'
  */
 
 /**
- * @typedef DragHandle
+ * @typedef {object} DragHandle
  * @property {HTMLDivElement} dragArea
  * @property {dragStopCallback} stop
  */
@@ -66,6 +65,11 @@ export class Editor {
   #activeConnectionPath
 
   /**
+   * @type {?TODO}
+   */
+  #connecting = null
+
+  /**
    * @param {HTMLElement} palette
    * @param {HTMLElement} container
    */
@@ -115,7 +119,7 @@ export class Editor {
         params: audioNodeParams.get(AudioNodeType)
       }
     )
-    this.#container.append(node.element)
+    node.addTo(this.#container)
     return node
   }
 
@@ -163,6 +167,23 @@ export class Editor {
     this.#dragging--
     if (this.#dragging === 0) {
       this.#dragArea.classList.remove('dragging')
+    }
+  }
+
+  /**
+   * @param {PointerEvent} e
+   * @return {?TODO}
+   */
+  startConnecting (e) {
+    if (this.#connecting) {
+      return null
+    }
+    this.#connecting = {
+      pointerId: e.pointerId
+    }
+    this.#container.setPointerCapture(e.pointerId)
+    return {
+      // move: z
     }
   }
 

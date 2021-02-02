@@ -121,17 +121,23 @@ export const audioNodeParams = new Map([
 ].map(([key, value]) => [key, new Map(value)]))
 
 /**
- * @typedef {Dragging}
+ * @typedef {object} Dragging
  * @property {import('../Vector2.js').Vector2} offset
  * @property {import('../Vector2.js').Vector2} containerOffset
  * @property {import('./editor.js').dragStopCallback} stop
  */
 
 /**
- * @typedef {MouseDown}
+ * @typedef {object} MouseDown
  * @property {number} pointerId
  * @property {import('../Vector2.js').Vector2} start
  * @property {?Dragging} dragging
+ */
+
+/**
+ * @typedef {object} ConnectionPoint
+ * @property {HTMLDivElement} element
+ * @property {Vector2} offset
  */
 
 /**
@@ -188,6 +194,16 @@ export class Node {
    * @type {HTMLDivElement}
    */
   #outputConnections
+
+  /**
+   * @type {ConnectionPoint[]}
+   */
+  #inputs
+
+  /**
+   * @type {ConnectionPoint[]}
+   */
+  #outputs
 
   /**
    * @type {?MouseDown}
@@ -278,12 +294,42 @@ export class Node {
   }
 
   /**
+   * @param {HTMLElement} parent
+   * @return {Node} - this
+   */
+  addTo (parent) {
+    parent.append(this.#element)
+    this.#measureConnectionPoints()
+    return this
+  }
+
+  /**
    * @return {HTMLDivElement}
    */
   #createConnectionPoint () {
     const connection = document.createElement('div')
     connection.className = 'node-connection-point'
     return connection
+  }
+
+  /**
+   */
+  #measureConnectionPoints () {
+    const elemPos = Rectangle.clientBounds(this.#element).pos
+    this.#inputs = Array.from(
+      this.#inputConnections.children,
+      element => ({
+        element,
+        offset: Rectangle.clientBounds(element).centre.sub(elemPos)
+      })
+    )
+    this.#outputs = Array.from(
+      this.#outputConnections.children,
+      element => ({
+        element,
+        offset: Rectangle.clientBounds(element).centre.sub(elemPos)
+      })
+    )
   }
 
   /**
@@ -307,6 +353,8 @@ export class Node {
     while (this.#outputConnections.children.length > outputs) {
       this.#outputConnections.lastElementChild.remove()
     }
+
+    this.#measureConnectionPoints()
   }
 
   /**
@@ -433,7 +481,10 @@ export class Node {
     if (!clickTarget || clickTarget.classList.contains('node-param-value')) {
       return
     } else if (clickTarget.classList.contains('node-connection-point')) {
-      console.log(clickTarget)
+      const handle = this.#editor.startConnecting(e)
+      if (handle) {
+        clickTarget.classList.add('node-connection-point-connecting')
+      }
       return
     }
 
@@ -509,7 +560,7 @@ export class Node {
           this.pos.sub(containerRect.pos)
           this.updatePos()
           this.#mouseDown.dragging.stop()
-          this.#editor.container.append(this.element)
+          this.#editor.container.append(this.#element)
         }
       }
       this.#mouseDown = null
@@ -542,12 +593,5 @@ export class Node {
    */
   destroy () {
     this.#element.remove()
-  }
-
-  /**
-   * @type {HTMLDivElement}
-   */
-  get element () {
-    return this.#element
   }
 }
