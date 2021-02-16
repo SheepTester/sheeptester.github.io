@@ -99,7 +99,7 @@ document.body.appendChild(createElement('div', {
     inputWrapper('from-morse', 'From', text => inputs['to-morse'].value
       = text.replace(/(\S)\/(\S)/g, '$1 / $2').split(' ').map(c => {
         if (!c || c === '/') return ' ';
-        const pattern = c.replace(/[−‒–—―]/g, '-').replace(/[﹒．·⋅·]/g, '.').replace(/[^.-]/g, '');
+        const pattern = c.replace(/[−‒–—―]/g, '-').replace(/[﹒．·⋅·•]/g, '.').replace(/[^.-]/g, '');
         return Object.keys(morse).find(char => morse[char] === pattern) || '';
       }).join(''), '... --- ...'),
     inputWrapper('to-morse', 'To', text => inputs['from-morse'].value
