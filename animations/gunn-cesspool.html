@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Unofficial Gunn Discord cesspool animated logo</title>
+    <meta name="description" content="Uses CANVAS owo" />
+
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="/sheep3.css">
+    <script src="/sheep3.js" charset="utf-8"></script>
+
+    <style>
+      @import url('https://sheeptester.github.io/sheep-sim/src/css/common.css');
+      @import url('https://sheeptester.github.io/sheep-sim/src/css/canvas.css');
+
+      body {
+        justify-content: center;
+        align-items: center;
+        background-image: radial-gradient(circle at 50% 50%, #e2e2e2, #8e8e8e);
+      }
+
+      #canvas-wrapper {
+        width: 300px;
+        height: 300px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="canvas-wrapper"></div>
+    <script src="https://sheeptester.github.io/javascripts/easing.js" charset="utf-8"></script>
+    <script type="module">
+      import { WindowResizeListener } from 'https://sheeptester.github.io/sheep-sim/src/view/window-resize-listener.mjs'
+      import { Canvas } from 'https://sheeptester.github.io/sheep-sim/src/view/canvas.mjs'
+      import { Animator } from 'https://sheeptester.github.io/sheep-sim/src/view/animator.mjs'
+      const { easeInQuart, easeOutQuart, easeOutExpo } = Easing
+
+      function loadImage (url) {
+        return new Promise((resolve, reject) => {
+          const image = new Image()
+          image.addEventListener('load', () => resolve(image))
+          image.addEventListener('error', reject)
+          image.src = url
+        })
+      }
+
+      const canvas = new Canvas()
+        .setWrapper(document.getElementById('canvas-wrapper'))
+      const animator = new Animator()
+      const resizeListener = new WindowResizeListener({ resizers: [canvas] })
+
+      const durations = {
+        LOGO_HOLD: 3000,
+        LOGO_OUT: 500,
+        BACK_SLIDE_START: 50,
+        BACK_SLIDE: 250,
+        GUNN_IN: 500,
+        GUNN_HOLD: 2000,
+        LOGO_IN: 500,
+        CIRCLE_OFFSET: -150,
+        CHAR_SPACING: 50,
+        CHAR: 500
+      }
+      const timings = {
+        LOGO_HOLD: 0,
+        LOGO_OUT: durations.LOGO_HOLD,
+        BACK_SLIDE: durations.LOGO_HOLD + durations.LOGO_OUT
+          + durations.BACK_SLIDE_START,
+        BACK_SLIDE_END: durations.LOGO_HOLD + durations.LOGO_OUT
+          + durations.BACK_SLIDE_START + durations.BACK_SLIDE,
+        GUNN_IN: durations.LOGO_HOLD + durations.LOGO_OUT,
+        GUNN_HOLD: durations.LOGO_HOLD + durations.LOGO_OUT + durations.GUNN_IN,
+        LOGO_IN: durations.LOGO_HOLD + durations.LOGO_OUT + durations.GUNN_IN
+          + durations.GUNN_HOLD,
+        CIRCLE_START: durations.LOGO_HOLD + durations.LOGO_OUT + durations.GUNN_IN
+          + durations.GUNN_HOLD + durations.CIRCLE_OFFSET,
+        CIRCLE_END: durations.LOGO_HOLD + durations.LOGO_OUT + durations.GUNN_IN
+          + durations.GUNN_HOLD + durations.CIRCLE_OFFSET + durations.LOGO_IN,
+        DURATION: durations.LOGO_HOLD + durations.LOGO_OUT + durations.GUNN_IN
+          + durations.GUNN_HOLD + durations.LOGO_IN
+      }
+      const colours = {
+        BACK: '#ff3e3e',
+        BLACK: '#000000'
+      }
+      const LOGO_SCALE = 0.8
+      const GUNN = 'GUNN'
+      const CHAR_SPACING = 1 / 5
+      const CHAR_SIZE = 1 / 5
+
+      function between (value, a, b) {
+        return value >= a && value < b
+      }
+
+      async function main () {
+        const logo = await loadImage('./gunn.png')
+
+        const { context: c } = canvas
+
+        function draw (time) {
+          c.clearRect(0, 0, ...canvas.size)
+          // Background
+          if (between(time, timings.LOGO_HOLD, timings.BACK_SLIDE_END)) {
+            c.fillStyle = colours.BACK
+            c.fillRect(0, 0, ...canvas.size)
+          } else {
+            c.fillStyle = colours.BLACK
+            c.fillRect(0, 0, ...canvas.size)
+          }
+          // Black in animation
+          if (between(time, timings.BACK_SLIDE, timings.BACK_SLIDE_END)) {
+            const prog = (time - timings.BACK_SLIDE) / durations.BACK_SLIDE
+            c.fillStyle = colours.BLACK
+            c.fillRect((1 - easeOutQuart(prog)) * canvas.size.x, 0, ...canvas.size)
+          }
+          // Gunn text
+          if (time >= timings.GUNN_IN) {
+            const spacing = canvas.size.x * CHAR_SPACING
+            c.font = `700 ${canvas.size.y * CHAR_SIZE}px "Roboto", sans-serif`
+            c.textAlign = 'center'
+            c.textBaseline = 'middle'
+            c.fillStyle = 'white'
+            for (let i = 0; i < GUNN.length; i++) {
+              const char = GUNN[i]
+              const offsetX = i * spacing
+                - (GUNN.length - 1) * spacing / 2
+              const delay = i * durations.CHAR_SPACING
+              const charTime = time - timings.GUNN_IN - delay
+              if (charTime > 0) {
+                const animX = charTime < durations.CHAR
+                  ? (1 - easeOutQuart(charTime / durations.CHAR))
+                    * canvas.size.x
+                  : 0
+                c.fillText(char, ...canvas.size.clone().scale(1 / 2).add({
+                  x: offsetX + animX
+                }))
+              }
+            }
+          }
+          // Circle animation
+          if (time >= timings.CIRCLE_START) {
+            const maxRadius = canvas.size.length / 2
+            const radius = time < timings.CIRCLE_END
+              ? easeOutQuart((time - timings.CIRCLE_START) / durations.LOGO_IN)
+                * maxRadius
+              : maxRadius
+            const centre = canvas.size.clone().scale(1 / 2)
+            c.fillStyle = colours.BACK
+            c.beginPath()
+            c.moveTo(...centre.clone().add({ x: radius }))
+            c.arc(...centre, radius, 0, 2 * Math.PI)
+            c.fill()
+          }
+          // Logo
+          if (between(time, timings.LOGO_HOLD, timings.GUNN_IN) || time >= timings.LOGO_IN) {
+            const scale = time >= timings.LOGO_IN
+              ? easeOutExpo((time - timings.LOGO_IN) / durations.LOGO_IN)
+                * LOGO_SCALE
+              : LOGO_SCALE
+            const logoPos = canvas.size.clone()
+              .scale((1 - scale) / 2)
+            if (between(time, timings.LOGO_OUT, timings.GUNN_IN)) {
+              logoPos.add({
+                x: easeInQuart((time - timings.LOGO_OUT) / durations.LOGO_OUT)
+                  * -canvas.size.x
+              })
+            }
+            c.drawImage(logo, ...logoPos, ...canvas.size.clone().scale(scale))
+          }
+        }
+
+        function render () {
+          const now = Date.now()
+          const time = now % timings.DURATION
+          draw(time)
+        }
+        animator.renderers.push({ render })
+
+        await resizeListener
+          .listen()
+          .resizeNow()
+        animator.start()
+      }
+
+      main()
+
+      Object.assign(window, {
+        canvas,
+        LOGO_SCALE
+      })
+    </script>
+  </body>
+</html>
