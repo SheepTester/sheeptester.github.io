@@ -10,6 +10,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="/sheep3.css">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gif.js/0.2.0/gif.js" charset="utf-8"></script>
+    <script src="https://sheeptester.github.io/javascripts/easing.js" charset="utf-8"></script>
     <script src="/sheep3.js" charset="utf-8"></script>
 
     <style>
@@ -26,11 +29,17 @@
         width: 300px;
         height: 300px;
       }
+      #canvas-wrapper.server-icon {
+        width: 48px;
+        height: 48px;
+        overflow: hidden;
+        border-radius: 10px;
+      }
     </style>
   </head>
   <body>
     <div id="canvas-wrapper"></div>
-    <script src="https://sheeptester.github.io/javascripts/easing.js" charset="utf-8"></script>
+    <button id="download">Download</button>
     <script type="module">
       import { WindowResizeListener } from 'https://sheeptester.github.io/sheep-sim/src/view/window-resize-listener.mjs'
       import { Canvas } from 'https://sheeptester.github.io/sheep-sim/src/view/canvas.mjs'
@@ -46,6 +55,24 @@
         })
       }
 
+      function download (filename, content) {
+        const saveLink = document.createElement('a')
+        document.body.appendChild(saveLink)
+
+        // Use special ms version if available to get it working on Edge.
+        if (navigator.msSaveOrOpenBlob) {
+          navigator.msSaveOrOpenBlob(content, filename)
+          return
+        }
+
+        const url = window.URL.createObjectURL(content)
+        saveLink.href = url
+        saveLink.download = filename
+        saveLink.click()
+        window.URL.revokeObjectURL(url)
+        document.body.removeChild(saveLink)
+      }
+
       const canvas = new Canvas()
         .setWrapper(document.getElementById('canvas-wrapper'))
       const animator = new Animator()
@@ -59,8 +86,11 @@
         GUNN_IN: 500,
         GUNN_HOLD: 2000,
         LOGO_IN: 500,
-        CIRCLE_OFFSET: -150,
-        CHAR_SPACING: 50,
+        CIRCLE_OFFSET: -250,
+        CIRCLE_SPACING: 150,
+        CIRCLE: 750,
+        LAST_CIRCLE: 500,
+        CHAR_SPACING: 40,
         CHAR: 500
       }
       const timings = {
@@ -83,12 +113,17 @@
       }
       const colours = {
         BACK: '#ff3e3e',
+        RED_1: '#ff5454',
+        RED_2: '#d03c3c',
         BLACK: '#000000'
       }
+      const reds = [colours.RED_2, colours.RED_1, colours.BACK]
       const LOGO_SCALE = 0.8
       const GUNN = 'GUNN'
       const CHAR_SPACING = 1 / 5
       const CHAR_SIZE = 1 / 5
+      const CHAR_SKEW = 1
+      const FRAME_DELAY = 1000 / 30
 
       function between (value, a, b) {
         return value >= a && value < b
@@ -129,29 +164,44 @@
               const delay = i * durations.CHAR_SPACING
               const charTime = time - timings.GUNN_IN - delay
               if (charTime > 0) {
-                const animX = charTime < durations.CHAR
-                  ? (1 - easeOutQuart(charTime / durations.CHAR))
-                    * canvas.size.x
-                  : 0
-                c.fillText(char, ...canvas.size.clone().scale(1 / 2).add({
-                  x: offsetX + animX
+                c.save()
+                c.translate(...canvas.size.clone().scale(1 / 2).add({
+                  x: offsetX
                 }))
+                if (charTime < durations.CHAR) {
+                  const prog = easeOutQuart(charTime / durations.CHAR)
+                  c.translate((1 - prog) * canvas.size.x, 0)
+                  // 1  0.5 0
+                  // 0  1   0
+                  // dx 0   1
+                  c.transform(1, 0, (1 - prog) * -CHAR_SKEW, 1, 0, 0, 0, 0)
+                }
+                c.fillText(char, 0, 0)
+                c.restore()
               }
             }
           }
           // Circle animation
-          if (time >= timings.CIRCLE_START) {
-            const maxRadius = canvas.size.length / 2
-            const radius = time < timings.CIRCLE_END
-              ? easeOutQuart((time - timings.CIRCLE_START) / durations.LOGO_IN)
-                * maxRadius
-              : maxRadius
-            const centre = canvas.size.clone().scale(1 / 2)
-            c.fillStyle = colours.BACK
-            c.beginPath()
-            c.moveTo(...centre.clone().add({ x: radius }))
-            c.arc(...centre, radius, 0, 2 * Math.PI)
-            c.fill()
+          const maxRadius = canvas.size.length / 2
+          for (let i = 0; i < reds.length; i++) {
+            const red = reds[i]
+            const delay = i * durations.CIRCLE_SPACING
+            const redTime = time - timings.CIRCLE_START - delay
+            const duration = i === reds.length - 1
+              ? durations.LAST_CIRCLE
+              : durations.CIRCLE
+            if (redTime > 0) {
+              const radius = redTime < duration
+                ? easeOutQuart(redTime / duration)
+                  * maxRadius
+                : maxRadius
+              const centre = canvas.size.clone().scale(1 / 2)
+              c.fillStyle = red
+              c.beginPath()
+              c.moveTo(...centre.clone().add({ x: radius }))
+              c.arc(...centre, radius, 0, 2 * Math.PI)
+              c.fill()
+            }
           }
           // Logo
           if (between(time, timings.LOGO_HOLD, timings.GUNN_IN) || time >= timings.LOGO_IN) {
@@ -159,15 +209,20 @@
               ? easeOutExpo((time - timings.LOGO_IN) / durations.LOGO_IN)
                 * LOGO_SCALE
               : LOGO_SCALE
-            const logoPos = canvas.size.clone()
-              .scale((1 - scale) / 2)
+            const logoSize = canvas.size.clone().scale(scale)
+            c.save()
+            c.translate(...canvas.size.clone().scale(1 / 2))
             if (between(time, timings.LOGO_OUT, timings.GUNN_IN)) {
-              logoPos.add({
-                x: easeInQuart((time - timings.LOGO_OUT) / durations.LOGO_OUT)
-                  * -canvas.size.x
-              })
+              const prog = easeInQuart(
+                (time - timings.LOGO_OUT) / durations.LOGO_OUT
+              )
+              c.translate(-prog * canvas.size.x, 0)
+              c.rotate(-prog * Math.PI / 6)
+            } else if (time >= timings.LOGO_IN) {
+              c.rotate((1 - easeOutExpo((time - timings.LOGO_IN) / durations.LOGO_IN)) * Math.PI / 6)
             }
-            c.drawImage(logo, ...logoPos, ...canvas.size.clone().scale(scale))
+            c.drawImage(logo, ...logoSize.clone().scale(-1 / 2), ...logoSize)
+            c.restore()
           }
         }
 
@@ -182,13 +237,36 @@
           .listen()
           .resizeNow()
         animator.start()
+
+        const downloadBtn = document.getElementById('download')
+        downloadBtn.addEventListener('click', async e => {
+          animator.stop()
+          downloadBtn.disabled = true
+          const gif = new GIF({
+            workerScript: './gif-worker.js',
+            width: canvas.canvas.width,
+            height: canvas.canvas.height
+          })
+          gif.on('finished', blob => {
+            download('gunn-discord', blob)
+            animator.start()
+            downloadBtn.disabled = false
+          })
+          for (let i = timings.LOGO_OUT; i < timings.DURATION + timings.LOGO_OUT; i += FRAME_DELAY) {
+            draw(i % timings.DURATION)
+            gif.addFrame(canvas.context, { delay: FRAME_DELAY, copy: true })
+          }
+          gif.render()
+        })
       }
 
       main()
 
       Object.assign(window, {
         canvas,
-        LOGO_SCALE
+        animator,
+        LOGO_SCALE,
+        FRAME_DELAY
       })
     </script>
   </body>
