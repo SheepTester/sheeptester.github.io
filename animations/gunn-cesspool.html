@@ -44,7 +44,24 @@
       import { WindowResizeListener } from 'https://sheeptester.github.io/sheep-sim/src/view/window-resize-listener.mjs'
       import { Canvas } from 'https://sheeptester.github.io/sheep-sim/src/view/canvas.mjs'
       import { Animator } from 'https://sheeptester.github.io/sheep-sim/src/view/animator.mjs'
+      import { Vector2 } from 'https://sheeptester.github.io/sheep-sim/src/utils/vector2.mjs'
       const { easeInQuart, easeOutQuart, easeOutExpo } = Easing
+
+      class ImitationCanvas {
+        constructor ({
+          canvas = document.createElement('canvas'),
+          size = new Vector2()
+        } = {}) {
+          this.canvas = canvas
+          this.canvas.width = size.x
+          this.canvas.height = size.y
+          this.context = canvas.getContext('2d')
+          canvas.classList.add('canvas')
+
+          this.position = new Vector2()
+          this.size = size
+        }
+      }
 
       function loadImage (url) {
         return new Promise((resolve, reject) => {
@@ -79,12 +96,12 @@
       const resizeListener = new WindowResizeListener({ resizers: [canvas] })
 
       const durations = {
-        LOGO_HOLD: 3000,
+        LOGO_HOLD: 500,
         LOGO_OUT: 500,
         BACK_SLIDE_START: 50,
         BACK_SLIDE: 250,
         GUNN_IN: 500,
-        GUNN_HOLD: 2000,
+        GUNN_HOLD: 1000,
         LOGO_IN: 500,
         CIRCLE_OFFSET: -250,
         CIRCLE_SPACING: 150,
@@ -123,18 +140,22 @@
       const CHAR_SPACING = 1 / 5
       const CHAR_SIZE = 1 / 5
       const CHAR_SKEW = 1
-      const FRAME_DELAY = 1000 / 30
+      const FRAME_DELAY = 1000 / 60
+      const GIF_SIZE = 300
 
       function between (value, a, b) {
         return value >= a && value < b
       }
 
-      async function main () {
-        const logo = await loadImage('./gunn.png')
+      class Animation {
+        constructor (canvas, logo) {
+          this.canvas = canvas
+          this.logo = logo
+        }
 
-        const { context: c } = canvas
-
-        function draw (time) {
+        draw (time) {
+          const { canvas, logo } = this
+          const { context: c } = canvas
           c.clearRect(0, 0, ...canvas.size)
           // Background
           if (between(time, timings.LOGO_HOLD, timings.BACK_SLIDE_END)) {
@@ -225,11 +246,16 @@
             c.restore()
           }
         }
+      }
 
+      async function main () {
+        const logo = await loadImage('./gunn.png')
+
+        const animation = new Animation(canvas, logo)
         function render () {
           const now = Date.now()
           const time = now % timings.DURATION
-          draw(time)
+          animation.draw(time)
         }
         animator.renderers.push({ render })
 
@@ -242,10 +268,14 @@
         downloadBtn.addEventListener('click', async e => {
           animator.stop()
           downloadBtn.disabled = true
+          const dummyCanvas = new ImitationCanvas({
+            size: new Vector2(GIF_SIZE, GIF_SIZE)
+          })
+          const animation = new Animation(dummyCanvas, logo)
           const gif = new GIF({
             workerScript: './gif-worker.js',
-            width: canvas.canvas.width,
-            height: canvas.canvas.height
+            width: GIF_SIZE,
+            height: GIF_SIZE
           })
           gif.on('finished', blob => {
             download('gunn-discord', blob)
@@ -253,8 +283,8 @@
             downloadBtn.disabled = false
           })
           for (let i = timings.LOGO_OUT; i < timings.DURATION + timings.LOGO_OUT; i += FRAME_DELAY) {
-            draw(i % timings.DURATION)
-            gif.addFrame(canvas.context, { delay: FRAME_DELAY, copy: true })
+            animation.draw(i % timings.DURATION)
+            gif.addFrame(dummyCanvas.context, { delay: FRAME_DELAY, copy: true })
           }
           gif.render()
         })
