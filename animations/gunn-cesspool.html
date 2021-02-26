@@ -29,12 +29,15 @@
       #canvas-wrapper {
         width: 300px;
         height: 300px;
+        overflow: hidden;
       }
       #canvas-wrapper.server-icon {
         width: 48px;
         height: 48px;
-        overflow: hidden;
         border-radius: 10px;
+      }
+      #canvas-wrapper.circle {
+        border-radius: 50%;
       }
     </style>
   </head>
@@ -162,6 +165,7 @@
         LOGO_SCALE: 0.8,
         LOGO_X: -0.025,
         LOGO_Y: 0.025,
+        GUNN_Y: 0.52,
         CHAR_SPACING: 1 / 5,
         CHAR_SIZE: 1 / 5,
         CHAR_SKEW: 1
@@ -216,9 +220,7 @@
               const charTime = time - timings.GUNN_IN - delay
               if (charTime > 0) {
                 c.save()
-                c.translate(...canvas.size.clone().scale(1 / 2).add({
-                  x: offsetX
-                }))
+                c.translate(canvas.size.x / 2 + offsetX, canvas.size.y * sizes.GUNN_Y)
                 if (charTime < durations.CHAR) {
                   const prog = easeOutQuart(charTime / durations.CHAR)
                   c.translate((1 - prog) * canvas.size.x, 0)
@@ -283,7 +285,7 @@
         const logoImage = await loadImage('./gunn.png')
         let logo = recolour(logoImage, colours.LOGO, new Vector2(sizes.LOGO_X, sizes.LOGO_Y))
 
-        const options = { speed: 1 }
+        const options = { speed: 1, serverIcon: false, circle: false }
         const animation = new Animation(canvas, logo)
         function render () {
           const now = Date.now() * options.speed
@@ -325,6 +327,20 @@
         for (const key of Object.keys(gifOptions)) {
           gifOptionsFolder.add(gifOptions, key)
         }
+        gui.add(options, 'serverIcon').onChange(() => {
+          if (options.serverIcon) {
+            canvas.wrapper.classList.add('server-icon')
+          } else {
+            canvas.wrapper.classList.remove('server-icon')
+          }
+        })
+        gui.add(options, 'circle').onChange(() => {
+          if (options.circle) {
+            canvas.wrapper.classList.add('circle')
+          } else {
+            canvas.wrapper.classList.remove('circle')
+          }
+        })
 
         const downloadBtn = document.getElementById('download')
         downloadBtn.addEventListener('click', async e => {
