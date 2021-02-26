@@ -72,6 +72,27 @@
         })
       }
 
+      function recolour (image, colour) {
+        const canvas = document.createElement('canvas')
+        const c = canvas.getContext('2d')
+        canvas.width = image.width
+        canvas.height = image.height
+        c.fillStyle = colour
+        c.fillRect(0, 0, 1, 1)
+        const { data: [red, green, blue] } = c.getImageData(0, 0, 1, 1)
+        c.clearRect(0, 0, canvas.width, canvas.height)
+        c.drawImage(image, 0, 0)
+        const imageData = c.getImageData(0, 0, canvas.width, canvas.height)
+        for (let i = 0; i < imageData.data.length; i += 4) {
+          imageData.data[i] = red
+          imageData.data[i + 1] = green
+          imageData.data[i + 2] = blue
+        }
+        c.clearRect(0, 0, canvas.width, canvas.height)
+        c.putImageData(imageData, 0, 0)
+        return canvas
+      }
+
       function download (filename, content) {
         const saveLink = document.createElement('a')
         document.body.appendChild(saveLink)
@@ -129,10 +150,12 @@
           + durations.GUNN_HOLD + durations.LOGO_IN
       }
       const colours = {
-        BACK: '#ff3e3e',
-        RED_1: '#ff5454',
-        RED_2: '#d03c3c',
-        BLACK: '#000000'
+        BACK: '#111',
+        RED_1: '#222',
+        RED_2: '#000',
+        LOGO: '#A61616',
+        TEXT_BACK: '#A61616',
+        TEXT: '#fff'
       }
       const reds = [colours.RED_2, colours.RED_1, colours.BACK]
       const LOGO_SCALE = 0.8
@@ -162,13 +185,13 @@
             c.fillStyle = colours.BACK
             c.fillRect(0, 0, ...canvas.size)
           } else {
-            c.fillStyle = colours.BLACK
+            c.fillStyle = colours.TEXT_BACK
             c.fillRect(0, 0, ...canvas.size)
           }
           // Black in animation
           if (between(time, timings.BACK_SLIDE, timings.BACK_SLIDE_END)) {
             const prog = (time - timings.BACK_SLIDE) / durations.BACK_SLIDE
-            c.fillStyle = colours.BLACK
+            c.fillStyle = colours.TEXT_BACK
             c.fillRect((1 - easeOutQuart(prog)) * canvas.size.x, 0, ...canvas.size)
           }
           // Gunn text
@@ -177,7 +200,7 @@
             c.font = `700 ${canvas.size.y * CHAR_SIZE}px "Roboto", sans-serif`
             c.textAlign = 'center'
             c.textBaseline = 'middle'
-            c.fillStyle = 'white'
+            c.fillStyle = colours.TEXT
             for (let i = 0; i < GUNN.length; i++) {
               const char = GUNN[i]
               const offsetX = i * spacing
@@ -249,7 +272,7 @@
       }
 
       async function main () {
-        const logo = await loadImage('./gunn.png')
+        const logo = recolour(await loadImage('./gunn.png'), colours.LOGO)
 
         const animation = new Animation(canvas, logo)
         function render () {
