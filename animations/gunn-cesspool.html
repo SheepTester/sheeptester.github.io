@@ -165,8 +165,11 @@
         CHAR_SKEW: 1
       }
       const GUNN = 'GUNN'
-      const FRAME_DELAY = 1000 / 60
-      const GIF_SIZE = 300
+      const gifOptions = {
+        FPS: 60,
+        SIZE: 300,
+        MP4: false
+      }
 
       function between (value, a, b) {
         return value >= a && value < b
@@ -291,11 +294,11 @@
           .resizeNow()
         animator.start()
 
-        const gui = new dat.GUI({
-          name: 'Colours'
-        })
+        const gui = new dat.GUI()
+        const colourFolder = gui.addFolder('Colours')
+        colourFolder.open()
         for (const key of Object.keys(colours)) {
-          const controller = gui.addColor(colours, key)
+          const controller = colourFolder.addColor(colours, key)
           if (key === 'LOGO') {
             controller.onChange(() => {
               logo = recolour(logoImage, colours.LOGO)
@@ -303,33 +306,60 @@
             })
           }
         }
+        const sizesFolder = gui.addFolder('Spacing')
         for (const key of Object.keys(sizes)) {
-          gui.add(sizes, key, 0, 2)
+          sizesFolder.add(sizes, key, 0, 2)
+        }
+        const gifOptionsFolder = gui.addFolder('GIF options')
+        for (const key of Object.keys(gifOptions)) {
+          gifOptionsFolder.add(gifOptions, key)
         }
 
         const downloadBtn = document.getElementById('download')
         downloadBtn.addEventListener('click', async e => {
-          animator.stop()
           downloadBtn.disabled = true
           const dummyCanvas = new ImitationCanvas({
-            size: new Vector2(GIF_SIZE, GIF_SIZE)
+            size: new Vector2(gifOptions.SIZE, gifOptions.SIZE)
           })
           const animation = new Animation(dummyCanvas, logo)
-          const gif = new GIF({
-            workerScript: './gif-worker.js',
-            width: GIF_SIZE,
-            height: GIF_SIZE
-          })
-          gif.on('finished', blob => {
-            download('gunn-discord', blob)
-            animator.start()
+          const frameDelay = 1000 / gifOptions.FPS
+          if (gifOptions.MP4) {
+            await import('https://unpkg.com/@ffmpeg/ffmpeg@0.9.5/dist/ffmpeg.min.js')
+            const { createFFmpeg, fetchFile } = FFmpeg
+            const ffmpeg = createFFmpeg({ log: true })
+            await ffmpeg.load()
+            let frame = 0
+            for (let i = timings.LOGO_OUT; i < timings.DURATION + timings.LOGO_OUT; i += frameDelay) {
+              animation.draw(i % timings.DURATION)
+              const blob = await new Promise(resolve => {
+                dummyCanvas.canvas.toBlob(resolve, 'image/png')
+              })
+              ffmpeg.FS('writeFile', `frame${frame}.png`, await fetchFile(blob))
+              // console.log(`Rendering ${(i / timings.DURATION * 100).toFixed(3)}%`)
+              frame++
+            }
+            // https://hamelot.io/visualization/using-ffmpeg-to-convert-a-set-of-images-into-a-video/
+            await ffmpeg.run('-r', gifOptions.FPS + '', '-i', `frame%d.png`, 'output.mp4')
+            const data = ffmpeg.FS('readFile', 'output.mp4')
+            download('gunn-discord.mp4', new Blob([data.buffer], { type: 'video/mp4' }))
             downloadBtn.disabled = false
-          })
-          for (let i = timings.LOGO_OUT; i < timings.DURATION + timings.LOGO_OUT; i += FRAME_DELAY) {
-            animation.draw(i % timings.DURATION)
-            gif.addFrame(dummyCanvas.context, { delay: FRAME_DELAY, copy: true })
+          } else {
+            const gif = new GIF({
+              workerScript: './gif-worker.js',
+              width: gifOptions.SIZE,
+              height: gifOptions.SIZE
+            })
+            gif.on('finished', blob => {
+              download('gunn-discord.gif', blob)
+              animator.start()
+              downloadBtn.disabled = false
+            })
+            for (let i = timings.LOGO_OUT; i < timings.DURATION + timings.LOGO_OUT; i += frameDelay) {
+              animation.draw(i % timings.DURATION)
+              gif.addFrame(dummyCanvas.context, { delay: frameDelay, copy: true })
+            }
+            gif.render()
           }
-          gif.render()
         })
       }
 
@@ -337,8 +367,7 @@
 
       Object.assign(window, {
         canvas,
-        animator,
-        FRAME_DELAY
+        animator
       })
     </script>
   </body>
