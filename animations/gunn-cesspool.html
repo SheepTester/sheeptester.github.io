@@ -73,7 +73,7 @@
         })
       }
 
-      function recolour (image, colour) {
+      function recolour (image, colour, { x: dx, y: dy }) {
         const canvas = document.createElement('canvas')
         const c = canvas.getContext('2d')
         canvas.width = image.width
@@ -90,7 +90,7 @@
           imageData.data[i + 2] = blue
         }
         c.clearRect(0, 0, canvas.width, canvas.height)
-        c.putImageData(imageData, 0, 0)
+        c.putImageData(imageData, dx * canvas.width, dy * canvas.height)
         return canvas
       }
 
@@ -154,12 +154,14 @@
         BACK: '#000000',
         CIRCLE_1: '#181818',
         CIRCLE_2: '#000000',
-        LOGO: '#A61616',
+        LOGO: '#ff3e3e',
         TEXT_BACK: '#A61616',
         TEXT: '#ffffff'
       }
       const sizes = {
         LOGO_SCALE: 0.8,
+        LOGO_X: -0.025,
+        LOGO_Y: 0.025,
         CHAR_SPACING: 1 / 5,
         CHAR_SIZE: 1 / 5,
         CHAR_SKEW: 1
@@ -279,11 +281,12 @@
 
       async function main () {
         const logoImage = await loadImage('./gunn.png')
-        let logo = recolour(logoImage, colours.LOGO)
+        let logo = recolour(logoImage, colours.LOGO, new Vector2(sizes.LOGO_X, sizes.LOGO_Y))
 
+        const options = { speed: 1 }
         const animation = new Animation(canvas, logo)
         function render () {
-          const now = Date.now()
+          const now = Date.now() * options.speed
           const time = now % timings.DURATION
           animation.draw(time)
         }
@@ -295,20 +298,28 @@
         animator.start()
 
         const gui = new dat.GUI()
+        gui.add(options, 'speed', 0, 5)
         const colourFolder = gui.addFolder('Colours')
         colourFolder.open()
         for (const key of Object.keys(colours)) {
           const controller = colourFolder.addColor(colours, key)
           if (key === 'LOGO') {
             controller.onChange(() => {
-              logo = recolour(logoImage, colours.LOGO)
+              logo = recolour(logoImage, colours.LOGO, new Vector2(sizes.LOGO_X, sizes.LOGO_Y))
               animation.logo = logo
             })
           }
         }
         const sizesFolder = gui.addFolder('Spacing')
         for (const key of Object.keys(sizes)) {
-          sizesFolder.add(sizes, key, 0, 2)
+          const isLogoOffset = key === 'LOGO_X' || key === 'LOGO_Y'
+          const controller = sizesFolder.add(sizes, key, isLogoOffset ? -2 : 0, 2)
+          if (isLogoOffset) {
+            controller.onChange(() => {
+              logo = recolour(logoImage, colours.LOGO, new Vector2(sizes.LOGO_X, sizes.LOGO_Y))
+              animation.logo = logo
+            })
+          }
         }
         const gifOptionsFolder = gui.addFolder('GIF options')
         for (const key of Object.keys(gifOptions)) {
