@@ -12,6 +12,7 @@
     <link rel="stylesheet" type="text/css" href="/sheep3.css">
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gif.js/0.2.0/gif.js" charset="utf-8"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dat.gui@0.7.7/build/dat.gui.min.js" charset="utf-8"></script>
     <script src="https://sheeptester.github.io/javascripts/easing.js" charset="utf-8"></script>
     <script src="/sheep3.js" charset="utf-8"></script>
 
@@ -150,19 +151,20 @@
           + durations.GUNN_HOLD + durations.LOGO_IN
       }
       const colours = {
-        BACK: '#111',
-        RED_1: '#222',
-        RED_2: '#000',
+        BACK: '#000000',
+        CIRCLE_1: '#181818',
+        CIRCLE_2: '#000000',
         LOGO: '#A61616',
         TEXT_BACK: '#A61616',
-        TEXT: '#fff'
+        TEXT: '#ffffff'
       }
-      const reds = [colours.RED_2, colours.RED_1, colours.BACK]
-      const LOGO_SCALE = 0.8
+      const sizes = {
+        LOGO_SCALE: 0.8,
+        CHAR_SPACING: 1 / 5,
+        CHAR_SIZE: 1 / 5,
+        CHAR_SKEW: 1
+      }
       const GUNN = 'GUNN'
-      const CHAR_SPACING = 1 / 5
-      const CHAR_SIZE = 1 / 5
-      const CHAR_SKEW = 1
       const FRAME_DELAY = 1000 / 60
       const GIF_SIZE = 300
 
@@ -196,8 +198,8 @@
           }
           // Gunn text
           if (time >= timings.GUNN_IN) {
-            const spacing = canvas.size.x * CHAR_SPACING
-            c.font = `700 ${canvas.size.y * CHAR_SIZE}px "Roboto", sans-serif`
+            const spacing = canvas.size.x * sizes.CHAR_SPACING
+            c.font = `700 ${canvas.size.y * sizes.CHAR_SIZE}px "Roboto", sans-serif`
             c.textAlign = 'center'
             c.textBaseline = 'middle'
             c.fillStyle = colours.TEXT
@@ -218,7 +220,7 @@
                   // 1  0.5 0
                   // 0  1   0
                   // dx 0   1
-                  c.transform(1, 0, (1 - prog) * -CHAR_SKEW, 1, 0, 0, 0, 0)
+                  c.transform(1, 0, (1 - prog) * -sizes.CHAR_SKEW, 1, 0, 0, 0, 0)
                 }
                 c.fillText(char, 0, 0)
                 c.restore()
@@ -227,6 +229,7 @@
           }
           // Circle animation
           const maxRadius = canvas.size.length / 2
+          const reds = [colours.CIRCLE_2, colours.CIRCLE_1, colours.BACK]
           for (let i = 0; i < reds.length; i++) {
             const red = reds[i]
             const delay = i * durations.CIRCLE_SPACING
@@ -251,8 +254,8 @@
           if (between(time, timings.LOGO_HOLD, timings.GUNN_IN) || time >= timings.LOGO_IN) {
             const scale = time >= timings.LOGO_IN
               ? easeOutExpo((time - timings.LOGO_IN) / durations.LOGO_IN)
-                * LOGO_SCALE
-              : LOGO_SCALE
+                * sizes.LOGO_SCALE
+              : sizes.LOGO_SCALE
             const logoSize = canvas.size.clone().scale(scale)
             c.save()
             c.translate(...canvas.size.clone().scale(1 / 2))
@@ -272,7 +275,8 @@
       }
 
       async function main () {
-        const logo = recolour(await loadImage('./gunn.png'), colours.LOGO)
+        const logoImage = await loadImage('./gunn.png')
+        let logo = recolour(logoImage, colours.LOGO)
 
         const animation = new Animation(canvas, logo)
         function render () {
@@ -286,6 +290,22 @@
           .listen()
           .resizeNow()
         animator.start()
+
+        const gui = new dat.GUI({
+          name: 'Colours'
+        })
+        for (const key of Object.keys(colours)) {
+          const controller = gui.addColor(colours, key)
+          if (key === 'LOGO') {
+            controller.onChange(() => {
+              logo = recolour(logoImage, colours.LOGO)
+              animation.logo = logo
+            })
+          }
+        }
+        for (const key of Object.keys(sizes)) {
+          gui.add(sizes, key, 0, 2)
+        }
 
         const downloadBtn = document.getElementById('download')
         downloadBtn.addEventListener('click', async e => {
@@ -318,7 +338,6 @@
       Object.assign(window, {
         canvas,
         animator,
-        LOGO_SCALE,
         FRAME_DELAY
       })
     </script>
