@@ -21,6 +21,8 @@
 .content textarea {
   border: 1px solid rgba(0, 0, 0, 0.1);
   border-radius: 5px;
+  inline-size: 100%;
+  box-sizing: border-box;
 }
 .content input {
   padding-inline: 10px;
@@ -36,4 +38,11 @@
   background-color: #4FA1A7;
   color: white;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+  transition: box-shadow .2s;
+}
+.content .contact-submit:hover {
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
+}
+.content .contact-submit:active {
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
 }

@@ -1,0 +1,11 @@
+.project {
+  display: flex;
+  height: 480px;
+}
+.project-thumbnail {
+  background-image: linear-gradient(black, red);
+  flex: auto;
+}
+.project-desc {
+  color: rgba(0, 0, 0, 0.5);
+}

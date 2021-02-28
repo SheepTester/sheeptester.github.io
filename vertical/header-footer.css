@@ -10,10 +10,12 @@ body {
   background-color: #4FA1A7;
   color: white;
   padding: 10px;
+  flex-wrap: wrap;
 }
 .logo-wrapper {
   display: flex;
   align-items: center;
+  margin-inline-end: 50px;
 }
 .logo {
   height: 48px;
