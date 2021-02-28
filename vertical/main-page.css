@@ -1,0 +1,22 @@
+.content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-image: url('./sheep.jpg');
+  background-position: center;
+  background-size: cover;
+}
+
+.name {
+  font-weight: normal;
+  font-size: 3em;
+  margin: 0;
+}
+.name,
+.subtitle {
+  background-color: rgba(255, 255, 255, 0.8);
+  padding-block: 0.2em;
+  padding-inline: 0.4em;
+  border-radius: 0.2em;
+}

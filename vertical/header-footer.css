@@ -1,0 +1,48 @@
+body {
+  display: flex;
+  flex-direction: column;
+}
+
+.navbar {
+  display: flex;
+  align-items: center;
+  flex: none;
+  background-color: #4FA1A7;
+  color: white;
+  padding: 10px;
+}
+.logo-wrapper {
+  display: flex;
+  align-items: center;
+}
+.logo {
+  height: 48px;
+  fill: currentColor;
+  margin-inline-end: 10px;
+}
+.wordmark {
+  font-size: 1.5em;
+}
+.links a {
+  padding-block: 0.1em;
+  padding-inline: 0.2em;
+  border-radius: 0.1em;
+}
+.links a:hover {
+  background-color: white;
+  color: rgba(0, 0, 0, 0.8);
+}
+
+.content {
+  flex: auto;
+}
+
+.footer {
+  flex: none;
+  background-color: #212121;
+  color: white;
+  padding: 10px;
+}
+.copyright {
+  margin: 0;
+}
