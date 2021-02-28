@@ -1,0 +1,39 @@
+.content {
+  max-inline-size: 600px;
+  margin: auto;
+  padding: 20px;
+}
+.title {
+  font-size: 4em;
+  font-weight: lighter;
+  margin: 0;
+}
+
+.content label {
+  display: flex;
+  flex-direction: column;
+  margin-block: 20px;
+}
+.label {
+  display: block;
+}
+.content input,
+.content textarea {
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 5px;
+}
+.content input {
+  padding-inline: 10px;
+}
+.content textarea {
+  padding: 10px;
+}
+.content .contact-submit {
+  border: none;
+  border-radius: 50%;
+  block-size: 48px;
+  inline-size: 48px;
+  background-color: #4FA1A7;
+  color: white;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}

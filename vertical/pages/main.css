@@ -3,7 +3,7 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background-image: url('./sheep.jpg');
+  background-image: url('../sheep.jpg');
   background-position: center;
   background-size: cover;
 }
