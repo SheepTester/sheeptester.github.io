@@ -1,5 +1,6 @@
 .content {
   max-inline-size: 600px;
+  inline-size: 100%;
   margin: auto;
   padding: 20px;
 }
