@@ -28,7 +28,7 @@ body {
 .links a {
   padding-block: 0.1em;
   padding-inline: 0.2em;
-  border-radius: 0.2em;
+  border-radius: 5px;
 }
 .search-btn {
   block-size: 36px;

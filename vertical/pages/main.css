@@ -18,5 +18,22 @@
   background-color: rgba(255, 255, 255, 0.8);
   padding-block: 0.2em;
   padding-inline: 0.4em;
-  border-radius: 0.2em;
+  border-radius: 5px;
+}
+
+.socials {
+  display: flex;
+}
+.social {
+  color: rgba(255, 255, 255, 0.7);
+  padding: 8px;
+}
+.social:hover {
+  color: white;
+}
+.social svg {
+  width: 36px;
+}
+.social path {
+  fill: currentColor;
 }
