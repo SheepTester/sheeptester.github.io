@@ -10,6 +10,7 @@ const ghPagesRepos = [
   // 'chaotic-cube',
   'colour',
   'dating-sim',
+  'dulcinea',
   'evo',
   'eyo-dictionary',
   'flex10-protect',

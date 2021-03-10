@@ -21,6 +21,71 @@ const customPaths = [
   // Manually add paths to the sitemap
 ];
 
+function generateShowBtns() {
+  const options = [
+    {label: 'HTML', name: 'hidehtml', selector: '.html'},
+    {label: 'images', name: 'hideimg', selector: '.img'},
+    {label: 'everything else', name: 'hideother', selector: '.dir a:not(.html):not(.img)'}
+  ];
+  const optionNames = options.map(option => option.name);
+  const targets = [[]];
+  const links = {};
+  let styles = '';
+  for (const {name, selector} of options) {
+    targets.push(...targets.map(target => [...target, name]));
+    styles += `:target[id*="${name}"]~* ${selector}{display:none}`;
+    links[name] = new Set();
+  }
+  const showSelectors = new Set();
+  const hideSelectors = new Set();
+  for (const target of targets) {
+    const id = target.join('_');
+    for (const {name, label} of options) {
+      // This variable name is misleading; "checked" just means whether it's
+      // non-default state is activated, which in this case actually means being
+      // unchecked.
+      const checked = target.includes(name);
+      const newTarget = target.includes(name)
+        ? target
+          .filter(n => n !== name)
+          .join('_')
+        : optionNames
+          .filter(n => n === name || target.includes(n))
+          .join('_');
+      const className = `checkbox-${name}-${newTarget}${checked ? '' : '-checked'}`
+      links[name].add(
+        `<a href="#${
+          newTarget
+        }" class="checkbox checkbox-type-${
+          name
+        } ${className}${
+          checked ? '' : ' checked'
+        }" role=checkbox aria-checked=${!checked}>${
+          label
+        }</a>`
+      );
+      if (id !== '') {
+        showSelectors.add(`:target[id="${id}"]~.checkboxes .${className}`);
+      } else {
+        showSelectors.add(`.${className}`);
+        hideSelectors.add(`:target~.checkboxes .${className}`);
+      }
+    }
+  }
+  styles += `${Array.from(showSelectors).join(',')}{display:inline-flex}`;
+  styles += `${Array.from(hideSelectors).join(',')}{display:none}`;
+  return {
+    targets: targets
+      .filter(target => target.length)
+      .map(target => `<a class=target id="${target.join('_')}"></a>`)
+      .join(''),
+    links: Object.values(links)
+      .map(links => Array.from(links).join(''))
+      .join(''),
+    styles: `<style>${styles}</style>`
+  };
+}
+
 (async () => {
   console.log('Starting...');
   const paths = JSON.parse(await read('./all/more-everything.json')); // this file is big
@@ -55,8 +120,9 @@ const customPaths = [
   const htmlURLs = [];
   pathLines.forEach(line => {
     if (line[0] === '>') {
-      html += `<div class="dir"><div class="head" tabindex="0">${line.slice(1)}</div><div class="body">`;
       tempPath.push(line.slice(1));
+      const id = tempPath.join('/');
+      html += `<div class=dir><input type=checkbox id="${id}"><label class=head for="${id}">${line.slice(1)}</label><div class=body>`;
     } else if (line === '<') {
       html += `</div></div>`;
       tempPath.pop();
@@ -93,7 +159,17 @@ const customPaths = [
       html += `<a href="${url}"${type}>${line}</a>`;
     }
   });
-  await write('./all/index.html', template.replace(/{DATE}/g, new Date().toISOString().slice(0, 10)).replace('{FILES}', html));
+  const {targets, links, styles} = generateShowBtns();
+  await write(
+    './all/index.html',
+    template
+      .replace(/{DATE}/g, new Date().toISOString().slice(0, 10))
+      .replace('{ISO}', new Date().toISOString())
+      .replace('{STYLES}', styles)
+      .replace('{TARGETS}', targets)
+      .replace('{CHECKBOXES}', links)
+      .replace('{FILES}', html)
+  );
   await write('./all/sitemap.txt', htmlURLs.join('\n'));
   console.log('Done!');
 })();

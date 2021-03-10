@@ -4,7 +4,6 @@ body {
   color: #494949;
 }
 .dir a {
-  display: block;
   text-decoration: none;
   color: #084999;
 }
@@ -48,7 +47,17 @@ a.img::before {
   padding-left: 20px;
   border-left: 1px solid rgba(0,0,0,0.1);
 }
-.dir.collapsed > .body {
+/* https://www.a11yproject.com/posts/2013-01-11-how-to-hide-content/ */
+.dir input[type=checkbox] {
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  height: 1px;
+  overflow: hidden;
+  position: absolute;
+  white-space: nowrap;
+  width: 1px;
+}
+.dir input[type=checkbox]:checked ~ .body {
   display: none;
 }
 .head::before {
@@ -62,10 +71,11 @@ a.img::before {
   margin: 0 5px;
   margin-bottom: 2px;
 }
-.collapsed > .head::before {
+.dir input[type=checkbox]:checked ~ .head::before {
   transform: rotate(-90deg);
 }
 .head, .dir a {
+  display: block;
   cursor: pointer;
   border: 1px solid transparent;
   border-radius: 2px;
@@ -76,7 +86,7 @@ a.img::before {
   background-color: hsl(214, 91%, 97%);
   border-color: hsl(214, 91%, 85%);
 }
-.head:focus, .dir a:focus {
+.dir input[type=checkbox]:focus ~ .head, .dir a:focus {
   background-image: -webkit-linear-gradient(rgba(255, 255, 255, 0.8), rgba(255,255,255,0));
   background-color: hsl(214, 91%, 89%);
   border-color: rgb(125, 162, 206);
@@ -125,7 +135,7 @@ h1, .btn-wrapper, p {
   margin: 0 auto;
   font-weight: normal;
 }
-button, .button {
+button, .button, .checkbox {
   -webkit-appearance: none;
   background: none;
   border: 1px solid rgba(0,0,0,0.15);
@@ -153,29 +163,43 @@ button:focus, .button:focus {
   opacity: 0.5;
   pointer-events: none;
 }
-body.hidehtml .html {
-  display: none;
-}
-body.hideimg .img {
-  display: none;
-}
-body.hideother > .dir a:not(.html):not(.img) {
-  display: none;
-}
 body.hideuncached > .dir a:not(.cached) {
   display: none;
 }
-label {
+.target {
+  position: fixed;
+  top: 0;
+}
+.checkboxes {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.checkbox {
+  display: none;
+  background-color: transparent;
+  padding: 0;
+  padding-right: 10px;
+  height: 30px;
+  align-items: center;
+  overflow: hidden;
+}
+.checkbox::before {
+  content: '';
+  width: 30px;
   margin-right: 10px;
+  align-self: stretch;
+  background-color: rgba(0, 0, 0, 0.15);
 }
-input[type=checkbox] {
-  vertical-align: middle;
-  width: 16px;
-  height: 16px;
-  margin: 10px;
+.checked {
+  border-color: rgba(0, 0, 0, 0.5);
 }
-input[type=checkbox]:focus {
-  filter: drop-shadow(0 0 3px rgb(125, 162, 206));
+.checked::before {
+  background-color: rgba(0, 0, 0, 0.5);
+  background-image: url('../img/material_check.svg');
+  background-size: 18px;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 :focus {
   outline: none;
@@ -188,13 +212,16 @@ input[type=checkbox]:focus {
     padding: 0 2px;
     margin: 0;
   }
-  button, .button {
+  button, .button, .checkbox {
     padding: 0 3px;
     margin: 2px;
   }
-  input[type=checkbox] {
-    width: auto;
-    height: auto;
-    margin: 3px;
+  .checkbox {
+    padding-left: 0;
+    height: 20px;
+  }
+  .checkbox::before {
+    margin-right: 3px;
+    width: 20px;
   }
 }
