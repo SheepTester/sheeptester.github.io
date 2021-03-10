@@ -131,6 +131,9 @@ body > .dir {
   color: #bd5555;
 }
 h1, .btn-wrapper, p {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
   max-width: 500px;
   margin: 0 auto;
   font-weight: normal;
@@ -169,11 +172,6 @@ body.hideuncached > .dir a:not(.cached) {
 .target {
   position: fixed;
   top: 0;
-}
-.checkboxes {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
 }
 .checkbox {
   display: none;
