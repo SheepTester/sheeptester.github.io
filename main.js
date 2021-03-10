@@ -170,7 +170,7 @@ document.addEventListener('DOMContentLoaded', e => {
       // Not accessible since this is only needed for fancy input methods
       const openDirectly = document.createElement('div');
       openDirectly.classList.add('open-directly');
-      openDirectly.title = 'Open page';
+      openDirectly.textContent = 'Open';
       link.appendChild(openDirectly);
 
       const title = link.querySelector('.name').textContent;
