@@ -25,7 +25,7 @@ function generateShowBtns() {
   const options = [
     {label: 'HTML', name: 'hidehtml', selector: '.html'},
     {label: 'images', name: 'hideimg', selector: '.img'},
-    {label: 'everything else', name: 'hideother', selector: '.dir a:not(.html):not(.img)'}
+    {label: 'everything else', name: 'hideother', selector: '.other'}
   ];
   const optionNames = options.map(option => option.name);
   const targets = [[]];
@@ -129,7 +129,7 @@ function generateShowBtns() {
     } else {
       const extension = line.slice(line.lastIndexOf('.') + 1);
       const url = tempPath.join('/') + '/' + (line === 'index.html' || line === 'index.md' ? '' : line);
-      let type;
+      let type = 'other';
       switch (extension) {
         case 'html':
           type = 'html';
@@ -137,10 +137,10 @@ function generateShowBtns() {
           htmlURLs.push(BASE_URL + url);
           break;
         case 'css':
-          type = 'css';
+          type = 'other css';
           break;
         case 'js':
-          type = 'js';
+          type = 'other js';
           break;
         case 'svg':
         case 'png':
@@ -150,13 +150,12 @@ function generateShowBtns() {
           break;
         case 'md':
           if (line === 'index.md') {
-            type = 'index';
+            type = 'other index';
             htmlURLs.push(BASE_URL + url);
           }
           break;
       }
-      type = type ? ` class="${type}"` : '';
-      html += `<a href="${url}"${type}>${line}</a>`;
+      html += `<a href="${url}" class="${type}">${line}</a>`;
     }
   });
   const {targets, links, styles} = generateShowBtns();
