@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <title>Bitmap to vector</title>
-    <meta name="description" content="Convert PNG to SVG by adding it as an image" />
+    <meta name="description" content="Convert PNG to SVG by embedding it as an image" />
 
     <link rel="stylesheet" type="text/css" href="/sheep3.css">
     <script src="/sheep3.js" charset="utf-8"></script>
@@ -26,6 +26,7 @@
       img {
         display: block;
         max-width: 100%;
+        max-height: 80vh;
         border: 1px solid rgba(0, 0, 0, 0.05);
         border-radius: 2px;
       }
@@ -47,7 +48,8 @@
     </style>
   </head>
   <body>
-    <p><label>Image (ideally a PNG): <input type="file" id="image" accept="image/*" autofocus></label>(you can also paste in an image)</p>
+    <p>Convert a bitmap costume to a vector costume on Scratch without losing any quality.</p>
+    <p><label>Images: <input type="file" id="image" accept="image/*" multiple autofocus></label>(you can also paste in an image)</p>
     <p><label>Scale <input type="number" id="scale" value="1">x</label></p>
     <script>
       function svgify ({ url, width, height, scale = 1 }) {
@@ -116,6 +118,11 @@
         lastOutput = outputWrapper
         lastFile = file
       }
+      async function handleFiles(files) {
+        for (const file of files) {
+          await handleFile(file)
+        }
+      }
 
       function reportError (error) {
         const report = document.createElement('div')
@@ -131,10 +138,10 @@
 
       const imageFile = document.getElementById('image')
       imageFile.addEventListener('change', () => {
-        handleFile(imageFile.files[0]).catch(reportError)
+        handleFiles(imageFile.files).catch(reportError)
       })
       document.addEventListener('paste', e => {
-        handleFile(e.clipboardData.files[0]).catch(reportError)
+        handleFiles(e.clipboardData.files).catch(reportError)
       })
       const scaleInput = document.getElementById('scale')
       scaleInput.addEventListener('change', () => {
