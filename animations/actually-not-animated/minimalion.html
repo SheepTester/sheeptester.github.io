@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Minimalion</title>
+    <meta name="description" content="Based on &ldquo;DDR1 Entry&rdquo; by MinimaIon on Scratch" />
+
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&display=swap" rel="stylesheet">
+    <style>
+      html,
+      body {
+        height: 100%;
+      }
+      body {
+        display: grid;
+        margin: 0;
+        background-color: #ebebeb;
+        font-family: 'Montserrat', sans-serif;
+        grid-template-rows: 60px auto;
+        font-weight: 600;
+      }
+
+      header {
+        display: grid;
+        grid-auto-flow: column;
+        justify-content: center;
+        align-items: center;
+        gap: 32px;
+        background-color: white;
+        font-size: 16px;
+      }
+      .logo {
+        width: 32px;
+        margin: 15px;
+      }
+      header a {
+        text-decoration: none;
+        color: #b3b6b9;
+        text-transform: uppercase;
+        font-weight: 700;
+      }
+      header .current {
+        color: black;
+      }
+
+      main {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        grid-auto-rows: 200px;
+        gap: 20px;
+        padding: 20px;
+        max-width: 640px;
+        width: 100%;
+        box-sizing: border-box;
+        justify-self: center;
+        align-content: start;
+      }
+      section {
+        display: grid;
+        position: relative;
+        background-color: white;
+        font-size: 18px;
+      }
+      section a {
+        color: black;
+        text-decoration: none;
+        padding: 20px;
+        font-weight: 600;
+      }
+      section a span {
+        display: inline-block;
+        max-width: 140px;
+      }
+      .welcome {
+        grid-column: span 2 / auto;
+        align-content: center;
+        justify-content: center;
+        overflow: hidden;
+      }
+      .welcome-to,
+      .minimalion {
+        position: relative;
+        z-index: 1;
+      }
+      .welcome-to {
+        color: #4b4e52;
+        font-size: 28px;
+        transform: translate(64px, 22px);
+      }
+      .minimalion {
+        color: #ff3628;
+        font-size: 64px;
+        font-weight: 600;
+      }
+
+      .welcome-background {
+        position: absolute;
+        z-index: 0;
+        width: 280px;
+        right: 20px;
+        top: 30px;
+      }
+
+      .attribution {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        margin: 20px;
+        max-width: 400px;
+        font-size: 0.8em;
+      }
+      .attribution a {
+        color: #ff3628;
+        text-decoration: none;
+      }
+      .attribution a:hover {
+        text-decoration: underline;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <svg xmlns="http://www.w3.org/2000/svg" class="logo" viewBox="0 0 90 90" aria-label="Minimalion logo">
+        <path d="M43.8,87.1C70.6,71.6 87.1,43 87.1,12.1C60.3,-3.4 27.3,-3.4 0.5,12.1C0.5,43 17,71.6 43.8,87.1Z" fill="#ff3628"/>
+      </svg>
+      <a href="#" class="current">Home</a>
+      <a href="#">About</a>
+      <a href="#">Projects</a>
+      <a href="#">Contact</a>
+    </header>
+    <main>
+      <section class="welcome">
+        <svg xmlns="http://www.w3.org/2000/svg" class="welcome-background" viewBox="0 0 90 90">
+          <path d="M43.8,87.1C70.6,71.6 87.1,43 87.1,12.1C60.3,-3.4 27.3,-3.4 0.5,12.1C0.5,43 17,71.6 43.8,87.1Z" fill="#f6f6f6"/>
+        </svg>
+        <span class="welcome-to">Welcome to</span>
+        <strong class="minimalion">Mınımalıon</strong>
+      </section>
+      <section>
+        <a href="#"><span>Announcing Leo ID</span></a>
+      </section>
+      <section>
+        <a href="#"><span>Best Projects of 2016</span></a>
+      </section>
+    </main>
+    <p class="attribution">
+      Original design by
+      <a href="https://scratch.mit.edu/projects/137984424/">MinimaIion</a>
+      on Scratch. The design is licensed under the
+      <a href="https://creativecommons.org/licenses/by-sa/2.0/">Creative Commons Attribution-ShareAlike 2.0 license</a>.
+      Thus,
+      <a href="https://github.com/SheepTester/sheeptester.github.io/blob/master/animations/actually-not-animated/minimalion.html">this HTML file</a>
+      has the same license.
+    </p>
+  </body>
+</html>
+<!-- https://assets.scratch.mit.edu/275ba79d2477270f24535e9565ebcca2.svg -->
+<!-- https://scratch.mit.edu/projects/137984424/ -->
