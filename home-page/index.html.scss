@@ -46,6 +46,14 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
     link[href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@300&display=swap"][rel="stylesheet"];
 
     script[src="/sheep3.js"] {}
+
+    style {
+      content: """
+        img {
+          width: 32px;
+        }
+      """;
+    }
   }
 
   body {

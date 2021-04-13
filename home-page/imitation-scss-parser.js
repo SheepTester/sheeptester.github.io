@@ -82,16 +82,21 @@ function startSelector (context) {
   context.html = () => {
     const { tagName = 'div', classes = [], id, attributes = [] } = context
     if (classes.length) {
-      attributes.push(['class', `"${classes.join(' ')}"`])
+      attributes.push(['class', classes.join(' ')])
     }
     if (id) {
-      attributes.push(['id', `"${id}"`])
+      attributes.push(['id', id])
     }
-    return `<${tagName}${attributes.map(([name, value]) => value === undefined ? ' ' + name : ` ${name}=${value}`).join('')}>`
+    return `<${tagName}${attributes.map(([name, value]) => value === undefined ? ' ' + name : ` ${name}="${escapeHtml(value)}"`).join('')}>`
   }
 }
 
 const escapeMap = { '<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;' }
+function escapeHtml (str) {
+  return str.replace(/[<>&"]/g, m => escapeMap[m])
+}
+
+const substitutionPattern = /#\{(?:(\$[\w-]+)|map\s*\.\s*get\s*\(\s*(\$[\w-]+)\s*,\s*'((?:[^'\r\n\\]|\\.)*)'\s*\))\}/g
 
 function trimMultilineString (str) {
   const contents = str.slice(3, -3)
@@ -142,8 +147,26 @@ async function parseImitationScss (psuedoScss, filePath, { html = '', noisy = fa
       for (const token of loopTokens) {
         await analyseToken(token, vars)
       }
-      // TODO: Substitute things
       tempHtml += html
+        .replace(substitutionPattern, (_, varName, mapName, key) => {
+          if (mapName) {
+            if (vars[mapName] === undefined) {
+              throw new ReferenceError(`${mapName} not defined`)
+            }
+            if (vars[mapName] === null || typeof vars[mapName] !== 'object') {
+              throw new TypeError('Not object')
+            }
+            if (vars[mapName][key] === undefined) {
+              throw new ReferenceError(`${key} not not in map`)
+            }
+            return escapeHtml(vars[mapName][key])
+          } else {
+            if (vars[varName] === undefined) {
+              throw new ReferenceError(`${varName} not defined`)
+            }
+            return escapeHtml(vars[varName])
+          }
+        })
       contextStack.pop() // each-loop
     }
     html = tempHtml
@@ -261,10 +284,10 @@ async function parseImitationScss (psuedoScss, filePath, { html = '', noisy = fa
         const strValue = tokenType === 'multilineString'
           ? trimMultilineString(token)
           : JSON.parse(token)
-        const escaped = strValue.replace(/[<>&"]/g, m => escapeMap[m])
+        const escaped = escapeHtml(strValue)
         if (context.type === 'attribute') {
           if (context.step === 'value') {
-            context.value = escaped
+            context.value = strValue
             context.step = 'end'
           } else {
             throw new Error('String must be after equal sign')
@@ -445,7 +468,7 @@ async function parseImitationScss (psuedoScss, filePath, { html = '', noisy = fa
       case 'mapGet': {
         if (context.type === 'each') {
           if (context.step === 'expr') {
-            if (!variables[groups[1]]) {
+            if (variables[groups[1]] === undefined) {
               throw new ReferenceError(`${groups[1]} not defined`)
             }
             const array = variables[groups[1]][JSON.parse(`"${

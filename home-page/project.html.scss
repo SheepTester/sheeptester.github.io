@@ -5,12 +5,15 @@ a.project[href="#{map.get($project, 'path')}"] {
     content: "#{map.get($project, 'name')}";
   }
 
+  content: " ";
+
   span.description.visually-hidden {
     content: "#{map.get($project, 'description')}";
   }
 
   span.tags {
     @each $tag in map.get($project, 'tags') {
+      content: " ";
       span.tag.tag-#{$tag}[title="#{$tag}"] {
         .visually-hidden {
           content: "#{$tag}";
@@ -19,7 +22,5 @@ a.project[href="#{map.get($project, 'path')}"] {
     }
   }
 
-  span.open-directly {
-    content: "Open";
-  }
+  span.open-directly {}
 }
