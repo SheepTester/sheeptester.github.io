@@ -69,11 +69,11 @@ const tokenizers = {
     push: patternTokenizers
   },
   multilineString: /^"""([^"\\]|\\.)*(?:"{1,2}([^"\\]|\\.)+)*"""/,
-  mapGet: /^map\s*\.\s*get\s*\(\s*(\$[\w-]+)\s*,\s*'(?:[^'\r\n\\]|\\.)*'\s*\)/,
+  mapGet: /^map\s*\.\s*get\s*\(\s*(\$[\w-]+)\s*,\s*'((?:[^'\r\n\\]|\\.)*)'\s*\)/,
   string: /^"(?:[^"\r\n\\]|\\.)*"/,
-  idName: /^#[\w-]+/,
-  className: /^\.[\w-]+/,
-  tagName: /^[\w-]+/,
+  idName: /^#(?:[\w-]|#\{(?:\$[\w-]+|map\s*\.\s*get\s*\(\s*\$[\w-]+\s*,\s*'(?:[^'\r\n\\]|\\.)*'\s*\))\})+/,
+  className: /^\.(?:[\w-]|#\{(?:\$[\w-]+|map\s*\.\s*get\s*\(\s*\$[\w-]+\s*,\s*'(?:[^'\r\n\\]|\\.)*'\s*\))\})+/,
+  tagName: /^(?:[\w-]|#\{(?:\$[\w-]+|map\s*\.\s*get\s*\(\s*\$[\w-]+\s*,\s*'(?:[^'\r\n\\]|\\.)*'\s*\))\})+/,
   whitespace: /^\s+/
 }
 
@@ -106,6 +106,50 @@ function trimMultilineString (str) {
 async function parseImitationScss (psuedoScss, filePath, { html = '', noisy = false, variables = {} } = {}) {
   const tokens = tokenize(psuedoScss, tokenizers)
   const contextStack = [{}]
+  async function loopOverArray (context, array) {
+    const minLength = Math.min(...array.map(sublist => Array.isArray(sublist) ? sublist.length : 1))
+    if (context.variables.length > minLength) {
+      throw new RangeError(`Destructuring too many variables from a list of at minimum ${minLength} items`)
+    }
+    const loopTokens = []
+    let brackets = 0
+    while (true) {
+      const { value: nextToken, done } = tokens.next()
+      if (done) throw new Error('tokens should not be done; unbalanced curlies probably')
+      loopTokens.push(nextToken)
+      if (nextToken[0] === 'lcurly') {
+        brackets++
+      } else if (nextToken[0] === 'rcurly') {
+        brackets--
+        if (brackets <= 0) break
+      }
+    }
+    let tempHtml = html
+    for (const entry of array) {
+      contextStack.push({ type: 'each-loop' })
+      html = ''
+      const vars = { ...variables }
+      if (context.variables.length === 1) {
+        vars[context.variables[0]] = entry
+      } else {
+        if (!Array.isArray(entry)) {
+          throw new TypeError('Cannot destructure from non-array')
+        }
+        context.variables.forEach((varName, i) => {
+          vars[varName] = entry[i]
+        })
+      }
+      for (const token of loopTokens) {
+        await analyseToken(token, vars)
+      }
+      // TODO: Substitute things
+      tempHtml += html
+      contextStack.pop() // each-loop
+    }
+    html = tempHtml
+    contextStack.pop() // each
+    contextStack.push({})
+  }
   async function analyseToken ([tokenType, token, groups], variables) {
     let context = contextStack[contextStack.length - 1]
     if (noisy) console.log([tokenType, token], context)
@@ -260,7 +304,7 @@ async function parseImitationScss (psuedoScss, filePath, { html = '', noisy = fa
         if (context.type === 'selector') {
           html += context.html()
           contextStack.push({})
-        } else if (context.type === 'each') {
+        } else if (context.type === 'each-loop') {
           contextStack.push({})
         } else {
           throw new Error('Left curly should only be after selector')
@@ -276,8 +320,11 @@ async function parseImitationScss (psuedoScss, filePath, { html = '', noisy = fa
           html += `</${context.tagName || 'div'}>`
           contextStack.pop()
           contextStack.push({})
+        } else if (context.type === 'each-loop') {
+          contextStack.pop()
+          contextStack.push({})
         } else {
-          throw new Error('Right curly\'s matching left curly should only be after selector')
+          throw new Error('Right curly\'s matching left curly in wrong context')
         }
         break
       }
@@ -351,12 +398,15 @@ async function parseImitationScss (psuedoScss, filePath, { html = '', noisy = fa
       case 'in': {
         if (context.type === 'each') {
           if (context.step === 'variables') {
+            if (context.variables.length === 0) {
+              throw new Error('Need at least one variable before `in`')
+            }
             context.step = 'expr'
           } else {
             throw new Error('`in` must be after @each or variables')
           }
         } else {
-          throw new Error('in should only be in @each')
+          throw new Error('`in` should only be in @each')
         }
         break
       }
@@ -372,16 +422,7 @@ async function parseImitationScss (psuedoScss, filePath, { html = '', noisy = fa
             const array = Array.isArray(yaml)
               ? yaml
               : Object.entries(yaml)
-            const minLength = Math.min(...array.map(sublist => Array.isArray(sublist) ? sublist.length : 1))
-            if (context.variables > minLength) {
-              throw new RangeError(`Destructuring too many variables from a list of at minimum ${minLength} items`)
-            }
-            context.data = array
-            // Collect the HTML inside the block and then perform some
-            // substitutions later
-            context.tempHtml = html
-            html = ''
-            context.step = 'contents'
+            await loopOverArray(context, array)
           } else {
             throw new Error('Import function must only be used after in')
           }
@@ -404,23 +445,28 @@ async function parseImitationScss (psuedoScss, filePath, { html = '', noisy = fa
       case 'mapGet': {
         if (context.type === 'each') {
           if (context.step === 'expr') {
-            //
-            context.data = array
-            // Collect the HTML inside the block and then perform some
-            // substitutions later
-            context.tempHtml = html
-            html = ''
-            context.step = 'contents'
+            if (!variables[groups[1]]) {
+              throw new ReferenceError(`${groups[1]} not defined`)
+            }
+            const array = variables[groups[1]][JSON.parse(`"${
+              groups[2].replace(/"|\\'/g, m => m === '"' ? '\\"' : '\'')
+            }"`)]
+            if (!Array.isArray(array)) {
+              console.error(array)
+              throw new TypeError('Cannot loop over non-array')
+            }
+            await loopOverArray(context, array)
           } else {
             throw new Error('map.get function must only be used after in')
           }
         } else {
           throw new Error('map.get in wrong context')
         }
+        break
       }
 
       default: {
-        console.log(html)
+        console.error(html)
         throw new Error(`${tokenType} not implemented yet`)
       }
     }
@@ -439,7 +485,7 @@ fs.readFile(inputFile, 'utf8')
       outputFile,
       await parseImitationScss(psuedoScss, inputFile, {
         html: '<!DOCTYPE html>',
-        noisy: true
+        noisy: false
       }) + `\n<!-- Generated from ${inputFile} -->\n`
     )
   })
