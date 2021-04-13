@@ -102,9 +102,9 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
     }
 
     section.projects {
-      // @each $project in import("./projects.yml") {
-      //   @import "./project.html.scss";
-      // }
+      @each $project in import("./projects.yml") {
+        @import "./project.html.scss";
+      }
     }
   }
 }

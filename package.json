@@ -8,7 +8,8 @@
     "discord.js": "^12.3.1",
     "node-fetch": "^2.6.1",
     "pngquant-bin": "^5.0.2",
-    "xml2js": "^0.4.23"
+    "xml2js": "^0.4.23",
+    "yaml": "^1.10.2"
   },
   "name": "sheeptester.github.io",
   "description": "GitHub pages",

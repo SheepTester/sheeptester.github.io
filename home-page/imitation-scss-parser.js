@@ -1,53 +1,39 @@
 // node home-page/imitation-scss-parser.js home-page/index.html.scss index.html
 
 const fs = require('fs/promises')
+const nodePath = require('path')
+const YAML = require('yaml')
 
 function * tokenize (text, possibilities) {
-  possibilities = Object.entries(possibilities)
+  const tokenizers = [Object.entries(possibilities)]
   tokenization:
   while (text.length) {
-    for (const [type, possibility] of possibilities) {
-      let token
-      if (typeof possibility === 'string') {
-        if (text.startsWith(possibility)) {
-          token = possibility
-          text = text.slice(possibility.length)
+    for (const [type, rawPossibility] of tokenizers[tokenizers.length - 1]) {
+      const possibility = typeof rawPossibility === 'string' || rawPossibility instanceof RegExp
+        ? { pattern: rawPossibility }
+        : rawPossibility
+      let token, groups
+      if (typeof possibility.pattern === 'string') {
+        if (text.startsWith(possibility.pattern)) {
+          token = possibility.pattern
+          text = text.slice(possibility.pattern.length)
         }
       } else {
-        const match = text.match(possibility)
+        const match = text.match(possibility.pattern)
         if (match && match.index === 0) {
           token = match[0]
+          groups = match
           text = text.slice(match[0].length)
         }
       }
       if (token) {
-        if (type === 'BEGIN_RAW') {
-          let raw = ''
-          let brackets = 0
-          while (text.length) {
-            const match = text.match(/^[^()[\]{}]+/)
-            if (match) {
-              raw += match[0]
-              text = text.slice(match[0].length)
-            } else {
-              const bracket = text[0]
-              if ('[({'.includes(bracket)) {
-                brackets++
-                text = text.slice(1)
-              } else {
-                brackets--
-                text = text.slice(1)
-              }
-              if (brackets < 0) {
-                yield ['RAW', raw]
-              } else {
-                raw += bracket
-              }
-            }
-          }
-        } else {
-          yield [type, token]
+        if (possibility.pop) {
+          tokenizers.pop()
         }
+        if (possibility.push) {
+          tokenizers.push(Object.entries(possibility.push))
+        }
+        yield [type, token, groups]
         continue tokenization
       }
     }
@@ -56,8 +42,16 @@ function * tokenize (text, possibilities) {
   }
 }
 
+const patternTokenizers = {
+  in: {
+    pattern: 'in',
+    pop: true
+  },
+  variable: /^\$[\w-]+/,
+  separator: ',',
+  whitespace: /^\s+/
+}
 const tokenizers = {
-  BEGIN_RAW: /^css\s*\{/,
   comment: /^\/\/.*/,
   lparen: '(',
   rparen: ')',
@@ -68,8 +62,15 @@ const tokenizers = {
   equal: '=',
   semicolon: ';',
   colon: ':',
+  import: '@import',
+  importFunc: /^import\s*\(\s*("(?:[^"\r\n\\]|\\.)*")\s*\)/,
+  each: {
+    pattern: '@each',
+    push: patternTokenizers
+  },
   multilineString: /^"""([^"\\]|\\.)*(?:"{1,2}([^"\\]|\\.)+)*"""/,
-  string: /^"(?:[^"\r\n\\]|\\.)*"|'(?:[^'\r\n\\]|\\.)*'/,
+  mapGet: /^map\s*\.\s*get\s*\(\s*(\$[\w-]+)\s*,\s*'(?:[^'\r\n\\]|\\.)*'\s*\)/,
+  string: /^"(?:[^"\r\n\\]|\\.)*"/,
   idName: /^#[\w-]+/,
   className: /^\.[\w-]+/,
   tagName: /^[\w-]+/,
@@ -102,17 +103,16 @@ function trimMultilineString (str) {
   }}`, 'g'), ' ').trim()
 }
 
-function parseImitationScss (psuedoScss, { html = '', noisy = false } = {}) {
+async function parseImitationScss (psuedoScss, filePath, { html = '', noisy = false, variables = {} } = {}) {
   const tokens = tokenize(psuedoScss, tokenizers)
   const contextStack = [{}]
-  parser:
-  for (const [tokenType, token] of tokens) {
+  async function analyseToken ([tokenType, token, groups], variables) {
     let context = contextStack[contextStack.length - 1]
     if (noisy) console.log([tokenType, token], context)
 
     switch (tokenType) {
       case 'comment': {
-        continue parser
+        break
       }
 
       case 'tagName': {
@@ -232,6 +232,17 @@ function parseImitationScss (psuedoScss, { html = '', noisy = false } = {}) {
           } else {
             throw new Error('String must be after colon')
           }
+        } else if (context.type === 'import') {
+          if (context.step === 'path') {
+            const path = nodePath.join(nodePath.dirname(filePath), strValue)
+            html += await parseImitationScss(await fs.readFile(path, 'utf8'), path, {
+              noisy,
+              variables
+            })
+            context.step = 'end'
+          } else {
+            throw new Error('String must be after colon')
+          }
         } else {
           throw new Error('Invalid string context')
         }
@@ -241,8 +252,6 @@ function parseImitationScss (psuedoScss, { html = '', noisy = false } = {}) {
       case 'whitespace': {
         if (context.type === 'selector') {
           context.encounteredWhiteSpace = true
-        } else {
-          continue parser
         }
         break
       }
@@ -250,6 +259,8 @@ function parseImitationScss (psuedoScss, { html = '', noisy = false } = {}) {
       case 'lcurly': {
         if (context.type === 'selector') {
           html += context.html()
+          contextStack.push({})
+        } else if (context.type === 'each') {
           contextStack.push({})
         } else {
           throw new Error('Left curly should only be after selector')
@@ -283,6 +294,13 @@ function parseImitationScss (psuedoScss, { html = '', noisy = false } = {}) {
           } else {
             throw new Error('Colon must be after string')
           }
+        } else if (context.type === 'import') {
+          if (context.step === 'end') {
+            contextStack.pop()
+            contextStack.push({})
+          } else {
+            throw new Error('Colon must be after import path string')
+          }
         } else {
           throw new Error('Invalid semicolon context')
         }
@@ -302,11 +320,113 @@ function parseImitationScss (psuedoScss, { html = '', noisy = false } = {}) {
         break
       }
 
+      case 'each': {
+        if (!context.type) {
+          context.type = 'each'
+          context.variables = []
+          context.step = 'variables'
+        } else {
+          throw new Error('Each cannot be used inside a context')
+        }
+        break
+      }
+
+      case 'variable': {
+        if (context.type === 'each') {
+          if (context.step === 'variables') {
+            context.variables.push(token)
+          } else {
+            throw new Error('Variables must be after @each')
+          }
+        } else {
+          throw new Error('Each cannot be used inside a context')
+        }
+        break
+      }
+
+      case 'separator': {
+        break
+      }
+
+      case 'in': {
+        if (context.type === 'each') {
+          if (context.step === 'variables') {
+            context.step = 'expr'
+          } else {
+            throw new Error('`in` must be after @each or variables')
+          }
+        } else {
+          throw new Error('in should only be in @each')
+        }
+        break
+      }
+
+      case 'importFunc': {
+        if (context.type === 'each') {
+          if (context.step === 'expr') {
+            const path = nodePath.join(nodePath.dirname(filePath), JSON.parse(groups[1]))
+            const yaml = YAML.parse(await fs.readFile(path, 'utf8'))
+            if (yaml === null || typeof yaml !== 'object') {
+              throw new TypeError('Cannot loop over a non-array/object')
+            }
+            const array = Array.isArray(yaml)
+              ? yaml
+              : Object.entries(yaml)
+            const minLength = Math.min(...array.map(sublist => Array.isArray(sublist) ? sublist.length : 1))
+            if (context.variables > minLength) {
+              throw new RangeError(`Destructuring too many variables from a list of at minimum ${minLength} items`)
+            }
+            context.data = array
+            // Collect the HTML inside the block and then perform some
+            // substitutions later
+            context.tempHtml = html
+            html = ''
+            context.step = 'contents'
+          } else {
+            throw new Error('Import function must only be used after in')
+          }
+        } else {
+          throw new Error('Import function should only be in @each')
+        }
+        break
+      }
+
+      case 'import': {
+        if (!context.type) {
+          context.type = 'import'
+          context.step = 'path'
+        } else {
+          throw new Error('@import cannot be inside a context')
+        }
+        break
+      }
+
+      case 'mapGet': {
+        if (context.type === 'each') {
+          if (context.step === 'expr') {
+            //
+            context.data = array
+            // Collect the HTML inside the block and then perform some
+            // substitutions later
+            context.tempHtml = html
+            html = ''
+            context.step = 'contents'
+          } else {
+            throw new Error('map.get function must only be used after in')
+          }
+        } else {
+          throw new Error('map.get in wrong context')
+        }
+      }
+
       default: {
         console.log(html)
-        throw new Error(`Not done with ${tokenType} yet`)
+        throw new Error(`${tokenType} not implemented yet`)
       }
     }
+  }
+  for (const token of tokens) {
+    await analyseToken(token, variables)
   }
   if (noisy) console.log(contextStack)
   return html
@@ -314,10 +434,12 @@ function parseImitationScss (psuedoScss, { html = '', noisy = false } = {}) {
 
 const [, , inputFile, outputFile] = process.argv
 fs.readFile(inputFile, 'utf8')
-  .then(psuedoScss => fs.writeFile(
-    outputFile,
-    parseImitationScss(psuedoScss, {
-      html: '<!DOCTYPE html>',
-      noisy: true
-    }) + `\n<!-- Generated from ${inputFile} -->\n`
-  ))
+  .then(async psuedoScss => {
+    fs.writeFile(
+      outputFile,
+      await parseImitationScss(psuedoScss, inputFile, {
+        html: '<!DOCTYPE html>',
+        noisy: true
+      }) + `\n<!-- Generated from ${inputFile} -->\n`
+    )
+  })
