@@ -1,0 +1,25 @@
+a.project[href="#{map.get($project, 'path')}"] {
+  img.thumbnail[src="#{map.get($project, 'image')}"];
+
+  span.title {
+    content: "#{map.get($project, 'name')}";
+  }
+
+  span.description.visually-hidden {
+    content: "#{map.get($project, 'description')}";
+  }
+
+  span.tags {
+    @each $tag in map.get($project, 'tags') {
+      span.tag.tag-#{$tag}[title="#{$tag}"] {
+        .visually-hidden {
+          content: "#{$tag}";
+        }
+      }
+    }
+  }
+
+  span.open-directly {
+    content: "Open";
+  }
+}

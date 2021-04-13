@@ -42,24 +42,68 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
     link[rel="mask-icon"][href="/safari-pinned-tab.svg"][color="#4fa1a7"];
 
     link[rel="stylesheet"][type="text/css"][href="/sheep3.css"];
-    link[rel="stylesheet"][type="text/css"][href="/style.css"];
     link[rel="preconnect"][href="https://fonts.gstatic.com"];
     link[href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@300&display=swap"][rel="stylesheet"];
 
     script[src="/sheep3.js"] {}
-    script[src="/main.js"] {}
   }
 
   body {
     .strip {}
 
-    .about {
-      //
+    section.about {
+      .card {
+        h1 {
+          content: "Hello,";
+        }
+        p {
+          content: """
+            I’m Sean, a high school student graduating in 2021.
+          """;
+          // TODO: Age display
+        }
+      }
+
+      .card {
+        h2 {
+          content: "Phenomena that interest me";
+        }
+
+        .interests {
+          // TODO: Images
+          .interest {
+            img[src="/SHEPS.svg"];
+            p.sheep {
+              content: "Sheep";
+            }
+          }
+          .border {}
+          .interest {
+            img[src="/SHEPS.svg"];
+            p {
+              content: "Front-end web development";
+            }
+          }
+          .border {}
+          .interest {
+            img[src="/SHEPS.svg"];
+            p {
+              content: "Constructed languages";
+            }
+          }
+        }
+      }
+
+      .card {
+        h2 {
+          content: "How to stalk me";
+        }
+      }
     }
 
-    .projects {
-      // @each $project in "./projects.yml" {
-      //   @import "./";
+    section.projects {
+      // @each $project in import("./projects.yml") {
+      //   @import "./project.html.scss";
       // }
     }
   }

@@ -1,0 +1,587 @@
+- path: /all/
+  image: img/all2-smaller.png
+  name: Almost everything
+  description: >-
+    A sitemap of effectively all the files on this site.
+  tags:
+    - directory
+
+- path: /platformre/
+  image: img/plat.svg
+  name: Platformre
+  description: >-
+    A tile-based platformer with a random level generator.
+  tags:
+    - game
+    - recommend
+
+- path: /platformre/a/
+  image: img/aplat-smaller.png
+  name: A Platformer
+  description: >-
+    A series of platformer levels translated from my Scratch project.
+  tags:
+    - game
+    - recommend
+
+- path: /javascripts/audio-editor/
+  image: img/audio-editor-smaller.png
+  name: Audio Editor
+  description: >-
+    An audio editor based on stolen code from Scratch.
+  tags:
+    - recommend
+    - utility
+
+- path: /javascripts/shepform/colour.html
+  image: img/colourpick-smaller.png
+  name: Colour input II
+  description: >-
+    A colour input translated from a Scratch project.
+  tags:
+    - recommend
+    - utility
+
+- path: /platformre/maker/
+  image: img/platmakre-smaller.png
+  name: Level editor
+  description: >-
+    A level creator and editor for the Platformre.
+  tags:
+    - game
+    - utility
+
+- path: /platformre/nova/penland/
+  image: img/newpenland.png
+  name: Penland Nova
+  description: >-
+    A tile-based 2D world simulator.
+  tags:
+    - game
+    - incomplete
+    - unintuitive
+
+- path: /gamepro5/minigames/turkeys/
+  image: img/turkeys.png
+  name: Turkeys
+  description: >-
+    A turkey collection game.
+  tags:
+    - game
+    - incomplete
+
+- path: /telegraph/
+  image: img/tele-smaller.png
+  name: Telegraph
+  description: >-
+    A morse code game for a history project.
+  tags:
+    - game
+    - school
+
+- path: /javascripts/clicker
+  image: img/click-smaller.png
+  name: Clicker Game
+  description: >-
+    A basic clicker game.
+  tags:
+    - game
+
+- path: /gamepro5/minigames/dodgedots.html
+  image: img/reds-smaller.png
+  name: Dodge dots game thing
+  description: >-
+    A minimalist dodging game translated from a Scratch project.
+  tags:
+    - game
+
+- path: /gamepro5/minigames/color.html
+  image: img/color.png
+  name: Color fight thing
+  description: >-
+    A simple two-player game based on a Scratch project.
+  tags:
+    - game
+
+- path: https://orbiit.github.io/gunn-web-app/games/connect4.html
+  image: img/connect4-smaller.png
+  name: Connect 3
+  description: >-
+    A proof-of-concept connect 3 game.
+  tags:
+    - game
+
+- path: /gunn-student-sim/
+  image: img/gunn student simulator-smaller.png
+  name: Gunn student simulator
+  description: >-
+    A game satirizing the lives of students at my school.
+  tags:
+    - game
+    - school
+
+- path: /fun-gunn-run/
+  image: img/fgr-smaller.png
+  name: '"Fun" Gunn Run'
+  description: >-
+    A Temple Run clone set at my school.
+  tags:
+    - game
+    - school
+
+- path: /yesnt/
+  image: img/yesnt-smaller.png
+  name: YESNT
+  description: >-
+    An unintuitive and rather difficult escape game based on a true phenomenon
+    at my school.
+  tags:
+    - game
+    - school
+    - unintuitive
+
+- path: /unclear-target-w-very-confusing-critique/
+  image: img/pistole-smaller.png
+  name: Pistole offers a wide range of opportunities.
+  description: >-
+    My satire project for English class criticizing a specific institution at my
+    school.
+  tags:
+    - game
+    - school
+
+- path: /thingkingland/bookmarklets/theHouse.html
+  image: img/house-smaller.png
+  name: The House
+  description: >-
+    A choose-your-own adventure game.
+  tags:
+    - game
+
+- path: /thingkingland/the-hotel/
+  image: img/hotel-smaller.png
+  name: The Hotel
+  description: >-
+    The sequel to the House.
+  tags:
+    - game
+
+- path: /thingkingland/games/PFPFPF/
+  image: img/pfpfpf-smaller.png
+  name: PFPFPF
+  description: >-
+    A simple game where you move your cursor around to pop bubbles quickly.
+  tags:
+    - game
+
+- path: /thingkingland/games/Roshambo/roshambo.html
+  image: img/roshambo-smaller.png
+  name: Roshambo
+  description: >-
+    Fast-paced rock paper scissors.
+  tags:
+    - game
+
+- path: /javascripts/video/shit/
+  image: img/openshit-smaller.png
+  name: OpenShit
+  description: >-
+    A less simple video editor.
+  tags:
+    - utility
+    - unintuitive
+
+- path: /javascripts/video/
+  image: img/smothered-smaller.png
+  name: Smothered Rock
+  description: >-
+    A primitive video editor.
+  tags:
+    - utility
+
+- path: /words-go-here/misc/svgtopng.html
+  image: img/svgtopng-smaller.png
+  name: SVG to PNG
+  description: >-
+    An SVG to PNG converter with options to resize.
+  tags:
+    - utility
+
+- path: /javascripts/jpg-quality.html
+  image: img/jpg-quality.jpg
+  name: JPG Quality
+  description: >-
+    An image-to-JPG converter with an option to reduce the quality for maximum
+    artifacts.
+  tags:
+    - utility
+
+- path: /text-save/
+  image: img/text-save-smaller.png
+  name: text-save
+  description: >-
+    A primitive note-taking web app.
+  tags:
+    - utility
+
+- path: /javascripts/charcopy.html
+  image: img/charcopy-smaller.png
+  name: Character copy area
+  description: >-
+    Click to copy a special character or a string.
+  tags:
+    - utility
+
+- path: /javascripts/cryptography.html
+  image: img/crypto-smaller.png
+  name: Cryptography
+  description: >-
+    Encoders and decoders for common ciphers used on Scratch.
+  tags:
+    - utility
+
+- path: /htmlifier/
+  image: img/htmlifier-smaller.png
+  name: HTMLifier
+  description: >-
+    A Scratch project packager that spits out a fat HTML file.
+  tags:
+    - utility
+
+- path: /scratch-gui/
+  image: img/eyangicques-smaller.png
+  name: E羊icques
+  description: >-
+    A mod of Scratch 3.0 that adds small changes like custom aspect ratio
+    support and loading extensions from a URL.
+  tags:
+    - utility
+
+- path: /javascripts/carecalc.html
+  image: img/carecalc-smaller.png
+  name: Grade Care Calculator
+  description: >-
+    A minimum necessary grade calculator.
+  tags:
+    - utility
+    - school
+
+- path: /javascripts/cyrillic-finder.html
+  image: img/cyrillic-smaller.png
+  name: Special character finder
+  description: >-
+    A detector of non-US-keyboard characters.
+  tags:
+    - utility
+
+- path: /hello-world/weird-flex.html
+  image: img/weird-flex-but-ok-smaller.png
+  name: Weird flex but ok
+  description: >-
+    A generator replacing each word in the phrase with a synonym.
+  tags:
+    - utility
+
+- path: /hello-world/attitude.html
+  image: img/attitude-smaller.png
+  name: Attitude
+  description: >-
+    Calculates the sum of each letter's value in a word.
+  tags:
+    - utility
+
+- path: /trumpdays/
+  image: img/trumpdays-smaller.png
+  name: Trump days
+  description: >-
+    A countdown for Trump's first term.
+  tags:
+    - visual
+
+- path: /hello-world/drills.html
+  image: img/drills-smaller.png
+  name: Trig Drill Generator
+  description: >-
+    A generator of sine and cosine problems with basic angles.
+  tags:
+    - utility
+    - school
+
+- path: /roots/
+  image: img/roots-smaller.png
+  name: Roots and Affixes
+  description: >-
+    Some Greek and Latin roots.
+  tags:
+    - school
+    - incomplete
+
+- path: /happynumbers/
+  image: img/mems-smaller.png
+  name: Happy Number Finder
+  description: >-
+    A calculator for happy numbers.
+  tags:
+    - school
+
+- path: /happynumbers/sieve/
+  image: img/sieve-smaller.png
+  name: Sieve of Eranthoses
+  description: >-
+    A prime number and factor finder.
+  tags:
+    - utility
+    - school
+
+- path: /animations/
+  image: img/anima.png
+  name: Animations
+  description: >-
+    Some CSS-based animations.
+  tags:
+    - visual
+    - directory
+
+- path: /sentence/
+  image: img/sentence-smaller.png
+  name: Sentence Generator
+  description: >-
+    A primitive and gibberish sentence generator.
+  tags:
+    - visual
+
+- path: /longer-tweets/
+  image: img/longtweets-smaller.png
+  name: Longer Tweets
+  description: >-
+    A blog because every website owner has one.
+  tags:
+    - directory
+
+- path: /words-go-here/f-word/
+  image: img/fword-smaller.png
+  name: F Word
+  description: >-
+    A primitive social medium based on Firebase, of course.
+  tags:
+    - utility
+
+- path: ?penland
+  image: img/penland-smaller.png
+  name: Penland
+  description: >-
+    A 2D sandbox game translated from my Scratch project.
+  tags:
+    - game
+    - unintuitive
+
+- path: /platformre/nova/paint.html
+  image: img/mspaint-smaller.png
+  name: Platformer Paint
+  description: >-
+    Two-player Splatoon using the Platformre engine.
+  tags:
+    - game
+
+- path: https://orbiit.github.io/gunn-web-app/
+  image: img/ugwa-smaller.png
+  name: Unofficial Gunn Web App
+  description: >-
+    A web app that displays the schedule for my school.
+  tags:
+    - utility
+    - school
+
+- path: https://orbiit.github.io/ugwisha/
+  image: img/ugwisha-smaller.png
+  name: Ugwisha
+  description: >-
+    A (subjectively) better-designed version of UGWA.
+  tags:
+    - utility
+    - visual
+    - school
+
+- path: https://orbiit.github.io/elimination/
+  image: img/elimination-smaller.png
+  name: Elimination
+  description: >-
+    A website for playing Elimination at my school where people have to locate
+    their assigned target in real life to ask for their elimination sequence,
+    which can be entered into the site to mark them as eliminated. There is a
+    public leaderboard, and the last one standing wins.
+  tags:
+    - school
+
+- path: /olamreee/
+  image: img/olamreee-smaller.png
+  name: OlamREEE
+  description: >-
+    Digital cards for fictional elements for a school project.
+  tags:
+    - utility
+    - school
+
+- path: /themes/billy-goat/index-dark.html
+  image: img/billy-goat-smaller.png
+  name: Billy Goat Blog Theme
+  description: >-
+    A blog website design.
+  tags:
+    - visual
+
+- path: /contextmenutest.html
+  image: img/rightclick-smaller.png
+  name: Context Menu Test
+  description: >-
+    An infuriating custom context menu design.
+  tags:
+    - visual
+
+- path: /javascripts/imagetoscheme.html
+  image: img/scheme-smaller.png
+  name: Image to ASCII
+  description: >-
+    A converter based on the average lightness of pixels.
+  tags:
+    - utility
+
+- path: /toastia/editor/
+  image: img/tile-editor-smaller.png
+  name: Tile editor
+  description: >-
+    An editor for creating worlds for an abandoned game.
+  tags:
+    - utility
+    - incomplete
+
+- path: /javascripts/terminal/
+  image: img/terminal-smaller.png
+  name: Terminal
+  description: >-
+    A terminal design with primitive commands.
+  tags:
+    - visual
+
+- path: /words-go-here/misc/flappy-again.html
+  image: img/flappy-smaller.png
+  name: Flappy bird AI
+  description: >-
+    Simulates evolution of flappy birds by having only the fittest pass on their
+    genes.
+  tags:
+    - visual
+    - unintuitive
+
+- path: /words-go-here/misc/artificial-thonkulos/khwvahy/
+  image: img/khwvahy-smaller.png
+  name: κλωναλγ
+  description: >-
+    Simulates the evolution of cars traversing a maze. It's not very efficient
+    though.
+  tags:
+    - visual
+    - unintuitive
+
+- path: /javascripts/mutate.html
+  image: img/life.png
+  name: Cell Simulation
+  description: >-
+    A cellular automata attempting to simulate evolution.
+  tags:
+    - visual
+
+- path: /mars/
+  image: img/mars-smaller.png
+  name: Mars
+  description: >-
+    An attempt at an incremental game.
+  tags:
+    - game
+    - incomplete
+
+- path: /ovinetopia/
+  image: img/ovinetopia-smaller.png
+  name: Ovinetopia
+  description: >-
+    Another attempt at an incremental game.
+  tags:
+    - visual
+    - incomplete
+
+- path: /javascripts/
+  image: img/js-smaller.png
+  name: Javascripts
+  description: >-
+    Things I made.
+  tags:
+    - directory
+
+- path: /words-go-here/misc/
+  image: img/misc-smaller.png
+  name: Miscellaneous
+  description: >-
+    Things I made and didn't put in JavaScripts for some reason.
+  tags:
+    - directory
+
+- path: /thingkingland/sitemap.html
+  image: img/thingkingland-smaller.png
+  name: Thingkingland
+  description: >-
+    The pages I made while learning HTML/CSS/JS.
+  tags:
+    - directory
+
+- path: /javascripts/particles/
+  image: img/particles-smaller.png
+  name: Particles
+  description: >-
+    Some cool particle effects.
+  tags:
+    - visual
+    - directory
+
+- path: /gamepro5/minigames/
+  image: img/minigames-smaller.png
+  name: Minigames
+  description: >-
+    Simple but usually boring little game ideas.
+  tags:
+    - game
+    - directory
+
+- path: /hello-world/
+  image: img/helloworlddir-smaller.png
+  name: Chromebook creations
+  description: >-
+    HTML files I made on and uploaded from my Chromebook.
+  tags:
+    - directory
+
+- path: /hello-world/userscripts/
+  image: img/userscripts-smaller.png
+  name: Userscripts and userstyles
+  description: >-
+    A collection of helpful userscripts and userstyles I made.
+  tags:
+    - utility
+    - directory
+
+- path: /eyo-dictionary/
+  image: img/eyo-smaller.png
+  name: Eyo Dictionary
+  description: >-
+    A searchable list of words in my first constructed language.
+  tags:
+    - utility
+    - unintuitive
+
+- path: /eyo-dictionary/validator.html
+  image: img/die-smaller.png
+  name: Eyo Word Validator
+  description: >-
+    A validator for the minimalist alphabet in my first constructed language.
+  tags:
+    - utility
+    - unintuitive

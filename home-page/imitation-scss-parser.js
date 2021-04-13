@@ -68,6 +68,7 @@ const tokenizers = {
   equal: '=',
   semicolon: ';',
   colon: ':',
+  multilineString: /^"""([^"\\]|\\.)*(?:"{1,2}([^"\\]|\\.)+)*"""/,
   string: /^"(?:[^"\r\n\\]|\\.)*"|'(?:[^'\r\n\\]|\\.)*'/,
   idName: /^#[\w-]+/,
   className: /^\.[\w-]+/,
@@ -90,6 +91,16 @@ function startSelector (context) {
 }
 
 const escapeMap = { '<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;' }
+
+function trimMultilineString (str) {
+  const contents = str.slice(3, -3)
+  const firstIndentMatch = contents.match(/\n([ \t]*)/)
+  return contents.replace(new RegExp(String.raw`\s*\n[ \t]{0,${
+    firstIndentMatch
+      ? firstIndentMatch[1].length
+      : 0
+  }}`, 'g'), ' ').trim()
+}
 
 function parseImitationScss (psuedoScss, { html = '', noisy = false } = {}) {
   const tokens = tokenize(psuedoScss, tokenizers)
@@ -201,17 +212,22 @@ function parseImitationScss (psuedoScss, { html = '', noisy = false } = {}) {
         break
       }
 
+      case 'multilineString':
       case 'string': {
+        const strValue = tokenType === 'multilineString'
+          ? trimMultilineString(token)
+          : JSON.parse(token)
+        const escaped = strValue.replace(/[<>&"]/g, m => escapeMap[m])
         if (context.type === 'attribute') {
           if (context.step === 'value') {
-            context.value = token
+            context.value = escaped
             context.step = 'end'
           } else {
             throw new Error('String must be after equal sign')
           }
         } else if (context.type === 'content') {
           if (context.step === 'value') {
-            html += JSON.parse(token).replace(/[<>&"]/g, m => escapeMap[m])
+            html += escaped
             context.step = 'end'
           } else {
             throw new Error('String must be after colon')
