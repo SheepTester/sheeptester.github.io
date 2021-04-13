@@ -58,7 +58,9 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
     }
 
     .projects {
-      //
+      // @each $project in "./projects.yml" {
+      //   @import "./";
+      // }
     }
   }
 }
