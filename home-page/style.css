@@ -1,0 +1,2 @@
+html,body{height:100%;}body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif,'Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol';margin:0; display:flex; flex-direction:column;}@media (min-width:1000px){body{flex-direction:row;}}@media (min-width:1000px){.about{overflow:auto;}}img{width:32px;}.projects{flex:auto; display:grid; grid-template-columns:repeat(auto-fit,300px);}
+/* Generated from home-page/index.html.scss */

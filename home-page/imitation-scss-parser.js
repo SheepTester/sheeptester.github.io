@@ -1,4 +1,4 @@
-// node home-page/imitation-scss-parser.js home-page/index.html.scss index.html
+// node home-page/imitation-scss-parser.js home-page/index.html.scss index.html home-page/style.css
 
 const fs = require('fs/promises')
 const nodePath = require('path')
@@ -51,8 +51,23 @@ const patternTokenizers = {
   separator: ',',
   whitespace: /^\s+/
 }
-const tokenizers = {
+const cssRawTokenizers = {
   comment: /^\/\/.*/,
+  string: /^(?:"(?:[^"\r\n\\]|\\.)*"|'(?:[^'\r\n\\]|\\.)*')/,
+  lcurly: { pattern: /^\s*\{\s*/ },
+  rcurly: { pattern: /^\s*}\s*/, pop: true },
+  semicolon: /^\s*;\s*/,
+  colon: /^\s*:\s*/,
+  separator: /^\s*,\s*/,
+  whitespace: /^\s+/,
+  anythingElse: /^[^{}:,\s]+/
+}
+cssRawTokenizers.lcurly.push = cssRawTokenizers
+const tokenizers = {
+  multilineString: /^"""([^"\\]|\\.)*(?:"{1,2}([^"\\]|\\.)+)*"""/,
+  string: /^"(?:[^"\r\n\\]|\\.)*"/,
+  comment: /^\/\/.*/,
+  cssRawBegin: { pattern: /^css\s*\{/, push: cssRawTokenizers },
   lparen: '(',
   rparen: ')',
   lbracket: '[',
@@ -68,9 +83,7 @@ const tokenizers = {
     pattern: '@each',
     push: patternTokenizers
   },
-  multilineString: /^"""([^"\\]|\\.)*(?:"{1,2}([^"\\]|\\.)+)*"""/,
   mapGet: /^map\s*\.\s*get\s*\(\s*(\$[\w-]+)\s*,\s*'((?:[^'\r\n\\]|\\.)*)'\s*\)/,
-  string: /^"(?:[^"\r\n\\]|\\.)*"/,
   idName: /^#(?:[\w-]|#\{(?:\$[\w-]+|map\s*\.\s*get\s*\(\s*\$[\w-]+\s*,\s*'(?:[^'\r\n\\]|\\.)*'\s*\))\})+/,
   className: /^\.(?:[\w-]|#\{(?:\$[\w-]+|map\s*\.\s*get\s*\(\s*\$[\w-]+\s*,\s*'(?:[^'\r\n\\]|\\.)*'\s*\))\})+/,
   tagName: /^(?:[\w-]|#\{(?:\$[\w-]+|map\s*\.\s*get\s*\(\s*\$[\w-]+\s*,\s*'(?:[^'\r\n\\]|\\.)*'\s*\))\})+/,
@@ -108,7 +121,7 @@ function trimMultilineString (str) {
   }}`, 'g'), ' ').trim()
 }
 
-async function parseImitationScss (psuedoScss, filePath, { html = '', noisy = false, variables = {} } = {}) {
+async function parseImitationScss (psuedoScss, filePath, { html = '', css = '', noisy = false, variables = {} } = {}) {
   const tokens = tokenize(psuedoScss, tokenizers)
   const contextStack = [{}]
   async function loopOverArray (context, array) {
@@ -130,8 +143,10 @@ async function parseImitationScss (psuedoScss, filePath, { html = '', noisy = fa
       }
     }
     let tempHtml = html
+    let tempCss = css
     for (const entry of array) {
       contextStack.push({ type: 'each-loop' })
+      css = ''
       html = ''
       const vars = { ...variables }
       if (context.variables.length === 1) {
@@ -170,6 +185,7 @@ async function parseImitationScss (psuedoScss, filePath, { html = '', noisy = fa
       contextStack.pop() // each-loop
     }
     html = tempHtml
+    css = tempCss + css
     contextStack.pop() // each
     contextStack.push({})
   }
@@ -281,6 +297,10 @@ async function parseImitationScss (psuedoScss, filePath, { html = '', noisy = fa
 
       case 'multilineString':
       case 'string': {
+        if (context.type === 'css') {
+          context.css += token
+          break
+        }
         const strValue = tokenType === 'multilineString'
           ? trimMultilineString(token)
           : JSON.parse(token)
@@ -302,10 +322,12 @@ async function parseImitationScss (psuedoScss, filePath, { html = '', noisy = fa
         } else if (context.type === 'import') {
           if (context.step === 'path') {
             const path = nodePath.join(nodePath.dirname(filePath), strValue)
-            html += await parseImitationScss(await fs.readFile(path, 'utf8'), path, {
+            const imported = await parseImitationScss(await fs.readFile(path, 'utf8'), path, {
               noisy,
               variables
             })
+            html += imported.html
+            context.css += imported.css
             context.step = 'end'
           } else {
             throw new Error('String must be after colon')
@@ -319,6 +341,8 @@ async function parseImitationScss (psuedoScss, filePath, { html = '', noisy = fa
       case 'whitespace': {
         if (context.type === 'selector') {
           context.encounteredWhiteSpace = true
+        } else if (context.type === 'css') {
+          context.css += ' '
         }
         break
       }
@@ -329,13 +353,27 @@ async function parseImitationScss (psuedoScss, filePath, { html = '', noisy = fa
           contextStack.push({})
         } else if (context.type === 'each-loop') {
           contextStack.push({})
+        } else if (context.type === 'css') {
+          context.css += '{'
+          context.brackets++
         } else {
-          throw new Error('Left curly should only be after selector')
+          throw new Error('Left curly in ivnalid context')
         }
         break
       }
 
       case 'rcurly': {
+        if (context.type === 'css') {
+          context.brackets--
+          if (context.brackets <= 0) {
+            css += context.css.trim()
+            contextStack.pop()
+            contextStack.push({})
+          } else {
+            context.css += '}'
+          }
+          break
+        }
         contextStack.pop()
         context = contextStack[contextStack.length - 1]
         if (noisy) console.log('RCURLY', context)
@@ -371,6 +409,8 @@ async function parseImitationScss (psuedoScss, filePath, { html = '', noisy = fa
           } else {
             throw new Error('Colon must be after import path string')
           }
+        } else if (context.type === 'css') {
+          context.css += ';'
         } else {
           throw new Error('Invalid semicolon context')
         }
@@ -384,8 +424,10 @@ async function parseImitationScss (psuedoScss, filePath, { html = '', noisy = fa
           } else {
             throw new Error('Colon must be after `content`')
           }
+        } else if (context.type === 'css') {
+          context.css += ':'
         } else {
-          throw new Error('Colon should only be in content')
+          throw new Error('Colon in wrong context')
         }
         break
       }
@@ -415,6 +457,9 @@ async function parseImitationScss (psuedoScss, filePath, { html = '', noisy = fa
       }
 
       case 'separator': {
+        if (context.type === 'css') {
+          context.css += ','
+        }
         break
       }
 
@@ -488,6 +533,26 @@ async function parseImitationScss (psuedoScss, filePath, { html = '', noisy = fa
         break
       }
 
+      case 'cssRawBegin': {
+        if (!context.type) {
+          context.type = 'css'
+          context.brackets = 1
+          context.css = ''
+        } else {
+          throw new Error('css cannot be inside a context')
+        }
+        break
+      }
+
+      case 'anythingElse': {
+        if (context.type === 'css') {
+          context.css += token
+        } else {
+          throw new Error('anythingElse must be inside css')
+        }
+        break
+      }
+
       default: {
         console.error(html)
         throw new Error(`${tokenType} not implemented yet`)
@@ -498,17 +563,22 @@ async function parseImitationScss (psuedoScss, filePath, { html = '', noisy = fa
     await analyseToken(token, variables)
   }
   if (noisy) console.log(contextStack)
-  return html
+  return { html, css }
 }
 
-const [, , inputFile, outputFile] = process.argv
+const [, , inputFile, outputHtml, outputCss] = process.argv
 fs.readFile(inputFile, 'utf8')
   .then(async psuedoScss => {
-    fs.writeFile(
-      outputFile,
-      await parseImitationScss(psuedoScss, inputFile, {
-        html: '<!DOCTYPE html>',
-        noisy: false
-      }) + `\n<!-- Generated from ${inputFile} -->\n`
+    const { html, css } = await parseImitationScss(psuedoScss, inputFile, {
+      html: '<!DOCTYPE html>',
+      noisy: false
+    })
+    await fs.writeFile(
+      outputHtml,
+      html + `\n<!-- Generated from ${inputFile} -->\n`
+    )
+    await fs.writeFile(
+      outputCss,
+      css + `\n/* Generated from ${inputFile} */\n`
     )
   })

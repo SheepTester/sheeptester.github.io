@@ -42,24 +42,46 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
     link[rel="mask-icon"][href="/safari-pinned-tab.svg"][color="#4fa1a7"];
 
     link[rel="stylesheet"][type="text/css"][href="/sheep3.css"];
-    link[rel="preconnect"][href="https://fonts.gstatic.com"];
-    link[href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@300&display=swap"][rel="stylesheet"];
+    link[rel="stylesheet"][type="text/css"][href="/home-page/style.css"];
+    // link[rel="preconnect"][href="https://fonts.gstatic.com"];
+    // link[href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@300&display=swap"][rel="stylesheet"];
 
     script[src="/sheep3.js"] {}
-
-    style {
-      content: """
-        img {
-          width: 32px;
-        }
-      """;
-    }
   }
 
   body {
+    css {
+      html,
+      body {
+        height: 100%;
+      }
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+          'Helvetica Neue', Arial, sans-serif, 'Apple Color Emoji',
+          'Segoe UI Emoji', 'Segoe UI Symbol';
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+      }
+
+      @media (min-width: 1000px) {
+        body {
+          flex-direction: row;
+        }
+      }
+    }
+
     .strip {}
 
     section.about {
+      css {
+        @media (min-width: 1000px) {
+          .about {
+            overflow: auto;
+          }
+        }
+      }
+
       .card {
         h1 {
           content: "Hello,";
@@ -78,6 +100,12 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
         }
 
         .interests {
+          css {
+            img {
+              width: 32px;
+            }
+          }
+
           // TODO: Images
           .interest {
             img[src="/SHEPS.svg"];
@@ -110,6 +138,14 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
     }
 
     section.projects {
+      css {
+        .projects {
+          flex: auto;
+          display: grid;
+          grid-template-columns: repeat(auto-fit, 300px);
+        }
+      }
+
       @each $project in import("./projects.yml") {
         @import "./project.html.scss";
       }
