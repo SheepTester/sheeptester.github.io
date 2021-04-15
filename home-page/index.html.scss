@@ -63,22 +63,19 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
         display: flex;
         flex-direction: column;
       }
-
-      @media (min-width: 1000px) {
-        body {
-          flex-direction: row;
-        }
+    }
+    @media (min-width: 1000px) {
+      body {
+        flex-direction: row;
       }
     }
 
     .strip {}
 
     section.about {
-      css {
-        @media (min-width: 1000px) {
-          .about {
-            overflow: auto;
-          }
+      @media (min-width: 1000px) {
+        .about {
+          overflow: auto;
         }
       }
 
