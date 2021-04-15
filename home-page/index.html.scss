@@ -80,7 +80,7 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
   }
   @media (min-width: 1000px) {
     body {
-      display: unset;
+      display: block;
     }
   }
   body {
@@ -91,15 +91,24 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
         top: 0;
         left: 0;
         right: 0;
-        height: 20px;
-        background-image: linear-gradient(90deg, #20de88, #28bbe8);
+        height: 145px;
+        background-image: linear-gradient(180deg, transparent 86.21%, rgb(23,
+        25, 49, 0.75) 86.21%, rgb(23, 25, 49, 0.92), #171931),
+        linear-gradient(90deg, #20de88, #28bbe8);
+      }
+    }
+    @media (min-width: 1000px) {
+      .strip {
+        height: 60px;
+        background-image: linear-gradient(180deg, transparent 66.67%, rgb(23,
+        25, 49, 0.75) 66.67%, rgb(23, 25, 49, 0.92), #171931),
+        linear-gradient(90deg, #20de88, #28bbe8);
       }
     }
     .strip {}
 
     css {
       .about {
-        margin-top: 20px;
         max-width: 600px;
         width: 100%;
         align-self: center;
@@ -113,6 +122,13 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
         top: 0;
         left: 0;
         bottom: 0;
+
+        // https://stackoverflow.com/a/38994837
+        -ms-overflow-style: none;  // Internet Explorer 10+
+        scrollbar-width: none;  // Firefox
+      }
+      .about::-webkit-scrollbar {
+        display: none; // Safari and Chrome
       }
     }
     section.about {
@@ -121,7 +137,7 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
           border-radius: 10px;
           padding: 20px;
           margin: 20px;
-          background-color: #363742;
+          background-color: #24364a;
           box-shadow: 0 3px 10px rgba(0, 0, 0, 0.5);
         }
         .card h1,
@@ -129,6 +145,38 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
         .card p {
           margin: 0;
         }
+        .card h2 {
+          color: rgba(255, 255, 255, 0.9);
+          margin-bottom: 15px;
+          font-weight: normal;
+        }
+      }
+      @media (min-width: 1000px) {
+        .card {
+          margin-left: 40px;
+        }
+      }
+
+      css {
+        .a11y-link:focus {
+          position: fixed;
+          top: 0;
+          left: 0;
+          margin: 20px;
+          background: white;
+          color: #066460;
+          padding: 10px 20px;
+          box-shadow: 0 3px 10px rgba(0, 0, 0, 0.5);
+          border-radius: 5px;
+          overflow: visible;
+          width: auto;
+          height: auto;
+          clip: auto;
+          clip-path: none;
+        }
+      }
+      a.visually-hidden.a11y-link[href="#projects"] {
+        content: "Skip to my projects";
       }
 
       .card {
@@ -139,9 +187,10 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
             background-clip: text;
             color: transparent;
             background-image: linear-gradient(90deg, #20de88, #28bbe8);
+            font-size: 64px;
           }
         }
-        h1 {
+        h1#hello {
           content: "Hello,";
         }
         p {
@@ -153,7 +202,7 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
       }
 
       .card {
-        h2 {
+        h2#interests {
           content: "Phenomena that interest me";
         }
 
@@ -164,6 +213,12 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
             align-items: flex-start;
           }
         }
+        @media (max-width: 500px) {
+          .interests {
+            flex-direction: column;
+            align-items: center;
+          }
+        }
         .interests {
           css {
             .interest {
@@ -172,9 +227,11 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
               flex-direction: column;
               justify-content: center;
               align-items: center;
+              padding: 10px;
             }
             .border {
-              border-left: 1px solid rgba(255, 255, 255, 0.1);
+              border-left: 1px solid rgba(151, 189, 179, 0.2);
+              border-top: 1px solid rgba(151, 189, 179, 0.2);
               align-self: stretch;
             }
 
@@ -209,7 +266,7 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
       }
 
       .card {
-        h2 {
+        h2#stalk {
           content: "How to stalk me";
         }
 
@@ -224,6 +281,41 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
         .socials {
           @each $social in map.get($socials, 'profiles') {
             @import "./social.html.scss";
+          }
+        }
+
+        css {
+          .discord-link {
+            display: block;
+            text-decoration: none;
+            color: inherit;
+            margin: -20px;
+            margin-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 20px;
+          }
+          .discord-link:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+          }
+        }
+        a.discord-link[href="https://discord.gg/srtYgbVw4H"] {
+          css {
+            .discord-link-title {
+              display: block;
+              font-size: 1.2em;
+              color: rgba(255, 255, 255, 0.8);
+            }
+          }
+          span.discord-link-title {
+            content: "Contact me through Discord";
+          }
+          css {
+            .discord-link-subtitle {
+              font-size: 0.9em;
+            }
+          }
+          span.discord-link-subtitle {
+            content: "Join my server to DM me without sending a friend request.";
           }
         }
       }
@@ -248,6 +340,61 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
           margin: 20px;
         }
       }
+
+      css {
+        .projects-info {
+          padding: 0 20px;
+          max-width: 600px;
+          margin: 0 auto;
+          box-sizing: border-box;
+        }
+      }
+      @media (min-width: 1000px) {
+        .projects-info {
+          margin: 0;
+        }
+      }
+      .projects-info {
+        css {
+          .projects-header {
+            font-weight: lighter;
+            font-size: 56px;
+            margin: 0;
+            margin-top: 20px;
+            color: rgba(255, 255, 255, 0.9);
+          }
+        }
+        @media (min-width: 1000px) {
+          .projects-header {
+            margin-top: 60px;
+          }
+        }
+        h1.projects-header#projects {
+          content: "Projects";
+        }
+
+        css {
+          .projects-note a {
+            text-decoration: none;
+            color: #1ce0e0;
+          }
+          .projects-note a:hover {
+            text-decoration: underline;
+          }
+        }
+        p.projects-note {
+          content: "There’s some more on ";
+          a[href="https://scratch.mit.edu/users/Sheep_maker/"] {
+            content: "Scratch";
+          }
+          content: " and ";
+          a[href="https://github.com/SheepTester?tab=repositories"] {
+            content: "GitHub";
+          }
+          content: ".";
+        }
+      }
+
       .projects {
         @each $project in import("./projects.yml") {
           @import "./project.html.scss";

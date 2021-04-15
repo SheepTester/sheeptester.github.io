@@ -159,6 +159,28 @@ function addStyle (targetCss, style, key = 'main') {
   }
 }
 
+function substitute (html, vars) {
+  return html.replace(substitutionPattern, (_, varName, mapName, key) => {
+    if (mapName) {
+      if (vars[mapName] === undefined) {
+        throw new ReferenceError(`${mapName} not defined`)
+      }
+      if (vars[mapName] === null || typeof vars[mapName] !== 'object') {
+        throw new TypeError('Not object')
+      }
+      if (vars[mapName][key] === undefined) {
+        throw new ReferenceError(`${key} not not in map`)
+      }
+      return escapeHtml(vars[mapName][key] + '')
+    } else {
+      if (vars[varName] === undefined) {
+        throw new ReferenceError(`${varName} not defined`)
+      }
+      return escapeHtml(vars[varName])
+    }
+  })
+}
+
 async function parseImitationScss (psuedoScss, filePath, {
   html = '',
   css = new Map([['main', new Set()]]),
@@ -205,26 +227,7 @@ async function parseImitationScss (psuedoScss, filePath, {
       for (const token of loopTokens) {
         await analyseToken(token, vars)
       }
-      tempHtml += html
-        .replace(substitutionPattern, (_, varName, mapName, key) => {
-          if (mapName) {
-            if (vars[mapName] === undefined) {
-              throw new ReferenceError(`${mapName} not defined`)
-            }
-            if (vars[mapName] === null || typeof vars[mapName] !== 'object') {
-              throw new TypeError('Not object')
-            }
-            if (vars[mapName][key] === undefined) {
-              throw new ReferenceError(`${key} not not in map`)
-            }
-            return escapeHtml(vars[mapName][key])
-          } else {
-            if (vars[varName] === undefined) {
-              throw new ReferenceError(`${varName} not defined`)
-            }
-            return escapeHtml(vars[varName])
-          }
-        })
+      tempHtml += substitute(html, vars)
       assignToCss(tempCss, css)
       contextStack.pop() // each-loop
     }
@@ -391,7 +394,7 @@ async function parseImitationScss (psuedoScss, filePath, {
           }
         } else if (context.type === 'var') {
           if (context.step === 'value') {
-            variables[context.var] = strValue
+            variables[context.var] = substitute(strValue, variables)
             context.step = 'end'
           } else {
             throw new Error('Import function must only be used after colon')
@@ -671,6 +674,7 @@ async function parseImitationScss (psuedoScss, filePath, {
             if (variables[groups[1]] === undefined) {
               throw new ReferenceError(`${groups[1]} not defined`)
             }
+            context.value = variables[groups[1]][key]
             context.condition = Object.prototype.hasOwnProperty.call(variables[groups[1]], key)
             context.step = 'content'
           } else {

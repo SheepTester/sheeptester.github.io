@@ -50,6 +50,9 @@ profiles:
 
   - name: Replit
     link: https://replit.com/@Sheep_tester
+    bg: '#F4F4F5'
+    ball: '#4F5151'
+    border: '#697C84'
     type: replit
 
   - name: CodinGame
@@ -99,6 +102,7 @@ profiles:
 
   - name: Devpost
     link: https://devpost.com/SheepTester
+    bg: '#003E54'
     type: devpost
 
   - name: Imgur
@@ -128,7 +132,6 @@ profiles:
 
   - name: Codecademy
     link: https://www.codecademy.com/profiles/SeanICUP
-    ball: false
     border: '#1F4056'
 
 usernames:
@@ -146,7 +149,6 @@ usernames:
   - name: Gmail
     username: ussa.say
     bg: '#E4E4E4'
-    ball: false
     border: '#D14836'
 
   - name: Outlook
