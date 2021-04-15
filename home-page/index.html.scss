@@ -1,6 +1,19 @@
 // Imitation SCSS representing HTML
 // (This gives me full control over the whitespace)
 
+css {
+  // https://www.a11yproject.com/posts/2013-01-11-how-to-hide-content/
+  .visually-hidden {
+    clip: rect(0 0 0 0);
+    clip-path: inset(50%);
+    height: 1px;
+    overflow: hidden;
+    position: absolute;
+    white-space: nowrap;
+    width: 1px;
+  }
+}
+
 html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
   head {
     meta[charset="UTF-8"];
@@ -49,37 +62,85 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
     script[src="/sheep3.js"] {}
   }
 
+  css {
+    html,
+    body {
+      height: 100%;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+        'Helvetica Neue', Arial, sans-serif, 'Apple Color Emoji',
+        'Segoe UI Emoji', 'Segoe UI Symbol';
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      background-color: #171931;
+      color: rgba(255, 255, 255, 0.7);
+    }
+  }
+  @media (min-width: 1000px) {
+    body {
+      display: unset;
+    }
+  }
   body {
     css {
-      html,
-      body {
-        height: 100%;
+      .strip {
+        position: absolute;
+        z-index: -1;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 20px;
+        background-image: linear-gradient(90deg, #20de88, #28bbe8);
       }
-      body {
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
-          'Helvetica Neue', Arial, sans-serif, 'Apple Color Emoji',
-          'Segoe UI Emoji', 'Segoe UI Symbol';
-        margin: 0;
-        display: flex;
-        flex-direction: column;
+    }
+    .strip {}
+
+    css {
+      .about {
+        margin-top: 20px;
+        max-width: 600px;
+        width: 100%;
+        align-self: center;
       }
     }
     @media (min-width: 1000px) {
-      body {
-        flex-direction: row;
+      .about {
+        overflow: auto;
+        width: 500px;
+        position: fixed;
+        top: 0;
+        left: 0;
+        bottom: 0;
       }
     }
-
-    .strip {}
-
     section.about {
-      @media (min-width: 1000px) {
-        .about {
-          overflow: auto;
+      css {
+        .card {
+          border-radius: 10px;
+          padding: 20px;
+          margin: 20px;
+          background-color: #363742;
+          box-shadow: 0 3px 10px rgba(0, 0, 0, 0.5);
+        }
+        .card h1,
+        .card h2,
+        .card p {
+          margin: 0;
         }
       }
 
       .card {
+        css {
+          .card h1 {
+            display: inline-block;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            background-image: linear-gradient(90deg, #20de88, #28bbe8);
+          }
+        }
         h1 {
           content: "Hello,";
         }
@@ -96,9 +157,29 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
           content: "Phenomena that interest me";
         }
 
+        css {
+          .interests {
+            display: flex;
+            text-align: center;
+            align-items: flex-start;
+          }
+        }
         .interests {
           css {
-            img {
+            .interest {
+              flex: 1 0 0;
+              display: flex;
+              flex-direction: column;
+              justify-content: center;
+              align-items: center;
+            }
+            .border {
+              border-left: 1px solid rgba(255, 255, 255, 0.1);
+              align-self: stretch;
+            }
+
+            // TEMP
+            .interest img {
               width: 32px;
             }
           }
@@ -131,20 +212,46 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
         h2 {
           content: "How to stalk me";
         }
+
+        $socials: import("./socials.yml");
+        css {
+          .socials {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
+            gap: 10px;
+          }
+        }
+        .socials {
+          @each $social in map.get($socials, 'profiles') {
+            @import "./social.html.scss";
+          }
+        }
       }
     }
 
-    section.projects {
+    css {
+      .project-wrapper {
+        flex: auto;
+      }
+    }
+    @media (min-width: 1000px) {
+      .project-wrapper {
+        margin-left: 500px;
+      }
+    }
+    section.project-wrapper {
       css {
         .projects {
-          flex: auto;
           display: grid;
-          grid-template-columns: repeat(auto-fit, 300px);
+          grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+          gap: 20px;
+          margin: 20px;
         }
       }
-
-      @each $project in import("./projects.yml") {
-        @import "./project.html.scss";
+      .projects {
+        @each $project in import("./projects.yml") {
+          @import "./project.html.scss";
+        }
       }
     }
   }

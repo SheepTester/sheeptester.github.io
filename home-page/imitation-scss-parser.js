@@ -1,4 +1,5 @@
 // node home-page/imitation-scss-parser.js home-page/index.html.scss index.html home-page/style.css
+// nodemon --watch home-page --ext scss,yml,js home-page/imitation-scss-parser.js home-page/index.html.scss index.html home-page/style.css
 
 const fs = require('fs/promises')
 const nodePath = require('path')
@@ -92,10 +93,12 @@ const tokenizers = {
   media: { pattern: '@media', push: mediaQueryTokenizers },
   import: '@import',
   importFunc: /^import\s*\(\s*("(?:[^"\r\n\\]|\\.)*")\s*\)/,
+  if: '@if',
   each: {
     pattern: '@each',
     push: patternTokenizers
   },
+  variable: /^\$[\w-]+/,
   mapGet: /^map\s*\.\s*get\s*\(\s*(\$[\w-]+)\s*,\s*'((?:[^'\r\n\\]|\\.)*)'\s*\)/,
   idName: /^#(?:[\w-]|#\{(?:\$[\w-]+|map\s*\.\s*get\s*\(\s*\$[\w-]+\s*,\s*'(?:[^'\r\n\\]|\\.)*'\s*\))\})+/,
   className: /^\.(?:[\w-]|#\{(?:\$[\w-]+|map\s*\.\s*get\s*\(\s*\$[\w-]+\s*,\s*'(?:[^'\r\n\\]|\\.)*'\s*\))\})+/,
@@ -263,6 +266,16 @@ async function parseImitationScss (psuedoScss, filePath, {
             context.value = token
             context.step = 'end'
           }
+        } else if (context.type === 'if') {
+          if (context.step === 'condition') {
+            if (token === 'not') {
+              context.not = !context.not
+            } else {
+              throw new Error('must only use `not` after @if')
+            }
+          } else {
+            throw new Error('not must be after @if')
+          }
         } else {
           throw new Error('Invalid tag name context')
         }
@@ -376,6 +389,13 @@ async function parseImitationScss (psuedoScss, filePath, {
           } else {
             throw new Error('String must be after colon')
           }
+        } else if (context.type === 'var') {
+          if (context.step === 'value') {
+            variables[context.var] = strValue
+            context.step = 'end'
+          } else {
+            throw new Error('Import function must only be used after colon')
+          }
         } else {
           throw new Error('Invalid string context')
         }
@@ -384,6 +404,8 @@ async function parseImitationScss (psuedoScss, filePath, {
 
       case 'whitespace': {
         if (context.type === 'selector') {
+          // Intended to be syntactic sugar for nested elements, but currently
+          // unimplemented
           context.encounteredWhiteSpace = true
         } else if (context.type === 'css') {
           context.css += ' '
@@ -406,6 +428,33 @@ async function parseImitationScss (psuedoScss, filePath, {
           context.type = 'css'
           context.brackets = 1
           context.css = ''
+        } else if (context.type === 'if') {
+          if (context.step === 'content') {
+            if (context.not) {
+              context.condition = !context.condition
+            }
+            if (context.condition) {
+              context.step = 'end'
+              contextStack.push({})
+            } else {
+              // Skip over contents
+              let brackets = 1
+              while (true) {
+                const { value: nextToken, done } = tokens.next()
+                if (done) throw new Error('tokens should not be done; unbalanced curlies probably')
+                if (nextToken[0] === 'lcurly') {
+                  brackets++
+                } else if (nextToken[0] === 'rcurly') {
+                  brackets--
+                  if (brackets <= 0) break
+                }
+              }
+              contextStack.pop()
+              contextStack.push({})
+            }
+          } else {
+            throw new Error('Left curly must be after if condition')
+          }
         } else {
           throw new Error('Left curly in ivnalid context')
         }
@@ -434,6 +483,13 @@ async function parseImitationScss (psuedoScss, filePath, {
         } else if (context.type === 'each-loop') {
           contextStack.pop()
           contextStack.push({})
+        } else if (context.type === 'if') {
+          if (context.step === 'end') {
+            contextStack.pop()
+            contextStack.push({})
+          } else {
+            throw new Error('Right curly must be after left curly in @if')
+          }
         } else {
           throw new Error('Right curly\'s matching left curly in wrong context')
         }
@@ -450,14 +506,21 @@ async function parseImitationScss (psuedoScss, filePath, {
             contextStack.pop()
             contextStack.push({})
           } else {
-            throw new Error('Colon must be after string')
+            throw new Error('Semicolon must be after string')
+          }
+        } else if (context.type === 'var') {
+          if (context.step === 'end') {
+            contextStack.pop()
+            contextStack.push({})
+          } else {
+            throw new Error('Semicolon must be after import func')
           }
         } else if (context.type === 'import') {
           if (context.step === 'end') {
             contextStack.pop()
             contextStack.push({})
           } else {
-            throw new Error('Colon must be after import path string')
+            throw new Error('Semicolon must be after import path string')
           }
         } else if (context.type === 'css') {
           context.css += ';'
@@ -475,6 +538,12 @@ async function parseImitationScss (psuedoScss, filePath, {
             context.step = 'value'
           } else {
             throw new Error('Colon must be after `content`')
+          }
+        } else if (context.type === 'var') {
+          if (context.step === 'after-varname') {
+            context.step = 'value'
+          } else {
+            throw new Error('Colon must be after var name')
           }
         } else if (context.type === 'css') {
           context.css += ':'
@@ -498,14 +567,18 @@ async function parseImitationScss (psuedoScss, filePath, {
       }
 
       case 'variable': {
-        if (context.type === 'each') {
+        if (!context.type) {
+          context.type = 'var'
+          context.step = 'after-varname'
+          context.var = token
+        } else if (context.type === 'each') {
           if (context.step === 'variables') {
             context.variables.push(token)
           } else {
             throw new Error('Variables must be after @each')
           }
         } else {
-          throw new Error('Each cannot be used inside a context')
+          throw new Error('Variable invalid context')
         }
         break
       }
@@ -550,6 +623,15 @@ async function parseImitationScss (psuedoScss, filePath, {
           } else {
             throw new Error('Import function must only be used after in')
           }
+        } else if (context.type === 'var') {
+          if (context.step === 'value') {
+            const path = nodePath.join(nodePath.dirname(filePath), JSON.parse(groups[1]))
+            const yaml = YAML.parse(await fs.readFile(path, 'utf8'))
+            variables[context.var] = yaml
+            context.step = 'end'
+          } else {
+            throw new Error('Import function must only be used after colon')
+          }
         } else {
           throw new Error('Import function should only be in @each')
         }
@@ -567,14 +649,15 @@ async function parseImitationScss (psuedoScss, filePath, {
       }
 
       case 'mapGet': {
+        const key = JSON.parse(`"${
+          groups[2].replace(/"|\\'/g, m => m === '"' ? '\\"' : '\'')
+        }"`)
         if (context.type === 'each') {
           if (context.step === 'expr') {
             if (variables[groups[1]] === undefined) {
               throw new ReferenceError(`${groups[1]} not defined`)
             }
-            const array = variables[groups[1]][JSON.parse(`"${
-              groups[2].replace(/"|\\'/g, m => m === '"' ? '\\"' : '\'')
-            }"`)]
+            const array = variables[groups[1]][key]
             if (!Array.isArray(array)) {
               console.error(array)
               throw new TypeError('Cannot loop over non-array')
@@ -582,6 +665,16 @@ async function parseImitationScss (psuedoScss, filePath, {
             await loopOverArray(context, array)
           } else {
             throw new Error('map.get function must only be used after in')
+          }
+        } else if (context.type === 'if') {
+          if (context.step === 'condition') {
+            if (variables[groups[1]] === undefined) {
+              throw new ReferenceError(`${groups[1]} not defined`)
+            }
+            context.condition = Object.prototype.hasOwnProperty.call(variables[groups[1]], key)
+            context.step = 'content'
+          } else {
+            throw new Error('map.get must be after @if')
           }
         } else {
           throw new Error('map.get in wrong context')
@@ -639,6 +732,16 @@ async function parseImitationScss (psuedoScss, filePath, {
         break
       }
 
+      case 'if': {
+        if (!context.type) {
+          context.type = 'if'
+          context.step = 'condition'
+        } else {
+          throw new Error('@media cannot be inside a context')
+        }
+        break
+      }
+
       default: {
         console.error(html)
         throw new Error(`${tokenType} not implemented yet`)
@@ -674,4 +777,8 @@ fs.readFile(inputFile, 'utf8')
       ).join('')
         + `\n/* Generated from ${inputFile} */\n`
     )
+  })
+  .catch(err => {
+    console.error(err)
+    process.exit(1)
   })

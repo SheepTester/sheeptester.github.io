@@ -1,6 +1,32 @@
+css {
+  .project {
+    position: relative;
+    padding-bottom: 100%;
+    border-radius: 10px;
+    overflow: hidden;
+    color: inherit;
+  }
+}
 a.project[href="#{map.get($project, 'path')}"] {
+  css {
+    .thumbnail {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 0;
+    }
+  }
   img.thumbnail[src="#{map.get($project, 'image')}"];
 
+  css {
+    .title {
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 1;
+    }
+  }
   span.title {
     content: "#{map.get($project, 'name')}";
   }

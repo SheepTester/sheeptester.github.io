@@ -1,3 +1,30 @@
-a.social {
-  // TODO
+css {
+  .social {
+    position: relative;
+    padding-bottom: 100%;
+    background-color: white;
+    border-radius: 10px;
+  }
+}
+a.social[href="#{map.get($social, 'link')}"] {
+  span.visually-hidden {
+    content: "#{map.get($social, 'name')}";
+  }
+
+  css {
+    .ball {
+      position: absolute;
+      width: 40%;
+      height: 40%;
+      margin: 30%;
+      border-radius: 50%;
+      background-color: white;
+    }
+  }
+  @if map.get($social, 'bg') {
+    span.ball[style="background-color:#{map.get($social, 'bg')}"] {}
+  }
+  @if not map.get($social, 'bg') {
+    span.ball {}
+  }
 }
