@@ -1,0 +1,39 @@
+recommend:
+  name: Commendable
+  colour1: '#f0db20'
+  colour2: '#efb302'
+
+game:
+  name: Game
+  colour1: '#aaec12'
+  colour2: '#2ac213'
+
+utility:
+  name: Utility
+  colour1: '#24b1f8'
+  colour2: '#2966d7'
+
+visual:
+  name: Visually pleasing
+  colour1: '#dc14eb'
+  colour2: '#7c1cf1'
+
+directory:
+  name: Directory
+  colour1: '#97a6b4'
+  colour2: '#7b8098'
+
+school:
+  name: For school
+  colour1: '#e09304'
+  colour2: '#fe7716'
+
+incomplete:
+  name: Incomplete
+  colour1: '#de4b88'
+  colour2: '#d24343'
+
+unintuitive:
+  name: Unintuitive
+  colour1: '#a8713e'
+  colour2: '#78402d'

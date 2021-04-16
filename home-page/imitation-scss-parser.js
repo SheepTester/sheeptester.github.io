@@ -100,7 +100,7 @@ const tokenizers = {
     push: patternTokenizers
   },
   variable: /^\$[\w-]+/,
-  mapGet: /^map\s*\.\s*get\s*\(\s*(\$[\w-]+)\s*,\s*'((?:[^'\r\n\\]|\\.)*)'\s*\)/,
+  mapGet: /^map\s*\.\s*get\s*\(\s*(\$[\w-]+)\s*,\s*('(?:[^'\r\n\\]|\\.)*'|\$[\w-]+)\s*\)/,
   idName: /^#(?:[\w-]|#\{(?:\$[\w-]+|map\s*\.\s*get\s*\(\s*\$[\w-]+\s*,\s*'(?:[^'\r\n\\]|\\.)*'\s*\))\})+/,
   className: /^\.(?:[\w-]|#\{(?:\$[\w-]+|map\s*\.\s*get\s*\(\s*\$[\w-]+\s*,\s*'(?:[^'\r\n\\]|\\.)*'\s*\))\})+/,
   tagName: /^(?:[\w-]|#\{(?:\$[\w-]+|map\s*\.\s*get\s*\(\s*\$[\w-]+\s*,\s*'(?:[^'\r\n\\]|\\.)*'\s*\))\})+/,
@@ -133,7 +133,7 @@ function escapeHtml (str) {
   return str.replace(/[<>&"]/g, m => escapeMap[m])
 }
 
-const substitutionPattern = /#\{(?:(\$[\w-]+)|map\s*\.\s*get\s*\(\s*(\$[\w-]+)\s*,\s*'((?:[^'\r\n\\]|\\.)*)'\s*\))\}/g
+const substitutionPattern = /#\{(?:(\$[\w-]+)|map\s*\.\s*get\s*\(\s*(\$[\w-]+)\s*,\s*('(?:[^'\r\n\\]|\\.)*'|\$[\w-]+)\s*\))\}/g
 
 function trimMultilineString (str) {
   const contents = str.slice(3, -3)
@@ -167,24 +167,39 @@ function addStyle (targetCss, style, key = 'main') {
   }
 }
 
-function substitute (html, vars) {
-  return html.replace(substitutionPattern, (_, varName, mapName, key) => {
+function mapGet (vars, mapName, keyName, undefinedOk = false) {
+  if (vars[mapName] === undefined) {
+    throw new ReferenceError(`${mapName} not defined`)
+  }
+  if (vars[mapName] === null || typeof vars[mapName] !== 'object') {
+    throw new TypeError(`${mapName} not object`)
+  }
+  if (keyName[0] === '$' && vars[keyName] === undefined) {
+    throw new TypeError(`${keyName} not defined`)
+  }
+  if (keyName[0] === '$' && typeof vars[keyName] !== 'string') {
+    throw new TypeError(`${keyName} not string`)
+  }
+  const key = keyName[0] === '$'
+    ? vars[keyName]
+    : JSON.parse(`"${
+      keyName.slice(1, -1).replace(/"|\\'/g, m => m === '"' ? '\\"' : '\'')
+    }"`)
+  if (!undefinedOk && vars[mapName][key] === undefined) {
+    throw new ReferenceError(`${key} not not in map`)
+  }
+  return vars[mapName][key]
+}
+
+function substitute (html, vars, escape = escapeHtml) {
+  return html.replace(substitutionPattern, (_, varName, mapName, keyName) => {
     if (mapName) {
-      if (vars[mapName] === undefined) {
-        throw new ReferenceError(`${mapName} not defined`)
-      }
-      if (vars[mapName] === null || typeof vars[mapName] !== 'object') {
-        throw new TypeError('Not object')
-      }
-      if (vars[mapName][key] === undefined) {
-        throw new ReferenceError(`${key} not not in map`)
-      }
-      return escapeHtml(vars[mapName][key] + '')
+      return escape(mapGet(vars, mapName, keyName) + '')
     } else {
       if (vars[varName] === undefined) {
         throw new ReferenceError(`${varName} not defined`)
       }
-      return escapeHtml(vars[varName])
+      return escape(vars[varName])
     }
   })
 }
@@ -218,9 +233,16 @@ async function parseImitationScss (psuedoScss, filePath, {
       console.log(label, popped)
     }
   }
-  async function loopOverArray (context, array, variables) {
+  async function loopOverArray (context, data, variables) {
+    if (data === null || typeof data !== 'object') {
+      console.error(data)
+      throw new TypeError('Cannot loop over non-array')
+    }
+    const array = Array.isArray(data)
+      ? data
+      : Object.entries(data)
     const minLength = Math.min(...array.map(sublist => Array.isArray(sublist) ? sublist.length : 1))
-    if (context.variables.length > minLength) {
+    if (context.variables.length > minLength && minLength >= 2) {
       throw new RangeError(`Destructuring too many variables from a list of at minimum ${minLength} items`)
     }
     const loopTokens = []
@@ -238,6 +260,7 @@ async function parseImitationScss (psuedoScss, filePath, {
     }
     let tempHtml = html
     let tempCss = css
+    let index = 0
     for (const entry of array) {
       contextStack.push({ type: 'each-loop' })
       css = new Map()
@@ -246,12 +269,14 @@ async function parseImitationScss (psuedoScss, filePath, {
       if (context.variables.length === 1) {
         vars[context.variables[0]] = entry
       } else {
-        if (!Array.isArray(entry)) {
-          throw new TypeError('Cannot destructure from non-array')
+        if (Array.isArray(entry)) {
+          context.variables.forEach((varName, i) => {
+            vars[varName] = entry[i]
+          })
+        } else {
+          vars[context.variables[0]] = entry
+          vars[context.variables[1]] = index + 1
         }
-        context.variables.forEach((varName, i) => {
-          vars[varName] = entry[i]
-        })
       }
       // console.log('loopstart', vars);
       for (const token of loopTokens) {
@@ -266,6 +291,7 @@ async function parseImitationScss (psuedoScss, filePath, {
         console.log(contextHistory.join('\n'));
         throw new Error('Unbalanced popping; each-loop still exists')
       }
+      index++
     }
     html = tempHtml
     css = tempCss
@@ -529,7 +555,7 @@ async function parseImitationScss (psuedoScss, filePath, {
         if (context.type === 'css') {
           context.brackets--
           if (context.brackets <= 0) {
-            addStyle(css, context.css.trim(), context.media)
+            addStyle(css, substitute(context.css.trim(), variables, str => str), context.media)
             pop('css')
             contextStack.push({ _from: 'rcurly css' })
           } else {
@@ -639,6 +665,11 @@ async function parseImitationScss (psuedoScss, filePath, {
         } else if (context.type === 'each') {
           if (context.step === 'variables') {
             context.variables.push(token)
+          } else if (context.step === 'expr') {
+            if (variables[token] === undefined) {
+              throw new ReferenceError(`${token} not defined`)
+            }
+            await loopOverArray(context, variables[token], variables)
           } else {
             throw new Error('Variables must be after @each')
           }
@@ -696,10 +727,7 @@ async function parseImitationScss (psuedoScss, filePath, {
             if (yaml === null || typeof yaml !== 'object') {
               throw new TypeError('Cannot loop over a non-array/object')
             }
-            const array = Array.isArray(yaml)
-              ? yaml
-              : Object.entries(yaml)
-            await loopOverArray(context, array, variables)
+            await loopOverArray(context, yaml, variables)
           } else {
             throw new Error('Import function must only be used after in')
           }
@@ -729,34 +757,21 @@ async function parseImitationScss (psuedoScss, filePath, {
       }
 
       case 'mapGet': {
-        const key = JSON.parse(`"${
-          groups[2].replace(/"|\\'/g, m => m === '"' ? '\\"' : '\'')
-        }"`)
         if (context.type === 'each') {
           if (context.step === 'expr') {
-            if (variables[groups[1]] === undefined) {
-              throw new ReferenceError(`${groups[1]} not defined`)
-            }
-            const array = variables[groups[1]][key]
-            if (!Array.isArray(array)) {
-              console.error(array)
-              throw new TypeError('Cannot loop over non-array')
-            }
+            const array = mapGet(variables, groups[1], groups[2])
             await loopOverArray(context, array, variables)
           } else {
             throw new Error('map.get function must only be used after in')
           }
         } else if (context.type === 'if') {
           if (context.step === 'condition') {
-            // console.log('help', contextStack, variables);
-            if (variables[groups[1]] === undefined) {
-              throw new ReferenceError(`${groups[1]} not defined`)
-            }
             if (context.equal) {
-              context.condition = context.value === variables[groups[1]][key]
+              context.condition = mapGet(variables, groups[1], groups[2])
             } else {
-              context.value = variables[groups[1]][key]
-              context.condition = Object.prototype.hasOwnProperty.call(variables[groups[1]], key)
+              const value = mapGet(variables, groups[1], groups[2], true)
+              context.value = value
+              context.condition = value !== undefined
             }
             context.step = 'content'
           } else {
@@ -764,13 +779,7 @@ async function parseImitationScss (psuedoScss, filePath, {
           }
         } else if (context.type === 'var') {
           if (context.step === 'value') {
-            if (variables[groups[1]] === undefined) {
-              throw new ReferenceError(`${groups[1]} not defined`)
-            }
-            if (variables[groups[1]][key] === undefined) {
-              throw new ReferenceError(`${key} not in ${groups[1]}`)
-            }
-            variables[context.var] = variables[groups[1]][key]
+            variables[context.var] = mapGet(variables, groups[1], groups[2])
             context.step = 'end'
           } else {
             throw new Error('map.get must be after colon')

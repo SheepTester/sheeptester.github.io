@@ -76,15 +76,8 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
         'Helvetica Neue', Arial, sans-serif, 'Apple Color Emoji',
         'Segoe UI Emoji', 'Segoe UI Symbol';
       margin: 0;
-      display: flex;
-      flex-direction: column;
       background-color: #171931;
       color: rgba(255, 255, 255, 0.7);
-    }
-  }
-  @media (min-width: 1000px) {
-    body {
-      display: block;
     }
   }
   body {
@@ -115,7 +108,7 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
       .about {
         max-width: 600px;
         width: 100%;
-        align-self: center;
+        margin: 0 auto;
       }
     }
     @media (min-width: 1000px) {
@@ -412,6 +405,8 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
       }
     }
     section.project-wrapper {
+      $tags: import("./tags.yml");
+
       css {
         .projects-info {
           padding: 0 20px;
@@ -423,6 +418,7 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
       @media (min-width: 1000px) {
         .projects-info {
           margin: 0;
+          max-width: none;
         }
       }
       .projects-info {
@@ -467,6 +463,69 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
             content: "GitHub";
           }
           content: ".";
+        }
+
+        css {
+          .filter-by {
+            margin: 0;
+            font-weight: normal;
+            font-size: 0.9em;
+            text-transform: uppercase;
+            margin-top: 20px;
+            color: rgba(255, 255, 255, 0.5);
+          }
+        }
+        h2.filter-by#filter-by {
+          content: "Filter by";
+        }
+
+        @each $tag, $tag-data in $tags {
+          css {
+            .tag-#{$tag} {
+              background-color: #{map.get($tag-data, 'colour1')};
+              background-image: linear-gradient(150deg, #{map.get($tag-data, 'colour1')}, #{map.get($tag-data, 'colour2')});
+            }
+          }
+
+          input[type="checkbox"].visually-hidden.filter-checkbox#filter-by-#{$tag};
+
+          css {
+            .filter-tag {
+              display: inline-flex;
+              cursor: pointer;
+              background-color: #111213;
+              border-radius: 50px;
+              margin-top: 5px;
+              margin-right: 5px;
+              overflow: hidden;
+              height: 30px;
+            }
+            .filter-tag:hover {
+              background-color: #272c31;
+            }
+            .filter-checkbox:checked + .filter-tag {
+              background-color: white;
+              color: #111213;
+            }
+          }
+          label.filter-tag[for="filter-by-#{$tag}"] {
+            css {
+              .filter-tag-icon {
+                width: 30px;
+              }
+            }
+            span.filter-tag-icon.tag-#{$tag} {}
+
+            css {
+              .filter-tag-name {
+                margin: 0 10px;
+                align-self: center;
+              }
+            }
+            span.filter-tag-name {
+              content: "#{map.get($tag-data, 'name')}";
+            }
+          }
         }
       }
 
