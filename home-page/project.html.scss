@@ -5,6 +5,7 @@ css {
     border-radius: 10px;
     overflow: hidden;
     color: inherit;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.5);
   }
 }
 a.project[href="#{map.get($project, 'path')}"] {

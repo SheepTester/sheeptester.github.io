@@ -88,6 +88,7 @@ profiles:
 
   - name: Piskel
     link: https://www.piskelapp.com/user/5860704475676672
+    bg: '#00B600'
     type: piskel
 
   - name: Fandom
@@ -156,3 +157,7 @@ usernames:
     link: mailto:seanthesheep22+st@outlook.com
     bg: '#0072C6'
     ball: border
+
+discord:
+  name: Discord
+  bg: '#7289DA'

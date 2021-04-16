@@ -211,12 +211,14 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
             display: flex;
             text-align: center;
             align-items: flex-start;
+            margin: 0 -20px;
           }
         }
         @media (max-width: 500px) {
           .interests {
             flex-direction: column;
             align-items: center;
+            margin: 0;
           }
         }
         .interests {
@@ -271,27 +273,47 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
         }
 
         $socials: import("./socials.yml");
+
         css {
           .socials {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
-            gap: 10px;
+            gap: 20px;
           }
         }
         .socials {
+          $type: "a";
           @each $social in map.get($socials, 'profiles') {
             @import "./social.html.scss";
           }
         }
 
+        .usernames {
+          $type: "span";
+          @each $social in map.get($socials, 'usernames') {
+            @if map.get($social, 'link') {
+              a[href="#{map.get($social, 'link')}"] {
+                @import "./social.html.scss";
+                content: "#{map.get($social, 'username')}";
+              }
+            }
+            @if not map.get($social, 'link') {
+              span {
+                @import "./social.html.scss";
+                content: "#{map.get($social, 'username')}";
+              }
+            }
+          }
+        }
+
         css {
           .discord-link {
-            display: block;
+            display: flex;
             text-decoration: none;
             color: inherit;
             margin: -20px;
             margin-top: 20px;
-            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            border-top: 1px solid rgba(151, 189, 179, 0.2);
             padding: 20px;
           }
           .discord-link:hover {
@@ -300,22 +322,48 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
         }
         a.discord-link[href="https://discord.gg/srtYgbVw4H"] {
           css {
-            .discord-link-title {
-              display: block;
-              font-size: 1.2em;
-              color: rgba(255, 255, 255, 0.8);
+            .discord-text {
+              flex: auto;
             }
           }
-          span.discord-link-title {
-            content: "Contact me through Discord";
+          span.discord-text {
+            css {
+              .discord-link-title {
+                display: block;
+                font-size: 1.2em;
+                color: rgba(255, 255, 255, 0.8);
+              }
+            }
+            span.discord-link-title {
+              content: "Contact me through Discord";
+            }
+            css {
+              .discord-link-subtitle {
+                font-size: 0.9em;
+              }
+            }
+            span.discord-link-subtitle {
+              content: "Join my server to DM me without sending a friend request.";
+            }
           }
+
           css {
-            .discord-link-subtitle {
-              font-size: 0.9em;
+            .discord-icon-wrappper {
+              flex: none;
             }
           }
-          span.discord-link-subtitle {
-            content: "Join my server to DM me without sending a friend request.";
+          span.discord-icon-wrappper {
+            css {
+              .discord-link-icon {
+                display: block;
+                width: 32px;
+                height: 32px;
+              }
+            }
+            $type: "span";
+            $extra-class: "discord-link-icon";
+            $social: map.get($socials, 'discord');
+            @import "./social.html.scss";
           }
         }
       }

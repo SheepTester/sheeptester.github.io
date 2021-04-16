@@ -87,6 +87,7 @@ const tokenizers = {
   rbracket: ']',
   lcurly: '{',
   rcurly: '}',
+  eqeq: '==',
   equal: '=',
   semicolon: ';',
   colon: ':',
@@ -108,7 +109,7 @@ const tokenizers = {
 
 function startSelector (context) {
   context.type = 'selector'
-  context.html = () => {
+  context.html = variables => {
     const { tagName = 'div', classes = [], id, attributes = [] } = context
     if (classes.length) {
       attributes.push(['class', classes.join(' ')])
@@ -116,7 +117,14 @@ function startSelector (context) {
     if (id) {
       attributes.push(['id', id])
     }
-    return `<${tagName}${attributes.map(([name, value]) => value === undefined ? ' ' + name : ` ${name}="${escapeHtml(value)}"`).join('')}>`
+    return `<${substitute(tagName, variables)}${
+      attributes
+        .map(([name, value]) => [name, value && substitute(value, variables)])
+        .filter(([, value]) => value !== '')
+        .map(([name, value]) =>
+          value === undefined ? ' ' + name : ` ${name}="${escapeHtml(value)}"`)
+        .join('')
+    }>`
   }
 }
 
@@ -181,14 +189,34 @@ function substitute (html, vars) {
   })
 }
 
+const fileCache = new Map()
+async function getFile (path) {
+  const file = fileCache.get(path)
+  if (file === undefined) {
+    const file = await fs.readFile(path, 'utf8')
+    fileCache.set(path, file)
+    return file
+  } else {
+    return file
+  }
+}
+
 async function parseImitationScss (psuedoScss, filePath, {
   html = '',
   css = new Map([['main', new Set()]]),
   noisy = false,
+  logPop = false,
   variables = {}
 } = {}) {
   const tokens = tokenize(psuedoScss, tokenizers)
   const contextStack = [{}]
+  function pop (label = '') {
+    const popped = contextStack.pop()
+    if (logPop) {
+      delete popped._from
+      console.log(label, popped)
+    }
+  }
   async function loopOverArray (context, array) {
     const minLength = Math.min(...array.map(sublist => Array.isArray(sublist) ? sublist.length : 1))
     if (context.variables.length > minLength) {
@@ -199,13 +227,13 @@ async function parseImitationScss (psuedoScss, filePath, {
     while (true) {
       const { value: nextToken, done } = tokens.next()
       if (done) throw new Error('tokens should not be done; unbalanced curlies probably')
-      loopTokens.push(nextToken)
       if (nextToken[0] === 'lcurly') {
         brackets++
       } else if (nextToken[0] === 'rcurly') {
         brackets--
         if (brackets <= 0) break
       }
+      loopTokens.push(nextToken)
     }
     let tempHtml = html
     let tempCss = css
@@ -224,17 +252,28 @@ async function parseImitationScss (psuedoScss, filePath, {
           vars[varName] = entry[i]
         })
       }
+      let skipping = null
       for (const token of loopTokens) {
-        await analyseToken(token, vars)
+        if (skipping) {
+          if (token === skipping) {
+            skipping = null
+          }
+          continue
+        }
+        if (logPop) console.log('BEGIN TOKEN', token.slice(0, 2))
+        const out = await analyseToken(token, vars)
+        if (out && out.skipTo) {
+          skipping = out.skipTo
+        }
       }
       tempHtml += substitute(html, vars)
       assignToCss(tempCss, css)
-      contextStack.pop() // each-loop
+      pop('each-loop (loop end)') // each-loop
     }
     html = tempHtml
     css = tempCss
-    contextStack.pop() // each
-    contextStack.push({})
+    pop('each') // each
+    contextStack.push({ _from: 'loopOverArray' })
   }
   async function analyseToken ([tokenType, token, groups], variables) {
     let context = contextStack[contextStack.length - 1]
@@ -339,7 +378,7 @@ async function parseImitationScss (psuedoScss, filePath, {
       case 'rbracket': {
         if (context.type === 'attribute') {
           if (context.step === 'post-name' || context.step === 'end') {
-            contextStack.pop()
+            pop('attribute')
             const parentContext = contextStack[contextStack.length - 1]
             if (!parentContext.attributes) parentContext.attributes = []
             parentContext.attributes.push([context.name, context.value])
@@ -361,9 +400,10 @@ async function parseImitationScss (psuedoScss, filePath, {
           context.media += token
           break
         }
-        const strValue = tokenType === 'multilineString'
+        const rawStrValue = tokenType === 'multilineString'
           ? trimMultilineString(token)
           : JSON.parse(token)
+        const strValue = substitute(rawStrValue, variables)
         const escaped = escapeHtml(strValue)
         if (context.type === 'attribute') {
           if (context.step === 'value') {
@@ -382,8 +422,9 @@ async function parseImitationScss (psuedoScss, filePath, {
         } else if (context.type === 'import') {
           if (context.step === 'path') {
             const path = nodePath.join(nodePath.dirname(filePath), strValue)
-            const imported = await parseImitationScss(await fs.readFile(path, 'utf8'), path, {
+            const imported = await parseImitationScss(await getFile(path), path, {
               noisy,
+              logPop,
               variables
             })
             html += imported.html
@@ -394,8 +435,15 @@ async function parseImitationScss (psuedoScss, filePath, {
           }
         } else if (context.type === 'var') {
           if (context.step === 'value') {
-            variables[context.var] = substitute(strValue, variables)
+            variables[context.var] = strValue
             context.step = 'end'
+          } else {
+            throw new Error('Import function must only be used after colon')
+          }
+        } else if (context.type === 'if') {
+          if (context.step === 'value') {
+            context.condition = context.value === strValue
+            context.step = 'content'
           } else {
             throw new Error('Import function must only be used after colon')
           }
@@ -420,10 +468,10 @@ async function parseImitationScss (psuedoScss, filePath, {
 
       case 'lcurly': {
         if (context.type === 'selector') {
-          html += context.html()
-          contextStack.push({})
+          html += context.html(variables)
+          contextStack.push({ _from: 'lcurly selector' })
         } else if (context.type === 'each-loop') {
-          contextStack.push({})
+          contextStack.push({ _from: 'lcurly each-loop' })
         } else if (context.type === 'css') {
           context.css += '{'
           context.brackets++
@@ -438,7 +486,7 @@ async function parseImitationScss (psuedoScss, filePath, {
             }
             if (context.condition) {
               context.step = 'end'
-              contextStack.push({})
+              contextStack.push({ _from: 'lcurly if content (true)' })
             } else {
               // Skip over contents
               let brackets = 1
@@ -449,11 +497,13 @@ async function parseImitationScss (psuedoScss, filePath, {
                   brackets++
                 } else if (nextToken[0] === 'rcurly') {
                   brackets--
-                  if (brackets <= 0) break
+                  if (brackets <= 0) {
+                    pop('if (condition false)')
+                    contextStack.push({ _from: 'lcurly if content (false)' })
+                    return { skipTo: nextToken }
+                  }
                 }
               }
-              contextStack.pop()
-              contextStack.push({})
             }
           } else {
             throw new Error('Left curly must be after if condition')
@@ -469,31 +519,32 @@ async function parseImitationScss (psuedoScss, filePath, {
           context.brackets--
           if (context.brackets <= 0) {
             addStyle(css, context.css.trim(), context.media)
-            contextStack.pop()
-            contextStack.push({})
+            pop('css')
+            contextStack.push({ _from: 'rcurly css' })
           } else {
             context.css += '}'
           }
           break
         }
-        contextStack.pop()
+        pop('generic rcurly')
         context = contextStack[contextStack.length - 1]
         if (noisy) console.log('RCURLY', context)
         if (context.type === 'selector') {
-          html += `</${context.tagName || 'div'}>`
-          contextStack.pop()
-          contextStack.push({})
+          html += `</${context.tagName ? substitute(context.tagName, variables) : 'div'}>`
+          pop('selector (})')
+          contextStack.push({ _from: 'rcurly selector' })
         } else if (context.type === 'each-loop') {
-          contextStack.pop()
-          contextStack.push({})
+          pop('each-loop (})')
+          contextStack.push({ _from: 'rcurly each-loop' })
         } else if (context.type === 'if') {
           if (context.step === 'end') {
-            contextStack.pop()
-            contextStack.push({})
+            pop('if (})')
+            contextStack.push({ _from: 'rcurly if' })
           } else {
             throw new Error('Right curly must be after left curly in @if')
           }
         } else {
+          console.error(contextStack)
           throw new Error('Right curly\'s matching left curly in wrong context')
         }
         break
@@ -501,27 +552,27 @@ async function parseImitationScss (psuedoScss, filePath, {
 
       case 'semicolon': {
         if (context.type === 'selector') {
-          html += context.html()
-          contextStack.pop()
-          contextStack.push({})
+          html += context.html(variables)
+          pop('selector (;)')
+          contextStack.push({ _from: 'semicolon selector' })
         } else if (context.type === 'content') {
           if (context.step === 'end') {
-            contextStack.pop()
-            contextStack.push({})
+            pop('content')
+            contextStack.push({ _from: 'semicolon content' })
           } else {
             throw new Error('Semicolon must be after string')
           }
         } else if (context.type === 'var') {
           if (context.step === 'end') {
-            contextStack.pop()
-            contextStack.push({})
+            pop('var')
+            contextStack.push({ _from: 'semicolon var' })
           } else {
-            throw new Error('Semicolon must be after import func')
+            throw new Error('Semicolon must be after var setting')
           }
         } else if (context.type === 'import') {
           if (context.step === 'end') {
-            contextStack.pop()
-            contextStack.push({})
+            pop('@import')
+            contextStack.push({ _from: 'semicolon import end' })
           } else {
             throw new Error('Semicolon must be after import path string')
           }
@@ -580,6 +631,21 @@ async function parseImitationScss (psuedoScss, filePath, {
           } else {
             throw new Error('Variables must be after @each')
           }
+        } else if (context.type === 'if') {
+          if (context.step === 'condition') {
+            if (context.equal) {
+              if (variables[token] === undefined) {
+                throw new ReferenceError(`${token} not defined`)
+              }
+              context.condition = context.value === variables[token]
+            } else {
+              context.value = variables[token]
+              context.condition = variables[token] !== undefined
+            }
+            context.step = 'content'
+          } else {
+            throw new Error('Variable must be after @if')
+          }
         } else {
           throw new Error('Variable invalid context')
         }
@@ -615,7 +681,7 @@ async function parseImitationScss (psuedoScss, filePath, {
         if (context.type === 'each') {
           if (context.step === 'expr') {
             const path = nodePath.join(nodePath.dirname(filePath), JSON.parse(groups[1]))
-            const yaml = YAML.parse(await fs.readFile(path, 'utf8'))
+            const yaml = YAML.parse(await getFile(path))
             if (yaml === null || typeof yaml !== 'object') {
               throw new TypeError('Cannot loop over a non-array/object')
             }
@@ -629,7 +695,7 @@ async function parseImitationScss (psuedoScss, filePath, {
         } else if (context.type === 'var') {
           if (context.step === 'value') {
             const path = nodePath.join(nodePath.dirname(filePath), JSON.parse(groups[1]))
-            const yaml = YAML.parse(await fs.readFile(path, 'utf8'))
+            const yaml = YAML.parse(await getFile(path))
             variables[context.var] = yaml
             context.step = 'end'
           } else {
@@ -674,11 +740,28 @@ async function parseImitationScss (psuedoScss, filePath, {
             if (variables[groups[1]] === undefined) {
               throw new ReferenceError(`${groups[1]} not defined`)
             }
-            context.value = variables[groups[1]][key]
-            context.condition = Object.prototype.hasOwnProperty.call(variables[groups[1]], key)
+            if (context.equal) {
+              context.condition = context.value === variables[groups[1]][key]
+            } else {
+              context.value = variables[groups[1]][key]
+              context.condition = Object.prototype.hasOwnProperty.call(variables[groups[1]], key)
+            }
             context.step = 'content'
           } else {
             throw new Error('map.get must be after @if')
+          }
+        } else if (context.type === 'var') {
+          if (context.step === 'value') {
+            if (variables[groups[1]] === undefined) {
+              throw new ReferenceError(`${groups[1]} not defined`)
+            }
+            if (variables[groups[1]][key] === undefined) {
+              throw new ReferenceError(`${key} not in ${groups[1]}`)
+            }
+            variables[context.var] = variables[groups[1]][key]
+            context.step = 'end'
+          } else {
+            throw new Error('map.get must be after colon')
           }
         } else {
           throw new Error('map.get in wrong context')
@@ -746,6 +829,20 @@ async function parseImitationScss (psuedoScss, filePath, {
         break
       }
 
+      case 'eqeq': {
+        if (context.type === 'if') {
+          if (context.step === 'content') {
+            context.equal = true
+            context.step = 'value'
+          } else {
+            throw new Error('== must be after the condition')
+          }
+        } else {
+          throw new Error('== must be inside @if')
+        }
+        break
+      }
+
       default: {
         console.error(html)
         throw new Error(`${tokenType} not implemented yet`)
@@ -764,7 +861,8 @@ fs.readFile(inputFile, 'utf8')
   .then(async psuedoScss => {
     const { html, css } = await parseImitationScss(psuedoScss, inputFile, {
       html: '<!DOCTYPE html>',
-      noisy: false
+      noisy: false,
+      logPop: true
     })
     await fs.writeFile(
       outputHtml,

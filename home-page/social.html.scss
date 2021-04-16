@@ -3,7 +3,7 @@ css {
     position: relative;
     padding-bottom: 100%;
     background-color: white;
-    border-radius: 10px;
+    border-radius: 15%;
     box-sizing: border-box;
   }
   .social-instagram {
@@ -29,14 +29,21 @@ $bg: "";
   $bg: "background-color:#{map.get($social, 'bg')}";
 }
 $ball-type: "social";
-@if map.get($social, 'type') {
-  $ball-type: "social social-#{map.get($social, 'type')}";
+@if $extra-class {
+  $ball-type: "#{$ball-type} #{$extra-class}";
 }
-a.#{$ball-type}[href="#{map.get($social, 'link')}"][style="#{$bg}"] {
-  span.visually-hidden {
-    content: "#{map.get($social, 'name')}";
-  }
-
+@if map.get($social, 'type') {
+  $ball-type: "#{$ball-type} social-#{map.get($social, 'type')}";
+}
+$link: "";
+@if not $type {
+  $type: "span";
+}
+@if $type == "a" {
+  $link: map.get($social, 'link');
+}
+$name: map.get($social, 'name');
+#{$type}.#{$ball-type}[href="#{$link}"][style="#{$bg}"][title="#{$name}"][aria-label="#{$name}"] {
   css {
     .ball {
       position: absolute;
@@ -62,6 +69,19 @@ a.#{$ball-type}[href="#{map.get($social, 'link')}"][style="#{$bg}"] {
   $ball: "";
   @if map.get($social, 'ball') {
     $ball: "background-color:#{map.get($social, 'ball')}";
+    @if map.get($social, 'ball') == "border" {
+      $ball: "";
+      $class: "ball border-ball";
+    }
   }
   span.#{$class}[style="#{$border}#{$ball}"] {}
+
+  css {
+    .social-name {
+      display: none;
+    }
+  }
+  span.social-name {
+    content: "#{$name}";
+  }
 }
