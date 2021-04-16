@@ -314,6 +314,7 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
               a.username:hover {
                 color: white;
               }
+              // TODO: Gmail icon has a hover effect; remove?
               .username-icon {
                 display: block;
                 width: 32px;
@@ -412,15 +413,6 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
     }
     section.project-wrapper {
       css {
-        .projects {
-          display: grid;
-          grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-          gap: 20px;
-          margin: 20px;
-        }
-      }
-
-      css {
         .projects-info {
           padding: 0 20px;
           max-width: 600px;
@@ -453,6 +445,10 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
         }
 
         css {
+          .projects-note {
+            margin: 0;
+            margin-top: 10px;
+          }
           .projects-note a {
             text-decoration: none;
             color: #1ce0e0;
@@ -474,6 +470,14 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
         }
       }
 
+      css {
+        .projects {
+          display: grid;
+          grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+          gap: 20px;
+          padding: 20px;
+        }
+      }
       .projects {
         @each $project in import("./projects.yml") {
           @import "./project.html.scss";

@@ -5,6 +5,11 @@ css {
     background-color: white;
     border-radius: 15%;
     box-sizing: border-box;
+    transition: transform .2s;
+  }
+  .social:hover,
+  a.username:hover .social {
+    transform: scale(1.1);
   }
   .social-instagram {
     background-image: radial-gradient(circle at 20% 100%, #F9D773, #F5AB3F, #F05431, #DD1D4F, #AA128D, #3D3CE2);
@@ -54,6 +59,11 @@ $name: map.get($social, 'name');
       background-color: white;
       border: 5px solid transparent;
       box-sizing: border-box;
+      transition: all .2s;
+    }
+    .social:hover .ball,
+    a.username:hover .ball {
+      transform: scale(1.2);
     }
     .border-ball {
       border-color: white;
