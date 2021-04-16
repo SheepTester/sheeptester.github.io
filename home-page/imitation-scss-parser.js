@@ -200,7 +200,8 @@ async function getFile (path) {
     return file
   }
 }
-
+const t = []
+let first = true
 async function parseImitationScss (psuedoScss, filePath, {
   html = '',
   css = new Map([['main', new Set()]]),
@@ -208,12 +209,14 @@ async function parseImitationScss (psuedoScss, filePath, {
   logPop = false,
   variables = {}
 } = {}) {
+  const f = first
+  first = false
   const tokens = tokenize(psuedoScss, tokenizers)
   const contextStack = [{}]
   function pop (label = '') {
     const popped = contextStack.pop()
     if (logPop) {
-      delete popped._from
+      // delete popped._from
       console.log(label, popped)
     }
   }
@@ -227,13 +230,13 @@ async function parseImitationScss (psuedoScss, filePath, {
     while (true) {
       const { value: nextToken, done } = tokens.next()
       if (done) throw new Error('tokens should not be done; unbalanced curlies probably')
+      loopTokens.push(nextToken)
       if (nextToken[0] === 'lcurly') {
         brackets++
       } else if (nextToken[0] === 'rcurly') {
         brackets--
         if (brackets <= 0) break
       }
-      loopTokens.push(nextToken)
     }
     let tempHtml = html
     let tempCss = css
@@ -252,19 +255,9 @@ async function parseImitationScss (psuedoScss, filePath, {
           vars[varName] = entry[i]
         })
       }
-      let skipping = null
       for (const token of loopTokens) {
-        if (skipping) {
-          if (token === skipping) {
-            skipping = null
-          }
-          continue
-        }
         if (logPop) console.log('BEGIN TOKEN', token.slice(0, 2))
-        const out = await analyseToken(token, vars)
-        if (out && out.skipTo) {
-          skipping = out.skipTo
-        }
+        await analyseToken(token, vars)
       }
       tempHtml += substitute(html, vars)
       assignToCss(tempCss, css)
@@ -278,6 +271,21 @@ async function parseImitationScss (psuedoScss, filePath, {
   async function analyseToken ([tokenType, token, groups], variables) {
     let context = contextStack[contextStack.length - 1]
     if (noisy) console.log([tokenType, token], context)
+    const v = contextStack.map(a => a.type === 'if' ? a.type + (a.not ? !a.condition : a.condition) : a.type || `? [from ${a._from}]`).join(' ')
+    if (f && t[t.length - 1] !== v) t.push(v)
+
+    if (context.type === 'if' && context.step === 'skip') {
+      if (tokenType === 'lcurly') {
+        context.brackets++
+      } else if (tokenType === 'rcurly') {
+        context.brackets--
+      }
+      if (context.brackets <= 0) {
+        pop('if (condition false)')
+        contextStack.push({ _from: 'lcurly if content (false)' })
+      }
+      return
+    }
 
     switch (tokenType) {
       case 'comment': {
@@ -488,22 +496,8 @@ async function parseImitationScss (psuedoScss, filePath, {
               context.step = 'end'
               contextStack.push({ _from: 'lcurly if content (true)' })
             } else {
-              // Skip over contents
-              let brackets = 1
-              while (true) {
-                const { value: nextToken, done } = tokens.next()
-                if (done) throw new Error('tokens should not be done; unbalanced curlies probably')
-                if (nextToken[0] === 'lcurly') {
-                  brackets++
-                } else if (nextToken[0] === 'rcurly') {
-                  brackets--
-                  if (brackets <= 0) {
-                    pop('if (condition false)')
-                    contextStack.push({ _from: 'lcurly if content (false)' })
-                    return { skipTo: nextToken }
-                  }
-                }
-              }
+              context.step = 'skip'
+              context.brackets = 1
             }
           } else {
             throw new Error('Left curly must be after if condition')
@@ -544,6 +538,7 @@ async function parseImitationScss (psuedoScss, filePath, {
             throw new Error('Right curly must be after left curly in @if')
           }
         } else {
+          // console.log([...t].join('\n'))
           console.error(contextStack)
           throw new Error('Right curly\'s matching left curly in wrong context')
         }
@@ -862,7 +857,7 @@ fs.readFile(inputFile, 'utf8')
     const { html, css } = await parseImitationScss(psuedoScss, inputFile, {
       html: '<!DOCTYPE html>',
       noisy: false,
-      logPop: true
+      // logPop: true
     })
     await fs.writeFile(
       outputHtml,
