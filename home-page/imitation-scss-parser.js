@@ -200,8 +200,7 @@ async function getFile (path) {
     return file
   }
 }
-const t = []
-let first = true
+
 async function parseImitationScss (psuedoScss, filePath, {
   html = '',
   css = new Map([['main', new Set()]]),
@@ -209,9 +208,8 @@ async function parseImitationScss (psuedoScss, filePath, {
   logPop = false,
   variables = {}
 } = {}) {
-  const f = first
-  first = false
   const tokens = tokenize(psuedoScss, tokenizers)
+  const contextHistory = []
   const contextStack = [{}]
   function pop (label = '') {
     const popped = contextStack.pop()
@@ -220,7 +218,7 @@ async function parseImitationScss (psuedoScss, filePath, {
       console.log(label, popped)
     }
   }
-  async function loopOverArray (context, array) {
+  async function loopOverArray (context, array, variables) {
     const minLength = Math.min(...array.map(sublist => Array.isArray(sublist) ? sublist.length : 1))
     if (context.variables.length > minLength) {
       throw new RangeError(`Destructuring too many variables from a list of at minimum ${minLength} items`)
@@ -231,7 +229,7 @@ async function parseImitationScss (psuedoScss, filePath, {
       const { value: nextToken, done } = tokens.next()
       if (done) throw new Error('tokens should not be done; unbalanced curlies probably')
       loopTokens.push(nextToken)
-      if (nextToken[0] === 'lcurly') {
+      if (nextToken[0] === 'lcurly' || nextToken[0] === 'cssRawBegin') {
         brackets++
       } else if (nextToken[0] === 'rcurly') {
         brackets--
@@ -255,13 +253,19 @@ async function parseImitationScss (psuedoScss, filePath, {
           vars[varName] = entry[i]
         })
       }
+      // console.log('loopstart', vars);
       for (const token of loopTokens) {
         if (logPop) console.log('BEGIN TOKEN', token.slice(0, 2))
         await analyseToken(token, vars)
       }
+      // console.log('loopend');
       tempHtml += substitute(html, vars)
       assignToCss(tempCss, css)
       pop('each-loop (loop end)') // each-loop
+      if (contextStack[contextStack.length - 1].type === 'each-loop') {
+        console.log(contextHistory.join('\n'));
+        throw new Error('Unbalanced popping; each-loop still exists')
+      }
     }
     html = tempHtml
     css = tempCss
@@ -271,8 +275,21 @@ async function parseImitationScss (psuedoScss, filePath, {
   async function analyseToken ([tokenType, token, groups], variables) {
     let context = contextStack[contextStack.length - 1]
     if (noisy) console.log([tokenType, token], context)
-    const v = contextStack.map(a => a.type === 'if' ? a.type + (a.not ? !a.condition : a.condition) : a.type || `? [from ${a._from}]`).join(' ')
-    if (f && t[t.length - 1] !== v) t.push(v)
+    const contextEntry = contextStack.map(context => {
+      if (context.type === 'if') {
+        return `if(${
+          context.not ? !context.condition : context.condition
+        })[${context.step}]`
+      } else if (context.type) {
+        return context.type + (context.step ? `[${context.step}]` : '')
+          + (context.brackets !== undefined ? `[${context.brackets}]` : '')
+      } else {
+        return `?${context._from}`
+      }
+    }).join(' ')
+    if (contextHistory[contextHistory.length - 1] !== contextEntry) {
+      contextHistory.push(contextEntry)
+    }
 
     if (context.type === 'if' && context.step === 'skip') {
       if (tokenType === 'lcurly') {
@@ -433,7 +450,7 @@ async function parseImitationScss (psuedoScss, filePath, {
             const imported = await parseImitationScss(await getFile(path), path, {
               noisy,
               logPop,
-              variables
+              variables: { ...variables }
             })
             html += imported.html
             assignToCss(css, imported.css)
@@ -538,7 +555,6 @@ async function parseImitationScss (psuedoScss, filePath, {
             throw new Error('Right curly must be after left curly in @if')
           }
         } else {
-          // console.log([...t].join('\n'))
           console.error(contextStack)
           throw new Error('Right curly\'s matching left curly in wrong context')
         }
@@ -683,7 +699,7 @@ async function parseImitationScss (psuedoScss, filePath, {
             const array = Array.isArray(yaml)
               ? yaml
               : Object.entries(yaml)
-            await loopOverArray(context, array)
+            await loopOverArray(context, array, variables)
           } else {
             throw new Error('Import function must only be used after in')
           }
@@ -726,12 +742,13 @@ async function parseImitationScss (psuedoScss, filePath, {
               console.error(array)
               throw new TypeError('Cannot loop over non-array')
             }
-            await loopOverArray(context, array)
+            await loopOverArray(context, array, variables)
           } else {
             throw new Error('map.get function must only be used after in')
           }
         } else if (context.type === 'if') {
           if (context.step === 'condition') {
+            // console.log('help', contextStack, variables);
             if (variables[groups[1]] === undefined) {
               throw new ReferenceError(`${groups[1]} not defined`)
             }

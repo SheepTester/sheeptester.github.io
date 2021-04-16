@@ -292,17 +292,44 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
           }
         }
 
+        css {
+          .usernames {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            margin: 20px 0;
+            gap: 10px;
+          }
+        }
         .usernames {
           $type: "span";
+          $extra-class: "username-icon";
           @each $social in map.get($socials, 'usernames') {
+            css {
+              .username {
+                display: flex;
+                text-decoration: none;
+                color: inherit;
+                align-items: center;
+              }
+              a.username:hover {
+                color: white;
+              }
+              .username-icon {
+                display: block;
+                width: 32px;
+                height: 32px;
+                padding: 0;
+                margin-right: 10px;
+              }
+            }
             @if map.get($social, 'link') {
-              a[href="#{map.get($social, 'link')}"] {
+              a.username[href="#{map.get($social, 'link')}"] {
                 @import "./social.html.scss";
                 content: "#{map.get($social, 'username')}";
               }
             }
             @if not map.get($social, 'link') {
-              span {
+              span.username {
                 @import "./social.html.scss";
                 content: "#{map.get($social, 'username')}";
               }
