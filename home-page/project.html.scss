@@ -70,9 +70,12 @@ a.#{$classes}[href="#{map.get($project, 'path')}"] {
       opacity: 0.5;
       transition: opacity .2s;
     }
-    .project:hover .title,
-    .showing-desc .title {
+    .project:hover .title {
       opacity: 1;
+    }
+    .project.showing-desc .title {
+      opacity: 0;
+      pointer-events: none;
     }
   }
   span.title {
@@ -109,9 +112,12 @@ a.#{$classes}[href="#{map.get($project, 'path')}"] {
           transition-delay: 0s;
           box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
         }
-        .project:hover .tag,
-        .showing-desc .tag {
+        .project:hover .tag {
           opacity: 1;
+        }
+        .project.showing-desc .tag {
+          opacity: 0;
+          pointer-events: none;
         }
       }
       css {
@@ -154,13 +160,16 @@ a.#{$classes}[href="#{map.get($project, 'path')}"] {
     .has-js .open-directly {
       display: block;
     }
-    .project:hover .open-directly,
-    .showing-desc .open-directly {
+    .project:hover .open-directly {
       opacity: 1;
     }
     .open-directly:hover {
       background-color: white;
       box-shadow: 0 3px 5px rgba(0, 0, 0, 0.2);
+    }
+    .project.showing-desc .open-directly {
+      opacity: 0;
+      pointer-events: none;
     }
   }
   span.open-directly {}

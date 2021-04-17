@@ -6,7 +6,8 @@ for (const checkbox of document.getElementsByClassName('filter-checkbox')) {
   checkbox.addEventListener('change', e => {
     if (checkbox.checked) {
       selected.add(className)
-      removeDescription()
+      unselect()
+      lastSelected = null
     } else {
       selected.delete(className)
     }
@@ -29,46 +30,65 @@ for (const label of document.getElementsByClassName('filter-tag')) {
   })
 }
 
-function createDescription (from, link) {
-  const div = document.createElement('div')
-  div.className = 'description'
-  for (const paragraph of from.split(/\r?\n/)) {
+function empty (elem) {
+  while (elem.firstChild) elem.removeChild(elem.firstChild)
+}
+
+const descElems = {
+  wrapper: document.getElementById('description-wrapper'),
+  title: document.getElementById('desc-title'),
+  link: document.getElementById('desc-link'),
+  tags: document.getElementById('desc-tags'),
+  text: document.getElementById('description')
+}
+function createTag (tagElem) {
+  const tag = document.createElement('div')
+  tag.className = 'desc-tag'
+  const icon = document.createElement('div')
+  icon.className = `desc-tag-icon base-tag ${[...tagElem.classList].find(cls => cls.startsWith('tag-'))}`
+  const name = document.createElement('div')
+  name.className = 'desc-tag-name'
+  name.textContent = tagElem.title
+  tag.append(icon, name)
+  return tag
+}
+function setDescription (project) {
+  descElems.title.textContent = project.querySelector('.title').textContent
+  descElems.link.href = project.href
+  empty(descElems.tags)
+  for (const tag of project.getElementsByClassName('tag')) {
+    descElems.tags.append(createTag(tag))
+  }
+  empty(descElems.text)
+  for (const paragraph of project.querySelector('.project-desc').textContent.split(/\r?\n/)) {
     const p = document.createElement('p')
     p.textContent = paragraph
-    div.append(p)
+    descElems.text.append(p)
   }
-  const a = document.createElement('a')
-  a.className = 'desc-visit block-link'
-  a.href = link
-  a.textContent = 'Visit'
-  div.append(a)
-  return div
 }
-function removeDescription () {
+function unselect () {
+  descElems.wrapper.style.display = 'none'
   if (lastSelected) {
-    const [project, description] = lastSelected
-    project.classList.remove('showing-desc')
-    description.remove()
+    lastSelected.classList.remove('showing-desc')
   }
 }
+
 const projectsWrapper = document.getElementById('projects-wrapper')
 let lastSelected = null
 projectsWrapper.addEventListener('click', e => {
   const project = e.target.closest('.project')
   if (project && !e.target.closest('.open-directly')) {
-    removeDescription()
-    if (!lastSelected || lastSelected[0] !== project) {
-      const description = createDescription(
-        project.querySelector('.project-desc').textContent,
-        project.href
-      )
-      lastSelected = [project, description]
+    e.preventDefault()
+    unselect()
+    if (lastSelected !== project) {
+      setDescription(project)
+      project.after(descElems.wrapper)
+      descElems.wrapper.style.display = null
+      lastSelected = project
       project.classList.add('showing-desc')
-      project.after(description)
     } else {
       lastSelected = null
     }
-    e.preventDefault()
   }
 })
 

@@ -6,9 +6,9 @@ document.addEventListener("DOMContentLoaded", function(e) {
     document.body.classList.add('sheep-blockscreen');
     homeButton.addEventListener('transitionend', function(e) {
       window.requestAnimationFrame(function() {
-        window.requestAnimationFrame(function() {
-          window.location = '/?from=sheep3';
-        });
+        // Try forcing repaint
+        homeButton.getBoundingClientRect();
+        window.location = '/?from=sheep3';
       });
     });
   });
