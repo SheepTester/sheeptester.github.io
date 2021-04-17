@@ -111,6 +111,80 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
     }
     .strip {}
 
+    // TEMP
+    css {
+      .wow {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        width: 142vmax;
+        height: 142vmax;
+        margin: -71vmax;
+        border-radius: 50%;
+        background-color: black;
+        pointer-events: none;
+        z-index: 5;
+        animation: zoom .5s .8s forwards;
+      }
+      @keyframes zoom {
+        from {
+          width: 142vmax;
+          height: 142vmax;
+          margin: -71vmax;
+        }
+        to {
+          width: 100px;
+          height: 100px;
+          margin: -50px;
+        }
+      }
+    }
+    .wow {}
+    // TEMP
+    css {
+      .logo {
+        position: fixed;
+        width: 90px;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -48%);
+        z-index: 7;
+      }
+    }
+    svg.logo[xmlns="http://www.w3.org/2000/svg"][viewBox="0 0 480 480"] {
+      $path: """
+        M90 90
+        a50 50 0 0 0 0 100
+        H98.579
+        A150 150 0 1 0 381.421 190
+        H390
+        a50 50 0 0 0 0 -100
+        a50 50 0 1 1 -100 0
+        a50 50 0 1 1 -100 0
+        a50 50 0 1 1 -100 0
+        z
+      """;
+      css {
+        .logo-path {
+          fill: none;
+          stroke: rgba(255, 255, 255, 0.8);
+          stroke-width: 20;
+          animation: stroke-intro 1s 0.5s backwards;
+        }
+        @keyframes stroke-intro {
+          from {
+            stroke-dasharray: 0 1376;
+            stroke-dashoffset: -170;
+          }
+          to {
+            stroke-dasharray: 1376 0;
+            stroke-dashoffset: -730;
+          }
+        }
+      }
+      path.logo-path[d="#{$path}"];
+    }
+
     css {
       .about {
         max-width: 600px;
