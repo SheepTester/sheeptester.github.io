@@ -92,6 +92,14 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
           document.body.classList.add('from-sheep');
         }
         document.body.classList.add('has-js');
+        window.jsSuccess = true;
+      """;
+    }
+    script {
+      content: """
+        if (!window.jsSuccess) {
+          document.body.className = 'old-js';
+        }
       """;
     }
 
@@ -606,19 +614,34 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
           content: ".";
         }
 
-        noscript {
-          css {
-            .no-js {
-              padding: 20px;
-              border-radius: 10px;
-              background-color: #dd2263;
-              color: white;
-              box-shadow: 0 3px 10px rgba(0, 0, 0, 0.5);
-              margin: 20px 0;
-            }
+        css {
+          .warning {
+            padding: 20px;
+            border-radius: 10px;
+            background-color: #dd2263;
+            color: white;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.5);
+            margin: 20px 0;
           }
-          .no-js {
-            content: "Note that many of these projects require JavaScript, which you do not have enabled.";
+          .old-js-warning {
+            display: none;
+          }
+          .old-js .old-js-warning {
+            display: block;
+          }
+        }
+        .warning.old-js-warning {
+          content: """
+            Note that many of these projects require new web features that your
+            browser doesn’t support. Please use a modern browser.
+          """;
+        }
+        noscript {
+          .warning.no-js {
+            content: """
+              Note that many of these projects require JavaScript, which you do
+              not have enabled.
+            """;
           }
         }
 
