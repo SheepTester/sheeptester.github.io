@@ -4,7 +4,7 @@ sheep-btn {
   z-index: 1000;
   height: 50px;
   width: 50px;
-  border-radius: 25px;
+  border-radius: 50%;
   background-color: rgba(0, 0, 0, 0.4);
   background-size: 45px;
   background-repeat: no-repeat;
@@ -35,18 +35,17 @@ sheep-btn:focus {
 }
 .sheep-blockscreen {
   pointer-events: none;
-  overflow: hidden;
 }
 .sheep-blockscreen sheep-btn {
-  right: 0;
-  bottom: 0;
-  border-radius: 0;
-  width: 100vw;
-  height: 100vh;
+  right: 50%;
+  bottom: 50%;
+  width: 142vmax;
+  height: 142vmax;
+  margin: -71vmax;
   background-color: black;
-  background-size: 70px;
+  background-size: 90px;
   background-position: 50% 50%;
   box-shadow: none;
   pointer-events: none;
-  transition: all .2s;
+  transition: all .5s;
 }

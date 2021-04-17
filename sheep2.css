@@ -65,7 +65,7 @@ body.sheep-blockscreen sheep-btn {
   width: 100vw;
   height: 100vh;
   background-color: black;
-  background-size: 70px;
+  background-size: 90px;
   background-position: 50% 50%;
   box-shadow: none;
   pointer-events: none;

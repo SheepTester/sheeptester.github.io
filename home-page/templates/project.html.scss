@@ -1,0 +1,177 @@
+css {
+  .project {
+    display: block;
+    position: relative;
+    padding-bottom: 100%;
+    border-radius: 10px;
+    color: inherit;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+    background-image: linear-gradient(45deg, #20de88, #28bbe8);
+    transition: box-shadow .5s;
+  }
+  .project:not(.showing-desc):hover {
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.8);
+    transition: box-shadow .2s;
+  }
+  .showing-desc::after {
+    content: '';
+    border-bottom: 10px solid #24364a;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-top: 10px;
+    margin-left: -10px;
+  }
+}
+$classes: "project";
+@each $tag in map.get($project, 'tags') {
+  $classes: "#{$classes} project-#{$tag}"
+}
+a.#{$classes}[href="#{map.get($project, 'path')}"] {
+  css {
+    .thumbnail {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 0;
+      border-radius: 10px;
+      opacity: 0.7;
+      filter: grayscale(1);
+      transition: opacity .5s, filter .5s;
+    }
+    .project:hover .thumbnail,
+    .showing-desc .thumbnail {
+      opacity: 1;
+      filter: grayscale(0);
+      transition: opacity .2s, filter .2s;
+    }
+  }
+  img.thumbnail[src="#{map.get($project, 'image')}"];
+
+  css {
+    .title {
+      display: block;
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 1;
+      background-image: linear-gradient(0deg, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0,
+        0, 0.45) 50%, rgba(0, 0, 0, 0.2) 70%, rgba(0, 0, 0, 0.05) 90%,
+        transparent 100%);
+      padding: 10px 15px;
+      padding-top: 30px;
+      font-size: 24px;
+      border-bottom-left-radius: 10px;
+      border-bottom-right-radius: 10px;
+      color: white;
+      opacity: 0.5;
+      transition: opacity .2s;
+    }
+    .project:hover .title {
+      opacity: 1;
+    }
+    .project.showing-desc .title {
+      opacity: 0;
+      pointer-events: none;
+    }
+  }
+  span.title {
+    content: "#{map.get($project, 'name')}";
+  }
+
+  span.project-desc.visually-hidden[aria-label="Description"] {
+    content: "#{map.get($project, 'description')}";
+  }
+
+  css {
+    .tags {
+      display: flex;
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 1;
+      margin: 8px;
+    }
+  }
+  span.tags[aria-label="Tags"] {
+    @each $tag, $index in map.get($project, 'tags') {
+      $tag-info: map.get($tags, $tag);
+      content: " ";
+      css {
+        .tag {
+          display: block;
+          width: 24px;
+          height: 24px;
+          border-radius: 50%;
+          margin-right: 8px;
+          opacity: 0;
+          transition: opacity .5s;
+          transition-delay: 0s;
+          box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+        }
+        .project:hover .tag {
+          opacity: 1;
+        }
+        .project.showing-desc .tag {
+          opacity: 0;
+          pointer-events: none;
+        }
+      }
+      css {
+        // Separate so that the style unduplicator is able to see this as
+        // separate
+        .project:hover .tag:nth-child(#{$index}) {
+          transition-delay: calc(0.1s * #{$index});
+        }
+      }
+      span.tag.base-tag.tag-#{$tag}[title="#{map.get($tag-info, 'name')}"] {
+        .visually-hidden {
+          content: "#{map.get($tag-info, 'name')}";
+        }
+      }
+    }
+  }
+
+  css {
+    .open-directly {
+      display: none;
+      position: absolute;
+      top: 0;
+      right: 0;
+      z-index: 1;
+      width: 24px;
+      height: 24px;
+      background-color: rgba(255, 255, 255, 0.5);
+      background-image: url('/home-page/icons/open-directly.svg');
+      background-size: 24px;
+      background-repeat: no-repeat;
+      background-position: center;
+      padding: 6px;
+      margin: 6px;
+      border-radius: 50%;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+      opacity: 0;
+      transition: opacity .5s, background-color .2s, box-shadow .2s;
+      transition-delay: 0.05s, 0, 0;
+    }
+    .has-js .open-directly {
+      display: block;
+    }
+    .project:hover .open-directly {
+      opacity: 1;
+    }
+    .open-directly:hover {
+      background-color: white;
+      box-shadow: 0 3px 5px rgba(0, 0, 0, 0.2);
+    }
+    .project.showing-desc .open-directly {
+      opacity: 0;
+      pointer-events: none;
+    }
+  }
+  span.open-directly {}
+}

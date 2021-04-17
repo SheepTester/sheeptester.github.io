@@ -1,0 +1,867 @@
+// Imitation SCSS representing HTML
+// (This gives me full control over the whitespace)
+
+css {
+  :root {
+    color-scheme: dark;
+  }
+
+  // https://www.a11yproject.com/posts/2013-01-11-how-to-hide-content/
+  .visually-hidden {
+    clip: rect(0 0 0 0);
+    clip-path: inset(50%);
+    height: 1px;
+    overflow: hidden;
+    position: absolute;
+    white-space: nowrap;
+    width: 1px;
+  }
+}
+
+html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
+  head {
+    meta[charset="UTF-8"];
+    script[src="/redirects.js"] {}
+
+    meta[name="viewport"][content="width=device-width, initial-scale=1"];
+
+    // Typical meta
+    title {
+      content: "SheepTester";
+    }
+    meta[name="description"][content="A list of some projects I have made using fancy web technologies."];
+    meta[name="keywords"][content="sheeptester, sheep tester, sheep_tester"];
+    meta[name="theme-color"][content="#4fa1a7"];
+
+    // Google search
+    meta[name="google-site-verification"][content="hVAKq2ipG9tPimbCmGiDbT-Qq1-UEv35XweisVQ5VEE"];
+
+    // Open graph
+    meta[name="title"][content="SheepTester"];
+    meta[property="og:title"][content="SheepTester"];
+    meta[property="og:type"][content="website"];
+    meta[property="og:url"][content="https://sheeptester.github.io/"];
+    meta[property="og:image"][content="https://sheeptester.github.io/home-page/preview/opengraph.png"];
+    meta[property="og:description"][content="A directory of some things I made."];
+
+    // Twitter
+    meta[name="twitter:card"][content="summary"];
+    meta[name="twitter:title"][content="SheepTester"];
+    meta[name="twitter:description"][content="A directory of some things I made."];
+    meta[name="twitter:image"][content="https://sheeptester.github.io/home-page/preview/opengraph.png"];
+    link[rel="canonical"][href="https://sheeptester.github.io/"];
+
+    // Other icons from http://realfavicongenerator.net/
+    link[rel="apple-touch-icon"][sizes="180x180"][href="/apple-touch-icon.png"];
+    link[rel="icon"][type="image/png"][sizes="32x32"][href="/favicon-32x32.png"];
+    link[rel="icon"][type="image/png"][sizes="16x16"][href="/favicon-16x16.png"];
+    link[rel="manifest"][href="/manifest.json"];
+    link[rel="mask-icon"][href="/safari-pinned-tab.svg"][color="#4fa1a7"];
+
+    link[rel="stylesheet"][type="text/css"][href="/sheep3.css"];
+    link[rel="stylesheet"][type="text/css"][href="/home-page/style.css"];
+
+    script[src="/sheep3.js"] {}
+  }
+
+  css {
+    html,
+    body {
+      height: 100%;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+        'Helvetica Neue', Arial, sans-serif, 'Apple Color Emoji',
+        'Segoe UI Emoji', 'Segoe UI Symbol';
+      margin: 0;
+      background-color: #171931;
+      color: rgba(255, 255, 255, 0.7);
+      word-break: break-word;
+    }
+  }
+  body {
+    script {
+      // Need semicolons because the newlines are removed
+      // Using ?. to weed out incompetent browsers
+      content: """
+        const params = new URL(window.location).searchParams;
+        if (params.get('from')?.startsWith('sheep')) {
+          window.history.replaceState({}, '', '/');
+          document.body.classList.add('from-sheep');
+        }
+        document.body.classList.add('has-js');
+        window.jsSuccess = true;
+      """;
+    }
+    script {
+      content: """
+        if (!window.jsSuccess) {
+          document.body.className = 'old-js';
+        }
+      """;
+    }
+
+    css {
+      .strip {
+        position: absolute;
+        z-index: -1;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 145px;
+        background-image: linear-gradient(180deg, transparent 86.21%, rgb(23,
+        25, 49, 0.75) 86.21%, rgb(23, 25, 49, 0.92), #171931),
+        linear-gradient(90deg, #20de88, #28bbe8);
+      }
+    }
+    @media (min-width: 1000px) {
+      .strip {
+        height: 60px;
+        background-image: linear-gradient(180deg, transparent 66.67%, rgb(23,
+        25, 49, 0.75) 66.67%, rgb(23, 25, 49, 0.92), #171931),
+        linear-gradient(90deg, #20de88, #28bbe8);
+      }
+    }
+    .strip {}
+
+    css {
+      .intro {
+        position: fixed;
+        bottom: 50%;
+        right: 50%;
+        z-index: 5;
+        transform-origin: bottom right;
+        animation: to-corner-then-disappear 2s cubic-bezier(0.7, 0, 0.35, 1) 1.2s forwards;
+      }
+      @keyframes to-corner-then-disappear {
+        // Go to corner
+        0% {
+          bottom: 50%;
+          right: 50%;
+          transform: scale(1);
+        }
+        70% {
+          bottom: 35px;
+          right: 35px;
+          opacity: 1;
+          transform: scale(0.5);
+        }
+        // Then disappear
+        80% {
+          bottom: 35px;
+          right: 35px;
+          opacity: 1;
+          transform: scale(0.5);
+        }
+        100% {
+          bottom: 35px;
+          right: 35px;
+          opacity: 0;
+          transform: scale(0.5);
+        }
+      }
+    }
+    .intro {
+      css {
+        .intro-back {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          border-radius: 50%;
+          background-color: black;
+          pointer-events: none;
+          transform: translateZ(0);
+          animation: circle-in 0.8s 0.8s both;
+        }
+        @keyframes circle-in {
+          from {
+            // 142 ≈ 100 sqrt(2) (diagonal of square screen)
+            width: 142vmax;
+            height: 142vmax;
+            margin: -71vmax;
+          }
+          to {
+            width: 100px;
+            height: 100px;
+            margin: -50px;
+          }
+        }
+      }
+      .intro-back {}
+
+      css {
+        .logo {
+          position: absolute;
+          width: 90px;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -48%);
+          pointer-events: none;
+        }
+      }
+      svg.logo[xmlns="http://www.w3.org/2000/svg"][viewBox="0 0 480 480"] {
+        $path: """
+          M90 90
+          a50 50 0 0 0 0 100
+          H98.579
+          A150 150 0 1 0 381.421 190
+          H390
+          a50 50 0 0 0 0 -100
+          a50 50 0 1 1 -100 0
+          a50 50 0 1 1 -100 0
+          a50 50 0 1 1 -100 0
+          z
+        """;
+        css {
+          .logo-path {
+            fill: none;
+            stroke: rgba(255, 255, 255, 0.7);
+            stroke-width: 20;
+            animation: stroke-intro 1s 0.5s backwards;
+          }
+          @keyframes stroke-intro {
+            from {
+              stroke-dasharray: 0 1376;
+              stroke-dashoffset: -170;
+            }
+            to {
+              stroke-dasharray: 1376 0;
+              stroke-dashoffset: -730;
+            }
+          }
+          .from-sheep .logo-path {
+            animation: none;
+          }
+        }
+        path.logo-path[d="#{$path}"];
+      }
+
+      css {
+        sheep-btn {
+          animation: do-not-show-so-quickly 0.2s 2.4s backwards;
+        }
+        @keyframes do-not-show-so-quickly {
+          from {
+            opacity: 0;
+          }
+          to {
+            opacity: 1;
+          }
+        }
+      }
+    }
+
+    css {
+      .about {
+        max-width: 600px;
+        width: 100%;
+        margin: 0 auto;
+      }
+    }
+    @media (min-width: 1000px) {
+      .about {
+        overflow: auto;
+        width: 500px;
+        position: fixed;
+        top: 0;
+        left: 0;
+        bottom: 0;
+
+        // https://stackoverflow.com/a/38994837
+        -ms-overflow-style: none;  // Internet Explorer 10+
+        scrollbar-width: none;  // Firefox
+      }
+      .about::-webkit-scrollbar {
+        display: none; // Safari and Chrome
+      }
+    }
+    section.about {
+      css {
+        .card {
+          border-radius: 10px;
+          padding: 20px;
+          margin: 20px;
+          background-color: #24364a;
+          box-shadow: 0 3px 10px rgba(0, 0, 0, 0.5);
+        }
+        .card h1,
+        .card h2,
+        .card p {
+          margin: 0;
+        }
+        .card h2 {
+          color: rgba(255, 255, 255, 0.9);
+          margin-bottom: 15px;
+          font-weight: normal;
+        }
+      }
+      @media (min-width: 1000px) {
+        .card {
+          margin-left: 40px;
+        }
+      }
+
+      css {
+        .a11y-link:focus {
+          position: fixed;
+          top: 0;
+          left: 0;
+          margin: 20px;
+          background: white;
+          color: #066460;
+          padding: 10px 20px;
+          box-shadow: 0 3px 10px rgba(0, 0, 0, 0.5);
+          border-radius: 5px;
+          overflow: visible;
+          width: auto;
+          height: auto;
+          clip: auto;
+          clip-path: none;
+        }
+      }
+      a.visually-hidden.a11y-link[href="#projects"] {
+        content: "Skip to my projects";
+      }
+
+      .card {
+        css {
+          .card h1 {
+            display: inline-block;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            background-image: linear-gradient(90deg, #20de88, #28bbe8);
+            font-size: 64px;
+          }
+        }
+        h1#hello {
+          content: "Hello,";
+        }
+        p {
+          content: """
+            I’m Sean, a high school student graduating in 2021.
+          """;
+          // TODO: Age display
+        }
+      }
+
+      .card {
+        h2#interests {
+          content: "Phenomena that interest me";
+        }
+
+        css {
+          .interests {
+            display: flex;
+            text-align: center;
+            align-items: flex-start;
+            margin: 0 -20px;
+          }
+        }
+        @media (max-width: 500px) {
+          .interests {
+            flex-direction: column;
+            align-items: center;
+            margin: 0;
+          }
+        }
+        .interests {
+          css {
+            .interest {
+              flex: 1 0 0;
+              display: flex;
+              flex-direction: column;
+              justify-content: center;
+              align-items: center;
+              padding: 10px;
+            }
+            .border {
+              border-left: 1px solid rgba(151, 189, 179, 0.2);
+              border-top: 1px solid rgba(151, 189, 179, 0.2);
+              align-self: stretch;
+            }
+
+            // TEMP
+            .interest img {
+              width: 32px;
+            }
+          }
+
+          // TODO: Images
+          .interest {
+            img[src="/SHEPS.svg"];
+            p.sheep {
+              content: "Sheep";
+            }
+          }
+          .border {}
+          .interest {
+            img[src="/SHEPS.svg"];
+            p {
+              content: "Front-end web development";
+            }
+          }
+          .border {}
+          .interest {
+            img[src="/SHEPS.svg"];
+            p {
+              content: "Constructed languages";
+            }
+          }
+        }
+      }
+
+      .card {
+        h2#stalk {
+          content: "How to stalk me";
+        }
+
+        $socials: import("./data/socials.yml");
+
+        css {
+          .socials {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
+            gap: 20px;
+          }
+        }
+        .socials {
+          $type: "a";
+          @each $social in map.get($socials, 'profiles') {
+            @import "./templates/social.html.scss";
+          }
+        }
+
+        css {
+          .usernames {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            margin: 20px 0;
+            gap: 10px;
+          }
+        }
+        .usernames {
+          $type: "span";
+          $extra-class: "username-icon";
+          @each $social in map.get($socials, 'usernames') {
+            css {
+              .username {
+                display: flex;
+                text-decoration: none;
+                color: inherit;
+                align-items: center;
+              }
+              a.username:hover {
+                color: white;
+              }
+              // TODO: Gmail icon has a hover effect; remove?
+              .username-icon {
+                display: block;
+                width: 32px;
+                height: 32px;
+                padding: 0;
+                margin-right: 10px;
+              }
+            }
+            @if map.get($social, 'link') {
+              a.username[href="#{map.get($social, 'link')}"] {
+                @import "./templates/social.html.scss";
+                content: "#{map.get($social, 'username')}";
+              }
+            }
+            @if not map.get($social, 'link') {
+              span.username {
+                @import "./templates/social.html.scss";
+                content: "#{map.get($social, 'username')}";
+              }
+            }
+          }
+        }
+
+        css {
+          .block-link {
+            display: flex;
+            text-decoration: none;
+            color: inherit;
+            margin: -20px;
+            margin-top: 20px;
+            border-top: 1px solid rgba(151, 189, 179, 0.2);
+            padding: 20px;
+          }
+          .block-link:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+          }
+        }
+        a.discord-link.block-link[href="https://discord.gg/srtYgbVw4H"] {
+          css {
+            .discord-text {
+              flex: auto;
+            }
+          }
+          span.discord-text {
+            css {
+              .discord-link-title {
+                display: block;
+                font-size: 1.2em;
+                color: rgba(255, 255, 255, 0.8);
+              }
+            }
+            span.discord-link-title {
+              content: "Contact me through Discord";
+            }
+            css {
+              .discord-link-subtitle {
+                font-size: 0.9em;
+              }
+            }
+            span.discord-link-subtitle {
+              content: "Join my server to DM me without sending a friend request.";
+            }
+          }
+
+          css {
+            .discord-icon-wrappper {
+              flex: none;
+            }
+          }
+          span.discord-icon-wrappper {
+            css {
+              .discord-link-icon {
+                display: block;
+                width: 32px;
+                height: 32px;
+              }
+            }
+            $type: "span";
+            $extra-class: "discord-link-icon";
+            $social: map.get($socials, 'discord');
+            @import "./templates/social.html.scss";
+          }
+        }
+      }
+    }
+
+    css {
+      .project-wrapper {
+        flex: auto;
+      }
+    }
+    @media (min-width: 1000px) {
+      .project-wrapper {
+        margin-left: 500px;
+      }
+    }
+    section.project-wrapper {
+      $tags: import("./data/tags.yml");
+
+      css {
+        .projects-info {
+          padding: 0 20px;
+          max-width: 600px;
+          margin: 0 auto;
+          box-sizing: border-box;
+        }
+      }
+      @media (min-width: 1000px) {
+        .projects-info {
+          margin: 0;
+          max-width: none;
+        }
+      }
+      .projects-info {
+        css {
+          .projects-header {
+            font-weight: lighter;
+            font-size: 56px;
+            margin: 0;
+            margin-top: 20px;
+            color: rgba(255, 255, 255, 0.9);
+          }
+        }
+        @media (min-width: 1000px) {
+          .projects-header {
+            margin-top: 60px;
+          }
+        }
+        h1.projects-header#projects {
+          content: "Projects";
+        }
+
+        css {
+          .projects-note {
+            margin: 0;
+            margin-top: 10px;
+          }
+          .projects-note a {
+            text-decoration: none;
+            color: #1ce0e0;
+          }
+          .projects-note a:hover {
+            text-decoration: underline;
+          }
+        }
+        p.projects-note {
+          content: "There’s some more on ";
+          a[href="https://scratch.mit.edu/users/Sheep_maker/"] {
+            content: "Scratch";
+          }
+          content: " and ";
+          a[href="https://github.com/SheepTester?tab=repositories"] {
+            content: "GitHub";
+          }
+          content: ".";
+        }
+
+        css {
+          .warning {
+            padding: 20px;
+            border-radius: 10px;
+            background-color: #dd2263;
+            color: white;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.5);
+            margin: 20px 0;
+          }
+          .old-js-warning {
+            display: none;
+          }
+          .old-js .old-js-warning {
+            display: block;
+          }
+        }
+        .warning.old-js-warning {
+          content: """
+            Note that many of these projects require new web features that your
+            browser doesn’t support. Please use a modern browser.
+          """;
+        }
+        noscript {
+          .warning.no-js {
+            content: """
+              Note that many of these projects require JavaScript, which you do
+              not have enabled.
+            """;
+          }
+        }
+
+        css {
+          .filters {
+            display: none;
+          }
+          .has-js .filters {
+            display: block;
+          }
+        }
+        .filters {
+          css {
+            .filter-by {
+              margin: 0;
+              font-weight: normal;
+              font-size: 0.9em;
+              text-transform: uppercase;
+              margin-top: 20px;
+              color: rgba(255, 255, 255, 0.5);
+            }
+          }
+          h2.filter-by#filter-by {
+            content: "Filter by";
+          }
+
+          @each $tag, $tag-data in $tags {
+            css {
+              .base-tag {
+                background-position: center;
+                background-repeat: no-repeat;
+                background-size: 75%, auto;
+              }
+            }
+            css {
+              .tag-#{$tag} {
+                background-color: #{map.get($tag-data, 'colour1')};
+                background-image: url("/home-page/icons/tag-#{$tag}.svg"),
+                  linear-gradient(150deg, #{map.get($tag-data, 'colour1')},
+                  #{map.get($tag-data, 'colour2')});
+              }
+            }
+
+            input[type="checkbox"].visually-hidden.filter-checkbox#filter-by-#{$tag};
+
+            css {
+              .filter-tag {
+                display: inline-flex;
+                cursor: pointer;
+                background-color: #111213;
+                border-radius: 50px;
+                margin-top: 10px;
+                margin-right: 10px;
+                overflow: hidden;
+                height: 30px;
+              }
+              .filter-tag:hover {
+                background-color: #272c31;
+              }
+              .filter-checkbox:focus-visible + .filter-tag {
+                box-shadow: 0 0 0 1px black, 0 0 0 2px white;
+              }
+              .filter-checkbox:checked + .filter-tag {
+                background-color: white;
+                color: #111213;
+              }
+            }
+            label.filter-tag[for="filter-by-#{$tag}"] {
+              css {
+                .filter-tag-icon {
+                  width: 30px;
+                }
+              }
+              @if $tag == "recommend" {
+                css {
+                  .filter-checkbox:checked + .filter-tag .tag-#{$tag} {
+                    background-image: url("/home-page/icons/checked-dark.svg"),
+                      linear-gradient(150deg, #{map.get($tag-data, 'colour1')},
+                      #{map.get($tag-data, 'colour2')});
+                  }
+                }
+              }
+              @if not $tag == "recommend" {
+                css {
+                  .filter-checkbox:checked + .filter-tag .tag-#{$tag} {
+                    background-image: url("/home-page/icons/checked.svg"),
+                      linear-gradient(150deg, #{map.get($tag-data, 'colour1')},
+                      #{map.get($tag-data, 'colour2')});
+                  }
+                }
+              }
+              span.filter-tag-icon.base-tag.tag-#{$tag} {}
+
+              css {
+                .filter-tag-name {
+                  margin: 0 10px;
+                  align-self: center;
+                }
+              }
+              span.filter-tag-name {
+                content: "#{map.get($tag-data, 'name')}";
+              }
+            }
+          }
+        }
+      }
+
+      css {
+        .projects {
+          display: grid;
+          grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+          gap: 20px;
+          padding: 20px;
+          grid-auto-flow: dense;
+        }
+      }
+      .projects#projects-wrapper {
+        @each $project in import("./data/projects.yml") {
+          @import "./templates/project.html.scss";
+        }
+
+        css {
+          .description {
+            border-radius: 10px;
+            padding: 20px;
+            background-color: #24364a;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.5);
+            grid-column: 1 / -1;
+            line-height: 1.5;
+          }
+        }
+        .description#description-wrapper[style="display:none"] {
+          css {
+            .description-body {
+              max-width: 560px;
+              margin: 0 auto;
+              box-sizing: border-box;
+            }
+          }
+          .description-body {
+            css {
+              .description-header {
+                display: flex;
+                align-items: flex-start;
+              }
+            }
+            .description-header {
+              css {
+                .desc-title {
+                  margin: 0;
+                  flex: auto;
+                  color: rgba(255, 255, 255, 0.9);
+                  font-weight: normal;
+                  font-size: 2em;
+                  line-height: 1.1;
+                }
+              }
+              h2.desc-title#desc-title {}
+
+              css {
+                .desc-visit {
+                  color: #1ce0e0;
+                  border: 1px solid #1ce0e0;
+                  text-transform: uppercase;
+                  text-decoration: none;
+                  padding: 2px 15px;
+                  border-radius: 30px;
+                  margin-top: 5px;
+                  font-size: 0.9em;
+                  flex: none;
+                }
+                .desc-visit:hover {
+                  background-color: rgba(28, 224, 224, 0.1);
+                }
+              }
+              a[href="#"].desc-visit#desc-link {
+                content: "Visit";
+              }
+            }
+
+            .description-tags#desc-tags {
+              css {
+                .desc-tag {
+                  display: inline-flex;
+                  height: 30px;
+                  overflow: hidden;
+                  margin-top: 10px;
+                  margin-right: 10px;
+                }
+                .desc-tag-icon {
+                  width: 30px;
+                  border-top-left-radius: 25px;
+                  border-bottom-left-radius: 25px;
+                }
+                .desc-tag-name {
+                  border-top-right-radius: 25px;
+                  border-bottom-right-radius: 25px;
+                  border: 1px solid rgba(151, 189, 179, 0.2);
+                  border-left: none;
+                  padding-right: 10px;
+                  padding-left: 5px;
+                  display: flex;
+                  align-items: center;
+                }
+              }
+            }
+
+            .description-text#description {
+              css {
+                .description-text p {
+                  margin: 10px 0;
+                }
+                .description-text p:last-child {
+                  margin-bottom: 0;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+
+    script[src="/home-page/main.js"] {}
+  }
+}

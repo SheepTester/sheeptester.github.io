@@ -1,0 +1,163 @@
+profiles:
+  - name: GitHub
+    link: https://github.com/SheepTester
+    bg: '#181717'
+
+  - name: Twitter
+    link: https://twitter.com/Sheep_tester/
+    ball: '#1DA1F2'
+
+  - name: Instagram
+    link: https://www.instagram.com/sheeptester/
+    type: instagram
+
+  - name: Reddit
+    link: https://www.reddit.com/user/Sheep_Tester
+    bg: '#FF4500'
+
+  - name: Scratch
+    link: https://scratch.mit.edu/users/Sheep_maker/
+    bg: '#25AFF4'
+    ball: '#F8A839'
+    border: white
+
+  - name: YouTube
+    link: https://www.youtube.com/c/SeanYentheHumansperson
+    ball: '#FF0000'
+
+  - name: JSFiddle
+    link: https://jsfiddle.net/user/SheepTester/
+    bg: '#0483FF'
+    ball: border
+
+  - name: Twitch
+    link: https://www.twitch.tv/sheeptester
+    bg: '#6441A4'
+    ball: border
+
+  - name: Google+ # RIP
+    link: https://plus.google.com/u/0/+SeanYentheHumansperson
+    bg: '#DC4E41'
+
+  - name: Facebook
+    link: https://www.facebook.com/ovinus.real
+    bg: '#3B5998'
+
+  - name: Duolingo
+    link: https://www.duolingo.com/syen5
+    bg: '#30A7E4'
+    ball: '#77C700'
+
+  - name: Replit
+    link: https://replit.com/@Sheep_tester
+    bg: '#F4F4F5'
+    ball: '#4F5151'
+    border: '#697C84'
+    type: replit
+
+  - name: CodinGame
+    link: https://www.codingame.com/profile/7338447a65f53edd10117a7ad07622c14994643
+    bg: '#FCD207'
+    ball: '#1F2528'
+
+  - name: JSPerf
+    link: https://jsperf.com/browse/SheepTester
+    type: jsperf
+
+  - name: Gravatar
+    link: https://en.gravatar.com/sheeptester
+    bg: '#1E8CBE'
+
+  - name: Quizlet
+    link: https://quizlet.com/sean_but_not_really
+    bg: '#4458B0'
+
+  - name: GitLab
+    link: https://gitlab.com/SheepTester
+    bg: '#2D2D61'
+    ball: '#E1452D'
+
+  - name: Snap!
+    link: https://snap.berkeley.edu/user?user=sheeptester
+    bg: '#E6A822'
+    ball: '#4A6CD4'
+
+  - name: Xbox
+    link: https://account.xbox.com/en-us/Profile?Gamertag=SeanICUP
+    bg: '#107C10'
+
+  - name: Piskel
+    link: https://www.piskelapp.com/user/5860704475676672
+    bg: '#00B600'
+    type: piskel
+
+  - name: Fandom
+    link: https://community.fandom.com/wiki/User:SheepTester
+    bg: '#002A32'
+    ball: false
+    border: '#00d6d6'
+
+  - name: NPM
+    link: https://www.npmjs.com/~sheeptester
+    bg: '#CB3837'
+
+  - name: Devpost
+    link: https://devpost.com/SheepTester
+    bg: '#003E54'
+    type: devpost
+
+  - name: Imgur
+    link: https://imgur.com/user/sheeptester
+    bg: '#21B66E'
+    ball: border
+
+  - name: Internet Archive
+    link: https://archive.org/details/@sheep_tester
+    bg: '#000000'
+
+  - name: lernu!
+    link: https://lernu.net/en/uzanto/313379/profilo
+    bg: '#347F78'
+
+  - name: Storyboard That
+    link: https://www.storyboardthat.com/storyboards/you_egg
+    ball: '#729DC8'
+
+  - name: Tumblr
+    link: https://sheep-tester.tumblr.com/
+    bg: '#36465D'
+
+  - name: Blogger
+    link: https://boxofsean.blogspot.com/
+    bg: '#FF5722'
+
+  - name: Codecademy
+    link: https://www.codecademy.com/profiles/SeanICUP
+    border: '#1F4056'
+
+usernames:
+  - name: Minecraft (Java)
+    username: ovinu
+    link: https://namemc.com/profile/ovinu.1
+    bg: '#6CD45A'
+    ball: '#000000'
+
+  - name: Discord
+    username: Sean#2422
+    link: https://discord.gg/srtYgbVw4H
+    bg: '#7289DA'
+
+  - name: Gmail
+    username: ussa.say
+    bg: '#E4E4E4'
+    border: '#D14836'
+
+  - name: Outlook
+    username: seanthesheep22
+    link: mailto:seanthesheep22+st@outlook.com
+    bg: '#0072C6'
+    ball: border
+
+discord:
+  name: Discord
+  bg: '#7289DA'

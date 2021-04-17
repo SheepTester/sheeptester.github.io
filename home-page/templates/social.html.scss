@@ -1,0 +1,98 @@
+css {
+  .social {
+    display: block;
+    position: relative;
+    padding-bottom: 100%;
+    background-color: white;
+    border-radius: 15%;
+    box-sizing: border-box;
+    transition: transform .2s;
+  }
+  .social:hover,
+  a.username:hover .social {
+    transform: scale(1.1);
+  }
+  .social-instagram {
+    background-image: radial-gradient(circle at 20% 100%, #F9D773, #F5AB3F, #F05431, #DD1D4F, #AA128D, #3D3CE2);
+  }
+  .social-replit .ball {
+    border-width: 10px;
+  }
+  .social-jsperf {
+    background-image: linear-gradient(#6ca5dd, #1a6ab9);
+  }
+  .social-piskel {
+    background-image: linear-gradient(-90deg, black, transparent),
+      linear-gradient(#2A6FFF 0%, #2A6FFF 33.3%, #00EE00 33.3%, #00EE00 66.7%,
+      #FF0000 66.7%, #FF0000 100%);
+  }
+  .social-devpost {
+    background-image: linear-gradient(90deg, #3ACCE6 20%, transparent 20%, transparent 80%, #3ACCE6 80%);
+  }
+}
+$bg: "";
+@if map.get($social, 'bg') {
+  $bg: "background-color:#{map.get($social, 'bg')}";
+}
+$ball-type: "social";
+@if $extra-class {
+  $ball-type: "#{$ball-type} #{$extra-class}";
+}
+@if map.get($social, 'type') {
+  $ball-type: "#{$ball-type} social-#{map.get($social, 'type')}";
+}
+$link: "";
+@if not $type {
+  $type: "span";
+}
+@if $type == "a" {
+  $link: map.get($social, 'link');
+}
+$name: map.get($social, 'name');
+#{$type}.#{$ball-type}[href="#{$link}"][style="#{$bg}"][title="#{$name}"][aria-label="#{$name}"] {
+  css {
+    .ball {
+      position: absolute;
+      width: 50%;
+      height: 50%;
+      margin: 25%;
+      border-radius: 50%;
+      background-color: white;
+      border: 5px solid transparent;
+      box-sizing: border-box;
+      transition: all .2s;
+    }
+    .social:hover .ball,
+    a.username:hover .ball {
+      transform: scale(1.2);
+    }
+    .border-ball {
+      border-color: white;
+      background-color: transparent;
+    }
+  }
+  $class: "ball";
+  $border: "";
+  @if map.get($social, 'border') {
+    $class: "ball border-ball";
+    $border: "border-color:#{map.get($social, 'border')};";
+  }
+  $ball: "";
+  @if map.get($social, 'ball') {
+    $ball: "background-color:#{map.get($social, 'ball')}";
+    @if map.get($social, 'ball') == "border" {
+      $ball: "";
+      $class: "ball border-ball";
+    }
+  }
+  span.#{$class}[style="#{$border}#{$ball}"] {}
+
+  css {
+    .social-name {
+      display: none;
+    }
+  }
+  span.social-name {
+    content: "#{$name}";
+  }
+}
