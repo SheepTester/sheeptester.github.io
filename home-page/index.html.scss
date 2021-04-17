@@ -115,27 +115,65 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
     css {
       .wow {
         position: fixed;
-        top: 50%;
-        left: 50%;
-        width: 142vmax;
-        height: 142vmax;
-        margin: -71vmax;
+        bottom: 50%;
+        right: 50%;
         border-radius: 50%;
         background-color: black;
         pointer-events: none;
         z-index: 5;
-        animation: zoom .5s .8s forwards;
+        transform: translateZ(0);
+        animation: zoom 2s 0.8s both, disappear 0.2s 2.5s forwards;
       }
       @keyframes zoom {
-        from {
+        0% {
           width: 142vmax;
           height: 142vmax;
           margin: -71vmax;
         }
-        to {
+        40% {
           width: 100px;
           height: 100px;
           margin: -50px;
+        }
+        50% {
+          width: 100px;
+          height: 100px;
+          margin: -50px;
+          bottom: 50%;
+          right: 50%;
+        }
+        90% {
+          width: 50px;
+          height: 50px;
+          margin: 0;
+          bottom: 10px;
+          right: 10px;
+        }
+        100% {
+          width: 50px;
+          height: 50px;
+          margin: 0;
+          bottom: 10px;
+          right: 10px;
+        }
+      }
+      sheep-btn {
+        animation: do-not-show-so-quickly 0.2s 2.4s backwards;
+      }
+      @keyframes do-not-show-so-quickly {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+      @keyframes disappear {
+        from {
+          opacity: 1;
+        }
+        to {
+          opacity: 0;
         }
       }
     }
@@ -145,10 +183,26 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
       .logo {
         position: fixed;
         width: 90px;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -48%);
+        right: 50%;
+        bottom: 50%;
+        transform: translate(50%, 52%);
         z-index: 7;
+        pointer-events: none;
+        animation: weee 0.8s 1.8s forwards, disappear 0.2s 2.5s forwards;
+      }
+      @keyframes weee {
+        from {
+          width: 90px;
+          right: 50%;
+          bottom: 50%;
+          transform: translate(50%, 52%);
+        }
+        to {
+          width: 45px;
+          right: 10px;
+          bottom: 10px;
+          transform: translate(-5%,-2%);
+        }
       }
     }
     svg.logo[xmlns="http://www.w3.org/2000/svg"][viewBox="0 0 480 480"] {
