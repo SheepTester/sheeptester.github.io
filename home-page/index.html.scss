@@ -78,6 +78,7 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
       margin: 0;
       background-color: #171931;
       color: rgba(255, 255, 255, 0.7);
+      white-space: pre-wrap;
     }
   }
   body {
@@ -338,7 +339,7 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
         }
 
         css {
-          .discord-link {
+          .block-link {
             display: flex;
             text-decoration: none;
             color: inherit;
@@ -347,11 +348,11 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
             border-top: 1px solid rgba(151, 189, 179, 0.2);
             padding: 20px;
           }
-          .discord-link:hover {
+          .block-link:hover {
             background-color: rgba(255, 255, 255, 0.05);
           }
         }
-        a.discord-link[href="https://discord.gg/srtYgbVw4H"] {
+        a.discord-link.block-link[href="https://discord.gg/srtYgbVw4H"] {
           css {
             .discord-text {
               flex: auto;
@@ -613,28 +614,18 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
           background-color: #24364a;
           box-shadow: 0 3px 10px rgba(0, 0, 0, 0.5);
           grid-column: 1 / -1;
-          position: relative;
-          z-index: 2;
-          animation: desc-show .5s;
-          transition: all .5s;
+          line-height: 1.5;
         }
-        .desc-hide {
-          animation: none;
-          padding: 0 20px;
-          height: 0;
-          overflow: hidden;
+        .description p {
+          margin: 0;
+          margin-bottom: 10px;
         }
-        @keyframes desc-show {
-          from {
-            padding: 0 20px;
-            height: 0;
-            overflow: hidden;
-          }
-          to {
-            padding: 20px;
-            max-height: 100%;
-            overflow: hidden;
-          }
+        .description p:last-child {
+          margin-bottom: 0;
+        }
+        .desc-visit {
+          justify-content: center;
+          padding: 10px;
         }
       }
     }

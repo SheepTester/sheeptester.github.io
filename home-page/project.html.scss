@@ -3,20 +3,25 @@ css {
     position: relative;
     padding-bottom: 100%;
     border-radius: 10px;
-    overflow: hidden;
     color: inherit;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
     background-image: linear-gradient(45deg, #20de88, #28bbe8);
-    transition: box-shadow .5s, transform .2s, border-radius .2s;
+    transition: box-shadow .5s;
   }
   .project:not(.showing-desc):hover {
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.8);
-    transition: box-shadow .2s, transform .2s, border-radius .2s;
+    transition: box-shadow .2s;
   }
-  .showing-desc {
-    transform: translateY(30px);
-    border-bottom-left-radius: 0;
-    border-bottom-right-radius: 0;
+  .showing-desc::after {
+    content: '';
+    border-bottom: 10px solid #24364a;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-top: 10px;
+    margin-left: -10px;
   }
 }
 $classes: "project";
@@ -31,6 +36,7 @@ a.#{$classes}[href="#{map.get($project, 'path')}"] {
       left: 0;
       width: 100%;
       z-index: 0;
+      border-radius: 10px;
       opacity: 0.7;
       filter: grayscale(1);
       transition: opacity .5s, filter .5s;
@@ -58,25 +64,22 @@ a.#{$classes}[href="#{map.get($project, 'path')}"] {
       padding: 10px 15px;
       padding-top: 30px;
       font-size: 24px;
+      border-bottom-left-radius: 10px;
+      border-bottom-right-radius: 10px;
       color: white;
       opacity: 0.5;
-      transition: opacity .2s, padding .5s;
+      transition: opacity .2s;
     }
     .project:hover .title,
     .showing-desc .title {
       opacity: 1;
-    }
-    .showing-desc .title {
-      padding-bottom: 25px;
     }
   }
   span.title {
     content: "#{map.get($project, 'name')}";
   }
 
-  content: " ";
-
-  span.project-desc.visually-hidden {
+  span.project-desc.visually-hidden[aria-label="Description"] {
     content: "#{map.get($project, 'description')}";
   }
 
@@ -90,7 +93,7 @@ a.#{$classes}[href="#{map.get($project, 'path')}"] {
       margin: 8px;
     }
   }
-  span.tags {
+  span.tags[aria-label="Tags"] {
     @each $tag, $index in map.get($project, 'tags') {
       $tag-info: map.get($tags, $tag);
       content: " ";
