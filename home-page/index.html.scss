@@ -597,11 +597,44 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
           grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
           gap: 20px;
           padding: 20px;
+          grid-auto-flow: dense;
         }
       }
-      .projects {
+      .projects#projects-wrapper {
         @each $project in import("./projects.yml") {
           @import "./project.html.scss";
+        }
+      }
+
+      css {
+        .description {
+          border-radius: 10px;
+          padding: 20px;
+          background-color: #24364a;
+          box-shadow: 0 3px 10px rgba(0, 0, 0, 0.5);
+          grid-column: 1 / -1;
+          position: relative;
+          z-index: 2;
+          animation: desc-show .5s;
+          transition: all .5s;
+        }
+        .desc-hide {
+          animation: none;
+          padding: 0 20px;
+          height: 0;
+          overflow: hidden;
+        }
+        @keyframes desc-show {
+          from {
+            padding: 0 20px;
+            height: 0;
+            overflow: hidden;
+          }
+          to {
+            padding: 20px;
+            max-height: 100%;
+            overflow: hidden;
+          }
         }
       }
     }

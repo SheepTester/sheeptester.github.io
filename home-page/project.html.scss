@@ -7,11 +7,16 @@ css {
     color: inherit;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
     background-image: linear-gradient(45deg, #20de88, #28bbe8);
-    transition: box-shadow .5s;
+    transition: box-shadow .5s, transform .2s, border-radius .2s;
   }
-  .project:hover {
+  .project:not(.showing-desc):hover {
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.8);
-    transition: box-shadow .2s;
+    transition: box-shadow .2s, transform .2s, border-radius .2s;
+  }
+  .showing-desc {
+    transform: translateY(30px);
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
   }
 }
 $classes: "project";
@@ -30,7 +35,8 @@ a.#{$classes}[href="#{map.get($project, 'path')}"] {
       filter: grayscale(1);
       transition: opacity .5s, filter .5s;
     }
-    .project:hover .thumbnail {
+    .project:hover .thumbnail,
+    .showing-desc .thumbnail {
       opacity: 1;
       filter: grayscale(0);
       transition: opacity .2s, filter .2s;
@@ -54,10 +60,14 @@ a.#{$classes}[href="#{map.get($project, 'path')}"] {
       font-size: 24px;
       color: white;
       opacity: 0.5;
-      transition: opacity .2s;
+      transition: opacity .2s, padding .5s;
     }
-    .project:hover .title {
+    .project:hover .title,
+    .showing-desc .title {
       opacity: 1;
+    }
+    .showing-desc .title {
+      padding-bottom: 25px;
     }
   }
   span.title {
@@ -66,7 +76,7 @@ a.#{$classes}[href="#{map.get($project, 'path')}"] {
 
   content: " ";
 
-  span.description.visually-hidden {
+  span.project-desc.visually-hidden {
     content: "#{map.get($project, 'description')}";
   }
 
@@ -96,7 +106,8 @@ a.#{$classes}[href="#{map.get($project, 'path')}"] {
           transition-delay: 0s;
           box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
         }
-        .project:hover .tag {
+        .project:hover .tag,
+        .showing-desc .tag {
           opacity: 1;
         }
       }
@@ -140,7 +151,8 @@ a.#{$classes}[href="#{map.get($project, 'path')}"] {
     .has-js .open-directly {
       display: block;
     }
-    .project:hover .open-directly {
+    .project:hover .open-directly,
+    .showing-desc .open-directly {
       opacity: 1;
     }
     .open-directly:hover {
