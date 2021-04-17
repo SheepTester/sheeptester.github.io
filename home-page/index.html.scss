@@ -21,7 +21,7 @@ css {
 html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
   head {
     meta[charset="UTF-8"];
-    script[src="redirects.js"] {}
+    script[src="/redirects.js"] {}
 
     meta[name="viewport"][content="width=device-width, initial-scale=1"];
 
@@ -41,14 +41,14 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
     meta[property="og:title"][content="SheepTester"];
     meta[property="og:type"][content="website"];
     meta[property="og:url"][content="https://sheeptester.github.io/"];
-    meta[property="og:image"][content="https://sheeptester.github.io/Sheep_maker.png"];
+    meta[property="og:image"][content="https://sheeptester.github.io/home-page/preview/opengraph.png"];
     meta[property="og:description"][content="A directory of some things I made."];
 
     // Twitter
     meta[name="twitter:card"][content="summary"];
     meta[name="twitter:title"][content="SheepTester"];
     meta[name="twitter:description"][content="A directory of some things I made."];
-    meta[name="twitter:image"][content="https://sheeptester.github.io/Sheep_maker.png"];
+    meta[name="twitter:image"][content="https://sheeptester.github.io/home-page/preview/opengraph.png"];
     link[rel="canonical"][href="https://sheeptester.github.io/"];
 
     // Other icons from http://realfavicongenerator.net/
@@ -60,8 +60,6 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
 
     link[rel="stylesheet"][type="text/css"][href="/sheep3.css"];
     link[rel="stylesheet"][type="text/css"][href="/home-page/style.css"];
-    // link[rel="preconnect"][href="https://fonts.gstatic.com"];
-    // link[href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@300&display=swap"][rel="stylesheet"];
 
     script[src="/sheep3.js"] {}
   }
@@ -418,7 +416,7 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
           content: "How to stalk me";
         }
 
-        $socials: import("./socials.yml");
+        $socials: import("./data/socials.yml");
 
         css {
           .socials {
@@ -430,7 +428,7 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
         .socials {
           $type: "a";
           @each $social in map.get($socials, 'profiles') {
-            @import "./social.html.scss";
+            @import "./templates/social.html.scss";
           }
         }
 
@@ -467,13 +465,13 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
             }
             @if map.get($social, 'link') {
               a.username[href="#{map.get($social, 'link')}"] {
-                @import "./social.html.scss";
+                @import "./templates/social.html.scss";
                 content: "#{map.get($social, 'username')}";
               }
             }
             @if not map.get($social, 'link') {
               span.username {
-                @import "./social.html.scss";
+                @import "./templates/social.html.scss";
                 content: "#{map.get($social, 'username')}";
               }
             }
@@ -537,7 +535,7 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
             $type: "span";
             $extra-class: "discord-link-icon";
             $social: map.get($socials, 'discord');
-            @import "./social.html.scss";
+            @import "./templates/social.html.scss";
           }
         }
       }
@@ -554,7 +552,7 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
       }
     }
     section.project-wrapper {
-      $tags: import("./tags.yml");
+      $tags: import("./data/tags.yml");
 
       css {
         .projects-info {
@@ -759,8 +757,8 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
         }
       }
       .projects#projects-wrapper {
-        @each $project in import("./projects.yml") {
-          @import "./project.html.scss";
+        @each $project in import("./data/projects.yml") {
+          @import "./templates/project.html.scss";
         }
 
         css {

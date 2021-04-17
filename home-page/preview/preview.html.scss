@@ -1,0 +1,99 @@
+html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
+  head {
+    meta[charset="UTF-8"];
+
+    meta[name="viewport"][content="width=device-width, initial-scale=1"];
+
+    link[rel="stylesheet"][type="text/css"][href="/sheep3.css"];
+    link[rel="stylesheet"][type="text/css"][href="./style.css"];
+
+    script[src="/sheep3.js"] {}
+  }
+
+  css {
+    html,
+    body {
+      height: 100%;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+        'Helvetica Neue', Arial, sans-serif, 'Apple Color Emoji',
+        'Segoe UI Emoji', 'Segoe UI Symbol';
+      margin: 0;
+      background-color: #171931;
+      color: rgba(255, 255, 255, 0.7);
+      word-break: break-word;
+
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+  }
+  body {
+    css {
+      .strip {
+        position: absolute;
+        z-index: -1;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: calc(50% + 50px);
+        background-image: linear-gradient(180deg, rgb(23,
+        25, 49, 0.75), rgb(23, 25, 49, 0.92), #171931),
+        linear-gradient(90deg, #20de88, #28bbe8);
+        background-size: 100% 20px, auto;
+        background-repeat: no-repeat;
+        background-position: bottom;
+      }
+    }
+    .strip {}
+
+    section.about {
+      css {
+        .card {
+          border-radius: 10px;
+          padding: 20px;
+          padding-right: 60px;
+          margin: 20px;
+          background-color: #24364a;
+          box-shadow: 0 3px 10px rgba(0, 0, 0, 0.5);
+        }
+        .card h1,
+        .card p {
+          margin: 0;
+        }
+        .card p {
+          font-size: 1.3em;
+        }
+      }
+
+      .card {
+        css {
+          .card h1 {
+            display: inline-block;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            background-image: linear-gradient(90deg, #20de88, #28bbe8);
+            font-size: 64px;
+          }
+        }
+        h1#hello {
+          content: "SheepTester";
+        }
+        p {
+          content: """
+            A directory listing of a bunch of things I made.
+          """;
+        }
+      }
+    }
+
+    css {
+      sheep-btn {
+        background-color: transparent;
+        box-shadow: none;
+      }
+    }
+  }
+}

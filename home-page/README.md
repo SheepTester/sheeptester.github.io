@@ -6,7 +6,8 @@ SCSS-like syntax to generate HTML.
 ## Build
 
 ```sh
-node home-page/imitation-scss-parser.js home-page/index.html.scss index.html home-page/style.css
+node home-page/imitation-scss-parser.js home-page/index.html.scss index.html \
+  home-page/style.css
 ```
 
 ## Development
