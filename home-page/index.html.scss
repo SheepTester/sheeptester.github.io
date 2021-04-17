@@ -481,9 +481,18 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
 
         @each $tag, $tag-data in $tags {
           css {
+            .base-tag {
+              background-position: center;
+              background-repeat: no-repeat;
+              background-size: 75%, auto;
+            }
+          }
+          css {
             .tag-#{$tag} {
               background-color: #{map.get($tag-data, 'colour1')};
-              background-image: linear-gradient(150deg, #{map.get($tag-data, 'colour1')}, #{map.get($tag-data, 'colour2')});
+              background-image: url("/home-page/icons/tag-#{$tag}.svg"),
+                linear-gradient(150deg, #{map.get($tag-data, 'colour1')},
+                #{map.get($tag-data, 'colour2')});
             }
           }
 
@@ -514,7 +523,25 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
                 width: 30px;
               }
             }
-            span.filter-tag-icon.tag-#{$tag} {}
+            @if $tag == "recommend" {
+              css {
+                .filter-checkbox:checked + .filter-tag .tag-#{$tag} {
+                  background-image: url("/home-page/icons/checked-dark.svg"),
+                    linear-gradient(150deg, #{map.get($tag-data, 'colour1')},
+                    #{map.get($tag-data, 'colour2')});
+                }
+              }
+            }
+            @if not $tag == "recommend" {
+              css {
+                .filter-checkbox:checked + .filter-tag .tag-#{$tag} {
+                  background-image: url("/home-page/icons/checked.svg"),
+                    linear-gradient(150deg, #{map.get($tag-data, 'colour1')},
+                    #{map.get($tag-data, 'colour2')});
+                }
+              }
+            }
+            span.filter-tag-icon.base-tag.tag-#{$tag} {}
 
             css {
               .filter-tag-name {

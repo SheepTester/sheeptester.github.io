@@ -1,0 +1,12 @@
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M18 8C20.2091 8 22 9.79086 22 12V14C22 16.2091 20.2091 18 18 18C16.1325 18 14.5639 16.7202 14.1234 14.9899C13.9872 14.4547 13.5523 14 13 14H11C10.4477 14 10.0128 14.4547 9.87657 14.9899C9.43606 16.7202 7.86748 18 6 18C3.79086 18 2 16.2091 2 14V12C2 9.79086 3.79086 8 6 8H18Z" fill="white" fill-opacity="0.53"/>
+  <circle r="1" transform="matrix(-1 0 0 1 20 14)" fill="white" fill-opacity="0.83"/>
+  <circle r="1" transform="matrix(-1 0 0 1 18 12)" fill="white" fill-opacity="0.83"/>
+  <circle r="1" transform="matrix(-1 0 0 1 18 16)" fill="white" fill-opacity="0.83"/>
+  <circle r="1" transform="matrix(-1 0 0 1 16 14)" fill="white" fill-opacity="0.83"/>
+  <circle r="1" transform="matrix(-1 0 0 1 12 11)" fill="white" fill-opacity="0.83"/>
+  <path d="M5 12.5L6 13.5L7 12.5V11H5V12.5Z" fill="white" fill-opacity="0.83"/>
+  <path d="M7 15.5L6 14.5L5 15.5L5 17L7 17L7 15.5Z" fill="white" fill-opacity="0.83"/>
+  <path d="M4.5 15L5.5 14L4.5 13L3 13L3 15L4.5 15Z" fill="white" fill-opacity="0.83"/>
+  <path d="M7.50004 13L6.50004 14L7.50004 15L9 15L9 13L7.50004 13Z" fill="white" fill-opacity="0.83"/>
+</svg>

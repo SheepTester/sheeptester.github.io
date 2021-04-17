@@ -288,7 +288,7 @@ async function parseImitationScss (psuedoScss, filePath, {
       assignToCss(tempCss, css)
       pop('each-loop (loop end)') // each-loop
       if (contextStack[contextStack.length - 1].type === 'each-loop') {
-        console.log(contextHistory.join('\n'));
+        console.error(contextHistory.join('\n'));
         throw new Error('Unbalanced popping; each-loop still exists')
       }
       index++
@@ -310,7 +310,7 @@ async function parseImitationScss (psuedoScss, filePath, {
         return context.type + (context.step ? `[${context.step}]` : '')
           + (context.brackets !== undefined ? `[${context.brackets}]` : '')
       } else {
-        return `?${context._from}`
+        return `?(${context._from})`
       }
     }).join(' ')
     if (contextHistory[contextHistory.length - 1] !== contextEntry) {
@@ -318,7 +318,7 @@ async function parseImitationScss (psuedoScss, filePath, {
     }
 
     if (context.type === 'if' && context.step === 'skip') {
-      if (tokenType === 'lcurly') {
+      if (tokenType === 'lcurly' || tokenType === 'cssRawBegin') {
         context.brackets++
       } else if (tokenType === 'rcurly') {
         context.brackets--
@@ -581,7 +581,8 @@ async function parseImitationScss (psuedoScss, filePath, {
             throw new Error('Right curly must be after left curly in @if')
           }
         } else {
-          console.error(contextStack)
+          console.error(contextHistory.join('\n'))
+          // console.error(contextStack)
           throw new Error('Right curly\'s matching left curly in wrong context')
         }
         break

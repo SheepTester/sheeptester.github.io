@@ -103,7 +103,7 @@ a.project[href="#{map.get($project, 'path')}"] {
           transition-delay: calc(0.1s * #{$index});
         }
       }
-      span.tag.tag-#{$tag}[title="#{map.get($tag-info, 'name')}"] {
+      span.tag.base-tag.tag-#{$tag}[title="#{map.get($tag-info, 'name')}"] {
         .visually-hidden {
           content: "#{map.get($tag-info, 'name')}";
         }
@@ -111,5 +111,34 @@ a.project[href="#{map.get($project, 'path')}"] {
     }
   }
 
+  css {
+    .open-directly {
+      position: absolute;
+      top: 0;
+      right: 0;
+      z-index: 1;
+      width: 24px;
+      height: 24px;
+      background-color: rgba(255, 255, 255, 0.5);
+      background-image: url('/home-page/icons/open-directly.svg');
+      background-size: 24px;
+      background-repeat: no-repeat;
+      background-position: center;
+      padding: 6px;
+      margin: 6px;
+      border-radius: 50%;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+      opacity: 0;
+      transition: opacity .5s, background-color .2s, box-shadow .2s;
+      transition-delay: 0.05s, 0, 0;
+    }
+    .project:hover .open-directly {
+      opacity: 1;
+    }
+    .open-directly:hover {
+      background-color: white;
+      box-shadow: 0 3px 5px rgba(0, 0, 0, 0.2);
+    }
+  }
   span.open-directly {}
 }

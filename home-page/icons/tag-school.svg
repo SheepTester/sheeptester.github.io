@@ -1,0 +1,16 @@
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M22 6H14C12.8954 6 12 6.89543 12 8V18C12 18.5523 12.4477 19 13 19H20C21.1046 19 22 18.1046 22 17V6Z" fill="white" fill-opacity="0.35"/>
+  <path d="M2 6H10C11.1046 6 12 6.89543 12 8V18C12 18.5523 11.5523 19 11 19H4C2.89543 19 2 18.1046 2 17V6Z" fill="white" fill-opacity="0.35"/>
+  <path d="M22 6H14C12.8954 6 12 6.89543 12 8V18H20C21.1046 18 22 17.1046 22 16V6Z" fill="white" fill-opacity="0.37"/>
+  <path d="M2 6H10C11.1046 6 12 6.89543 12 8V18H4C2.89543 18 2 17.1046 2 16V6Z" fill="white" fill-opacity="0.37"/>
+  <rect x="4" y="8" width="6" height="1" rx="0.5" fill="white" fill-opacity="0.56"/>
+  <rect x="4" y="10" width="3" height="1" rx="0.5" fill="white" fill-opacity="0.56"/>
+  <rect x="4" y="12" width="3" height="2" rx="0.5" fill="white" fill-opacity="0.56"/>
+  <rect x="8" y="10" width="2" height="4" rx="0.5" fill="white" fill-opacity="0.56"/>
+  <rect x="4" y="15" width="6" height="1" rx="0.5" fill="white" fill-opacity="0.56"/>
+  <rect x="14" y="8" width="6" height="1" rx="0.5" fill="white" fill-opacity="0.56"/>
+  <rect x="14" y="13" width="6" height="1" rx="0.5" fill="white" fill-opacity="0.56"/>
+  <rect x="14" y="10" width="2" height="2" rx="0.5" fill="white" fill-opacity="0.56"/>
+  <rect x="14" y="15" width="6" height="1" rx="0.5" fill="white" fill-opacity="0.56"/>
+  <rect x="17" y="10" width="3" height="2" rx="0.5" fill="white" fill-opacity="0.56"/>
+</svg>
