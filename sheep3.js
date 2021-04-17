@@ -5,9 +5,11 @@ document.addEventListener("DOMContentLoaded", function(e) {
   homeButton.addEventListener('click', function(e) {
     document.body.classList.add('sheep-blockscreen');
     homeButton.addEventListener('transitionend', function(e) {
-      setTimeout(function() {
-        window.location = '/?from=sheep3';
-      }, 100);
+      window.requestAnimationFrame(function() {
+        window.requestAnimationFrame(function() {
+          window.location = '/?from=sheep3';
+        });
+      });
     });
   });
   homeButton.addEventListener('keydown', function(e) {

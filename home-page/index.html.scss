@@ -83,8 +83,15 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
   }
   body {
     script {
+      // Need semicolons because the newlines are removed
+      // Using ?. to weed out incompetent browsers
       content: """
-        document.body.classList.add('has-js')
+        const params = new URL(window.location).searchParams;
+        if (params.get('from')?.startsWith('sheep')) {
+          window.history.replaceState({}, '', '/');
+          document.body.classList.add('from-sheep');
+        }
+        document.body.classList.add('has-js');
       """;
     }
 
@@ -111,132 +118,131 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
     }
     .strip {}
 
-    // TEMP
     css {
-      .wow {
+      .intro {
         position: fixed;
         bottom: 50%;
         right: 50%;
-        border-radius: 50%;
-        background-color: black;
-        pointer-events: none;
         z-index: 5;
-        transform: translateZ(0);
-        animation: zoom 2s 0.8s both, disappear 0.2s 2.5s forwards;
+        transform-origin: bottom right;
+        animation: to-corner-then-disappear 2s cubic-bezier(0.7, 0, 0.35, 1) 1.2s forwards;
       }
-      @keyframes zoom {
+      @keyframes to-corner-then-disappear {
+        // Go to corner
         0% {
-          width: 142vmax;
-          height: 142vmax;
-          margin: -71vmax;
-        }
-        40% {
-          width: 100px;
-          height: 100px;
-          margin: -50px;
-        }
-        50% {
-          width: 100px;
-          height: 100px;
-          margin: -50px;
           bottom: 50%;
           right: 50%;
+          transform: scale(1);
         }
-        90% {
-          width: 50px;
-          height: 50px;
-          margin: 0;
-          bottom: 10px;
-          right: 10px;
+        70% {
+          bottom: 35px;
+          right: 35px;
+          opacity: 1;
+          transform: scale(0.5);
+        }
+        // Then disappear
+        80% {
+          bottom: 35px;
+          right: 35px;
+          opacity: 1;
+          transform: scale(0.5);
         }
         100% {
-          width: 50px;
-          height: 50px;
-          margin: 0;
-          bottom: 10px;
-          right: 10px;
-        }
-      }
-      sheep-btn {
-        animation: do-not-show-so-quickly 0.2s 2.4s backwards;
-      }
-      @keyframes do-not-show-so-quickly {
-        from {
+          bottom: 35px;
+          right: 35px;
           opacity: 0;
-        }
-        to {
-          opacity: 1;
-        }
-      }
-      @keyframes disappear {
-        from {
-          opacity: 1;
-        }
-        to {
-          opacity: 0;
+          transform: scale(0.5);
         }
       }
     }
-    .wow {}
-    // TEMP
-    css {
-      .logo {
-        position: fixed;
-        width: 90px;
-        right: 50%;
-        bottom: 50%;
-        transform: translate(50%, 52%);
-        z-index: 7;
-        pointer-events: none;
-        animation: weee 0.8s 1.8s forwards, disappear 0.2s 2.5s forwards;
-      }
-      @keyframes weee {
-        from {
-          width: 90px;
-          right: 50%;
-          bottom: 50%;
-          transform: translate(50%, 52%);
-        }
-        to {
-          width: 45px;
-          right: 10px;
-          bottom: 10px;
-          transform: translate(-5%,-2%);
-        }
-      }
-    }
-    svg.logo[xmlns="http://www.w3.org/2000/svg"][viewBox="0 0 480 480"] {
-      $path: """
-        M90 90
-        a50 50 0 0 0 0 100
-        H98.579
-        A150 150 0 1 0 381.421 190
-        H390
-        a50 50 0 0 0 0 -100
-        a50 50 0 1 1 -100 0
-        a50 50 0 1 1 -100 0
-        a50 50 0 1 1 -100 0
-        z
-      """;
+    .intro {
       css {
-        .logo-path {
-          fill: none;
-          stroke: rgba(255, 255, 255, 0.8);
-          stroke-width: 20;
-          animation: stroke-intro 1s 0.5s backwards;
+        .intro-back {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          border-radius: 50%;
+          background-color: black;
+          pointer-events: none;
+          transform: translateZ(0);
+          animation: circle-in 0.8s 0.8s both;
         }
-        @keyframes stroke-intro {
+        @keyframes circle-in {
           from {
-            stroke-dasharray: 0 1376;
-            stroke-dashoffset: -170;
+            // 142 ≈ 100 sqrt(2) (diagonal of square screen)
+            width: 142vmax;
+            height: 142vmax;
+            margin: -71vmax;
           }
           to {
-            stroke-dasharray: 1376 0;
-            stroke-dashoffset: -730;
+            width: 100px;
+            height: 100px;
+            margin: -50px;
           }
         }
       }
-      path.logo-path[d="#{$path}"];
+      .intro-back {}
+
+      css {
+        .logo {
+          position: absolute;
+          width: 90px;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -48%);
+          pointer-events: none;
+        }
+      }
+      svg.logo[xmlns="http://www.w3.org/2000/svg"][viewBox="0 0 480 480"] {
+        $path: """
+          M90 90
+          a50 50 0 0 0 0 100
+          H98.579
+          A150 150 0 1 0 381.421 190
+          H390
+          a50 50 0 0 0 0 -100
+          a50 50 0 1 1 -100 0
+          a50 50 0 1 1 -100 0
+          a50 50 0 1 1 -100 0
+          z
+        """;
+        css {
+          .logo-path {
+            fill: none;
+            stroke: rgba(255, 255, 255, 0.7);
+            stroke-width: 20;
+            animation: stroke-intro 1s 0.5s backwards;
+          }
+          @keyframes stroke-intro {
+            from {
+              stroke-dasharray: 0 1376;
+              stroke-dashoffset: -170;
+            }
+            to {
+              stroke-dasharray: 1376 0;
+              stroke-dashoffset: -730;
+            }
+          }
+          .from-sheep .logo-path {
+            animation: none;
+          }
+        }
+        path.logo-path[d="#{$path}"];
+      }
+
+      css {
+        sheep-btn {
+          animation: do-not-show-so-quickly 0.2s 2.4s backwards;
+        }
+        @keyframes do-not-show-so-quickly {
+          from {
+            opacity: 0;
+          }
+          to {
+            opacity: 1;
+          }
+        }
+      }
     }
 
     css {

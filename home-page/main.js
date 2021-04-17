@@ -55,7 +55,7 @@ const projectsWrapper = document.getElementById('projects-wrapper')
 let lastSelected = null
 projectsWrapper.addEventListener('click', e => {
   const project = e.target.closest('.project')
-  if (project) {
+  if (project && !e.target.closest('.open-directly')) {
     removeDescription()
     if (!lastSelected || lastSelected[0] !== project) {
       const description = createDescription(
@@ -68,9 +68,7 @@ projectsWrapper.addEventListener('click', e => {
     } else {
       lastSelected = null
     }
-    if (!e.target.closest('.open-directly')) {
-      e.preventDefault()
-    }
+    e.preventDefault()
   }
 })
 
