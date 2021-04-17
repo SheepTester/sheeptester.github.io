@@ -265,26 +265,25 @@ async function parseImitationScss (psuedoScss, filePath, {
       contextStack.push({ type: 'each-loop' })
       css = new Map()
       html = ''
-      const vars = { ...variables }
       if (context.variables.length === 1) {
-        vars[context.variables[0]] = entry
+        variables[context.variables[0]] = entry
       } else {
         if (Array.isArray(entry)) {
           context.variables.forEach((varName, i) => {
-            vars[varName] = entry[i]
+            variables[varName] = entry[i]
           })
         } else {
-          vars[context.variables[0]] = entry
-          vars[context.variables[1]] = index + 1
+          variables[context.variables[0]] = entry
+          variables[context.variables[1]] = index + 1
         }
       }
-      // console.log('loopstart', vars);
+      // console.log('loopstart', variables);
       for (const token of loopTokens) {
         if (logPop) console.log('BEGIN TOKEN', token.slice(0, 2))
-        await analyseToken(token, vars)
+        await analyseToken(token, variables)
       }
       // console.log('loopend');
-      tempHtml += substitute(html, vars)
+      tempHtml += substitute(html, variables)
       assignToCss(tempCss, css)
       pop('each-loop (loop end)') // each-loop
       if (contextStack[contextStack.length - 1].type === 'each-loop') {

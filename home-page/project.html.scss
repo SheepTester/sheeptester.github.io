@@ -14,7 +14,11 @@ css {
     transition: box-shadow .2s;
   }
 }
-a.project[href="#{map.get($project, 'path')}"] {
+$classes: "project";
+@each $tag in map.get($project, 'tags') {
+  $classes: "#{$classes} project-#{$tag}"
+}
+a.#{$classes}[href="#{map.get($project, 'path')}"] {
   css {
     .thumbnail {
       position: absolute;
@@ -113,6 +117,7 @@ a.project[href="#{map.get($project, 'path')}"] {
 
   css {
     .open-directly {
+      display: none;
       position: absolute;
       top: 0;
       right: 0;
@@ -131,6 +136,9 @@ a.project[href="#{map.get($project, 'path')}"] {
       opacity: 0;
       transition: opacity .5s, background-color .2s, box-shadow .2s;
       transition-delay: 0.05s, 0, 0;
+    }
+    .has-js .open-directly {
+      display: block;
     }
     .project:hover .open-directly {
       opacity: 1;

@@ -81,6 +81,12 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
     }
   }
   body {
+    script {
+      content: """
+        document.body.classList.add('has-js')
+      """;
+    }
+
     css {
       .strip {
         position: absolute;
@@ -465,92 +471,121 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
           content: ".";
         }
 
+        noscript {
+          css {
+            .no-js {
+              padding: 20px;
+              border-radius: 10px;
+              background-color: #dd2263;
+              color: white;
+              box-shadow: 0 3px 10px rgba(0, 0, 0, 0.5);
+              margin: 20px 0;
+            }
+          }
+          .no-js {
+            content: "Note that many of these projects require JavaScript, which you do not have enabled.";
+          }
+        }
+
         css {
-          .filter-by {
-            margin: 0;
-            font-weight: normal;
-            font-size: 0.9em;
-            text-transform: uppercase;
-            margin-top: 20px;
-            color: rgba(255, 255, 255, 0.5);
+          .filters {
+            display: none;
+          }
+          .has-js .filters {
+            display: block;
           }
         }
-        h2.filter-by#filter-by {
-          content: "Filter by";
-        }
-
-        @each $tag, $tag-data in $tags {
+        .filters {
           css {
-            .base-tag {
-              background-position: center;
-              background-repeat: no-repeat;
-              background-size: 75%, auto;
+            .filter-by {
+              margin: 0;
+              font-weight: normal;
+              font-size: 0.9em;
+              text-transform: uppercase;
+              margin-top: 20px;
+              color: rgba(255, 255, 255, 0.5);
             }
           }
-          css {
-            .tag-#{$tag} {
-              background-color: #{map.get($tag-data, 'colour1')};
-              background-image: url("/home-page/icons/tag-#{$tag}.svg"),
-                linear-gradient(150deg, #{map.get($tag-data, 'colour1')},
-                #{map.get($tag-data, 'colour2')});
-            }
+          h2.filter-by#filter-by {
+            content: "Filter by";
           }
 
-          input[type="checkbox"].visually-hidden.filter-checkbox#filter-by-#{$tag};
-
-          css {
-            .filter-tag {
-              display: inline-flex;
-              cursor: pointer;
-              background-color: #111213;
-              border-radius: 50px;
-              margin-top: 5px;
-              margin-right: 5px;
-              overflow: hidden;
-              height: 30px;
-            }
-            .filter-tag:hover {
-              background-color: #272c31;
-            }
-            .filter-checkbox:checked + .filter-tag {
-              background-color: white;
-              color: #111213;
-            }
-          }
-          label.filter-tag[for="filter-by-#{$tag}"] {
+          @each $tag, $tag-data in $tags {
             css {
-              .filter-tag-icon {
-                width: 30px;
+              .base-tag {
+                background-position: center;
+                background-repeat: no-repeat;
+                background-size: 75%, auto;
               }
             }
-            @if $tag == "recommend" {
-              css {
-                .filter-checkbox:checked + .filter-tag .tag-#{$tag} {
-                  background-image: url("/home-page/icons/checked-dark.svg"),
-                    linear-gradient(150deg, #{map.get($tag-data, 'colour1')},
-                    #{map.get($tag-data, 'colour2')});
-                }
+            css {
+              .tag-#{$tag} {
+                background-color: #{map.get($tag-data, 'colour1')};
+                background-image: url("/home-page/icons/tag-#{$tag}.svg"),
+                  linear-gradient(150deg, #{map.get($tag-data, 'colour1')},
+                  #{map.get($tag-data, 'colour2')});
               }
             }
-            @if not $tag == "recommend" {
-              css {
-                .filter-checkbox:checked + .filter-tag .tag-#{$tag} {
-                  background-image: url("/home-page/icons/checked.svg"),
-                    linear-gradient(150deg, #{map.get($tag-data, 'colour1')},
-                    #{map.get($tag-data, 'colour2')});
-                }
-              }
-            }
-            span.filter-tag-icon.base-tag.tag-#{$tag} {}
+
+            input[type="checkbox"].visually-hidden.filter-checkbox#filter-by-#{$tag};
 
             css {
-              .filter-tag-name {
-                margin: 0 10px;
-                align-self: center;
+              .filter-tag {
+                display: inline-flex;
+                cursor: pointer;
+                background-color: #111213;
+                border-radius: 50px;
+                margin-top: 10px;
+                margin-right: 10px;
+                overflow: hidden;
+                height: 30px;
+              }
+              .filter-tag:hover {
+                background-color: #272c31;
+              }
+              .filter-checkbox:focus-visible + .filter-tag {
+                box-shadow: 0 0 0 1px black, 0 0 0 2px white;
+              }
+              .filter-checkbox:checked + .filter-tag {
+                background-color: white;
+                color: #111213;
               }
             }
-            span.filter-tag-name {
-              content: "#{map.get($tag-data, 'name')}";
+            label.filter-tag[for="filter-by-#{$tag}"] {
+              css {
+                .filter-tag-icon {
+                  width: 30px;
+                }
+              }
+              @if $tag == "recommend" {
+                css {
+                  .filter-checkbox:checked + .filter-tag .tag-#{$tag} {
+                    background-image: url("/home-page/icons/checked-dark.svg"),
+                      linear-gradient(150deg, #{map.get($tag-data, 'colour1')},
+                      #{map.get($tag-data, 'colour2')});
+                  }
+                }
+              }
+              @if not $tag == "recommend" {
+                css {
+                  .filter-checkbox:checked + .filter-tag .tag-#{$tag} {
+                    background-image: url("/home-page/icons/checked.svg"),
+                      linear-gradient(150deg, #{map.get($tag-data, 'colour1')},
+                      #{map.get($tag-data, 'colour2')});
+                  }
+                }
+              }
+              span.filter-tag-icon.base-tag.tag-#{$tag} {}
+
+              css {
+                .filter-tag-name {
+                  margin: 0 10px;
+                  align-self: center;
+                }
+              }
+              span.filter-tag-name {
+                content: "#{map.get($tag-data, 'name')}";
+              }
             }
           }
         }
@@ -570,5 +605,7 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
         }
       }
     }
+
+    script[src="/home-page/main.js"] {}
   }
 }
