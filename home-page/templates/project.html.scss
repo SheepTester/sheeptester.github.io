@@ -29,7 +29,7 @@ $classes: "project";
 @each $tag in map.get($project, 'tags') {
   $classes: "#{$classes} project-#{$tag}"
 }
-a.#{$classes}[href="#{map.get($project, 'path')}"] {
+a.#{$classes}[href="#{map.get($project, 'path')}"][data-desc="#{map.get($project, 'description')}"] {
   css {
     .thumbnail {
       position: absolute;
@@ -83,10 +83,6 @@ a.#{$classes}[href="#{map.get($project, 'path')}"] {
     content: "#{map.get($project, 'name')}";
   }
 
-  span.project-desc.visually-hidden[aria-label="Description"] {
-    content: "#{map.get($project, 'description')}";
-  }
-
   css {
     .tags {
       display: flex;
@@ -97,7 +93,7 @@ a.#{$classes}[href="#{map.get($project, 'path')}"] {
       margin: 8px;
     }
   }
-  span.tags[aria-label="Tags"] {
+  span.tags {
     @each $tag, $index in map.get($project, 'tags') {
       $tag-info: map.get($tags, $tag);
       content: " ";
@@ -128,11 +124,7 @@ a.#{$classes}[href="#{map.get($project, 'path')}"] {
           transition-delay: calc(0.1s * #{$index});
         }
       }
-      span.tag.base-tag.tag-#{$tag}[title="#{map.get($tag-info, 'name')}"] {
-        .visually-hidden {
-          content: "#{map.get($tag-info, 'name')}";
-        }
-      }
+      span.tag.base-tag.tag-#{$tag}[title="#{map.get($tag-info, 'name')}"] {}
     }
   }
 

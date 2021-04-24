@@ -389,21 +389,21 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
 
           // TODO: Images
           .interest {
-            img[src="/SHEPS.svg"];
+            img[src="/SHEPS.svg"][alt="A sheep"];
             p.sheep {
               content: "Sheep";
             }
           }
           .border {}
           .interest {
-            img[src="/SHEPS.svg"];
+            img[src="/SHEPS.svg"][alt="A website"];
             p {
               content: "Front-end web development";
             }
           }
           .border {}
           .interest {
-            img[src="/SHEPS.svg"];
+            img[src="/SHEPS.svg"][alt="The Tower of Babel flag of conlanging"];
             p {
               content: "Constructed languages";
             }

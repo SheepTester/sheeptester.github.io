@@ -60,7 +60,7 @@ function setDescription (project) {
     descElems.tags.append(createTag(tag))
   }
   empty(descElems.text)
-  for (const paragraph of project.querySelector('.project-desc').textContent.split(/\r?\n/)) {
+  for (const paragraph of project.dataset.desc.split(/\r?\n/)) {
     const p = document.createElement('p')
     p.textContent = paragraph
     descElems.text.append(p)
@@ -91,7 +91,3 @@ projectsWrapper.addEventListener('click', e => {
     }
   }
 })
-
-for (const project of document.getElementsByClassName('project')) {
-  project.ariaLabel = 'View details'
-}
