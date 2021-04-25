@@ -386,6 +386,7 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
           css {
             .age-clickable {
               cursor: pointer;
+              color: rgba(255, 255, 255, 0.9);
             }
             .age {
               position: relative;
@@ -395,12 +396,20 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
             .age span {
               position: absolute;
               user-select: text;
+              color: rgba(255, 255, 255, 0.8);
+            }
+            .age span::after {
+              content: attr(data-last);
+              color: var(--last);
+              position: absolute;
+              top: 1em;
+              left: 0;
             }
             .insignificant {
-              opacity: 0.5;
+              opacity: 0.4;
             }
           }
-          span#age {
+          span#age[role="text"] {
             content: "at least 13";
           }
           content: " years";

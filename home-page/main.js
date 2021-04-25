@@ -98,29 +98,32 @@ for (const project of document.getElementsByClassName('project')) {
   project.ariaExpanded = 'false'
 }
 
-function easeInCubic (t) {
-  return t * t * t
-}
-function easeOutCubic (t) {
-  t--
-  return t * t * t + 1
+function easeInOutCubic (t) {
+  t *= 2
+  if (t < 1) return t * t * t / 2
+  t -= 2
+  return (t * t * t + 2) / 2
 }
 
 const BIRTHDAY = 1049933280000 // new Date('2003-04-09T17:08-07:00').getTime()
 const MS_IN_YR = 1000 * 60 * 60 * 24 * 365.242199
 function getAge (now = Date.now()) {
-  return ((now - BIRTHDAY) / MS_IN_YR).toFixed(15)
+  // Could be 15, but it gets imprecise at such a small scale, and the animation
+  // looks unlike the others
+  return ((now - BIRTHDAY) / MS_IN_YR).toFixed(13)
 }
 const ANIM_LENGTH = 500 // ms
-const OFFSET = 10 // px
+const ALPHA = 0.8
 
 const ageSpan = document.getElementById('age')
 ageSpan.textContent = Math.floor((Date.now() - BIRTHDAY) / MS_IN_YR)
 ageSpan.classList.add('age-clickable')
 ageSpan.tabIndex = 0
+ageSpan.title = 'Click to see me age in real time'
 ageSpan.addEventListener('click', e => {
   const ageWrapper = document.createElement('code')
   ageWrapper.classList.add('age')
+  ageWrapper.role = 'text'
   const age = getAge()
   ageWrapper.style.width = age.length + 'ch'
   const decimal = age.indexOf('.')
@@ -159,17 +162,22 @@ ageSpan.addEventListener('click', e => {
         const interval = 10 ** digit.exponent * MS_IN_YR
         const animationTime = Math.min(interval, ANIM_LENGTH)
         const time = (now - BIRTHDAY) % interval
-        digit.elem.style.transform = `translate3d(${i}ch, ${
-          time < animationTime / 2
-            ? easeInCubic(time / (animationTime / 2)) * OFFSET
-            : time < animationTime
-            ? (easeOutCubic(time / (animationTime / 2) - 1) - 1) * OFFSET
-            : 0
-        }px, 0)`
-        if (time < animationTime / 2) {
-          digit.elem.textContent = (+age[i] + 9) % 10
-        } else {
+        if (digit.elem.textContent !== age[i]) {
           digit.elem.textContent = age[i]
+        }
+        if (time < animationTime) {
+          const interp = easeInOutCubic(time / animationTime)
+          digit.elem.style.transform = `translate3d(${i}ch, ${interp - 1}em, 0)`
+          digit.elem.style.color = `rgba(255, 255, 255, ${interp * ALPHA})`
+          digit.elem.style.setProperty('--last', `rgba(255, 255, 255, ${(1 - interp) * ALPHA})`)
+          digit.elem.dataset.last = (+age[i] + 9) % 10
+          digit.wasStatic = false
+        } else if (!digit.wasStatic) {
+          digit.elem.style.transform = `translate3d(${i}ch, 0, 0)`
+          digit.elem.style.color = null
+          digit.elem.style.removeProperty('--last')
+          delete digit.elem.dataset.last
+          digit.wasStatic = true
         }
       }
     }
