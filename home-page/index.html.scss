@@ -78,6 +78,11 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
       color: rgba(255, 255, 255, 0.7);
       word-break: break-word;
     }
+    code,
+    pre {
+      font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo,
+        monospace;
+    }
   }
   body {
     script {
@@ -341,7 +346,64 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
           content: """
             I’m Sean, a high school student graduating in 2021.
           """;
-          // TODO: Age display
+        }
+        css {
+          .card .datum {
+            margin-top: 1em;
+          }
+          .attribute {
+            background-color: #111213;
+            text-transform: uppercase;
+            font-size: 0.8em;
+            padding: 5px 10px;
+            border-radius: 50px;
+            margin-right: 5px;
+          }
+        }
+        p.datum {
+          span.attribute {
+            content: "Pronouns";
+          }
+          content: " ";
+          abbr[title="English"] {
+            content: "he";
+          }
+          content: ", ";
+          abbr[title="Spanish"] {
+            content: "él";
+          }
+          content: ", ";
+          abbr[title="Esperanto"] {
+            content: "li";
+          }
+          content: ", etc.";
+        }
+        p.datum {
+          span.attribute {
+            content: "Experience";
+          }
+          content: " ";
+          css {
+            .age-clickable {
+              cursor: pointer;
+            }
+            .age {
+              position: relative;
+              display: inline-block;
+              user-select: none;
+            }
+            .age span {
+              position: absolute;
+              user-select: text;
+            }
+            .insignificant {
+              opacity: 0.5;
+            }
+          }
+          span#age {
+            content: "at least 13";
+          }
+          content: " years";
         }
       }
 
@@ -771,7 +833,7 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
             line-height: 1.5;
           }
         }
-        .description#description-wrapper[style="display:none"] {
+        .description#description-wrapper[style="display:none"][aria-role="contentinfo"] {
           css {
             .description-body {
               max-width: 560px;
