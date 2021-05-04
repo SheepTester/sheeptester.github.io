@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>JavaScript Reference Guide</title>
+    <meta name="description" content="A cheat sheet for all the essential JavaScript built-in functions you should know." />
+
+    <link rel="stylesheet" type="text/css" href="/sheep3.css">
+    <script src="/sheep3.js" charset="utf-8"></script>
+
+    <style>
+      :root {
+        color-scheme: dark;
+      }
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+          'Helvetica Neue', Arial, sans-serif, 'Apple Color Emoji',
+          'Segoe UI Emoji', 'Segoe UI Symbol';
+        background-color: #151019;
+        color: rgba(255, 255, 255, 0.7);
+      }
+
+      .container {
+        max-width: 500px;
+        margin: 0 auto;
+      }
+      .container h1 {
+        font-weight: lighter;
+        font-size: 64px;
+        margin: 0;
+        line-height: 1;
+        color: rgba(255, 255, 255, 0.9);
+      }
+
+      .key {
+        font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo,
+          monospace;
+      }
+
+      .property {
+        display: flex;
+      }
+      .key {
+        font-weight: normal;
+        font-size: inherit;
+        margin: 0;
+        margin-right: 10px;
+      }
+      .type-name {
+        text-transform: uppercase;
+        font-size: 0.8em;
+        font-weight: bold;
+      }
+      .property-null > .type-name { color: #8a8a8a; }
+      .property-undefined > .type-name { color: #8a8a8a; }
+      .property-string > .type-name { color: #e4cc58; }
+      .property-boolean > .type-name { color: #5daef3; }
+      .property-number > .type-name { color: #6cec4b; }
+      .property-bigint > .type-name { color: #4de49e; }
+      .property-symbol > .type-name { color: #e4c03c; }
+      .property-getter > .type-name { color: #e87fb4; }
+      .function {
+        color: #cb79da;
+      }
+      .arg {
+        color: #f3ac42;
+      }
+      .property-class,
+      .property-struct {
+        display: block;
+        background-color: rgba(232, 95, 249, 0.1);
+        padding: 10px 15px;
+        border-radius: 5px;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.5);
+        margin: 10px 0;
+      }
+      .property-class > .key,
+      .property-struct > .key {
+        font-size: 24px;
+      }
+      h3 {
+        text-transform: uppercase;
+        font-size: 0.8em;
+        margin: 10px 0 5px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>JavaScript Reference Guide</h1>
+      <p class="description">
+        A short list of all the essential built-in objects in JavaScript you
+        need to know so you can be prepared for your next job interview.
+      </p>
+    </div>
+    <script type="module">
+const entries = function * (value) {
+  for (const key of Object.getOwnPropertyNames(value)) {
+    yield [key, value[key]]
+  }
+  for (const key of Object.getOwnPropertySymbols(value)) {
+    yield [`[${key.description}]`, value[key]]
+  }
+}
+
+class Analyser {
+  static #ignoreFuncProps = ['length', 'name', 'prototype']
+
+  #analysed = new Map()
+  #startName
+
+  start (value, startName = '') {
+    this.#startName = startName
+    return this.#analyse('', value)
+  }
+
+  #analyse (path, value) {
+    if (value === null) {
+      return { type: 'null' }
+    } else if (typeof value === 'function' || typeof value === 'object') {
+      if (this.#analysed.get(value) !== undefined) {
+        return { type: 'alias', see: this.#analysed.get(value) }
+      }
+      this.#analysed.set(value, path || this.#startName)
+      const staticProps = new Map()
+      const properties = new Map()
+      if (typeof value === 'function') {
+        if (value.prototype) {
+          const base = path ? path + '_' : ''
+          for (const [key, prop] of entries(Object.getOwnPropertyDescriptors(value.prototype))) {
+            if (prop.value) {
+              properties.set(
+                key,
+                {
+                  path: base + key,
+                  type: this.#analyse(base + key, prop.value)
+                }
+              )
+            } else {
+              properties.set(
+                key,
+                { path: base + key, type: { type: 'getter' } }
+              )
+            }
+          }
+        } else {
+          return { type: 'function', args: value.length }
+        }
+      }
+      for (const [key, val] of entries(value)) {
+        if (typeof value === 'function' && Analyser.#ignoreFuncProps.includes(key)) {
+          continue
+        }
+        const propPath = key[0] === '['
+          ? path + key
+          : path
+          ? path + '.' + key
+          : key
+        staticProps.set(
+          key,
+          { path: propPath, type: this.#analyse(propPath, val) }
+        )
+      }
+      if (staticProps.length === 0 && typeof value !== 'function') {
+        return {
+          type: 'instance',
+          className: value[Symbol.toStringTag] || value.constructor.name,
+          classPath: this.#analysed.get(value.constructor?.name)
+        }
+      }
+      if (typeof value === 'function') {
+        return {
+          type: 'class',
+          staticProps,
+          properties,
+          args: value.length
+        }
+      } else {
+        return {
+          type: 'struct',
+          staticProps
+        }
+      }
+    } else {
+      return { type: typeof value }
+    }
+  }
+}
+
+class Renderer {
+  static #alphabet = 'abcdefghijklmnopqrstuvwxyz'
+
+  static #createProperty (path, keyName, type) {
+    const property = Object.assign(document.createElement('div'), {
+      className: `property property-${type.type}`,
+      id: path
+    })
+    const key = Object.assign(document.createElement('h2'), {
+      className: 'key'
+    })
+    const keyNameElem = Object.assign(document.createElement('span'), {
+      className: 'key-name',
+      textContent: keyName
+    })
+    if (type.type === 'class') {
+      key.append(
+        'new ',
+        keyNameElem,
+        '(',
+        ...[...this.#alphabet.slice(0, type.args)]
+          .flatMap(arg => [
+            Object.assign(document.createElement('span'), {
+              className: 'arg',
+              textContent: arg
+            }),
+            ', '
+          ])
+          .slice(0, -1),
+        ')'
+      )
+    } else {
+      key.append(keyNameElem)
+    }
+    property.append(key, this.#createType(type))
+    return property
+  }
+
+  static #createType (type) {
+    switch (type.type) {
+      case 'null':
+      case 'undefined':
+      case 'string':
+      case 'boolean':
+      case 'number':
+      case 'bigint':
+      case 'symbol':
+      case 'getter': {
+        return Object.assign(document.createElement('span'), {
+          className: 'type-name',
+          textContent: type.type
+        })
+      }
+      case 'function': {
+        const funcText = Object.assign(document.createElement('em'), {
+          className: 'function'
+        })
+        funcText.append(
+          'function(',
+          ...[...this.#alphabet.slice(0, type.args)]
+            .flatMap(arg => [
+              Object.assign(document.createElement('span'), {
+                className: 'arg',
+                textContent: arg
+              }),
+              ', '
+            ])
+            .slice(0, -1),
+          ')'
+        )
+        return funcText
+      }
+      case 'alias': {
+        const seeText = Object.assign(document.createElement('em'), {
+          className: 'alias'
+        })
+        seeText.append(
+          'See ',
+          Object.assign(document.createElement('a'), {
+            href: '#' + type.see,
+            textContent: 'TODO'
+          })
+        )
+        return seeText
+      }
+      case 'instance': {
+        if (type.classPath) {
+          return Object.assign(document.createElement('a'), {
+            className: 'instance-link',
+            href: '#' + type.classPath,
+            textContent: type.className
+          })
+        } else {
+          return Object.assign(document.createElement('span'), {
+            className: 'instance',
+            textContent: type.className
+          })
+        }
+      }
+      case 'struct': {
+        const wrapper = Object.assign(document.createElement('div'), {
+          className: 'wrapper'
+        })
+        for (const [key, { path, type: propType }] of type.staticProps) {
+          wrapper.append(this.#createProperty(path, key, propType))
+        }
+        return wrapper
+      }
+      case 'class': {
+        const wrapper = Object.assign(document.createElement('div'), {
+          className: 'wrapper'
+        })
+        if (type.staticProps.size > 0) {
+          wrapper.append(Object.assign(document.createElement('h3'), {
+            textContent: 'Static'
+          }))
+          for (const [key, { path, type: propType }] of type.staticProps) {
+            wrapper.append(this.#createProperty(path, key, propType))
+          }
+        }
+        if (type.properties.size > 0) {
+          wrapper.append(Object.assign(document.createElement('h3'), {
+            textContent: 'Instance'
+          }))
+          for (const [key, { path, type: propType }] of type.properties) {
+            wrapper.append(this.#createProperty(path, key, propType))
+          }
+        }
+        return wrapper
+      }
+      default:
+        throw new TypeError(`${type.type} not valid type`)
+    }
+  }
+
+  static #addTo (target, key, { path, type }) {
+    if (type.type === 'struct') {
+      for (const [key, prop] of type.staticProps) {
+        this.#addTo(target, key, prop)
+      }
+    } else {
+      target.append(this.#createProperty(path, key, type))
+    }
+  }
+
+  static start (analysed) {
+    const wrapper = Object.assign(document.createElement('div'), {
+      className: 'reference'
+    })
+    if (analysed.type === 'struct') {
+      for (const [key, prop] of analysed.staticProps) {
+        this.#addTo(wrapper, key, prop)
+      }
+    } else {
+      throw new TypeError('Analysed must be a struct')
+    }
+    return wrapper
+  }
+}
+
+const analysed = new Analyser().start(globalThis, 'globalThis')
+document.body.append(Renderer.start(analysed))
+    </script>
+  </body>
+</html>
