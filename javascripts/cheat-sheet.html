@@ -6,6 +6,7 @@
 
     <title>JavaScript Reference Sheet</title>
     <meta name="description" content="A cheat sheet for all the essential JavaScript built-in functions you should know." />
+    <meta name="theme-color" content="#e87fb4">
 
     <link rel="stylesheet" type="text/css" href="/sheep3.css">
     <script src="/sheep3.js" charset="utf-8"></script>
@@ -59,13 +60,16 @@
         color: #f0c2f9;
       }
       .type-name,
+      .getter-setter,
       .function,
       .alias,
       .instance,
       .instance-link {
         margin-left: 5px;
       }
-      .type-name {
+      .type-name,
+      .getter,
+      .setter {
         text-transform: uppercase;
         font-size: 0.8em;
         font-weight: bold;
@@ -77,7 +81,8 @@
       .property-number > .type-name { color: #60d443; }
       .property-bigint > .type-name { color: #4de49e; }
       .property-symbol > .type-name { color: #e4c03c; }
-      .property-getter > .type-name { color: #e87fb4; }
+      .getter { color: #e87fb4; }
+      .setter { color: #eab26b; }
       .function {
         color: #cb79da;
       }
@@ -85,6 +90,7 @@
         color: #f3ac42;
       }
       .property-class,
+      .property-interface,
       .property-struct {
         /* https://stackoverflow.com/a/7785711 */
         display: table; /* Actually FF 20+ */
@@ -101,17 +107,20 @@
         margin: 10px 0;
       }
       .property-class:first-child,
+      .property-interface:first-child,
       .property-struct:first-child {
         margin-top: 0;
       }
       .property-class > .key,
+      .property-interface > .key,
       .property-struct > .key {
         font-size: 16px;
       }
       h3 {
         text-transform: uppercase;
         font-size: 0.8em;
-        margin: 10px 0 5px;
+        margin: 0;
+        margin-top: 5px;
         color: rgba(255, 255, 255, 0.5);
       }
       a {
@@ -161,10 +170,54 @@ class Analyser {
 
   _analysed = new Map()
   _startName
+  _noConstructor = new Set()
+  _extraClasses = new Set()
 
   start (value, startName = '') {
     this._startName = startName
-    return this._analyse('', value)
+    const analysed = this._analyse('', value)
+    const extra = new Map()
+    for (const prototype of this._noConstructor) {
+      const name = prototype[Symbol.toStringTag]
+      extra.set(name, this._analyseNoConstructor(name, prototype))
+    }
+    for (const constructorFn of this._extraClasses) {
+      if (this._analysed.has(constructorFn)) continue
+      const name = constructorFn.name
+      extra.set(name, this._analyse(name, constructorFn))
+    }
+    return { analysed, extra }
+  }
+
+  _analyseProp (path, descriptor) {
+    if ('value' in descriptor) {
+      return { path, type: this._analyse(path, descriptor.value) }
+    } else {
+      return {
+        path,
+        type: {
+          type: 'getter-setter',
+          get: !!descriptor.get,
+          set: !!descriptor.set
+        }
+      }
+    }
+  }
+
+  _analyseNoConstructor (name, prototype) {
+    this._analysed.set(prototype, name)
+    const properties = new Map()
+    for (const [key, descriptor] of entries(Object.getOwnPropertyDescriptors(prototype))) {
+      properties.set(key, this._analyseProp(name + '#' + key, descriptor))
+    }
+    const superClass = Object.getPrototypeOf(prototype)
+    return {
+      type: 'interface',
+      properties,
+      extends: superClass && superClass !== Object.prototype
+        ? superClass.constructor
+        : null
+    }
   }
 
   _analyse (path, value) {
@@ -180,22 +233,9 @@ class Analyser {
       if (typeof value === 'function') {
         if (value.prototype) {
           const base = path ? path + '#' : ''
-          for (const [key, prop] of entries(Object.getOwnPropertyDescriptors(value.prototype))) {
+          for (const [key, descriptor] of entries(Object.getOwnPropertyDescriptors(value.prototype))) {
             if (key === 'constructor') continue
-            if (prop.value) {
-              properties.set(
-                key,
-                {
-                  path: base + key,
-                  type: this._analyse(base + key, prop.value)
-                }
-              )
-            } else {
-              properties.set(
-                key,
-                { path: base + key, type: { type: 'getter' } }
-              )
-            }
+            properties.set(key, this._analyseProp(base + key, descriptor))
           }
         } else {
           return { type: 'function', args: value.length }
@@ -216,18 +256,25 @@ class Analyser {
         )
       }
       if (staticProps.size === 0 && typeof value !== 'function') {
+        const prototype = Object.getPrototypeOf(value)
+        if (!prototype.hasOwnProperty('constructor')) {
+          this._noConstructor.add(prototype)
+        }
         return {
           type: 'instance',
           className: value[Symbol.toStringTag] || value.constructor.name,
           // console.memory is an instance of MemoryInfo, which has no
-          // constructor
-          classPath: Object.getPrototypeOf(value).hasOwnProperty('constructor')
+          // constructor, so it's dealt with separately
+          classPath: prototype.hasOwnProperty('constructor')
             ? value.constructor
-            : null
+            : prototype
         }
       }
       if (typeof value === 'function') {
         const superClass = Object.getPrototypeOf(value.prototype)
+        if (superClass) {
+          this._extraClasses.add(superClass.constructor)
+        }
         return {
           type: 'class',
           staticProps,
@@ -290,8 +337,12 @@ class Renderer {
           .slice(0, -1),
         ')'
       )
-      if (type.extends) {
-        const superClass = this._analyser.getAnalysed(type.extends)
+    } else {
+      key.append(keyNameElem)
+    }
+    if (type.extends) {
+      const superClass = this._analyser.getAnalysed(type.extends)
+      if (superClass) {
         key.append(
           ' extends ',
           Object.assign(document.createElement('a'), {
@@ -300,9 +351,9 @@ class Renderer {
             textContent: superClass
           })
         )
+      } else {
+        key.append(` extends ${type.extends.name}`)
       }
-    } else {
-      key.append(keyNameElem)
     }
     property.append(key, ' ', this._createType(type))
     return property
@@ -316,12 +367,32 @@ class Renderer {
       case 'boolean':
       case 'number':
       case 'bigint':
-      case 'symbol':
-      case 'getter': {
+      case 'symbol': {
         return Object.assign(document.createElement('span'), {
           className: 'type-name',
           textContent: type.type
         })
+      }
+      case 'getter-setter': {
+        const getterSetter = Object.assign(document.createElement('span'), {
+          className: 'getter-setter'
+        })
+        if (type.get) {
+          getterSetter.append(Object.assign(document.createElement('span'), {
+            className: 'getter',
+            textContent: 'get'
+          }))
+        }
+        if (type.get && type.set) {
+          getterSetter.append(' and ')
+        }
+        if (type.set) {
+          getterSetter.append(Object.assign(document.createElement('span'), {
+            className: 'setter',
+            textContent: 'set'
+          }))
+        }
+        return getterSetter
       }
       case 'function': {
         const funcText = Object.assign(document.createElement('em'), {
@@ -379,6 +450,15 @@ class Renderer {
         }
         return wrapper
       }
+      case 'interface': {
+        const wrapper = Object.assign(document.createElement('div'), {
+          className: 'wrapper'
+        })
+        for (const [key, { path, type: propType }] of type.properties) {
+          wrapper.append(this._createProperty(path, key, propType))
+        }
+        return wrapper
+      }
       case 'class': {
         const wrapper = Object.assign(document.createElement('div'), {
           className: 'wrapper'
@@ -416,7 +496,7 @@ class Renderer {
     }
   }
 
-  start (analysed) {
+  start (analysed, extras = new Map()) {
     const wrapper = Object.assign(document.createElement('div'), {
       className: 'reference'
     })
@@ -427,13 +507,16 @@ class Renderer {
     } else {
       throw new TypeError('Analysed must be a struct')
     }
+    for (const [key, type] of extras) {
+      wrapper.append(this._createProperty(key, key, type))
+    }
     return wrapper
   }
 }
 
 const analyser = new Analyser()
-const analysed = analyser.start(globalThis, 'globalThis')
-document.body.append(new Renderer(analyser).start(analysed))
+const { analysed, extra } = analyser.start(globalThis, 'globalThis')
+document.body.append(new Renderer(analyser).start(analysed, extra))
     </script>
   </body>
 </html>
