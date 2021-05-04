@@ -143,7 +143,7 @@
 const entries = function * (value) {
   for (const key of Object.getOwnPropertyNames(value)) {
     yield [
-      /^[$A-Za-z][$\w]*$/.test(key)
+      /^[$A-Za-z_][$\w]*$/.test(key)
         ? key
         : /^\d+$/.test(key)
         ? `[${key}]`
