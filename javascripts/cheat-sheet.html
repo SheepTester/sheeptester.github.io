@@ -126,6 +126,9 @@
       a {
         color: #9bb4ec;
       }
+      .private {
+        color: #ff5b5b;
+      }
 
       :target {
         animation: flash 3s;
@@ -184,7 +187,7 @@ class Analyser {
     for (const constructorFn of this._extraClasses) {
       if (this._analysed.has(constructorFn)) continue
       const name = constructorFn.name
-      extra.set(name, this._analyse(name, constructorFn))
+      extra.set(name, { ...this._analyse(name, constructorFn), private: true })
     }
     return { analysed, extra }
   }
@@ -216,7 +219,8 @@ class Analyser {
       properties,
       extends: superClass && superClass !== Object.prototype
         ? superClass.constructor
-        : null
+        : null,
+      private: true
     }
   }
 
@@ -237,8 +241,6 @@ class Analyser {
             if (key === 'constructor') continue
             properties.set(key, this._analyseProp(base + key, descriptor))
           }
-        } else {
-          return { type: 'function', args: value.length }
         }
       }
       for (const [key, val] of entries(value)) {
@@ -255,7 +257,9 @@ class Analyser {
           { path: propPath, type: this._analyse(propPath, val) }
         )
       }
-      if (staticProps.size === 0 && typeof value !== 'function') {
+      if (typeof value === 'function' && !value.prototype) {
+        return { type: 'function', args: value.length, staticProps }
+      } else if (staticProps.size === 0 && typeof value !== 'function') {
         const prototype = Object.getPrototypeOf(value)
         if (!prototype.hasOwnProperty('constructor')) {
           this._noConstructor.add(prototype)
@@ -354,6 +358,14 @@ class Renderer {
       } else {
         key.append(` extends ${type.extends.name}`)
       }
+    }
+    if (type.private) {
+      key.append(
+        Object.assign(document.createElement('sup'), {
+          className: 'private',
+          textContent: 'not global'
+        })
+      )
     }
     property.append(key, ' ', this._createType(type))
     return property
@@ -487,12 +499,13 @@ class Renderer {
   }
 
   _addTo (target, { path, type }) {
-    if (type.type === 'struct') {
+    if (type.type !== 'struct') {
+      target.append(this._createProperty(path, path, type))
+    }
+    if (type.type === 'struct' || type.type === 'function') {
       for (const [, prop] of type.staticProps) {
         this._addTo(target, prop)
       }
-    } else {
-      target.append(this._createProperty(path, path, type))
     }
   }
 
