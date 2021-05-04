@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>JavaScript Reference Guide</title>
+    <title>JavaScript Reference Sheet</title>
     <meta name="description" content="A cheat sheet for all the essential JavaScript built-in functions you should know." />
 
     <link rel="stylesheet" type="text/css" href="/sheep3.css">
@@ -20,6 +20,8 @@
           'Segoe UI Emoji', 'Segoe UI Symbol';
         background-color: #151019;
         color: rgba(255, 255, 255, 0.7);
+        margin: 10px;
+        font-size: 14px;
       }
 
       .container {
@@ -33,20 +35,35 @@
         line-height: 1;
         color: rgba(255, 255, 255, 0.9);
       }
+      .description {
+        font-size: 16px;
+      }
 
       .key {
         font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo,
           monospace;
       }
 
-      .property {
-        display: flex;
+      .reference {
+        column-width: 250px;
+        column-gap: 10px;
+        word-break: break-word;
       }
       .key {
+        display: inline;
         font-weight: normal;
         font-size: inherit;
         margin: 0;
-        margin-right: 10px;
+      }
+      .key-name {
+        color: #f0c2f9;
+      }
+      .type-name,
+      .function,
+      .alias,
+      .instance,
+      .instance-link {
+        margin-left: 5px;
       }
       .type-name {
         text-transform: uppercase;
@@ -57,7 +74,7 @@
       .property-undefined > .type-name { color: #8a8a8a; }
       .property-string > .type-name { color: #e4cc58; }
       .property-boolean > .type-name { color: #5daef3; }
-      .property-number > .type-name { color: #6cec4b; }
+      .property-number > .type-name { color: #60d443; }
       .property-bigint > .type-name { color: #4de49e; }
       .property-symbol > .type-name { color: #e4c03c; }
       .property-getter > .type-name { color: #e87fb4; }
@@ -69,27 +86,54 @@
       }
       .property-class,
       .property-struct {
-        display: block;
+        /* https://stackoverflow.com/a/7785711 */
+        display: table; /* Actually FF 20+ */
+        -webkit-column-break-inside: avoid; /* Chrome, Safari */
+        page-break-inside: avoid; /* Theoretically FF 20+ */
+        break-inside: avoid-column; /* IE 11 */
+
+        width: 100%;
+        box-sizing: border-box;
         background-color: rgba(232, 95, 249, 0.1);
-        padding: 10px 15px;
+        padding: 5px 10px;
         border-radius: 5px;
         box-shadow: 0 3px 10px rgba(0, 0, 0, 0.5);
         margin: 10px 0;
       }
+      .property-class:first-child,
+      .property-struct:first-child {
+        margin-top: 0;
+      }
       .property-class > .key,
       .property-struct > .key {
-        font-size: 24px;
+        font-size: 16px;
       }
       h3 {
         text-transform: uppercase;
         font-size: 0.8em;
         margin: 10px 0 5px;
+        color: rgba(255, 255, 255, 0.5);
+      }
+      a {
+        color: #9bb4ec;
+      }
+
+      :target {
+        animation: flash 3s;
+      }
+      @keyframes flash {
+        from {
+          background-color: rgba(255, 240, 96, 0.5);
+        }
+        to {
+          background-color: transparent;
+        }
       }
     </style>
   </head>
   <body>
     <div class="container">
-      <h1>JavaScript Reference Guide</h1>
+      <h1>JavaScript Reference Sheet</h1>
       <p class="description">
         A short list of all the essential built-in objects in JavaScript you
         need to know so you can be prepared for your next job interview.
@@ -98,7 +142,14 @@
     <script type="module">
 const entries = function * (value) {
   for (const key of Object.getOwnPropertyNames(value)) {
-    yield [key, value[key]]
+    yield [
+      /^[$A-Za-z][$\w]*$/.test(key)
+        ? key
+        : /^\d+$/.test(key)
+        ? `[${key}]`
+        : `[${JSON.stringify(key)}]`,
+      value[key]
+    ]
   }
   for (const key of Object.getOwnPropertySymbols(value)) {
     yield [`[${key.description}]`, value[key]]
@@ -106,7 +157,7 @@ const entries = function * (value) {
 }
 
 class Analyser {
-  static #ignoreFuncProps = ['length', 'name', 'prototype']
+  static #ignoreFuncProps = ['length', 'name', 'prototype', 'arguments', 'caller']
 
   #analysed = new Map()
   #startName
@@ -128,8 +179,9 @@ class Analyser {
       const properties = new Map()
       if (typeof value === 'function') {
         if (value.prototype) {
-          const base = path ? path + '_' : ''
+          const base = path ? path + '#' : ''
           for (const [key, prop] of entries(Object.getOwnPropertyDescriptors(value.prototype))) {
+            if (key === 'constructor') continue
             if (prop.value) {
               properties.set(
                 key,
@@ -163,19 +215,27 @@ class Analyser {
           { path: propPath, type: this.#analyse(propPath, val) }
         )
       }
-      if (staticProps.length === 0 && typeof value !== 'function') {
+      if (staticProps.size === 0 && typeof value !== 'function') {
         return {
           type: 'instance',
           className: value[Symbol.toStringTag] || value.constructor.name,
-          classPath: this.#analysed.get(value.constructor?.name)
+          // console.memory is an instance of MemoryInfo, which has no
+          // constructor
+          classPath: Object.getPrototypeOf(value).hasOwnProperty('constructor')
+            ? value.constructor
+            : null
         }
       }
       if (typeof value === 'function') {
+        const superClass = Object.getPrototypeOf(value.prototype)
         return {
           type: 'class',
           staticProps,
           properties,
-          args: value.length
+          args: value.length,
+          extends: superClass && superClass !== Object.prototype
+            ? superClass.constructor
+            : null
         }
       } else {
         return {
@@ -187,18 +247,28 @@ class Analyser {
       return { type: typeof value }
     }
   }
+
+  getAnalysed (value) {
+    return this.#analysed.get(value)
+  }
 }
 
 class Renderer {
   static #alphabet = 'abcdefghijklmnopqrstuvwxyz'
 
-  static #createProperty (path, keyName, type) {
+  #analyser
+
+  constructor (analyser) {
+    this.#analyser = analyser
+  }
+
+  #createProperty (path, keyName, type) {
     const property = Object.assign(document.createElement('div'), {
-      className: `property property-${type.type}`,
-      id: path
+      className: `property property-${type.type}`
     })
     const key = Object.assign(document.createElement('h2'), {
-      className: 'key'
+      className: 'key',
+      id: path
     })
     const keyNameElem = Object.assign(document.createElement('span'), {
       className: 'key-name',
@@ -209,7 +279,7 @@ class Renderer {
         'new ',
         keyNameElem,
         '(',
-        ...[...this.#alphabet.slice(0, type.args)]
+        ...[...Renderer.#alphabet.slice(0, type.args)]
           .flatMap(arg => [
             Object.assign(document.createElement('span'), {
               className: 'arg',
@@ -220,14 +290,25 @@ class Renderer {
           .slice(0, -1),
         ')'
       )
+      if (type.extends) {
+        const superClass = this.#analyser.getAnalysed(type.extends)
+        key.append(
+          ' extends ',
+          Object.assign(document.createElement('a'), {
+            className: 'extends',
+            href: '#' + superClass,
+            textContent: superClass
+          })
+        )
+      }
     } else {
       key.append(keyNameElem)
     }
-    property.append(key, this.#createType(type))
+    property.append(key, ' ', this.#createType(type))
     return property
   }
 
-  static #createType (type) {
+  #createType (type) {
     switch (type.type) {
       case 'null':
       case 'undefined':
@@ -248,7 +329,7 @@ class Renderer {
         })
         funcText.append(
           'function(',
-          ...[...this.#alphabet.slice(0, type.args)]
+          ...[...Renderer.#alphabet.slice(0, type.args)]
             .flatMap(arg => [
               Object.assign(document.createElement('span'), {
                 className: 'arg',
@@ -269,17 +350,18 @@ class Renderer {
           'See ',
           Object.assign(document.createElement('a'), {
             href: '#' + type.see,
-            textContent: 'TODO'
+            textContent: type.see
           })
         )
         return seeText
       }
       case 'instance': {
         if (type.classPath) {
+          const classPath = this.#analyser.getAnalysed(type.classPath)
           return Object.assign(document.createElement('a'), {
             className: 'instance-link',
-            href: '#' + type.classPath,
-            textContent: type.className
+            href: '#' + classPath,
+            textContent: classPath
           })
         } else {
           return Object.assign(document.createElement('span'), {
@@ -324,23 +406,23 @@ class Renderer {
     }
   }
 
-  static #addTo (target, key, { path, type }) {
+  #addTo (target, { path, type }) {
     if (type.type === 'struct') {
-      for (const [key, prop] of type.staticProps) {
-        this.#addTo(target, key, prop)
+      for (const [, prop] of type.staticProps) {
+        this.#addTo(target, prop)
       }
     } else {
-      target.append(this.#createProperty(path, key, type))
+      target.append(this.#createProperty(path, path, type))
     }
   }
 
-  static start (analysed) {
+  start (analysed) {
     const wrapper = Object.assign(document.createElement('div'), {
       className: 'reference'
     })
     if (analysed.type === 'struct') {
-      for (const [key, prop] of analysed.staticProps) {
-        this.#addTo(wrapper, key, prop)
+      for (const [, prop] of analysed.staticProps) {
+        this.#addTo(wrapper, prop)
       }
     } else {
       throw new TypeError('Analysed must be a struct')
@@ -349,8 +431,9 @@ class Renderer {
   }
 }
 
-const analysed = new Analyser().start(globalThis, 'globalThis')
-document.body.append(Renderer.start(analysed))
+const analyser = new Analyser()
+const analysed = analyser.start(globalThis, 'globalThis')
+document.body.append(new Renderer(analyser).start(analysed))
     </script>
   </body>
 </html>
