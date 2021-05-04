@@ -157,24 +157,24 @@ const entries = function * (value) {
 }
 
 class Analyser {
-  static #ignoreFuncProps = ['length', 'name', 'prototype', 'arguments', 'caller']
+  static _ignoreFuncProps = ['length', 'name', 'prototype', 'arguments', 'caller']
 
-  #analysed = new Map()
-  #startName
+  _analysed = new Map()
+  _startName
 
   start (value, startName = '') {
-    this.#startName = startName
-    return this.#analyse('', value)
+    this._startName = startName
+    return this._analyse('', value)
   }
 
-  #analyse (path, value) {
+  _analyse (path, value) {
     if (value === null) {
       return { type: 'null' }
     } else if (typeof value === 'function' || typeof value === 'object') {
-      if (this.#analysed.get(value) !== undefined) {
-        return { type: 'alias', see: this.#analysed.get(value) }
+      if (this._analysed.get(value) !== undefined) {
+        return { type: 'alias', see: this._analysed.get(value) }
       }
-      this.#analysed.set(value, path || this.#startName)
+      this._analysed.set(value, path || this._startName)
       const staticProps = new Map()
       const properties = new Map()
       if (typeof value === 'function') {
@@ -187,7 +187,7 @@ class Analyser {
                 key,
                 {
                   path: base + key,
-                  type: this.#analyse(base + key, prop.value)
+                  type: this._analyse(base + key, prop.value)
                 }
               )
             } else {
@@ -202,7 +202,7 @@ class Analyser {
         }
       }
       for (const [key, val] of entries(value)) {
-        if (typeof value === 'function' && Analyser.#ignoreFuncProps.includes(key)) {
+        if (typeof value === 'function' && Analyser._ignoreFuncProps.includes(key)) {
           continue
         }
         const propPath = key[0] === '['
@@ -212,7 +212,7 @@ class Analyser {
           : key
         staticProps.set(
           key,
-          { path: propPath, type: this.#analyse(propPath, val) }
+          { path: propPath, type: this._analyse(propPath, val) }
         )
       }
       if (staticProps.size === 0 && typeof value !== 'function') {
@@ -249,20 +249,20 @@ class Analyser {
   }
 
   getAnalysed (value) {
-    return this.#analysed.get(value)
+    return this._analysed.get(value)
   }
 }
 
 class Renderer {
-  static #alphabet = 'abcdefghijklmnopqrstuvwxyz'
+  static _alphabet = 'abcdefghijklmnopqrstuvwxyz'
 
-  #analyser
+  _analyser
 
   constructor (analyser) {
-    this.#analyser = analyser
+    this._analyser = analyser
   }
 
-  #createProperty (path, keyName, type) {
+  _createProperty (path, keyName, type) {
     const property = Object.assign(document.createElement('div'), {
       className: `property property-${type.type}`
     })
@@ -279,7 +279,7 @@ class Renderer {
         'new ',
         keyNameElem,
         '(',
-        ...[...Renderer.#alphabet.slice(0, type.args)]
+        ...[...Renderer._alphabet.slice(0, type.args)]
           .flatMap(arg => [
             Object.assign(document.createElement('span'), {
               className: 'arg',
@@ -291,7 +291,7 @@ class Renderer {
         ')'
       )
       if (type.extends) {
-        const superClass = this.#analyser.getAnalysed(type.extends)
+        const superClass = this._analyser.getAnalysed(type.extends)
         key.append(
           ' extends ',
           Object.assign(document.createElement('a'), {
@@ -304,11 +304,11 @@ class Renderer {
     } else {
       key.append(keyNameElem)
     }
-    property.append(key, ' ', this.#createType(type))
+    property.append(key, ' ', this._createType(type))
     return property
   }
 
-  #createType (type) {
+  _createType (type) {
     switch (type.type) {
       case 'null':
       case 'undefined':
@@ -329,7 +329,7 @@ class Renderer {
         })
         funcText.append(
           'function(',
-          ...[...Renderer.#alphabet.slice(0, type.args)]
+          ...[...Renderer._alphabet.slice(0, type.args)]
             .flatMap(arg => [
               Object.assign(document.createElement('span'), {
                 className: 'arg',
@@ -357,7 +357,7 @@ class Renderer {
       }
       case 'instance': {
         if (type.classPath) {
-          const classPath = this.#analyser.getAnalysed(type.classPath)
+          const classPath = this._analyser.getAnalysed(type.classPath)
           return Object.assign(document.createElement('a'), {
             className: 'instance-link',
             href: '#' + classPath,
@@ -375,7 +375,7 @@ class Renderer {
           className: 'wrapper'
         })
         for (const [key, { path, type: propType }] of type.staticProps) {
-          wrapper.append(this.#createProperty(path, key, propType))
+          wrapper.append(this._createProperty(path, key, propType))
         }
         return wrapper
       }
@@ -388,7 +388,7 @@ class Renderer {
             textContent: 'Static'
           }))
           for (const [key, { path, type: propType }] of type.staticProps) {
-            wrapper.append(this.#createProperty(path, key, propType))
+            wrapper.append(this._createProperty(path, key, propType))
           }
         }
         if (type.properties.size > 0) {
@@ -396,7 +396,7 @@ class Renderer {
             textContent: 'Instance'
           }))
           for (const [key, { path, type: propType }] of type.properties) {
-            wrapper.append(this.#createProperty(path, key, propType))
+            wrapper.append(this._createProperty(path, key, propType))
           }
         }
         return wrapper
@@ -406,13 +406,13 @@ class Renderer {
     }
   }
 
-  #addTo (target, { path, type }) {
+  _addTo (target, { path, type }) {
     if (type.type === 'struct') {
       for (const [, prop] of type.staticProps) {
-        this.#addTo(target, prop)
+        this._addTo(target, prop)
       }
     } else {
-      target.append(this.#createProperty(path, path, type))
+      target.append(this._createProperty(path, path, type))
     }
   }
 
@@ -422,7 +422,7 @@ class Renderer {
     })
     if (analysed.type === 'struct') {
       for (const [, prop] of analysed.staticProps) {
-        this.#addTo(wrapper, prop)
+        this._addTo(wrapper, prop)
       }
     } else {
       throw new TypeError('Analysed must be a struct')
