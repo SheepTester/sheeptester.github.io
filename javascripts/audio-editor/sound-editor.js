@@ -20,6 +20,7 @@ const HEIGHT = 100;
 const DEFAULT_ZOOM = 200;
 const MIN_ZOOM = 0.03125;
 const MAX_ZOOM = 50;
+const MAX_CANVAS_WIDTH = 5000;
 
 const MAX_MP3_SAMPLES = 1152;
 
@@ -53,12 +54,24 @@ class SoundEditor {
     ].forEach(method => this[method] = this[method].bind(this));
 
     this.props = props;
+
+    const zoom = this.props.sampleRate / DEFAULT_ZOOM;
+    const predictedWidth = Math.ceil(this.props.samples.length / zoom);
     this.state = {
       playhead: null, // null is not playing, [0 -> 1] is playing percent
       trimStart: 0,
       trimEnd: 0,
       selectDirection: 'end',
-      zoom: this.props.sampleRate / DEFAULT_ZOOM
+      zoom: predictedWidth > MAX_CANVAS_WIDTH
+        // Derivation:
+        // zoom = (sample rate / default zoom) * 2^n, where n is an integer
+        // canvas width = ceil(samples / zoom)
+        //              = ceil(samples / ((sample rate / default zoom) * 2^n))
+        //              = default zoom * samples / sample rate * 1 / 2^n
+        // 2^n = default zoom * samples / (sample rate * canvas width)
+        // n = log_2 (default zoom * samples / (sample rate * canvas width))
+        ? zoom * Math.pow(2, Math.ceil(Math.log2((DEFAULT_ZOOM * this.props.samples.length) / (this.props.sampleRate * MAX_CANVAS_WIDTH))))
+        : zoom
     };
 
     this.redoStack = [];
