@@ -275,8 +275,8 @@ function makeLi () {
   li.append(removeBtn)
   return { id, li }
 }
-addFileInput.addEventListener('change', async () => {
-  for (const file of addFileInput.files) {
+async function addFiles (files) {
+  for (const file of files) {
     const { id, li } = makeLi()
     const url = await blobToDataUrl(file)
 
@@ -316,7 +316,14 @@ addFileInput.addEventListener('change', async () => {
       img.addEventListener('error', reject)
     })
   }
+}
+addFileInput.addEventListener('change', async () => {
+  await addFiles(addFileInput.files)
   addFileInput.value = null
+  update()
+})
+document.addEventListener('paste', async e => {
+  await addFiles(e.clipboardData.files)
   update()
 })
 addTextBtn.addEventListener('click', () => {
