@@ -881,24 +881,25 @@ const [, , inputFile, outputHtml, outputCss] = process.argv
 fs.readFile(inputFile, 'utf8')
   .then(async psuedoScss => {
     const { html, css } = await parseImitationScss(psuedoScss, inputFile, {
-      html: '<!DOCTYPE html>',
+      html: `<!DOCTYPE html>\n<!-- Hi! This file was generated, so it's hard to read. The source code is at ${inputFile} -->\n`,
       noisy: false,
       // logPop: true
     })
     await fs.writeFile(
       outputHtml,
-      html + `\n<!-- Generated from ${inputFile} -->\n`
+      html + '\n',
     )
     await fs.writeFile(
       outputCss,
-      Array.from(
-        css,
-        ([media, styles]) => {
-          const css = [...styles].join('')
-          return media === 'main' ? css : `${media}{${css}}`
-        }
-      ).join('')
-        + `\n/* Generated from ${inputFile} */\n`
+      `/* Hi! This file was generated, so it's hard to read. The source code is at ${inputFile} */\n${
+        Array.from(
+          css,
+          ([media, styles]) => {
+            const css = [...styles].join('')
+            return media === 'main' ? css : `${media}{${css}}`
+          }
+        ).join('')
+      }\n`,
     )
   })
   .catch(err => {
