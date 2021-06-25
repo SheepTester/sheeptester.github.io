@@ -153,15 +153,23 @@ function draw () {
   c.strokeStyle = 'blue'
   c.beginPath()
   const precision = 1 / scaleX
-  let first = true
+  let start = true
   for (let x = bounds.x.min; x <= bounds.x.max; x += precision) {
     const y = func(x)
     if (Number.isNaN(y)) {
       continue
     }
-    if (first) {
+    if (y < bounds.y.min || y > bounds.y.max) {
+      if (!start) {
+        c.lineTo(x, y < bounds.y.min ? bounds.y.min : bounds.y.max)
+        c.stroke()
+        c.beginPath()
+        start = true
+      }
+    }
+    if (start) {
       c.moveTo(x, y)
-      first = false
+      start = false
     } else {
       c.lineTo(x, y)
     }
