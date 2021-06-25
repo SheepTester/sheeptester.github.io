@@ -38,6 +38,13 @@ for (const [open, close] of ['()', '[]', '{}']) {
 }
 function transformInput (input) {
   const replaced = input
+    // Implicit parentheses (eg sin 3x -> sin(3x))
+    .replace(/(?<=([a-zA-Z]\w*) +)(-?\w+)/g, (_, funcName, param) => typeof Math[funcName] === 'function' ? `(${param})` : param)
+    // Implicit multiplication for literal coefficients (eg 3x -> 3 * x)
+    .replace(/(\d+|\))\s*([a-zA-Z]\w*|\()/g, (_, coefficient, factor) => `${coefficient} * ${factor}`)
+    // Implicit multiplication between variables (eg x sin -> x * sin)
+    .replace(/(\w+) +(?=\w+)/g, (_, coefficient, factor) => `${coefficient} * `)
+    // Add Math. to functions and constants
     .replace(/[a-zA-Z]\w*/g, word =>
       Math[word.toUpperCase()]
         ? `Math.${word.toUpperCase()}`
@@ -76,13 +83,13 @@ function transformInput (input) {
 function findDigitBoundsInString (string, from) {
   let start, end = from
   for (let i = from - 1; i >= 0; i--) {
-    if (!'0123456789'.includes(string[i])) {
+    if (!'0123456789.-'.includes(string[i])) {
       start = Math.min(i + 1, from)
       break
     }
   }
   for (let i = from; i < string.length; i++) {
-    if (!'0123456789'.includes(string[i])) {
+    if (!'0123456789.-'.includes(string[i])) {
       end = i
       break
     }
@@ -95,10 +102,13 @@ let func = () => NaN
 function update () {
   const code = transformInput(elems.expression.value)
   elems.transformed.textContent = `⇒ ${code}`
+  const oldFunc = func
   try {
     func = eval(code)
+    func(0) // Ensure the code itself doesn't throw an error
     elems.error.textContent = ''
   } catch (err) {
+    func = oldFunc
     elems.error.textContent = err.stack
   }
   draw()
@@ -117,10 +127,19 @@ class Interval {
   get mid () {
     return (this.min + this.max) / 2
   }
+
+  has (value) {
+    return this.min <= value && value <= this.max
+  }
 }
 
 const c = elems.canvas.getContext('2d')
 const bounds = { x: new Interval(-10, 10), y: new Interval(-10, 10) }
+const colours = {
+  axis: 'rgba(0, 0, 0, 0.5)',
+  grid: 'rgba(0, 0, 0, 0.2)',
+  function: 'blue'
+}
 function draw () {
   c.clearRect(0, 0, c.canvas.width, c.canvas.height)
   c.save()
@@ -134,7 +153,7 @@ function draw () {
   // Gridlines and axes
   c.lineWidth = 1 / scaleX
   for (let x = Math.ceil(bounds.x.min); x <= Math.floor(bounds.x.max); x++) {
-    c.strokeStyle = x === 0 ? 'black' : 'rgba(0, 0, 0, 0.2)'
+    c.strokeStyle = x === 0 ? colours.axis : colours.grid
     c.beginPath()
     c.moveTo(x, bounds.y.min)
     c.lineTo(x, bounds.y.max)
@@ -142,39 +161,68 @@ function draw () {
   }
   c.lineWidth = 1 / scaleY
   for (let y = Math.ceil(bounds.y.min); y <= Math.floor(bounds.y.max); y++) {
-    c.strokeStyle = y === 0 ? 'black' : 'rgba(0, 0, 0, 0.2)'
+    c.strokeStyle = y === 0 ? colours.axis : colours.grid
     c.beginPath()
     c.moveTo(bounds.x.min, y)
     c.lineTo(bounds.x.max, y)
     c.stroke()
   }
 
-  c.lineWidth = 1 / scaleX
-  c.strokeStyle = 'blue'
-  c.beginPath()
   const precision = 1 / scaleX
-  let start = true
-  for (let x = bounds.x.min; x <= bounds.x.max; x += precision) {
-    const y = func(x)
-    if (Number.isNaN(y)) {
-      continue
-    }
-    if (y < bounds.y.min || y > bounds.y.max) {
-      if (!start) {
-        c.lineTo(x, y < bounds.y.min ? bounds.y.min : bounds.y.max)
-        c.stroke()
-        c.beginPath()
-        start = true
+  const maxPrecision = 1 / 1000 / scaleX
+  const samples = []
+  function insertSample (point) {
+    for (let i = samples.length; i--;) {
+      if (samples[i].x < point.x) {
+        samples.splice(i + 1, 0, point)
+        return
       }
     }
-    if (start) {
-      c.moveTo(x, y)
-      start = false
-    } else {
-      c.lineTo(x, y)
+    samples.splice(0, 0, point)
+  }
+  function checkInterval (lower, upper) {
+    if (upper.x - lower.x < maxPrecision) return
+    if (bounds.y.has(lower.y) && !bounds.y.has(upper.y) || !bounds.y.has(lower.y) && bounds.y.has(upper.y)) {
+      const mid = { x: (lower.x + upper.x) / 2 }
+      mid.y = func(mid.x)
+      insertSample(mid)
+      checkInterval(lower, mid)
+      checkInterval(mid, upper)
     }
   }
-  c.stroke()
+  let last
+  for (let x = bounds.x.min; x <= bounds.x.max; x += precision) {
+    const point = { x, y: func(x) }
+    insertSample(point)
+    if (last) {
+      checkInterval(last, point)
+    }
+    last = point
+  }
+
+  c.lineWidth = 1 / scaleX
+  c.strokeStyle = colours.function
+  let started = false
+  for (const { x, y } of samples) {
+    if (bounds.y.has(y)) {
+      if (started) {
+        c.lineTo(x, y)
+      } else {
+        c.beginPath()
+        c.moveTo(x, y)
+        started = true
+      }
+    } else if (started) {
+      if (!Number.isNaN(y)) {
+        c.lineTo(x, y < bounds.y.min ? bounds.y.min : bounds.y.max)
+      }
+      c.stroke()
+      started = false
+    }
+  }
+  if (started) {
+    c.stroke()
+  }
 
   c.restore()
 }
