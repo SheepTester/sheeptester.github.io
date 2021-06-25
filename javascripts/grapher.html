@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>dumb grapher</title>
+    <meta name="description" content="might use grapheme, idk" />
+
+    <link rel="stylesheet" type="text/css" href="/sheep3.css">
+    <script src="/sheep3.js" charset="utf-8"></script>
+
+    <style>
+      #error {
+        color: red;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="sidebar">
+      <label><em>f</em>(<em>x</em>) = <input type="text" id="expression" value="1 / x^2" autofocus></label>
+      <pre id="transformed"></pre>
+      <pre id="error"></pre>
+    </div>
+    <canvas id="canvas"></canvas>
+    <script>
+const elems = {
+  expression: document.getElementById('expression'),
+  transformed: document.getElementById('transformed'),
+  error: document.getElementById('error'),
+  canvas: document.getElementById('canvas')
+}
+
+const bracketPairs = {}
+for (const [open, close] of ['()', '[]', '{}']) {
+  bracketPairs[open] = close
+  bracketPairs[close] = open
+}
+function transformInput (input) {
+  const replaced = input
+    .replace(/[a-zA-Z]\w*/g, word =>
+      Math[word.toUpperCase()]
+        ? `Math.${word.toUpperCase()}`
+        : Math[word]
+        ? `Math.${word}`
+        : word)
+    .replace(/\^/g, '**')
+  const brackets = []
+  let transformed = ''
+  for (const char of replaced) {
+    if ('([{'.includes(char)) {
+      brackets.push(char)
+    } else if (')]}'.includes(char)) {
+      const open = bracketPairs[char]
+      if (brackets.includes(open)) {
+        // Turn something like [(wow] into [(wow)]
+        while (brackets[brackets.length - 1] !== open) {
+          transformed += bracketPairs[brackets.pop()]
+        }
+        brackets.pop()
+      } else {
+        // If the user typed (wow]), then the ] is probably a mistake, so ignore
+        // it.
+        continue
+      }
+    }
+    transformed += char
+  }
+  // Close unclosed brackets
+  for (const bracket of brackets.reverse()) {
+    transformed += bracketPairs[bracket]
+  }
+  return `x => ${transformed || 'NaN'}`
+}
+
+function findDigitBoundsInString (string, from) {
+  let start, end = from
+  for (let i = from - 1; i >= 0; i--) {
+    if (!'0123456789'.includes(string[i])) {
+      start = Math.min(i + 1, from)
+      break
+    }
+  }
+  for (let i = from; i < string.length; i++) {
+    if (!'0123456789'.includes(string[i])) {
+      end = i
+      break
+    }
+  }
+  return { start, end }
+}
+
+let func = () => NaN
+
+function update () {
+  const code = transformInput(elems.expression.value)
+  elems.transformed.textContent = `⇒ ${code}`
+  try {
+    func = eval(code)
+    elems.error.textContent = ''
+  } catch (err) {
+    elems.error.textContent = err.stack
+  }
+  draw()
+}
+
+class Interval {
+  constructor (a, b) {
+    this.min = Math.min(a, b)
+    this.max = Math.max(a, b)
+  }
+
+  get range () {
+    return this.max - this.min
+  }
+
+  get mid () {
+    return (this.min + this.max) / 2
+  }
+}
+
+const c = elems.canvas.getContext('2d')
+const bounds = { x: new Interval(-10, 10), y: new Interval(-10, 10) }
+function draw () {
+  c.clearRect(0, 0, c.canvas.width, c.canvas.height)
+  c.save()
+
+  c.translate(c.canvas.width / 2, c.canvas.height / 2)
+  const scaleX = c.canvas.width / bounds.x.range
+  const scaleY = c.canvas.height / bounds.y.range
+  c.scale(scaleX, -scaleY)
+  c.translate(bounds.x.mid, bounds.y.mid)
+
+  // Gridlines and axes
+  c.lineWidth = 1 / scaleX
+  for (let x = Math.ceil(bounds.x.min); x <= Math.floor(bounds.x.max); x++) {
+    c.strokeStyle = x === 0 ? 'black' : 'rgba(0, 0, 0, 0.2)'
+    c.beginPath()
+    c.moveTo(x, bounds.y.min)
+    c.lineTo(x, bounds.y.max)
+    c.stroke()
+  }
+  c.lineWidth = 1 / scaleY
+  for (let y = Math.ceil(bounds.y.min); y <= Math.floor(bounds.y.max); y++) {
+    c.strokeStyle = y === 0 ? 'black' : 'rgba(0, 0, 0, 0.2)'
+    c.beginPath()
+    c.moveTo(bounds.x.min, y)
+    c.lineTo(bounds.x.max, y)
+    c.stroke()
+  }
+
+  c.lineWidth = 1 / scaleX
+  c.strokeStyle = 'blue'
+  c.beginPath()
+  const precision = 1 / scaleX
+  let first = true
+  for (let x = bounds.x.min; x <= bounds.x.max; x += precision) {
+    const y = func(x)
+    if (Number.isNaN(y)) {
+      continue
+    }
+    if (first) {
+      c.moveTo(x, y)
+      first = false
+    } else {
+      c.lineTo(x, y)
+    }
+  }
+  c.stroke()
+
+  c.restore()
+}
+
+elems.expression.addEventListener('input', update)
+elems.expression.addEventListener('keydown', e => {
+  if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+    if (elems.expression.selectionStart === elems.expression.selectionEnd) {
+      const { start, end } = findDigitBoundsInString(elems.expression.value, elems.expression.selectionStart)
+      elems.expression.setSelectionRange(start, end)
+    }
+    const { selectionStart: start, selectionEnd: end } = elems.expression
+    const selected = elems.expression.value.slice(start, end)
+    if (Number.isFinite(+selected)) {
+      let change = e.key === 'ArrowUp' ? 1 : -1
+      if (e.altKey) change /= 10
+      if (e.shiftKey) change *= 10
+      if (e.ctrlKey) change *= 100
+      const newValue = (+selected + change).toString()
+      elems.expression.value = elems.expression.value.slice(0, start) + newValue + elems.expression.value.slice(end)
+      elems.expression.setSelectionRange(start, start + newValue.length)
+      update()
+    }
+    e.preventDefault()
+  }
+})
+
+update()
+    </script>
+  </body>
+</html>
