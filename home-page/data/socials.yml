@@ -91,6 +91,10 @@ profiles:
     bg: '#00B600'
     type: piskel
 
+  - name: Wikipedia
+    link: https://en.wikipedia.org/wiki/User:SheepTester
+    border: '#000000'
+
   - name: Fandom
     link: https://community.fandom.com/wiki/User:SheepTester
     bg: '#002A32'
