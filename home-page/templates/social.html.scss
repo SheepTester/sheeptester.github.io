@@ -8,7 +8,7 @@ css {
     box-sizing: border-box;
     transition: transform .2s;
   }
-  .social:hover,
+  a.social:hover,
   a.username:hover .social {
     transform: scale(1.1);
   }
@@ -62,7 +62,7 @@ $name: map.get($social, 'name');
       box-sizing: border-box;
       transition: all .2s;
     }
-    .social:hover .ball,
+    a.social:hover .ball,
     a.username:hover .ball {
       transform: scale(1.2);
     }

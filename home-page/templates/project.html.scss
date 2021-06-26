@@ -160,10 +160,6 @@ a.#{$classes}[href="#{map.get($project, 'path')}"][data-desc="#{map.get($project
       background-color: white;
       box-shadow: 0 3px 5px rgba(0, 0, 0, 0.2);
     }
-    .project.showing-desc .open-directly {
-      opacity: 0;
-      pointer-events: none;
-    }
   }
   span.open-directly {}
 }
