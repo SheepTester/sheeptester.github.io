@@ -21,7 +21,7 @@
     <button type="button" id="start">start</button>
     <button type="button" id="pause">pause</button>
     <script>
-// C# major scale I think, idk, not a music person
+// C# major scale I think, idk, not a music person (49 to 73 in Scratch)
 const majorScale = ['C#3', 'Eb3', 'F#3', 'G#3', 'Bb3', 'C#4', 'Eb4', 'F#4', 'G#4', 'Bb4', 'C#5']
 
 // gain : [0, 1]
@@ -32,14 +32,15 @@ function gainToDb (gain) {
 }
 
 class Note {
-  #volume = new Tone.Volume(-12).toDestination()
-  #synth = new Tone.Synth().connect(this.#volume)
+  #volume = new Tone.Volume(0).toDestination()
   #note = 0
+  #sampler
   #interval
   #delay
   #scale
 
-  constructor (interval, delay = 0, octaveOffset = 0) {
+  constructor (sampler, interval, delay = 0, octaveOffset = 0) {
+    this.#sampler = sampler
     this.#interval = interval
     this.#delay = delay
     // Wisdom from brother: transpose raises/lowers a note, and 12 semitones
@@ -50,19 +51,56 @@ class Note {
   start () {
     Tone.Transport.scheduleRepeat(time => {
       // this.#volume.volume.linearRampToValueAtTime(gainToDb(this.#note % 3 * 0.3 + 0.4), time + 0.025)
-      this.#synth.triggerAttackRelease(majorScale[Math.floor(Math.random() * 9)], this.#interval, time)
+      this.#sampler.triggerAttackRelease(this.#scale[Math.floor(Math.random() * 9)], this.#interval, time)
       this.#note++
     }, this.#interval, this.#delay)
   }
 }
 
 async function main () {
+  const bass = new Tone.Sampler({
+    urls: {
+      C2: '36-C2.mp3',
+      C3: '48-C3.mp3'
+    },
+    release: '1m',
+    baseUrl: './audio-editor/audio/instruments/bass/',
+  }).toDestination()
+  const musicBox = new Tone.Sampler({
+    urls: {
+      C4: '60-C4.mp3'
+    },
+    release: '1m',
+    baseUrl: './audio-editor/audio/instruments/music-box/',
+  }).toDestination()
+  const piano = new Tone.Sampler({
+    urls: {
+      C3: '48-C3.mp3',
+      C4: '60-C4.mp3',
+      C5: '72-C5.mp3'
+    },
+    release: '1m',
+    baseUrl: './audio-editor/audio/instruments/piano/',
+  }).toDestination()
+  const pizzicato = new Tone.Sampler({
+    urls: {
+      C4: '60-C4.mp3'
+    },
+    release: '1m',
+    baseUrl: './audio-editor/audio/instruments/pizzicato/',
+  }).toDestination()
+
+  // 0.4s per quarter note with 4/4 time signature (default)
+  Tone.Transport.bpm.value = 150
+
   // bars:quarter notes
-  new Note('4n').start()
-  new Note('8n', '4:2').start()
-  new Note('2n', '9:0', -2).start()
-  new Note('2n', '10:0', 1).start()
-  new Note('4n.', '20:0', 1).start()
+  new Note(piano, '4n').start()
+  new Note(pizzicato, '8n', '4:2').start()
+  new Note(bass, '2n', '9:0', -2).start()
+  new Note(piano, '2n', '10:0', 1).start()
+  new Note(musicBox, '4n.', '20:0', 1).start()
+
+  await Tone.loaded()
 
   document.getElementById('start').addEventListener('click', async () => {
     await Tone.start()
