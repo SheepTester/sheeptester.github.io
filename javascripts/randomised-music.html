@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Randomised music</title>
+    <meta name="description" content="Randomised notes along the C# major scale with Tone.js. Based on a Scratch project" />
+
+    <link rel="stylesheet" type="text/css" href="/sheep3.css">
+    <script src="/sheep3.js" charset="utf-8"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.26/Tone.min.js" charset="utf-8"></script>
+
+    <style>
+      /* TEMP */
+    </style>
+  </head>
+  <body>
+    <p>Code based on and inspired by <a href="https://scratch.mit.edu/projects/101550561/">Pi Music</a>, which itself was based on <a href="https://scratch.mit.edu/projects/84632326">Information as Art</a>. Made with <a href="https://tonejs.github.io/">Tone.js</a>.</p>
+    <button type="button" id="start">start</button>
+    <button type="button" id="pause">pause</button>
+    <script>
+// C# major scale I think, idk, not a music person
+const majorScale = ['C#3', 'Eb3', 'F#3', 'G#3', 'Bb3', 'C#4', 'Eb4', 'F#4', 'G#4', 'Bb4', 'C#5']
+
+// gain : [0, 1]
+// from https://github.com/Tonejs/Tone.js/blob/13.4.9/Tone/core/Tone.js#L529-L531
+function gainToDb (gain) {
+  // probably can be simplified to 20 * Math.log10(gain)
+  return 20 * (Math.log(gain) / Math.LN10)
+}
+
+class Note {
+  #volume = new Tone.Volume(-12).toDestination()
+  #synth = new Tone.Synth().connect(this.#volume)
+  #note = 0
+  #interval
+  #delay
+  #scale
+
+  constructor (interval, delay = 0, octaveOffset = 0) {
+    this.#interval = interval
+    this.#delay = delay
+    // Wisdom from brother: transpose raises/lowers a note, and 12 semitones
+    // makes an octave
+    this.#scale = majorScale.map(note => Tone.Frequency(note).transpose(octaveOffset * 12))
+  }
+
+  start () {
+    Tone.Transport.scheduleRepeat(time => {
+      // this.#volume.volume.linearRampToValueAtTime(gainToDb(this.#note % 3 * 0.3 + 0.4), time + 0.025)
+      this.#synth.triggerAttackRelease(majorScale[Math.floor(Math.random() * 9)], this.#interval, time)
+      this.#note++
+    }, this.#interval, this.#delay)
+  }
+}
+
+async function main () {
+  // bars:quarter notes
+  new Note('4n').start()
+  new Note('8n', '4:2').start()
+  new Note('2n', '9:0', -2).start()
+  new Note('2n', '10:0', 1).start()
+  new Note('4n.', '20:0', 1).start()
+
+  document.getElementById('start').addEventListener('click', async () => {
+    await Tone.start()
+    Tone.Transport.start()
+  })
+  document.getElementById('pause').addEventListener('click', () => {
+    Tone.Transport.pause()
+  })
+}
+
+main()
+    </script>
+  </body>
+</html>
