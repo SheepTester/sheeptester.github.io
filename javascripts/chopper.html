@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Chop an image into squares</title>
+    <meta name="description" content="To turn a large image into smaller Discord emoji" />
+
+    <link rel="stylesheet" type="text/css" href="/sheep3.css">
+    <script src="/sheep3.js" charset="utf-8"></script>
+
+    <style>
+      .wrapper {
+        display: inline-block;
+        position: relative;
+      }
+      #overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        opacity: 0.1;
+        image-rendering: pixelated;
+        image-rendering: crisp-edges;
+        transition: opacity .2s;
+      }
+      #overlay:hover {
+        opacity: 1;
+      }
+      #overlay:active {
+        opacity: 0;
+      }
+      .emoji-grid {
+        display: grid;
+        font-size: 0;
+      }
+      .emoji {
+        transition: transform 0.2s;
+      }
+      .download:hover .emoji {
+        transform: scale(0.8);
+      }
+    </style>
+  </head>
+  <body>
+    <p>
+      <label>
+        Select an image:
+        <input type="file" id="image-file" accept="image/*" autofocus>
+        (or paste an image here)
+      </label>
+    </p>
+    <p><label>Rows: <input type="number" id="rows" value="1"></label></p>
+    <p><label>Columns: <input type="number" id="cols" value="1"></label></p>
+    <p>
+      <label>
+        Fit:
+        <select id="fit">
+          <option value="cover">Cover area, crop sides</option>
+          <option value="contain" selected>Contain inside area, transparent bars</option>
+          <option value="stretch">S t r e t c h</option>
+        </select>
+      </label>
+    </p>
+    <div class="wrapper">
+      <canvas id="preview"></canvas>
+      <canvas id="overlay"></canvas>
+    </div>
+    <p><button id="chop" disabled>Chop!</button></p>
+    <script src="./jszip.min.js" charset="utf-8"></script>
+    <script>
+const elems = {
+  image: document.getElementById('image-file'),
+  rows: document.getElementById('rows'),
+  cols: document.getElementById('cols'),
+  fit: document.getElementById('fit'),
+  preview: document.getElementById('preview'),
+  overlay: document.getElementById('overlay'),
+  chop: document.getElementById('chop')
+}
+// Discord resizes emoji images down to 128 by 128
+const SIZE = 128
+// Size in pixels of large displayed emoji (eg in emoji-only messages) in the
+// Discord client
+const DISPLAY_SIZE = 48
+
+let image, oldUrl
+function loadImage (file) {
+  if (oldUrl) {
+    URL.revokeObjectURL(oldUrl)
+  }
+  const url = URL.createObjectURL(file)
+  image = new Image()
+  image.addEventListener('load', updatePreview, { once: true })
+  image.src = url
+  oldUrl = url
+}
+elems.image.addEventListener('change', () => {
+  if (elems.image.files[0]) {
+    loadImage(elems.image.files[0])
+  }
+})
+document.addEventListener('paste', e => {
+  if (e.clipboardData.files[0]) {
+    loadImage(e.clipboardData.files[0])
+  }
+})
+
+function getSize () {
+  return {
+    rows: Math.max(+elems.rows.value | 0, 1),
+    cols: Math.max(+elems.cols.value | 0, 1)
+  }
+}
+
+const c = elems.preview.getContext('2d')
+const oc = elems.overlay.getContext('2d')
+function updatePreview () {
+  if (!image) return
+
+  const { rows, cols } = getSize()
+  c.canvas.width = SIZE * cols
+  c.canvas.height = SIZE * rows
+  c.canvas.style.width = c.canvas.width * DISPLAY_SIZE / SIZE + 'px'
+  switch (elems.fit.value) {
+    case 'stretch': {
+      c.drawImage(image, 0, 0, c.canvas.width, c.canvas.height)
+      break
+    }
+    case 'contain': {
+      const scale = image.width / image.height > c.canvas.width / c.canvas.height
+        // Image is wider, so base on width
+        ? c.canvas.width / image.width
+        // Image is taller, so base on height
+        : c.canvas.height / image.height
+      c.drawImage(
+        image,
+        (c.canvas.width - image.width * scale) / 2,
+        (c.canvas.height - image.height * scale) / 2,
+        image.width * scale,
+        image.height * scale
+      )
+      break
+    }
+    case 'cover': {
+      const scale = image.width / image.height < c.canvas.width / c.canvas.height
+        // Image is taller, so base on width
+        ? c.canvas.width / image.width
+        // Image is height, so base on height
+        : c.canvas.height / image.height
+      c.drawImage(
+        image,
+        (c.canvas.width - image.width * scale) / 2,
+        (c.canvas.height - image.height * scale) / 2,
+        image.width * scale,
+        image.height * scale
+      )
+      break
+    }
+  }
+
+  oc.canvas.width = cols * DISPLAY_SIZE
+  oc.canvas.height = rows * DISPLAY_SIZE
+  oc.strokeStyle = 'white'
+  oc.imageSmoothingEnabled = false
+  oc.beginPath()
+  for (let x = 0; x < cols; x++) {
+    for (let y = 0; y < rows; y++) {
+      oc.moveTo((x + 1) * DISPLAY_SIZE + 0.5, y * DISPLAY_SIZE + 0.5)
+      oc.lineTo(x * DISPLAY_SIZE + 0.5, y * DISPLAY_SIZE + 0.5)
+      oc.lineTo(x * DISPLAY_SIZE + 0.5, (y + 1) * DISPLAY_SIZE + 0.5)
+    }
+  }
+  oc.stroke()
+  oc.strokeStyle = 'black'
+  oc.beginPath()
+  for (let x = 0; x < cols; x++) {
+    for (let y = 0; y < rows; y++) {
+      oc.moveTo((x + 1) * DISPLAY_SIZE - 0.5, y * DISPLAY_SIZE - 0.5)
+      oc.lineTo((x + 1) * DISPLAY_SIZE - 0.5, (y + 1) * DISPLAY_SIZE - 0.5)
+      oc.lineTo(x * DISPLAY_SIZE - 0.5, (y + 1) * DISPLAY_SIZE - 0.5)
+    }
+  }
+  oc.stroke()
+
+  elems.chop.disabled = false
+}
+
+elems.rows.addEventListener('input', updatePreview)
+elems.cols.addEventListener('input', updatePreview)
+elems.fit.addEventListener('change', updatePreview)
+
+elems.chop.addEventListener('click', async () => {
+  const { rows, cols } = getSize()
+  const rowLength = `${rows}`.length
+  const colLength = `${cols}`.length
+
+  const output = document.createElement('fieldset')
+  const emoji = Object.assign(document.createElement('div'), {
+    className: 'emoji-grid'
+  })
+  emoji.style.gridTemplateColumns = `repeat(${cols}, ${DISPLAY_SIZE}px)`
+
+  const canvas = document.createElement('canvas')
+  canvas.width = SIZE
+  canvas.height = SIZE
+  const c = canvas.getContext('2d')
+  const blobs = []
+  for (let y = 0; y < rows; y++) {
+    for (let x = 0; x < cols; x++) {
+      c.clearRect(0, 0, SIZE, SIZE)
+      c.drawImage(elems.preview, x * SIZE, y * SIZE, SIZE, SIZE, 0, 0, SIZE, SIZE)
+      const blob = await new Promise(resolve => canvas.toBlob(resolve))
+      const url = URL.createObjectURL(blob)
+      const name = `emoji_${
+        x.toString().padStart(colLength, '0')
+      }-${
+        y.toString().padStart(rowLength, '0')
+      }.png`
+      blobs.push({ blob, name })
+      const image = Object.assign(document.createElement('img'), {
+        src: url,
+        className: 'emoji'
+      })
+      image.style.width = DISPLAY_SIZE + 'px'
+      const download = Object.assign(document.createElement('a'), {
+        download: name,
+        href: url,
+        className: 'download'
+      })
+      download.append(image)
+      emoji.append(download)
+    }
+  }
+
+  const downloadZipBtn = Object.assign(document.createElement('button'), {
+    textContent: 'Download all as .zip'
+  })
+  downloadZipBtn.addEventListener('click', async () => {
+    const zip = new JSZip()
+    for (const { name, blob } of blobs) {
+      zip.file(name, blob)
+    }
+    const blob = await zip.generateAsync({ type: 'blob' })
+    const url = URL.createObjectURL(blob)
+    const download = Object.assign(document.createElement('a'), {
+      download: 'emoji.zip',
+      href: url
+    })
+    document.body.append(download)
+    download.click()
+    download.remove()
+    URL.revokeObjectURL(url)
+  })
+
+  output.append(
+    Object.assign(document.createElement('legend'), {
+      textContent: 'Result'
+    }),
+    Object.assign(document.createElement('p'), {
+      textContent: 'Click on a tile to download an individual emoji.'
+    }),
+    emoji,
+    downloadZipBtn
+  )
+  document.body.append(output)
+})
+    </script>
+  </body>
+</html>
