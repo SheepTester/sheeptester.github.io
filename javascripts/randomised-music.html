@@ -32,14 +32,13 @@ function gainToDb (gain) {
 }
 
 class Note {
-  #volume = new Tone.Volume(0).toDestination()
   #note = 0
   #sampler
   #interval
   #delay
   #scale
 
-  constructor (sampler, interval, delay = 0, octaveOffset = 0) {
+  constructor (sampler, interval, { delay = 0, octaveOffset = 0 } = {}) {
     this.#sampler = sampler
     this.#interval = interval
     this.#delay = delay
@@ -50,8 +49,11 @@ class Note {
 
   start () {
     Tone.Transport.scheduleRepeat(time => {
-      // this.#volume.volume.linearRampToValueAtTime(gainToDb(this.#note % 3 * 0.3 + 0.4), time + 0.025)
-      this.#sampler.triggerAttackRelease(this.#scale[Math.floor(Math.random() * 9)], this.#interval, time)
+      this.#sampler.triggerAttackRelease(
+        this.#scale[Math.floor(Math.random() * 9)],
+        this.#interval,
+        time
+      )
       this.#note++
     }, this.#interval, this.#delay)
   }
@@ -95,10 +97,10 @@ async function main () {
 
   // bars:quarter notes
   new Note(piano, '4n').start()
-  new Note(pizzicato, '8n', '4:2').start()
-  new Note(bass, '2n', '9:0', -2).start()
-  new Note(piano, '2n', '10:0', 1).start()
-  new Note(musicBox, '4n.', '20:0', 1).start()
+  new Note(pizzicato, '8n', { delay: '4:2' }).start()
+  new Note(bass, '2n', { delay: '9:0', octaveOffset: -2 }).start()
+  new Note(piano, '2n', { delay: '10:0', octaveOffset: 1 }).start()
+  new Note(musicBox, '4n.', { delay: '20:0', octaveOffset: 1 }).start()
 
   await Tone.loaded()
 
