@@ -13,11 +13,17 @@
       /* https://colorhunt.co/palette/144698 */
       body {
         background-color: #103c42;
+        color: #ffe837;
         margin: 10px;
         font-size: 0;
         font-family: 'Roboto', sans-serif;
       }
       .card {
+        -webkit-appearance: none;
+        border: none;
+        background: none;
+        font: inherit;
+        color: inherit;
         border-radius: 8px;
         padding: 10px;
         background-color: #02576c;
@@ -26,8 +32,9 @@
         margin: 10px;
         justify-content: center;
         align-items: center;
-        width: 120px;
-        height: 180px;
+        width: 140px;
+        height: 200px;
+        box-sizing: border-box;
         flex: none;
         vertical-align: top;
         cursor: pointer;
@@ -40,33 +47,49 @@
       .card:active {
         box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
       }
-      .card span {
+      .copyable  {
         font-size: 60px;
         text-align: center;
-        color: #ffe837;
       }
-      .long span {
+      .long .copyable {
         font-size: 20px;
         word-wrap: break-word;
         max-height: 200px;
         overflow: hidden;
       }
-      .really-long span {
+      .really-long .copyable {
         font-size: 10px;
+      }
+      .code-point {
+        color: #05A19C;
+        position: absolute;
+        bottom: 10px;
+        left: 0;
+        right: 0;
+        text-align: center;
+        font-size: 14px;
       }
       .add-btn {
         background-image: url('./material-add_circle_outline.svg');
         background-repeat: no-repeat;
         background-position: center;
         background-size: 60px;
+        background-color: transparent;
+        border: 3px solid #02576c;
+        box-shadow: none;
+        transition: background-color .2s, box-shadow .2s;
+      }
+      .add-btn:active {
+        border: 3px solid #02576c;
+        background-color: rgba(2, 87, 108, 0.5);
       }
       .corner-btn {
-        width: 48px;
-        height: 48px;
+        width: 36px;
+        height: 36px;
         -webkit-appearance: none;
         border: none;
         background: none;
-        margin: -24px;
+        margin: -18px;
         position: absolute;
         pointer-events: none;
         opacity: 0;
@@ -98,9 +121,6 @@
         bottom: 0;
         right: 0;
       }
-      :focus {
-        outline: none;
-      }
     </style>
   </head>
   <body>
@@ -109,31 +129,55 @@ let strings = ['—', '–', '×', 'Δ', '¯\\_(ツ)_/¯', '🤔'];
 try {
   const arr = JSON.parse(localStorage.getItem('[javascripts] charcopy'));
   if (Array.isArray(arr)) strings = arr;
-} catch (e) {}
-const fragment = document.createDocumentFragment();
+} catch (err) {
+  console.error(err);
+}
+
 function newCard(str) {
-  const card = document.createElement('div');
+  const card = document.createElement('button');
+  card.ariaLabel = `Click to copy "${str}"`;
   card.dataset.clipboardText = str;
   new ClipboardJS(card, {container: card});
   card.classList.add('card');
-  if (str.length > 2) card.classList.add('long');
-  if (str.length > 80) card.classList.add('really-long');
+
   const char = document.createElement('span');
+  char.classList.add('copyable');
   char.textContent = str;
   card.appendChild(char);
+
+  const chars = [...str];
+  const length = chars.length;
+  if (length === 1) {
+    card.appendChild(document.createTextNode(' '));
+    const codePoint = document.createElement('span');
+    codePoint.classList.add('code-point');
+    codePoint.textContent = `U+${chars[0].codePointAt(0).toString(16).padStart(4, '0').toUpperCase()}`;
+    card.appendChild(codePoint);
+  } else {
+    if (length > 1) card.classList.add('long');
+    if (length > 80) card.classList.add('really-long');
+  }
+
   const removeBtn = document.createElement('button');
   removeBtn.classList.add('corner-btn');
   removeBtn.classList.add('remove-btn');
+  removeBtn.ariaLabel = 'Remove';
   removeBtn.addEventListener('click', e => {
+    if (!e.shiftKey && !confirm('Are you sure you want to remove this?\n\nTip: hold shift and click to skip confirmation.')) {
+      return;
+    }
+    console.log('Removed', str);
     document.body.removeChild(card);
     const index = strings.indexOf(str);
-    if (~index) strings.splice(index, 1);
+    if (index !== -1) strings.splice(index, 1);
     localStorage.setItem('[javascripts] charcopy', JSON.stringify(strings));
   });
   card.appendChild(removeBtn);
+
   const moveLeftBtn = document.createElement('button');
   moveLeftBtn.classList.add('corner-btn');
   moveLeftBtn.classList.add('left-btn');
+  moveLeftBtn.ariaLabel = 'Move left';
   moveLeftBtn.addEventListener('click', e => {
     const index = strings.indexOf(str);
     if (~index && index > 0) {
@@ -144,9 +188,11 @@ function newCard(str) {
     }
   });
   card.appendChild(moveLeftBtn);
+
   const moveRightBtn = document.createElement('button');
   moveRightBtn.classList.add('corner-btn');
   moveRightBtn.classList.add('right-btn');
+  moveRightBtn.ariaLabel = 'Move right';
   moveRightBtn.addEventListener('click', e => {
     const index = strings.indexOf(str);
     if (~index && index < strings.length - 1) {
@@ -157,23 +203,39 @@ function newCard(str) {
     }
   });
   card.appendChild(moveRightBtn);
+
   return card;
 }
+
+const fragment = document.createDocumentFragment();
 strings.forEach(str => {
   fragment.appendChild(newCard(str));
 });
-const addCard = document.createElement('div');
+
+const addCard = document.createElement('button');
+addCard.ariaLabel = 'Add character or copypasta';
 addCard.classList.add('card');
 addCard.classList.add('add-btn');
 addCard.addEventListener('click', e => {
-  const newStr = prompt('Add character:');
-  if (newStr && !strings.includes(newStr)) {
+  let newStr = prompt('Enter the character/copypasta you want to add.\n\nYou can also use U+XXXX to add a character by its Unicode code point.');
+  if (!newStr) {
+    return;
+  }
+  if (newStr.startsWith('U+')) {
+    try {
+      newStr = String.fromCodePoint(parseInt(newStr.slice(2), 16));
+    } catch (err) {
+      console.error(err);
+    }
+  }
+  if (!strings.includes(newStr)) {
     strings.push(newStr);
     document.body.insertBefore(newCard(newStr), addCard);
     localStorage.setItem('[javascripts] charcopy', JSON.stringify(strings));
   }
 });
 fragment.appendChild(addCard);
+
 document.body.appendChild(fragment);
     </script>
   </body>
