@@ -69,6 +69,11 @@
         right: 0;
         text-align: center;
         font-size: 14px;
+        opacity: 0;
+        transition: opacity .2s;
+      }
+      .card:hover .code-point {
+        opacity: 1;
       }
       .add-btn {
         background-image: url('./material-add_circle_outline.svg');
@@ -99,12 +104,15 @@
         background-size: 24px;
         transition: opacity .2s;
         cursor: pointer;
+        border-radius: 50%;
       }
-      .card:hover .corner-btn {
+      .card:hover .corner-btn,
+      .card:focus-visible .corner-btn {
         pointer-events: all;
-        opacity: 0.5;
+        opacity: 0.2;
       }
-      .card:hover .corner-btn:hover {
+      .card:hover .corner-btn:hover,
+      .corner-btn:focus-visible {
         opacity: 1;
       }
       .remove-btn {
@@ -131,6 +139,12 @@
       }
       .card.dragged .corner-btn {
         opacity: 0;
+      }
+      :focus {
+        outline: none;
+      }
+      :focus-visible {
+        box-shadow: 0 0 0 3px #ffe837;
       }
     </style>
   </head>
