@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Sitemap Tinder</title>
+    <meta
+      name="description"
+      content="Quickly preview and reject the many web pages on this website."
+    />
+
+    <link rel="stylesheet" type="text/css" href="/sheep3.css" />
+    <script src="/sheep3.js" charset="utf-8"></script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      html,
+      body {
+        height: 100%;
+      }
+      body {
+        margin: 0;
+        font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI',
+          Roboto, 'Helvetica Neue', Helvetica, Arial, 'PingFang TC',
+          'Source Han Sans TC', 'Source Han Sans TW', 'Noto Sans CJK TC',
+          'Microsoft Jhenghei', MOESongUN, PMingLiU, PMingLiU-ExtB, MingLiU,
+          MingLiU-ExtB, Ming, 'Heiti TC', HanaMinA, HanaMinB, sans-serif,
+          'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+        font-size: 14px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      button,
+      input,
+      select,
+      textarea {
+        -webkit-appearance: none;
+        border: none;
+        background: none;
+        color: inherit;
+        font: inherit;
+      }
+      button:not(:disabled) {
+        cursor: pointer;
+      }
+      .card {
+        display: flex;
+        flex-direction: column;
+        width: 300px;
+        height: 500px;
+        margin: -250px -150px;
+        border-radius: 30px;
+        overflow: hidden;
+        box-shadow: 0 5px 30px rgba(52, 67, 77, 0.2);
+        background-color: white;
+        position: relative;
+      }
+      .back {
+        background-image: url('./assets/card-back.svg'), linear-gradient(-15deg, #bec4ce, #e3eaef);
+        background-size: 120px, auto;
+        background-position: center;
+        background-repeat: no-repeat;
+      }
+      .preview {
+        flex: auto;
+      }
+      .iframe {
+        height: 100%;
+        border: none;
+        pointer-events: none;
+      }
+      .buttons {
+        display: flex;
+        justify-content: center;
+        padding: 10px;
+      }
+      .card-btn {
+        width: 48px;
+        height: 48px;
+        font-size: 0;
+        box-shadow: 0 3px 12px rgba(146, 43, 113, 0.3);
+        border-radius: 50%;
+        background-size: 24px;
+        background-position: center;
+        background-repeat: no-repeat;
+        margin: 10px;
+        transition: box-shadow 0.2s;
+      }
+      .card-btn:hover {
+        box-shadow: 0 7px 20px rgba(146, 43, 113, 0.3);
+      }
+      .card-btn:active {
+        box-shadow: 0 1px 3px rgba(146, 43, 113, 0.3);
+      }
+      .reject-btn {
+        background-image: url('./assets/material-close.svg');
+      }
+      .accept-btn {
+        background-image: url('./assets/material-favourite.svg'),
+          linear-gradient(-60deg, #ff0063, #e34dff);
+        background-size: 24px, auto;
+      }
+      .meta {
+        padding: 20px;
+        padding-bottom: 0;
+      }
+      .title {
+        font-weight: 800;
+        margin: 0;
+        font-size: 2em;
+        line-height: 1;
+      }
+      .description {
+        margin: 0;
+        margin-top: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <div class="preview">
+        <iframe class="iframe" src="/all/" tabindex="-1"></iframe>
+      </div>
+      <div class="meta">
+        <h2 class="title">/all/ - Almost Everything</h2>
+        <p class="description">
+          Links to almost all files on this site (since 2021-03-10)
+        </p>
+      </div>
+      <div class="buttons">
+        <button class="card-btn reject-btn">This does not please me.</button>
+        <button class="card-btn accept-btn">This sparks joy.</button>
+      </div>
+    </div>
+    <!-- <div class="card back"></div> -->
+    <script>
+      let paths
+      fetch('./sitemap.txt')
+        .then(r => r.text())
+        .then(sitemap => {
+          paths = sitemap.trim().split(/\r?\n/)
+        })
+    </script>
+  </body>
+</html>
