@@ -40,6 +40,7 @@
         cursor: pointer;
         transition: box-shadow .2s;
         position: relative;
+        touch-action: none;
       }
       .card:hover {
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
@@ -111,15 +112,25 @@
         top: 0;
         right: 0;
       }
-      .left-btn {
-        background-image: url('./material-chevron_left.svg');
-        bottom: 0;
-        left: 0;
+      .placeholder {
+        box-shadow: none;
+        pointer-events: none;
+        background: none;
+        border: 3px solid #05A19C;
       }
-      .right-btn {
-        background-image: url('./material-chevron_right.svg');
-        bottom: 0;
-        right: 0;
+      .dragging {
+        cursor: grabbing;
+        user-select: none;
+        touch-action: none;
+      }
+      .card.dragged {
+        position: fixed;
+        cursor: unset;
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.6);
+        z-index: 100;
+      }
+      .card.dragged .corner-btn {
+        opacity: 0;
       }
     </style>
   </head>
@@ -132,6 +143,12 @@ try {
 } catch (err) {
   console.error(err);
 }
+
+const MARGIN = 10;
+const WIDTH = 140 + MARGIN * 2;
+const HEIGHT = 200 + MARGIN * 2;
+const MIN_DRAG_RADIUS = 10;
+let dragging = false;
 
 function newCard(str) {
   const card = document.createElement('button');
@@ -174,35 +191,97 @@ function newCard(str) {
   });
   card.appendChild(removeBtn);
 
-  const moveLeftBtn = document.createElement('button');
-  moveLeftBtn.classList.add('corner-btn');
-  moveLeftBtn.classList.add('left-btn');
-  moveLeftBtn.ariaLabel = 'Move left';
-  moveLeftBtn.addEventListener('click', e => {
-    const index = strings.indexOf(str);
-    if (~index && index > 0) {
-      strings.splice(index, 1);
-      strings.splice(index - 1, 0, str);
-      document.body.insertBefore(card, card.previousElementSibling);
-      localStorage.setItem('[javascripts] charcopy', JSON.stringify(strings));
+  let pointer;
+  card.addEventListener('pointerdown', e => {
+    if (!pointer) {
+      const rect = card.getBoundingClientRect();
+      pointer = {
+        x: e.clientX,
+        y: e.clientY,
+        offset: {x: e.clientX - rect.left, y: e.clientY - rect.top},
+        id: e.pointerId
+      };
+      card.setPointerCapture(e.pointerId);
     }
   });
-  card.appendChild(moveLeftBtn);
+  card.addEventListener('pointermove', e => {
+    if (pointer && pointer.id === e.pointerId) {
+      if (!dragging && Math.hypot(e.clientX - pointer.x, e.clientY - pointer.y) > MIN_DRAG_RADIUS) {
+        dragging = true;
 
-  const moveRightBtn = document.createElement('button');
-  moveRightBtn.classList.add('corner-btn');
-  moveRightBtn.classList.add('right-btn');
-  moveRightBtn.ariaLabel = 'Move right';
-  moveRightBtn.addEventListener('click', e => {
-    const index = strings.indexOf(str);
-    if (~index && index < strings.length - 1) {
-      strings.splice(index, 1);
-      strings.splice(index + 1, 0, str);
-      document.body.insertBefore(card.nextElementSibling, card);
-      localStorage.setItem('[javascripts] charcopy', JSON.stringify(strings));
+        // Get number of columns
+        pointer.cards = [...document.querySelectorAll('.card')];
+        const firstRow = document.elementFromPoint(MARGIN + WIDTH / 2, MARGIN + HEIGHT * 0.5).closest('.card');
+        const secondRow = document.elementFromPoint(MARGIN + WIDTH / 2, MARGIN + HEIGHT * 1.5).closest('.card');
+        pointer.columns = !secondRow
+          ? strings.length
+          : secondRow.classList.contains('add-btn')
+          ? strings.length
+          : strings.indexOf(secondRow.dataset.clipboardText) - strings.indexOf(firstRow.dataset.clipboardText);
+
+        pointer.placeholder = document.createElement('div');
+        pointer.placeholder.classList.add('card');
+        pointer.placeholder.classList.add('placeholder');
+        document.body.insertBefore(pointer.placeholder, card);
+
+        document.body.classList.add('dragging');
+        card.classList.add('dragged');
+      }
+      if (dragging) {
+        const {offset, columns, placeholder} = pointer;
+
+        if (!pointer.cards) {
+          pointer.cards = [...document.querySelectorAll('.card:not(.dragged)')];
+        }
+
+        const x = e.clientX - offset.x;
+        const y = e.clientY - offset.y;
+        const grid = {
+          x: Math.floor(Math.max(x + window.scrollX + WIDTH / 2 - MARGIN, 0) / WIDTH),
+          y: Math.floor(Math.max(y + window.scrollY + HEIGHT / 2 - MARGIN, 0) / HEIGHT)
+        };
+        const index = Math.min(
+          Math.min(grid.x, columns - 1) + Math.min(grid.y, Math.ceil(strings.length / columns) - 1) * columns,
+          strings.length - 1
+        );
+
+        card.style.left = x + 'px';
+        card.style.top = y + 'px';
+
+        if (strings[index] !== str) {
+          const oldIndex = strings.indexOf(str);
+          if (oldIndex < index) {
+            // Moving the placeholder will also move everything left, so need to
+            // do index + 1
+            document.body.insertBefore(placeholder, pointer.cards[index + 1]);
+            strings.splice(oldIndex, 1);
+            strings.splice(index, 0, str);
+          } else {
+            document.body.insertBefore(placeholder, pointer.cards[index]);
+            strings.splice(oldIndex, 1);
+            strings.splice(index, 0, str);
+          }
+          pointer.cards = null;
+        }
+      }
     }
   });
-  card.appendChild(moveRightBtn);
+  const handlePointerEnd = e => {
+    if (pointer && pointer.id === e.pointerId) {
+      if (dragging) {
+        document.body.classList.remove('dragging');
+        card.classList.remove('dragged');
+        document.body.replaceChild(card, pointer.placeholder);
+        card.style.left = null;
+        card.style.top = null;
+        dragging = false;
+        localStorage.setItem('[javascripts] charcopy', JSON.stringify(strings));
+      }
+      pointer = null;
+    }
+  };
+  card.addEventListener('pointerup', handlePointerEnd);
+  card.addEventListener('pointercancel', handlePointerEnd);
 
   return card;
 }
