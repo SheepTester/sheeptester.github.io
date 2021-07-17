@@ -47,6 +47,7 @@
           'Segoe UI Symbol';
         font-size: 14px;
         display: flex;
+        overflow-x: hidden;
       }
       button,
       input,
@@ -200,7 +201,7 @@
         bottom: 0;
         right: 0;
         background-image: url('./assets/material-launch.svg');
-        background-color: rgba(0, 0, 0, 0.5);
+        background-color: rgba(232, 13, 88, 0.5);
         -webkit-backdrop-filter: blur(0.5em);
         backdrop-filter: blur(0.5em);
       }
@@ -208,6 +209,7 @@
         padding: 1.5em;
         padding-bottom: 0;
         word-break: break-word;
+        white-space: pre-wrap;
       }
       .title {
         font-weight: 800;
@@ -259,6 +261,70 @@
       .era-3-badge {
         background-image: linear-gradient(120deg, #20de88, #28bbe8);
       }
+
+      .likes {
+        display: flex;
+        flex-direction: column;
+        width: 250px;
+        box-shadow: 0 0 15px rgba(52, 67, 77, 0.2);
+        transition: margin-left 0.5s, transform 0.5s, box-shadow 0.5s;
+      }
+      .hide-likes {
+        margin-left: -250px;
+        transform: translateX(250px);
+        box-shadow: none;
+      }
+      .likes-heading {
+        font-size: 24px;
+        margin: 0;
+        padding: 20px;
+        font-weight: 800;
+      }
+      .list {
+        flex: auto;
+        overflow: auto;
+        padding-bottom: 70px;
+      }
+      .liked {
+        display: flex;
+        flex-direction: column;
+        height: 60px;
+        box-sizing: border-box;
+        text-decoration: none;
+        padding: 10px 20px;
+        color: inherit;
+        justify-content: space-between;
+      }
+      .liked:hover {
+        background-color: rgba(0, 0, 0, 0.05);
+      }
+      .liked:visited {
+        color: #a3a3a3;
+      }
+      .like-title,
+      .like-description {
+        white-space: pre;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        margin: 0;
+      }
+      .like-title {
+        font-weight: 800;
+      }
+      .spacer {
+        display: block;
+      }
+      .slide-in {
+        animation: slide-in 0.5s;
+      }
+      @keyframes slide-in {
+        from {
+          margin-top: -60px;
+        }
+        to {
+          margin-top: 0;
+        }
+      }
     </style>
   </head>
   <body>
@@ -266,10 +332,26 @@
       <article class="card back hidden" id="deck"></article>
       <article class="card back unselected" id="next"></article>
     </section>
-    <section class="likes"></section>
+    <section class="likes hide-likes" id="likes">
+      <h2 class="likes-heading">Inspection list</h2>
+      <div class="list" id="list">
+        <span class="spacer" id="spacer"></span>
+      </div>
+    </section>
     <script src="../javascripts/_dom2.js"></script>
     <script>
       const params = new URL(window.location).searchParams
+
+      const LS_ID = '[all] tinder.likes'
+      let results
+      try {
+        results = JSON.parse(localStorage.getItem(LS_ID))
+        if (!Array.isArray(results.likes) || !Array.isArray(results.dislikes)) {
+          throw new TypeError('Weird structure.')
+        }
+      } catch {
+        results = { likes: [], dislikes: [] }
+      }
 
       let paths
       fetch('./sitemap.txt')
@@ -287,9 +369,20 @@
               }
             }
           }
+          const alreadySeen = [
+            ...results.dislikes,
+            ...results.likes.map(({ path }) => path)
+          ]
+          paths = paths.filter(path => !alreadySeen.includes(path)).slice(0, 1)
           showCardForPath(paths.pop())
         })
 
+      const likesContainer = document.getElementById('likes')
+      const likesList = document.getElementById('list')
+      const spacer = document.getElementById('spacer')
+      spacer.addEventListener('animationend', () => {
+        spacer.classList.remove('slide-in')
+      })
       function createCard (path, title, description, era, requiresJs) {
         const iframe = Elem('iframe', {
           className: 'iframe',
@@ -305,13 +398,25 @@
         let decided = false
         const handleDecision = async decision => {
           if (decided) return
+          const accept = decision === 'accepted'
+          if (accept) {
+            results.likes.push({ path, title, description })
+          } else {
+            results.dislikes.push(path)
+          }
+          localStorage.setItem(LS_ID, JSON.stringify(results))
           if (animationEnd) await animationEnd
           card.classList.add(decision)
+          if (accept) likesContainer.classList.remove('hide-likes')
           card.addEventListener(
             'animationend',
             () => {
               // Animation of card toss is done.
               card.remove()
+              if (accept) {
+                spacer.classList.add('slide-in')
+                spacer.after(createLiked(path, title, description))
+              }
             },
             { once: true }
           )
@@ -385,12 +490,22 @@
         return card
       }
 
+      function createLiked (path, title, description) {
+        return Elem('a', { className: 'liked', href: path, target: '_blank' }, [
+          Elem('p', { className: 'like-title' }, [title]),
+          Elem('p', { className: 'like-description' }, [description])
+        ])
+      }
+
       const cards = document.getElementById('cards')
       const deck = document.getElementById('deck')
       const next = document.getElementById('next')
       const parser = new DOMParser()
       let animationEnd
       async function showCardForPath (path) {
+        if (!path) {
+          return
+        }
         // Assumes that the `next` card is ready to be flipped. This is already
         // the case after accepting/rejecting.
         const doc = await fetch(path)
@@ -426,7 +541,9 @@
             )
         )
         cards.append(card)
-        deck.classList.replace('hidden', 'come-in')
+        if (paths.length > 0) {
+          deck.classList.replace('hidden', 'come-in')
+        }
         next.classList.replace('unselected', 'flip-out')
         card.classList.add('flip-in')
         animationEnd = new Promise(resolve => {
@@ -434,14 +551,25 @@
             'animationend',
             () => {
               // Animation of card flip is done.
-              deck.classList.replace('come-in', 'hidden')
-              next.classList.replace('flip-out', 'unselected')
+              if (paths.length > 0) {
+                deck.classList.replace('come-in', 'hidden')
+                next.classList.replace('flip-out', 'unselected')
+              } else {
+                next.classList.replace('flip-out', 'hidden')
+              }
               card.classList.remove('flip-in')
               resolve()
             },
             { once: true }
           )
         })
+      }
+
+      if (results.likes.length > 0) {
+        likesContainer.classList.remove('hide-likes')
+        for (const { path, title, description } of results.likes) {
+          spacer.after(createLiked(path, title, description))
+        }
       }
     </script>
   </body>
