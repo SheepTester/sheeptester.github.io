@@ -20,6 +20,8 @@
       rel="stylesheet"
     />
     <style>
+      /* Design based on https://dribbble.com/shots/15212873/attachments/6958010?mode=media */
+
       html,
       body {
         height: 100%;
@@ -114,6 +116,39 @@
           transform: scale(0.5);
         }
       }
+      .flip-out {
+        animation: flip-out 0.5s cubic-bezier(0.4, 0, 1, 0.6) forwards;
+      }
+      @keyframes flip-out {
+        from {
+          transform: scale(0.5) perspective(1000px);
+        }
+        to {
+          transform: scale(0.5) perspective(1000px) rotateY(90deg);
+        }
+      }
+      .flip-in {
+        animation: flip-in 0.5s cubic-bezier(0, 0.4, 0.6, 1) 0.5s backwards;
+      }
+      @keyframes flip-in {
+        from {
+          transform: scale(0.5) perspective(1000px) rotateY(-90deg);
+        }
+        to {
+          transform: scale(0.5) perspective(1000px);
+        }
+      }
+      .come-in {
+        animation: come-in 0.5s 0.3s both;
+      }
+      @keyframes come-in {
+        from {
+          transform: scale(0.3);
+        }
+        to {
+          transform: scale(0.45);
+        }
+      }
       .preview {
         flex: auto;
       }
@@ -167,67 +202,115 @@
         margin: 0;
         margin-top: 0.5em;
       }
+      .hidden {
+        display: none;
+      }
     </style>
   </head>
   <body>
-    <section class="cards">
-      <article class="card back unselected"></article>
-      <article class="card">
-        <div class="preview">
-          <iframe
-            class="iframe"
-            src="/"
-            tabindex="-1"
-            sandbox="allow-same-origin"
-          ></iframe>
-        </div>
-        <div class="meta">
-          <h2 class="title">SheepTester</h2>
-          <p class="description">
-            A directory of some things I made.
-          </p>
-        </div>
-        <div class="buttons">
-          <button
-            class="card-btn reject-btn"
-            title="This does not please me."
-            aria-label="This does not please me."
-          ></button>
-          <button
-            class="card-btn accept-btn"
-            title="This sparks joy."
-            aria-label="This sparks joy."
-          ></button>
-        </div>
-      </article>
+    <section class="cards" id="cards">
+      <article class="card back hidden" id="deck"></article>
+      <article class="card back" id="next"></article>
     </section>
     <section class="likes"></section>
+    <script src="../javascripts/_dom2.js"></script>
     <script>
       let paths
       fetch('./sitemap.txt')
         .then(r => r.text())
         .then(sitemap => {
-          paths = sitemap.trim().split(/\r?\n/)
+          paths = sitemap
+            .trim()
+            // TEMP
+            .replaceAll('https://sheeptester.github.io', '')
+            .split(/\r?\n/)
+            .reverse()
+          showCardForPath(paths.pop())
         })
 
-      // TEMP
-      window.onload = () => {
-        document.querySelector('iframe').contentDocument.body.style.overflow =
-          'hidden'
+      function createCard (path, title, description) {
+        const iframe = Elem('iframe', {
+          className: 'iframe',
+          src: path,
+          tabIndex: -1,
+          sandbox: 'allow-same-origin'
+        })
+        iframe.addEventListener('load', () => {
+          iframe.contentDocument.body.style.overflow = 'hidden'
+        })
+        const rejectBtn = Elem('button', {
+          className: 'card-btn reject-btn',
+          title: 'This does not please me.',
+          ariaLabel: 'This does not please me.'
+        })
+        rejectBtn.addEventListener('click', async () => {
+          if (animationEnd) await animationEnd
+          next.classList.replace('unselected', 'ascend')
+          card.classList.add('rejected')
+        })
+        const acceptBtn = Elem('button', {
+          className: 'card-btn accept-btn',
+          title: 'This sparks joy.',
+          ariaLabel: 'This sparks joy.'
+        })
+        acceptBtn.addEventListener('click', async () => {
+          if (animationEnd) await animationEnd
+          next.classList.replace('unselected', 'ascend')
+          card.classList.add('accepted')
+        })
+        const card = Elem('article', { className: 'card' }, [
+          Elem('div', { className: 'preview' }, [iframe]),
+          Elem('div', { className: 'meta' }, [
+            Elem('h2', { className: 'title' }, [title]),
+            description &&
+              Elem('p', { className: 'description' }, [description])
+          ]),
+          Elem('buttons', { className: 'buttons' }, [rejectBtn, acceptBtn])
+        ])
+        return card
       }
-      document.querySelector('.reject-btn').onclick = () => {
-        document.querySelector('.card:first-child').classList.add('ascend')
-        document
-          .querySelector('.card:first-child')
-          .classList.remove('unselected')
-        document.querySelector('.card:nth-child(2)').classList.add('rejected')
-      }
-      document.querySelector('.accept-btn').onclick = () => {
-        document.querySelector('.card:first-child').classList.add('ascend')
-        document
-          .querySelector('.card:first-child')
-          .classList.remove('unselected')
-        document.querySelector('.card:nth-child(2)').classList.add('accepted')
+
+      const cards = document.getElementById('cards')
+      const deck = document.getElementById('deck')
+      const next = document.getElementById('next')
+      const parser = new DOMParser()
+      let animationEnd
+      async function showCardForPath (path) {
+        // Assumes that the `next` card is ready to be flipped. This is already
+        // the case after accepting/rejecting.
+        const doc = await fetch(path)
+          .then(r => r.text())
+          .then(html => parser.parseFromString(html, 'text/html'))
+        const card = createCard(
+          path,
+          doc.querySelector('title')?.textContent ?? path,
+          doc
+            .querySelector('meta[name="description"][content]')
+            ?.getAttribute('content')
+        )
+        cards.append(card)
+        deck.classList.replace('hidden', 'come-in')
+        next.classList.remove('ascend')
+        next.classList.add('flip-out')
+        card.classList.add('flip-in')
+        animationEnd = new Promise(resolve => {
+          card.addEventListener(
+            'animationend',
+            () => {
+              // Animation of card flip is done.
+              deck.classList.replace('come-in', 'hidden')
+              next.classList.replace('flip-out', 'unselected')
+              card.classList.remove('flip-in')
+              resolve()
+              card.addEventListener('animationend', () => {
+                // Animation of card toss is done.
+                card.remove()
+                showCardForPath(paths.pop())
+              })
+            },
+            { once: true }
+          )
+        })
       }
     </script>
   </body>
