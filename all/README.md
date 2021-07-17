@@ -1,5 +1,9 @@
 # How to update /all/
 
+You'll need to create a `basic-gh-auth.json` file in the /all/ directory based
+on `basic-gh-auth.example.json`. Use your GitHub username, and you can get the
+personal access token at https://github.com/settings/tokens.
+
 You can just run
 
 ```sh

@@ -3,7 +3,8 @@
   height="24px"
   viewBox="0 0 24 24"
   width="24px"
-  fill="#000000"
+  fill="white"
+  fill-opacity="0.8"
 >
   <path d="M0 0h24v24H0z" fill="none" />
   <path

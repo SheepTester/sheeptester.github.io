@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Sitemap Tinder</title>
+    <title>Tinder but for web pages</title>
     <meta
       name="description"
       content="Quickly preview and reject the many web pages on this website."
@@ -28,12 +28,23 @@
       }
       body {
         margin: 0;
+        /*
+          Includes fonts (from Wiktionary) for Traditional Chinese and Hangul
+          because of /vertical/.
+          Latin font stack is from paly.win + GitHub.
+          Admittedly, just `'Monsterrat', sans-serif` would probably suffice.
+        */
         font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI',
           Roboto, 'Helvetica Neue', Helvetica, Arial, 'PingFang TC',
           'Source Han Sans TC', 'Source Han Sans TW', 'Noto Sans CJK TC',
           'Microsoft Jhenghei', MOESongUN, PMingLiU, PMingLiU-ExtB, MingLiU,
-          MingLiU-ExtB, Ming, 'Heiti TC', HanaMinA, HanaMinB, sans-serif,
-          'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+          MingLiU-ExtB, Ming, 'Heiti TC', HanaMinA, HanaMinB,
+          'Apple SD Gothic Neo', 'Malgun Gothic', Dotum, Gulim,
+          'NanumBarunGothic YetHangul', NanumBarunGothic, UnDotum,
+          'Source Han Sans K', 'Source Han Sans KR', 'Noto Sans CJK KR',
+          NanumGothic, 'NanumMyeongjo YetHangul', NanumMyeongjo, Batang,
+          UnBatang, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+          'Segoe UI Symbol';
         font-size: 14px;
         display: flex;
       }
@@ -64,7 +75,6 @@
         width: 20em;
         margin: -18em -10em;
         border-radius: 2em;
-        overflow: hidden;
         box-shadow: 0 0.36em 2em rgba(52, 67, 77, 0.2);
         background-color: white;
         position: relative;
@@ -114,10 +124,10 @@
       }
       @keyframes flip-out {
         from {
-          transform: scale(0.45) perspective(1000px);
+          transform: scale(0.45) perspective(70em);
         }
         to {
-          transform: scale(0.5) perspective(1000px) rotateY(90deg);
+          transform: scale(0.5) perspective(70em) rotateY(90deg);
         }
       }
       .flip-in {
@@ -125,10 +135,10 @@
       }
       @keyframes flip-in {
         from {
-          transform: scale(0.5) perspective(1000px) rotateY(-90deg);
+          transform: scale(0.5) perspective(70em) rotateY(-90deg);
         }
         to {
-          transform: scale(0.5) perspective(1000px);
+          transform: scale(0.5) perspective(70em);
         }
       }
       .come-in {
@@ -144,17 +154,20 @@
       }
       .preview {
         flex: auto;
+        position: relative;
       }
       .iframe {
         height: 100%;
         width: 100%;
         border: none;
         pointer-events: none;
+        border-top-left-radius: 2em;
+        border-top-right-radius: 2em;
       }
       .buttons {
         display: flex;
         justify-content: center;
-        padding: 10px;
+        padding: 1em;
       }
       .card-btn {
         width: 3.5em;
@@ -181,6 +194,16 @@
           linear-gradient(-60deg, #ff0063, #e34dff);
         background-size: 1.75em, auto;
       }
+      .open-btn {
+        display: inline-block;
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        background-image: url('./assets/material-launch.svg');
+        background-color: rgba(0, 0, 0, 0.5);
+        -webkit-backdrop-filter: blur(0.5em);
+        backdrop-filter: blur(0.5em);
+      }
       .meta {
         padding: 1.5em;
         padding-bottom: 0;
@@ -198,6 +221,43 @@
       }
       .hidden {
         display: none;
+      }
+      .badges {
+        margin-top: 0.5em;
+        margin-right: -1.5em;
+      }
+      .badge {
+        display: inline-block;
+        padding: 0.4em 1em;
+        border-radius: 2em;
+        margin-right: 0.5em;
+        text-transform: uppercase;
+      }
+      .js-badge {
+        background-color: #f0db4f;
+        color: #323330;
+      }
+      .visited-badge {
+        pointer-events: none;
+        color: white;
+        background-color: white;
+        text-decoration: none;
+        user-select: none;
+      }
+      .visited-badge:visited {
+        background-color: #b527e0;
+      }
+      .era-badge {
+        color: white;
+      }
+      .era-1-badge {
+        background-image: linear-gradient(120deg, #92c1bc, #6391a0);
+      }
+      .era-2-badge {
+        background-image: linear-gradient(120deg, #ff8025, #e828ad);
+      }
+      .era-3-badge {
+        background-image: linear-gradient(120deg, #20de88, #28bbe8);
       }
     </style>
   </head>
@@ -230,7 +290,7 @@
           showCardForPath(paths.pop())
         })
 
-      function createCard (path, title, description) {
+      function createCard (path, title, description, era, requiresJs) {
         const iframe = Elem('iframe', {
           className: 'iframe',
           src: path,
@@ -238,9 +298,13 @@
           sandbox: 'allow-same-origin'
         })
         iframe.addEventListener('load', () => {
-          iframe.contentDocument.body.style.overflow = 'hidden'
+          if (iframe.contentDocument) {
+            iframe.contentDocument.body.style.overflow = 'hidden'
+          }
         })
+        let decided = false
         const handleDecision = async decision => {
+          if (decided) return
           if (animationEnd) await animationEnd
           card.classList.add(decision)
           card.addEventListener(
@@ -266,11 +330,55 @@
         })
         acceptBtn.addEventListener('click', () => handleDecision('accepted'))
         const card = Elem('article', { className: 'card' }, [
-          Elem('div', { className: 'preview' }, [iframe]),
+          Elem('div', { className: 'preview' }, [
+            iframe,
+            Elem('a', {
+              className: 'card-btn open-btn',
+              href: path,
+              target: '_blank',
+              title: 'Open site in new tab',
+              ariaLabel: 'Open site in new tab'
+            })
+          ]),
           Elem('div', { className: 'meta' }, [
             Elem('h2', { className: 'title' }, [title]),
             description &&
-              Elem('p', { className: 'description' }, [description])
+              Elem('p', { className: 'description' }, [description]),
+            Elem('div', { className: 'badges' }, [
+              era &&
+                Elem(
+                  'span',
+                  {
+                    className: `badge era-badge era-${era}-badge`,
+                    title:
+                      era === 3
+                        ? 'Made between 2018-12-15 and today.'
+                        : era === 2
+                        ? 'Made between 2017-11-30 and 2018-12-14.'
+                        : 'Made before 2017-11-30.'
+                  },
+                  [`Era ${era}`]
+                ),
+              requiresJs &&
+                Elem(
+                  'span',
+                  {
+                    className: 'badge js-badge',
+                    title:
+                      'The site may require JavaScript to show up properly. Try opening the site in a new tab.'
+                  },
+                  ['Req. JS']
+                ),
+              Elem(
+                'a',
+                {
+                  className: 'badge visited-badge',
+                  href: path,
+                  tabIndex: -1
+                },
+                ['Visited']
+              )
+            ])
           ]),
           Elem('buttons', { className: 'buttons' }, [rejectBtn, acceptBtn])
         ])
@@ -293,7 +401,29 @@
           doc.querySelector('title')?.textContent ?? path,
           doc
             .querySelector('meta[name="description"][content]')
-            ?.getAttribute('content')
+            ?.getAttribute('content'),
+          // The sheep.js version used gives an approximate date
+          doc.querySelector('script[src*="sheep3.js"]')
+            ? 3 // Starting 2018-12-15
+            : doc.querySelector('script[src*="sheep2.js"]')
+            ? 2 // Starting 2017-11-30
+            : doc.querySelector('script[src*="sheep.js"]')
+            ? 1
+            : null,
+          // If there's a non sheep.js script tag and the page is empty, then it
+          // probably requires JS to render
+          doc.querySelector(
+            'script:not([src*="sheep.js"]):not([src*="sheep2.js"]):not([src*="sheep3.js"])'
+          ) &&
+            [...doc.body.childNodes].every(node =>
+              node.nodeType === Node.ELEMENT_NODE
+                ? node.tagName === 'SCRIPT' ||
+                  node.tagName === 'CANVAS' ||
+                  node.textContent.trim()
+                : node.nodeType === Node.TEXT_NODE
+                ? node.nodeValue.trim()
+                : true
+            )
         )
         cards.append(card)
         deck.classList.replace('hidden', 'come-in')
