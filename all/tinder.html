@@ -79,6 +79,10 @@
         background-position: center;
         background-repeat: no-repeat;
       }
+      .rejected,
+      .accepted {
+        z-index: 100;
+      }
       .rejected {
         animation: rejected 0.8s cubic-bezier(1, 0, 1, 1) forwards;
       }
@@ -105,23 +109,12 @@
       .unselected {
         transform: scale(0.45);
       }
-      .ascend {
-        animation: ascend 0.8s cubic-bezier(0.7, 0, 0.3, 1) 0.2s backwards;
-      }
-      @keyframes ascend {
-        from {
-          transform: scale(0.45);
-        }
-        to {
-          transform: scale(0.5);
-        }
-      }
       .flip-out {
         animation: flip-out 0.5s cubic-bezier(0.4, 0, 1, 0.6) forwards;
       }
       @keyframes flip-out {
         from {
-          transform: scale(0.5) perspective(1000px);
+          transform: scale(0.45) perspective(1000px);
         }
         to {
           transform: scale(0.5) perspective(1000px) rotateY(90deg);
@@ -191,6 +184,7 @@
       .meta {
         padding: 1.5em;
         padding-bottom: 0;
+        word-break: break-word;
       }
       .title {
         font-weight: 800;
@@ -210,21 +204,29 @@
   <body>
     <section class="cards" id="cards">
       <article class="card back hidden" id="deck"></article>
-      <article class="card back" id="next"></article>
+      <article class="card back unselected" id="next"></article>
     </section>
     <section class="likes"></section>
     <script src="../javascripts/_dom2.js"></script>
     <script>
+      const params = new URL(window.location).searchParams
+
       let paths
       fetch('./sitemap.txt')
         .then(r => r.text())
         .then(sitemap => {
-          paths = sitemap
-            .trim()
-            // TEMP
-            .replaceAll('https://sheeptester.github.io', '')
-            .split(/\r?\n/)
-            .reverse()
+          paths = sitemap.trim().split(/\r?\n/)
+          if (params.get('shuffle') === 'false') {
+            paths.reverse()
+          } else {
+            // Shuffle
+            for (let i = paths.length; i--; ) {
+              const index = Math.floor(Math.random() * (i + 1))
+              if (i !== index) {
+                ;[paths[i], paths[index]] = [paths[index], paths[i]]
+              }
+            }
+          }
           showCardForPath(paths.pop())
         })
 
@@ -238,26 +240,31 @@
         iframe.addEventListener('load', () => {
           iframe.contentDocument.body.style.overflow = 'hidden'
         })
+        const handleDecision = async decision => {
+          if (animationEnd) await animationEnd
+          card.classList.add(decision)
+          card.addEventListener(
+            'animationend',
+            () => {
+              // Animation of card toss is done.
+              card.remove()
+            },
+            { once: true }
+          )
+          showCardForPath(paths.pop())
+        }
         const rejectBtn = Elem('button', {
           className: 'card-btn reject-btn',
           title: 'This does not please me.',
           ariaLabel: 'This does not please me.'
         })
-        rejectBtn.addEventListener('click', async () => {
-          if (animationEnd) await animationEnd
-          next.classList.replace('unselected', 'ascend')
-          card.classList.add('rejected')
-        })
+        rejectBtn.addEventListener('click', () => handleDecision('rejected'))
         const acceptBtn = Elem('button', {
           className: 'card-btn accept-btn',
           title: 'This sparks joy.',
           ariaLabel: 'This sparks joy.'
         })
-        acceptBtn.addEventListener('click', async () => {
-          if (animationEnd) await animationEnd
-          next.classList.replace('unselected', 'ascend')
-          card.classList.add('accepted')
-        })
+        acceptBtn.addEventListener('click', () => handleDecision('accepted'))
         const card = Elem('article', { className: 'card' }, [
           Elem('div', { className: 'preview' }, [iframe]),
           Elem('div', { className: 'meta' }, [
@@ -290,8 +297,7 @@
         )
         cards.append(card)
         deck.classList.replace('hidden', 'come-in')
-        next.classList.remove('ascend')
-        next.classList.add('flip-out')
+        next.classList.replace('unselected', 'flip-out')
         card.classList.add('flip-in')
         animationEnd = new Promise(resolve => {
           card.addEventListener(
@@ -302,11 +308,6 @@
               next.classList.replace('flip-out', 'unselected')
               card.classList.remove('flip-in')
               resolve()
-              card.addEventListener('animationend', () => {
-                // Animation of card toss is done.
-                card.remove()
-                showCardForPath(paths.pop())
-              })
             },
             { once: true }
           )
