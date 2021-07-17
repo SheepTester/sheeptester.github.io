@@ -34,8 +34,6 @@
           'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
         font-size: 14px;
         display: flex;
-        justify-content: center;
-        align-items: center;
       }
       button,
       input,
@@ -50,29 +48,78 @@
       button:not(:disabled) {
         cursor: pointer;
       }
+      .cards {
+        flex: auto;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden;
+      }
       .card {
         display: flex;
         flex-direction: column;
-        width: 300px;
-        height: 500px;
-        margin: -250px -150px;
-        border-radius: 30px;
+        height: 36em;
+        width: 20em;
+        margin: -18em -10em;
+        border-radius: 2em;
         overflow: hidden;
-        box-shadow: 0 5px 30px rgba(52, 67, 77, 0.2);
+        box-shadow: 0 0.36em 2em rgba(52, 67, 77, 0.2);
         background-color: white;
         position: relative;
+        /* Scale card down to zoom out iframe */
+        font-size: 2em;
+        transform: scale(0.5);
       }
       .back {
-        background-image: url('./assets/card-back.svg'), linear-gradient(-15deg, #bec4ce, #e3eaef);
-        background-size: 120px, auto;
+        background-image: url('./assets/card-back.svg'),
+          linear-gradient(-15deg, #bec4ce, #e3eaef);
+        background-size: 8em, auto;
         background-position: center;
         background-repeat: no-repeat;
+      }
+      .rejected {
+        animation: rejected 0.8s cubic-bezier(1, 0, 1, 1) forwards;
+      }
+      @keyframes rejected {
+        from {
+          transform: scale(0.5);
+        }
+        to {
+          transform: translate(-18em, 50vh) translateY(100%) scale(0.5)
+            rotate(-60deg);
+        }
+      }
+      .accepted {
+        animation: accepted 0.8s cubic-bezier(1, 0, 1, 1) forwards;
+      }
+      @keyframes accepted {
+        from {
+          transform: scale(0.5);
+        }
+        to {
+          transform: translateX(50vw) translateX(100%) scale(0.8) rotate(15deg);
+        }
+      }
+      .unselected {
+        transform: scale(0.45);
+      }
+      .ascend {
+        animation: ascend 0.8s cubic-bezier(0.7, 0, 0.3, 1) 0.2s backwards;
+      }
+      @keyframes ascend {
+        from {
+          transform: scale(0.45);
+        }
+        to {
+          transform: scale(0.5);
+        }
       }
       .preview {
         flex: auto;
       }
       .iframe {
         height: 100%;
+        width: 100%;
         border: none;
         pointer-events: none;
       }
@@ -82,22 +129,21 @@
         padding: 10px;
       }
       .card-btn {
-        width: 48px;
-        height: 48px;
-        font-size: 0;
-        box-shadow: 0 3px 12px rgba(146, 43, 113, 0.3);
+        width: 3.5em;
+        height: 3.5em;
+        box-shadow: 0 0.2em 1em rgba(146, 43, 113, 0.3);
         border-radius: 50%;
-        background-size: 24px;
+        background-size: 1.75em;
         background-position: center;
         background-repeat: no-repeat;
-        margin: 10px;
+        margin: 0.7em;
         transition: box-shadow 0.2s;
       }
       .card-btn:hover {
-        box-shadow: 0 7px 20px rgba(146, 43, 113, 0.3);
+        box-shadow: 0 0.5em 1.5em rgba(146, 43, 113, 0.3);
       }
       .card-btn:active {
-        box-shadow: 0 1px 3px rgba(146, 43, 113, 0.3);
+        box-shadow: 0 0.1em 0.2em rgba(146, 43, 113, 0.3);
       }
       .reject-btn {
         background-image: url('./assets/material-close.svg');
@@ -105,10 +151,10 @@
       .accept-btn {
         background-image: url('./assets/material-favourite.svg'),
           linear-gradient(-60deg, #ff0063, #e34dff);
-        background-size: 24px, auto;
+        background-size: 1.75em, auto;
       }
       .meta {
-        padding: 20px;
+        padding: 1.5em;
         padding-bottom: 0;
       }
       .title {
@@ -119,27 +165,43 @@
       }
       .description {
         margin: 0;
-        margin-top: 10px;
+        margin-top: 0.5em;
       }
     </style>
   </head>
   <body>
-    <div class="card">
-      <div class="preview">
-        <iframe class="iframe" src="/all/" tabindex="-1"></iframe>
-      </div>
-      <div class="meta">
-        <h2 class="title">/all/ - Almost Everything</h2>
-        <p class="description">
-          Links to almost all files on this site (since 2021-03-10)
-        </p>
-      </div>
-      <div class="buttons">
-        <button class="card-btn reject-btn">This does not please me.</button>
-        <button class="card-btn accept-btn">This sparks joy.</button>
-      </div>
-    </div>
-    <!-- <div class="card back"></div> -->
+    <section class="cards">
+      <article class="card back unselected"></article>
+      <article class="card">
+        <div class="preview">
+          <iframe
+            class="iframe"
+            src="/"
+            tabindex="-1"
+            sandbox="allow-same-origin"
+          ></iframe>
+        </div>
+        <div class="meta">
+          <h2 class="title">SheepTester</h2>
+          <p class="description">
+            A directory of some things I made.
+          </p>
+        </div>
+        <div class="buttons">
+          <button
+            class="card-btn reject-btn"
+            title="This does not please me."
+            aria-label="This does not please me."
+          ></button>
+          <button
+            class="card-btn accept-btn"
+            title="This sparks joy."
+            aria-label="This sparks joy."
+          ></button>
+        </div>
+      </article>
+    </section>
+    <section class="likes"></section>
     <script>
       let paths
       fetch('./sitemap.txt')
@@ -147,6 +209,26 @@
         .then(sitemap => {
           paths = sitemap.trim().split(/\r?\n/)
         })
+
+      // TEMP
+      window.onload = () => {
+        document.querySelector('iframe').contentDocument.body.style.overflow =
+          'hidden'
+      }
+      document.querySelector('.reject-btn').onclick = () => {
+        document.querySelector('.card:first-child').classList.add('ascend')
+        document
+          .querySelector('.card:first-child')
+          .classList.remove('unselected')
+        document.querySelector('.card:nth-child(2)').classList.add('rejected')
+      }
+      document.querySelector('.accept-btn').onclick = () => {
+        document.querySelector('.card:first-child').classList.add('ascend')
+        document
+          .querySelector('.card:first-child')
+          .classList.remove('unselected')
+        document.querySelector('.card:nth-child(2)').classList.add('accepted')
+      }
     </script>
   </body>
 </html>
