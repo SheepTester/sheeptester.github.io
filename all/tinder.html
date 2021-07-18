@@ -68,6 +68,7 @@
         justify-content: center;
         align-items: center;
         overflow: hidden;
+        position: relative;
       }
       .card {
         display: flex;
@@ -291,6 +292,57 @@
         background-color: #cccccc;
         box-shadow: none;
       }
+      .undo-btn {
+        position: absolute;
+        left: 0;
+        right: 0;
+        margin: 0 auto;
+        bottom: 10px;
+        padding: 10px 20px;
+        color: rgba(0, 0, 0, 0.7);
+        transition: opacity 0.5s;
+      }
+      .undo-btn:hover {
+        text-decoration: underline;
+      }
+      .undo-btn:disabled {
+        opacity: 0;
+        pointer-events: none;
+      }
+      .undo-note {
+        display: flex;
+        align-items: center;
+        position: absolute;
+        left: 0;
+        right: 0;
+        margin: 0 auto;
+        bottom: 20px;
+        height: 60px;
+        width: 300px;
+        background-color: rgba(0, 0, 0, 0.7);
+        color: white;
+        border-radius: 100px;
+        padding-left: 60px;
+        padding-right: 20px;
+        background-image: url('./assets/material-done.svg');
+        background-repeat: no-repeat;
+        background-position: 18px;
+        animation: fade-out 0.5s 3s forwards;
+        transition: transform 0.3s;
+      }
+      .hide-now {
+        transform: translateY(100%) translateY(20px);
+        transition-timing-function: cubic-bezier(0.5, 0, 1, 1);
+        animation: none;
+      }
+      @keyframes fade-out {
+        from {
+          opacity: 1;
+        }
+        to {
+          opacity: 0;
+        }
+      }
 
       .likes {
         display: flex;
@@ -417,6 +469,11 @@
           Give the rejected ones another chance.
         </button>
       </div>
+      <button class="undo-btn" id="undo-btn" disabled>Undo</button>
+      <span class="undo-note hidden" id="undo-note">
+        The web page has been added back to the deck and will appear after this
+        one.
+      </span>
     </section>
     <section class="likes hide-likes" id="likes">
       <h2 class="likes-heading">Inspection list</h2>
@@ -476,6 +533,18 @@
       spacer.addEventListener('animationend', () => {
         spacer.classList.remove('slide-in')
       })
+      const undoBtn = document.getElementById('undo-btn')
+      const undoNote = document.getElementById('undo-note')
+      undoBtn.addEventListener('click', () => {
+        paths.push(results.dislikes.pop())
+        localStorage.setItem(LS_ID, JSON.stringify(results))
+        undoNote.classList.remove('hidden', 'hide-now')
+        undoBtn.disabled = true
+      })
+      undoNote.addEventListener('animationend', () => {
+        undoNote.classList.remove('hide-now')
+        undoNote.classList.add('hidden')
+      })
       function createCard (path, title, description, era, requiresJs) {
         const iframe = Elem('iframe', {
           className: 'iframe',
@@ -494,8 +563,11 @@
           const accept = decision === 'accepted'
           if (accept) {
             results.likes.push({ path, title, description })
+            undoBtn.disabled = true
           } else {
             results.dislikes.push(path)
+            undoBtn.disabled = false
+            undoNote.classList.add('hide-now')
           }
           localStorage.setItem(LS_ID, JSON.stringify(results))
           if (animationEnd) await animationEnd
