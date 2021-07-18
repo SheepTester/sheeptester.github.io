@@ -504,10 +504,7 @@
       fetch('./sitemap.txt')
         .then(r => r.text())
         .then(sitemap => {
-          paths = sitemap
-            .trim()
-            .split(/\r?\n/)
-            .slice(0, 5)
+          paths = sitemap.trim().split(/\r?\n/)
           if (params.get('shuffle') === 'false') {
             paths.reverse()
           } else {
@@ -536,10 +533,17 @@
       const undoBtn = document.getElementById('undo-btn')
       const undoNote = document.getElementById('undo-note')
       undoBtn.addEventListener('click', () => {
+        if (results.dislikes.length === 0) return
         paths.push(results.dislikes.pop())
         localStorage.setItem(LS_ID, JSON.stringify(results))
         undoNote.classList.remove('hidden', 'hide-now')
         undoBtn.disabled = true
+        // If `paths` had previously been empty before restoring the last
+        // dislike, then the "That is all." note is currently showing. Will have
+        // to reload the page.
+        if (paths.length === 1) {
+          window.location.reload()
+        }
       })
       undoNote.addEventListener('animationend', () => {
         undoNote.classList.remove('hide-now')
