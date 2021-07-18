@@ -26,11 +26,16 @@
       body {
         height: 100%;
       }
+      html {
+        /* The hidden likes list apparently stretches outside of body regardless
+        of <body>'s overflow status */
+        overflow-x: hidden;
+      }
       body {
         margin: 0;
         /*
           Includes fonts (from Wiktionary) for Traditional Chinese and Hangul
-          because of /vertical/.
+            because of /vertical/.
           Latin font stack is from paly.win + GitHub.
           Admittedly, just `'Monsterrat', sans-serif` would probably suffice.
         */
@@ -181,16 +186,19 @@
         margin: 0.7em;
       }
       .card-btn,
-      .reset-rejected {
+      .reset-rejected,
+      .likes-expand-btn {
         box-shadow: 0 0.2em 1em rgba(146, 43, 113, 0.3);
         transition: box-shadow 0.2s;
       }
       .card-btn:hover,
-      .reset-rejected:hover:not(:disabled) {
+      .reset-rejected:hover:not(:disabled),
+      .likes-expand-btn {
         box-shadow: 0 0.5em 1.5em rgba(146, 43, 113, 0.3);
       }
       .card-btn:active,
-      .reset-rejected:active:not(:disabled) {
+      .reset-rejected:active:not(:disabled),
+      .likes-expand-btn {
         box-shadow: 0 0.1em 0.2em rgba(146, 43, 113, 0.3);
       }
       .reject-btn {
@@ -294,6 +302,7 @@
       }
       .undo-btn {
         position: absolute;
+        z-index: 150;
         left: 0;
         right: 0;
         margin: 0 auto;
@@ -349,19 +358,71 @@
         flex-direction: column;
         width: 250px;
         box-shadow: 0 0 15px rgba(52, 67, 77, 0.2);
+        background-color: white;
         transition: margin-left 0.5s, transform 0.5s, box-shadow 0.5s;
+        position: relative;
+        z-index: 170;
       }
       .hide-likes {
         margin-left: -250px;
         transform: translateX(250px);
         box-shadow: none;
       }
+      .likes-header {
+        display: flex;
+        align-items: center;
+        flex: none;
+      }
       .likes-heading {
         font-size: 24px;
-        margin: 0;
         padding: 20px;
+        margin: 0;
         font-weight: 800;
+        flex: auto;
+      }
+      .likes-expand-btn {
+        display: none;
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
         flex: none;
+        background-image: url('./assets/material-chevron-left.svg');
+        background-size: 24px;
+        background-repeat: no-repeat;
+        background-position: center;
+      }
+      @media (max-width: 600px) {
+        .likes {
+          position: fixed;
+          top: 0;
+          right: -250px;
+          bottom: 0;
+          transition: right 0.5s, box-shadow 0.5s;
+        }
+        .hide-likes {
+          margin-left: none;
+          transform: none;
+          box-shadow: none;
+        }
+        .expand-likes {
+          right: 0;
+        }
+        .likes-heading {
+          padding: 20px 0;
+        }
+        .likes-expand-btn {
+          display: inline-block;
+          transform: translateX(-60px);
+          background-color: white;
+          transition: transform 0.5s, box-shadow 0.5s;
+        }
+        .hide-likes .likes-expand-btn {
+          transform: translateX(0);
+        }
+        .expand-likes .likes-expand-btn {
+          transform: rotate(180deg);
+          box-shadow: none;
+        }
       }
       .list {
         flex: auto;
@@ -454,12 +515,76 @@
         padding-bottom: 10px;
       }
 
+      .cinematic {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        z-index: 200;
+      }
+      .recede {
+        pointer-events: none;
+      }
+      .bar {
+        background-color: black;
+        height: 20vh;
+        transition: height 1s;
+      }
+      .recede .bar {
+        height: 0;
+      }
+      .title-screen {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        flex: auto;
+        color: white;
+        background-image: linear-gradient(
+          -30deg,
+          rgba(255, 0, 99, 0.8),
+          rgba(227, 77, 255, 0.8)
+        );
+        padding: 50px;
+        text-align: center;
+        transition: opacity 1s;
+      }
+      .recede .title-screen {
+        opacity: 0;
+      }
+      .title-screen-title {
+        font-weight: 800;
+        margin: 0;
+      }
+      .title-screen-subtitle {
+        margin: 0;
+        margin-top: 20px;
+      }
+
       .hidden {
         display: none;
       }
     </style>
   </head>
   <body>
+    <div class="cinematic" id="cinematic">
+      <div class="bar"></div>
+      <div class="title-screen" id="title-screen">
+        <h1 class="title-screen-title">
+          There are <span id="count">many</span> web pages on this site.
+        </h1>
+        <p class="title-screen-subtitle">Have you seen them all?</p>
+        <noscript>
+          <p class="title-screen-subtitle">
+            This experience requires JavaScript.
+          </p>
+        </noscript>
+      </div>
+      <div class="bar"></div>
+    </div>
     <section class="cards" id="cards">
       <article class="card back hidden" id="deck"></article>
       <article class="card back unselected" id="next"></article>
@@ -476,7 +601,14 @@
       </span>
     </section>
     <section class="likes hide-likes" id="likes">
-      <h2 class="likes-heading">Inspection list</h2>
+      <div class="likes-header">
+        <button
+          class="likes-expand-btn"
+          id="expand-btn"
+          aria-label="Expand/collapse the inspection list."
+        ></button>
+        <h2 class="likes-heading">Inspection list</h2>
+      </div>
       <div class="list" id="list">
         <span class="spacer" id="spacer"></span>
       </div>
@@ -500,11 +632,15 @@
         results = { likes: [], dislikes: [] }
       }
 
+      const count = document.getElementById('count')
+      const cinematic = document.getElementById('cinematic')
+      const titleScreen = document.getElementById('title-screen')
       let paths
       fetch('./sitemap.txt')
         .then(r => r.text())
         .then(sitemap => {
           paths = sitemap.trim().split(/\r?\n/)
+          count.textContent = paths.length
           if (params.get('shuffle') === 'false') {
             paths.reverse()
           } else {
@@ -521,7 +657,30 @@
             ...results.likes.map(({ path }) => path)
           ]
           paths = paths.filter(path => !alreadySeen.includes(path))
-          showCardForPath(paths.pop())
+          if (paths.length > 0) {
+            titleScreen.addEventListener(
+              'transitionend',
+              () => {
+                cinematic.classList.replace('recede', 'hidden')
+              },
+              { once: true }
+            )
+            let timeoutId = setTimeout(() => {
+              cinematic.classList.add('recede')
+              showCardForPath(paths.pop())
+              timeoutId = null
+            }, 2000)
+            cinematic.addEventListener('click', () => {
+              if (timeoutId) {
+                cinematic.classList.add('recede')
+                showCardForPath(paths.pop())
+                clearTimeout(timeoutId)
+              }
+            })
+          } else {
+            cinematic.classList.add('hidden')
+            showCardForPath(undefined)
+          }
         })
 
       const likesContainer = document.getElementById('likes')
@@ -529,6 +688,14 @@
       const spacer = document.getElementById('spacer')
       spacer.addEventListener('animationend', () => {
         spacer.classList.remove('slide-in')
+      })
+      const expandBtn = document.getElementById('expand-btn')
+      expandBtn.addEventListener('click', () => {
+        if (likesContainer.classList.contains('expand-likes')) {
+          likesContainer.classList.remove('expand-likes')
+        } else if (!likesContainer.classList.contains('hide-likes')) {
+          likesContainer.classList.add('expand-likes')
+        }
       })
       const undoBtn = document.getElementById('undo-btn')
       const undoNote = document.getElementById('undo-note')
@@ -690,11 +857,12 @@
       const deck = document.getElementById('deck')
       const next = document.getElementById('next')
       const resetRejectedBtn = document.getElementById('reset-rejected')
+      const noMoreCards = document.getElementById('no-more-cards')
       const parser = new DOMParser()
       let animationEnd
       async function showCardForPath (path) {
         if (!path) {
-          document.getElementById('no-more-cards').classList.remove('hidden')
+          noMoreCards.classList.remove('hidden')
           next.classList.add('hidden')
           if (results.dislikes.length === 0) {
             resetRejectedBtn.disabled = true
@@ -730,9 +898,9 @@
               node.nodeType === Node.ELEMENT_NODE
                 ? node.tagName === 'SCRIPT' ||
                   node.tagName === 'CANVAS' ||
-                  node.textContent.trim()
+                  !node.textContent.trim()
                 : node.nodeType === Node.TEXT_NODE
-                ? node.nodeValue.trim()
+                ? !node.nodeValue.trim()
                 : true
             )
         )
