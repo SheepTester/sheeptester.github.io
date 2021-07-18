@@ -173,18 +173,23 @@
       .card-btn {
         width: 3.5em;
         height: 3.5em;
-        box-shadow: 0 0.2em 1em rgba(146, 43, 113, 0.3);
         border-radius: 50%;
         background-size: 1.75em;
         background-position: center;
         background-repeat: no-repeat;
         margin: 0.7em;
+      }
+      .card-btn,
+      .reset-rejected {
+        box-shadow: 0 0.2em 1em rgba(146, 43, 113, 0.3);
         transition: box-shadow 0.2s;
       }
-      .card-btn:hover {
+      .card-btn:hover,
+      .reset-rejected:hover:not(:disabled) {
         box-shadow: 0 0.5em 1.5em rgba(146, 43, 113, 0.3);
       }
-      .card-btn:active {
+      .card-btn:active,
+      .reset-rejected:active:not(:disabled) {
         box-shadow: 0 0.1em 0.2em rgba(146, 43, 113, 0.3);
       }
       .reject-btn {
@@ -220,9 +225,6 @@
       .description {
         margin: 0;
         margin-top: 0.5em;
-      }
-      .hidden {
-        display: none;
       }
       .badges {
         margin-top: 0.5em;
@@ -261,6 +263,34 @@
       .era-3-badge {
         background-image: linear-gradient(120deg, #20de88, #28bbe8);
       }
+      .no-more-cards {
+        position: absolute;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        font-size: 14px;
+        animation: fade-in 0.5s;
+      }
+      @keyframes fade-in {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+      .reset-rejected {
+        padding: 4px 10px;
+        border-radius: 50px;
+        background-image: linear-gradient(-15deg, #ff0063, #e34dff);
+        color: white;
+      }
+      .reset-rejected:disabled {
+        background-image: none;
+        background-color: #cccccc;
+        box-shadow: none;
+      }
 
       .likes {
         display: flex;
@@ -279,27 +309,32 @@
         margin: 0;
         padding: 20px;
         font-weight: 800;
+        flex: none;
       }
       .list {
         flex: auto;
         overflow: auto;
-        padding-bottom: 70px;
       }
       .liked {
         display: flex;
-        flex-direction: column;
         height: 60px;
         box-sizing: border-box;
         text-decoration: none;
         padding: 10px 20px;
         color: inherit;
-        justify-content: space-between;
       }
       .liked:hover {
         background-color: rgba(0, 0, 0, 0.05);
       }
       .liked:visited {
         color: #a3a3a3;
+      }
+      .like-meta {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        width: 0;
+        flex: auto;
       }
       .like-title,
       .like-description {
@@ -310,6 +345,26 @@
       }
       .like-title {
         font-weight: 800;
+      }
+      .like-remove-btn {
+        display: none;
+        background-image: url('./assets/material-close.svg');
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: 24px;
+        margin-right: -10px;
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        align-self: center;
+      }
+      .liked:hover .like-remove-btn,
+      .liked:focus-visible .like-remove-btn,
+      .liked:focus-within .like-remove-btn {
+        display: inline-block;
+      }
+      .like-remove-btn:hover {
+        background-color: rgba(0, 0, 0, 0.05);
       }
       .spacer {
         display: block;
@@ -325,17 +380,52 @@
           margin-top: 0;
         }
       }
+      .footer {
+        flex: none;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: flex-start;
+        min-height: 70px;
+        margin-right: 70px;
+      }
+      .reset-accepted {
+        color: #ff254d;
+        padding: 10px;
+      }
+      .reset-accepted:hover {
+        text-decoration: underline;
+      }
+      .footer-note {
+        margin: 0;
+        padding: 0 10px;
+        padding-bottom: 10px;
+      }
+
+      .hidden {
+        display: none;
+      }
     </style>
   </head>
   <body>
     <section class="cards" id="cards">
       <article class="card back hidden" id="deck"></article>
       <article class="card back unselected" id="next"></article>
+      <div class="no-more-cards hidden" id="no-more-cards">
+        <p>That is all.</p>
+        <button class="reset-rejected" id="reset-rejected">
+          Give the rejected ones another chance.
+        </button>
+      </div>
     </section>
     <section class="likes hide-likes" id="likes">
       <h2 class="likes-heading">Inspection list</h2>
       <div class="list" id="list">
         <span class="spacer" id="spacer"></span>
+      </div>
+      <div class="footer">
+        <button class="reset-accepted" id="reset-accepted">Clear all.</button>
+        <p class="footer-note">Note: This will add them back to the deck.</p>
       </div>
     </section>
     <script src="../javascripts/_dom2.js"></script>
@@ -357,7 +447,10 @@
       fetch('./sitemap.txt')
         .then(r => r.text())
         .then(sitemap => {
-          paths = sitemap.trim().split(/\r?\n/)
+          paths = sitemap
+            .trim()
+            .split(/\r?\n/)
+            .slice(0, 5)
           if (params.get('shuffle') === 'false') {
             paths.reverse()
           } else {
@@ -373,7 +466,7 @@
             ...results.dislikes,
             ...results.likes.map(({ path }) => path)
           ]
-          paths = paths.filter(path => !alreadySeen.includes(path)).slice(0, 1)
+          paths = paths.filter(path => !alreadySeen.includes(path))
           showCardForPath(paths.pop())
         })
 
@@ -491,19 +584,46 @@
       }
 
       function createLiked (path, title, description) {
-        return Elem('a', { className: 'liked', href: path, target: '_blank' }, [
-          Elem('p', { className: 'like-title' }, [title]),
-          Elem('p', { className: 'like-description' }, [description])
-        ])
+        const removeBtn = Elem('button', {
+          className: 'like-remove-btn',
+          ariaLabel: 'Move to deck.',
+          title: 'Move to deck.'
+        })
+        removeBtn.addEventListener('click', e => {
+          e.preventDefault()
+          paths.unshift(path)
+          results.likes = results.likes.filter(liked => liked.path !== path)
+          localStorage.setItem(LS_ID, JSON.stringify(results))
+          liked.remove()
+        })
+        const liked = Elem(
+          'a',
+          { className: 'liked', href: path, target: '_blank' },
+          [
+            Elem('div', { className: 'like-meta' }, [
+              Elem('p', { className: 'like-title' }, [title]),
+              Elem('p', { className: 'like-description' }, [description])
+            ]),
+            removeBtn
+          ]
+        )
+        return liked
       }
 
       const cards = document.getElementById('cards')
       const deck = document.getElementById('deck')
       const next = document.getElementById('next')
+      const resetRejectedBtn = document.getElementById('reset-rejected')
       const parser = new DOMParser()
       let animationEnd
       async function showCardForPath (path) {
         if (!path) {
+          document.getElementById('no-more-cards').classList.remove('hidden')
+          next.classList.add('hidden')
+          if (results.dislikes.length === 0) {
+            resetRejectedBtn.disabled = true
+            resetRejectedBtn.title = 'You have not rejected any web pages.'
+          }
           return
         }
         // Assumes that the `next` card is ready to be flipped. This is already
@@ -571,6 +691,26 @@
           spacer.after(createLiked(path, title, description))
         }
       }
+
+      resetRejectedBtn.addEventListener('click', () => {
+        results.dislikes = []
+        localStorage.setItem(LS_ID, JSON.stringify(results))
+        window.location.reload()
+      })
+      document
+        .getElementById('reset-accepted')
+        .addEventListener('click', () => {
+          if (
+            !confirm(
+              'Are you sure you want to add all the web pages you marked as "This sparks joy" back to the deck?'
+            )
+          ) {
+            return
+          }
+          results.likes = []
+          localStorage.setItem(LS_ID, JSON.stringify(results))
+          window.location.reload()
+        })
     </script>
   </body>
 </html>
