@@ -88,6 +88,8 @@
         /* Scale card down to zoom out iframe */
         font-size: 2em;
         transform: scale(0.5);
+        touch-action: none;
+        user-select: none;
       }
       .back {
         background-image: url('./assets/card-back.svg'),
@@ -189,7 +191,7 @@
       .reset-rejected,
       .likes-expand-btn {
         box-shadow: 0 0.2em 1em rgba(146, 43, 113, 0.3);
-        transition: box-shadow 0.2s;
+        transition: box-shadow 0.2s, transform 0.5s, filter 0.5s;
       }
       .card-btn:hover,
       .reset-rejected:hover:not(:disabled),
@@ -208,6 +210,16 @@
         background-image: url('./assets/material-favourite.svg'),
           linear-gradient(-60deg, #ff0063, #e34dff);
         background-size: 1.75em, auto;
+      }
+      .possible-reject .reject-btn,
+      .possible-accept .accept-btn {
+        transform: scale(1.2);
+      }
+      .possible-reject .accept-btn,
+      .possible-accept .reject-btn {
+        transform: scale(0.8);
+        box-shadow: none;
+        filter: grayscale(1);
       }
       .open-btn {
         display: inline-block;
@@ -460,8 +472,7 @@
         font-weight: 800;
       }
       .like-remove-btn {
-        display: none;
-        background-image: url('./assets/material-close.svg');
+        background-image: url('./assets/material-close-grey.svg');
         background-position: center;
         background-repeat: no-repeat;
         background-size: 24px;
@@ -471,13 +482,9 @@
         border-radius: 50%;
         align-self: center;
       }
-      .liked:hover .like-remove-btn,
-      .liked:focus-visible .like-remove-btn,
-      .liked:focus-within .like-remove-btn {
-        display: inline-block;
-      }
       .like-remove-btn:hover {
         background-color: rgba(0, 0, 0, 0.05);
+        background-image: url('./assets/material-close.svg');
       }
       .spacer {
         display: block;
@@ -729,8 +736,9 @@
           }
         })
         let decided = false
-        const handleDecision = async decision => {
+        const handleDecision = async (decision, useAnimation = true) => {
           if (decided) return
+          decided = { decision, useAnimation }
           const accept = decision === 'accepted'
           if (accept) {
             results.likes.push({ path, title, description })
@@ -742,20 +750,22 @@
           }
           localStorage.setItem(LS_ID, JSON.stringify(results))
           if (animationEnd) await animationEnd
-          card.classList.add(decision)
           if (accept) likesContainer.classList.remove('hide-likes')
-          card.addEventListener(
-            'animationend',
-            () => {
-              // Animation of card toss is done.
-              card.remove()
-              if (accept) {
-                spacer.classList.add('slide-in')
-                spacer.after(createLiked(path, title, description))
-              }
-            },
-            { once: true }
-          )
+          if (useAnimation) {
+            card.classList.add(decision)
+            card.addEventListener(
+              'animationend',
+              () => {
+                // Animation of card toss is done.
+                card.remove()
+                if (accept) {
+                  spacer.classList.add('slide-in')
+                  spacer.after(createLiked(path, title, description))
+                }
+              },
+              { once: true }
+            )
+          }
           showCardForPath(paths.pop())
         }
         const rejectBtn = Elem('button', {
@@ -823,6 +833,86 @@
           ]),
           Elem('buttons', { className: 'buttons' }, [rejectBtn, acceptBtn])
         ])
+        const MIN_DRAG_RADIUS = 10
+        const MIN_SWIPE_DIST = 50
+        let pointer
+        card.addEventListener('pointerdown', e => {
+          if (!pointer) {
+            pointer = {
+              id: e.pointerId,
+              startX: e.clientX,
+              startY: e.clientY,
+              dragging: false
+            }
+          }
+        })
+        card.addEventListener('pointermove', e => {
+          if (pointer && pointer.id === e.pointerId) {
+            const deltaX = e.clientX - pointer.startX
+            const deltaY = e.clientY - pointer.startY
+            if (
+              !pointer.dragging &&
+              Math.hypot(deltaX, deltaY) > MIN_DRAG_RADIUS &&
+              !card.classList.contains('flip-in') &&
+              !decided
+            ) {
+              pointer.dragging = true
+              card.setPointerCapture(e.pointerId)
+              card.style.transition = null
+            }
+            if (pointer.dragging) {
+              card.style.transform = `translate(${deltaX}px, ${deltaY *
+                0.5}px) rotate(${Math.atan(deltaX / 1000)}rad) scale(0.5)`
+              if (deltaX < -MIN_SWIPE_DIST) {
+                card.classList.add('possible-reject')
+                card.classList.remove('possible-accept')
+              } else if (deltaX > MIN_SWIPE_DIST) {
+                card.classList.add('possible-accept')
+                card.classList.remove('possible-reject')
+              } else {
+                card.classList.remove('possible-reject')
+                card.classList.remove('possible-accept')
+              }
+            }
+          }
+        })
+        const handlePointerEnd = e => {
+          if (pointer && pointer.id === e.pointerId) {
+            if (pointer.dragging) {
+              if (card.classList.contains('possible-reject')) {
+                card.style.transition =
+                  'transform 0.5s cubic-bezier(1, 0, 1, 1)'
+                const deltaX = e.clientX - pointer.startX
+                card.style.transform = `translate(${deltaX -
+                  500}px, 50vh) translateY(100%) scale(0.5) rotate(-60deg)`
+                handleDecision('rejected', false)
+              } else if (card.classList.contains('possible-accept')) {
+                card.style.transition = 'transform 0.8s'
+                card.style.transform = `translateX(50vw) translateX(100%) scale(0.8) rotate(15deg)`
+                handleDecision('accepted', false)
+              } else {
+                card.style.transition = 'transform 0.5s'
+                card.style.transform = null
+              }
+            }
+            pointer = null
+          }
+        }
+        card.addEventListener('pointerup', handlePointerEnd)
+        card.addEventListener('pointercancel', handlePointerEnd)
+        card.addEventListener('transitionend', e => {
+          // transitionend events bubble from the card-btns
+          if (e.target === card) {
+            card.style.transition = null
+            if (decided && !decided.useAnimation) {
+              card.remove()
+              if (decided === 'accepted') {
+                spacer.classList.add('slide-in')
+                spacer.after(createLiked(path, title, description))
+              }
+            }
+          }
+        })
         return card
       }
 
@@ -844,8 +934,10 @@
           { className: 'liked', href: path, target: '_blank' },
           [
             Elem('div', { className: 'like-meta' }, [
-              Elem('p', { className: 'like-title' }, [title]),
-              Elem('p', { className: 'like-description' }, [description])
+              Elem('p', { className: 'like-title', title }, [title]),
+              Elem('p', { className: 'like-description', title: description }, [
+                description
+              ])
             ]),
             removeBtn
           ]
