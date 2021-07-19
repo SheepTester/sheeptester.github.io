@@ -571,6 +571,21 @@
         margin-top: 20px;
       }
 
+      .summary {
+        position: fixed;
+        z-index: 101;
+        opacity: 0;
+        padding: 10px;
+        transition: opacity 0.2s;
+        cursor: default;
+      }
+      .summary:hover {
+        opacity: 1;
+      }
+      .summary span {
+        font-weight: bold;
+      }
+
       .hidden {
         display: none;
       }
@@ -591,6 +606,9 @@
         </noscript>
       </div>
       <div class="bar"></div>
+    </div>
+    <div class="summary">
+      <span id="reviewed">0</span>/<span id="total">0</span> pages reviewed.
     </div>
     <section class="cards" id="cards">
       <article class="card back hidden" id="deck"></article>
@@ -638,8 +656,15 @@
       } catch {
         results = { likes: [], dislikes: [] }
       }
+      const reviewed = document.getElementById('reviewed')
+      reviewed.textContent = results.likes.length + results.dislikes.length
+      function handleResultsChange () {
+        localStorage.setItem(LS_ID, JSON.stringify(results))
+        reviewed.textContent = results.likes.length + results.dislikes.length
+      }
 
       const count = document.getElementById('count')
+      const total = document.getElementById('total')
       const cinematic = document.getElementById('cinematic')
       const titleScreen = document.getElementById('title-screen')
       let paths
@@ -648,6 +673,7 @@
         .then(sitemap => {
           paths = sitemap.trim().split(/\r?\n/)
           count.textContent = paths.length
+          total.textContent = paths.length
           if (params.get('shuffle') === 'false') {
             paths.reverse()
           } else {
@@ -709,7 +735,7 @@
       undoBtn.addEventListener('click', () => {
         if (results.dislikes.length === 0) return
         paths.push(results.dislikes.pop())
-        localStorage.setItem(LS_ID, JSON.stringify(results))
+        handleResultsChange()
         undoNote.classList.remove('hidden', 'hide-now')
         undoBtn.disabled = true
         // If `paths` had previously been empty before restoring the last
@@ -748,7 +774,7 @@
             undoBtn.disabled = false
             undoNote.classList.add('hide-now')
           }
-          localStorage.setItem(LS_ID, JSON.stringify(results))
+          handleResultsChange()
           if (animationEnd) await animationEnd
           if (accept) likesContainer.classList.remove('hide-likes')
           if (useAnimation) {
@@ -887,7 +913,8 @@
                   500}px, 50vh) translateY(100%) scale(0.5) rotate(-60deg)`
                 handleDecision('rejected', false)
               } else if (card.classList.contains('possible-accept')) {
-                card.style.transition = 'transform 0.8s'
+                card.style.transition =
+                  'transform 0.5s cubic-bezier(0.3, 0, 1, 0.7)'
                 card.style.transform = `translateX(50vw) translateX(100%) scale(0.8) rotate(15deg)`
                 handleDecision('accepted', false)
               } else {
@@ -906,7 +933,7 @@
             card.style.transition = null
             if (decided && !decided.useAnimation) {
               card.remove()
-              if (decided === 'accepted') {
+              if (decided.decision === 'accepted') {
                 spacer.classList.add('slide-in')
                 spacer.after(createLiked(path, title, description))
               }
@@ -926,7 +953,7 @@
           e.preventDefault()
           paths.unshift(path)
           results.likes = results.likes.filter(liked => liked.path !== path)
-          localStorage.setItem(LS_ID, JSON.stringify(results))
+          handleResultsChange()
           liked.remove()
         })
         const liked = Elem(
@@ -1030,7 +1057,7 @@
 
       resetRejectedBtn.addEventListener('click', () => {
         results.dislikes = []
-        localStorage.setItem(LS_ID, JSON.stringify(results))
+        handleResultsChange()
         window.location.reload()
       })
       document
@@ -1044,7 +1071,7 @@
             return
           }
           results.likes = []
-          localStorage.setItem(LS_ID, JSON.stringify(results))
+          handleResultsChange()
           window.location.reload()
         })
     </script>
