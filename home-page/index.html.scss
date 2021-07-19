@@ -663,21 +663,21 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
             margin: 0;
             margin-top: 10px;
           }
-          .projects-note a {
+          .link {
             text-decoration: none;
             color: #1ce0e0;
           }
-          .projects-note a:hover {
+          .link:hover {
             text-decoration: underline;
           }
         }
         p.projects-note {
           content: "There’s some more on ";
-          a[href="https://scratch.mit.edu/users/Sheep_maker/"] {
+          a.link[href="https://scratch.mit.edu/users/Sheep_maker/"] {
             content: "Scratch";
           }
           content: " and ";
-          a[href="https://github.com/SheepTester?tab=repositories"] {
+          a.link[href="https://github.com/SheepTester?tab=repositories"] {
             content: "GitHub";
           }
           content: ".";
@@ -929,6 +929,21 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
               }
             }
           }
+        }
+      }
+
+      css {
+        .tinder-note {
+          margin: 0;
+          padding: 20px 60px;
+          padding-top: 0;
+          text-align: center;
+        }
+      }
+      p.tinder-note {
+        content: "That was merely a preview of what this website has in store. ";
+        a.link[href="./all/tinder.html"] {
+          content: "Expore and sort through everything else.";
         }
       }
     }

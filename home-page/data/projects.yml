@@ -46,7 +46,7 @@
   image: img/platmakre-smaller.png
   name: Level editor
   description: >-
-    A level creator and editor for the Platformre.
+    A level creator and editor for Platformre.
   tags:
     - game
     - utility
