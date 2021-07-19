@@ -215,13 +215,13 @@ function newCard(str) {
         offset: {x: e.clientX - rect.left, y: e.clientY - rect.top},
         id: e.pointerId
       };
-      card.setPointerCapture(e.pointerId);
     }
   });
   card.addEventListener('pointermove', e => {
     if (pointer && pointer.id === e.pointerId) {
       if (!dragging && Math.hypot(e.clientX - pointer.x, e.clientY - pointer.y) > MIN_DRAG_RADIUS) {
         dragging = true;
+        card.setPointerCapture(e.pointerId);
 
         // Get number of columns
         pointer.cards = [...document.querySelectorAll('.card')];
