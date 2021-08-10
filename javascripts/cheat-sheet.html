@@ -59,7 +59,7 @@
       .key-name {
         color: #f0c2f9;
       }
-      .type-name,
+      .type-type,
       .getter-setter,
       .function,
       .alias,
@@ -74,13 +74,13 @@
         font-size: 0.8em;
         font-weight: bold;
       }
-      .property-null > .type-name { color: #8a8a8a; }
-      .property-undefined > .type-name { color: #8a8a8a; }
-      .property-string > .type-name { color: #e4cc58; }
-      .property-boolean > .type-name { color: #5daef3; }
-      .property-number > .type-name { color: #60d443; }
-      .property-bigint > .type-name { color: #4de49e; }
-      .property-symbol > .type-name { color: #e4c03c; }
+      .type-null { color: #8a8a8a; }
+      .type-undefined { color: #8a8a8a; }
+      .type-string { color: #e4cc58; }
+      .type-boolean { color: #5daef3; }
+      .type-number { color: #60d443; }
+      .type-bigint { color: #4de49e; }
+      .type-symbol { color: #e4c03c; }
       .getter { color: #e87fb4; }
       .setter { color: #eab26b; }
       .function {
@@ -91,7 +91,8 @@
       }
       .property-class,
       .property-interface,
-      .property-struct {
+      .property-struct,
+      .has-getter-type > .wrapper {
         /* https://stackoverflow.com/a/7785711 */
         display: table; /* Actually FF 20+ */
         -webkit-column-break-inside: avoid; /* Chrome, Safari */
@@ -192,16 +193,28 @@ class Analyser {
     return { analysed, extra }
   }
 
-  _analyseProp (path, descriptor) {
+  _analyseProp (path, descriptor, object) {
     if ('value' in descriptor) {
       return { path, type: this._analyse(path, descriptor.value) }
     } else {
+      let getterType
+      if (object && descriptor.get) {
+        try {
+          const value = descriptor.get.call(object)
+          getterType = this._analyse(path, value)
+          delete getterType.value
+          if (value instanceof Promise) {
+            value.catch(() => {})
+          }
+        } catch {}
+      }
       return {
         path,
         type: {
           type: 'getter-setter',
           get: !!descriptor.get,
-          set: !!descriptor.set
+          set: !!descriptor.set,
+          getterType
         }
       }
     }
@@ -236,10 +249,14 @@ class Analyser {
       const properties = new Map()
       if (typeof value === 'function') {
         if (value.prototype) {
+          let instance
+          try {
+            instance = new value()
+          } catch {}
           const base = path ? path + '#' : ''
           for (const [key, descriptor] of entries(Object.getOwnPropertyDescriptors(value.prototype))) {
             if (key === 'constructor') continue
-            properties.set(key, this._analyseProp(base + key, descriptor))
+            properties.set(key, this._analyseProp(base + key, descriptor, instance))
           }
         }
       }
@@ -295,7 +312,7 @@ class Analyser {
         }
       }
     } else {
-      return { type: typeof value }
+      return { type: typeof value, value }
     }
   }
 
@@ -380,10 +397,25 @@ class Renderer {
       case 'number':
       case 'bigint':
       case 'symbol': {
-        return Object.assign(document.createElement('span'), {
-          className: 'type-name',
-          textContent: type.type
-        })
+        if ('value' in type) {
+          return Object.assign(document.createElement('span'), {
+            className: `type-type type-${type.type} type-value`,
+            textContent: type.type === 'symbol'
+              ? `Symbol(${type.value.description || ''})`
+              : type.type === 'bigint'
+              ? `${type.value}n`
+              : type.type === 'string'
+              ? (type.value.length > 100
+                ? JSON.stringify(type.value.slice(0, 100) + '…')
+                : JSON.stringify(type.value))
+              : type.value
+          })
+        } else {
+          return Object.assign(document.createElement('span'), {
+            className: `type-type type-${type.type} type-name`,
+            textContent: type.type
+          })
+        }
       }
       case 'getter-setter': {
         const getterSetter = Object.assign(document.createElement('span'), {
@@ -403,6 +435,10 @@ class Renderer {
             className: 'setter',
             textContent: 'set'
           }))
+        }
+        if (type.getterType) {
+          getterSetter.append(' ', this._createType(type.getterType))
+          getterSetter.classList.add('has-getter-type')
         }
         return getterSetter
       }
