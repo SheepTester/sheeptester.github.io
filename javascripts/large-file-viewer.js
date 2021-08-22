@@ -1,9 +1,37 @@
+// @ts-check
+
 const elems = {
-  selectSource: document.getElementById('select-source'),
-  file: document.getElementById('file'),
-  byUrl: document.getElementById('by-url'),
-  url: document.getElementById('url'),
-  lines: document.getElementById('lines')
+  selectSource: /** @type {HTMLFieldSetElement} */ (document.getElementById(
+    'select-source'
+  )),
+  file: /** @type {HTMLInputElement} */ (document.getElementById('file')),
+  byUrl: /** @type {HTMLFormElement} */ (document.getElementById('by-url')),
+  url: /** @type {HTMLInputElement} */ (document.getElementById('url')),
+  lines: /** @type {HTMLDivElement} */ (document.getElementById('lines')),
+  textMeasurer: /** @type {HTMLSpanElement} */ (document.getElementById(
+    'text-measurer'
+  ))
+}
+
+/**
+ * Partition an array based on some test.
+ * @template T
+ * @param {T[]} array
+ * @param {function(T, number): boolean} test
+ * @returns {[T[], T[]]}
+ */
+function partition (array, test) {
+  const pass = []
+  const fail = []
+  for (let i = 0; i < array.length; i++) {
+    const item = array[i]
+    if (test(item, i)) {
+      pass.push(item)
+    } else {
+      fail.push(item)
+    }
+  }
+  return [pass, fail]
 }
 
 /**
@@ -14,7 +42,15 @@ function read (stream) {
   const reader = stream.getReader()
   return {
     [Symbol.asyncIterator]: () => ({
-      next: () => reader.read()
+      next: async () => {
+        const result = await reader.read()
+        // TypeScript weirdness
+        if (result.done) {
+          return { done: true, value: result.value }
+        } else {
+          return { done: false, value: result.value }
+        }
+      }
     })
   }
 }
@@ -29,9 +65,11 @@ function read (stream) {
 /**
  * @param {ReadableStream<Uint8Array>} stream
  * @param {number} columns - The number of columns/characters per line.
+ * @param {function(number[]): void} onProgress - The function takes the newly
+ * found row indices.
  * @returns {Promise<Line[]>} Indices
  */
-async function analyse (stream, columns) {
+async function analyse (stream, columns, onProgress = () => {}) {
   /**
    * 0-indexed, so line 1's byte index is at index 0 of the array.
    * @type {Line[]}
@@ -44,6 +82,7 @@ async function analyse (stream, columns) {
   /** Keep track of accumulative byte index in the stream. */
   let index = 0
   for await (const bytes of read(stream)) {
+    const rowIndices = []
     for (let i = 0; i < bytes.length; i++) {
       if (sequenceState > 0) {
         if (bytes[i] >> 6 === 0b10) {
@@ -71,16 +110,138 @@ async function analyse (stream, columns) {
 
         const lastLine = lineIndices[lineIndices.length - 1]
         lastLine.rowIndices.push(i + index)
+        rowIndices.push(i + index)
       }
       // Check for newline character for a new line.
       if (bytes[i] === 0x0a) {
         column = 0
         lineIndices.push({ index: i + index + 1, rowIndices: [i + index + 1] })
+        rowIndices.push(i + index + 1)
       }
     }
     index += bytes.length
+    onProgress(rowIndices)
+    await new Promise(resolve => setTimeout(resolve, 3000))
   }
   // If `sequenceState` > 0, then each byte in the byte sequence apparently
   // becomes U+FFFD. Whatever.
   return lineIndices
 }
+
+/** @returns {[number, number]} - Rows, columns. */
+function getSize () {
+  const { width, height } = elems.lines.getBoundingClientRect()
+  const {
+    width: charWidth,
+    height: charHeight
+  } = elems.textMeasurer.getBoundingClientRect()
+
+  return [Math.floor(height / charHeight), Math.floor(width / charWidth)]
+}
+
+const decoder = new TextDecoder()
+
+/**
+ * @param {Blob} blob
+ */
+async function onBlob (blob) {
+  document.body.classList.replace('show-view-select-source', 'show-view-viewer')
+
+  const [rows, columns] = getSize()
+  const rowElems = Array.from({ length: rows }, () =>
+    Object.assign(document.createElement('span'), { className: 'line' })
+  )
+  const rowIndices = [0]
+
+  /**
+   * @param {HTMLSpanElement} rowElem
+   * @param {string} line
+   */
+  function renderRow (rowElem, line) {
+    rowElem.textContent = line
+  }
+
+  let prevStartRow = -rows
+  let prevRowCount = 0
+
+  /**
+   * @param {number} startRow
+   */
+  async function setView (startRow) {
+    const [oldRowElems, recyclableRowElems] = partition(
+      rowElems,
+      (_, i) =>
+        prevStartRow + i >= startRow &&
+        prevStartRow + i < Math.min(startRow + rows, prevRowCount)
+    )
+    for (let i = 0; i < rows; i++) {
+      const row = startRow + i
+      if (
+        row >= prevStartRow &&
+        row < Math.min(prevStartRow + rows, prevRowCount)
+      ) {
+        const rowOffset = startRow - prevStartRow
+        rowElems[i] = oldRowElems[i - rowOffset]
+      } else {
+        rowElems[i] = recyclableRowElems.pop()
+        if (row >= rowIndices.length - 1) {
+          // Empty
+          rowElems[i].textContent = ''
+        } else {
+          renderRow(
+            rowElems[i],
+            decoder.decode(
+              await blob
+                .slice(rowIndices[row], rowIndices[row + 1])
+                .arrayBuffer()
+            )
+          )
+        }
+        if (row < prevStartRow && oldRowElems[0]) {
+          oldRowElems[0].before(rowElems[i])
+        } else {
+          elems.lines.append(rowElems[i])
+        }
+      }
+      rowElems[i].style.top = i + 'em'
+    }
+    prevStartRow = startRow
+    prevRowCount = rowIndices.length - 1
+  }
+
+  setView(0)
+  const lineIndices = await analyse(blob.stream(), columns, indices => {
+    for (const index of indices) {
+      rowIndices.push(index)
+    }
+    // setView(rowIndices.length - rows - 1)
+    setView(0)
+  })
+  rowIndices.push(blob.size)
+}
+
+elems.file.addEventListener('change', () => {
+  if (elems.file.files[0]) {
+    onBlob(elems.file.files[0])
+  }
+})
+
+elems.byUrl.addEventListener('submit', async event => {
+  event.preventDefault()
+
+  elems.selectSource.disabled = true
+  document.body.classList.remove('show-cors-error', 'show-offline-error')
+  try {
+    const response = await fetch(elems.url.value)
+    onBlob(await response.blob())
+  } catch {
+    const isCors = await fetch(elems.url.value, { mode: 'no-cors' })
+      .then(() => true)
+      .catch(() => false)
+    document.body.classList.add(
+      isCors ? 'show-cors-error' : 'show-offline-error'
+    )
+  } finally {
+    elems.selectSource.disabled = false
+  }
+})

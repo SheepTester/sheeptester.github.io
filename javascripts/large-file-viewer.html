@@ -13,41 +13,218 @@
     <link rel="stylesheet" type="text/css" href="/sheep3.css" />
     <script src="/sheep3.js" charset="utf-8"></script>
 
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <!-- https://fonts.google.com/share?selection.family=Ubuntu%20Mono:wght@400;700 -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Ubuntu+Mono:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
     <style>
-      /* TEMP */
+      html {
+        height: 100%;
+      }
+      body {
+        min-height: 100%;
+        margin: 0;
+        display: flex;
+        background-color: #1c1e2a;
+        color: rgba(255, 255, 255, 0.8);
+        font-family: 'Ubuntu Mono', monospace;
+      }
+
+      button,
+      input,
+      select,
+      textarea {
+        border: none;
+        background: none;
+        color: inherit;
+        font: inherit;
+      }
+      button:not(:disabled),
+      input[type='submit']:not(:disabled) {
+        cursor: pointer;
+      }
+      ::placeholder {
+        color: inherit;
+        opacity: 0.3;
+      }
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+      .link:hover {
+        text-decoration: underline;
+      }
+
+      .hidden {
+        display: none;
+      }
+      .show-view-select-source .view-select-source,
+      .show-view-viewer .view-viewer {
+        display: flex;
+      }
+      .view-select-source,
+      .view-viewer {
+        flex: auto;
+      }
+      .show-cors-error .cors-error,
+      .show-offline-error .offline-error {
+        display: block;
+      }
+
+      .view-select-source {
+        flex-direction: column;
+      }
+      .select-source-heading {
+        font-size: 24px;
+        margin: 0;
+        padding: 20px;
+        background-image: linear-gradient(135deg, #557dee, #f443b2);
+        color: white;
+      }
+      .select-source {
+        flex: auto;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        margin: 0;
+        padding: 20px;
+        border: none;
+      }
+      .or {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        align-self: stretch;
+        margin: 20px 0;
+      }
+      .or::before,
+      .or::after {
+        content: '';
+        flex: auto;
+        display: block;
+        max-width: 50px;
+        height: 1px;
+        margin: 0 20px;
+        background-color: rgba(255, 255, 255, 0.2);
+      }
+      .label {
+        display: flex;
+        flex-direction: column;
+        text-align: center;
+        align-items: center;
+      }
+      .input {
+        background-color: rgba(255, 255, 255, 0.2);
+        padding: 0 15px;
+        height: 32px;
+        box-sizing: border-box;
+        border-radius: 50px;
+        margin-top: 20px;
+        width: 100%;
+        max-width: 550px;
+        text-align: center;
+      }
+      .file-input {
+        padding-top: 4px;
+        max-width: 250px;
+      }
+      .by-url {
+        display: flex;
+        flex-direction: column;
+      }
+      .load-url-btn {
+        height: 32px;
+        box-sizing: border-box;
+        padding: 0 15px;
+        background-color: rgba(255, 255, 255, 0.2);
+        border-radius: 100px;
+        margin-top: 20px;
+        align-self: center;
+      }
+      .load-url-btn:not(:disabled):hover {
+        background-color: rgba(255, 255, 255, 0.3);
+      }
+      .error {
+        background-color: #ff004c;
+        color: white;
+        padding: 20px;
+        max-width: 700px;
+        border-radius: 10px;
+        align-self: center;
+        margin-top: 20px;
+      }
+      .error .link {
+        color: black;
+      }
+
+      .view-viewer {
+        flex-direction: column;
+      }
+      .lines {
+        position: relative;
+        flex: auto;
+      }
+      .line {
+        position: absolute;
+        left: 0;
+        white-space: pre;
+      }
+      #text-measurer {
+        display: block;
+        position: absolute;
+        z-index: -1;
+        opacity: 0;
+        pointer-events: none;
+        width: 1ch;
+        height: 1em;
+      }
     </style>
   </head>
-  <body>
-    <div class="view-select-source">
-      <h2>Select a text file</h2>
+  <body class="show-view-select-source">
+    <div class="hidden view-select-source">
+      <h2 class="select-source-heading">Select a text file</h2>
       <fieldset class="select-source" id="select-source">
-        <div class="by-file">
-          <label>
-            Select a file on your computer:
-            <input type="file" id="file" />
-          </label>
-        </div>
+        <label class="label">
+          Select a file on your computer:
+          <input type="file" id="file" class="input file-input" />
+        </label>
         <span class="or">or</span>
         <form class="by-url" id="by-url">
-          <label>
+          <label class="label">
             View text file at URL:
-            <input type="url" id="url" />
+            <input
+              type="url"
+              id="url"
+              class="input"
+              placeholder="https://example.com/"
+              value="https://sheeptester.github.io/htmlifier/index.bundle.min.js"
+            />
           </label>
-          <input type="submit" value="Load" />
-          <div class="error cors-error">
+          <input type="submit" value="Load" class="load-url-btn" />
+          <div class="hidden error cors-error">
             For security reasons, your browser prevents this web page from
             accessing that URL because that website did not opt-in to requests
             from this web page. This is infamously known as the
-            <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS"
+            <a
+              href="https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS"
+              class="link"
+              target="_blank"
               >CORS policy</a
             >.
           </div>
-          <div class="error offline-error">You're offline.</div>
+          <div class="hidden error offline-error">
+            You're offline, or the URL is invalid.
+          </div>
         </form>
       </fieldset>
     </div>
-    <div class="view-viewer">
-      <div class="lines" id="lines"></div>
+    <div class="hidden view-viewer">
+      <div class="lines" id="lines">
+        <span id="text-measurer"></span>
+      </div>
     </div>
     <script src="./large-file-viewer.js"></script>
   </body>
