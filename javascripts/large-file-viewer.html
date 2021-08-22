@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Large file viewer</title>
+    <meta
+      name="description"
+      content="Preview a large text file without lag, hopefully."
+    />
+
+    <link rel="stylesheet" type="text/css" href="/sheep3.css" />
+    <script src="/sheep3.js" charset="utf-8"></script>
+
+    <style>
+      /* TEMP */
+    </style>
+  </head>
+  <body>
+    <div class="view-select-source">
+      <h2>Select a text file</h2>
+      <fieldset class="select-source" id="select-source">
+        <div class="by-file">
+          <label>
+            Select a file on your computer:
+            <input type="file" id="file" />
+          </label>
+        </div>
+        <span class="or">or</span>
+        <form class="by-url" id="by-url">
+          <label>
+            View text file at URL:
+            <input type="url" id="url" />
+          </label>
+          <input type="submit" value="Load" />
+          <div class="error cors-error">
+            For security reasons, your browser prevents this web page from
+            accessing that URL because that website did not opt-in to requests
+            from this web page. This is infamously known as the
+            <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS"
+              >CORS policy</a
+            >.
+          </div>
+          <div class="error offline-error">You're offline.</div>
+        </form>
+      </fieldset>
+    </div>
+    <div class="view-viewer">
+      <div class="lines" id="lines"></div>
+    </div>
+    <script src="./large-file-viewer.js"></script>
+  </body>
+</html>
