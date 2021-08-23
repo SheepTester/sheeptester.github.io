@@ -104,7 +104,6 @@ async function analyse (stream, columns, onProgress = () => {}) {
       // I believe at this point there's either the start of a multi-byte
       // sequence, an ASCII character, or some invalid byte (which will be
       // replaced with U+FFFD).
-      column++
       if (column >= columns) {
         column = 0
 
@@ -117,6 +116,12 @@ async function analyse (stream, columns, onProgress = () => {}) {
         column = 0
         lineIndices.push({ index: i + index + 1, rowIndices: [i + index + 1] })
         rowIndices.push(i + index + 1)
+      }
+      // Tab characters will indent to the next multiple of 4
+      if (bytes[i] === 0x09) {
+        column = Math.ceil((column + 1) / 4) * 4
+      } else {
+        column++
       }
     }
     index += bytes.length
@@ -139,8 +144,6 @@ function getSize () {
   return [Math.floor(height / charHeight), Math.floor(width / charWidth)]
 }
 
-const decoder = new TextDecoder()
-
 /**
  * @param {Blob} blob
  */
@@ -154,11 +157,63 @@ async function onBlob (blob) {
   const rowIndices = [0]
 
   /**
-   * @param {HTMLSpanElement} rowElem
+   * @param {HTMLSpanElement} rowElem - Should be empty.
    * @param {string} line
+   * @param {[string, HTMLSpanElement | null]} [prevIdentifier] - An identifier
+   * from the end of the previous line, if it exists; to deal with wrapping
+   * @returns {[string, HTMLSpanElement | null] | undefined} - The identifier at
+   * the end of the line, if it exists.
    */
-  function renderRow (rowElem, line) {
-    rowElem.textContent = line
+  function renderRow (rowElem, line, prevIdentifier) {
+    /** @type {[string, HTMLSpanElement | null] | undefined} */
+    let lastIdentifier
+    let lastIndex = 0
+    // https://mathiasbynens.be/notes/javascript-identifiers-es6 but also
+    // allowing hyphens for CSS/Scheme etc
+    for (const match of line.matchAll(
+      /[ \n]+|\t|-?(?:\d*\.\d+|\d+\.?)|[$_\p{ID_Start}-][$_\p{ID_Continue}-]*/gu
+    )) {
+      const before = line.slice(lastIndex, match.index)
+      if (before.length > 0) {
+        rowElem.append(before)
+      }
+      lastIndex = match.index + match[0].length
+      if (' \t\n'.includes(match[0][0])) {
+        const span = Object.assign(document.createElement('span'), {
+          className: 'whitespace',
+          textContent: match[0]
+        })
+        span.dataset.char = [...match[0]]
+          .map(char => ({ ' ': '·', '\t': '→', '\n': '¬' }[char]))
+          .join('')
+        rowElem.append(span)
+      } else if (match[0].includes('.') || match[0].match(/^-*\d/)) {
+        rowElem.append(
+          Object.assign(document.createElement('span'), {
+            className: 'number',
+            textContent: match[0]
+          })
+        )
+      } else {
+        const span = Object.assign(document.createElement('span'), {
+          className: 'identifier',
+          textContent: match[0]
+        })
+        if (prevIdentifier) {
+          prevIdentifier[1].style.color = 'cyan'
+        }
+        span.style.color = 'yellow'
+        rowElem.append(span)
+        if (lastIndex === line.length) {
+          lastIdentifier = [match[0], span]
+        }
+      }
+    }
+    const after = line.slice(lastIndex)
+    if (after.length > 0) {
+      rowElem.append(after)
+    }
+    return lastIdentifier
   }
 
   let prevStartRow = -rows
@@ -184,17 +239,11 @@ async function onBlob (blob) {
         rowElems[i] = oldRowElems[i - rowOffset]
       } else {
         rowElems[i] = recyclableRowElems.pop()
-        if (row >= rowIndices.length - 1) {
-          // Empty
-          rowElems[i].textContent = ''
-        } else {
+        rowElems[i].textContent = ''
+        if (row < rowIndices.length - 1) {
           renderRow(
             rowElems[i],
-            decoder.decode(
-              await blob
-                .slice(rowIndices[row], rowIndices[row + 1])
-                .arrayBuffer()
-            )
+            await blob.slice(rowIndices[row], rowIndices[row + 1]).text()
           )
         }
         if (row < prevStartRow && oldRowElems[0]) {

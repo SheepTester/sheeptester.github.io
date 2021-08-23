@@ -30,7 +30,9 @@
         display: flex;
         background-color: #1c1e2a;
         color: rgba(255, 255, 255, 0.8);
-        font-family: 'Ubuntu Mono', monospace;
+        font-family: 'Ubuntu Mono', ui-monospace, 'SFMono-Regular', 'SF Mono',
+          'Menlo', 'Consolas', 'Liberation Mono', monospace;
+        tab-size: 4;
       }
 
       button,
@@ -166,8 +168,11 @@
       .lines {
         position: relative;
         flex: auto;
+        margin: 10px;
       }
       .line {
+        display: inline-block;
+        width: 100%;
         position: absolute;
         left: 0;
         white-space: pre;
@@ -180,6 +185,19 @@
         pointer-events: none;
         width: 1ch;
         height: 1em;
+      }
+
+      .whitespace {
+        position: relative;
+        color: transparent;
+      }
+      .whitespace::before {
+        content: attr(data-char);
+        color: rgba(255, 255, 255, 0.3);
+        position: absolute;
+      }
+      .number {
+        color: orange;
       }
     </style>
   </head>
