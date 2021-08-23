@@ -153,6 +153,8 @@ function getSize () {
   }
 }
 
+const decoder = new TextDecoder()
+
 const highlightRegex = /[ \n]+|\t|-?(?:\d*\.\d+|\d+\.?)|[$_\p{ID_Start}-][$_\p{ID_Continue}-]*/gu
 
 /**
@@ -294,6 +296,10 @@ async function onBlob (blob) {
      * @type {(function(): void)[]}
      */
     const domManipulations = []
+    const baseIndex = startRow > 0 ? rowIndices[startRow - 1] : 0
+    const buffer = await blob
+      .slice(baseIndex, rowIndices[startRow + rows])
+      .arrayBuffer()
     for (let i = 0; i < rows; i++) {
       const row = startRow + i
       if (
@@ -317,22 +323,33 @@ async function onBlob (blob) {
             // Previous line
             lineCache[row - 1] =
               row > 0
-                ? await blob.slice(rowIndices[row - 1], rowIndices[row]).text()
+                ? decoder.decode(
+                    buffer.slice(
+                      rowIndices[row - 1] - baseIndex,
+                      rowIndices[row] - baseIndex
+                    )
+                  )
                 : ''
           }
           if (lineCache[row] === undefined) {
             // Current line
-            lineCache[row] = await blob
-              .slice(rowIndices[row], rowIndices[row + 1])
-              .text()
+            lineCache[row] = decoder.decode(
+              buffer.slice(
+                rowIndices[row] - baseIndex,
+                rowIndices[row + 1] - baseIndex
+              )
+            )
           }
           if (lineCache[row + 1] === undefined) {
             // Next line
             lineCache[row + 1] =
               row < rowIndices.length - 2
-                ? await blob
-                    .slice(rowIndices[row + 1], rowIndices[row + 2])
-                    .text()
+                ? decoder.decode(
+                    buffer.slice(
+                      rowIndices[row + 1] - baseIndex,
+                      rowIndices[row + 2] - baseIndex
+                    )
+                  )
                 : ''
           }
           domManipulations.push(() => {
