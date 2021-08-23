@@ -59,6 +59,25 @@ function read (stream) {
 }
 
 /**
+ * Find the index of the first item of `array` for which `test` returns true.
+ * Returns the length of `array` if no items pass the test. Will not check items
+ * with indices less than `after` (default 0).
+ * @template T
+ * @param {T[]} array
+ * @param {function(T, number): boolean} test
+ * @param {number} after
+ * @returns {number}
+ */
+function findIndex (array, test, after = 0) {
+  for (let i = after; i < array.length; i++) {
+    if (test(array[i], i)) {
+      return i
+    }
+  }
+  return array.length
+}
+
+/**
  * @typedef {object} Line
  * @property {number} index - Byte index of the first character in the line.
  * @property {number[]} rowIndices - Array of byte indices for the first
@@ -66,18 +85,14 @@ function read (stream) {
  */
 
 /**
+ * @param {Line[]} lineIndices - 0-indexed, so line 1's byte index is at index 0
+ * of the array.
+ * @param {number[]} rowIndices
  * @param {ReadableStream<Uint8Array>} stream
- * @param {number} columns - The number of columns/characters per line.
- * @param {function(number[]): Promise<void>} onProgress - The function takes
- * the newly found row indices.
- * @returns {Promise<Line[]>} Indices
+ * @param {number} columns - The number of columns/characters per line. the
+ * newly found row indices.
  */
-async function analyse (stream, columns, onProgress = () => Promise.resolve()) {
-  /**
-   * 0-indexed, so line 1's byte index is at index 0 of the array.
-   * @type {Line[]}
-   */
-  const lineIndices = [{ index: 0, rowIndices: [0] }]
+async function * _analyse (lineIndices, rowIndices, stream, columns) {
   /** Keep track of position in column. */
   let column = 0
   /** Keep track of nth byte in a byte sequence. */
@@ -85,7 +100,6 @@ async function analyse (stream, columns, onProgress = () => Promise.resolve()) {
   /** Keep track of accumulative byte index in the stream. */
   let index = 0
   for await (const bytes of read(stream)) {
-    const rowIndices = []
     for (let i = 0; i < bytes.length; i++) {
       if (sequenceState > 0) {
         if (bytes[i] >> 6 === 0b10) {
@@ -130,12 +144,37 @@ async function analyse (stream, columns, onProgress = () => Promise.resolve()) {
     index += bytes.length
     // Take a break between chunks; it seems that reading large files will make
     // it stream very quickly without any break for a page render, which is sad.
-    await onProgress(rowIndices)
+    yield
     await new Promise(window.requestAnimationFrame)
   }
-  // If `sequenceState` > 0, then each byte in the byte sequence apparently
-  // becomes U+FFFD. Whatever.
-  return lineIndices
+  // If `sequenceState` > 0, then each byte in the byte sequence at the end of
+  // the file apparently becomes U+FFFD. Whatever.
+
+  // `index` should be the BLob size here.
+  rowIndices.push(index)
+}
+
+/**
+ * @typedef {object} Analysis
+ * @property {Line[]} lineIndices
+ * @property {number[]} rowIndices
+ * @property {AsyncGenerator<void>} generator
+ */
+
+/**
+ * @param {ReadableStream<Uint8Array>} stream
+ * @param {number} columns - The number of columns/characters per line. the
+ * newly found row indices.
+ * @returns {Analysis}
+ */
+function analyse (stream, columns) {
+  const lineIndices = [{ index: 0, rowIndices: [0] }]
+  const rowIndices = [0]
+  return {
+    lineIndices,
+    rowIndices,
+    generator: _analyse(lineIndices, rowIndices, stream, columns)
+  }
 }
 
 /** @returns {{ rows: number, columns: number, charHeight: number }} */
@@ -167,7 +206,7 @@ async function onBlob (blob) {
   let rowElems = Array.from({ length: rows }, () =>
     Object.assign(document.createElement('span'), { className: 'line' })
   )
-  const rowIndices = [0]
+  const { lineIndices, rowIndices, generator } = analyse(blob.stream(), columns)
 
   /**
    * @param {HTMLSpanElement} rowElem - Should be empty.
@@ -277,6 +316,7 @@ async function onBlob (blob) {
     if (prevStartRow === startRow && prevRowCount === rowIndices.length - 1) {
       return false
     }
+    let lastLineNum = 0
     const [oldRowElems, recyclableRowElems] = partition(
       rowElems,
       (_, i) =>
@@ -362,8 +402,18 @@ async function onBlob (blob) {
           })
         }
       }
+      const lineNum = findIndex(
+        lineIndices,
+        ({ index }) => rowIndices[row] < index,
+        Math.max(lastLineNum - 1, 0)
+      )
+      const lineNumDisplay = lineNum !== lastLineNum ? lineNum.toString() : ''
+      if (lineNum !== lastLineNum) {
+        lastLineNum = lineNum
+      }
       domManipulations.push(() => {
         newRowElems[i].style.top = i + 'em'
+        newRowElems[i].dataset.line = lineNumDisplay
       })
       if (abortRequests > 0) {
         abortRequests--
@@ -423,6 +473,10 @@ async function onBlob (blob) {
         setCurrentRow(currentRow - rows + 1)
       } else if (event.key === 'PageDown') {
         setCurrentRow(currentRow + rows - 1)
+      } else if (event.key === 'Home') {
+        setCurrentRow(0)
+      } else if (event.key === 'End') {
+        setCurrentRow(rowIndices.length - rows - 1)
       }
     }
   })
@@ -510,14 +564,9 @@ async function onBlob (blob) {
   elems.scrollbar.addEventListener('pointercancel', handlePointerEnd)
 
   setView(currentRow)
-  const lineIndices = await analyse(blob.stream(), columns, async indices => {
-    for (const index of indices) {
-      rowIndices.push(index)
-    }
-    // setView(rowIndices.length - rows - 1)
+  for await (const _ of generator) {
     await setView(currentRow)
-  })
-  rowIndices.push(blob.size)
+  }
   setView(currentRow)
 }
 

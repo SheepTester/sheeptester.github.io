@@ -183,6 +183,14 @@
         white-space: pre;
         line-height: 1;
       }
+      .line::before {
+        content: attr(data-line);
+        position: absolute;
+        right: 100%;
+        top: 0;
+        margin-right: 20px;
+        color: rgba(255, 255, 255, 0.7);
+      }
       #text-measurer {
         display: block;
         position: absolute;
@@ -197,6 +205,7 @@
         border-left: 1px solid rgba(255, 255, 255, 0.2);
         width: 15px;
         touch-action: none;
+        overflow: hidden;
       }
       .scrollbar {
         position: absolute;
@@ -208,6 +217,10 @@
       }
       .scrollbar:hover {
         background-color: rgba(255, 255, 255, 0.5);
+      }
+      .line-numbers {
+        width: 60px;
+        background-color: #11131d;
       }
 
       .whitespace {
@@ -265,6 +278,7 @@
     </div>
     <div class="hidden view-viewer">
       <div class="lines-wrapper">
+        <div class="line-numbers"></div>
         <div class="lines" id="lines">
           <span id="text-measurer"></span>
         </div>
