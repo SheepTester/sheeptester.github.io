@@ -10,6 +10,9 @@ const elems = {
   lines: /** @type {HTMLDivElement} */ (document.getElementById('lines')),
   textMeasurer: /** @type {HTMLSpanElement} */ (document.getElementById(
     'text-measurer'
+  )),
+  scrollbar: /** @type {HTMLDivElement} */ (document.getElementById(
+    'scrollbar'
   ))
 }
 
@@ -126,7 +129,8 @@ async function analyse (stream, columns, onProgress = () => {}) {
     }
     index += bytes.length
     onProgress(rowIndices)
-    await new Promise(resolve => setTimeout(resolve, 3000))
+    // TEMP
+    // await new Promise(resolve => setTimeout(resolve, 3000))
   }
   // If `sequenceState` > 0, then each byte in the byte sequence apparently
   // becomes U+FFFD. Whatever.
@@ -153,7 +157,7 @@ async function onBlob (blob) {
   document.body.classList.replace('show-view-select-source', 'show-view-viewer')
 
   const [rows, columns] = getSize()
-  const rowElems = Array.from({ length: rows }, () =>
+  let rowElems = Array.from({ length: rows }, () =>
     Object.assign(document.createElement('span'), { className: 'line' })
   )
   const rowIndices = [0]
@@ -229,33 +233,67 @@ async function onBlob (blob) {
 
   let prevStartRow = -rows
   let prevRowCount = 0
+  let abortRequests = 0
+  /**
+   * A promise that resolves when the currently running `setView` finishes.
+   * `null` if `setView` is not running.
+   * @type {Promise<void> | null}
+   */
+  let running = null
 
   /**
    * @param {number} startRow
+   * @returns {Promise<boolean>} - Whether the function had been aborted
    */
-  async function setView (startRow) {
+  async function _setView (startRow) {
+    if (running) {
+      abortRequests++
+      await running
+    }
+    if (abortRequests > 0) {
+      abortRequests--
+      return true
+    }
+    if (prevStartRow === startRow && prevRowCount === rowIndices.length - 1) {
+      return false
+    }
     const [oldRowElems, recyclableRowElems] = partition(
       rowElems,
       (_, i) =>
         prevStartRow + i >= startRow &&
         prevStartRow + i < Math.min(startRow + rows, prevRowCount)
     )
+    const newRowElems = [...rowElems]
     /**
      * A sparse array of cached lines.
      * @type {string[]}
      */
     const lineCache = []
+    /**
+     * A function of callbacks to defer DOM manipulation while asynchronously
+     * reading text from the Blob. This way, the lines don't have a weird
+     * scanning effect.
+     * @type {(function(): void)[]}
+     */
+    const domManipulations = []
     for (let i = 0; i < rows; i++) {
       const row = startRow + i
       if (
         row >= prevStartRow &&
         row < Math.min(prevStartRow + rows, prevRowCount)
       ) {
-        const rowOffset = startRow - prevStartRow
-        rowElems[i] = oldRowElems[i - rowOffset]
+        const rowOffset = startRow > prevStartRow ? 0 : startRow - prevStartRow
+        newRowElems[i] = oldRowElems[i + rowOffset]
       } else {
-        rowElems[i] = recyclableRowElems.pop()
-        rowElems[i].textContent = ''
+        newRowElems[i] = recyclableRowElems.pop()
+        domManipulations.push(() => {
+          newRowElems[i].textContent = ''
+          if (row < prevStartRow && oldRowElems[0]) {
+            oldRowElems[0].before(newRowElems[i])
+          } else {
+            elems.lines.append(newRowElems[i])
+          }
+        })
         if (row < rowIndices.length - 1) {
           if (lineCache[row - 1] === undefined) {
             // Previous line
@@ -279,34 +317,89 @@ async function onBlob (blob) {
                     .text()
                 : ''
           }
-          renderRow(
-            rowElems[i],
-            lineCache[row],
-            lineCache[row - 1],
-            lineCache[row + 1]
-          )
-        }
-        if (row < prevStartRow && oldRowElems[0]) {
-          oldRowElems[0].before(rowElems[i])
-        } else {
-          elems.lines.append(rowElems[i])
+          domManipulations.push(() => {
+            renderRow(
+              newRowElems[i],
+              lineCache[row],
+              lineCache[row - 1],
+              lineCache[row + 1]
+            )
+          })
         }
       }
-      rowElems[i].style.top = i + 'em'
+      domManipulations.push(() => {
+        newRowElems[i].style.top = i + 'em'
+      })
+      if (abortRequests > 0) {
+        abortRequests--
+        return true
+      }
     }
+
+    // Synchronously apply DOM changes all at once
+    for (const change of domManipulations) {
+      change()
+    }
+
+    rowElems = newRowElems
     prevStartRow = startRow
     prevRowCount = rowIndices.length - 1
+
+    const scrollbarHeight = Math.max((rows / (prevRowCount + rows)) * 100, 5)
+    elems.scrollbar.style.height = scrollbarHeight + '%'
+    elems.scrollbar.style.top =
+      prevRowCount === 0
+        ? '0'
+        : (startRow / (prevRowCount - 1)) * (100 - scrollbarHeight) + '%'
+    return false
   }
 
-  setView(0)
+  /**
+   * @param {number} startRow
+   */
+  function setView (startRow) {
+    const promise = _setView(startRow).then(aborted => {
+      // Don't reset `running` to `null` if `setView` was aborted because
+      // `running` was probably set to a different promise.
+      if (!aborted) {
+        running = null
+      }
+    })
+    // I think it's fine that `running` gets set to something else
+    running = promise
+    return promise
+  }
+
+  let currentRow = 0
+  document.addEventListener('keydown', event => {
+    if (!event.shiftKey && !event.ctrlKey && !event.altKey && !event.metaKey) {
+      if (event.key === 'ArrowUp') {
+        if (currentRow > 0) {
+          currentRow--
+        }
+      } else if (event.key === 'ArrowDown') {
+        if (currentRow < rowIndices.length - 2) {
+          currentRow++
+        }
+      } else if (event.key === 'PageUp') {
+        currentRow = Math.max(currentRow - rows + 1, 0)
+      } else if (event.key === 'PageDown') {
+        currentRow = Math.min(currentRow + rows - 1, rowIndices.length - 1)
+      }
+      setView(currentRow)
+    }
+  })
+
+  setView(currentRow)
   const lineIndices = await analyse(blob.stream(), columns, indices => {
     for (const index of indices) {
       rowIndices.push(index)
     }
     // setView(rowIndices.length - rows - 1)
-    setView(0)
+    setView(currentRow)
   })
   rowIndices.push(blob.size)
+  setView(currentRow)
 }
 
 elems.file.addEventListener('change', () => {
