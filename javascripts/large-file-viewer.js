@@ -68,11 +68,11 @@ function read (stream) {
 /**
  * @param {ReadableStream<Uint8Array>} stream
  * @param {number} columns - The number of columns/characters per line.
- * @param {function(number[]): void} onProgress - The function takes the newly
- * found row indices.
+ * @param {function(number[]): Promise<void>} onProgress - The function takes
+ * the newly found row indices.
  * @returns {Promise<Line[]>} Indices
  */
-async function analyse (stream, columns, onProgress = () => {}) {
+async function analyse (stream, columns, onProgress = () => Promise.resolve()) {
   /**
    * 0-indexed, so line 1's byte index is at index 0 of the array.
    * @type {Line[]}
@@ -128,16 +128,17 @@ async function analyse (stream, columns, onProgress = () => {}) {
       }
     }
     index += bytes.length
-    onProgress(rowIndices)
-    // TEMP
-    // await new Promise(resolve => setTimeout(resolve, 3000))
+    // Take a break between chunks; it seems that reading large files will make
+    // it stream very quickly without any break for a page render, which is sad.
+    await onProgress(rowIndices)
+    await new Promise(window.requestAnimationFrame)
   }
   // If `sequenceState` > 0, then each byte in the byte sequence apparently
   // becomes U+FFFD. Whatever.
   return lineIndices
 }
 
-/** @returns {[number, number]} - Rows, columns. */
+/** @returns {{ rows: number, columns: number, charHeight: number }} */
 function getSize () {
   const { width, height } = elems.lines.getBoundingClientRect()
   const {
@@ -145,7 +146,11 @@ function getSize () {
     height: charHeight
   } = elems.textMeasurer.getBoundingClientRect()
 
-  return [Math.floor(height / charHeight), Math.floor(width / charWidth)]
+  return {
+    rows: Math.floor(height / charHeight),
+    columns: Math.floor(width / charWidth),
+    charHeight
+  }
 }
 
 const highlightRegex = /[ \n]+|\t|-?(?:\d*\.\d+|\d+\.?)|[$_\p{ID_Start}-][$_\p{ID_Continue}-]*/gu
@@ -156,7 +161,7 @@ const highlightRegex = /[ \n]+|\t|-?(?:\d*\.\d+|\d+\.?)|[$_\p{ID_Start}-][$_\p{I
 async function onBlob (blob) {
   document.body.classList.replace('show-view-select-source', 'show-view-viewer')
 
-  const [rows, columns] = getSize()
+  const { rows, columns, charHeight } = getSize()
   let rowElems = Array.from({ length: rows }, () =>
     Object.assign(document.createElement('span'), { className: 'line' })
   )
@@ -240,6 +245,19 @@ async function onBlob (blob) {
    * @type {Promise<void> | null}
    */
   let running = null
+
+  /** @param {number} startRow */
+  function setScrollbar (startRow) {
+    const scrollbarHeight = Math.max(
+      (rows / (rowIndices.length - 1 + rows)) * 100,
+      5
+    )
+    elems.scrollbar.style.height = scrollbarHeight + '%'
+    elems.scrollbar.style.top =
+      rowIndices.length <= 1
+        ? '0'
+        : (startRow / (rowIndices.length - 2)) * (100 - scrollbarHeight) + '%'
+  }
 
   /**
    * @param {number} startRow
@@ -340,17 +358,12 @@ async function onBlob (blob) {
     for (const change of domManipulations) {
       change()
     }
+    setScrollbar(startRow)
 
     rowElems = newRowElems
     prevStartRow = startRow
     prevRowCount = rowIndices.length - 1
 
-    const scrollbarHeight = Math.max((rows / (prevRowCount + rows)) * 100, 5)
-    elems.scrollbar.style.height = scrollbarHeight + '%'
-    elems.scrollbar.style.top =
-      prevRowCount === 0
-        ? '0'
-        : (startRow / (prevRowCount - 1)) * (100 - scrollbarHeight) + '%'
     return false
   }
 
@@ -371,32 +384,121 @@ async function onBlob (blob) {
   }
 
   let currentRow = 0
+  function setCurrentRow (row) {
+    if (row < 0) {
+      currentRow = 0
+    } else if (row >= rowIndices.length) {
+      currentRow = rowIndices.length - 1
+    } else {
+      currentRow = row
+    }
+    setScrollbar(currentRow)
+    setView(currentRow)
+  }
+
   document.addEventListener('keydown', event => {
     if (!event.shiftKey && !event.ctrlKey && !event.altKey && !event.metaKey) {
       if (event.key === 'ArrowUp') {
-        if (currentRow > 0) {
-          currentRow--
-        }
+        setCurrentRow(currentRow - 1)
       } else if (event.key === 'ArrowDown') {
-        if (currentRow < rowIndices.length - 2) {
-          currentRow++
-        }
+        setCurrentRow(currentRow + 1)
       } else if (event.key === 'PageUp') {
-        currentRow = Math.max(currentRow - rows + 1, 0)
+        setCurrentRow(currentRow - rows + 1)
       } else if (event.key === 'PageDown') {
-        currentRow = Math.min(currentRow + rows - 1, rowIndices.length - 1)
+        setCurrentRow(currentRow + rows - 1)
       }
-      setView(currentRow)
     }
   })
+  let remainder = 0
+  document.addEventListener('wheel', event => {
+    // Note: Pinch-to-zoom is stored in deltaY but with ctrlKey=true
+    if (event.shiftKey || event.ctrlKey || event.altKey || event.metaKey) {
+      return
+    }
+    const deltaRow = Math.trunc((event.deltaY + remainder) / charHeight)
+    // Keeping the remainder allows for smooth trackpad scrolling.
+    // Implementation is not great because scrolling up a line requires you to
+    // scroll an entire line the other way to return to the previous line.
+    remainder = (event.deltaY + remainder) % charHeight
+    setCurrentRow(currentRow + deltaRow)
+  })
+  /**
+   * @typedef {object} DragState
+   * @property {number} pointerId
+   * @property {number} offsetY
+   * @property {{ top: number, height: number }} parentRect
+   * @property {{ top: number, height: number }} barRect
+   */
+  /**
+   * Whether the user is currently dragging the scrollbar.
+   * @type {DragState | null}
+   */
+  let dragging = null
+  elems.scrollbar.parentElement.addEventListener('pointerdown', event => {
+    if (!dragging) {
+      const inGutter = !elems.scrollbar.contains(
+        /** @type {Node} */ (event.target)
+      )
+      const parentRect = elems.scrollbar.parentElement.getBoundingClientRect()
+      const barRectReadonly = elems.scrollbar.getBoundingClientRect()
+      const barRect = {
+        top: barRectReadonly.top,
+        height: barRectReadonly.height
+      }
+      if (inGutter) {
+        // Simulate dragging the bar directly to the mouse cursor
+        barRect.top = event.clientY - barRect.height / 2
+        if (barRect.top < 0) {
+          barRect.top = 0
+        } else if (barRect.top + barRect.height > parentRect.bottom) {
+          barRect.top = parentRect.bottom - barRect.height
+        }
+      }
+      dragging = {
+        pointerId: event.pointerId,
+        offsetY: event.clientY - barRect.top,
+        parentRect,
+        barRect
+      }
+      elems.scrollbar.setPointerCapture(event.pointerId)
+      if (inGutter) {
+        setCurrentRow(
+          Math.floor(
+            ((event.clientY - dragging.offsetY) /
+              (parentRect.height - barRect.height)) *
+              rowIndices.length
+          )
+        )
+      }
+    }
+  })
+  elems.scrollbar.addEventListener('pointermove', event => {
+    if (dragging && dragging.pointerId === event.pointerId) {
+      setCurrentRow(
+        Math.floor(
+          ((event.clientY - dragging.offsetY) /
+            (dragging.parentRect.height - dragging.barRect.height)) *
+            rowIndices.length
+        )
+      )
+    }
+  })
+  /** @param {PointerEvent} event */
+  const handlePointerEnd = event => {
+    if (dragging && dragging.pointerId === event.pointerId) {
+      dragging = null
+    }
+  }
+  elems.scrollbar.addEventListener('pointerup', handlePointerEnd)
+  elems.scrollbar.addEventListener('pointercancel', handlePointerEnd)
 
   setView(currentRow)
-  const lineIndices = await analyse(blob.stream(), columns, indices => {
+  const lineIndices = await analyse(blob.stream(), columns, async indices => {
     for (const index of indices) {
       rowIndices.push(index)
     }
     // setView(rowIndices.length - rows - 1)
-    setView(currentRow)
+    await setView(currentRow)
   })
   rowIndices.push(blob.size)
   setView(currentRow)
