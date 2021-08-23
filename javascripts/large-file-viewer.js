@@ -144,6 +144,8 @@ function getSize () {
   return [Math.floor(height / charHeight), Math.floor(width / charWidth)]
 }
 
+const highlightRegex = /[ \n]+|\t|-?(?:\d*\.\d+|\d+\.?)|[$_\p{ID_Start}-][$_\p{ID_Continue}-]*/gu
+
 /**
  * @param {Blob} blob
  */
@@ -159,61 +161,70 @@ async function onBlob (blob) {
   /**
    * @param {HTMLSpanElement} rowElem - Should be empty.
    * @param {string} line
-   * @param {[string, HTMLSpanElement | null]} [prevIdentifier] - An identifier
-   * from the end of the previous line, if it exists; to deal with wrapping
-   * @returns {[string, HTMLSpanElement | null] | undefined} - The identifier at
-   * the end of the line, if it exists.
    */
-  function renderRow (rowElem, line, prevIdentifier) {
-    /** @type {[string, HTMLSpanElement | null] | undefined} */
-    let lastIdentifier
+  function renderRow (rowElem, line, prevLine = '', nextLine = '') {
     let lastIndex = 0
     // https://mathiasbynens.be/notes/javascript-identifiers-es6 but also
     // allowing hyphens for CSS/Scheme etc
-    for (const match of line.matchAll(
-      /[ \n]+|\t|-?(?:\d*\.\d+|\d+\.?)|[$_\p{ID_Start}-][$_\p{ID_Continue}-]*/gu
-    )) {
-      const before = line.slice(lastIndex, match.index)
-      if (before.length > 0) {
+    for (const { [0]: match, index: matchIndex } of (
+      prevLine +
+      line +
+      nextLine
+    ).matchAll(highlightRegex)) {
+      // Ignore matches from the other lines
+      const index = matchIndex - prevLine.length
+      const endIndex = index + match.length
+      if (index >= line.length) break
+      if (endIndex < 0) continue
+
+      const before = line.slice(lastIndex, index)
+      if (index > 0 && before.length > 0) {
         rowElem.append(before)
       }
-      lastIndex = match.index + match[0].length
-      if (' \t\n'.includes(match[0][0])) {
+      lastIndex = endIndex
+
+      const matchInLine = match.slice(
+        index < 0 ? -index : 0,
+        endIndex > line.length ? -(endIndex - line.length) : undefined
+      )
+      if (' \t\n'.includes(match[0])) {
         const span = Object.assign(document.createElement('span'), {
           className: 'whitespace',
-          textContent: match[0]
+          textContent: matchInLine
         })
-        span.dataset.char = [...match[0]]
+        span.dataset.char = [...matchInLine]
           .map(char => ({ ' ': '·', '\t': '→', '\n': '¬' }[char]))
           .join('')
         rowElem.append(span)
-      } else if (match[0].includes('.') || match[0].match(/^-*\d/)) {
+      } else if (match.includes('.') || match.match(/^-?\d/)) {
         rowElem.append(
           Object.assign(document.createElement('span'), {
             className: 'number',
-            textContent: match[0]
+            textContent: matchInLine
           })
         )
       } else {
+        // Give each name a unique colour; inspired by
+        // https://evanbrooks.info/syntax-highlight/
+        /** @type {string} */
+        const hash = window['md5'](match) // TypeScript hack
         const span = Object.assign(document.createElement('span'), {
           className: 'identifier',
-          textContent: match[0]
+          textContent: matchInLine
         })
-        if (prevIdentifier) {
-          prevIdentifier[1].style.color = 'cyan'
-        }
-        span.style.color = 'yellow'
+        // https://github.com/evnbr/syntax-highlight/blob/74719de0bd23784da2331de6ba6936a8a837893d/v2/script/semantic.js#L22-L32
+        span.style.color = window['hsluv'].hsluvToHex([
+          (parseInt(hash.slice(9, 12), 16) / 0x1000) * 360,
+          60,
+          (parseInt(hash.slice(5, 7), 16) / 0x100) * 10 + 62
+        ])
         rowElem.append(span)
-        if (lastIndex === line.length) {
-          lastIdentifier = [match[0], span]
-        }
       }
     }
     const after = line.slice(lastIndex)
     if (after.length > 0) {
       rowElem.append(after)
     }
-    return lastIdentifier
   }
 
   let prevStartRow = -rows
@@ -229,6 +240,11 @@ async function onBlob (blob) {
         prevStartRow + i >= startRow &&
         prevStartRow + i < Math.min(startRow + rows, prevRowCount)
     )
+    /**
+     * A sparse array of cached lines.
+     * @type {string[]}
+     */
+    const lineCache = []
     for (let i = 0; i < rows; i++) {
       const row = startRow + i
       if (
@@ -241,9 +257,33 @@ async function onBlob (blob) {
         rowElems[i] = recyclableRowElems.pop()
         rowElems[i].textContent = ''
         if (row < rowIndices.length - 1) {
+          if (lineCache[row - 1] === undefined) {
+            // Previous line
+            lineCache[row - 1] =
+              row > 0
+                ? await blob.slice(rowIndices[row - 1], rowIndices[row]).text()
+                : ''
+          }
+          if (lineCache[row] === undefined) {
+            // Current line
+            lineCache[row] = await blob
+              .slice(rowIndices[row], rowIndices[row + 1])
+              .text()
+          }
+          if (lineCache[row + 1] === undefined) {
+            // Next line
+            lineCache[row + 1] =
+              row < rowIndices.length - 2
+                ? await blob
+                    .slice(rowIndices[row + 1], rowIndices[row + 2])
+                    .text()
+                : ''
+          }
           renderRow(
             rowElems[i],
-            await blob.slice(rowIndices[row], rowIndices[row + 1]).text()
+            lineCache[row],
+            lineCache[row - 1],
+            lineCache[row + 1]
           )
         }
         if (row < prevStartRow && oldRowElems[0]) {
