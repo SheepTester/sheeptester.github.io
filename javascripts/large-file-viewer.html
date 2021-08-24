@@ -60,20 +60,9 @@
         text-decoration: underline;
       }
 
-      .hidden {
-        display: none;
-      }
-      .show-view-select-source .view-select-source,
-      .show-view-viewer .view-viewer {
-        display: flex;
-      }
       .view-select-source,
       .view-viewer {
         flex: auto;
-      }
-      .show-cors-error .cors-error,
-      .show-offline-error .offline-error {
-        display: block;
       }
 
       .view-select-source {
@@ -119,13 +108,22 @@
         align-items: center;
       }
       .input {
-        background-color: rgba(255, 255, 255, 0.2);
+        background-color: rgba(255, 255, 255, 0.1);
         padding: 0 15px;
         height: 32px;
         box-sizing: border-box;
         border-radius: 50px;
-        margin-top: 20px;
         width: 100%;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+      .input:focus {
+        outline: none;
+        border-color: white;
+      }
+      .label .input {
+        margin-top: 20px;
+      }
+      .url-input {
         max-width: 550px;
         text-align: center;
       }
@@ -191,6 +189,9 @@
         margin-right: 20px;
         color: rgba(255, 255, 255, 0.7);
       }
+      .line.wrapped-row::before {
+        color: rgba(255, 255, 255, 0.3);
+      }
       #text-measurer {
         display: block;
         position: absolute;
@@ -236,9 +237,92 @@
         /* From https://evanbrooks.info/syntax-highlight/v2/ */
         color: #ff9a7b;
       }
+
+      .buttons-wrapper {
+        flex: none;
+        display: flex;
+        background-color: #0c0e17;
+        padding: 10px;
+        padding-right: 60px;
+        overflow-x: auto;
+      }
+      .button-row {
+        display: flex;
+        justify-content: space-between;
+      }
+      .button {
+        flex: none;
+        display: flex;
+        flex-direction: column;
+        border-radius: 5px;
+        align-items: center;
+        background-color: rgba(255, 255, 255, 0.1);
+        padding: 10px;
+      }
+      .buttons-wrapper .button {
+        margin-right: 10px;
+      }
+      .button:hover {
+        background-color: rgba(255, 255, 255, 0.2);
+      }
+      .primary {
+        background-color: #b061ce;
+      }
+      .primary:hover {
+        background-color: #cd99e1;
+        color: black;
+      }
+      .key {
+        opacity: 0.5;
+      }
+      .line-btn {
+        flex-direction: row;
+        padding: 5px 10px;
+      }
+      .line-btn .key {
+        margin-left: 10px;
+      }
+
+      .modal {
+        position: fixed;
+        bottom: 100px;
+        left: 50px;
+        right: 50px;
+        max-width: 500px;
+        margin: 0 auto;
+        background-color: rgba(39, 42, 60, 0.9);
+        padding: 10px;
+        border-radius: 10px;
+      }
+      .modal-text {
+        margin: 0;
+        margin-bottom: 10px;
+        color: rgba(255, 255, 255, 0.7);
+      }
+      .modal-text strong {
+        color: rgba(255, 255, 255, 0.9);
+      }
+      .modal .button-row {
+        margin-top: 10px;
+      }
+
+      .hidden {
+        display: none;
+      }
+      .show-view-select-source .view-select-source,
+      .show-view-viewer .view-viewer,
+      .show-normal-mode .normal-mode,
+      .show-visual-mode .visual-mode {
+        display: flex;
+      }
+      .show-cors-error .cors-error,
+      .show-offline-error .offline-error,
+      .show-go-to-line .go-to-line {
+        display: block;
+      }
     </style>
   </head>
-  <body class="show-view-select-source">
+  <body class="show-view-select-source show-normal-mode">
     <div class="hidden view-select-source">
       <h2 class="select-source-heading">Select a text file</h2>
       <fieldset class="select-source" id="select-source">
@@ -253,7 +337,7 @@
             <input
               type="url"
               id="url"
-              class="input"
+              class="input url-input"
               placeholder="https://example.com/"
               value="https://sheeptester.github.io/htmlifier/index.bundle.min.js"
             />
@@ -285,6 +369,44 @@
         <div class="scrollbar-wrapper">
           <div class="scrollbar" id="scrollbar"></div>
         </div>
+      </div>
+      <div class="buttons-wrapper">
+        <button class="button hidden normal-mode" data-key="g">
+          <span class="label">Go to</span> <span class="key">(g)</span>
+        </button>
+        <button class="button hidden normal-mode" data-key="G">
+          <span class="label">Go to end</span> <span class="key">(G)</span>
+        </button>
+        <button class="button hidden normal-mode" data-key="/">
+          <span class="label">Search</span> <span class="key">(/)</span>
+        </button>
+        <button class="button hidden normal-mode" data-key="v">
+          <span class="label">Select</span> <span class="key">(v)</span>
+        </button>
+
+        <button class="button hidden visual-mode" data-key="Escape">
+          <span class="label">Exit select mode</span>
+          <span class="key">(esc)</span>
+        </button>
+        <button class="button hidden visual-mode" data-key="y">
+          <span class="label">Copy</span> <span class="key">(y)</span>
+        </button>
+      </div>
+    </div>
+    <div class="modal go-to-line hidden">
+      <p class="modal-text">
+        <strong>Go to a line:</strong>
+        Type a line number, optionally followed by a colon (:) and a column
+        number.
+      </p>
+      <input type="text" class="input" id="line-number" placeholder="1:1" />
+      <div class="button-row">
+        <button class="button line-btn" data-key="Escape">
+          <span class="label">Cancel</span> <span class="key">(esc)</span>
+        </button>
+        <button class="button line-btn primary" data-key="Enter">
+          <span class="label">OK</span> <span class="key">(enter)</span>
+        </button>
       </div>
     </div>
 

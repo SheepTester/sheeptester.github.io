@@ -13,6 +13,9 @@ const elems = {
   )),
   scrollbar: /** @type {HTMLDivElement} */ (document.getElementById(
     'scrollbar'
+  )),
+  lineNumber: /** @type {HTMLInputElement} */ (document.getElementById(
+    'line-number'
   ))
 }
 
@@ -408,12 +411,19 @@ async function onBlob (blob) {
         Math.max(lastLineNum - 1, 0)
       )
       const lineNumDisplay = lineNum !== lastLineNum ? lineNum.toString() : ''
+      const isFirstRow =
+        lineIndices[lineNum - 1].rowIndices[0] === rowIndices[row]
       if (lineNum !== lastLineNum) {
         lastLineNum = lineNum
       }
       domManipulations.push(() => {
         newRowElems[i].style.top = i + 'em'
         newRowElems[i].dataset.line = lineNumDisplay
+        if (isFirstRow) {
+          newRowElems[i].classList.remove('wrapped-row')
+        } else {
+          newRowElems[i].classList.add('wrapped-row')
+        }
       })
       if (abortRequests > 0) {
         abortRequests--
@@ -451,6 +461,11 @@ async function onBlob (blob) {
   }
 
   let currentRow = 0
+  /**
+   * Sets the currentRow, clamping it if it is out of bounds, and re-renders the
+   * view.
+   * @param {number} row
+   */
   function setCurrentRow (row) {
     if (row < 0) {
       currentRow = 0
@@ -463,20 +478,82 @@ async function onBlob (blob) {
     setView(currentRow)
   }
 
+  /** @type {'normal' | 'visual'} */
+  let mode = 'normal'
+  /** @type {number | null} */
+  let oldLineNumber = null
+  const actions = {
+    g: () => {
+      if (oldLineNumber === null) {
+        oldLineNumber = 0 // TODO
+        elems.lineNumber.value = '3:3' // TODO
+        document.body.classList.add('show-go-to-line')
+        elems.lineNumber.focus()
+        elems.lineNumber.select()
+      }
+    },
+    G: () => {
+      setCurrentRow(rowIndices.length - rows - 1)
+    },
+    '/': () => {},
+    v: () => {
+      if (mode === 'normal') {
+        mode = 'visual'
+        document.body.classList.replace('show-normal-mode', 'show-visual-mode')
+      }
+    },
+
+    Escape: () => {
+      if (mode === 'visual') {
+        mode = 'normal'
+        document.body.classList.replace('show-visual-mode', 'show-normal-mode')
+      } else if (oldLineNumber !== null) {
+        oldLineNumber = null // TODO
+        document.body.classList.remove('show-go-to-line')
+      }
+    },
+    y: () => {},
+
+    Enter: () => {
+      oldLineNumber = null // TODO
+      document.body.classList.remove('show-go-to-line')
+    }
+  }
+  document.body.addEventListener('click', event => {
+    const button =
+      event.target instanceof HTMLElement && event.target.closest('.button')
+    if (button instanceof HTMLElement) {
+      actions[button.dataset.key]()
+    }
+  })
   document.addEventListener('keydown', event => {
-    if (!event.shiftKey && !event.ctrlKey && !event.altKey && !event.metaKey) {
-      if (event.key === 'ArrowUp') {
-        setCurrentRow(currentRow - 1)
-      } else if (event.key === 'ArrowDown') {
-        setCurrentRow(currentRow + 1)
-      } else if (event.key === 'PageUp') {
-        setCurrentRow(currentRow - rows + 1)
-      } else if (event.key === 'PageDown') {
-        setCurrentRow(currentRow + rows - 1)
-      } else if (event.key === 'Home') {
-        setCurrentRow(0)
-      } else if (event.key === 'End') {
-        setCurrentRow(rowIndices.length - rows - 1)
+    if (!event.ctrlKey && !event.altKey && !event.metaKey) {
+      if (
+        event.key !== 'Escape' &&
+        event.key !== 'Enter' &&
+        event.target instanceof HTMLElement &&
+        (event.target.tagName === 'INPUT' || event.target.tagName === 'SELECT')
+      ) {
+        return
+      }
+      if (!event.shiftKey) {
+        if (event.key === 'ArrowUp') {
+          setCurrentRow(currentRow - 1)
+        } else if (event.key === 'ArrowDown') {
+          setCurrentRow(currentRow + 1)
+        } else if (event.key === 'PageUp') {
+          setCurrentRow(currentRow - rows + 1)
+        } else if (event.key === 'PageDown') {
+          setCurrentRow(currentRow + rows - 1)
+        } else if (event.key === 'Home') {
+          setCurrentRow(0)
+        } else if (event.key === 'End') {
+          setCurrentRow(rowIndices.length - rows - 1)
+        }
+      }
+      if (actions[event.key]) {
+        actions[event.key]()
+        event.preventDefault()
       }
     }
   })
