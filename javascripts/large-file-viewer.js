@@ -206,6 +206,10 @@ async function onBlob (blob) {
   document.body.classList.remove('show-view-select-source')
   document.body.classList.add('show-view-viewer')
 
+  // Wait for fonts to load (fonts will affect getSize)
+  // https://stackoverflow.com/a/32292880
+  await document['fonts'].ready
+
   const { rows, columns, charHeight } = getSize()
   let rowElems = Array.from({ length: rows }, () =>
     Object.assign(document.createElement('span'), { className: 'line' })
