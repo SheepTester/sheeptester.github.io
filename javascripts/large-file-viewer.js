@@ -203,7 +203,8 @@ const highlightRegex = /[ \n]+|\t|-?(?:\d*\.\d+|\d+\.?)|[$_\p{ID_Start}-][$_\p{I
  * @param {Blob} blob
  */
 async function onBlob (blob) {
-  document.body.classList.replace('show-view-select-source', 'show-view-viewer')
+  document.body.classList.remove('show-view-select-source')
+  document.body.classList.add('show-view-viewer')
 
   const { rows, columns, charHeight } = getSize()
   let rowElems = Array.from({ length: rows }, () =>
@@ -653,22 +654,49 @@ elems.file.addEventListener('change', () => {
   }
 })
 
-elems.byUrl.addEventListener('submit', async event => {
-  event.preventDefault()
-
+/**
+ * @param {string} url
+ * @returns {Promise<boolean>}
+ */
+async function loadFromUrl (url) {
   elems.selectSource.disabled = true
   document.body.classList.remove('show-cors-error', 'show-offline-error')
   try {
-    const response = await fetch(elems.url.value)
+    const response = await fetch(url)
     onBlob(await response.blob())
+    if (url !== paramUrl) {
+      window.history.pushState({}, '', '?' + new URLSearchParams({ url }))
+    }
+    return true
   } catch {
-    const isCors = await fetch(elems.url.value, { mode: 'no-cors' })
+    const isCors = await fetch(url, { mode: 'no-cors' })
       .then(() => true)
       .catch(() => false)
     document.body.classList.add(
       isCors ? 'show-cors-error' : 'show-offline-error'
     )
+    return false
   } finally {
     elems.selectSource.disabled = false
   }
+}
+
+elems.byUrl.addEventListener('submit', async event => {
+  event.preventDefault()
+
+  await loadFromUrl(elems.url.value)
 })
+
+const params = new URL(window.location.href).searchParams
+const paramUrl = params.get('url')
+if (paramUrl) {
+  document.body.classList.remove('show-view-select-source')
+  loadFromUrl(paramUrl).then(success => {
+    if (!success) {
+      elems.url.value = paramUrl
+      document.body.classList.add('show-view-select-source')
+      params.delete('url')
+      window.history.replaceState({}, '', window.location.pathname)
+    }
+  })
+}

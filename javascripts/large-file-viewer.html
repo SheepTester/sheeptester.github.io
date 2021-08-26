@@ -262,13 +262,16 @@
       .buttons-wrapper .button {
         margin-right: 10px;
       }
-      .button:hover {
+      .button:not(:disabled):hover {
         background-color: rgba(255, 255, 255, 0.2);
+      }
+      .button:disabled {
+        opacity: 0.5;
       }
       .primary {
         background-color: #b061ce;
       }
-      .primary:hover {
+      .primary:not(:disabled):hover {
         background-color: #cd99e1;
         color: black;
       }
@@ -377,7 +380,7 @@
         <button class="button hidden normal-mode" data-key="G">
           <span class="label">Go to end</span> <span class="key">(G)</span>
         </button>
-        <button class="button hidden normal-mode" data-key="/">
+        <button class="button hidden normal-mode" data-key="/" disabled>
           <span class="label">Search</span> <span class="key">(/)</span>
         </button>
         <button class="button hidden normal-mode" data-key="v">
@@ -388,7 +391,7 @@
           <span class="label">Exit select mode</span>
           <span class="key">(esc)</span>
         </button>
-        <button class="button hidden visual-mode" data-key="y">
+        <button class="button hidden visual-mode" data-key="y" disabled>
           <span class="label">Copy</span> <span class="key">(y)</span>
         </button>
       </div>
@@ -404,7 +407,7 @@
         <button class="button line-btn" data-key="Escape">
           <span class="label">Cancel</span> <span class="key">(esc)</span>
         </button>
-        <button class="button line-btn primary" data-key="Enter">
+        <button class="button line-btn primary" data-key="Enter" disabled>
           <span class="label">OK</span> <span class="key">(enter)</span>
         </button>
       </div>
