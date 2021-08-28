@@ -60,6 +60,11 @@ profiles:
     bg: '#FCD207'
     ball: '#1F2528'
 
+  - name: JSBench.me
+    link: https://jsbench.me/user/sheeptester
+    ball: '#0C77B9'
+    border: '#020202'
+
   - name: JSPerf
     link: https://jsperf.com/browse/SheepTester
     type: jsperf
