@@ -16,7 +16,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Lato&family=Montserrat:wght@400;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Montserrat:wght@400;700&display=swap"
       rel="stylesheet"
     />
     <style>
@@ -30,16 +30,28 @@
       body {
         margin: 0;
         font-family: 'Lato', sans-serif;
-      }
-      .section {
-        min-height: 100%;
+        color: #294355;
       }
 
+      .link {
+        color: #15a6fb;
+        font-weight: bold;
+        text-decoration: none;
+      }
+      .link:hover {
+        text-decoration: underline;
+      }
+
+      .section,
+      .intro {
+        min-height: 100%;
+      }
       .heading-wrapper {
         background-image: linear-gradient(150deg, #394e5f, #152038);
       }
       .heading,
-      .conversion {
+      .conversion,
+      .intro {
         margin: 0 auto;
         width: 100%;
         max-width: 1000px;
@@ -57,7 +69,7 @@
       .conversion {
         display: flex;
         align-items: flex-start;
-        margin: 40px 0;
+        margin: 40px auto;
       }
       .conversion-title {
         background-image: linear-gradient(150deg, #394e5f, #152038);
@@ -73,6 +85,7 @@
         color: white;
         border-radius: 10px;
         transition: transform 0.5s;
+        box-shadow: 0 2px 7px rgba(0, 0, 0, 0.1);
       }
       .conversion-title:target {
         transform: rotate(-2deg) scale(1.05);
@@ -80,7 +93,6 @@
       .instructions {
         flex: auto;
         padding-right: 40px;
-        color: #294355;
       }
       .instructions p:first-child,
       .instructions ol:first-child {
@@ -92,14 +104,6 @@
       }
       .instructions ol li {
         margin: 10px 0;
-      }
-      .instructions a {
-        color: #15a6fb;
-        font-weight: bold;
-        text-decoration: none;
-      }
-      .instructions a:hover {
-        text-decoration: underline;
       }
       @media (max-width: 800px) {
         .heading {
@@ -123,6 +127,53 @@
         .instructions {
           padding: 20px 40px 0;
         }
+      }
+
+      .intro {
+        padding-bottom: 40px;
+      }
+      .title {
+        font-family: 'Montserrat', sans-serif;
+        font-size: 64px;
+        text-align: center;
+        color: #0f1b44;
+        margin: 0;
+        padding: 40px;
+        line-height: 1;
+      }
+      .description {
+        margin: 0;
+        padding: 0 40px;
+      }
+      .toc {
+        display: grid;
+        padding: 40px;
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+        gap: 20px;
+      }
+      .conversion-list {
+        border-radius: 10px;
+        box-shadow: 0 2px 7px rgba(0, 0, 0, 0.1);
+      }
+      .target,
+      .source {
+        display: block;
+        padding: 10px 15px;
+        color: inherit;
+        text-decoration: none;
+      }
+      .target {
+        color: white;
+        font-family: 'Montserrat', sans-serif;
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+      }
+      .source:last-child {
+        border-bottom-left-radius: 10px;
+        border-bottom-right-radius: 10px;
+      }
+      .source:hover {
+        background-color: rgba(0, 0, 0, 0.05);
       }
 
       .mp3 {
@@ -158,6 +209,48 @@
     </style>
   </head>
   <body>
+    <div class="intro">
+      <h1 class="title">File con&shy;verters</h1>
+      <p class="description">
+        Here's a list of all the file converters on
+        <a class="link" href="/">my website</a>.
+      </p>
+      <div class="toc">
+        <div class="conversion-list">
+          <a href="#mp3" class="target mp3">
+            Convert to <strong class="file-type">mp3</strong>...
+          </a>
+          <a href="#mp3-to-wav" class="source">
+            From <strong class="file-type">wav</strong>
+          </a>
+          <a href="#mp3-to-wav" class="source">
+            From <strong class="file-type">png</strong>
+          </a>
+        </div>
+        <div class="conversion-list">
+          <a href="#jpg" class="target jpg">
+            Convert to <strong class="file-type">jpg</strong>...
+          </a>
+          <a href="#mp3-to-wav" class="source">
+            From <strong class="file-type">wav</strong>
+          </a>
+          <a href="#mp3-to-wav" class="source">
+            From <strong class="file-type">png</strong>
+          </a>
+        </div>
+        <div class="conversion-list">
+          <a href="#pdf" class="target pdf">
+            Convert to <strong class="file-type">pdf</strong>...
+          </a>
+          <a href="#mp3-to-wav" class="source">
+            From <strong class="file-type">wav</strong>
+          </a>
+          <a href="#mp3-to-wav" class="source">
+            From <strong class="file-type">png</strong>
+          </a>
+        </div>
+      </div>
+    </div>
     <div class="section">
       <div class="heading-wrapper mp3">
         <h2 class="heading">
@@ -171,7 +264,7 @@
         <div class="instructions">
           <p>
             Use
-            <a href="#wav-to-mp3">JPG Quality</a>.
+            <a class="link" href="#wav-to-mp3">JPG Quality</a>.
           </p>
           <ol>
             <li>
@@ -195,7 +288,9 @@
         <div class="instructions">
           <p>
             Use
-            <a href="https://sheeptester.github.io/javascripts/jpg-quality.html"
+            <a
+              class="link"
+              href="https://sheeptester.github.io/javascripts/jpg-quality.html"
               >JPG Quality</a
             >.
           </p>
@@ -215,7 +310,7 @@
         </div>
       </div>
     </div>
-    <div class="section">
+    <section class="section">
       <div class="heading-wrapper jpg">
         <h2 class="heading">
           Convert to <strong class="file-type">jpg</strong>
@@ -228,7 +323,9 @@
         <div class="instructions">
           <p>
             Use
-            <a href="https://sheeptester.github.io/javascripts/jpg-quality.html"
+            <a
+              class="link"
+              href="https://sheeptester.github.io/javascripts/jpg-quality.html"
               >JPG Quality</a
             >.
           </p>
@@ -254,7 +351,9 @@
         <div class="instructions">
           <p>
             Use
-            <a href="https://sheeptester.github.io/javascripts/jpg-quality.html"
+            <a
+              class="link"
+              href="https://sheeptester.github.io/javascripts/jpg-quality.html"
               >JPG Quality</a
             >.
           </p>
@@ -273,6 +372,19 @@
           </ol>
         </div>
       </div>
-    </div>
+    </section>
+    <!--
+      Converters:
+      - mp3, wav -> mp3, wav https://sheeptester.github.io/javascripts/audio-editor/
+      - svg -> png https://sheeptester.github.io/words-go-here/misc/svgtopng.html
+      - image -> jpg, webp https://sheeptester.github.io/javascripts/jpg-quality.html
+      - image, audio -> webm https://sheeptester.github.io/javascripts/video/shit/
+      - image -> pdf https://sheeptester.github.io/javascripts/one-pdf.html
+      - sb2, sb3 -> html https://sheeptester.github.io/htmlifier/
+      - image -> svg https://sheeptester.github.io/javascripts/tosvg.html https://sheeptester.github.io/words-go-here/misc/imgtosvg.html
+      - image -> txt https://sheeptester.github.io/javascripts/imagetoscheme.html
+      - gif -> png https://sheeptester.github.io/words-go-here/misc/animated-painting-maker.html
+      - font -> svg (zip) https://sheeptester.github.io/javascripts/fontmaker.html
+    -->
   </body>
 </html>
