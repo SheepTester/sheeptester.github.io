@@ -46,7 +46,9 @@
       .section,
       .intro {
         min-height: 100%;
+        padding-bottom: 40px;
       }
+
       .heading-wrapper {
         background-image: linear-gradient(150deg, #394e5f, #152038);
       }
@@ -131,9 +133,6 @@
         }
       }
 
-      .intro {
-        padding-bottom: 40px;
-      }
       .title {
         font-family: 'Montserrat', sans-serif;
         font-size: 64px;
@@ -148,15 +147,21 @@
         padding: 0 40px;
       }
       .toc {
-        display: grid;
-        align-items: flex-start;
-        padding: 40px;
-        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-        gap: 20px;
+        column-width: 180px;
+        column-gap: 20px;
+        padding: 30px 40px;
       }
       .conversion-list {
         border-radius: 10px;
         box-shadow: 0 2px 7px rgba(0, 0, 0, 0.1);
+
+        /* https://stackoverflow.com/a/7785711 */
+        display: inline-block; /* Actually FF 20+ */
+        -webkit-column-break-inside: avoid; /* Chrome, Safari */
+        page-break-inside: avoid; /* Theoretically FF 20+ */
+        break-inside: avoid-column; /* IE 11 */
+        width: 100%;
+        margin: 10px 0;
       }
       .target,
       .source {
@@ -172,12 +177,23 @@
         border-top-left-radius: 10px;
         border-top-right-radius: 10px;
       }
+      .source {
+        display: flex;
+        align-items: center;
+      }
       .source:last-child {
         border-bottom-left-radius: 10px;
         border-bottom-right-radius: 10px;
       }
       .source:hover {
         background-color: rgba(0, 0, 0, 0.05);
+      }
+      .dot {
+        margin-left: auto;
+        display: block;
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
       }
 
       .mp3 {
@@ -204,22 +220,44 @@
       .pdf {
         background-image: linear-gradient(150deg, #ff3838, #a9000b);
       }
+      .sb {
+        background-image: linear-gradient(150deg, #8a7752, #3a2612);
+      }
       .sb2 {
-        background-image: linear-gradient(150deg, #394e5f, #152038);
+        background-image: linear-gradient(150deg, #c48714, #44270b);
       }
       .sb3 {
-        background-image: linear-gradient(150deg, #394e5f, #152038);
+        background-image: linear-gradient(150deg, #eb9715, #ce5608);
       }
       .html {
+        background-image: linear-gradient(150deg, #c6713e, #940707);
+      }
+      .webm {
+        background-image: linear-gradient(150deg, #8269e1, #1b0b65);
+      }
+      .txt {
         background-image: linear-gradient(150deg, #394e5f, #152038);
+      }
+      .woff,
+      .otf,
+      .ttf {
+        background-image: linear-gradient(150deg, #40aeff, #0a59df);
       }
       .image {
         background-image: linear-gradient(150deg, #f4f6f7, #dbdee5);
         color: #ff3589;
       }
-      .font {
+      .audio {
         background-image: linear-gradient(150deg, #f4f6f7, #dbdee5);
         color: #c435ff;
+      }
+      .font {
+        background-image: linear-gradient(150deg, #f4f6f7, #dbdee5);
+        color: #106bf4;
+      }
+      .Scratch {
+        background-image: linear-gradient(150deg, #f4f6f7, #dbdee5);
+        color: #ff8d00;
       }
     </style>
   </head>
@@ -236,10 +274,12 @@
             Convert to <strong class="file-type">pdf</strong>...
           </a>
           <a href="#png-to-pdf" class="source">
-            From <strong class="file-type">png</strong>
+            <span>From <strong class="file-type">png</strong></span>
+            <span class="dot png"></span>
           </a>
           <a href="#jpg-to-pdf" class="source">
-            From <strong class="file-type">jpg</strong>
+            <span>From <strong class="file-type">jpg</strong></span>
+            <span class="dot jpg"></span>
           </a>
         </div>
         <div class="conversion-list">
@@ -247,7 +287,8 @@
             Convert to <strong class="file-type">mp3</strong>...
           </a>
           <a href="#wav-to-mp3" class="source">
-            From <strong class="file-type">wav</strong>
+            <span>From <strong class="file-type">wav</strong></span>
+            <span class="dot wav"></span>
           </a>
         </div>
         <div class="conversion-list">
@@ -255,7 +296,8 @@
             Convert to <strong class="file-type">wav</strong>...
           </a>
           <a href="#mp3-to-wav" class="source">
-            From <strong class="file-type">mp3</strong>
+            <span>From <strong class="file-type">mp3</strong></span>
+            <span class="dot mp3"></span>
           </a>
         </div>
         <div class="conversion-list">
@@ -263,25 +305,32 @@
             Convert to <strong class="file-type">svg</strong>...
           </a>
           <a href="#png-to-svg" class="source">
-            From <strong class="file-type">png</strong>
+            <span>From <strong class="file-type">png</strong></span>
+            <span class="dot png"></span>
           </a>
           <a href="#jpg-to-svg" class="source">
-            From <strong class="file-type">jpg</strong>
+            <span>From <strong class="file-type">jpg</strong></span>
+            <span class="dot jpg"></span>
           </a>
           <a href="#gif-to-svg" class="source">
-            From <strong class="file-type">gif</strong>
+            <span>From <strong class="file-type">gif</strong></span>
+            <span class="dot gif"></span>
           </a>
           <a href="#webp-to-svg" class="source">
-            From <strong class="file-type">webp</strong>
+            <span>From <strong class="file-type">webp</strong></span>
+            <span class="dot webp"></span>
           </a>
           <a href="#woff-to-svg" class="source">
-            From <strong class="file-type">woff</strong>
+            <span>From <strong class="file-type">woff</strong></span>
+            <span class="dot woff"></span>
           </a>
           <a href="#otf-to-svg" class="source">
-            From <strong class="file-type">otf</strong>
+            <span>From <strong class="file-type">otf</strong></span>
+            <span class="dot otf"></span>
           </a>
           <a href="#ttf-to-svg" class="source">
-            From <strong class="file-type">ttf</strong>
+            <span>From <strong class="file-type">ttf</strong></span>
+            <span class="dot ttf"></span>
           </a>
         </div>
         <div class="conversion-list">
@@ -289,7 +338,12 @@
             Convert to <strong class="file-type">png</strong>...
           </a>
           <a href="#svg-to-png" class="source">
-            From <strong class="file-type">svg</strong>
+            <span>From <strong class="file-type">svg</strong></span>
+            <span class="dot svg"></span>
+          </a>
+          <a href="#gif-to-png" class="source">
+            <span>From <strong class="file-type">gif</strong></span>
+            <span class="dot gif"></span>
           </a>
         </div>
         <div class="conversion-list">
@@ -297,16 +351,20 @@
             Convert to <strong class="file-type">jpg</strong>...
           </a>
           <a href="#png-to-jpg" class="source">
-            From <strong class="file-type">png</strong>
+            <span>From <strong class="file-type">png</strong></span>
+            <span class="dot png"></span>
           </a>
           <a href="#gif-to-jpg" class="source">
-            From <strong class="file-type">gif</strong>
+            <span>From <strong class="file-type">gif</strong></span>
+            <span class="dot gif"></span>
           </a>
           <a href="#svg-to-jpg" class="source">
-            From <strong class="file-type">svg</strong>
+            <span>From <strong class="file-type">svg</strong></span>
+            <span class="dot svg"></span>
           </a>
           <a href="#webp-to-jpg" class="source">
-            From <strong class="file-type">webp</strong>
+            <span>From <strong class="file-type">webp</strong></span>
+            <span class="dot webp"></span>
           </a>
         </div>
         <div class="conversion-list">
@@ -314,24 +372,95 @@
             Convert to <strong class="file-type">webp</strong>...
           </a>
           <a href="#png-to-webp" class="source">
-            From <strong class="file-type">png</strong>
+            <span>From <strong class="file-type">png</strong></span>
+            <span class="dot png"></span>
           </a>
           <a href="#jpg-to-webp" class="source">
-            From <strong class="file-type">jpg</strong>
+            <span>From <strong class="file-type">jpg</strong></span>
+            <span class="dot jpg"></span>
           </a>
           <a href="#gif-to-webp" class="source">
-            From <strong class="file-type">gif</strong>
+            <span>From <strong class="file-type">gif</strong></span>
+            <span class="dot gif"></span>
           </a>
           <a href="#svg-to-webp" class="source">
-            From <strong class="file-type">svg</strong>
+            <span>From <strong class="file-type">svg</strong></span>
+            <span class="dot svg"></span>
           </a>
         </div>
         <div class="conversion-list">
-          <a href="#TARGET" class="target TARGET">
-            Convert to <strong class="file-type">TARGET</strong>...
+          <a href="#webm" class="target webm">
+            Convert to <strong class="file-type">webm</strong>...
           </a>
-          <a href="#SOURCE-to-TARGET" class="source">
-            From <strong class="file-type">SOURCE</strong>
+          <a href="#png-to-webm" class="source">
+            <span>From <strong class="file-type">png</strong></span>
+            <span class="dot png"></span>
+          </a>
+          <a href="#jpg-to-webm" class="source">
+            <span>From <strong class="file-type">jpg</strong></span>
+            <span class="dot jpg"></span>
+          </a>
+          <a href="#gif-to-webm" class="source">
+            <span>From <strong class="file-type">gif</strong></span>
+            <span class="dot gif"></span>
+          </a>
+          <a href="#svg-to-webm" class="source">
+            <span>From <strong class="file-type">svg</strong></span>
+            <span class="dot svg"></span>
+          </a>
+          <a href="#webp-to-webm" class="source">
+            <span>From <strong class="file-type">webp</strong></span>
+            <span class="dot webp"></span>
+          </a>
+          <a href="#mp3-to-webm" class="source">
+            <span>From <strong class="file-type">mp3</strong></span>
+            <span class="dot mp3"></span>
+          </a>
+          <a href="#wav-to-webm" class="source">
+            <span>From <strong class="file-type">wav</strong></span>
+            <span class="dot wav"></span>
+          </a>
+        </div>
+        <div class="conversion-list">
+          <a href="#html" class="target html">
+            Convert to <strong class="file-type">html</strong>...
+          </a>
+          <a href="#sb-to-html" class="source">
+            <span>From <strong class="file-type">sb</strong></span>
+            <span class="dot sb"></span>
+          </a>
+          <a href="#sb2-to-html" class="source">
+            <span>From <strong class="file-type">sb2</strong></span>
+            <span class="dot sb2"></span>
+          </a>
+          <a href="#sb3-to-html" class="source">
+            <span>From <strong class="file-type">sb3</strong></span>
+            <span class="dot sb3"></span>
+          </a>
+        </div>
+        <div class="conversion-list">
+          <a href="#txt" class="target txt">
+            Convert to <strong class="file-type">txt</strong>...
+          </a>
+          <a href="#png-to-txt" class="source">
+            <span>From <strong class="file-type">png</strong></span>
+            <span class="dot png"></span>
+          </a>
+          <a href="#jpg-to-txt" class="source">
+            <span>From <strong class="file-type">jpg</strong></span>
+            <span class="dot jpg"></span>
+          </a>
+          <a href="#gif-to-txt" class="source">
+            <span>From <strong class="file-type">gif</strong></span>
+            <span class="dot gif"></span>
+          </a>
+          <a href="#svg-to-txt" class="source">
+            <span>From <strong class="file-type">svg</strong></span>
+            <span class="dot svg"></span>
+          </a>
+          <a href="#webp-to-txt" class="source">
+            <span>From <strong class="file-type">webp</strong></span>
+            <span class="dot webp"></span>
           </a>
         </div>
       </div>
@@ -404,7 +533,7 @@
         </h3>
         <div class="instructions">
           <p>
-            Use
+            Use the
             <a
               class="link"
               href="https://sheeptester.github.io/javascripts/audio-editor/"
@@ -432,7 +561,7 @@
         </h3>
         <div class="instructions">
           <p>
-            Use
+            Use the
             <a
               class="link"
               href="https://sheeptester.github.io/javascripts/audio-editor/"
@@ -512,7 +641,7 @@
         </h3>
         <div class="instructions">
           <p>
-            Use
+            Use the
             <a
               class="link"
               href="https://sheeptester.github.io/javascripts/fontmaker.html"
@@ -648,7 +777,37 @@
               <em>after</em> setting the width and height).
             </li>
             <li>
-              Right click on the preview and save or copy it as a PNG.
+              Right click on the preview and save or copy it as a png.
+            </li>
+          </ol>
+        </div>
+      </div>
+
+      <div class="conversion">
+        <h3 class="conversion-title gif" id="gif-to-png">
+          Convert <strong class="file-type">gif</strong> to png
+        </h3>
+        <div class="instructions">
+          <p>
+            Use
+            <a
+              class="link"
+              href="https://sheeptester.github.io/words-go-here/misc/animated-painting-maker.html"
+              >Minecraft GIF to animated texture</a
+            >. This will make a PNG with each of the GIF's frames stacked on top
+            of each other.
+          </p>
+          <ol>
+            <li>Select a gif file under "GIF."</li>
+            <li>
+              Adjust the other settings as you please. This is intended for
+              creating animated textures for Minecraft, so you may have to set
+              "Width of texture" and "Height of texture" to the gif's original
+              width and height if you do not want it to be resized.
+            </li>
+            <li>
+              Right click on the image under "TEXTURE_NAME.png" and save or copy
+              it as a png.
             </li>
           </ol>
         </div>
@@ -827,41 +986,345 @@
       </div>
     </div>
 
-    <div class="section" id="TARGET">
-      <div class="heading-wrapper TARGET">
+    <div class="section" id="webm">
+      <div class="heading-wrapper webm">
         <h2 class="heading">
-          Convert to <strong class="file-type">TARGET</strong>
+          Convert to <strong class="file-type">webm</strong>
         </h2>
       </div>
 
       <div class="conversion">
-        <h3 class="conversion-title SOURCE" id="SOURCE-to-TARGET">
-          Convert <strong class="file-type">SOURCE</strong> to TARGET
+        <h3 class="conversion-title image" id="image-to-webm">
+          Convert <strong class="file-type">image</strong> to webm
         </h3>
         <div class="instructions">
           <p>
             Use
-            <a class="link" href="SOMETHING">SOMETHING</a>.
+            <a
+              class="link"
+              href="https://sheeptester.github.io/javascripts/video/shit/"
+              >OpenShit</a
+            >.
           </p>
           <ol>
-            INSTRUCTIONS
+            <li>
+              Click on the plus (+) icon in the top left corner to select an
+              image.
+            </li>
+            <li>
+              Drag the image that appears to the bottom left corner. The image
+              should appear in the timeline at the bottom as well as the preview
+              on the top right.
+            </li>
+            <li>
+              Optionally, adjust the duration of the video by resizing the image
+              track in the timeline, or add an audio file to go with the image.
+            </li>
+            <li>
+              From the menu bar on the top left, go to File > Export. Wait for
+              the video to export, then the webm should automatically download.
+            </li>
           </ol>
+        </div>
+      </div>
+
+      <div class="conversion">
+        <h3 class="conversion-title audio" id="audio-to-webm">
+          Convert <strong class="file-type">audio</strong> to webm
+        </h3>
+        <div class="instructions">
+          <p>
+            Use
+            <a
+              class="link"
+              href="https://sheeptester.github.io/javascripts/video/shit/"
+              >OpenShit</a
+            >.
+          </p>
+          <ol>
+            <li>
+              Click on the plus (+) icon in the top left corner to select an
+              audio file.
+            </li>
+            <li>
+              Drag the waveform that appears to the bottom left corner. The
+              audio should appear in the timeline at the bottom. You can press
+              the play button to preview the audio.
+            </li>
+            <li>
+              Optionally, adjust the duration of the video by resizing the audio
+              track in the timeline to trim or loop it, or add an image to go
+              with the audio.
+            </li>
+            <li>
+              From the menu bar on the top left, go to File > Export. Wait for
+              the video to export, then the webm should automatically download.
+            </li>
+          </ol>
+        </div>
+      </div>
+
+      <div class="conversion">
+        <h3 class="conversion-title png" id="png-to-webm">
+          Convert <strong class="file-type">png</strong> to webm
+        </h3>
+        <div class="instructions">
+          <p>
+            See
+            <a class="link" href="#image-to-webm">Convert image to webm</a>.
+          </p>
+        </div>
+      </div>
+
+      <div class="conversion">
+        <h3 class="conversion-title jpg" id="jpg-to-webm">
+          Convert <strong class="file-type">jpg</strong> to webm
+        </h3>
+        <div class="instructions">
+          <p>
+            See
+            <a class="link" href="#image-to-webm">Convert image to webm</a>.
+          </p>
+        </div>
+      </div>
+
+      <div class="conversion">
+        <h3 class="conversion-title gif" id="gif-to-webm">
+          Convert <strong class="file-type">gif</strong> to webm
+        </h3>
+        <div class="instructions">
+          <p>
+            See
+            <a class="link" href="#image-to-webm">Convert image to webm</a>.
+            Note that even though this produces a video, the gif will not
+            animate and will only show its first frame.
+          </p>
+        </div>
+      </div>
+
+      <div class="conversion">
+        <h3 class="conversion-title svg" id="svg-to-webm">
+          Convert <strong class="file-type">svg</strong> to webm
+        </h3>
+        <div class="instructions">
+          <p>
+            See
+            <a class="link" href="#image-to-webm">Convert image to webm</a>.
+          </p>
+        </div>
+      </div>
+
+      <div class="conversion">
+        <h3 class="conversion-title webp" id="webp-to-webm">
+          Convert <strong class="file-type">webp</strong> to webm
+        </h3>
+        <div class="instructions">
+          <p>
+            See
+            <a class="link" href="#image-to-webm">Convert image to webm</a>.
+          </p>
+        </div>
+      </div>
+
+      <div class="conversion">
+        <h3 class="conversion-title mp3" id="mp3-to-webm">
+          Convert <strong class="file-type">mp3</strong> to webm
+        </h3>
+        <div class="instructions">
+          <p>
+            See
+            <a class="link" href="#audio-to-webm">Convert audio to webm</a>.
+          </p>
+        </div>
+      </div>
+
+      <div class="conversion">
+        <h3 class="conversion-title wav" id="wav-to-webm">
+          Convert <strong class="file-type">wav</strong> to webm
+        </h3>
+        <div class="instructions">
+          <p>
+            See
+            <a class="link" href="#audio-to-webm">Convert audio to webm</a>.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="section" id="html">
+      <div class="heading-wrapper html">
+        <h2 class="heading">
+          Convert to <strong class="file-type">html</strong>
+        </h2>
+      </div>
+
+      <div class="conversion">
+        <h3 class="conversion-title Scratch" id="Scratch-to-html">
+          Convert <strong class="file-type">Scratch</strong> to html
+        </h3>
+        <div class="instructions">
+          <p>
+            Use the
+            <a class="link" href="https://sheeptester.github.io/htmlifier/"
+              >HTMLifier</a
+            >.
+          </p>
+          <ol>
+            <li>
+              Select the project file under "selecting a file on your computer."
+            </li>
+            <li>Click the "HTMLify" button.</li>
+          </ol>
+        </div>
+      </div>
+
+      <div class="conversion">
+        <h3 class="conversion-title sb" id="sb-to-html">
+          Convert <strong class="file-type">sb</strong> to html
+        </h3>
+        <div class="instructions">
+          <p>
+            See
+            <a class="link" href="#Scratch-to-html">Convert Scratch to html</a>.
+          </p>
+        </div>
+      </div>
+
+      <div class="conversion">
+        <h3 class="conversion-title sb2" id="sb2-to-html">
+          Convert <strong class="file-type">sb2</strong> to html
+        </h3>
+        <div class="instructions">
+          <p>
+            See
+            <a class="link" href="#Scratch-to-html">Convert Scratch to html</a>.
+          </p>
+        </div>
+      </div>
+
+      <div class="conversion">
+        <h3 class="conversion-title sb3" id="sb3-to-html">
+          Convert <strong class="file-type">sb3</strong> to html
+        </h3>
+        <div class="instructions">
+          <p>
+            See
+            <a class="link" href="#Scratch-to-html">Convert Scratch to html</a>.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="section" id="txt">
+      <div class="heading-wrapper txt">
+        <h2 class="heading">
+          Convert to <strong class="file-type">txt</strong>
+        </h2>
+      </div>
+
+      <div class="conversion">
+        <h3 class="conversion-title image" id="image-to-txt">
+          Convert <strong class="file-type">image</strong> to txt
+        </h3>
+        <div class="instructions">
+          <p>
+            Use
+            <a
+              class="link"
+              href="https://sheeptester.github.io/javascripts/imagetoscheme.html"
+              >Image to Scheme</a
+            >. This will convert each pixel to an ASCII character that visually
+            represents its brightness.
+          </p>
+          <ol>
+            <li>
+              Optionally, set "resolution (pixel square size to group)." By
+              default, it's set to 3, so the resulting image will be only a
+              third of the image's width and height, and each character will
+              represent the average brightness of a 3 by 3 square of pixels.
+            </li>
+            <li>Select an image under "image."</li>
+            <li>
+              Copy and paste the resulting text into a text editor, then save as
+              a txt file.
+            </li>
+          </ol>
+        </div>
+      </div>
+
+      <div class="conversion">
+        <h3 class="conversion-title png" id="png-to-txt">
+          Convert <strong class="file-type">png</strong> to txt
+        </h3>
+        <div class="instructions">
+          <p>
+            See <a href="#image-to-txt" class="link">Convert image to txt</a>.
+            Note that transparent pixels will become at signs (@).
+          </p>
+        </div>
+      </div>
+
+      <div class="conversion">
+        <h3 class="conversion-title jpg" id="jpg-to-txt">
+          Convert <strong class="file-type">jpg</strong> to txt
+        </h3>
+        <div class="instructions">
+          <p>
+            See <a href="#image-to-txt" class="link">Convert image to txt</a>.
+          </p>
+        </div>
+      </div>
+
+      <div class="conversion">
+        <h3 class="conversion-title gif" id="gif-to-txt">
+          Convert <strong class="file-type">gif</strong> to txt
+        </h3>
+        <div class="instructions">
+          <p>
+            See <a href="#image-to-txt" class="link">Convert image to txt</a>.
+            Note that transparent pixels will become at signs (@), and the
+            result will not be animated.
+          </p>
+        </div>
+      </div>
+
+      <div class="conversion">
+        <h3 class="conversion-title svg" id="svg-to-txt">
+          Convert <strong class="file-type">svg</strong> to txt
+        </h3>
+        <div class="instructions">
+          <p>
+            See <a href="#image-to-txt" class="link">Convert image to txt</a>.
+            Note that transparent pixels will become at signs (@).
+          </p>
+        </div>
+      </div>
+
+      <div class="conversion">
+        <h3 class="conversion-title webp" id="webp-to-txt">
+          Convert <strong class="file-type">webp</strong> to txt
+        </h3>
+        <div class="instructions">
+          <p>
+            See <a href="#image-to-txt" class="link">Convert image to txt</a>.
+            Note that transparent pixels will become at signs (@).
+          </p>
         </div>
       </div>
     </div>
 
     <!--
       Converters:
-      - mp3, wav -> mp3, wav https://sheeptester.github.io/javascripts/audio-editor/
-      - svg -> png https://sheeptester.github.io/words-go-here/misc/svgtopng.html
-      - image -> jpg, webp https://sheeptester.github.io/javascripts/jpg-quality.html
-      - image, audio -> webm https://sheeptester.github.io/javascripts/video/shit/
-      - image -> pdf https://sheeptester.github.io/javascripts/one-pdf.html
-      - sb2, sb3 -> html https://sheeptester.github.io/htmlifier/
-      - image -> svg https://sheeptester.github.io/javascripts/tosvg.html https://sheeptester.github.io/words-go-here/misc/imgtosvg.html
-      - image -> txt https://sheeptester.github.io/javascripts/imagetoscheme.html
-      - gif -> png https://sheeptester.github.io/words-go-here/misc/animated-painting-maker.html
-      - font -> svg (zip) https://sheeptester.github.io/javascripts/fontmaker.html
+      x mp3, wav -> mp3, wav https://sheeptester.github.io/javascripts/audio-editor/
+      x svg -> png https://sheeptester.github.io/words-go-here/misc/svgtopng.html
+      x image -> jpg, webp https://sheeptester.github.io/javascripts/jpg-quality.html
+      x image, audio -> webm https://sheeptester.github.io/javascripts/video/shit/
+      x image -> pdf https://sheeptester.github.io/javascripts/one-pdf.html
+      x sb2, sb3 -> html https://sheeptester.github.io/htmlifier/
+      x image -> svg https://sheeptester.github.io/javascripts/tosvg.html https://sheeptester.github.io/words-go-here/misc/imgtosvg.html
+      x image -> txt https://sheeptester.github.io/javascripts/imagetoscheme.html
+      x gif -> png https://sheeptester.github.io/words-go-here/misc/animated-painting-maker.html
+      x font -> svg (zip) https://sheeptester.github.io/javascripts/fontmaker.html
     -->
   </body>
 </html>
