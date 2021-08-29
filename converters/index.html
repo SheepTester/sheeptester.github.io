@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Convert files</title>
+    <meta
+      name="description"
+      content="A directory of file converters on my website."
+    />
+
+    <link rel="stylesheet" type="text/css" href="/sheep3.css" />
+    <script src="/sheep3.js" charset="utf-8"></script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Lato&family=Montserrat:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      html,
+      body {
+        height: 100%;
+      }
+      :root {
+        scroll-behavior: smooth;
+      }
+      body {
+        margin: 0;
+        font-family: 'Lato', sans-serif;
+      }
+      .section {
+        min-height: 100%;
+      }
+
+      .heading-wrapper {
+        background-image: linear-gradient(150deg, #394e5f, #152038);
+      }
+      .heading,
+      .conversion {
+        margin: 0 auto;
+        width: 100%;
+        max-width: 1000px;
+        box-sizing: border-box;
+      }
+      .heading {
+        font-family: 'Montserrat', sans-serif;
+        font-weight: normal;
+        color: white;
+        font-size: 64px;
+        padding: 40px;
+        padding-left: 240px;
+        line-height: 1;
+      }
+      .conversion {
+        display: flex;
+        align-items: flex-start;
+        margin: 40px 0;
+      }
+      .conversion-title {
+        background-image: linear-gradient(150deg, #394e5f, #152038);
+        font-family: 'Montserrat', sans-serif;
+        font-weight: normal;
+        font-size: 28px;
+        flex: none;
+        padding: 20px;
+        width: 160px;
+        margin: 0 40px;
+        box-sizing: border-box;
+        line-height: 1;
+        color: white;
+        border-radius: 10px;
+        transition: transform 0.5s;
+      }
+      .conversion-title:target {
+        transform: rotate(-2deg) scale(1.05);
+      }
+      .instructions {
+        flex: auto;
+        padding-right: 40px;
+        color: #294355;
+      }
+      .instructions p:first-child,
+      .instructions ol:first-child {
+        margin-top: 0;
+      }
+      .instructions p:last-child,
+      .instructions ol:last-child {
+        margin-bottom: 0;
+      }
+      .instructions ol li {
+        margin: 10px 0;
+      }
+      .instructions a {
+        color: #15a6fb;
+        font-weight: bold;
+        text-decoration: none;
+      }
+      .instructions a:hover {
+        text-decoration: underline;
+      }
+      @media (max-width: 800px) {
+        .heading {
+          padding: 40px 20px;
+          text-align: center;
+        }
+        .conversion {
+          flex-direction: column;
+        }
+        .conversion-title {
+          width: auto;
+          margin-left: 0;
+          border-radius: 0;
+          border-top-right-radius: 100vh;
+          border-bottom-right-radius: 100vh;
+          padding: 15px 40px;
+        }
+        .conversion-title:target {
+          transform: none;
+        }
+        .instructions {
+          padding: 20px 40px 0;
+        }
+      }
+
+      .mp3 {
+        background-image: linear-gradient(150deg, #32b6f7, #2058d4);
+      }
+      .wav {
+        background-image: linear-gradient(150deg, #8a57c0, #33008c);
+      }
+      .png {
+        background-image: linear-gradient(150deg, #e243eb, #7f0ddc);
+      }
+      .jpg {
+        background-image: linear-gradient(150deg, #ff6ca1, #e312e0);
+      }
+      .gif {
+        background-image: linear-gradient(150deg, #394e5f, #152038);
+      }
+      .svg {
+        background-image: linear-gradient(150deg, #f9c21d, #b8c006);
+      }
+      .pdf {
+        background-image: linear-gradient(150deg, #ff3838, #a9000b);
+      }
+      .sb2 {
+        background-image: linear-gradient(150deg, #394e5f, #152038);
+      }
+      .sb3 {
+        background-image: linear-gradient(150deg, #394e5f, #152038);
+      }
+      .html {
+        background-image: linear-gradient(150deg, #394e5f, #152038);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="section">
+      <div class="heading-wrapper mp3">
+        <h2 class="heading">
+          Convert to <strong class="file-type">mp3</strong>
+        </h2>
+      </div>
+      <div class="conversion">
+        <h3 class="conversion-title wav">
+          Convert <strong class="file-type">wav</strong> to mp3
+        </h3>
+        <div class="instructions">
+          <p>
+            Use
+            <a href="#wav-to-mp3">JPG Quality</a>.
+          </p>
+          <ol>
+            <li>
+              Select your image file for "image to ruin," or paste an image
+              using ctrl/cmd + V.
+            </li>
+            <li>Leave the "jpeg" dropdown as it is.</li>
+            <li>
+              Lower quality will have a smaller file size, but higher quality
+              will make the image look less corrupted. Set it to 1 to not lose
+              quality.
+            </li>
+            <li>Right click on the image that appears and save the image.</li>
+          </ol>
+        </div>
+      </div>
+      <div class="conversion">
+        <h3 class="conversion-title png">
+          Convert <strong class="file-type">png</strong> to mp3
+        </h3>
+        <div class="instructions">
+          <p>
+            Use
+            <a href="https://sheeptester.github.io/javascripts/jpg-quality.html"
+              >JPG Quality</a
+            >.
+          </p>
+          <ol>
+            <li>
+              Select your image file for "image to ruin," or paste an image
+              using ctrl/cmd + V.
+            </li>
+            <li>Leave the "jpeg" dropdown as it is.</li>
+            <li>
+              Lower quality will have a smaller file size, but higher quality
+              will make the image look less corrupted. Set it to 1 to not lose
+              quality.
+            </li>
+            <li>Right click on the image that appears and save the image.</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+    <div class="section">
+      <div class="heading-wrapper jpg">
+        <h2 class="heading">
+          Convert to <strong class="file-type">jpg</strong>
+        </h2>
+      </div>
+      <div class="conversion">
+        <h3 class="conversion-title pdf" id="wav-to-mp3">
+          Convert <strong class="file-type">pdf</strong> to mp3
+        </h3>
+        <div class="instructions">
+          <p>
+            Use
+            <a href="https://sheeptester.github.io/javascripts/jpg-quality.html"
+              >JPG Quality</a
+            >.
+          </p>
+          <ol>
+            <li>
+              Select your image file for "image to ruin," or paste an image
+              using ctrl/cmd + V.
+            </li>
+            <li>Leave the "jpeg" dropdown as it is.</li>
+            <li>
+              Lower quality will have a smaller file size, but higher quality
+              will make the image look less corrupted. Set it to 1 to not lose
+              quality.
+            </li>
+            <li>Right click on the image that appears and save the image.</li>
+          </ol>
+        </div>
+      </div>
+      <div class="conversion">
+        <h3 class="conversion-title svg">
+          Convert <strong class="file-type">svg</strong> to mp3
+        </h3>
+        <div class="instructions">
+          <p>
+            Use
+            <a href="https://sheeptester.github.io/javascripts/jpg-quality.html"
+              >JPG Quality</a
+            >.
+          </p>
+          <ol>
+            <li>
+              Select your image file for "image to ruin," or paste an image
+              using ctrl/cmd + V.
+            </li>
+            <li>Leave the "jpeg" dropdown as it is.</li>
+            <li>
+              Lower quality will have a smaller file size, but higher quality
+              will make the image look less corrupted. Set it to 1 to not lose
+              quality.
+            </li>
+            <li>Right click on the image that appears and save the image.</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

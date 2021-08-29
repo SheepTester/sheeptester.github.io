@@ -1,2 +1,2 @@
 User-agent: *
-Disallow: /living-skills/sean-yen/family.jpg
+Disallow: /living-skills/
