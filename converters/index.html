@@ -26,6 +26,7 @@
       }
       :root {
         scroll-behavior: smooth;
+        scroll-padding: 40px;
       }
       body {
         margin: 0;
@@ -120,6 +121,7 @@
           border-top-right-radius: 100vh;
           border-bottom-right-radius: 100vh;
           padding: 15px 40px;
+          box-shadow: none;
         }
         .conversion-title:target {
           transform: none;
@@ -138,7 +140,7 @@
         text-align: center;
         color: #0f1b44;
         margin: 0;
-        padding: 40px;
+        padding: 40px 10px;
         line-height: 1;
       }
       .description {
@@ -147,6 +149,7 @@
       }
       .toc {
         display: grid;
+        align-items: flex-start;
         padding: 40px;
         grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
         gap: 20px;
@@ -163,6 +166,7 @@
         text-decoration: none;
       }
       .target {
+        background-image: linear-gradient(150deg, #394e5f, #152038);
         color: white;
         font-family: 'Montserrat', sans-serif;
         border-top-left-radius: 10px;
@@ -189,7 +193,10 @@
         background-image: linear-gradient(150deg, #ff6ca1, #e312e0);
       }
       .gif {
-        background-image: linear-gradient(150deg, #394e5f, #152038);
+        background-image: linear-gradient(150deg, #73eb0a, #118633);
+      }
+      .webp {
+        background-image: linear-gradient(150deg, #408df1, #06246f);
       }
       .svg {
         background-image: linear-gradient(150deg, #f9c21d, #b8c006);
@@ -206,6 +213,14 @@
       .html {
         background-image: linear-gradient(150deg, #394e5f, #152038);
       }
+      .image {
+        background-image: linear-gradient(150deg, #f4f6f7, #dbdee5);
+        color: #ff3589;
+      }
+      .font {
+        background-image: linear-gradient(150deg, #f4f6f7, #dbdee5);
+        color: #c435ff;
+      }
     </style>
   </head>
   <body>
@@ -217,108 +232,439 @@
       </p>
       <div class="toc">
         <div class="conversion-list">
+          <a href="#pdf" class="target pdf">
+            Convert to <strong class="file-type">pdf</strong>...
+          </a>
+          <a href="#png-to-pdf" class="source">
+            From <strong class="file-type">png</strong>
+          </a>
+          <a href="#jpg-to-pdf" class="source">
+            From <strong class="file-type">jpg</strong>
+          </a>
+        </div>
+        <div class="conversion-list">
           <a href="#mp3" class="target mp3">
             Convert to <strong class="file-type">mp3</strong>...
           </a>
-          <a href="#mp3-to-wav" class="source">
+          <a href="#wav-to-mp3" class="source">
             From <strong class="file-type">wav</strong>
           </a>
+        </div>
+        <div class="conversion-list">
+          <a href="#wav" class="target wav">
+            Convert to <strong class="file-type">wav</strong>...
+          </a>
           <a href="#mp3-to-wav" class="source">
+            From <strong class="file-type">mp3</strong>
+          </a>
+        </div>
+        <div class="conversion-list">
+          <a href="#svg" class="target svg">
+            Convert to <strong class="file-type">svg</strong>...
+          </a>
+          <a href="#png-to-svg" class="source">
             From <strong class="file-type">png</strong>
+          </a>
+          <a href="#jpg-to-svg" class="source">
+            From <strong class="file-type">jpg</strong>
+          </a>
+          <a href="#gif-to-svg" class="source">
+            From <strong class="file-type">gif</strong>
+          </a>
+          <a href="#webp-to-svg" class="source">
+            From <strong class="file-type">webp</strong>
+          </a>
+          <a href="#woff-to-svg" class="source">
+            From <strong class="file-type">woff</strong>
+          </a>
+          <a href="#otf-to-svg" class="source">
+            From <strong class="file-type">otf</strong>
+          </a>
+          <a href="#ttf-to-svg" class="source">
+            From <strong class="file-type">ttf</strong>
+          </a>
+        </div>
+        <div class="conversion-list">
+          <a href="#png" class="target png">
+            Convert to <strong class="file-type">png</strong>...
+          </a>
+          <a href="#svg-to-png" class="source">
+            From <strong class="file-type">svg</strong>
           </a>
         </div>
         <div class="conversion-list">
           <a href="#jpg" class="target jpg">
             Convert to <strong class="file-type">jpg</strong>...
           </a>
-          <a href="#mp3-to-wav" class="source">
-            From <strong class="file-type">wav</strong>
-          </a>
-          <a href="#mp3-to-wav" class="source">
+          <a href="#png-to-jpg" class="source">
             From <strong class="file-type">png</strong>
+          </a>
+          <a href="#gif-to-jpg" class="source">
+            From <strong class="file-type">gif</strong>
+          </a>
+          <a href="#svg-to-jpg" class="source">
+            From <strong class="file-type">svg</strong>
+          </a>
+          <a href="#webp-to-jpg" class="source">
+            From <strong class="file-type">webp</strong>
           </a>
         </div>
         <div class="conversion-list">
-          <a href="#pdf" class="target pdf">
-            Convert to <strong class="file-type">pdf</strong>...
+          <a href="#webp" class="target webp">
+            Convert to <strong class="file-type">webp</strong>...
           </a>
-          <a href="#mp3-to-wav" class="source">
-            From <strong class="file-type">wav</strong>
-          </a>
-          <a href="#mp3-to-wav" class="source">
+          <a href="#png-to-webp" class="source">
             From <strong class="file-type">png</strong>
+          </a>
+          <a href="#jpg-to-webp" class="source">
+            From <strong class="file-type">jpg</strong>
+          </a>
+          <a href="#gif-to-webp" class="source">
+            From <strong class="file-type">gif</strong>
+          </a>
+          <a href="#svg-to-webp" class="source">
+            From <strong class="file-type">svg</strong>
+          </a>
+        </div>
+        <div class="conversion-list">
+          <a href="#TARGET" class="target TARGET">
+            Convert to <strong class="file-type">TARGET</strong>...
+          </a>
+          <a href="#SOURCE-to-TARGET" class="source">
+            From <strong class="file-type">SOURCE</strong>
           </a>
         </div>
       </div>
     </div>
-    <div class="section">
+
+    <div class="section" id="pdf">
+      <div class="heading-wrapper pdf">
+        <h2 class="heading">
+          Convert to <strong class="file-type">pdf</strong>
+        </h2>
+      </div>
+
+      <div class="conversion">
+        <h3 class="conversion-title image" id="image-to-pdf">
+          Convert <strong class="file-type">image</strong> to pdf
+        </h3>
+        <div class="instructions">
+          <p>
+            Use
+            <a
+              class="link"
+              href="https://sheeptester.github.io/javascripts/one-pdf.html"
+              >One PDF</a
+            >.
+          </p>
+          <ol>
+            <li>Click on "Add image" and select an image file.</li>
+            <li>Optionally, add additional images or text notes to the PDF.</li>
+            <li>
+              Click "Download" to download the PDF. The resulting PDF is also
+              previewed on the right.
+            </li>
+          </ol>
+        </div>
+      </div>
+
+      <div class="conversion">
+        <h3 class="conversion-title png" id="png-to-pdf">
+          Convert <strong class="file-type">png</strong> to pdf
+        </h3>
+        <div class="instructions">
+          <p>
+            See <a href="#image-to-pdf" class="link">Convert image to pdf</a>.
+          </p>
+        </div>
+      </div>
+
+      <div class="conversion">
+        <h3 class="conversion-title jpg" id="jpg-to-pdf">
+          Convert <strong class="file-type">jpg</strong> to pdf
+        </h3>
+        <div class="instructions">
+          <p>
+            See <a href="#image-to-pdf" class="link">Convert image to pdf</a>.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="section" id="mp3">
       <div class="heading-wrapper mp3">
         <h2 class="heading">
           Convert to <strong class="file-type">mp3</strong>
         </h2>
       </div>
+
       <div class="conversion">
-        <h3 class="conversion-title wav">
+        <h3 class="conversion-title wav" id="wav-to-mp3">
           Convert <strong class="file-type">wav</strong> to mp3
         </h3>
         <div class="instructions">
           <p>
             Use
-            <a class="link" href="#wav-to-mp3">JPG Quality</a>.
+            <a
+              class="link"
+              href="https://sheeptester.github.io/javascripts/audio-editor/"
+              >Audio Editor</a
+            >.
           </p>
           <ol>
-            <li>
-              Select your image file for "image to ruin," or paste an image
-              using ctrl/cmd + V.
-            </li>
-            <li>Leave the "jpeg" dropdown as it is.</li>
-            <li>
-              Lower quality will have a smaller file size, but higher quality
-              will make the image look less corrupted. Set it to 1 to not lose
-              quality.
-            </li>
-            <li>Right click on the image that appears and save the image.</li>
+            <li>Select the wav file under "Add sound."</li>
+            <li>Click "download as mp3."</li>
           </ol>
         </div>
       </div>
+    </div>
+
+    <div class="section" id="wav">
+      <div class="heading-wrapper wav">
+        <h2 class="heading">
+          Convert to <strong class="file-type">wav</strong>
+        </h2>
+      </div>
+
       <div class="conversion">
-        <h3 class="conversion-title png">
-          Convert <strong class="file-type">png</strong> to mp3
+        <h3 class="conversion-title mp3" id="mp3-to-wav">
+          Convert <strong class="file-type">mp3</strong> to wav
         </h3>
         <div class="instructions">
           <p>
             Use
             <a
               class="link"
-              href="https://sheeptester.github.io/javascripts/jpg-quality.html"
-              >JPG Quality</a
+              href="https://sheeptester.github.io/javascripts/audio-editor/"
+              >Audio Editor</a
             >.
           </p>
           <ol>
-            <li>
-              Select your image file for "image to ruin," or paste an image
-              using ctrl/cmd + V.
-            </li>
-            <li>Leave the "jpeg" dropdown as it is.</li>
-            <li>
-              Lower quality will have a smaller file size, but higher quality
-              will make the image look less corrupted. Set it to 1 to not lose
-              quality.
-            </li>
-            <li>Right click on the image that appears and save the image.</li>
+            <li>Select the mp3 file under "Add sound."</li>
+            <li>Click "download as wav."</li>
           </ol>
         </div>
       </div>
     </div>
-    <section class="section">
+
+    <div class="section" id="svg">
+      <div class="heading-wrapper svg">
+        <h2 class="heading">
+          Convert to <strong class="file-type">svg</strong>
+        </h2>
+      </div>
+
+      <div class="conversion">
+        <h3 class="conversion-title image" id="image-to-svg">
+          Convert <strong class="file-type">image</strong> to svg
+        </h3>
+        <div class="instructions">
+          <p>
+            Use
+            <a
+              class="link"
+              href="https://sheeptester.github.io/javascripts/tosvg.html"
+              >Bitmap to vector</a
+            >, made to convert Scratch bitmap costumes to vector costumes. This
+            embeds the image directly in the SVG, so there is no increase in
+            quality, but this can prevent Scratch from shrinking the costume if
+            it is too large.
+          </p>
+          <ol>
+            <li>
+              Select an image under "Images" or paste an image from your
+              clipboard.
+            </li>
+            <li>
+              A preview will instantly appear. Click "Download" to download the
+              SVG.
+            </li>
+            <li>
+              If the SVG is too large, set "Scale" to a number between 0 and 1
+              to shrink the SVG.
+            </li>
+          </ol>
+          <p>
+            Alternatively, use
+            <a
+              class="link"
+              href="https://sheeptester.github.io/words-go-here/misc/imgtosvg.html"
+              >Bitmap to SVG</a
+            >. This converts each pixel into a square, so zooming in will reveal
+            individual pixels. However, the result may be very large.
+          </p>
+          <ol>
+            <li>
+              Select an image under "image to svgify" or paste an image from
+              your clipboard.
+            </li>
+            <li>
+              A preview will instantly appear. Click "download" to download the
+              SVG.
+            </li>
+          </ol>
+        </div>
+      </div>
+
+      <div class="conversion">
+        <h3 class="conversion-title font" id="font-to-svg">
+          Convert <strong class="file-type">font</strong> to svg
+        </h3>
+        <div class="instructions">
+          <p>
+            Use
+            <a
+              class="link"
+              href="https://sheeptester.github.io/javascripts/fontmaker.html"
+              >Scratch Text Engine Maker</a
+            >
+            to convert select glyphs from a font into individual SVG files. Note
+            that the resulting SVG files only import properly in Scratch 2.0.
+          </p>
+          <ol>
+            <li>Select a font file under "Upload a font file."</li>
+            <li>
+              Optionally, adjust the other settings to your pleasing. This will
+              only create SVGs for the characters listed under "Type in the
+              characters you would like to support."
+            </li>
+            <li>
+              Click on "Click me to download a ZIP with the vector costumes!" to
+              download a ZIP file containing SVG files for each glyph.
+            </li>
+            <li>
+              If you are importing this into Scratch, use Scratch 2.0 for best
+              results, and import the text in the text box into a list.
+            </li>
+          </ol>
+        </div>
+      </div>
+
+      <div class="conversion">
+        <h3 class="conversion-title png" id="png-to-svg">
+          Convert <strong class="file-type">png</strong> to svg
+        </h3>
+        <div class="instructions">
+          <p>
+            See <a href="#image-to-svg" class="link">Convert image to svg</a>.
+          </p>
+        </div>
+      </div>
+
+      <div class="conversion">
+        <h3 class="conversion-title jpg" id="jpg-to-svg">
+          Convert <strong class="file-type">jpg</strong> to svg
+        </h3>
+        <div class="instructions">
+          <p>
+            See <a href="#image-to-svg" class="link">Convert image to svg</a>.
+          </p>
+        </div>
+      </div>
+
+      <div class="conversion">
+        <h3 class="conversion-title gif" id="gif-to-svg">
+          Convert <strong class="file-type">gif</strong> to svg
+        </h3>
+        <div class="instructions">
+          <p>
+            See <a href="#image-to-svg" class="link">Convert image to svg</a>.
+          </p>
+        </div>
+      </div>
+
+      <div class="conversion">
+        <h3 class="conversion-title webp" id="webp-to-svg">
+          Convert <strong class="file-type">webp</strong> to svg
+        </h3>
+        <div class="instructions">
+          <p>
+            See <a href="#image-to-svg" class="link">Convert image to svg</a>.
+          </p>
+        </div>
+      </div>
+
+      <div class="conversion">
+        <h3 class="conversion-title woff" id="woff-to-svg">
+          Convert <strong class="file-type">woff</strong> to svg
+        </h3>
+        <div class="instructions">
+          <p>
+            See <a href="#font-to-svg" class="link">Convert font to svg</a>.
+          </p>
+        </div>
+      </div>
+
+      <div class="conversion">
+        <h3 class="conversion-title otf" id="otf-to-svg">
+          Convert <strong class="file-type">otf</strong> to svg
+        </h3>
+        <div class="instructions">
+          <p>
+            See <a href="#font-to-svg" class="link">Convert font to svg</a>.
+          </p>
+        </div>
+      </div>
+
+      <div class="conversion">
+        <h3 class="conversion-title ttf" id="ttf-to-svg">
+          Convert <strong class="file-type">ttf</strong> to svg
+        </h3>
+        <div class="instructions">
+          <p>
+            See <a href="#font-to-svg" class="link">Convert font to svg</a>.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="section" id="png">
+      <div class="heading-wrapper png">
+        <h2 class="heading">
+          Convert to <strong class="file-type">png</strong>
+        </h2>
+      </div>
+
+      <div class="conversion">
+        <h3 class="conversion-title svg" id="svg-to-png">
+          Convert <strong class="file-type">svg</strong> to png
+        </h3>
+        <div class="instructions">
+          <p>
+            Use
+            <a
+              class="link"
+              href="https://sheeptester.github.io/words-go-here/misc/svgtopng.html"
+              >SVG to PNG</a
+            >.
+          </p>
+          <ol>
+            <li>
+              Select an svg file in the file selector at the top of the page.
+            </li>
+            <li>
+              Optionally, to resize the PNG, set the width and height and then
+              check "Custom width/height?" (the checkbox must be checked
+              <em>after</em> setting the width and height).
+            </li>
+            <li>
+              Right click on the preview and save or copy it as a PNG.
+            </li>
+          </ol>
+        </div>
+      </div>
+    </div>
+
+    <div class="section" id="jpg">
       <div class="heading-wrapper jpg">
         <h2 class="heading">
           Convert to <strong class="file-type">jpg</strong>
         </h2>
       </div>
+
       <div class="conversion">
-        <h3 class="conversion-title pdf" id="wav-to-mp3">
-          Convert <strong class="file-type">pdf</strong> to mp3
+        <h3 class="conversion-title image" id="image-to-jpg">
+          Convert <strong class="file-type">image</strong> to jpg
         </h3>
         <div class="instructions">
           <p>
@@ -326,27 +672,86 @@
             <a
               class="link"
               href="https://sheeptester.github.io/javascripts/jpg-quality.html"
-              >JPG Quality</a
+              >JPG quality</a
             >.
           </p>
           <ol>
             <li>
-              Select your image file for "image to ruin," or paste an image
-              using ctrl/cmd + V.
+              Select an image under "image to ruin" or paste an image from your
+              clipboard.
             </li>
-            <li>Leave the "jpeg" dropdown as it is.</li>
             <li>
-              Lower quality will have a smaller file size, but higher quality
-              will make the image look less corrupted. Set it to 1 to not lose
-              quality.
+              Set "quality" to your desired quality. A lower qualtiy will result
+              in more compression artifacts, but a higher quality will have a
+              larger file size. Set to 1 to not lose quality.
             </li>
-            <li>Right click on the image that appears and save the image.</li>
+            <li>
+              Right click the preview that appears and save or copy the image.
+            </li>
           </ol>
         </div>
       </div>
+
       <div class="conversion">
-        <h3 class="conversion-title svg">
-          Convert <strong class="file-type">svg</strong> to mp3
+        <h3 class="conversion-title png" id="png-to-jpg">
+          Convert <strong class="file-type">png</strong> to jpg
+        </h3>
+        <div class="instructions">
+          <p>
+            See <a href="#image-to-jpg" class="link">Convert image to jpg</a>.
+            Note that transparent pixels will become black.
+          </p>
+        </div>
+      </div>
+
+      <div class="conversion">
+        <h3 class="conversion-title gif" id="gif-to-jpg">
+          Convert <strong class="file-type">gif</strong> to jpg
+        </h3>
+        <div class="instructions">
+          <p>
+            See <a href="#image-to-jpg" class="link">Convert image to jpg</a>.
+            Note that transparent pixels will become black, and the image will
+            not be animated.
+          </p>
+        </div>
+      </div>
+
+      <div class="conversion">
+        <h3 class="conversion-title svg" id="svg-to-jpg">
+          Convert <strong class="file-type">svg</strong> to jpg
+        </h3>
+        <div class="instructions">
+          <p>
+            See <a href="#image-to-jpg" class="link">Convert image to jpg</a>.
+            Note that transparent regions will become black.
+          </p>
+        </div>
+      </div>
+
+      <div class="conversion">
+        <h3 class="conversion-title webp" id="webp-to-jpg">
+          Convert <strong class="file-type">webp</strong> to jpg
+        </h3>
+        <div class="instructions">
+          <p>
+            See <a href="#image-to-jpg" class="link">Convert image to jpg</a>.
+            Note that transparent pixels will become black.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="section" id="webp">
+      <div class="heading-wrapper webp">
+        <h2 class="heading">
+          Convert to <strong class="file-type">webp</strong>
+        </h2>
+      </div>
+
+      <div class="conversion">
+        <h3 class="conversion-title image" id="image-to-webp">
+          Convert <strong class="file-type">image</strong> to webp
         </h3>
         <div class="instructions">
           <p>
@@ -354,25 +759,97 @@
             <a
               class="link"
               href="https://sheeptester.github.io/javascripts/jpg-quality.html"
-              >JPG Quality</a
-            >.
+              >JPG quality</a
+            >. Yes, contrary to what the name suggests, this tool also can
+            produce webp files.
           </p>
           <ol>
             <li>
-              Select your image file for "image to ruin," or paste an image
-              using ctrl/cmd + V.
+              Select an image under "image to ruin" or paste an image from your
+              clipboard.
             </li>
-            <li>Leave the "jpeg" dropdown as it is.</li>
+            <li>Change the "jpeg" dropdown to "webp."</li>
             <li>
-              Lower quality will have a smaller file size, but higher quality
-              will make the image look less corrupted. Set it to 1 to not lose
-              quality.
+              Set "quality" to your desired quality. A lower qualtiy will result
+              in more compression artifacts, but a higher quality will have a
+              larger file size. Set to 1 to not lose quality.
             </li>
-            <li>Right click on the image that appears and save the image.</li>
+            <li>
+              Right click the preview that appears and save or copy the image.
+            </li>
           </ol>
         </div>
       </div>
-    </section>
+
+      <div class="conversion">
+        <h3 class="conversion-title png" id="png-to-webp">
+          Convert <strong class="file-type">png</strong> to webp
+        </h3>
+        <div class="instructions">
+          <p>
+            See <a href="#image-to-webp" class="link">Convert image to webp</a>.
+          </p>
+        </div>
+      </div>
+
+      <div class="conversion">
+        <h3 class="conversion-title jpg" id="jpg-to-webp">
+          Convert <strong class="file-type">jpg</strong> to webp
+        </h3>
+        <div class="instructions">
+          <p>
+            See <a href="#image-to-webp" class="link">Convert image to webp</a>.
+          </p>
+        </div>
+      </div>
+
+      <div class="conversion">
+        <h3 class="conversion-title gif" id="gif-to-webp">
+          Convert <strong class="file-type">gif</strong> to webp
+        </h3>
+        <div class="instructions">
+          <p>
+            See <a href="#image-to-webp" class="link">Convert image to webp</a>.
+            Note that the image will not be animated.
+          </p>
+        </div>
+      </div>
+
+      <div class="conversion">
+        <h3 class="conversion-title svg" id="svg-to-webp">
+          Convert <strong class="file-type">svg</strong> to webp
+        </h3>
+        <div class="instructions">
+          <p>
+            See <a href="#image-to-webp" class="link">Convert image to webp</a>.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="section" id="TARGET">
+      <div class="heading-wrapper TARGET">
+        <h2 class="heading">
+          Convert to <strong class="file-type">TARGET</strong>
+        </h2>
+      </div>
+
+      <div class="conversion">
+        <h3 class="conversion-title SOURCE" id="SOURCE-to-TARGET">
+          Convert <strong class="file-type">SOURCE</strong> to TARGET
+        </h3>
+        <div class="instructions">
+          <p>
+            Use
+            <a class="link" href="SOMETHING">SOMETHING</a>.
+          </p>
+          <ol>
+            INSTRUCTIONS
+          </ol>
+        </div>
+      </div>
+    </div>
+
     <!--
       Converters:
       - mp3, wav -> mp3, wav https://sheeptester.github.io/javascripts/audio-editor/
