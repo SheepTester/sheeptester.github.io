@@ -222,6 +222,9 @@
       .line-numbers {
         width: 60px;
         background-color: #11131d;
+        /* Apparently when selected this would introduce a newline at the
+        beginning, which is nonideal. */
+        user-select: none;
       }
 
       .whitespace {
@@ -236,6 +239,27 @@
       .number {
         /* From https://evanbrooks.info/syntax-highlight/v2/ */
         color: #ff9a7b;
+      }
+
+      .cursor-selection {
+        /* Needed in conjunction with .line-numbers for some reason, even though
+        it only produces one newline total. */
+        user-select: none;
+      }
+      .cursor {
+        position: absolute;
+        top: 0;
+        left: 0;
+        color: transparent;
+        white-space: pre;
+      }
+      .cursor::before {
+        content: attr(data-before);
+      }
+      .cursor::after {
+        content: attr(data-char);
+        border: 1px solid rgba(255, 255, 255, 0.8);
+        margin: -1px;
       }
 
       .buttons-wrapper {
@@ -368,6 +392,9 @@
         <div class="line-numbers"></div>
         <div class="lines" id="lines">
           <span id="text-measurer"></span>
+          <div class="cursor-selection" id="cursor-selection">
+            <div class="cursor" id="cursor"></div>
+          </div>
         </div>
         <div class="scrollbar-wrapper">
           <div class="scrollbar" id="scrollbar"></div>
@@ -407,7 +434,7 @@
         <button class="button line-btn" data-key="Escape">
           <span class="label">Cancel</span> <span class="key">(esc)</span>
         </button>
-        <button class="button line-btn primary" data-key="Enter" disabled>
+        <button class="button line-btn primary" data-key="Enter">
           <span class="label">OK</span> <span class="key">(enter)</span>
         </button>
       </div>

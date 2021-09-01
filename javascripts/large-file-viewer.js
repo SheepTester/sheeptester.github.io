@@ -16,7 +16,11 @@ const elems = {
   )),
   lineNumber: /** @type {HTMLInputElement} */ (document.getElementById(
     'line-number'
-  ))
+  )),
+  cursorSelection: /** @type {HTMLDivElement} */ (document.getElementById(
+    'cursor-selection'
+  )),
+  cursor: /** @type {HTMLDivElement} */ (document.getElementById('cursor'))
 }
 
 /**
@@ -72,6 +76,9 @@ function read (stream) {
  * @returns {number}
  */
 function findIndex (array, test, after = 0) {
+  if (after < 0) {
+    after = 0
+  }
   for (let i = after; i < array.length; i++) {
     if (test(array[i], i)) {
       return i
@@ -81,10 +88,16 @@ function findIndex (array, test, after = 0) {
 }
 
 /**
+ * @typedef {object} Row
+ * @property {number} byteIndex - Byte index of the first character in the row
+ * @property {number} charIndex - Number of characters *before* the row.
+ */
+
+/**
  * @typedef {object} Line
  * @property {number} index - Byte index of the first character in the line.
- * @property {number[]} rowIndices - Array of byte indices for the first
- * character of each row.
+ * @property {number} chars - Number of characters in the line.
+ * @property {Row[]} rows
  */
 
 /**
@@ -121,20 +134,25 @@ async function * _analyse (lineIndices, rowIndices, stream, columns) {
       } else if (bytes[i] >> 5 === 0b110) {
         sequenceState = 1
       }
+      const lastLine = lineIndices[lineIndices.length - 1]
       // I believe at this point there's either the start of a multi-byte
       // sequence, an ASCII character, or some invalid byte (which will be
       // replaced with U+FFFD).
       if (column >= columns) {
         column = 0
 
-        const lastLine = lineIndices[lineIndices.length - 1]
-        lastLine.rowIndices.push(i + index)
+        lastLine.rows.push({ charIndex: lastLine.chars, byteIndex: i + index })
         rowIndices.push(i + index)
       }
+      lastLine.chars++
       // Check for newline character for a new line.
       if (bytes[i] === 0x0a) {
         column = 0
-        lineIndices.push({ index: i + index + 1, rowIndices: [i + index + 1] })
+        lineIndices.push({
+          index: i + index + 1,
+          chars: 0,
+          rows: [{ charIndex: 0, byteIndex: i + index + 1 }]
+        })
         rowIndices.push(i + index + 1)
       }
       // Tab characters will indent to the next multiple of 4
@@ -171,7 +189,9 @@ async function * _analyse (lineIndices, rowIndices, stream, columns) {
  * @returns {Analysis}
  */
 function analyse (stream, columns) {
-  const lineIndices = [{ index: 0, rowIndices: [0] }]
+  const lineIndices = [
+    { index: 0, chars: 0, rows: [{ byteIndex: 0, charIndex: 0 }] }
+  ]
   const rowIndices = [0]
   return {
     lineIndices,
@@ -215,6 +235,8 @@ async function onBlob (blob) {
     Object.assign(document.createElement('span'), { className: 'line' })
   )
   const { lineIndices, rowIndices, generator } = analyse(blob.stream(), columns)
+
+  let cursor = { line: 0, column: 0 }
 
   /**
    * @param {HTMLSpanElement} rowElem - Should be empty.
@@ -325,6 +347,7 @@ async function onBlob (blob) {
       return false
     }
     let lastLineNum = 0
+    let lastRowIndex = 0
     const [oldRowElems, recyclableRowElems] = partition(
       rowElems,
       (_, i) =>
@@ -413,14 +436,19 @@ async function onBlob (blob) {
       const lineNum = findIndex(
         lineIndices,
         ({ index }) => rowIndices[row] < index,
-        Math.max(lastLineNum - 1, 0)
+        lastLineNum - 1
       )
       const lineNumDisplay = lineNum !== lastLineNum ? lineNum.toString() : ''
-      const isFirstRow =
-        lineIndices[lineNum - 1].rowIndices[0] === rowIndices[row]
       if (lineNum !== lastLineNum) {
-        lastLineNum = lineNum
+        lastRowIndex = 0
       }
+      const nthRowInLine = findIndex(
+        lineIndices[lineNum - 1].rows,
+        lineRow => lineRow.byteIndex === rowIndices[row],
+        lastRowIndex
+      )
+      const isFirstRow = nthRowInLine === 0
+      lastLineNum = lineNum
       domManipulations.push(() => {
         newRowElems[i].style.top = i + 'em'
         newRowElems[i].dataset.line = lineNumDisplay
@@ -440,13 +468,59 @@ async function onBlob (blob) {
     for (const change of domManipulations) {
       change()
     }
-    setScrollbar(startRow)
 
     rowElems = newRowElems
     prevStartRow = startRow
     prevRowCount = rowIndices.length - 1
 
+    setScrollbar(startRow)
+    renderLineCol()
+
     return false
+  }
+
+  function renderLineCol () {
+    // Remember, `cursor` is 0-indexed, not 1-indexed
+    let lineNum = -1
+    let visible = false
+    for (let i = 0; i < rows; i++) {
+      const row = prevStartRow + i
+      lineNum =
+        findIndex(
+          lineIndices,
+          ({ index }) => rowIndices[row] < index,
+          lineNum
+        ) - 1
+      const line = lineIndices[lineNum]
+      if (lineNum === cursor.line) {
+        const rowIndex = line.rows.findIndex(
+          lineRow => lineRow.byteIndex === rowIndices[row]
+        )
+        if (rowIndex === -1) {
+          // Probably means it hasn't been loaded yet/cursor position is out of
+          // bounds.
+          break
+        }
+        if (
+          cursor.column >= line.rows[rowIndex].charIndex &&
+          cursor.column < (line.rows[rowIndex + 1]?.charIndex ?? line.chars)
+        ) {
+          const text = [...rowElems[i].textContent]
+          const charIndex = cursor.column - line.rows[rowIndex].charIndex
+          elems.cursor.dataset.before = text.slice(0, charIndex).join('')
+          elems.cursor.dataset.char =
+            text[charIndex] === '\n' ? '¬' : text[charIndex]
+          elems.cursor.style.top = i + 'em'
+          visible = true
+          break
+        }
+      }
+    }
+    if (visible) {
+      elems.cursor.style.display = null
+    } else {
+      elems.cursor.style.display = 'none'
+    }
   }
 
   /**
@@ -483,15 +557,32 @@ async function onBlob (blob) {
     setView(currentRow)
   }
 
+  function scrollToCursorIfNeeded (forceRerender = false) {
+    const { rows: lineRows } = lineIndices[cursor.line]
+    const cursorRow = rowIndices.indexOf(
+      lineRows[
+        findIndex(lineRows, lineRow => cursor.column < lineRow.charIndex) - 1
+      ].byteIndex
+    )
+    if (cursorRow < currentRow || cursorRow >= currentRow + rows) {
+      setCurrentRow(cursorRow - Math.floor(rows / 2))
+    } else if (forceRerender) {
+      renderLineCol()
+    }
+  }
+
   /** @type {'normal' | 'visual'} */
   let mode = 'normal'
-  /** @type {number | null} */
-  let oldLineNumber = null
+  /**
+   * `null` if not previewing the line for go to.
+   * @type {number | null}
+   */
+  let originalRow = null
   const actions = {
     g: () => {
-      if (oldLineNumber === null) {
-        oldLineNumber = 0 // TODO
-        elems.lineNumber.value = '3:3' // TODO
+      if (originalRow === null) {
+        originalRow = currentRow
+        elems.lineNumber.value = `${cursor.line + 1}:${cursor.column + 1}`
         document.body.classList.add('show-go-to-line')
         elems.lineNumber.focus()
         elems.lineNumber.select()
@@ -512,15 +603,32 @@ async function onBlob (blob) {
       if (mode === 'visual') {
         mode = 'normal'
         document.body.classList.replace('show-visual-mode', 'show-normal-mode')
-      } else if (oldLineNumber !== null) {
-        oldLineNumber = null // TODO
+      } else if (originalRow !== null) {
+        setCurrentRow(originalRow)
+        originalRow = null
         document.body.classList.remove('show-go-to-line')
       }
     },
     y: () => {},
 
     Enter: () => {
-      oldLineNumber = null // TODO
+      if (originalRow === null) return
+      const [lineInput, colInput] = elems.lineNumber.value.split(':')
+      const line = +lineInput - 1
+      const col = +colInput - 1
+      if (lineIndices[line]) {
+        cursor = {
+          line,
+          column:
+            Number.isInteger(col) && col >= 0 && col < lineIndices[line].chars
+              ? col
+              : 0
+        }
+        scrollToCursorIfNeeded(true)
+      } else {
+        setCurrentRow(originalRow)
+      }
+      originalRow = null // TODO
       document.body.classList.remove('show-go-to-line')
     }
   }
@@ -542,11 +650,7 @@ async function onBlob (blob) {
         return
       }
       if (!event.shiftKey) {
-        if (event.key === 'ArrowUp') {
-          setCurrentRow(currentRow - 1)
-        } else if (event.key === 'ArrowDown') {
-          setCurrentRow(currentRow + 1)
-        } else if (event.key === 'PageUp') {
+        if (event.key === 'PageUp') {
           setCurrentRow(currentRow - rows + 1)
         } else if (event.key === 'PageDown') {
           setCurrentRow(currentRow + rows - 1)
@@ -554,12 +658,60 @@ async function onBlob (blob) {
           setCurrentRow(0)
         } else if (event.key === 'End') {
           setCurrentRow(rowIndices.length - rows - 1)
+        } else if (event.key === 'ArrowUp') {
+          if (cursor.line > 0) {
+            cursor.line--
+            if (cursor.column >= lineIndices[cursor.line].chars) {
+              cursor.column = lineIndices[cursor.line].chars - 1
+            }
+          }
+          setCurrentRow(currentRow - 1)
+        } else if (event.key === 'ArrowDown') {
+          if (cursor.line < lineIndices.length - 1) {
+            cursor.line++
+            if (cursor.column >= lineIndices[cursor.line].chars) {
+              cursor.column = lineIndices[cursor.line].chars - 1
+            }
+          }
+          setCurrentRow(currentRow + 1)
+        } else if (event.key === 'ArrowLeft') {
+          if (cursor.column === 0) {
+            if (cursor.line > 0) {
+              cursor.line--
+              cursor.column = lineIndices[cursor.line].chars - 1
+            }
+          } else {
+            cursor.column--
+          }
+          scrollToCursorIfNeeded(true)
+        } else if (event.key === 'ArrowRight') {
+          cursor.column++
+          if (cursor.column >= lineIndices[cursor.line].chars) {
+            if (cursor.line < lineIndices.length - 1) {
+              cursor.line++
+              cursor.column = 0
+            } else {
+              cursor.column--
+            }
+          }
+          scrollToCursorIfNeeded(true)
         }
       }
       if (actions[event.key]) {
         actions[event.key]()
         event.preventDefault()
       }
+    }
+  })
+  elems.lineNumber.addEventListener('input', () => {
+    const typedLine = parseInt(elems.lineNumber.value) - 1
+    if (lineIndices[typedLine]) {
+      // Preview typed line
+      setCurrentRow(
+        rowIndices.indexOf(lineIndices[typedLine].index) - Math.floor(rows / 2)
+      )
+    } else {
+      setCurrentRow(originalRow)
     }
   })
   let remainder = 0
