@@ -24,7 +24,6 @@ const ghPagesRepos = [
   'htmlblocks',
   'htmlifier',
   'intuitive-gunn-website',
-  'longer-tweets',
   'mars',
   'olamreee',
   'ovinetopia',
@@ -51,7 +50,8 @@ const ghPagesRepos = [
 ]
 
 const jekyllRepos = [
-  'blog'
+  'blog',
+  'longer-tweets',
 ]
 
 const ignore = [

@@ -17,10 +17,10 @@ const elems = {
   lineNumber: /** @type {HTMLInputElement} */ (document.getElementById(
     'line-number'
   )),
-  cursorSelection: /** @type {HTMLDivElement} */ (document.getElementById(
-    'cursor-selection'
-  )),
-  cursor: /** @type {HTMLDivElement} */ (document.getElementById('cursor'))
+  cursor: /** @type {HTMLDivElement} */ (document.getElementById('cursor')),
+  selectionStart: /** @type {HTMLDivElement} */ (document.getElementById(
+    'selection-start'
+  ))
 }
 
 /**
@@ -171,8 +171,15 @@ async function * _analyse (lineIndices, rowIndices, stream, columns) {
   // If `sequenceState` > 0, then each byte in the byte sequence at the end of
   // the file apparently becomes U+FFFD. Whatever.
 
-  // `index` should be the BLob size here.
+  // `index` should be the Blob size here.
   rowIndices.push(index)
+
+  // Delete last line if empty. (If the file ends with a newline, that'll be
+  // shown at the end of the previous line.)
+  const lastLine = lineIndices[lineIndices.length - 1]
+  if (lastLine.chars === 0) {
+    lineIndices.splice(-1, 1)
+  }
 }
 
 /**
@@ -220,6 +227,12 @@ const decoder = new TextDecoder()
 const highlightRegex = /[ \n]+|\t|-?(?:\d*\.\d+|\d+\.?)|[$_\p{ID_Start}-][$_\p{ID_Continue}-]*/gu
 
 /**
+ * @typedef {object} Cursor
+ * @property {number} line
+ * @property {number} column
+ */
+
+/**
  * @param {Blob} blob
  */
 async function onBlob (blob) {
@@ -236,13 +249,20 @@ async function onBlob (blob) {
   )
   const { lineIndices, rowIndices, generator } = analyse(blob.stream(), columns)
 
+  /** @type {Cursor} */
   let cursor = { line: 0, column: 0 }
+  /**
+   * Base position for selection
+   * @type {Cursor | null}
+   */
+  let base = null
 
   /**
    * @param {HTMLSpanElement} rowElem - Should be empty.
    * @param {string} line
    */
   function renderRow (rowElem, line, prevLine = '', nextLine = '') {
+    rowElem.dataset.content = line.replace('\n', '¬')
     let lastIndex = 0
     // https://mathiasbynens.be/notes/javascript-identifiers-es6 but also
     // allowing hyphens for CSS/Scheme etc
@@ -344,6 +364,7 @@ async function onBlob (blob) {
       return true
     }
     if (prevStartRow === startRow && prevRowCount === rowIndices.length - 1) {
+      renderLineCol()
       return false
     }
     let lastLineNum = 0
@@ -479,47 +500,82 @@ async function onBlob (blob) {
     return false
   }
 
+  /**
+   * @param {Cursor} cursor
+   * @returns {{ lineRow: Row, cursorRow: number }}
+   */
+  function getRowOfCursor (cursor) {
+    const { rows: lineRows } = lineIndices[cursor.line]
+    const lineRow =
+      lineRows[
+        findIndex(lineRows, lineRow => cursor.column < lineRow.charIndex) - 1
+      ]
+    return {
+      lineRow,
+      cursorRow: rowIndices.indexOf(lineRow.byteIndex)
+    }
+  }
+
   function renderLineCol () {
     // Remember, `cursor` is 0-indexed, not 1-indexed
-    let lineNum = -1
-    let visible = false
-    for (let i = 0; i < rows; i++) {
-      const row = prevStartRow + i
-      lineNum =
-        findIndex(
-          lineIndices,
-          ({ index }) => rowIndices[row] < index,
-          lineNum
-        ) - 1
-      const line = lineIndices[lineNum]
-      if (lineNum === cursor.line) {
-        const rowIndex = line.rows.findIndex(
-          lineRow => lineRow.byteIndex === rowIndices[row]
-        )
-        if (rowIndex === -1) {
-          // Probably means it hasn't been loaded yet/cursor position is out of
-          // bounds.
-          break
-        }
-        if (
-          cursor.column >= line.rows[rowIndex].charIndex &&
-          cursor.column < (line.rows[rowIndex + 1]?.charIndex ?? line.chars)
-        ) {
-          const text = [...rowElems[i].textContent]
-          const charIndex = cursor.column - line.rows[rowIndex].charIndex
-          elems.cursor.dataset.before = text.slice(0, charIndex).join('')
-          elems.cursor.dataset.char =
-            text[charIndex] === '\n' ? '¬' : text[charIndex]
-          elems.cursor.style.top = i + 'em'
-          visible = true
-          break
+    if (base) {
+      // Show selection
+      const [start, end] = (cursor.line === base.line
+      ? cursor.column < base.column
+      : cursor.line < base.line)
+        ? [cursor, base]
+        : [base, cursor]
+      const startRow = getRowOfCursor(start)
+      const endRow = getRowOfCursor(end)
+      for (let i = 0; i < rows; i++) {
+        const row = prevStartRow + i
+        if (row >= startRow.cursorRow + 1 && row <= endRow.cursorRow) {
+          rowElems[i].classList.add('highlighted')
+          if (row === endRow.cursorRow) {
+            rowElems[i].dataset.highlighted = [...rowElems[i].dataset.content]
+              .slice(0, end.column - endRow.lineRow.charIndex + 1)
+              .join('')
+          } else {
+            delete rowElems[i].dataset.highlighted
+          }
+        } else {
+          rowElems[i].classList.remove('highlighted')
         }
       }
-    }
-    if (visible) {
-      elems.cursor.style.display = null
+      if (
+        startRow.cursorRow >= prevStartRow &&
+        startRow.cursorRow < prevStartRow + rows
+      ) {
+        const text = [
+          ...rowElems[startRow.cursorRow - prevStartRow].dataset.content
+        ]
+        const charIndex = start.column - startRow.lineRow.charIndex
+        const endCharIndex =
+          startRow.cursorRow === endRow.cursorRow
+            ? end.column - endRow.lineRow.charIndex + 1
+            : text.length
+        elems.selectionStart.style.top =
+          startRow.cursorRow - prevStartRow + 'em'
+        elems.selectionStart.textContent = text.slice(0, charIndex).join('')
+        elems.selectionStart.dataset.content = text
+          .slice(charIndex, endCharIndex)
+          .join('')
+      }
     } else {
-      elems.cursor.style.display = 'none'
+      // Show cursor
+      const { lineRow, cursorRow } = getRowOfCursor(cursor)
+      if (cursorRow >= prevStartRow && cursorRow < prevStartRow + rows) {
+        const text = [
+          ...(rowElems[cursorRow - prevStartRow].dataset.content ?? '')
+        ]
+        const charIndex = cursor.column - lineRow.charIndex
+        elems.cursor.textContent = text.slice(0, charIndex).join('')
+        elems.cursor.dataset.char = text[charIndex]
+        elems.cursor.style.top = cursorRow - prevStartRow + 'em'
+        elems.cursor.style.display = null
+      } else {
+        elems.cursor.style.display = 'none'
+      }
     }
   }
 
@@ -557,15 +613,13 @@ async function onBlob (blob) {
     setView(currentRow)
   }
 
+  const SCROLL_PADDING = 2 // In rows
   function scrollToCursorIfNeeded (forceRerender = false) {
-    const { rows: lineRows } = lineIndices[cursor.line]
-    const cursorRow = rowIndices.indexOf(
-      lineRows[
-        findIndex(lineRows, lineRow => cursor.column < lineRow.charIndex) - 1
-      ].byteIndex
-    )
-    if (cursorRow < currentRow || cursorRow >= currentRow + rows) {
-      setCurrentRow(cursorRow - Math.floor(rows / 2))
+    const { cursorRow } = getRowOfCursor(cursor)
+    if (cursorRow < currentRow - SCROLL_PADDING) {
+      setCurrentRow(cursorRow - SCROLL_PADDING)
+    } else if (cursorRow >= currentRow + rows - SCROLL_PADDING - 1) {
+      setCurrentRow(cursorRow - rows + SCROLL_PADDING + 1)
     } else if (forceRerender) {
       renderLineCol()
     }
@@ -589,13 +643,17 @@ async function onBlob (blob) {
       }
     },
     G: () => {
-      setCurrentRow(rowIndices.length - rows - 1)
+      cursor.line = lineIndices.length - 1
+      cursor.column = lineIndices[cursor.line].chars - 1
+      scrollToCursorIfNeeded(true)
     },
     '/': () => {},
     v: () => {
       if (mode === 'normal') {
         mode = 'visual'
         document.body.classList.replace('show-normal-mode', 'show-visual-mode')
+        base = { ...cursor }
+        renderLineCol()
       }
     },
 
@@ -603,6 +661,8 @@ async function onBlob (blob) {
       if (mode === 'visual') {
         mode = 'normal'
         document.body.classList.replace('show-visual-mode', 'show-normal-mode')
+        base = null
+        renderLineCol()
       } else if (originalRow !== null) {
         setCurrentRow(originalRow)
         originalRow = null
@@ -665,7 +725,7 @@ async function onBlob (blob) {
               cursor.column = lineIndices[cursor.line].chars - 1
             }
           }
-          setCurrentRow(currentRow - 1)
+          scrollToCursorIfNeeded(true)
         } else if (event.key === 'ArrowDown') {
           if (cursor.line < lineIndices.length - 1) {
             cursor.line++
@@ -673,7 +733,7 @@ async function onBlob (blob) {
               cursor.column = lineIndices[cursor.line].chars - 1
             }
           }
-          setCurrentRow(currentRow + 1)
+          scrollToCursorIfNeeded(true)
         } else if (event.key === 'ArrowLeft') {
           if (cursor.column === 0) {
             if (cursor.line > 0) {

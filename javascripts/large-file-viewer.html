@@ -246,7 +246,8 @@
         it only produces one newline total. */
         user-select: none;
       }
-      .cursor {
+      .cursor,
+      .selection-start {
         position: absolute;
         top: 0;
         left: 0;
@@ -254,12 +255,37 @@
         white-space: pre;
       }
       .cursor::before {
-        content: attr(data-before);
+        content: '';
+        position: absolute;
+        right: 100%;
+        margin-right: 10px;
+        width: 60px;
+        display: block;
+        height: 1em;
+        background-color: #1c1e2a;
       }
       .cursor::after {
         content: attr(data-char);
         border: 1px solid rgba(255, 255, 255, 0.8);
         margin: -1px;
+      }
+      .show-visual-mode .cursor {
+        display: none;
+      }
+      .show-visual-mode .highlighted::after,
+      .show-visual-mode .selection-start::after {
+        content: attr(data-content);
+        background-color: rgba(255, 255, 255, 0.15);
+        color: transparent;
+        z-index: -1;
+      }
+      .show-visual-mode .highlighted::after {
+        position: absolute;
+        top: 0;
+        left: 0;
+      }
+      .show-visual-mode .highlighted[data-highlighted]::after {
+        content: attr(data-highlighted);
       }
 
       .buttons-wrapper {
@@ -392,8 +418,9 @@
         <div class="line-numbers"></div>
         <div class="lines" id="lines">
           <span id="text-measurer"></span>
-          <div class="cursor-selection" id="cursor-selection">
+          <div class="cursor-selection">
             <div class="cursor" id="cursor"></div>
+            <div class="selection-start" id="selection-start"></div>
           </div>
         </div>
         <div class="scrollbar-wrapper">
