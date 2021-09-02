@@ -843,6 +843,53 @@ async function onBlob (blob) {
       setCurrentRow(originalRow)
     }
   })
+  // Could maybe instead use the `selectionchange` event on document
+  elems.lines.addEventListener('click', () => {
+    const selection = document.getSelection()
+    if (!selection?.isCollapsed) return
+    const { focusNode: node, focusOffset: offset } = selection
+    const nodeElem = node instanceof Element ? node : node?.parentElement
+    if (!nodeElem) return
+    const rowElem = nodeElem.closest('.line')
+    if (!(rowElem instanceof HTMLSpanElement) || !rowElems.includes(rowElem)) {
+      return
+    }
+    const row = rowElems.indexOf(rowElem) + prevStartRow
+    const lineNum =
+      findIndex(lineIndices, line => line.index > rowIndices[row]) - 1
+    const lineRow = lineIndices[lineNum].rows.find(
+      lineRow => lineRow.byteIndex === rowIndices[row]
+    )
+    /**
+     * Number of UTF-16 values in the elements before `focusNode` in the row.
+     */
+    let charOffset = 0
+    for (const child of rowElem.childNodes) {
+      if (child === node) break
+      if (child instanceof Element) {
+        if (child.contains(node)) break
+        charOffset += child.textContent.length
+      } else if (child.nodeValue) {
+        charOffset += child.nodeValue.length
+      }
+    }
+    const columnUtf16 = charOffset + offset
+    let highSurrogates = 0
+    for (let i = 0; i < columnUtf16; i++) {
+      const code = rowElem.dataset.content.charCodeAt(i)
+      if (code >= 0xd800 && code <= 0xdbff) {
+        highSurrogates++
+      }
+    }
+    cursor = {
+      line: lineNum,
+      column: Math.min(
+        lineRow.charIndex + columnUtf16 - highSurrogates,
+        lineIndices[lineNum].chars - 1
+      )
+    }
+    renderLineCol()
+  })
   let remainder = 0
   document.addEventListener('wheel', event => {
     // Note: Pinch-to-zoom is stored in deltaY but with ctrlKey=true
