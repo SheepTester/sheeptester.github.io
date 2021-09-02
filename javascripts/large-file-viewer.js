@@ -669,7 +669,76 @@ async function onBlob (blob) {
         document.body.classList.remove('show-go-to-line')
       }
     },
-    y: () => {},
+    y: async () => {
+      if (base) {
+        const [start, end] = (cursor.line === base.line
+        ? cursor.column < base.column
+        : cursor.line < base.line)
+          ? [cursor, base]
+          : [base, cursor]
+
+        const { rows: startLineRows } = lineIndices[start.line]
+        const startLineRow =
+          startLineRows[
+            findIndex(
+              startLineRows,
+              lineRow => start.column < lineRow.charIndex
+            ) - 1
+          ]
+        let charsAtBeginningOfRowToRemove =
+          start.column - (startLineRow.charIndex - startLineRows[0].charIndex)
+        const { rows: endLineRows, chars } = lineIndices[end.line]
+        const afterEndLineRowIndex = findIndex(
+          endLineRows,
+          lineRow => end.column < lineRow.charIndex
+        )
+        let charsAtEndOfRowToRemove =
+          (afterEndLineRowIndex < endLineRows.length
+            ? endLineRows[afterEndLineRowIndex].charIndex -
+              endLineRows[0].charIndex
+            : chars) -
+          1 -
+          end.column
+
+        const lines = await blob
+          .slice(
+            startLineRow.byteIndex,
+            endLineRows[afterEndLineRowIndex]?.byteIndex ??
+              lineIndices[end.line + 1]?.index
+          )
+          .text()
+        for (let i = 0; i < charsAtBeginningOfRowToRemove; i++) {
+          const utf16Value = lines.charCodeAt(i)
+          if (utf16Value >= 0xd800 && utf16Value <= 0xdbff) {
+            charsAtBeginningOfRowToRemove++
+            i++
+          }
+        }
+        for (let i = 0; i < charsAtEndOfRowToRemove; i++) {
+          const utf16Value = lines.charCodeAt(lines.length - 1 - i)
+          if (utf16Value >= 0xdc00 && utf16Value <= 0xdfff) {
+            charsAtEndOfRowToRemove++
+            i++
+          }
+        }
+        await navigator.clipboard.writeText(
+          lines.slice(
+            charsAtBeginningOfRowToRemove,
+            charsAtEndOfRowToRemove === 0 ? undefined : -charsAtEndOfRowToRemove
+          )
+        )
+      } else {
+        // Copy line that cursor is on
+        await navigator.clipboard.writeText(
+          await blob
+            .slice(
+              lineIndices[cursor.line].index,
+              lineIndices[cursor.line + 1]?.index
+            )
+            .text()
+        )
+      }
+    },
 
     Enter: () => {
       if (originalRow === null) return
