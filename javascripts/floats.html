@@ -27,7 +27,7 @@
         align-items: center;
         flex-direction: column;
         text-align: center;
-        font-family: 'Oswald', sans-serif;
+        font-family: 'Nunito', sans-serif;
         background-color: #201f21;
         color: #d2d0d4;
       }
@@ -311,6 +311,8 @@
 
         if (window.location.hash) {
           view.deserialize(window.location.hash.slice(1))
+        } else {
+          view.float = Math.PI
         }
 
         preview.addEventListener('click', e => {
