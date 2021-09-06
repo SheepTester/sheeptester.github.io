@@ -20,6 +20,9 @@ const elems = {
   cursor: /** @type {HTMLDivElement} */ (document.getElementById('cursor')),
   selectionStart: /** @type {HTMLDivElement} */ (document.getElementById(
     'selection-start'
+  )),
+  searchQuery: /** @type {HTMLInputElement} */ (document.getElementById(
+    'search-query'
   ))
 }
 
@@ -45,8 +48,9 @@ function partition (array, test) {
 }
 
 /**
- * @param {ReadableStream<Uint8Array>} stream
- * @returns {AsyncIterable<Uint8Array>}
+ * @template T
+ * @param {ReadableStream<T>} stream
+ * @returns {AsyncIterable<T>}
  */
 function read (stream) {
   const reader = stream.getReader()
@@ -222,6 +226,18 @@ function getSize () {
   }
 }
 
+/**
+ *
+ * @param {ReadableStream<Uint8Array>} byteStream
+ * @param {RegExp} query
+ */
+async function searchStream (byteStream, query) {
+  const stream = byteStream.pipeThrough(new TextDecoderStream())
+  for await (const chunk of read(stream)) {
+    console.log(chunk.length)
+  }
+}
+
 const decoder = new TextDecoder()
 
 const highlightRegex = /[ \n]+|\t|-?(?:\d*\.\d+|\d+\.?)|[$_\p{ID_Start}-][$_\p{ID_Continue}-]*/gu
@@ -233,7 +249,16 @@ const highlightRegex = /[ \n]+|\t|-?(?:\d*\.\d+|\d+\.?)|[$_\p{ID_Start}-][$_\p{I
  */
 
 /**
- * @param {Blob} blob
+ * Hack because TypeScript's type definition for `Blob` in dom.d.ts conflicts
+ * with that in consumers.d.ts because their `stream` methods return different
+ * and incompatible `ReadableStream`s >_<.
+ * @typedef {object} IBlob
+ * @property {function(): ReadableStream<Uint8Array>} stream
+ * @property {function(number, number): Blob} slice
+ */
+
+/**
+ * @param {IBlob} blob
  */
 async function onBlob (blob) {
   document.body.classList.remove('show-view-select-source')
@@ -625,6 +650,73 @@ async function onBlob (blob) {
     }
   }
 
+  async function getSelection () {
+    if (base) {
+      const [start, end] = (cursor.line === base.line
+      ? cursor.column < base.column
+      : cursor.line < base.line)
+        ? [cursor, base]
+        : [base, cursor]
+
+      const { rows: startLineRows } = lineIndices[start.line]
+      const startLineRow =
+        startLineRows[
+          findIndex(
+            startLineRows,
+            lineRow => start.column < lineRow.charIndex
+          ) - 1
+        ]
+      let charsAtBeginningOfRowToRemove =
+        start.column - (startLineRow.charIndex - startLineRows[0].charIndex)
+      const { rows: endLineRows, chars } = lineIndices[end.line]
+      const afterEndLineRowIndex = findIndex(
+        endLineRows,
+        lineRow => end.column < lineRow.charIndex
+      )
+      let charsAtEndOfRowToRemove =
+        (afterEndLineRowIndex < endLineRows.length
+          ? endLineRows[afterEndLineRowIndex].charIndex -
+            endLineRows[0].charIndex
+          : chars) -
+        1 -
+        end.column
+
+      const lines = await blob
+        .slice(
+          startLineRow.byteIndex,
+          endLineRows[afterEndLineRowIndex]?.byteIndex ??
+            lineIndices[end.line + 1]?.index
+        )
+        .text()
+      for (let i = 0; i < charsAtBeginningOfRowToRemove; i++) {
+        const utf16Value = lines.charCodeAt(i)
+        if (utf16Value >= 0xd800 && utf16Value <= 0xdbff) {
+          charsAtBeginningOfRowToRemove++
+          i++
+        }
+      }
+      for (let i = 0; i < charsAtEndOfRowToRemove; i++) {
+        const utf16Value = lines.charCodeAt(lines.length - 1 - i)
+        if (utf16Value >= 0xdc00 && utf16Value <= 0xdfff) {
+          charsAtEndOfRowToRemove++
+          i++
+        }
+      }
+      return lines.slice(
+        charsAtBeginningOfRowToRemove,
+        charsAtEndOfRowToRemove === 0 ? undefined : -charsAtEndOfRowToRemove
+      )
+    } else {
+      // Copy line that cursor is on
+      return await blob
+        .slice(
+          lineIndices[cursor.line].index,
+          lineIndices[cursor.line + 1]?.index
+        )
+        .text()
+    }
+  }
+
   /** @type {'normal' | 'visual'} */
   let mode = 'normal'
   /**
@@ -632,9 +724,10 @@ async function onBlob (blob) {
    * @type {number | null}
    */
   let originalRow = null
+  let searching = false
   const actions = {
     g: () => {
-      if (originalRow === null) {
+      if (!searching && originalRow === null) {
         originalRow = currentRow
         elems.lineNumber.value = `${cursor.line + 1}:${cursor.column + 1}`
         document.body.classList.add('show-go-to-line')
@@ -647,7 +740,15 @@ async function onBlob (blob) {
       cursor.column = lineIndices[cursor.line].chars - 1
       scrollToCursorIfNeeded(true)
     },
-    '/': () => {},
+    '/': async () => {
+      if (!searching && originalRow === null) {
+        searching = true
+        elems.searchQuery.value = base ? await getSelection() : ''
+        document.body.classList.add('show-search')
+        elems.searchQuery.focus()
+        elems.searchQuery.select()
+      }
+    },
     v: () => {
       if (mode === 'normal') {
         mode = 'visual'
@@ -658,86 +759,22 @@ async function onBlob (blob) {
     },
 
     Escape: () => {
-      if (mode === 'visual') {
+      if (originalRow !== null) {
+        setCurrentRow(originalRow)
+        originalRow = null
+        document.body.classList.remove('show-go-to-line')
+      } else if (searching) {
+        searching = false
+        document.body.classList.remove('show-search')
+      } else if (mode === 'visual') {
         mode = 'normal'
         document.body.classList.replace('show-visual-mode', 'show-normal-mode')
         base = null
         renderLineCol()
-      } else if (originalRow !== null) {
-        setCurrentRow(originalRow)
-        originalRow = null
-        document.body.classList.remove('show-go-to-line')
       }
     },
     y: async () => {
-      if (base) {
-        const [start, end] = (cursor.line === base.line
-        ? cursor.column < base.column
-        : cursor.line < base.line)
-          ? [cursor, base]
-          : [base, cursor]
-
-        const { rows: startLineRows } = lineIndices[start.line]
-        const startLineRow =
-          startLineRows[
-            findIndex(
-              startLineRows,
-              lineRow => start.column < lineRow.charIndex
-            ) - 1
-          ]
-        let charsAtBeginningOfRowToRemove =
-          start.column - (startLineRow.charIndex - startLineRows[0].charIndex)
-        const { rows: endLineRows, chars } = lineIndices[end.line]
-        const afterEndLineRowIndex = findIndex(
-          endLineRows,
-          lineRow => end.column < lineRow.charIndex
-        )
-        let charsAtEndOfRowToRemove =
-          (afterEndLineRowIndex < endLineRows.length
-            ? endLineRows[afterEndLineRowIndex].charIndex -
-              endLineRows[0].charIndex
-            : chars) -
-          1 -
-          end.column
-
-        const lines = await blob
-          .slice(
-            startLineRow.byteIndex,
-            endLineRows[afterEndLineRowIndex]?.byteIndex ??
-              lineIndices[end.line + 1]?.index
-          )
-          .text()
-        for (let i = 0; i < charsAtBeginningOfRowToRemove; i++) {
-          const utf16Value = lines.charCodeAt(i)
-          if (utf16Value >= 0xd800 && utf16Value <= 0xdbff) {
-            charsAtBeginningOfRowToRemove++
-            i++
-          }
-        }
-        for (let i = 0; i < charsAtEndOfRowToRemove; i++) {
-          const utf16Value = lines.charCodeAt(lines.length - 1 - i)
-          if (utf16Value >= 0xdc00 && utf16Value <= 0xdfff) {
-            charsAtEndOfRowToRemove++
-            i++
-          }
-        }
-        await navigator.clipboard.writeText(
-          lines.slice(
-            charsAtBeginningOfRowToRemove,
-            charsAtEndOfRowToRemove === 0 ? undefined : -charsAtEndOfRowToRemove
-          )
-        )
-      } else {
-        // Copy line that cursor is on
-        await navigator.clipboard.writeText(
-          await blob
-            .slice(
-              lineIndices[cursor.line].index,
-              lineIndices[cursor.line + 1]?.index
-            )
-            .text()
-        )
-      }
+      await navigator.clipboard.writeText(await getSelection())
     },
 
     Enter: () => {
@@ -774,7 +811,9 @@ async function onBlob (blob) {
         event.key !== 'Escape' &&
         event.key !== 'Enter' &&
         event.target instanceof HTMLElement &&
-        (event.target.tagName === 'INPUT' || event.target.tagName === 'SELECT')
+        (event.target.tagName === 'INPUT' ||
+          event.target.tagName === 'TEXTAREA' ||
+          event.target.tagName === 'SELECT')
       ) {
         return
       }

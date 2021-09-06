@@ -112,9 +112,14 @@
         padding: 0 15px;
         height: 32px;
         box-sizing: border-box;
-        border-radius: 50px;
+        border-radius: 16px;
         width: 100%;
         border: 1px solid rgba(255, 255, 255, 0.1);
+        overflow: hidden;
+        resize: none;
+      }
+      textarea.input {
+        padding-top: 7px;
       }
       .input:focus {
         outline: none;
@@ -370,7 +375,8 @@
       }
       .show-cors-error .cors-error,
       .show-offline-error .offline-error,
-      .show-go-to-line .go-to-line {
+      .show-go-to-line .go-to-line,
+      .show-search .search {
         display: block;
       }
     </style>
@@ -465,6 +471,24 @@
         </button>
         <button class="button line-btn primary" data-key="Enter">
           <span class="label">OK</span> <span class="key">(enter)</span>
+        </button>
+      </div>
+    </div>
+    <div class="modal search hidden">
+      <p class="modal-text">
+        <strong>Search</strong>
+      </p>
+      <!-- `name` attribute for separate autofill namespace (maps.ucsd.edu uses
+      the same ID 😳) -->
+      <textarea
+        type="text"
+        class="input"
+        id="search-query"
+        name="lfv-search-query"
+      ></textarea>
+      <div class="button-row">
+        <button class="button line-btn" data-key="Escape">
+          <span class="label">Close</span> <span class="key">(esc)</span>
         </button>
       </div>
     </div>
