@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Remove font and colours from copied text</title>
+    <meta
+      name="description"
+      content="Removes some formatting from text while keeping things like lists, italics, links, etc. so it can be pasted into a Google Doc with your own styling."
+    />
+
+    <link rel="stylesheet" type="text/css" href="/sheep3.css" />
+    <script src="/sheep3.js" charset="utf-8"></script>
+
+    <style>
+      html,
+      body {
+        height: 100%;
+      }
+      body {
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+      }
+      .info {
+        flex: none;
+      }
+      .textareas {
+        display: flex;
+      }
+      .textareas,
+      #input,
+      #output,
+      #preview {
+        flex: 1 0 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="info">
+      <p>
+        Sometimes, I want to copy text from one site to a Google Doc or email
+        and keep the existing default text formatting that I already have,
+        rather than the text and background colour and font styles from the site
+        I copied from. I could use <kbd>ctrl + shift + V</kbd> to paste without
+        formatting, or <kbd>ctrl + \</kbd> to clear all formatting from selected
+        text. However, I also want to keep some formatting, such as
+        <em>italicized text</em>.
+      </p>
+      <p>
+        If you paste text with formatting into a text box, it will automatically
+        clean the formatting in your clipboard. (If it doesn't automatically
+        copy a clean version, try clicking
+        <button id="copy">Copy</button>.)
+      </p>
+      <p>
+        The left text box shows the HTML that was in your clipboard, and the
+        right side shows the cleaned HTML.
+      </p>
+    </div>
+    <div class="textareas">
+      <textarea
+        id="input"
+        placeholder="Paste text here"
+        autofocus
+        readonly
+      ></textarea>
+      <textarea id="output" readonly></textarea>
+    </div>
+    <iframe id="preview" sandbox="allow-same-origin"></iframe>
+    <script>
+      if (!('ClipboardItem' in window)) {
+        alert(
+          "Your browser doesn't support copying HTML. This won't work very well."
+        )
+      }
+      const input = document.getElementById('input')
+      const output = document.getElementById('output')
+      const preview = document.getElementById('preview')
+      const parser = new DOMParser()
+      // const blockList = [
+      //   'color',
+      //   'background-color',
+      //   'font-family',
+      //   'font-size',
+      //   'line-height'
+      // ]
+      const allowList = [
+        'font-style',
+        'font-weight',
+        'text-transform',
+        'text-decoration'
+      ]
+      let item
+      document.addEventListener('paste', e => {
+        const html = e.clipboardData.getData('text/html')
+        if (html) {
+          input.value = html
+          const doc = parser.parseFromString(html, 'text/html')
+          for (const element of doc.querySelectorAll('[style]')) {
+            /** @type {HTMLElement} */
+            const elem = element
+            for (const prop of [...elem.style]) {
+              if (!allowList.includes(prop)) {
+                elem.style[prop] = null
+              }
+            }
+          }
+          for (const element of doc.querySelectorAll('[class]')) {
+            element.removeAttribute('class')
+          }
+          output.value = doc.documentElement.outerHTML
+          preview.contentDocument.documentElement.innerHTML = output.value
+          const items = {}
+          for (const type of e.clipboardData.types) {
+            if (type !== 'text/html' && type.startsWith('text/')) {
+              items[type] = new Blob([e.clipboardData.getData(type)], { type })
+            }
+          }
+          items['text/html'] = new Blob([output.value], { type: 'text/html' })
+          item = new ClipboardItem(items)
+          navigator.clipboard.write([item]).catch(error => {
+            alert(
+              `I wasn't able to copy the cleaned HTML. Maybe try pressing the "Copy" button?\n\n${error?.stack ??
+                error}`
+            )
+          })
+        } else {
+          input.value = ''
+          output.value = ''
+        }
+      })
+      document.getElementById('copy').addEventListener('click', () => {
+        navigator.clipboard.write([item]).catch(error => {
+          alert(
+            `I wasn't able to copy the cleaned HTML. Oh well.\n\n${error?.stack ??
+              error}`
+          )
+        })
+      })
+    </script>
+  </body>
+</html>
