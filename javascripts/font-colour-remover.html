@@ -93,6 +93,13 @@
         'text-decoration'
       ]
       let item
+      function sadError (error) {
+        console.dir(error)
+        alert(
+          `I wasn't able to copy the cleaned HTML. Maybe try pressing the "Copy" button?\n\n${error?.stack ??
+            error}`
+        )
+      }
       document.addEventListener('paste', e => {
         const html = e.clipboardData.getData('text/html')
         if (html) {
@@ -110,6 +117,9 @@
           for (const element of doc.querySelectorAll('[class]')) {
             element.removeAttribute('class')
           }
+          for (const element of [...doc.getElementsByTagName('style')]) {
+            element.remove()
+          }
           output.value = doc.documentElement.outerHTML
           preview.contentDocument.documentElement.innerHTML = output.value
           const items = {}
@@ -121,10 +131,18 @@
           items['text/html'] = new Blob([output.value], { type: 'text/html' })
           item = new ClipboardItem(items)
           navigator.clipboard.write([item]).catch(error => {
-            alert(
-              `I wasn't able to copy the cleaned HTML. Maybe try pressing the "Copy" button?\n\n${error?.stack ??
-                error}`
-            )
+            if (error.name === 'NotAllowedError') {
+              const mime = error.message.match(/text\/\S+/)[0]
+              if (mime in items) {
+                delete items[mime]
+                item = new ClipboardItem(items)
+                alert(
+                  'Your browser didn\'t let me copy something for you. Can you click "Copy" again?'
+                )
+                return
+              }
+            }
+            sadError(error)
           })
         } else {
           input.value = ''
@@ -133,10 +151,7 @@
       })
       document.getElementById('copy').addEventListener('click', () => {
         navigator.clipboard.write([item]).catch(error => {
-          alert(
-            `I wasn't able to copy the cleaned HTML. Oh well.\n\n${error?.stack ??
-              error}`
-          )
+          sadError(error)
         })
       })
     </script>
