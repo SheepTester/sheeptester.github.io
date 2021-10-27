@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Résumé</title>
+    <meta name="description" content="Ahhh" />
+
+    <style>
+      html,
+      body {
+        height: 100%;
+      }
+      body {
+        display: flex;
+        flex-direction: column;
+        margin: 0;
+        page-break-inside: avoid;
+      }
+      .flex {
+        flex: auto;
+      }
+
+      .inline-info {
+        display: flex;
+      }
+    </style>
+  </head>
+  <body>
+    <section class="section">
+      <h2 class="header">Projects</h2>
+
+      <div class="inline-info project-info">
+        <h3 class="project-name">Personal website</h3>
+        <a href="https://sheeptester.github.io/" class="link" title="Link">
+          Link
+        </a>
+        <a
+          href="https://github.com/SheepTester/sheeptester.github.io"
+          class="github"
+          title="Github"
+        >
+          Github
+        </a>
+      </div>
+      <p class="project-desc">
+        A portfolio consisting of 600 web pages I’ve made since eighth grade
+        with varying purposes and complexity. Received over 27k clicks from
+        Google Search in the last 3 months. Includes:
+      </p>
+      <div class="subprojects">
+        <div class="subproject">
+          <div class="inline-info project-info">
+            <h4 class="project-name">HTMLifier</h4>
+            <a
+              href="https://sheeptester.github.io/htmlifier/"
+              class="link"
+              title="Link"
+            >
+              Link
+            </a>
+            <a
+              href="https://github.com/SheepTester/htmlifier/"
+              class="github"
+              title="Github"
+            >
+              Github
+            </a>
+          </div>
+          <p class="project-desc">
+            Packages projects made with
+            <a href="https://scratch.mit.edu/" class="ext-link">Scratch</a>.
+            Received 18k clicks in the past quarter.
+          </p>
+        </div>
+
+        <div class="subproject">
+          <div class="inline-info project-info">
+            <h4 class="project-name">Discord webhook sender</h4>
+            <a
+              href="https://sheeptester.github.io/javascripts/webhook-sender.html"
+              class="link"
+              title="Link"
+            >
+              Link
+            </a>
+            <a
+              href="https://github.com/SheepTester/sheeptester.github.io/blob/master/javascripts/webhook-sender.html"
+              class="github"
+              title="Github"
+            >
+              Github
+            </a>
+          </div>
+          <p class="project-desc">
+            A WYSIWYG editor for creating announcements on . Received 5.5k
+            clicks in the past quarter.
+          </p>
+        </div>
+
+        <div class="subproject">
+          <div class="inline-info project-info">
+            <h4 class="project-name">E羊icques</h4>
+            <a
+              href="https://sheeptester.github.io/scratch-gui/"
+              class="link"
+              title="Link"
+            >
+              Link
+            </a>
+            <a
+              href="https://github.com/SheepTester/scratch-gui"
+              class="github"
+              title="Github"
+            >
+              Github
+            </a>
+          </div>
+          <p class="project-desc">
+            A modification of
+            <a href="https://scratch.mit.edu/" class="ext-link">Scratch</a>
+            allowing for more customizability. Allowed me to learn React on my
+            own.
+          </p>
+        </div>
+      </div>
+
+      <div class="inline-info project-info">
+        <h3 class="project-name">Unofficial Gunn Web App</h3>
+        <a
+          href="https://orbiit.github.io/gunn-web-app/"
+          class="link"
+          title="Link"
+        >
+          Link
+        </a>
+        <a
+          href="https://github.com/Orbiit/gunn-web-app"
+          class="github"
+          title="Github"
+        >
+          Github
+        </a>
+      </div>
+      <p class="project-desc">
+        A web app that displayed the schedule and provided other utilities for
+        my high school used by students, parents, and staff. Received nearly 1k
+        clicks per month from Google with up to 736 concurrent users.
+      </p>
+    </section>
+
+    <div class="flex"></div>
+
+    <section class="section">
+      <h2 class="header">Education</h2>
+
+      <article class="school">
+        <div class="inline-info school-info">
+          <h3 class="school-name">University of California, San Diego</h3>
+          <p class="school-city">La Jolla, CA</p>
+          <p class="school-gpa">N/A</p>
+          <p class="school-date">Sept. 2021&ndash;June 2025*</p>
+        </div>
+        <p class="courses">
+          <span class="courses">Courses</span>:
+          <span class="course-name">CSE 11</span>
+          <span class="course-desc">(ongoing)</span>
+        </p>
+      </article>
+
+      <article class="school">
+        <div class="inline-info school-info">
+          <h3 class="school-name">Henry M. Gunn High School</h3>
+          <p class="school-city">Palo Alto, CA</p>
+          <p class="school-gpa">4.0 (weighted: 4.3056)</p>
+          <p class="school-date">Aug. 2017&ndash;June 2021</p>
+        </div>
+        <p class="coursees">
+          <span class="courses">Courses</span>:
+          <span class="course-name">FOOP</span>
+          <span class="course-desc">
+            (introductory recursion, higher order functions) </span
+          >,
+          <span class="course-name">AP CS A</span>
+          <span class="course-desc">
+            (iterative recursion, linked lists, message passing, environments,
+            big O notation, sorting algorithms)
+          </span>
+        </p>
+      </article>
+    </section>
+
+    <div class="flex"></div>
+
+    <section class="section">
+      <h2 class="header">Skills</h2>
+
+      <p class="skills">
+        <!-- general skills -->
+        web scraping &middot; full-stack web development &middot;
+        <!-- languages -->
+        HTML/CSS &middot; JavaScript &middot; TypeScript &middot; Rust &middot;
+        Java &middot; Racket &middot; Python &middot;
+        <!-- libraries -->
+        React &middot; Webpack &middot; Rollup &middot; jQuery &middot; Express
+        &middot;
+        <!-- runtimes -->
+        Node &middot; Deno &middot;
+        <!-- human languages -->
+        Spanish
+      </p>
+    </section>
+  </body>
+</html>
