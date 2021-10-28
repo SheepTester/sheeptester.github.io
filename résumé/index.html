@@ -7,6 +7,14 @@
     <title>Résumé</title>
     <meta name="description" content="Ahhh" />
 
+    <!-- https://fonts.google.com/share?selection.family=Montserrat:wght@700;900%7COpen%20Sans:ital@0;1%7CRaleway:wght@900 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&family=Open+Sans:ital@0;1&family=Raleway:wght@900&display=swap"
+      rel="stylesheet"
+    />
+
     <style>
       html,
       body {
@@ -17,13 +25,58 @@
         flex-direction: column;
         margin: 0;
         page-break-inside: avoid;
+        font-family: 'Open Sans', sans-serif;
       }
       .flex {
         flex: auto;
       }
 
+      .header {
+        font-family: 'Raleway', sans-serif;
+        font-weight: 900;
+        text-transform: uppercase;
+        font-size: 14px;
+        letter-spacing: 1px;
+        margin: 0;
+      }
+
       .inline-info {
         display: flex;
+        align-items: center;
+        margin-top: 20px;
+        white-space: nowrap;
+      }
+      .inline-info p {
+        margin-top: 0;
+        margin-bottom: 0;
+      }
+      .name {
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 900;
+        margin: 0;
+        font-size: 18px;
+      }
+      .school-city {
+        font-style: italic;
+        margin-left: 10px;
+      }
+      .school-gpa {
+        margin-left: auto;
+      }
+      .label {
+        font-family: 'Raleway', sans-serif;
+        font-weight: 900;
+        font-size: 12px;
+        text-transform: uppercase;
+        color: rgba(0, 0, 0, 0.5);
+      }
+      .school-date {
+        width: 190px;
+        text-align: right;
+      }
+      .desc {
+        margin: 0;
+        margin-top: 10px;
       }
     </style>
   </head>
@@ -32,7 +85,7 @@
       <h2 class="header">Projects</h2>
 
       <div class="inline-info project-info">
-        <h3 class="project-name">Personal website</h3>
+        <h3 class="name project-name">Personal website</h3>
         <a href="https://sheeptester.github.io/" class="link" title="Link">
           Link
         </a>
@@ -44,7 +97,7 @@
           Github
         </a>
       </div>
-      <p class="project-desc">
+      <p class="desc project-desc">
         A portfolio consisting of 600 web pages I’ve made since eighth grade
         with varying purposes and complexity. Received over 27k clicks from
         Google Search in the last 3 months. Includes:
@@ -52,7 +105,7 @@
       <div class="subprojects">
         <div class="subproject">
           <div class="inline-info project-info">
-            <h4 class="project-name">HTMLifier</h4>
+            <h4 class="name project-name">HTMLifier</h4>
             <a
               href="https://sheeptester.github.io/htmlifier/"
               class="link"
@@ -68,7 +121,7 @@
               Github
             </a>
           </div>
-          <p class="project-desc">
+          <p class="desc project-desc">
             Packages projects made with
             <a href="https://scratch.mit.edu/" class="ext-link">Scratch</a>.
             Received 18k clicks in the past quarter.
@@ -77,7 +130,7 @@
 
         <div class="subproject">
           <div class="inline-info project-info">
-            <h4 class="project-name">Discord webhook sender</h4>
+            <h4 class="name project-name">Discord webhook sender</h4>
             <a
               href="https://sheeptester.github.io/javascripts/webhook-sender.html"
               class="link"
@@ -93,15 +146,16 @@
               Github
             </a>
           </div>
-          <p class="project-desc">
-            A WYSIWYG editor for creating announcements on . Received 5.5k
-            clicks in the past quarter.
+          <p class="desc project-desc">
+            A WYSIWYG editor for creating announcements on
+            <a href="https://discord.com/" class="ext-link">Discord</a>.
+            Received 5.5k clicks in the past quarter.
           </p>
         </div>
 
         <div class="subproject">
           <div class="inline-info project-info">
-            <h4 class="project-name">E羊icques</h4>
+            <h4 class="name project-name">E羊icques</h4>
             <a
               href="https://sheeptester.github.io/scratch-gui/"
               class="link"
@@ -117,7 +171,7 @@
               Github
             </a>
           </div>
-          <p class="project-desc">
+          <p class="desc project-desc">
             A modification of
             <a href="https://scratch.mit.edu/" class="ext-link">Scratch</a>
             allowing for more customizability. Allowed me to learn React on my
@@ -127,7 +181,7 @@
       </div>
 
       <div class="inline-info project-info">
-        <h3 class="project-name">Unofficial Gunn Web App</h3>
+        <h3 class="name project-name">Unofficial Gunn Web App</h3>
         <a
           href="https://orbiit.github.io/gunn-web-app/"
           class="link"
@@ -143,7 +197,7 @@
           Github
         </a>
       </div>
-      <p class="project-desc">
+      <p class="desc project-desc">
         A web app that displayed the schedule and provided other utilities for
         my high school used by students, parents, and staff. Received nearly 1k
         clicks per month from Google with up to 736 concurrent users.
@@ -157,13 +211,13 @@
 
       <article class="school">
         <div class="inline-info school-info">
-          <h3 class="school-name">University of California, San Diego</h3>
+          <h3 class="name school-name">University of California, San Diego</h3>
           <p class="school-city">La Jolla, CA</p>
-          <p class="school-gpa">N/A</p>
+          <p class="school-gpa"><span class="label">GPA</span> N/A</p>
           <p class="school-date">Sept. 2021&ndash;June 2025*</p>
         </div>
-        <p class="courses">
-          <span class="courses">Courses</span>:
+        <p class="desc course-list">
+          <span class="label">Courses</span>
           <span class="course-name">CSE 11</span>
           <span class="course-desc">(ongoing)</span>
         </p>
@@ -171,13 +225,18 @@
 
       <article class="school">
         <div class="inline-info school-info">
-          <h3 class="school-name">Henry M. Gunn High School</h3>
+          <h3 class="name school-name">Henry M. Gunn High School</h3>
           <p class="school-city">Palo Alto, CA</p>
-          <p class="school-gpa">4.0 (weighted: 4.3056)</p>
+          <p class="school-gpa">
+            <span class="label">GPA</span> 4.0 (<span class="label"
+              >weighted</span
+            >
+            4.3)
+          </p>
           <p class="school-date">Aug. 2017&ndash;June 2021</p>
         </div>
-        <p class="coursees">
-          <span class="courses">Courses</span>:
+        <p class="desc course-list">
+          <span class="label">Courses</span>
           <span class="course-name">FOOP</span>
           <span class="course-desc">
             (introductory recursion, higher order functions) </span
