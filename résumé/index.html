@@ -79,10 +79,13 @@
         margin: 0;
         color: var(--theme);
       }
-
+      .list {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+      }
       .inline-info {
         display: flex;
-        margin-top: 20px;
         white-space: nowrap;
       }
       .inline-info p {
@@ -122,10 +125,15 @@
         margin: 0;
         margin-top: 10px;
       }
+      .section > .desc {
+        margin-top: -10px;
+      }
       .subprojects {
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-        gap: 0 20px;
+        gap: 20px;
+        padding-left: 20px;
+        border-left: 5px solid rgba(0, 0, 0, 0.3);
       }
       .ext-link {
         color: #2c94ff;
@@ -134,6 +142,9 @@
       }
       .ext-link[href]:hover {
         text-decoration: underline;
+      }
+      .course-desc {
+        color: rgba(0, 0, 0, 0.5);
       }
 
       .intro {
@@ -239,7 +250,7 @@
       </svg>
     </section>
 
-    <section class="section">
+    <section class="section list">
       <h2 class="header">Projects</h2>
 
       <div class="inline-info project-info">
@@ -315,7 +326,7 @@
           </p>
         </div>
 
-        <div class="subproject">
+        <!-- <div class="subproject">
           <div class="inline-info project-info">
             <h4 class="name project-name">E羊icques</h4>
             <a
@@ -338,6 +349,55 @@
             <a href="https://scratch.mit.edu/" class="ext-link">Scratch</a>
             allowing for more customizability. Allowed me to learn React on my
             own.
+          </p>
+        </div> -->
+
+        <div class="subproject">
+          <div class="inline-info project-info">
+            <h4 class="name project-name">Trig drill generator</h4>
+            <a
+              href="https://sheeptester.github.io/hello-world/drills.html"
+              class="icon link-icon"
+              title="Link"
+            >
+              Link
+            </a>
+            <a
+              href="https://github.com/SheepTester/hello-world/blob/master/drills.html"
+              class="icon github-icon"
+              title="Github"
+            >
+              Github
+            </a>
+          </div>
+          <p class="desc project-desc">
+            A timed quiz that generates questions about trigonometric special
+            angles as practice for students in my trigonometry class.
+          </p>
+        </div>
+
+        <div class="subproject">
+          <div class="inline-info project-info">
+            <h4 class="name project-name">OlamREEE</h4>
+            <a
+              href="https://sheeptester.github.io/olamreee/"
+              class="icon link-icon"
+              title="Link"
+            >
+              Link
+            </a>
+            <a
+              href="https://github.com/SheepTester/olamreee"
+              class="icon github-icon"
+              title="Github"
+            >
+              Github
+            </a>
+          </div>
+          <p class="desc project-desc">
+            A digital version of a chemistry project. Students found it more
+            convenient to use, and my teacher switched to it during distance
+            learning.
           </p>
         </div>
       </div>
@@ -364,11 +424,33 @@
         my high school used by students, parents, and staff. Received nearly 1k
         clicks per month from Google with up to 736 concurrent users.
       </p>
+
+      <div class="inline-info project-info">
+        <h3 class="name project-name">Elimination</h3>
+        <a
+          href="https://orbiit.github.io/elimination/"
+          class="icon link-icon"
+          title="Link"
+        >
+          Link
+        </a>
+        <a
+          href="https://github.com/Orbiit/elimination"
+          class="icon github-icon"
+          title="Github"
+        >
+          Github
+        </a>
+      </div>
+      <p class="desc project-desc">
+        I volunteered to make and host a website for a school-sponsored
+        assassination game with 323 student participants.
+      </p>
     </section>
 
     <div class="flex"></div>
 
-    <section class="section">
+    <section class="section list">
       <h2 class="header">Education</h2>
 
       <article class="school">
@@ -399,11 +481,11 @@
         </div>
         <p class="desc course-list">
           <span class="label">Courses</span>
-          <span class="course-name">FOOP</span>
-          <span class="course-desc">
-            (introductory recursion, higher order functions)</span
-          >,
-          <span class="course-name">AP CS A</span>
+          <span class="course-name"
+            >Functional and Object-Oriented Programming</span
+          >
+          <span class="course-desc"> (recursion, higher order functions)</span>,
+          <span class="course-name">AP Computer Science A</span>
           <span class="course-desc">
             (iterative recursion, linked lists, message passing, environments,
             big O notation, sorting algorithms)
@@ -421,8 +503,8 @@
         <!-- general skills -->
         Web scraping &middot; Full-stack web development &middot;
         <!-- languages -->
-        HTML/CSS &middot; JavaScript &middot; TypeScript &middot; Rust &middot;
-        Java &middot; Racket &middot; Python &middot;
+        HTML/CSS &middot; JavaScript &middot; TypeScript &middot; Python
+        &middot; Rust &middot; Java &middot; Racket &middot; Elm &middot;
         <!-- libraries -->
         React &middot; Webpack &middot; Rollup &middot; jQuery &middot; Express
         &middot;
