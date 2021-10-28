@@ -132,7 +132,7 @@
         text-decoration: none;
         font-weight: bold;
       }
-      .ext-link:hover {
+      .ext-link[href]:hover {
         text-decoration: underline;
       }
 
@@ -152,7 +152,7 @@
         font-weight: 700;
         margin: 0;
         font-size: 48px;
-        margin-right: 50px;
+        margin-right: 0.5in;
       }
       .logo {
         position: absolute;
@@ -196,24 +196,22 @@
       <div class="contact-info">
         <div class="contact-entry">
           <div class="icon mail-icon">Email</div>
-          <a href="mailto:iggle@gmail.com" class="contact-link"
-            >iggle@gmail.com</a
-          >
-        </div>
-        <div class="contact-entry">
-          <div class="icon github-icon-white">GitHub</div>
-          <a href="https://github.com/SheepTester" class="contact-link"
-            >SheepTester</a
-          >
-        </div>
-        <div class="contact-entry">
-          <div class="icon phone-icon">Phone</div>
-          <a href="tel:1-123-456-7890" class="contact-link">(123) 456-7890</a>
+          <a id="email" class="contact-link">iggle@gmail.com</a>
         </div>
         <div class="contact-entry">
           <div class="icon globe-icon">Website</div>
           <a href="https://sheeptester.github.io/" class="contact-link"
             >sheeptester.github.io</a
+          >
+        </div>
+        <div class="contact-entry">
+          <div class="icon phone-icon">Phone</div>
+          <a id="phone" class="contact-link">(123) 456-7890</a>
+        </div>
+        <div class="contact-entry">
+          <div class="icon github-icon-white">GitHub</div>
+          <a href="https://github.com/SheepTester" class="contact-link"
+            >SheepTester</a
           >
         </div>
       </div>
@@ -222,6 +220,7 @@
         viewBox="0 0 480 480"
         xmlns="http://www.w3.org/2000/svg"
         class="logo"
+        aria-label="SheepTester logo"
       >
         <path
           d="
@@ -433,5 +432,30 @@
         Spanish
       </p>
     </section>
+
+    <script>
+      // [...btoa('...')].reverse().join('')
+      function decode (str) {
+        return atob([...str].reverse().join(''))
+      }
+
+      // Ensure some user input to discourage web scrapers from scraping my
+      // email/phone number
+      let userInputHandled = false
+      const handleUserInput = () => {
+        if (!userInputHandled) {
+          const email = document.getElementById('email')
+          const phone = document.getElementById('phone')
+          email.href = decode('=02bj5CbpFWbnBUZtV3clJ3K5F2cuE2czVnOvRHbpFWb')
+          email.textContent = decode('t92YuwWah12ZAlXYz5SYzNXd')
+          phone.href = decode('2YzN20CN1ITLwUjNtEjOsVGd')
+          phone.textContent = decode('=YjN3YTL0UjMgkCM1YDK')
+          userInputHandled = true
+        }
+      }
+      document.addEventListener('keydown', handleUserInput, { once: true })
+      document.addEventListener('pointerdown', handleUserInput, { once: true })
+      document.addEventListener('pointermove', handleUserInput, { once: true })
+    </script>
   </body>
 </html>
