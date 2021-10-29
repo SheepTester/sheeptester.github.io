@@ -27,7 +27,6 @@
         min-height: 100%;
         flex-direction: column;
         margin: 0;
-        page-break-inside: avoid;
         font-family: 'Open Sans', sans-serif;
         box-sizing: border-box;
         padding: 0.5in;
@@ -104,10 +103,10 @@
       }
       .school-city {
         font-style: italic;
-        margin-left: 10px;
+        margin-left: 15px;
       }
       .school-gpa {
-        margin-left: auto;
+        margin-left: 15px;
       }
       .label {
         font-family: 'Raleway', sans-serif;
@@ -116,9 +115,11 @@
         text-transform: uppercase;
         color: rgba(0, 0, 0, 0.5);
       }
+      .courses-label:not(:first-child) {
+        margin-left: 15px;
+      }
       .school-date {
-        width: 190px;
-        text-align: right;
+        margin-left: auto;
       }
       .desc {
         margin: 0;
@@ -200,7 +201,16 @@
         text-decoration: underline;
       }
 
-      @media (max-width: 800px) {
+      .skills-desc {
+        margin: 10px 0;
+      }
+      .skills {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+        margin: 0;
+      }
+
+      @media screen and (max-width: 800px) {
         .inline-info {
           flex-wrap: wrap;
         }
@@ -479,10 +489,11 @@
           <h3 class="name school-name">University of California, San Diego</h3>
           <p class="school-city">La Jolla, CA</p>
           <p class="school-gpa"><span class="label">GPA</span> N/A</p>
-          <p class="school-date">Sept. 2021&ndash;June 2025*</p>
+          <p class="school-date">Sept. 2021&ndash;June 2025</p>
         </div>
         <p class="desc course-list">
-          <span class="label">Courses</span>
+          <span>Sophomore standing.</span>
+          <span class="label courses-label">Courses</span>
           <span class="course-name">CSE 11</span>
           <span class="course-desc">(ongoing)</span>
         </p>
@@ -496,12 +507,12 @@
             <span class="label">GPA</span> 4.0 (<span class="label"
               >weighted</span
             >
-            4.3)
+            4.44)
           </p>
           <p class="school-date">Aug. 2017&ndash;June 2021</p>
         </div>
         <p class="desc course-list">
-          <span class="label">Courses</span>
+          <span class="label courses-label">Courses</span>
           <span class="course-name"
             >Functional and Object-Oriented Programming</span
           >
@@ -519,20 +530,31 @@
 
     <section class="section">
       <h2 class="header">Skills</h2>
+      <p class="skills-desc">
+        Full-stack web development, web scraping, and these languages and tools:
+      </p>
 
       <p class="skills">
-        <!-- general skills -->
-        Web scraping &middot; Full-stack web development &middot;
         <!-- languages -->
-        HTML/CSS &middot; JavaScript &middot; TypeScript &middot; Python
-        &middot; Rust &middot; Java &middot; Racket &middot; Elm &middot;
+        <span>HTML/CSS</span>
+        <span>JavaScript</span>
+        <span>TypeScript</span>
+        <span>Python</span>
+        <span>Rust</span>
+        <span>Java</span>
+        <span>Racket</span>
+        <span>Elm</span>
         <!-- libraries -->
-        React &middot; Webpack &middot; Rollup &middot; jQuery &middot; Express
-        &middot;
+        <span>React</span>
+        <span>Webpack</span>
+        <span>Rollup</span>
+        <span>jQuery</span>
+        <span>Express</span>
         <!-- runtimes -->
-        Node &middot; Deno &middot;
+        <span>Node</span>
+        <span>Deno</span>
         <!-- human languages -->
-        Spanish
+        <span>Spanish</span>
       </p>
     </section>
 
