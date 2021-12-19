@@ -33,15 +33,15 @@ profiles:
   - name: Twitch
     link: https://www.twitch.tv/sheeptester
     bg: '#6441A4'
-    ball: border
+    ball: white
 
   - name: Google+ # RIP
     link: https://plus.google.com/u/0/+SeanYentheHumansperson
     bg: '#DC4E41'
 
   - name: Facebook
-    link: https://www.facebook.com/ovinus.real
-    bg: '#3B5998'
+    link: https://www.facebook.com/sheeptester/
+    bg: '#1A77F2'
 
   - name: Duolingo
     link: https://www.duolingo.com/syen5
@@ -98,13 +98,12 @@ profiles:
 
   - name: Wikipedia
     link: https://en.wikipedia.org/wiki/User:SheepTester
-    border: '#000000'
+    ball: '#000000'
 
   - name: Fandom
     link: https://community.fandom.com/wiki/User:SheepTester
-    bg: '#002A32'
-    ball: false
-    border: '#00d6d6'
+    bg: '#FA015A'
+    ball: '#FFC502'
 
   - name: NPM
     link: https://www.npmjs.com/~sheeptester
@@ -118,7 +117,25 @@ profiles:
   - name: Imgur
     link: https://imgur.com/user/sheeptester
     bg: '#21B66E'
-    ball: border
+    ball: '#25CC8B'
+    border: white
+
+  - name: Stepik
+    link: https://stepik.org/users/411870143
+    bg: '#222222'
+
+  - name: Expo
+    link: https://expo.dev/@sheeptester
+    ball: '#1B1F23'
+
+  - name: LinkedIn
+    link: https://www.linkedin.com/in/sean-yen-389856224/
+    bg: '#0B66C2'
+
+  - name: Google Maps
+    link: https://maps.app.goo.gl/kfWB94sEpb12bC9z9
+    bg: '#33A853'
+    type: gmaps
 
   - name: Internet Archive
     link: https://archive.org/details/@sheep_tester

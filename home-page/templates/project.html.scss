@@ -107,7 +107,7 @@ a.#{$classes}[href="#{map.get($project, 'path')}"][data-desc="#{map.get($project
           opacity: 0;
           transition: opacity .5s;
           transition-delay: 0s;
-          box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+          box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
         }
         .project:hover .tag {
           opacity: 1;

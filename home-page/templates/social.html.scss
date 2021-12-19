@@ -7,6 +7,8 @@ css {
     border-radius: 15%;
     box-sizing: border-box;
     transition: transform .2s;
+    z-index: 1;
+    overflow: hidden;
   }
   a.social:hover,
   a.username:hover .social {
@@ -28,6 +30,28 @@ css {
   }
   .social-devpost {
     background-image: linear-gradient(90deg, #3ACCE6 20%, transparent 20%, transparent 80%, #3ACCE6 80%);
+  }
+  .social-gmaps::before,
+  .social-gmaps::after {
+    content: '';
+    display: block;
+    position: absolute;
+    top: -100%;
+    bottom: -100%;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    // 100% * sqrt(2) / 3, a third of the diagonal
+    width: calc(100% * 1.4142135623730951 / 3);
+    z-index: -1;
+    transform: rotate(45deg);
+  }
+  .social-gmaps::before {
+    background-image: linear-gradient(#1B73E8 50%, #EA4336 50%);
+    transform: rotate(45deg) translateX(-100%);
+  }
+  .social-gmaps::after {
+    background-image: linear-gradient(#4285F4 50%, #FABD05 50%);
   }
 }
 $bg: "";

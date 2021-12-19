@@ -343,11 +343,7 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
           content: "Hello,";
         }
         p {
-          content: "I’m Sean, a first-year undergraduate at ";
-          a.link[href="https://ucsd.edu/"] {
-            content: "UC San Diego";
-          }
-          content: "  majoring in ";
+          content: "I’m Sean, a first-year undergraduate at UC San Diego majoring in ";
           a.link[href="https://sheeptester.github.io/longer-tweets/major/"][title="temporarily, hopefully"] {
             content: "Math CS*";
           }
@@ -371,20 +367,29 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
           }
         }
         p.datum {
+          css {
+            abbr {
+              text-decoration-color: rgba(255, 255, 255, 0.3);
+            }
+          }
           span.attribute {
             content: "Pronouns";
           }
           content: " ";
-          abbr[title="English"] {
+          abbr[title="English"][lang="en"] {
             content: "he";
           }
           content: ", ";
-          abbr[title="Spanish"] {
+          abbr[title="Spanish"][lang="es"] {
             content: "él";
           }
           content: ", ";
-          abbr[title="Esperanto"] {
+          abbr[title="Esperanto"][lang="eo"] {
             content: "li";
+          }
+          content: ", ";
+          abbr[title="Mandarin"][lang="zh"] {
+            content: "他";
           }
           content: ", etc.";
         }
@@ -793,20 +798,16 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
                 .filter-tag-icon {
                   width: 30px;
                 }
+                .filter-checkbox:checked + .filter-tag .tag-#{$tag} {
+                  background-image: url("/home-page/icons/checked.svg"),
+                    linear-gradient(150deg, #{map.get($tag-data, 'colour1')},
+                    #{map.get($tag-data, 'colour2')});
+                }
               }
-              @if $tag == "recommend" {
+              @if map.get($tag-data, 'dark') {
                 css {
                   .filter-checkbox:checked + .filter-tag .tag-#{$tag} {
                     background-image: url("/home-page/icons/checked-dark.svg"),
-                      linear-gradient(150deg, #{map.get($tag-data, 'colour1')},
-                      #{map.get($tag-data, 'colour2')});
-                  }
-                }
-              }
-              @if not $tag == "recommend" {
-                css {
-                  .filter-checkbox:checked + .filter-tag .tag-#{$tag} {
-                    background-image: url("/home-page/icons/checked.svg"),
                       linear-gradient(150deg, #{map.get($tag-data, 'colour1')},
                       #{map.get($tag-data, 'colour2')});
                   }

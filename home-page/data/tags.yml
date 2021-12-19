@@ -2,11 +2,13 @@ recommend:
   name: Commendable
   colour1: '#f0db20'
   colour2: '#efb302'
+  dark: true
 
 game:
   name: Game
   colour1: '#aaec12'
   colour2: '#2ac213'
+  dark: true
 
 utility:
   name: Utility
