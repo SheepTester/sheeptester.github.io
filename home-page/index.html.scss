@@ -343,9 +343,19 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
           content: "Hello,";
         }
         p {
-          content: """
-            I’m Sean, a first-year undergraduate at UC San Diego graduating in 2025.
-          """;
+          content: "I’m Sean, a first-year undergraduate at ";
+          a.link[href="https://ucsd.edu/"] {
+            content: "UC San Diego";
+          }
+          content: "  majoring in ";
+          a.link[href="https://sheeptester.github.io/longer-tweets/major/"][title="temporarily, hopefully"] {
+            content: "Math CS*";
+          }
+          content: " and graduating in 2025, formerly a student at ";
+          a.link[href="https://gunn.pausd.org/"] {
+            content: "Gunn High School";
+          }
+          content: ".";
         }
         css {
           .card .datum {
