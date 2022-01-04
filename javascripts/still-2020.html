@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>It&rsquo;s still March 2020</title>
+    <meta name="description" content="COVID-19 never ends." />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Spline+Sans:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" type="text/css" href="/sheep3.css" />
+    <script src="/sheep3.js" charset="utf-8"></script>
+
+    <style>
+      html {
+        height: 100%;
+        display: flex;
+      }
+      body {
+        flex: auto;
+        /* https://unsplash.com/photos/N6xp_7BGxC8 */
+        background-image: url('https://images.unsplash.com/photo-1640562329119-efcaa3dcf18d?ixlib=rb-1.2.1&q=80&fm=jpg&crop=entropy&cs=tinysrgb');
+        background-size: cover;
+        background-position: center;
+        font-family: 'Spline Sans', sans-serif;
+        margin: 50px;
+        text-align: center;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 36px;
+        text-shadow: 0 3px 10px rgba(0, 0, 0, 0.5);
+      }
+      strong {
+        color: white;
+      }
+    </style>
+  </head>
+  <body>
+    <p>
+      Today is <strong>March <span id="date"></span>, 2020</strong>.
+    </p>
+    <script>
+      const MS_PER_DAY = 24 * 60 * 60 * 1000
+      const MARCH_0 = new Date(2020, 2, 0).getTime()
+      const date = document.getElementById('date')
+      function update () {
+        date.textContent = Math.floor((Date.now() - MARCH_0) / MS_PER_DAY)
+      }
+      window.addEventListener('focus', update)
+      update()
+    </script>
+  </body>
+</html>
