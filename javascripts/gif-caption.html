@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Add a caption to a gif</title>
+    <meta name="description" content="When the" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fira+Sans+Condensed:wght@800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" type="text/css" href="/sheep3.css" />
+
+    <script src="https://unpkg.com/gif-frames@1.0.1/dist/gif-frames.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gif.js.optimized@1.0.1/dist/gif.min.js"></script>
+    <script src="/sheep3.js" charset="utf-8"></script>
+
+    <style>
+      html {
+        height: 100%;
+        display: flex;
+      }
+      body {
+        flex: auto;
+        font-family: -apple-system, BlinkMacSystemFont, avenir next, avenir,
+          segoe ui, helvetica neue, helvetica, Ubuntu, roboto, noto, arial,
+          sans-serif;
+        margin: 0;
+        display: flex;
+        background-color: #0f172a;
+        color: #cbd5e1;
+      }
+      textarea {
+        -webkit-appearance: none;
+        border: none;
+        background: none;
+        color: inherit;
+        font: inherit;
+      }
+      ::placeholder {
+        color: currentColor;
+        opacity: 0.3;
+      }
+
+      .fira-sans {
+        font-family: 'Fira Sans Condensed';
+        font-weight: 800;
+      }
+      .futura {
+        font-family: 'Futura Condensed', 'Futura';
+        font-weight: 800;
+      }
+      .impact {
+        font-family: 'Impact';
+      }
+
+      .settings {
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+      }
+      fieldset {
+        border: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+      }
+      .label {
+        font-weight: bold;
+        display: block;
+        color: #f8fafc;
+      }
+      .textarea-wrapper {
+        display: flex;
+      }
+      textarea {
+        padding: 10px;
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        border-radius: 5px;
+        width: 0;
+        box-sizing: border-box;
+        resize: vertical;
+        flex: auto;
+      }
+      #download:not([download]) {
+        display: none;
+      }
+
+      .gif-wrapper {
+        flex: auto;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-image: radial-gradient(circle, #334155, #1e293b);
+      }
+      #output {
+        max-width: 100%;
+        max-height: 100%;
+      }
+      .exporting #output {
+        opacity: 0.8;
+      }
+
+      @media (max-width: 500px) {
+        body {
+          flex-direction: column-reverse;
+        }
+        .settings {
+          flex-direction: row;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="settings">
+      <label>
+        <span class="label">Caption</span>
+        <div class="textarea-wrapper">
+          <textarea
+            id="caption"
+            placeholder="Discord users when they see this font"
+          ></textarea>
+        </div>
+      </label>
+      <label>
+        <span class="label">GIF (pronounced "gif")</span>
+        <input type="file" id="gif" accept="image/gif" />
+      </label>
+      <fieldset>
+        <legend class="label">Font</legend>
+        <label>
+          <input type="radio" name="font" value="fira-sans" checked />
+          <span class="fira-sans">Fira Sans Condensed</span>
+        </label>
+        <label>
+          <input type="radio" name="font" value="futura" />
+          <span class="futura">Futura Condensed</span>
+        </label>
+        <label>
+          <input type="radio" name="font" value="impact" />
+          <span class="impact">Impact</span>
+        </label>
+      </fieldset>
+      <button id="export">Export</button>
+      <a id="download">Download GIF</a>
+    </div>
+    <div class="gif-wrapper">
+      <canvas id="output"></canvas>
+    </div>
+    <script>
+      const elems = {
+        caption: document.getElementById('caption'),
+        gif: document.getElementById('gif'),
+        export: document.getElementById('export'),
+        download: document.getElementById('download'),
+        output: document.getElementById('output')
+      }
+      const context = elems.output.getContext('2d', { alpha: false })
+
+      const fonts = {
+        'fira-sans': '800 {SIZE} "Fira Sans Condensed"',
+        futura: '800 {SIZE} "Futura Condensed"',
+        impact: '{SIZE} "Impact"'
+      }
+      function getFont () {
+        return document.querySelector('input[name="font"]:checked').value
+      }
+
+      const options = {
+        caption: elems.caption.value,
+        font: getFont(),
+        frames: [],
+        name: 'sus.gif',
+        totalLength: 0
+      }
+      let exporting = false
+
+      elems.caption.addEventListener('input', () => {
+        options.caption = elems.caption.value
+      })
+      for (const radio of document.querySelectorAll('input[name="font"]')) {
+        radio.addEventListener('change', () => {
+          options.font = getFont()
+        })
+      }
+      elems.gif.addEventListener('change', async () => {
+        if (elems.gif.files[0]) {
+          options.name = elems.gif.files[0].name
+          const url = URL.createObjectURL(elems.gif.files[0])
+          options.frames = await gifFrames({
+            url,
+            frames: 'all',
+            outputType: 'canvas',
+            cumulative: true
+          })
+          options.totalLength = options.frames
+            .map(frame => frame.frameInfo.delay)
+            .reduce((a, b) => a + b)
+          URL.revokeObjectURL(url)
+          // Clear file input
+          // https://stackoverflow.com/a/3162319
+          elems.gif.value = ''
+
+          draw()
+        }
+      })
+
+      // Fraction of gif width
+      const TEXT = 0.08
+      const PADDING = 0.06
+      const LINE_SPACING = 0.04
+
+      function draw (frame = null, c = context) {
+        const width = options.frames[0].frameInfo.width
+        const lines = options.caption.split(/\r?\n/)
+        const captionSpace =
+          (PADDING * 2 +
+            lines.length * TEXT +
+            (lines.length - 1) * LINE_SPACING) *
+          width
+
+        c.canvas.width = width
+        c.canvas.height = options.frames[0].frameInfo.height + captionSpace
+
+        c.fillStyle = 'white'
+        c.fillRect(0, 0, width, c.canvas.height)
+
+        c.fillStyle = 'black'
+        c.textAlign = 'center'
+        c.font = fonts[options.font].replace('{SIZE}', TEXT * width + 'px')
+        for (const [i, line] of lines.entries()) {
+          c.fillText(
+            line,
+            width / 2,
+            (PADDING + (TEXT + LINE_SPACING) * i + TEXT) * width
+          )
+        }
+
+        // Current time in centiseconds
+        if (!frame) {
+          let time = (Date.now() / 10) % options.totalLength
+          for (const possibleFrame of options.frames) {
+            time -= possibleFrame.frameInfo.delay
+            if (time < 0) {
+              frame = possibleFrame
+              break
+            }
+          }
+        }
+        c.drawImage(frame.getImage(), 0, captionSpace)
+      }
+
+      function frame () {
+        if (options.frames.length > 0 && !exporting) {
+          draw()
+        }
+        window.requestAnimationFrame(frame)
+      }
+      frame()
+
+      elems.export.addEventListener('click', () => {
+        elems.export.disabled = true
+        exporting = true
+        document.body.classList.add('exporting')
+
+        const output = document
+          .createElement('canvas')
+          .getContext('2d', { alpha: false })
+        const gif = new GIF({
+          workerScript: '../animations/gif-worker.js',
+          width: elems.output.width,
+          height: elems.output.height
+        })
+        gif.on('finished', blob => {
+          if (elems.href) {
+            URL.revokeObjectURL(elems.href)
+          }
+          elems.download.download = options.name
+          elems.download.href = URL.createObjectURL(blob)
+          elems.download.click()
+
+          elems.export.disabled = false
+          exporting = false
+          document.body.classList.remove('exporting')
+        })
+        for (const frame of options.frames) {
+          draw(frame, output)
+          gif.addFrame(output.canvas, {
+            delay: frame.frameInfo.delay * 10,
+            copy: true
+          })
+        }
+        gif.render()
+      })
+    </script>
+  </body>
+</html>
