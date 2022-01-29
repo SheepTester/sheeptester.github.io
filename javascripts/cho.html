@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Empirical formula of CHO combustion calculator</title>
+    <meta
+      name="description"
+      content="Calculates the empirical formula of a compound containing only carbon, hydrogen, and oxygen based on the amount of CO2 and H2O produced."
+    />
+
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css"
+      integrity="sha384-AfEj0r4/OFrOo5t7NnNe46zW/tFgW6x/bCJG8FqQCEo3+Aro6EYUG4+cU+KJWu/X"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" type="text/css" href="/sheep3.css" />
+
+    <script src="/sheep3.js" charset="utf-8"></script>
+
+    <style>
+      input[type='number'] {
+        width: 10ch;
+        text-align: right;
+      }
+    </style>
+  </head>
+  <body>
+    <p>
+      The combustion of <input type="number" id="cho" value="6.90" /> g of a
+      compound containing only carbon, hydrogen and oxygen produced
+      <input type="number" id="co2" value="15.7" />
+      <select id="co2-units">
+        <option value="grams" selected>g</option>
+        <option value="moles">mol</option>
+      </select>
+      CO<sub>2</sub> and <input type="number" id="h2o" value="6.42" />
+      <select id="h2o-units">
+        <option value="grams" selected>g</option>
+        <option value="moles">mol</option>
+      </select>
+      H<sub>2</sub>O.
+    </p>
+    <div id="output"></div>
+    <script type="module">
+      import katex from 'https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.mjs'
+
+      // From Wikipedia
+      const MOLAR_MASS = {
+        CARBON: 12.0107,
+        HYDROGEN: 1.00784,
+        OXYGEN: 15.999,
+        CARBON_DIOXIDE: 44.01,
+        WATER: 18.01528
+      }
+      MOLAR_MASS.CO2 = MOLAR_MASS.CARBON + MOLAR_MASS.OXYGEN * 2
+      MOLAR_MASS.H2O = MOLAR_MASS.HYDROGEN * 2 + MOLAR_MASS.OXYGEN
+
+      const inputs = {
+        cho: document.getElementById('cho'),
+        co2: document.getElementById('co2'),
+        co2Units: document.getElementById('co2-units'),
+        h2o: document.getElementById('h2o'),
+        h2oUnits: document.getElementById('h2o-units')
+      }
+      const output = document.getElementById('output')
+
+      const r = String.raw
+
+      function calculate () {
+        const steps = []
+        let co2
+        if (inputs.co2Units.value === 'grams') {
+          const amount = inputs.co2.value
+          co2 = (+amount / MOLAR_MASS.CARBON_DIOXIDE).toFixed(2) // TEMP
+          steps.push(
+            r`${amount} \text{g CO}_2 \cdot \frac{\text{mol CO}_2}{${MOLAR_MASS.CARBON_DIOXIDE} \text{g CO}_2} = ${co2} \text{ mol CO}_2`
+          )
+        } else {
+          co2 = inputs.co2.value
+        }
+        const c = co2
+        steps.push(
+          r`${co2} \text{ mol CO}_2 \cdot \frac{\text{mol C}}{\text{mol CO}_2} = ${c} \text{ mol C}`
+        )
+        let h2o
+        if (inputs.co2Units.value === 'grams') {
+          const amount = inputs.h2o.value
+          h2o = (+amount / MOLAR_MASS.WATER).toFixed(2) // TEMP
+          steps.push(
+            r`${amount} \text{g H}_2\text{O} \cdot \frac{\text{mol H}_2\text{O}}{${MOLAR_MASS.WATER} \text{g H}_2\text{O}} = ${h2o} \text{ mol H}_2\text{O}`
+          )
+        } else {
+          h2o = +inputs.h2o.value
+        }
+        const h = 2 * h2o
+        steps.push(
+          r`${h2o} \text{ mol H}_2\text{O} \cdot \frac{2 \text{ mol H}}{\text{mol H}_2\text{O}} = ${h} \text{ mol H}`
+        )
+        const cho = inputs.cho.value
+        const o = (
+          (+cho - +c * MOLAR_MASS.CARBON - +h * MOLAR_MASS.HYDROGEN) /
+          MOLAR_MASS.OXYGEN
+        ).toFixed(2) // TEMP
+        steps.push(
+          r`\left(${cho} \text{g CHO} - ${c} \text{ mol C} \cdot \frac{${MOLAR_MASS.CARBON} \text{g C}}{\text{mol C}} - ${h} \text{ mol H} \cdot \frac{${MOLAR_MASS.HYDROGEN} \text{g H}}{\text{mol H}}\right) \cdot \frac{\text{mol O}}{${MOLAR_MASS.OXYGEN} \text{g O}} = ${o} \text{ mol O}`
+        )
+        const min = Math.min(+c, +h, +o)
+        const coefficients = {
+          c: +c / min,
+          h: +h / min,
+          o: +o / min
+        }
+        steps.push(r`\frac{${c} \text{ mol C}}{${min}} = ${coefficients.c}`)
+        steps.push(r`\frac{${h} \text{ mol H}}{${min}} = ${coefficients.h}`)
+        steps.push(r`\frac{${o} \text{ mol O}}{${min}} = ${coefficients.o}`)
+        steps.push(
+          r`\to \boxed{\text{C}${
+            coefficients.c === 1 ? '' : `_{${coefficients.c}}`
+          }\text{H}${
+            coefficients.h === 1 ? '' : `_{${coefficients.h}}`
+          }\text{O}${coefficients.o === 1 ? '' : `_{${coefficients.o}}`}}`
+        )
+        output.innerHTML = steps
+          .map(step =>
+            katex.renderToString(step, {
+              throwOnError: true,
+              displayMode: true,
+              fleqn: true
+            })
+          )
+          .join('')
+      }
+
+      calculate()
+      document.addEventListener('input', calculate)
+    </script>
+  </body>
+</html>
