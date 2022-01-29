@@ -47,16 +47,85 @@
     <script type="module">
       import katex from 'https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.mjs'
 
+      class SigFigNumber {
+        value
+        sigFigs
+
+        constructor (value, sigFigs) {
+          this.value = value
+          this.sigFigs = sigFigs
+        }
+
+        get #decimals () {
+          return this.sigFigs - Math.floor(Math.log10(this.value)) - 1
+        }
+
+        plus (number) {
+          const sum = this.value + number.value
+          return new SigFigNumber()
+        }
+
+        minus (number) {
+          return this.plus(number.times(-1))
+        }
+
+        times (number) {
+          if (typeof number === 'number') {
+            return new SigFigNumber(this.value * number, this.sigFigs)
+          } else {
+            return new SigFigNumber(
+              this.value * number.value,
+              Math.min(this.sigFigs, number.sigFigs)
+            )
+          }
+        }
+
+        inverse () {
+          return new SigFigNumber(1 / this.value, this.sigFigs)
+        }
+
+        valueOf () {
+          return this.value
+        }
+
+        toString () {
+          return this.value.toFixed(this.#decimals)
+        }
+
+        // From https://sheeptester.github.io/hello-world/sigfig.html
+
+        static #sigFigRegex =
+          /^-?0*(?:((?:[1-9][0-9]*)?[1-9])0*|([1-9][0-9]*(?:\.[0-9]+)?)(?:\.)?|\.0*([1-9][0-9]*))$/
+        static #sciNote = /((x|\*)\s*10|e)(\s*(\^|\*\*)?\s*[0-9-.]+)?$/i
+        static #nonNumbers = /[^0-9-.]/g
+
+        static #parseSigFigs (number) {
+          const match = number
+            .replace(this.#sciNote, '')
+            .replace(this.#nonNumbers, '')
+            .match(this.#sigFigRegex)
+          if (!match) {
+            return 0
+          }
+          const matchGroup = match[1] || match[2] || match[3]
+          return matchGroup.replace(/\./g, '').length
+        }
+
+        static from (number) {
+          return new SigFigNumber(+number, SigFigNumber.#parseSigFigs(value))
+        }
+      }
+
       // From Wikipedia
       const MOLAR_MASS = {
-        CARBON: 12.0107,
-        HYDROGEN: 1.00784,
-        OXYGEN: 15.999,
-        CARBON_DIOXIDE: 44.01,
-        WATER: 18.01528
+        CARBON: SigFigNumber.from('12.0107'),
+        HYDROGEN: SigFigNumber.from('1.00784'),
+        OXYGEN: SigFigNumber.from('15.999'),
+        CARBON_DIOXIDE: SigFigNumber.from('44.01'),
+        WATER: SigFigNumber.from('18.01528')
       }
-      MOLAR_MASS.CO2 = MOLAR_MASS.CARBON + MOLAR_MASS.OXYGEN * 2
-      MOLAR_MASS.H2O = MOLAR_MASS.HYDROGEN * 2 + MOLAR_MASS.OXYGEN
+      MOLAR_MASS.CO2 = MOLAR_MASS.CARBON.plus(MOLAR_MASS.OXYGEN.times(2))
+      MOLAR_MASS.H2O = MOLAR_MASS.HYDROGEN.times(2).plus(MOLAR_MASS.OXYGEN)
 
       const inputs = {
         cho: document.getElementById('cho'),
@@ -71,47 +140,43 @@
 
       function calculate () {
         const steps = []
-        let co2
+        let co2 = SigFigNumber.from(inputs.co2.value)
         if (inputs.co2Units.value === 'grams') {
-          const amount = inputs.co2.value
-          co2 = (+amount / MOLAR_MASS.CARBON_DIOXIDE).toFixed(2) // TEMP
+          const amount = co2
+          co2 = amount.times(MOLAR_MASS.CARBON_DIOXIDE.inverse())
           steps.push(
             r`${amount} \text{g CO}_2 \cdot \frac{\text{mol CO}_2}{${MOLAR_MASS.CARBON_DIOXIDE} \text{g CO}_2} = ${co2} \text{ mol CO}_2`
           )
-        } else {
-          co2 = inputs.co2.value
         }
         const c = co2
         steps.push(
           r`${co2} \text{ mol CO}_2 \cdot \frac{\text{mol C}}{\text{mol CO}_2} = ${c} \text{ mol C}`
         )
-        let h2o
+        let h2o = SigFigNumber.from(inputs.h2o.value)
         if (inputs.co2Units.value === 'grams') {
-          const amount = inputs.h2o.value
-          h2o = (+amount / MOLAR_MASS.WATER).toFixed(2) // TEMP
+          const amount = h2o
+          h2o = amount.times(MOLAR_MASS.WATER.inverse())
           steps.push(
             r`${amount} \text{g H}_2\text{O} \cdot \frac{\text{mol H}_2\text{O}}{${MOLAR_MASS.WATER} \text{g H}_2\text{O}} = ${h2o} \text{ mol H}_2\text{O}`
           )
-        } else {
-          h2o = +inputs.h2o.value
         }
-        const h = 2 * h2o
+        const h = h2o.times(2)
         steps.push(
           r`${h2o} \text{ mol H}_2\text{O} \cdot \frac{2 \text{ mol H}}{\text{mol H}_2\text{O}} = ${h} \text{ mol H}`
         )
-        const cho = inputs.cho.value
-        const o = (
-          (+cho - +c * MOLAR_MASS.CARBON - +h * MOLAR_MASS.HYDROGEN) /
-          MOLAR_MASS.OXYGEN
-        ).toFixed(2) // TEMP
+        const cho = SigFigNumber.from(inputs.cho.value)
+        const o = cho
+          .minus(c.times(MOLAR_MASS.CARBON))
+          .minus(h.times(MOLAR_MASS.HYDROGEN))
+          .times(MOLAR_MASS.OXYGEN.inverse())
         steps.push(
           r`\left(${cho} \text{g CHO} - ${c} \text{ mol C} \cdot \frac{${MOLAR_MASS.CARBON} \text{g C}}{\text{mol C}} - ${h} \text{ mol H} \cdot \frac{${MOLAR_MASS.HYDROGEN} \text{g H}}{\text{mol H}}\right) \cdot \frac{\text{mol O}}{${MOLAR_MASS.OXYGEN} \text{g O}} = ${o} \text{ mol O}`
         )
-        const min = Math.min(+c, +h, +o)
+        const min = c < h ? (c < o ? c : o) : h < o ? h : o
         const coefficients = {
-          c: +c / min,
-          h: +h / min,
-          o: +o / min
+          c: c.times(min.inverse()),
+          h: h.times(min.inverse()),
+          o: o.times(min.inverse())
         }
         steps.push(r`\frac{${c} \text{ mol C}}{${min}} = ${coefficients.c}`)
         steps.push(r`\frac{${h} \text{ mol H}}{${min}} = ${coefficients.h}`)
