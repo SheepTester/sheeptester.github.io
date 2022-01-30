@@ -29,8 +29,9 @@
   </head>
   <body>
     <p>
-      The combustion of <input type="number" id="cho" value="6.90" /> g of a
-      compound containing only carbon, hydrogen and oxygen produced
+      The combustion of <input type="number" id="cho" value="6.90" /> g of an
+      unknown organic compound containing only carbon, hydrogen and oxygen
+      produced
       <input type="number" id="co2" value="15.7" />
       <select id="co2-units">
         <option value="grams" selected>g</option>
@@ -57,12 +58,16 @@
         }
 
         get #decimals () {
-          return this.sigFigs - Math.floor(Math.log10(this.value)) - 1
+          return this.sigFigs - SigFigNumber.#intDigits(this.value)
         }
 
         plus (number) {
           const sum = this.value + number.value
-          return new SigFigNumber()
+          return new SigFigNumber(
+            sum,
+            SigFigNumber.#intDigits(sum) +
+              Math.min(this.#decimals, number.#decimals)
+          )
         }
 
         minus (number) {
@@ -89,7 +94,29 @@
         }
 
         toString () {
-          return this.value.toFixed(this.#decimals)
+          const decimals = this.#decimals
+          if (this.value === 0) {
+            return '0'
+          } else if (Number.isNaN(this.value)) {
+            return r`\text{NaN}`
+          } else if (this.value === Infinity || this.value === -Infinity) {
+            return r`${this.value < 0 ? '-' : ''}\infty`
+          }
+          const exponent = Math.floor(Math.log10(Math.abs(this.value)))
+          if (exponent < -2 || decimals < 0) {
+            // Use scientific notation
+            const coefficient = this.value / 10 ** exponent
+            return r`${coefficient.toFixed(
+              this.sigFigs - 1
+            )} \cdot 10^{${exponent}}`
+          } else {
+            const string = this.value.toFixed(decimals)
+            if (decimals === 0 && string.endsWith('0') && string.length > 1) {
+              return string + '.'
+            } else {
+              return string
+            }
+          }
         }
 
         // From https://sheeptester.github.io/hello-world/sigfig.html
@@ -111,8 +138,13 @@
           return matchGroup.replace(/\./g, '').length
         }
 
+        static #intDigits (number) {
+          const abs = Math.abs(number)
+          return abs < 1 ? 0 : Math.floor(Math.log10(abs)) + 1
+        }
+
         static from (number) {
-          return new SigFigNumber(+number, SigFigNumber.#parseSigFigs(value))
+          return new SigFigNumber(+number, SigFigNumber.#parseSigFigs(number))
         }
       }
 
@@ -153,7 +185,7 @@
           r`${co2} \text{ mol CO}_2 \cdot \frac{\text{mol C}}{\text{mol CO}_2} = ${c} \text{ mol C}`
         )
         let h2o = SigFigNumber.from(inputs.h2o.value)
-        if (inputs.co2Units.value === 'grams') {
+        if (inputs.h2oUnits.value === 'grams') {
           const amount = h2o
           h2o = amount.times(MOLAR_MASS.WATER.inverse())
           steps.push(
@@ -172,21 +204,46 @@
         steps.push(
           r`\left(${cho} \text{g CHO} - ${c} \text{ mol C} \cdot \frac{${MOLAR_MASS.CARBON} \text{g C}}{\text{mol C}} - ${h} \text{ mol H} \cdot \frac{${MOLAR_MASS.HYDROGEN} \text{g H}}{\text{mol H}}\right) \cdot \frac{\text{mol O}}{${MOLAR_MASS.OXYGEN} \text{g O}} = ${o} \text{ mol O}`
         )
-        const min = c < h ? (c < o ? c : o) : h < o ? h : o
+        let min = c
+        if (h < min) min = h
+        if (o < min) min = o
         const coefficients = {
           c: c.times(min.inverse()),
           h: h.times(min.inverse()),
           o: o.times(min.inverse())
         }
-        steps.push(r`\frac{${c} \text{ mol C}}{${min}} = ${coefficients.c}`)
-        steps.push(r`\frac{${h} \text{ mol H}}{${min}} = ${coefficients.h}`)
-        steps.push(r`\frac{${o} \text{ mol O}}{${min}} = ${coefficients.o}`)
+        steps.push(
+          r`\frac{${c} \text{ mol C}}{${min}} = ${coefficients.c},~\frac{${h} \text{ mol H}}{${min}} = ${coefficients.h},~\frac{${o} \text{ mol O}}{${min}} = ${coefficients.o}`
+        )
+        const { factor } = [1, 2, 3, 4, 5, 6, 7, 8, 9].reduce((acc, curr) => {
+          // Add up the error between each coefficient multiplied by `curr` and
+          // its rounded form to see how close they are to an integer
+          const offsets = Object.values(coefficients)
+            .map(n => n.value * curr)
+            .map(n => Math.abs(n - Math.round(n)))
+            .reduce((a, b) => a + b)
+          if (!acc || offsets < acc.offsets) {
+            return { offsets, factor: curr }
+          } else {
+            return acc
+          }
+        }, null)
+        const [roundedC, roundedH, roundedO] = [
+          coefficients.c,
+          coefficients.h,
+          coefficients.o
+        ].map(n => Math.round(n.value * factor))
+        if (factor !== 1) {
+          steps.push(
+            r`${coefficients.c} \cdot ${factor} \approx ${roundedC},~${coefficients.h} \cdot ${factor} \approx ${roundedH},~${coefficients.o} \cdot ${factor} \approx ${roundedO}`
+          )
+        }
         steps.push(
           r`\to \boxed{\text{C}${
-            coefficients.c === 1 ? '' : `_{${coefficients.c}}`
-          }\text{H}${
-            coefficients.h === 1 ? '' : `_{${coefficients.h}}`
-          }\text{O}${coefficients.o === 1 ? '' : `_{${coefficients.o}}`}}`
+            roundedC === 1 ? '' : `_{${roundedC}}`
+          }\text{H}${roundedH === 1 ? '' : `_{${roundedH}}`}\text{O}${
+            roundedO === 1 ? '' : `_{${roundedO}}`
+          }}\text{ (Use your intuition to figure out more reasonable coefficients.)}`
         )
         output.innerHTML = steps
           .map(step =>
