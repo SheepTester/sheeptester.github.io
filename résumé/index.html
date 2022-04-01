@@ -165,6 +165,7 @@
         font-size: 48px;
         margin-right: 0.5in;
         align-self: flex-end;
+        transform: translateY(8px);
       }
       .logo {
         position: absolute;
@@ -201,13 +202,39 @@
         text-decoration: underline;
       }
 
-      .skills-desc {
-        margin: 10px 0;
+      .skills-wrapper {
+        display: flex;
+        margin-top: 10px;
+        gap: 40px;
+      }
+      .skill-heading {
+        height: 16px;
+        display: flex;
+        align-items: flex-end;
+      }
+      .skill-main span {
+        display: block;
+      }
+      .skill-main .name {
+        margin-top: 10px;
+        margin-bottom: 5px;
+      }
+      .skill-main .desc {
+        margin: 0;
+      }
+      .other-skills {
+        flex: auto;
+      }
+      .other-skills .label {
+        margin-top: 0;
       }
       .skills {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
         margin: 0;
+      }
+      .wide-skill {
+        grid-column: 1 / 3;
       }
 
       @media screen and (max-width: 800px) {
@@ -488,18 +515,11 @@
         <div class="inline-info school-info">
           <h3 class="name school-name">University of California San Diego</h3>
           <p class="school-city">La Jolla, CA</p>
-          <p class="school-gpa"><span class="label">GPA</span> 3.925</p>
+          <p class="school-gpa"><span class="label">GPA</span> 3.916</p>
           <p class="school-date">Sept. 2021&ndash;June 2025</p>
         </div>
         <p class="desc course-list">
-          <span class="label">Major</span>
-          <span>Mathematics&mdash;Computer Science</span>
-          <span class="label courses-label">Courses</span>
-          <span class="course-name">CSE 11</span>,
-          <span class="course-name">CSE 12</span>
-          <span class="course-desc">(ongoing)</span>,
-          <span class="course-name">CSE 15L</span>
-          <span class="course-desc">(ongoing)</span>
+          Majoring in Mathematics&mdash;Computer Science.
         </p>
       </article>
 
@@ -515,51 +535,39 @@
           </p>
           <p class="school-date">Aug. 2017&ndash;June 2021</p>
         </div>
-        <p class="desc course-list">
-          <span class="label courses-label">Courses</span>
-          <span class="course-name"
-            >Functional and Object-Oriented Programming</span
-          >
-          <span class="course-desc"> (recursion, higher order functions)</span>,
-          <span class="course-name">AP Computer Science A</span>
-          <span class="course-desc">
-            (iterative recursion, linked lists, message passing, environments,
-            big O notation, sorting algorithms)
-          </span>
-        </p>
       </article>
     </section>
 
     <div class="flex"></div>
 
-    <section class="section">
-      <h2 class="header">Skills</h2>
-      <p class="skills-desc">
-        Full-stack web development, web scraping, and these languages and tools:
-      </p>
-
-      <p class="skills">
-        <!-- languages -->
-        <span>HTML/CSS</span>
-        <span>JavaScript</span>
-        <span>TypeScript</span>
-        <span>Python</span>
-        <span>Rust</span>
-        <span>Java</span>
-        <span>Racket</span>
-        <span>Elm</span>
-        <!-- libraries -->
-        <span>React</span>
-        <span>Webpack</span>
-        <span>Rollup</span>
-        <span>jQuery</span>
-        <span>Express</span>
-        <!-- runtimes -->
-        <span>Node</span>
-        <span>Deno</span>
-        <!-- human languages -->
-        <span>Spanish</span>
-      </p>
+    <section class="section skills-wrapper">
+      <div class="skill-main">
+        <h2 class="skill-heading header">Skills</h2>
+        <span class="name">HTML/CSS/JavaScript</span>
+        <span class="desc">Regularly used since 2016</span>
+      </div>
+      <div class="other-skills">
+        <h3 class="skill-heading label">Other skills</h3>
+        <p class="skills">
+          <span class="wide-skill">Full-stack web development</span>
+          <span>Web scraping</span>
+          <!-- languages -->
+          <span>TypeScript</span>
+          <span>Python</span>
+          <span>Rust</span>
+          <span>Java</span>
+          <span>Elm</span>
+          <!-- libraries -->
+          <span>React</span>
+          <span>Webpack</span>
+          <span>Rollup</span>
+          <span>jQuery</span>
+          <span>Express</span>
+          <!-- runtimes -->
+          <span>Node</span>
+          <span>Deno</span>
+        </p>
+      </div>
     </section>
 
     <script>
