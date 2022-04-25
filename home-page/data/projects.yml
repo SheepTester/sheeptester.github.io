@@ -122,7 +122,7 @@
 
 - path: /fun-gunn-run/
   image: img/fgr-smaller.png
-  name: '"Fun" Gunn Run'
+  name: “Fun” Gunn Run
   description: >-
     A Temple Run clone set at my school.
   tags:
@@ -290,13 +290,13 @@
   tags:
     - utility
 
-- path: /trumpdays/
-  image: img/trumpdays-smaller.png
-  name: Trump days
-  description: >-
-    A countdown for Trump's first term.
-  tags:
-    - visual
+# - path: /trumpdays/
+#   image: img/trumpdays-smaller.png
+#   name: Trump days
+#   description: >-
+#     A countdown for Trump's first term.
+#   tags:
+#     - visual
 
 - path: /hello-world/drills.html
   image: img/drills-smaller.png

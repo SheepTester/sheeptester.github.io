@@ -453,7 +453,7 @@ async function parseImitationScss (psuedoScss, filePath, {
         const rawStrValue = tokenType === 'multilineString'
           ? trimMultilineString(token)
           : JSON.parse(token)
-        const strValue = substitute(rawStrValue, variables)
+        const strValue = substitute(rawStrValue, variables, str => str)
         const escaped = escapeHtml(strValue)
         if (context.type === 'attribute') {
           if (context.step === 'value') {

@@ -25,6 +25,19 @@ profiles:
     link: https://www.youtube.com/c/SeanYentheHumansperson
     ball: '#FF0000'
 
+  - name: TikTok
+    link: https://www.tiktok.com/@sheeptester
+    bg: black
+    border: white
+    ball: black
+    type: tiktok
+
+  - name: Snapchat
+    link: https://www.snapchat.com/add/sheeptester
+    bg: '#FEFC00'
+    border: black
+    ball: white
+
   - name: JSFiddle
     link: https://jsfiddle.net/user/SheepTester/
     bg: '#0483FF'
@@ -136,6 +149,35 @@ profiles:
     link: https://maps.app.goo.gl/kfWB94sEpb12bC9z9
     bg: '#33A853'
     type: gmaps
+
+  - name: Hypixel
+    link: https://hypixel.net/members/sheeptester.5640761/
+    bg: '#282C32'
+    ball: '#F5C030'
+
+  - name: Multisim
+    link: https://www.multisim.com/contributors/907619-syen/
+    bg: '#57B685'
+    border: white
+
+  - name: CSSBattle
+    link: https://cssbattle.dev/player/sheeptester
+    bg: '#0F1116'
+    border: '#FFDF00'
+
+  - name: HackerRank
+    link: https://www.hackerrank.com/sheeptester
+    bg: '#39424E'
+    ball: '#2EC866'
+
+  - name: Linktree
+    link: https://linktr.ee/sheeptester
+    bg: '#38E09B'
+    ball: white
+
+  - name: LeetCode
+    link: https://leetcode.com/sheeptester/
+    type: leetcode
 
   - name: Internet Archive
     link: https://archive.org/details/@sheep_tester

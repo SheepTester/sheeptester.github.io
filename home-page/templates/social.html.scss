@@ -53,6 +53,28 @@ css {
   .social-gmaps::after {
     background-image: linear-gradient(#4285F4 50%, #FABD05 50%);
   }
+  .social-tiktok .ball {
+    box-shadow: 3px 0 0 #FE2B54, -3px 0 0 #22F5ED, inset 3px 0 0 #FE2B54, inset -3px 0 0 #22F5ED;
+  }
+  .social-leetcode .ball {
+    border-color: #FFA115;
+    border-left-color: black;
+    border-right-color: white;
+  }
+  .social-leetcode .ball::after {
+    content: '';
+    display: block;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100%;
+    padding: 0 2.5px;
+    height: 5px;
+    background-color: #B3B3B3;
+    border-radius: 5px;
+    margin: -2.5px;
+    // box-shadow: 0 0 0 3px white;
+  }
 }
 $bg: "";
 @if map.get($social, 'bg') {
