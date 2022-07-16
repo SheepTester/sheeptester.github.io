@@ -7,12 +7,12 @@ const YAML = require('yaml')
 
 function * tokenize (text, possibilities) {
   const tokenizers = [Object.entries(possibilities)]
-  tokenization:
-  while (text.length) {
+  tokenization: while (text.length) {
     for (const [type, rawPossibility] of tokenizers[tokenizers.length - 1]) {
-      const possibility = typeof rawPossibility === 'string' || rawPossibility instanceof RegExp
-        ? { pattern: rawPossibility }
-        : rawPossibility
+      const possibility =
+        typeof rawPossibility === 'string' || rawPossibility instanceof RegExp
+          ? { pattern: rawPossibility }
+          : rawPossibility
       let token, groups
       if (typeof possibility.pattern === 'string') {
         if (text.startsWith(possibility.pattern)) {
@@ -66,7 +66,7 @@ const makeCssRawTokenizers = tokenizers => ({
 })
 const cssBodyTokenizers = makeCssRawTokenizers({
   lcurly: { pattern: /^\s*\{\s*/ },
-  rcurly: { pattern: /^\s*}\s*/, pop: true },
+  rcurly: { pattern: /^\s*}\s*/, pop: true }
 })
 cssBodyTokenizers.lcurly.push = cssBodyTokenizers
 const mediaQueryTokenizers = makeCssRawTokenizers({
@@ -100,10 +100,14 @@ const tokenizers = {
     push: patternTokenizers
   },
   variable: /^\$[\w-]+/,
-  mapGet: /^map\s*\.\s*get\s*\(\s*(\$[\w-]+)\s*,\s*('(?:[^'\r\n\\]|\\.)*'|\$[\w-]+)\s*\)/,
-  idName: /^#(?:[\w-]|#\{(?:\$[\w-]+|map\s*\.\s*get\s*\(\s*\$[\w-]+\s*,\s*'(?:[^'\r\n\\]|\\.)*'\s*\))\})+/,
-  className: /^\.(?:[\w-]|#\{(?:\$[\w-]+|map\s*\.\s*get\s*\(\s*\$[\w-]+\s*,\s*'(?:[^'\r\n\\]|\\.)*'\s*\))\})+/,
-  tagName: /^(?:[\w-]|#\{(?:\$[\w-]+|map\s*\.\s*get\s*\(\s*\$[\w-]+\s*,\s*'(?:[^'\r\n\\]|\\.)*'\s*\))\})+/,
+  mapGet:
+    /^map\s*\.\s*get\s*\(\s*(\$[\w-]+)\s*,\s*('(?:[^'\r\n\\]|\\.)*'|\$[\w-]+)\s*\)/,
+  idName:
+    /^#(?:[\w-]|#\{(?:\$[\w-]+|map\s*\.\s*get\s*\(\s*\$[\w-]+\s*,\s*'(?:[^'\r\n\\]|\\.)*'\s*\))\})+/,
+  className:
+    /^\.(?:[\w-]|#\{(?:\$[\w-]+|map\s*\.\s*get\s*\(\s*\$[\w-]+\s*,\s*'(?:[^'\r\n\\]|\\.)*'\s*\))\})+/,
+  tagName:
+    /^(?:[\w-]|#\{(?:\$[\w-]+|map\s*\.\s*get\s*\(\s*\$[\w-]+\s*,\s*'(?:[^'\r\n\\]|\\.)*'\s*\))\})+/,
   whitespace: /^\s+/
 }
 
@@ -117,14 +121,13 @@ function startSelector (context) {
     if (id) {
       attributes.push(['id', id])
     }
-    return `<${substitute(tagName, variables)}${
-      attributes
-        .map(([name, value]) => [name, value && substitute(value, variables)])
-        .filter(([, value]) => value !== '')
-        .map(([name, value]) =>
-          value === undefined ? ' ' + name : ` ${name}="${escapeHtml(value)}"`)
-        .join('')
-    }>`
+    return `<${substitute(tagName, variables)}${attributes
+      .map(([name, value]) => [name, value && substitute(value, variables)])
+      .filter(([, value]) => value !== '')
+      .map(([name, value]) =>
+        value === undefined ? ' ' + name : ` ${name}="${escapeHtml(value)}"`
+      )
+      .join('')}>`
   }
 }
 
@@ -133,16 +136,23 @@ function escapeHtml (str) {
   return str.replace(/[<>&"]/g, m => escapeMap[m])
 }
 
-const substitutionPattern = /#\{(?:(\$[\w-]+)|map\s*\.\s*get\s*\(\s*(\$[\w-]+)\s*,\s*('(?:[^'\r\n\\]|\\.)*'|\$[\w-]+)\s*\))\}/g
+const substitutionPattern =
+  /#\{(?:(\$[\w-]+)|map\s*\.\s*get\s*\(\s*(\$[\w-]+)\s*,\s*('(?:[^'\r\n\\]|\\.)*'|\$[\w-]+)\s*\))\}/g
 
 function trimMultilineString (str) {
   const contents = str.slice(3, -3)
   const firstIndentMatch = contents.match(/\n([ \t]*)/)
-  return contents.replace(new RegExp(String.raw`\s*\n[ \t]{0,${
-    firstIndentMatch
-      ? firstIndentMatch[1].length
-      : 0
-  }}`, 'g'), ' ').trim()
+  return contents
+    .replace(
+      new RegExp(
+        String.raw`\s*\n[ \t]{0,${
+          firstIndentMatch ? firstIndentMatch[1].length : 0
+        }}`,
+        'g'
+      ),
+      ' '
+    )
+    .trim()
 }
 
 function assignToCss (targetCss, newCss) {
@@ -180,11 +190,14 @@ function mapGet (vars, mapName, keyName, undefinedOk = false) {
   if (keyName[0] === '$' && typeof vars[keyName] !== 'string') {
     throw new TypeError(`${keyName} not string`)
   }
-  const key = keyName[0] === '$'
-    ? vars[keyName]
-    : JSON.parse(`"${
-      keyName.slice(1, -1).replace(/"|\\'/g, m => m === '"' ? '\\"' : '\'')
-    }"`)
+  const key =
+    keyName[0] === '$'
+      ? vars[keyName]
+      : JSON.parse(
+          `"${keyName
+            .slice(1, -1)
+            .replace(/"|\\'/g, m => (m === '"' ? '\\"' : "'"))}"`
+        )
   if (!undefinedOk && vars[mapName][key] === undefined) {
     throw new ReferenceError(`${key} not not in map`)
   }
@@ -216,13 +229,17 @@ async function getFile (path) {
   }
 }
 
-async function parseImitationScss (psuedoScss, filePath, {
-  html = '',
-  css = new Map([['main', new Set()]]),
-  noisy = false,
-  logPop = false,
-  variables = {}
-} = {}) {
+async function parseImitationScss (
+  psuedoScss,
+  filePath,
+  {
+    html = '',
+    css = new Map([['main', new Set()]]),
+    noisy = false,
+    logPop = false,
+    variables = {}
+  } = {}
+) {
   const tokens = tokenize(psuedoScss, tokenizers)
   const contextHistory = []
   const contextStack = [{}]
@@ -238,18 +255,23 @@ async function parseImitationScss (psuedoScss, filePath, {
       console.error(data)
       throw new TypeError('Cannot loop over non-array')
     }
-    const array = Array.isArray(data)
-      ? data
-      : Object.entries(data)
-    const minLength = Math.min(...array.map(sublist => Array.isArray(sublist) ? sublist.length : 1))
+    const array = Array.isArray(data) ? data : Object.entries(data)
+    const minLength = Math.min(
+      ...array.map(sublist => (Array.isArray(sublist) ? sublist.length : 1))
+    )
     if (context.variables.length > minLength && minLength >= 2) {
-      throw new RangeError(`Destructuring too many variables from a list of at minimum ${minLength} items`)
+      throw new RangeError(
+        `Destructuring too many variables from a list of at minimum ${minLength} items`
+      )
     }
     const loopTokens = []
     let brackets = 0
     while (true) {
       const { value: nextToken, done } = tokens.next()
-      if (done) throw new Error('tokens should not be done; unbalanced curlies probably')
+      if (done)
+        throw new Error(
+          'tokens should not be done; unbalanced curlies probably'
+        )
       loopTokens.push(nextToken)
       if (nextToken[0] === 'lcurly' || nextToken[0] === 'cssRawBegin') {
         brackets++
@@ -287,7 +309,7 @@ async function parseImitationScss (psuedoScss, filePath, {
       assignToCss(tempCss, css)
       pop('each-loop (loop end)') // each-loop
       if (contextStack[contextStack.length - 1].type === 'each-loop') {
-        console.error(contextHistory.join('\n'));
+        console.error(contextHistory.join('\n'))
         throw new Error('Unbalanced popping; each-loop still exists')
       }
       index++
@@ -300,18 +322,23 @@ async function parseImitationScss (psuedoScss, filePath, {
   async function analyseToken ([tokenType, token, groups], variables) {
     let context = contextStack[contextStack.length - 1]
     if (noisy) console.log([tokenType, token], context)
-    const contextEntry = contextStack.map(context => {
-      if (context.type === 'if') {
-        return `if(${
-          context.not ? !context.condition : context.condition
-        })[${context.step}]`
-      } else if (context.type) {
-        return context.type + (context.step ? `[${context.step}]` : '')
-          + (context.brackets !== undefined ? `[${context.brackets}]` : '')
-      } else {
-        return `?(${context._from})`
-      }
-    }).join(' ')
+    const contextEntry = contextStack
+      .map(context => {
+        if (context.type === 'if') {
+          return `if(${context.not ? !context.condition : context.condition})[${
+            context.step
+          }]`
+        } else if (context.type) {
+          return (
+            context.type +
+            (context.step ? `[${context.step}]` : '') +
+            (context.brackets !== undefined ? `[${context.brackets}]` : '')
+          )
+        } else {
+          return `?(${context._from})`
+        }
+      })
+      .join(' ')
     if (contextHistory[contextHistory.length - 1] !== contextEntry) {
       contextHistory.push(contextEntry)
     }
@@ -450,9 +477,10 @@ async function parseImitationScss (psuedoScss, filePath, {
           context.media += token
           break
         }
-        const rawStrValue = tokenType === 'multilineString'
-          ? trimMultilineString(token)
-          : JSON.parse(token)
+        const rawStrValue =
+          tokenType === 'multilineString'
+            ? trimMultilineString(token)
+            : JSON.parse(token)
         const strValue = substitute(rawStrValue, variables, str => str)
         const escaped = escapeHtml(strValue)
         if (context.type === 'attribute') {
@@ -472,11 +500,15 @@ async function parseImitationScss (psuedoScss, filePath, {
         } else if (context.type === 'import') {
           if (context.step === 'path') {
             const path = nodePath.join(nodePath.dirname(filePath), strValue)
-            const imported = await parseImitationScss(await getFile(path), path, {
-              noisy,
-              logPop,
-              variables: { ...variables }
-            })
+            const imported = await parseImitationScss(
+              await getFile(path),
+              path,
+              {
+                noisy,
+                logPop,
+                variables: { ...variables }
+              }
+            )
             html += imported.html
             assignToCss(css, imported.css)
             context.step = 'end'
@@ -554,7 +586,11 @@ async function parseImitationScss (psuedoScss, filePath, {
         if (context.type === 'css') {
           context.brackets--
           if (context.brackets <= 0) {
-            addStyle(css, substitute(context.css.trim(), variables, str => str), context.media)
+            addStyle(
+              css,
+              substitute(context.css.trim(), variables, str => str),
+              context.media
+            )
             pop('css')
             contextStack.push({ _from: 'rcurly css' })
           } else {
@@ -566,7 +602,9 @@ async function parseImitationScss (psuedoScss, filePath, {
         context = contextStack[contextStack.length - 1]
         if (noisy) console.log('RCURLY', context)
         if (context.type === 'selector') {
-          html += `</${context.tagName ? substitute(context.tagName, variables) : 'div'}>`
+          html += `</${
+            context.tagName ? substitute(context.tagName, variables) : 'div'
+          }>`
           pop('selector (})')
           contextStack.push({ _from: 'rcurly selector' })
         } else if (context.type === 'each-loop') {
@@ -582,7 +620,7 @@ async function parseImitationScss (psuedoScss, filePath, {
         } else {
           console.error(contextHistory.join('\n'))
           // console.error(contextStack)
-          throw new Error('Right curly\'s matching left curly in wrong context')
+          throw new Error("Right curly's matching left curly in wrong context")
         }
         break
       }
@@ -722,7 +760,10 @@ async function parseImitationScss (psuedoScss, filePath, {
       case 'importFunc': {
         if (context.type === 'each') {
           if (context.step === 'expr') {
-            const path = nodePath.join(nodePath.dirname(filePath), JSON.parse(groups[1]))
+            const path = nodePath.join(
+              nodePath.dirname(filePath),
+              JSON.parse(groups[1])
+            )
             const yaml = YAML.parse(await getFile(path))
             if (yaml === null || typeof yaml !== 'object') {
               throw new TypeError('Cannot loop over a non-array/object')
@@ -733,7 +774,10 @@ async function parseImitationScss (psuedoScss, filePath, {
           }
         } else if (context.type === 'var') {
           if (context.step === 'value') {
-            const path = nodePath.join(nodePath.dirname(filePath), JSON.parse(groups[1]))
+            const path = nodePath.join(
+              nodePath.dirname(filePath),
+              JSON.parse(groups[1])
+            )
             const yaml = YAML.parse(await getFile(path))
             variables[context.var] = yaml
             context.step = 'end'
@@ -826,7 +870,9 @@ async function parseImitationScss (psuedoScss, filePath, {
         if (context.type === 'css') {
           context.css += '('
         } else if (context.type === 'media') {
-          context.media += '('
+          // @media queries require spaces around `and` and after @media, but
+          // the lparen token swallows up the whitespace for that.
+          context.media += token.startsWith(' ') ? ' (' : '('
         }
         break
       }
@@ -882,24 +928,19 @@ fs.readFile(inputFile, 'utf8')
   .then(async psuedoScss => {
     const { html, css } = await parseImitationScss(psuedoScss, inputFile, {
       html: `<!DOCTYPE html>\n<!-- Hi! This file was generated, so it's hard to read. The source code is at ${inputFile} -->\n`,
-      noisy: false,
+      noisy: false
       // logPop: true
     })
-    await fs.writeFile(
-      outputHtml,
-      html + '\n',
-    )
+    await fs.writeFile(outputHtml, html + '\n')
     await fs.writeFile(
       outputCss,
-      `/* Hi! This file was generated, so it's hard to read. The source code is at ${inputFile} */\n${
-        Array.from(
-          css,
-          ([media, styles]) => {
-            const css = [...styles].join('')
-            return media === 'main' ? css : `${media}{${css}}`
-          }
-        ).join('')
-      }\n`,
+      `/* Hi! This file was generated, so it's hard to read. The source code is at ${inputFile} */\n${Array.from(
+        css,
+        ([media, styles]) => {
+          const css = [...styles].join('')
+          return media === 'main' ? css : `${media}{${css}}`
+        }
+      ).join('')}\n`
     )
   })
   .catch(err => {

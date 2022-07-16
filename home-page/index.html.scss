@@ -367,35 +367,8 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
           }
         }
         p.datum {
-          css {
-            abbr {
-              text-decoration-color: rgba(255, 255, 255, 0.3);
-            }
-          }
           span.attribute {
-            content: "Pronouns";
-          }
-          content: " ";
-          abbr[title="English"][lang="en"] {
-            content: "he";
-          }
-          content: ", ";
-          abbr[title="Spanish"][lang="es"] {
-            content: "él";
-          }
-          content: ", ";
-          abbr[title="Esperanto"][lang="eo"] {
-            content: "li";
-          }
-          content: ", ";
-          abbr[title="Mandarin"][lang="zh"] {
-            content: "他";
-          }
-          content: ", etc.";
-        }
-        p.datum {
-          span.attribute {
-            content: "Experience";
+            content: "Age";
           }
           content: " ";
           css {
@@ -428,6 +401,33 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
             content: "at least 13";
           }
           content: " years";
+        }
+        p.datum {
+          css {
+            abbr {
+              text-decoration-color: rgba(255, 255, 255, 0.3);
+            }
+          }
+          span.attribute {
+            content: "Pronouns";
+          }
+          content: " ";
+          abbr[title="English"][lang="en"] {
+            content: "he";
+          }
+          content: ", ";
+          abbr[title="Spanish"][lang="es"] {
+            content: "él";
+          }
+          content: ", ";
+          abbr[title="Esperanto"][lang="eo"] {
+            content: "li";
+          }
+          content: ", ";
+          abbr[title="Mandarin"][lang="zh"] {
+            content: "他";
+          }
+          content: ", etc.";
         }
       }
 
@@ -464,6 +464,7 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
             .border {
               border-left: 1px solid rgba(151, 189, 179, 0.2);
               border-top: 1px solid rgba(151, 189, 179, 0.2);
+              margin: 20px 0;
               align-self: stretch;
             }
 
@@ -832,10 +833,16 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
       css {
         .projects {
           display: grid;
+          grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+          padding: 20px 0;
+          grid-auto-flow: dense;
+        }
+      }
+      @media (min-width: 680px) {
+        .projects {
           grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
           gap: 20px;
           padding: 20px;
-          grid-auto-flow: dense;
         }
       }
       .projects#projects-wrapper {
@@ -845,12 +852,16 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
 
         css {
           .description {
-            border-radius: 10px;
             padding: 20px;
             background-color: #24364a;
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.5);
             grid-column: 1 / -1;
             line-height: 1.5;
+          }
+        }
+        @media (min-width: 680px) {
+          .description {
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.5);
           }
         }
         .description#description-wrapper[style="display:none"][aria-role="contentinfo"] {
@@ -954,7 +965,7 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
       p.tinder-note {
         content: "That was merely a preview of what this website has in store. ";
         a.link[href="./all/tinder.html"] {
-          content: "Expore and sort through everything else.";
+          content: "Explore and sort through everything else.";
         }
       }
     }

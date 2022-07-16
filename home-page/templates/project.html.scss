@@ -3,15 +3,9 @@ css {
     display: block;
     position: relative;
     padding-bottom: 100%;
-    border-radius: 10px;
     color: inherit;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
     background-image: linear-gradient(45deg, #20de88, #28bbe8);
     transition: box-shadow .5s;
-  }
-  .project:not(.showing-desc):hover {
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.8);
-    transition: box-shadow .2s;
   }
   .showing-desc::after {
     content: '';
@@ -19,10 +13,27 @@ css {
     border-left: 10px solid transparent;
     border-right: 10px solid transparent;
     position: absolute;
-    top: 100%;
+    bottom: 0;
     left: 50%;
     margin-top: 10px;
     margin-left: -10px;
+  }
+}
+@media (hover: hover) {
+  .project:not(.showing-desc):hover {
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.8);
+    transition: box-shadow .2s;
+    z-index: 1;
+  }
+}
+@media (min-width: 680px) {
+  .project {
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+  }
+  .showing-desc::after {
+    top: 100%;
+    bottom: unset;
   }
 }
 $classes: "project";
@@ -37,16 +48,26 @@ a.#{$classes}[href="#{map.get($project, 'path')}"][data-desc="#{map.get($project
       left: 0;
       width: 100%;
       z-index: 0;
-      border-radius: 10px;
       opacity: 0.7;
       filter: grayscale(1);
       transition: opacity .5s, filter .5s;
     }
-    .project:hover .thumbnail,
     .showing-desc .thumbnail {
       opacity: 1;
       filter: grayscale(0);
       transition: opacity .2s, filter .2s;
+    }
+  }
+  @media (hover: hover) {
+    .project:hover .thumbnail {
+      opacity: 1;
+      filter: grayscale(0);
+      transition: opacity .2s, filter .2s;
+    }
+  }
+  @media (min-width: 680px) {
+    .thumbnail {
+      border-radius: 10px;
     }
   }
   img.thumbnail[src="#{map.get($project, 'image')}"];
@@ -64,19 +85,27 @@ a.#{$classes}[href="#{map.get($project, 'path')}"][data-desc="#{map.get($project
         transparent 100%);
       padding: 10px 15px;
       padding-top: 30px;
-      font-size: 24px;
+      font-size: 1px;
       border-bottom-left-radius: 10px;
       border-bottom-right-radius: 10px;
       color: white;
-      opacity: 0.5;
+      opacity: 0;
       transition: opacity .2s;
     }
-    .project:hover .title {
-      opacity: 1;
+  }
+  @media (min-width: 680px) {
+    .title {
+      font-size: 24px;
+      opacity: 0.5;
     }
     .project.showing-desc .title {
       opacity: 0;
       pointer-events: none;
+    }
+  }
+  @media (min-width: 680px) and (hover: hover) {
+    .project:hover .title {
+      opacity: 1;
     }
   }
   span.title {
@@ -109,12 +138,14 @@ a.#{$classes}[href="#{map.get($project, 'path')}"][data-desc="#{map.get($project
           transition-delay: 0s;
           box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
         }
-        .project:hover .tag {
-          opacity: 1;
-        }
         .project.showing-desc .tag {
           opacity: 0;
           pointer-events: none;
+        }
+      }
+      @media (hover: hover) {
+        .project:hover .tag {
+          opacity: 1;
         }
       }
       css {
@@ -150,15 +181,19 @@ a.#{$classes}[href="#{map.get($project, 'path')}"][data-desc="#{map.get($project
       transition: opacity .5s, background-color .2s, box-shadow .2s;
       transition-delay: 0.05s, 0, 0;
     }
-    .has-js .open-directly {
-      display: block;
-    }
-    .project:hover .open-directly {
-      opacity: 1;
-    }
     .open-directly:hover {
       background-color: white;
       box-shadow: 0 3px 5px rgba(0, 0, 0, 0.2);
+    }
+  }
+  @media (hover: hover) {
+    .project:hover .open-directly {
+      opacity: 1;
+    }
+  }
+  @media (min-width: 680px) {
+    .has-js .open-directly {
+      display: block;
     }
   }
   span.open-directly {}
