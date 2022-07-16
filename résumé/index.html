@@ -143,6 +143,11 @@
       .ext-link[href]:hover {
         text-decoration: underline;
       }
+      @media print {
+        .ext-link {
+          text-decoration: underline;
+        }
+      }
       .course-desc {
         color: rgba(0, 0, 0, 0.5);
       }
@@ -515,12 +520,10 @@
         <div class="inline-info school-info">
           <h3 class="name school-name">University of California San Diego</h3>
           <p class="school-city">La Jolla, CA</p>
-          <p class="school-gpa"><span class="label">GPA</span> 3.916</p>
+          <p class="school-gpa"><span class="label">GPA</span> 3.944</p>
           <p class="school-date">Sept. 2021&ndash;June 2025</p>
         </div>
-        <p class="desc course-list">
-          Majoring in Computer Science.
-        </p>
+        <p class="desc course-list">Majoring in Computer Science.</p>
       </article>
 
       <article class="school">
@@ -543,7 +546,7 @@
     <section class="section skills-wrapper">
       <div class="skill-main">
         <h2 class="skill-heading header">Skills</h2>
-        <span class="name">HTML/CSS/JavaScript</span>
+        <span class="name">HTML/<wbr />CSS/<wbr />JavaScript</span>
         <span class="desc">Regularly used since 2016</span>
       </div>
       <div class="other-skills">
