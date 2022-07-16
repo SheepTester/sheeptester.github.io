@@ -17,6 +17,7 @@ css {
     left: 50%;
     margin-top: 10px;
     margin-left: -10px;
+    pointer-events: none;
   }
 }
 @media (hover: hover) {
@@ -34,6 +35,22 @@ css {
   .showing-desc::after {
     top: 100%;
     bottom: unset;
+    filter: drop-shadow(0 3px 10px black);
+  }
+  // Cover up shadow of arrow
+  .showing-desc::before {
+    content: '';
+    display: block;
+    background-color: #24364a;
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-top: 20px;
+    margin-left: -30px;
+    width: 60px;
+    height: 23px;
+    z-index: 1;
+    pointer-events: none;
   }
 }
 $classes: "project";
@@ -104,7 +121,7 @@ a.#{$classes}[href="#{map.get($project, 'path')}"][data-desc="#{map.get($project
     }
   }
   @media (min-width: 680px) and (hover: hover) {
-    .project:hover .title {
+    .project:not(.showing-desc):hover .title {
       opacity: 1;
     }
   }
@@ -144,7 +161,7 @@ a.#{$classes}[href="#{map.get($project, 'path')}"][data-desc="#{map.get($project
         }
       }
       @media (hover: hover) {
-        .project:hover .tag {
+        .project:not(.showing-desc):hover .tag {
           opacity: 1;
         }
       }
@@ -187,7 +204,7 @@ a.#{$classes}[href="#{map.get($project, 'path')}"][data-desc="#{map.get($project
     }
   }
   @media (hover: hover) {
-    .project:hover .open-directly {
+    .project:not(.showing-desc):hover .open-directly {
       opacity: 1;
     }
   }

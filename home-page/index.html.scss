@@ -894,18 +894,29 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
 
               css {
                 .desc-visit {
-                  color: #1ce0e0;
-                  border: 1px solid #1ce0e0;
+                  display: flex;
+                  align-items: center;
+                  background-color: white;
+                  background-image: url('/home-page/icons/open-directly.svg');
+                  background-size: 24px;
+                  background-repeat: no-repeat;
+                  background-position: right 6px center;
+                  height: 36px;
+                  color: rgba(34, 171, 165, 1);
+                  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+                  font-weight: bold;
                   text-transform: uppercase;
+                  font-size: 0.9em;
                   text-decoration: none;
-                  padding: 2px 15px;
+                  padding-left: 12px;
+                  padding-right: 33px;
                   border-radius: 30px;
                   margin-top: 5px;
-                  font-size: 0.9em;
                   flex: none;
+                  transition: box-shadow .2s;
                 }
                 .desc-visit:hover {
-                  background-color: rgba(28, 224, 224, 0.1);
+                  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.5);
                 }
               }
               a[href="#"].desc-visit#desc-link {
