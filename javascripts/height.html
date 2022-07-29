@@ -175,7 +175,13 @@
           e.target.value =
             +e.target.value +
             (e.key === 'ArrowUp' ? 1 : -1) *
-              (e.ctrlKey ? 100 : e.shiftKey ? 10 : e.altKey ? 0.1 : 1)
+              (e.ctrlKey || e.metaKey
+                ? 100
+                : e.shiftKey
+                ? 10
+                : e.altKey
+                ? 0.1
+                : 1)
           e.preventDefault()
           e.target.dispatchEvent(new Event('input'))
         }
