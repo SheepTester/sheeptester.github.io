@@ -4,8 +4,8 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Unofficial Gunn Discord cesspool animated logo</title>
-    <meta name="description" content="Uses CANVAS owo" />
+    <title>UCSD 2026 animated logo</title>
+    <meta name="description" content="hhh" />
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -30,6 +30,7 @@
     <script src="/sheep3.js" charset="utf-8"></script>
 
     <style>
+      @import url('https://www.ucsd.edu/_resources/css/vendor/brix_sans.css');
       @import url('https://sheeptester.github.io/sheep-sim/src/css/common.css');
       @import url('https://sheeptester.github.io/sheep-sim/src/css/canvas.css');
 
@@ -40,8 +41,8 @@
       }
 
       #canvas-wrapper {
-        width: 300px;
-        height: 300px;
+        width: 500px;
+        height: 500px;
         overflow: hidden;
       }
       #canvas-wrapper.server-icon {
@@ -123,13 +124,44 @@
           const { canvas, logo } = this
           const { context: c } = canvas
           c.clearRect(0, 0, ...canvas.size)
+
+          const gradient = c.createLinearGradient(0, 0, 0, canvas.size.y)
+          gradient.addColorStop(0, '#00619A')
+          gradient.addColorStop(1, '#143356')
+          c.fillStyle = gradient
+          c.fillRect(0, 0, ...canvas.size)
+
+          c.save()
+          c.translate(...canvas.size)
+          c.rotate(-Math.PI / 4)
+          c.fillStyle = '#FFCD00'
+          c.fillRect(-102 / 2, -1157 / 2, 204 / 2, 2314 / 2)
+          c.fillRect((-204 * 1.5 - 42) / 2, -1730 / 4, 204 / 2, 1730 / 2)
+          c.fillRect((204 / 2 + 42) / 2, -1730 / 4, 204 / 2, 1730 / 2)
+          c.restore()
+
+          c.shadowColor = 'black'
+          c.shadowBlur = 50
+          c.textAlign = 'center'
+          c.fillStyle = 'white'
+          c.font = '190px "BrixSansBold"'
+          c.fillText('2026', canvas.size.x / 2, 342)
+          c.font = '66px "BrixSansBold"'
+          c.fillText('UC SAN DIEGO', canvas.size.x / 2, 201)
+          c.fillText('UC SAN DIEGO', canvas.size.x / 2, 201)
+          c.shadowColor = 'transparent'
+          c.fillText('UC SAN DIEGO', canvas.size.x / 2, 201)
+          c.font = '190px "BrixSansBold"'
+          c.fillText('2026', canvas.size.x / 2, 342)
         }
       }
 
       async function main () {
         const options = { speed: 1, serverIcon: false, circle: false }
         const animation = new Animation(canvas, {
-          crewmate: await loadImage('./gunn.png')
+          crewmate: await loadImage(
+            'https://cdn.discordapp.com/attachments/986565854105833493/1003045624083665007/OVERWRITE_ME.png'
+          )
         })
         function render () {
           const now = Date.now() * options.speed
