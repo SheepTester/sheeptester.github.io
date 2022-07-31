@@ -63,7 +63,7 @@
       import { Canvas } from 'https://sheeptester.github.io/sheep-sim/src/view/canvas.mjs'
       import { Animator } from 'https://sheeptester.github.io/sheep-sim/src/view/animator.mjs'
       import { Vector2 } from 'https://sheeptester.github.io/sheep-sim/src/utils/vector2.mjs'
-      const { easeInQuart, easeOutQuart, easeOutExpo } = Easing
+      const { easeInOutCubic, easeInCubic, easeOutCubic } = Easing
 
       class ImitationCanvas {
         constructor ({
@@ -158,17 +158,37 @@
             })
           }
         }
+
+        transition (time, eventId, duration) {
+          const event = this.#eventsMap[eventId].time
+          const transitioning = event < time && time < event + duration
+          return {
+            time: transitioning
+              ? (time - event) / duration
+              : time > event
+              ? 1
+              : 0,
+            transitioning
+          }
+        }
       }
 
       const timings = new Timings()
         .event('to-ucsd')
         .then(1000)
         .event('to-amogus')
-        .then(1000)
+        .then(2000)
         .event('to-2026')
-        .then(1000)
+        .then(800)
 
       class Animation {
+        static #TRIDENT = {
+          GAP: 21,
+          WIDTH: 102,
+          SHORTER: 432.5,
+          LONGER: 578.5
+        }
+
         canvas
         images
         #gradient
@@ -181,8 +201,10 @@
         draw (time) {
           const { canvas, images } = this
           const { context: c } = canvas
+          c.save()
+          c.scale(...canvas.size.clone().scale(1 / 500))
           c.fillStyle = 'black'
-          c.fillRect(0, 0, ...canvas.size)
+          c.fillRect(0, 0, 500, 500)
 
           timings.component(time, {
             enter: { at: 'to-2026', for: 800 },
@@ -190,55 +212,103 @@
             render: ({ inTime, outTime, transitioning }) => {
               const y =
                 transitioning === 'in'
-                  ? (1 - Easing.easeInOutCubic(inTime)) * -3 * canvas.size.y
-                  : Easing.easeInOutCubic(outTime) * -3 * canvas.size.y
+                  ? (1 - easeInOutCubic(inTime)) * -3 * 500
+                  : easeInOutCubic(outTime) * -3 * 500
               const gradient = canvas.context.createLinearGradient(
                 0,
                 y,
                 0,
-                y + canvas.size.y
+                y + 500 * 2
               )
               gradient.addColorStop(0, '#00619A')
               gradient.addColorStop(0.5, '#143356')
               gradient.addColorStop(1, 'black')
               c.fillStyle = gradient
-              c.fillRect(0, 0, canvas.size.x, canvas.size.y)
-              c.strokeRect(0, 0, canvas.size.x, canvas.size.y)
+              c.fillRect(0, 0, 500, 500)
+              c.strokeRect(0, 0, 500, 500)
             }
           })
 
-          c.save()
-          c.translate(...canvas.size)
-          c.rotate(-Math.PI / 4)
-          c.fillStyle = '#FFCD00'
-          c.fillRect(-102 / 2, -1157 / 2, 204 / 2, 2314 / 2)
-          c.fillRect((-204 * 1.5 - 42) / 2, -1730 / 4, 204 / 2, 1730 / 2)
-          c.fillRect((204 / 2 + 42) / 2, -1730 / 4, 204 / 2, 1730 / 2)
-          c.restore()
+          timings.component(time, {
+            enter: { at: 'to-2026', for: 800 },
+            exit: { at: 'to-amogus', for: 1000 },
+            render: ({ inTime, outTime, transitioning }) => {
+              const T = Animation.#TRIDENT
+              c.save()
+              c.translate(500, 500)
+              c.rotate(-Math.PI / 4)
+              c.scale(1, -1)
+              c.fillStyle = '#FFCD00'
+              const GROWTH_TIME = 0.4
+              const OUT_TIME = (1 - GROWTH_TIME) / 3
+              const DIFF_TIME = 0.1
+              const growth =
+                (outTime < GROWTH_TIME
+                  ? easeInCubic(outTime / GROWTH_TIME)
+                  : 1) * 250
+              const diameter = Math.SQRT2 * 500
+              c.beginPath()
+              c.rect(
+                -T.WIDTH / 2,
+                outTime > 1 - DIFF_TIME
+                  ? diameter
+                  : outTime > GROWTH_TIME + DIFF_TIME
+                  ? easeInCubic(
+                      (outTime - GROWTH_TIME - DIFF_TIME) / OUT_TIME
+                    ) * diameter
+                  : 0,
+                T.WIDTH,
+                T.LONGER + growth
+              )
+              c.rect(
+                -T.WIDTH * 1.5 - T.GAP,
+                outTime > 1 - DIFF_TIME * 2
+                  ? diameter
+                  : outTime > GROWTH_TIME
+                  ? easeInCubic((outTime - GROWTH_TIME) / OUT_TIME) * diameter
+                  : 0,
+                T.WIDTH,
+                T.SHORTER + growth
+              )
+              c.rect(
+                T.WIDTH / 2 + T.GAP,
+                outTime > GROWTH_TIME + DIFF_TIME * 2
+                  ? easeInCubic(
+                      (outTime - GROWTH_TIME - DIFF_TIME * 2) / OUT_TIME
+                    ) * diameter
+                  : 0,
+                T.WIDTH,
+                T.SHORTER + growth
+              )
+              c.clip()
+              const radius = Math.SQRT2 * 500 * easeOutCubic(inTime)
+              c.beginPath()
+              c.moveTo(0, radius)
+              c.arc(0, 0, radius, 0, Math.PI * 2)
+              c.fill()
+              c.restore()
+            }
+          })
 
-          c.shadowColor = 'black'
-          c.shadowBlur = 50
           c.textAlign = 'center'
           c.fillStyle = 'white'
           c.font = '190px "BrixSansBold"'
-          c.fillText('2026', canvas.size.x / 2, 342)
+          c.fillText('2026', 500 / 2, 342)
           c.font = '66px "BrixSansBold"'
-          c.fillText('UC SAN DIEGO', canvas.size.x / 2, 201)
-          c.fillText('UC SAN DIEGO', canvas.size.x / 2, 201)
-          c.shadowColor = 'transparent'
-          c.fillText('UC SAN DIEGO', canvas.size.x / 2, 201)
-          c.font = '190px "BrixSansBold"'
-          c.fillText('2026', canvas.size.x / 2, 342)
+          c.fillText('UC SAN DIEGO', 500 / 2, 201)
+
+          c.restore()
         }
       }
 
       async function main () {
         const options = { speed: 1, serverIcon: false, circle: false }
-        const animation = new Animation(canvas, {
+        const images = {
           crewmate: await loadImage(
             'https://cdn.discordapp.com/attachments/986565854105833493/1003045624083665007/OVERWRITE_ME.png'
           )
-        })
+        }
+        const animation = new Animation(canvas, images)
         function render () {
           const now = Date.now() * options.speed
           const time = now % timings.duration
@@ -276,7 +346,7 @@
           const dummyCanvas = new ImitationCanvas({
             size: new Vector2(gifOptions.SIZE, gifOptions.SIZE)
           })
-          const animation = new Animation(dummyCanvas, logo)
+          const animation = new Animation(dummyCanvas, images)
           const frameDelay = 1000 / gifOptions.FPS
           if (gifOptions.MP4) {
             await import(
