@@ -133,22 +133,41 @@
           return this
         }
 
+        #between (time, start, end) {
+          if (start < end) {
+            return start < time && time < end
+          } else {
+            // end < start
+            return time > start || time < end
+          }
+        }
+
+        #addTime (time, offset = 0) {
+          return (
+            (((time + offset) % this.duration) + this.duration) % this.duration
+          )
+        }
+
         component (time, { enter, exit, render }) {
-          // May want to add offsets relative to an event later
-          const enterTime = this.#eventsMap[enter.at].time
-          const exitTime = this.#eventsMap[exit.at].time
+          const enterTime = this.#addTime(
+            this.#eventsMap[enter.at].time,
+            enter.offset
+          )
+          const exitTime = this.#addTime(
+            this.#eventsMap[exit.at].time,
+            exit.offset
+          )
           // This math will probably die with certain numbers
-          const insideRange =
-            enterTime < exitTime
-              ? enterTime < time && time < exitTime + exit.for
-              : time > enterTime || time < exitTime + exit.for
-          if (insideRange) {
-            const transitioning =
-              enterTime < time && time < enterTime + enter.for
-                ? 'in'
-                : exitTime < time && time < exitTime + exit.for
-                ? 'out'
-                : null
+          if (this.#between(time, enterTime, exitTime + exit.for)) {
+            const transitioning = this.#between(
+              time,
+              enterTime,
+              enterTime + enter.for
+            )
+              ? 'in'
+              : this.#between(time, exitTime, exitTime + exit.for)
+              ? 'out'
+              : null
             render({
               inTime:
                 transitioning === 'in' ? (time - enterTime) / enter.for : 1,
@@ -157,13 +176,17 @@
               transitioning,
               getTransition: (eventId, duration) => {
                 const event = this.#eventsMap[eventId].time
-                const transitioning = event < time && time < event + duration
+                const transitioning = this.#between(
+                  time,
+                  event,
+                  event + duration
+                )
                 return {
                   time: transitioning
                     ? (time - event) / duration
-                    : event < time && time < exitTime + exit.for
-                    ? 1
-                    : 0,
+                    : this.#between(time, enterTime, event)
+                    ? 0
+                    : 1,
                   transitioning
                 }
               }
@@ -178,7 +201,7 @@
         .event('to-amogus')
         .then(2000)
         .event('to-2026')
-        .then(800)
+        .then(1200)
 
       const SIZE = 500
 
@@ -230,8 +253,8 @@
           c.fillRect(0, 0, SIZE, SIZE)
 
           timings.component(time, {
-            enter: { at: 'to-2026', for: 800 },
-            exit: { at: 'to-amogus', for: 800 },
+            enter: { at: 'to-2026', for: 1500, offset: -500 },
+            exit: { at: 'to-amogus', for: 800, offset: 400 },
             render: ({ inTime, outTime, transitioning }) => {
               const y =
                 transitioning === 'in'
@@ -253,7 +276,7 @@
           })
 
           timings.component(time, {
-            enter: { at: 'to-2026', for: 600 },
+            enter: { at: 'to-2026', for: 1000, offset: 500 },
             exit: { at: 'to-amogus', for: 1000 },
             render: ({ inTime, outTime, transitioning }) => {
               const T = Animation.#TRIDENT
@@ -316,7 +339,7 @@
           c.fillStyle = 'white'
 
           timings.component(time, {
-            enter: { at: 'to-2026', for: 500 },
+            enter: { at: 'to-2026', for: 500, offset: 500 },
             exit: { at: 'to-amogus', for: 500 },
             render: ({ inTime, outTime, transitioning, getTransition }) => {
               const transition = getTransition('to-ucsd', 700)
@@ -327,13 +350,13 @@
               const startX =
                 centerX + fontTime * (SIZE - 30 - totalWidth - centerX)
               for (const { content, x } of parts) {
-                c.fillText(content, startX + x, 342 + fontTime * 40)
+                c.fillText(content, startX + x, 342 + fontTime * 30)
               }
             }
           })
 
           timings.component(time, {
-            enter: { at: 'to-2026', for: 500 },
+            enter: { at: 'to-2026', for: 1000, offset: 500 },
             exit: { at: 'to-amogus', for: 500 },
             render: ({ inTime, outTime, transitioning, getTransition }) => {
               const transition = getTransition('to-ucsd', 700)
@@ -345,30 +368,63 @@
                     )
                   : 0
               const fontSize = 66 + fontTime * 120
-              const y = 201 + fontTime * 100
+              const y = 201 + fontTime * 90
               c.font = `${fontSize}px 'BrixSansBold'`
-              const scale =
-                transition.time < 1 - GROW_TIME
-                  ? easeInOutCubic(1 - transition.time / (1 - GROW_TIME))
-                  : 0
-              const { width: totalWidth, parts } = this.#textParts([
-                'UC',
-                { content: ' ', scale },
-                'S',
-                { content: 'AN ', scale },
-                'D',
-                { content: 'IEGO', scale }
-              ])
-              for (const { content, x, width } of parts) {
-                const textX = SIZE / 2 + x - totalWidth / 2
-                if (width !== null) {
-                  c.save()
-                  c.beginPath()
-                  c.rect(textX, y - fontSize, width, y)
-                  c.clip()
+              if (transitioning !== 'in') {
+                const scale =
+                  transition.time < 1 - GROW_TIME
+                    ? easeInOutCubic(1 - transition.time / (1 - GROW_TIME))
+                    : 0
+                const { width: totalWidth, parts } = this.#textParts([
+                  'UC',
+                  { content: ' ', scale },
+                  'S',
+                  { content: 'AN ', scale },
+                  'D',
+                  { content: 'IEGO', scale }
+                ])
+                for (const { content, x, width } of parts) {
+                  const textX = SIZE / 2 + x - totalWidth / 2
+                  if (width !== null) {
+                    c.save()
+                    c.beginPath()
+                    c.rect(textX, y - fontSize, width, y)
+                    c.clip()
+                  }
+                  c.fillText(content, textX, y)
+                  if (width !== null) {
+                    c.restore()
+                  }
                 }
-                c.fillText(content, textX, y)
-                if (width !== null) {
+              } else {
+                const { width: totalWidth, parts } = this.#textParts([
+                  'U',
+                  'C ',
+                  'S',
+                  'A',
+                  'N ',
+                  'D',
+                  'I',
+                  'E',
+                  'G',
+                  'O'
+                ])
+                const TRANSIT_TIME = 0.4
+                const WAIT_PER_LETTER = (1 - TRANSIT_TIME) / parts.length
+                const startX = SIZE / 2 - totalWidth / 2
+                for (const [i, { content, x }] of parts.entries()) {
+                  c.save()
+                  const letterTime =
+                    inTime > WAIT_PER_LETTER * i + TRANSIT_TIME
+                      ? 0
+                      : inTime < WAIT_PER_LETTER * i
+                      ? 1
+                      : 1 -
+                        easeOutCubic(
+                          (inTime - WAIT_PER_LETTER * i) / TRANSIT_TIME
+                        )
+                  c.transform(1, 0, letterTime * -0.5, 1, 0, 0)
+                  c.fillText(content, startX + x + letterTime * SIZE, y)
                   c.restore()
                 }
               }
