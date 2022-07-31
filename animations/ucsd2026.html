@@ -154,21 +154,20 @@
                 transitioning === 'in' ? (time - enterTime) / enter.for : 1,
               outTime:
                 transitioning === 'out' ? (time - exitTime) / exit.for : 0,
-              transitioning
+              transitioning,
+              getTransition: (eventId, duration) => {
+                const event = this.#eventsMap[eventId].time
+                const transitioning = event < time && time < event + duration
+                return {
+                  time: transitioning
+                    ? (time - event) / duration
+                    : event < time && time < exitTime + exit.for
+                    ? 1
+                    : 0,
+                  transitioning
+                }
+              }
             })
-          }
-        }
-
-        transition (time, eventId, duration) {
-          const event = this.#eventsMap[eventId].time
-          const transitioning = event < time && time < event + duration
-          return {
-            time: transitioning
-              ? (time - event) / duration
-              : time > event
-              ? 1
-              : 0,
-            transitioning
           }
         }
       }
@@ -180,6 +179,8 @@
         .then(2000)
         .event('to-2026')
         .then(800)
+
+      const SIZE = 500
 
       class Animation {
         static #TRIDENT = {
@@ -198,13 +199,35 @@
           this.images = images
         }
 
+        #textParts (substrings) {
+          const parts = []
+          let x = 0
+          for (const substring of substrings) {
+            const { content, scale } =
+              typeof substring === 'string'
+                ? { content: substring, scale: 1 }
+                : substring
+            const width = this.canvas.context.measureText(content).width * scale
+            parts.push({
+              content,
+              x,
+              width: scale < 1 ? width : null
+            })
+            x += width
+          }
+          return {
+            width: x,
+            parts
+          }
+        }
+
         draw (time) {
           const { canvas, images } = this
           const { context: c } = canvas
           c.save()
-          c.scale(...canvas.size.clone().scale(1 / 500))
+          c.scale(...canvas.size.clone().scale(1 / SIZE))
           c.fillStyle = 'black'
-          c.fillRect(0, 0, 500, 500)
+          c.fillRect(0, 0, SIZE, SIZE)
 
           timings.component(time, {
             enter: { at: 'to-2026', for: 800 },
@@ -212,30 +235,30 @@
             render: ({ inTime, outTime, transitioning }) => {
               const y =
                 transitioning === 'in'
-                  ? (1 - easeInOutCubic(inTime)) * -3 * 500
-                  : easeInOutCubic(outTime) * -3 * 500
+                  ? (1 - easeInOutCubic(inTime)) * -3 * SIZE
+                  : easeInOutCubic(outTime) * -3 * SIZE
               const gradient = canvas.context.createLinearGradient(
                 0,
                 y,
                 0,
-                y + 500 * 2
+                y + SIZE * 2
               )
               gradient.addColorStop(0, '#00619A')
               gradient.addColorStop(0.5, '#143356')
               gradient.addColorStop(1, 'black')
               c.fillStyle = gradient
-              c.fillRect(0, 0, 500, 500)
-              c.strokeRect(0, 0, 500, 500)
+              c.fillRect(0, 0, SIZE, SIZE)
+              c.strokeRect(0, 0, SIZE, SIZE)
             }
           })
 
           timings.component(time, {
-            enter: { at: 'to-2026', for: 800 },
+            enter: { at: 'to-2026', for: 600 },
             exit: { at: 'to-amogus', for: 1000 },
             render: ({ inTime, outTime, transitioning }) => {
               const T = Animation.#TRIDENT
               c.save()
-              c.translate(500, 500)
+              c.translate(SIZE, SIZE)
               c.rotate(-Math.PI / 4)
               c.scale(1, -1)
               c.fillStyle = '#FFCD00'
@@ -246,7 +269,7 @@
                 (outTime < GROWTH_TIME
                   ? easeInCubic(outTime / GROWTH_TIME)
                   : 1) * 250
-              const diameter = Math.SQRT2 * 500
+              const diameter = Math.SQRT2 * SIZE
               c.beginPath()
               c.rect(
                 -T.WIDTH / 2,
@@ -281,7 +304,7 @@
                 T.SHORTER + growth
               )
               c.clip()
-              const radius = Math.SQRT2 * 500 * easeOutCubic(inTime)
+              const radius = Math.SQRT2 * SIZE * easeOutCubic(inTime)
               c.beginPath()
               c.moveTo(0, radius)
               c.arc(0, 0, radius, 0, Math.PI * 2)
@@ -290,12 +313,67 @@
             }
           })
 
-          c.textAlign = 'center'
           c.fillStyle = 'white'
-          c.font = '190px "BrixSansBold"'
-          c.fillText('2026', 500 / 2, 342)
-          c.font = '66px "BrixSansBold"'
-          c.fillText('UC SAN DIEGO', 500 / 2, 201)
+
+          timings.component(time, {
+            enter: { at: 'to-2026', for: 500 },
+            exit: { at: 'to-amogus', for: 500 },
+            render: ({ inTime, outTime, transitioning, getTransition }) => {
+              const transition = getTransition('to-ucsd', 700)
+              const fontTime = easeInOutCubic(transition.time)
+              c.font = `${190 - fontTime * 100}px 'BrixSansBold'`
+              const { width: totalWidth, parts } = this.#textParts(['2026'])
+              const centerX = SIZE / 2 - totalWidth / 2
+              const startX =
+                centerX + fontTime * (SIZE - 30 - totalWidth - centerX)
+              for (const { content, x } of parts) {
+                c.fillText(content, startX + x, 342 + fontTime * 40)
+              }
+            }
+          })
+
+          timings.component(time, {
+            enter: { at: 'to-2026', for: 500 },
+            exit: { at: 'to-amogus', for: 500 },
+            render: ({ inTime, outTime, transitioning, getTransition }) => {
+              const transition = getTransition('to-ucsd', 700)
+              const GROW_TIME = 0.15
+              const fontTime =
+                transition.time > GROW_TIME
+                  ? easeInOutCubic(
+                      (transition.time - GROW_TIME) / (1 - GROW_TIME)
+                    )
+                  : 0
+              const fontSize = 66 + fontTime * 120
+              const y = 201 + fontTime * 100
+              c.font = `${fontSize}px 'BrixSansBold'`
+              const scale =
+                transition.time < 1 - GROW_TIME
+                  ? easeInOutCubic(1 - transition.time / (1 - GROW_TIME))
+                  : 0
+              const { width: totalWidth, parts } = this.#textParts([
+                'UC',
+                { content: ' ', scale },
+                'S',
+                { content: 'AN ', scale },
+                'D',
+                { content: 'IEGO', scale }
+              ])
+              for (const { content, x, width } of parts) {
+                const textX = SIZE / 2 + x - totalWidth / 2
+                if (width !== null) {
+                  c.save()
+                  c.beginPath()
+                  c.rect(textX, y - fontSize, width, y)
+                  c.clip()
+                }
+                c.fillText(content, textX, y)
+                if (width !== null) {
+                  c.restore()
+                }
+              }
+            }
+          })
 
           c.restore()
         }
