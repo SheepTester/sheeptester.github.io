@@ -114,22 +114,98 @@
         MP4: false
       }
 
+      class Timings {
+        duration = 0
+        #events = []
+        #eventsMap = {}
+
+        /** Marks an event at the current time. Mutates object, chainable. */
+        event (id) {
+          const event = { id, time: this.duration }
+          this.#events.push(event)
+          this.#eventsMap[id] = event
+          return this
+        }
+
+        /** Adds to the current time. Mutates object, chainable. */
+        then (time) {
+          this.duration += time
+          return this
+        }
+
+        component (time, { enter, exit, render }) {
+          // May want to add offsets relative to an event later
+          const enterTime = this.#eventsMap[enter.at].time
+          const exitTime = this.#eventsMap[exit.at].time
+          // This math will probably die with certain numbers
+          const insideRange =
+            enterTime < exitTime
+              ? enterTime < time && time < exitTime + exit.for
+              : time > enterTime || time < exitTime + exit.for
+          if (insideRange) {
+            const transitioning =
+              enterTime < time && time < enterTime + enter.for
+                ? 'in'
+                : exitTime < time && time < exitTime + exit.for
+                ? 'out'
+                : null
+            render({
+              inTime:
+                transitioning === 'in' ? (time - enterTime) / enter.for : 1,
+              outTime:
+                transitioning === 'out' ? (time - exitTime) / exit.for : 0,
+              transitioning
+            })
+          }
+        }
+      }
+
+      const timings = new Timings()
+        .event('to-ucsd')
+        .then(1000)
+        .event('to-amogus')
+        .then(1000)
+        .event('to-2026')
+        .then(1000)
+
       class Animation {
+        canvas
+        images
+        #gradient
+
         constructor (canvas, images) {
           this.canvas = canvas
           this.images = images
         }
 
         draw (time) {
-          const { canvas, logo } = this
+          const { canvas, images } = this
           const { context: c } = canvas
-          c.clearRect(0, 0, ...canvas.size)
-
-          const gradient = c.createLinearGradient(0, 0, 0, canvas.size.y)
-          gradient.addColorStop(0, '#00619A')
-          gradient.addColorStop(1, '#143356')
-          c.fillStyle = gradient
+          c.fillStyle = 'black'
           c.fillRect(0, 0, ...canvas.size)
+
+          timings.component(time, {
+            enter: { at: 'to-2026', for: 800 },
+            exit: { at: 'to-amogus', for: 800 },
+            render: ({ inTime, outTime, transitioning }) => {
+              const y =
+                transitioning === 'in'
+                  ? (1 - Easing.easeInOutCubic(inTime)) * -3 * canvas.size.y
+                  : Easing.easeInOutCubic(outTime) * -3 * canvas.size.y
+              const gradient = canvas.context.createLinearGradient(
+                0,
+                y,
+                0,
+                y + canvas.size.y
+              )
+              gradient.addColorStop(0, '#00619A')
+              gradient.addColorStop(0.5, '#143356')
+              gradient.addColorStop(1, 'black')
+              c.fillStyle = gradient
+              c.fillRect(0, 0, canvas.size.x, canvas.size.y)
+              c.strokeRect(0, 0, canvas.size.x, canvas.size.y)
+            }
+          })
 
           c.save()
           c.translate(...canvas.size)
@@ -165,7 +241,7 @@
         })
         function render () {
           const now = Date.now() * options.speed
-          const time = now % 1000 // timings.DURATION // TEMP
+          const time = now % timings.duration
           animation.draw(time)
         }
         animator.renderers.push({ render })
@@ -210,12 +286,8 @@
             const ffmpeg = createFFmpeg({ log: true })
             await ffmpeg.load()
             let frame = 0
-            for (
-              let i = timings.LOGO_OUT;
-              i < timings.DURATION + timings.LOGO_OUT;
-              i += frameDelay
-            ) {
-              animation.draw(i % timings.DURATION)
+            for (let i = 0; i < timings.duration; i += frameDelay) {
+              animation.draw(i)
               const blob = await new Promise(resolve => {
                 dummyCanvas.canvas.toBlob(resolve, 'image/png')
               })
@@ -246,12 +318,8 @@
               animator.start()
               downloadBtn.disabled = false
             })
-            for (
-              let i = timings.LOGO_OUT;
-              i < timings.DURATION + timings.LOGO_OUT;
-              i += frameDelay
-            ) {
-              animation.draw(i % timings.DURATION)
+            for (let i = 0; i < timings.duration; i += frameDelay) {
+              animation.draw(i)
               gif.addFrame(dummyCanvas.context, {
                 delay: frameDelay,
                 copy: true
