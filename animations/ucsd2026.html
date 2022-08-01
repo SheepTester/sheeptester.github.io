@@ -74,6 +74,13 @@
       //     are aliases with ucsd-end and 2026-start, respectively.
       // - It should be easier to schedule staggered animations within a
       //   transition
+      //   - Currently, I'm using percentages of the [0, 1] transition times.
+      //   - [0, 1] normalization probably isn't necessary for those transition
+      //     times since I'm going to interpolate them with easing functions
+      //     anyways. They should probably stay as milliseconds so I can define
+      //     subparts of a transition in terms of milliseconds.
+      //   - Maybe if a transition has multiple parts it should be defined in an
+      //     array and given to Timings.component.
       // - inTime probably should go from 1 to 0 as most of the time, I like to
       //   think of the before-transition state as being zero during normalcy
       // - Thinking in terms of components and their lifetimes reminds me of
@@ -355,26 +362,33 @@
           // 2026
           timings.component(time, {
             enter: { at: 'to-2026', for: 1000, offset: 0 },
-            exit: { at: 'to-amogus', for: 500 },
+            exit: { at: 'to-amogus', for: 300, offset: 100 },
             render: ({ inTime, outTime, transitioning, getTransition }) => {
               const inState = 1 - easeInOutCubic(inTime)
               const transition = getTransition('to-ucsd', 700)
               const fontTime = easeInOutCubic(transition.time)
-              c.font = `${
-                190 - fontTime * 100 + inState * 100
-              }px 'BrixSansBold'`
+              const fontSize = 190 - fontTime * 100 + inState * 100
+              c.font = `${fontSize}px 'BrixSansBold'`
               const { width: origWidth, parts } = this.#textParts([...'2026'])
               const spacing = inState * SIZE
               const totalWidth = origWidth + spacing * (parts.length - 1)
               const centerX = SIZE / 2 - totalWidth / 2
               const startX =
                 centerX + fontTime * (SIZE - 30 - totalWidth - centerX)
-              for (const [i, { content, x }] of parts.entries()) {
-                c.fillText(
-                  content,
-                  startX + x + i * spacing,
-                  342 + fontTime * 30 + inState * 400
-                )
+              const y = 342 + fontTime * 30 + inState * 400
+              if (transitioning !== 'out') {
+                for (const [i, { content, x }] of parts.entries()) {
+                  c.fillText(content, startX + x + i * spacing, y)
+                }
+              } else {
+                const START_MOVE = 0.3
+                const height =
+                  (SIZE - (y - fontSize * 0.7)) *
+                  (outTime > START_MOVE
+                    ? 1 -
+                      easeOutCubic((outTime - START_MOVE) / (1 - START_MOVE))
+                    : 1)
+                c.fillRect(startX, SIZE - height, totalWidth, height)
               }
             }
           })
@@ -471,8 +485,10 @@
         function render () {
           const now = Date.now() * options.speed
           const time =
-            (now % (timings.duration - timings.events['to-2026'].time)) +
-            timings.events['to-2026'].time
+            (now %
+              (timings.events['to-2026'].time -
+                timings.events['to-amogus'].time)) +
+            timings.events['to-amogus'].time
           // const time = now % timings.duration
           animation.draw(time)
         }
