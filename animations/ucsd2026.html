@@ -65,6 +65,23 @@
       import { Vector2 } from 'https://sheeptester.github.io/sheep-sim/src/utils/vector2.mjs'
       const { easeInOutCubic, easeInCubic, easeOutCubic } = Easing
 
+      // NOTES for programmatic animation
+      // - It's hard to think in terms of events, unfortunately. I prefer
+      //   thinking in terms of parts.
+      //   - I could define the name of parts then refer to the start/end. For
+      //     example, the crewmate only really shows during amongus, so I could
+      //     say it comes in at amongus-start and leaves amongus-end, but those
+      //     are aliases with ucsd-end and 2026-start, respectively.
+      // - It should be easier to schedule staggered animations within a
+      //   transition
+      // - inTime probably should go from 1 to 0 as most of the time, I like to
+      //   think of the before-transition state as being zero during normalcy
+      // - Thinking in terms of components and their lifetimes reminds me of
+      //   Hitfilm's composite shot layers (probably something similar for
+      //   Adobe)
+      // - A playhead for previewing a certain moment or portion of time would
+      //   be nice
+
       class ImitationCanvas {
         constructor ({
           canvas = document.createElement('canvas'),
@@ -116,14 +133,12 @@
 
       class Timings {
         duration = 0
-        #events = []
-        #eventsMap = {}
+        events = {}
 
         /** Marks an event at the current time. Mutates object, chainable. */
         event (id) {
           const event = { id, time: this.duration }
-          this.#events.push(event)
-          this.#eventsMap[id] = event
+          this.events[id] = event
           return this
         }
 
@@ -150,13 +165,10 @@
 
         component (time, { enter, exit, render }) {
           const enterTime = this.#addTime(
-            this.#eventsMap[enter.at].time,
+            this.events[enter.at].time,
             enter.offset
           )
-          const exitTime = this.#addTime(
-            this.#eventsMap[exit.at].time,
-            exit.offset
-          )
+          const exitTime = this.#addTime(this.events[exit.at].time, exit.offset)
           // This math will probably die with certain numbers
           if (this.#between(time, enterTime, exitTime + exit.for)) {
             const transitioning = this.#between(
@@ -175,7 +187,7 @@
                 transitioning === 'out' ? (time - exitTime) / exit.for : 0,
               transitioning,
               getTransition: (eventId, duration) => {
-                const event = this.#eventsMap[eventId].time
+                const event = this.events[eventId].time
                 const transitioning = this.#between(
                   time,
                   event,
@@ -201,7 +213,7 @@
         .event('to-amogus')
         .then(2000)
         .event('to-2026')
-        .then(1200)
+        .then(2500)
 
       const SIZE = 500
 
@@ -252,6 +264,7 @@
           c.fillStyle = 'black'
           c.fillRect(0, 0, SIZE, SIZE)
 
+          // Gradient background
           timings.component(time, {
             enter: { at: 'to-2026', for: 1500, offset: -500 },
             exit: { at: 'to-amogus', for: 800, offset: 400 },
@@ -275,6 +288,7 @@
             }
           })
 
+          // Trident
           timings.component(time, {
             enter: { at: 'to-2026', for: 1000, offset: 500 },
             exit: { at: 'to-amogus', for: 1000 },
@@ -338,25 +352,36 @@
 
           c.fillStyle = 'white'
 
+          // 2026
           timings.component(time, {
-            enter: { at: 'to-2026', for: 500, offset: 500 },
+            enter: { at: 'to-2026', for: 1000, offset: 0 },
             exit: { at: 'to-amogus', for: 500 },
             render: ({ inTime, outTime, transitioning, getTransition }) => {
+              const inState = 1 - easeInOutCubic(inTime)
               const transition = getTransition('to-ucsd', 700)
               const fontTime = easeInOutCubic(transition.time)
-              c.font = `${190 - fontTime * 100}px 'BrixSansBold'`
-              const { width: totalWidth, parts } = this.#textParts(['2026'])
+              c.font = `${
+                190 - fontTime * 100 + inState * 100
+              }px 'BrixSansBold'`
+              const { width: origWidth, parts } = this.#textParts([...'2026'])
+              const spacing = inState * SIZE
+              const totalWidth = origWidth + spacing * (parts.length - 1)
               const centerX = SIZE / 2 - totalWidth / 2
               const startX =
                 centerX + fontTime * (SIZE - 30 - totalWidth - centerX)
-              for (const { content, x } of parts) {
-                c.fillText(content, startX + x, 342 + fontTime * 30)
+              for (const [i, { content, x }] of parts.entries()) {
+                c.fillText(
+                  content,
+                  startX + x + i * spacing,
+                  342 + fontTime * 30 + inState * 400
+                )
               }
             }
           })
 
+          // UC SAN DIEGO / UCSD
           timings.component(time, {
-            enter: { at: 'to-2026', for: 1000, offset: 500 },
+            enter: { at: 'to-2026', for: 1000, offset: 1000 },
             exit: { at: 'to-amogus', for: 500 },
             render: ({ inTime, outTime, transitioning, getTransition }) => {
               const transition = getTransition('to-ucsd', 700)
@@ -445,7 +470,10 @@
         const animation = new Animation(canvas, images)
         function render () {
           const now = Date.now() * options.speed
-          const time = now % timings.duration
+          const time =
+            (now % (timings.duration - timings.events['to-2026'].time)) +
+            timings.events['to-2026'].time
+          // const time = now % timings.duration
           animation.draw(time)
         }
         animator.renderers.push({ render })
