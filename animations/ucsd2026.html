@@ -260,6 +260,7 @@
         canvas
         images
         #gradient
+        #shadowDeferred = []
 
         constructor (canvas, images) {
           this.canvas = canvas
@@ -286,6 +287,20 @@
             width: x,
             parts
           }
+        }
+
+        #shadow (opacity, render) {
+          this.canvas.context.shadowBlur = 60
+          while (opacity > 0) {
+            this.canvas.context.shadowColor = `rgba(0, 0, 0, ${Math.min(
+              opacity,
+              1
+            )})`
+            render()
+            opacity--
+          }
+          this.canvas.context.shadowColor = 'transparent'
+          this.#shadowDeferred.push(render)
         }
 
         draw (time) {
@@ -440,7 +455,10 @@
                       )
                     : 1) *
                     (y + 10)
-                c.fillText(content, startX + x + i * spacing, textY)
+                this.#shadow(1.19, () => {
+                  c.font = `${fontSize}px 'BrixSansBold'`
+                  c.fillText(content, startX + x + i * spacing, textY)
+                })
               }
             }
           })
@@ -491,16 +509,19 @@
                       : 1) *
                       (y + 10)
                   i++
-                  if (width !== null) {
-                    c.save()
-                    c.beginPath()
-                    c.rect(textX, textY - fontSize, width, textY)
-                    c.clip()
-                  }
-                  c.fillText(content, textX, textY)
-                  if (width !== null) {
-                    c.restore()
-                  }
+                  this.#shadow(2.85, () => {
+                    c.font = `${fontSize}px 'BrixSansBold'`
+                    if (width !== null) {
+                      c.save()
+                      c.beginPath()
+                      c.rect(textX, textY - fontSize, width, textY)
+                      c.clip()
+                    }
+                    c.fillText(content, textX, textY)
+                    if (width !== null) {
+                      c.restore()
+                    }
+                  })
                 }
               } else {
                 const { width: totalWidth, parts } = this.#textParts([
@@ -519,7 +540,6 @@
                 const WAIT_PER_LETTER = (1 - TRANSIT_TIME) / parts.length
                 const startX = SIZE / 2 - totalWidth / 2
                 for (const [i, { content, x }] of parts.entries()) {
-                  c.save()
                   const letterTime =
                     inTime > WAIT_PER_LETTER * i + TRANSIT_TIME
                       ? 0
@@ -529,9 +549,13 @@
                         easeOutCubic(
                           (inTime - WAIT_PER_LETTER * i) / TRANSIT_TIME
                         )
-                  c.transform(1, 0, letterTime * -0.5, 1, 0, 0)
-                  c.fillText(content, startX + x + letterTime * SIZE, y)
-                  c.restore()
+                  this.#shadow(2.85, () => {
+                    c.font = `${fontSize}px 'BrixSansBold'`
+                    c.save()
+                    c.transform(1, 0, letterTime * -0.5, 1, 0, 0)
+                    c.fillText(content, startX + x + letterTime * SIZE, y)
+                    c.restore()
+                  })
                 }
               }
             }
@@ -570,6 +594,11 @@
             }
           })
 
+          for (const render of this.#shadowDeferred) {
+            render()
+          }
+          this.#shadowDeferred = []
+
           c.restore()
         }
       }
@@ -582,13 +611,13 @@
         const animation = new Animation(canvas, images)
         function render () {
           const now = Date.now() * options.speed
-          const time =
-            (now %
-              (timings.events['to-2026'].time +
-                1000 -
-                timings.events['to-amogus'].time)) +
-            timings.events['to-amogus'].time
-          // const time = now % timings.duration
+          // const time =
+          //   (now %
+          //     (timings.events['to-2026'].time +
+          //       1000 -
+          //       timings.events['to-amogus'].time)) +
+          //   timings.events['to-amogus'].time
+          const time = now % timings.duration
           animation.draw(time)
         }
         animator.renderers.push({ render })
