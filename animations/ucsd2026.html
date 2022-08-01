@@ -164,6 +164,14 @@
           }
         }
 
+        #difference (start, end) {
+          if (start < end) {
+            return end - start
+          } else {
+            return end + (this.duration - start)
+          }
+        }
+
         #addTime (time, offset = 0) {
           return (
             (((time + offset) % this.duration) + this.duration) % this.duration
@@ -188,10 +196,17 @@
               ? 'out'
               : null
             render({
+              totalTime:
+                this.#difference(enterTime, time) /
+                this.#difference(enterTime, exitTime),
               inTime:
-                transitioning === 'in' ? (time - enterTime) / enter.for : 1,
+                transitioning === 'in'
+                  ? this.#difference(enterTime, time) / enter.for
+                  : 1,
               outTime:
-                transitioning === 'out' ? (time - exitTime) / exit.for : 0,
+                transitioning === 'out'
+                  ? this.#difference(exitTime, time) / exit.for
+                  : 0,
               transitioning,
               getTransition: (eventId, duration) => {
                 const event = this.events[eventId].time
@@ -202,7 +217,7 @@
                 )
                 return {
                   time: transitioning
-                    ? (time - event) / duration
+                    ? this.#difference(event, time) / duration
                     : this.#between(time, enterTime, event)
                     ? 0
                     : 1,
@@ -218,7 +233,7 @@
         .event('to-ucsd')
         .then(2000)
         .event('to-amogus')
-        .then(2000)
+        .then(3000)
         .event('to-2026')
         .then(2500)
 
@@ -485,6 +500,39 @@
             }
           })
 
+          // Crewmate
+          timings.component(time, {
+            enter: { at: 'to-amogus', for: 500, offset: 500 },
+            exit: { at: 'to-2026', for: 1000, offset: -300 },
+            render: ({
+              totalTime,
+              inTime,
+              outTime,
+              transitioning,
+              getTransition
+            }) => {
+              const RATIO =
+                this.images.crewmate.height / this.images.crewmate.width
+              const size = 200
+              c.save()
+              c.translate(
+                50 + totalTime * 150 - (1 - easeOutCubic(inTime)) * 100,
+                SIZE -
+                  (100 + totalTime * 100 - (1 - easeOutCubic(inTime)) * 200) +
+                  easeInCubic(outTime) * 400
+              )
+              c.rotate(totalTime * (Math.PI / 10))
+              c.drawImage(
+                this.images.crewmate,
+                -size / 2,
+                -(size * RATIO) / 2,
+                size,
+                size * RATIO
+              )
+              c.restore()
+            }
+          })
+
           c.restore()
         }
       }
@@ -492,19 +540,18 @@
       async function main () {
         const options = { speed: 1, serverIcon: false, circle: false }
         const images = {
-          crewmate: await loadImage(
-            'https://cdn.discordapp.com/attachments/986565854105833493/1003045624083665007/OVERWRITE_ME.png'
-          )
+          crewmate: await loadImage('./crewmate.webp')
         }
         const animation = new Animation(canvas, images)
         function render () {
           const now = Date.now() * options.speed
-          // const time =
-          //   (now %
-          //     (timings.events['to-2026'].time -
-          //       timings.events['to-amogus'].time)) +
-          //   timings.events['to-amogus'].time
-          const time = now % timings.duration
+          const time =
+            (now %
+              (timings.events['to-2026'].time +
+                1000 -
+                timings.events['to-amogus'].time)) +
+            timings.events['to-amogus'].time
+          // const time = now % timings.duration
           animation.draw(time)
         }
         animator.renderers.push({ render })
