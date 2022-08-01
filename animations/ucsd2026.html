@@ -126,6 +126,16 @@
         saveLink.remove()
       }
 
+      // Seeded random
+      // https://github.com/bryc/code/blob/master/jshash/PRNGs.md#mulberry32
+      const mulberry32 = seed => () => {
+        seed |= 0
+        seed = (seed + 0x6d2b79f5) | 0
+        let temp = Math.imul(seed ^ (seed >>> 15), 1 | seed)
+        temp = (temp + Math.imul(temp ^ (temp >>> 7), 61 | temp)) ^ temp
+        return ((temp ^ (temp >>> 14)) >>> 0) / 4294967296
+      }
+
       const canvas = new Canvas().setWrapper(
         document.getElementById('canvas-wrapper')
       )
@@ -307,6 +317,33 @@
               c.fillStyle = gradient
               c.fillRect(0, 0, SIZE, SIZE)
               c.strokeRect(0, 0, SIZE, SIZE)
+            }
+          })
+
+          // Space stars
+          timings.component(time, {
+            enter: { at: 'to-amogus', for: 1000, offset: 250 },
+            exit: { at: 'to-2026', for: 1000, offset: -250 },
+            render: ({ totalTime, inTime, outTime, transitioning }) => {
+              const STAR_COUNT = 30
+              const MOVEMENT = 100
+              const random = mulberry32(0x533d_0)
+              c.fillStyle = 'white'
+              c.beginPath()
+              for (let i = 0; i < STAR_COUNT; i++) {
+                const radius = random() * 2 + 1
+                const x =
+                  random() * (SIZE + MOVEMENT) +
+                  (MOVEMENT * (totalTime - 1) * radius) / 3
+                const y =
+                  random() * SIZE +
+                  (1 - easeOutCubic(inTime) + easeInCubic(outTime)) *
+                    SIZE *
+                    radius
+                c.moveTo(x, y + radius)
+                c.arc(x, y, radius, 0, Math.PI * 2)
+              }
+              c.fill()
             }
           })
 
@@ -502,8 +539,8 @@
 
           // Crewmate
           timings.component(time, {
-            enter: { at: 'to-amogus', for: 500, offset: 500 },
-            exit: { at: 'to-2026', for: 1000, offset: -300 },
+            enter: { at: 'to-amogus', for: 500, offset: 700 },
+            exit: { at: 'to-2026', for: 700, offset: -300 },
             render: ({
               totalTime,
               inTime,
@@ -516,7 +553,7 @@
               const size = 200
               c.save()
               c.translate(
-                50 + totalTime * 150 - (1 - easeOutCubic(inTime)) * 100,
+                50 + totalTime * 200,
                 SIZE -
                   (100 + totalTime * 100 - (1 - easeOutCubic(inTime)) * 200) +
                   easeInCubic(outTime) * 400
@@ -642,9 +679,9 @@
 
       main()
 
+      // Debug
       Object.assign(window, {
-        canvas,
-        animator
+        mulberry32
       })
     </script>
   </body>
