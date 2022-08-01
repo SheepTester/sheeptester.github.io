@@ -454,8 +454,8 @@
                         (outTime - LETTER_DIFF * i) / (1 - LETTER_DIFF * 4)
                       )
                     : 1) *
-                    (y + 10)
-                this.#shadow(1.19, () => {
+                    (y + 70)
+                this.#shadow(200 / fontSize, () => {
                   c.font = `${fontSize}px 'BrixSansBold'`
                   c.fillText(content, startX + x + i * spacing, textY)
                 })
@@ -507,9 +507,9 @@
                           (outTime - LETTER_DIFF * i) / (1 - LETTER_DIFF * 4)
                         )
                       : 1) *
-                      (y + 10)
+                      (y + 60)
                   i++
-                  this.#shadow(2.85, () => {
+                  this.#shadow(200 / fontSize, () => {
                     c.font = `${fontSize}px 'BrixSansBold'`
                     if (width !== null) {
                       c.save()
@@ -552,8 +552,12 @@
                   this.#shadow(2.85, () => {
                     c.font = `${fontSize}px 'BrixSansBold'`
                     c.save()
-                    c.transform(1, 0, letterTime * -0.5, 1, 0, 0)
-                    c.fillText(content, startX + x + letterTime * SIZE, y)
+                    c.transform(1, 0, letterTime * -1, 1, 0, 0)
+                    c.fillText(
+                      content,
+                      startX + x + letterTime * (SIZE + 60),
+                      y
+                    )
                     c.restore()
                   })
                 }
