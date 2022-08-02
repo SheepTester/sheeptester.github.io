@@ -145,7 +145,7 @@
       const gifOptions = {
         FPS: 60,
         SIZE: 300,
-        MP4: false
+        MP4: true
       }
 
       class Timings {
@@ -480,7 +480,21 @@
                   : 0
               const fontSize = 66 + fontTime * 120
               const y = 201 + fontTime * 90
+
+              if (this.#tempContext.canvas.width === this.canvas.size.x) {
+                this.#tempContext.clearRect(0, 0, SIZE, SIZE)
+              } else {
+                this.#tempContext.canvas.width = this.canvas.size.x
+                this.#tempContext.canvas.height = this.canvas.size.y
+                this.#tempContext.scale(
+                  ...this.canvas.size.clone().scale(1 / SIZE)
+                )
+                this.#tempContext.fillStyle = 'white'
+              }
+              this.#tempContext.font = `${fontSize}px 'BrixSansBold'`
+              // for this.#textParts
               c.font = `${fontSize}px 'BrixSansBold'`
+
               if (transitioning !== 'in') {
                 const scale =
                   transition.time < 1 - GROW_TIME
@@ -495,17 +509,6 @@
                   'D',
                   { content: 'IEGO', scale }
                 ])
-                if (this.#tempContext.canvas.width === this.canvas.size.x) {
-                  this.#tempContext.clearRect(0, 0, SIZE, SIZE)
-                } else {
-                  this.#tempContext.canvas.width = this.canvas.size.x
-                  this.#tempContext.canvas.height = this.canvas.size.y
-                  this.#tempContext.scale(
-                    ...this.canvas.size.clone().scale(1 / SIZE)
-                  )
-                  this.#tempContext.fillStyle = 'white'
-                }
-                this.#tempContext.font = `${fontSize}px 'BrixSansBold'`
                 const LETTER_DIFF = 0.1
                 let i = 0
                 for (const { content, x, width } of parts) {
@@ -538,9 +541,6 @@
                     this.#tempContext.restore()
                   }
                 }
-                this.#shadow(200 / fontSize, () => {
-                  c.drawImage(this.#tempContext.canvas, 0, 0)
-                })
               } else {
                 const { width: totalWidth, parts } = this.#textParts([
                   'U',
@@ -567,19 +567,22 @@
                         easeOutCubic(
                           (inTime - WAIT_PER_LETTER * i) / TRANSIT_TIME
                         )
-                  this.#shadow(200 / fontSize, () => {
-                    c.font = `${fontSize}px 'BrixSansBold'`
-                    c.save()
-                    c.transform(1, 0, letterTime * -1, 1, 0, 0)
-                    c.fillText(
-                      content,
-                      startX + x + letterTime * (SIZE + 60),
-                      y
-                    )
-                    c.restore()
-                  })
+                  this.#tempContext.save()
+                  this.#tempContext.transform(
+                    1,
+                    0,
+                    letterTime * -1,
+                    1,
+                    startX + x + letterTime * (SIZE + 60),
+                    y
+                  )
+                  this.#tempContext.fillText(content, 0, 0)
+                  this.#tempContext.restore()
                 }
               }
+              this.#shadow(200 / fontSize, () => {
+                c.drawImage(this.#tempContext.canvas, 0, 0)
+              })
             }
           })
 
@@ -633,12 +636,12 @@
         const animation = new Animation(canvas, images)
         function render () {
           const now = Date.now() * options.speed
-          const time =
-            (now %
-              (timings.events['to-amogus'].time -
-                timings.events['to-ucsd'].time)) +
-            timings.events['to-ucsd'].time
-          // const time = now % timings.duration
+          // const time =
+          //   (now %
+          //     (timings.events['to-amogus'].time -
+          //       timings.events['to-ucsd'].time)) +
+          //   timings.events['to-ucsd'].time
+          const time = now % timings.duration
           animation.draw(time)
         }
         animator.renderers.push({ render })
@@ -676,6 +679,13 @@
           const animation = new Animation(dummyCanvas, images)
           const frameDelay = 1000 / gifOptions.FPS
           if (gifOptions.MP4) {
+            if (!('SharedArrayBuffer' in window)) {
+              downloadBtn.disabled = false
+              alert(
+                "SharedArrayBuffer isn't available. Reload the page and try again. If it still doesn't work, then I guess you can't download an mp4."
+              )
+              return
+            }
             await import(
               'https://unpkg.com/@ffmpeg/ffmpeg@0.9.5/dist/ffmpeg.min.js'
             )
@@ -683,7 +693,9 @@
             const ffmpeg = createFFmpeg({ log: true })
             await ffmpeg.load()
             let frame = 0
+            let temp = 0
             for (let i = 0; i < timings.duration; i += frameDelay) {
+              if (temp++ < 10) break
               animation.draw(i)
               const blob = await new Promise(resolve => {
                 dummyCanvas.canvas.toBlob(resolve, 'image/png')

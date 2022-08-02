@@ -351,6 +351,13 @@
           const animation = new Animation(dummyCanvas, logo)
           const frameDelay = 1000 / gifOptions.FPS
           if (gifOptions.MP4) {
+            if (!('SharedArrayBuffer' in window)) {
+              downloadBtn.disabled = false
+              alert(
+                "SharedArrayBuffer isn't available. Reload the page and try again. If it still doesn't work, then I guess you can't download an mp4."
+              )
+              return
+            }
             await import('https://unpkg.com/@ffmpeg/ffmpeg@0.9.5/dist/ffmpeg.min.js')
             const { createFFmpeg, fetchFile } = FFmpeg
             const ffmpeg = createFFmpeg({ log: true })
@@ -391,6 +398,8 @@
       }
 
       main()
+
+      navigator.serviceWorker.register('./sw.js')
 
       Object.assign(window, {
         canvas,
