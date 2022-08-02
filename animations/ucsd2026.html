@@ -539,7 +539,7 @@
                   }
                 }
                 this.#shadow(200 / fontSize, () => {
-                  c.drawImage(this.#tempContext.canvas, 0, 0, SIZE, SIZE)
+                  c.drawImage(this.#tempContext.canvas, 0, 0)
                 })
               } else {
                 const { width: totalWidth, parts } = this.#textParts([
@@ -633,12 +633,12 @@
         const animation = new Animation(canvas, images)
         function render () {
           const now = Date.now() * options.speed
-          // const time =
-          //   (now %
-          //     (timings.events['to-amogus'].time -
-          //       timings.events['to-ucsd'].time)) +
-          //   timings.events['to-ucsd'].time
-          const time = now % timings.duration
+          const time =
+            (now %
+              (timings.events['to-amogus'].time -
+                timings.events['to-ucsd'].time)) +
+            timings.events['to-ucsd'].time
+          // const time = now % timings.duration
           animation.draw(time)
         }
         animator.renderers.push({ render })
