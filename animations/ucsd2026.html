@@ -228,7 +228,7 @@
                 return {
                   time: transitioning
                     ? this.#difference(event, time) / duration
-                    : this.#between(time, enterTime, event)
+                    : time === event || this.#between(time, enterTime, event)
                     ? 0
                     : 1,
                   transitioning
@@ -481,16 +481,12 @@
               const fontSize = 66 + fontTime * 120
               const y = 201 + fontTime * 90
 
-              if (this.#tempContext.canvas.width === this.canvas.size.x) {
-                this.#tempContext.clearRect(0, 0, SIZE, SIZE)
-              } else {
-                this.#tempContext.canvas.width = this.canvas.size.x
-                this.#tempContext.canvas.height = this.canvas.size.y
-                this.#tempContext.scale(
-                  ...this.canvas.size.clone().scale(1 / SIZE)
-                )
-                this.#tempContext.fillStyle = 'white'
-              }
+              this.#tempContext.canvas.width = this.canvas.size.x
+              this.#tempContext.canvas.height = this.canvas.size.y
+              this.#tempContext.scale(
+                ...this.canvas.size.clone().scale(1 / SIZE)
+              )
+              this.#tempContext.fillStyle = 'white'
               this.#tempContext.font = `${fontSize}px 'BrixSansBold'`
               // for this.#textParts
               c.font = `${fontSize}px 'BrixSansBold'`
@@ -581,7 +577,7 @@
                 }
               }
               this.#shadow(200 / fontSize, () => {
-                c.drawImage(this.#tempContext.canvas, 0, 0)
+                c.drawImage(this.#tempContext.canvas, 0, 0, SIZE, SIZE)
               })
             }
           })
@@ -693,9 +689,7 @@
             const ffmpeg = createFFmpeg({ log: true })
             await ffmpeg.load()
             let frame = 0
-            let temp = 0
             for (let i = 0; i < timings.duration; i += frameDelay) {
-              if (temp++ < 10) break
               animation.draw(i)
               const blob = await new Promise(resolve => {
                 dummyCanvas.canvas.toBlob(resolve, 'image/png')
@@ -712,7 +706,7 @@
             )
             const data = ffmpeg.FS('readFile', 'output.mp4')
             download(
-              'gunn-discord.mp4',
+              'ucsd26.mp4',
               new Blob([data.buffer], { type: 'video/mp4' })
             )
             downloadBtn.disabled = false
@@ -723,7 +717,7 @@
               height: gifOptions.SIZE
             })
             gif.on('finished', blob => {
-              download('gunn-discord.gif', blob)
+              download('ucsd26.gif', blob)
               animator.start()
               downloadBtn.disabled = false
             })
