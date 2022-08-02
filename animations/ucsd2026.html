@@ -261,10 +261,12 @@
         images
         #gradient
         #shadowDeferred = []
+        #tempContext
 
         constructor (canvas, images) {
           this.canvas = canvas
           this.images = images
+          this.#tempContext = document.createElement('canvas').getContext('2d')
         }
 
         #textParts (substrings) {
@@ -493,6 +495,17 @@
                   'D',
                   { content: 'IEGO', scale }
                 ])
+                if (this.#tempContext.canvas.width === this.canvas.size.x) {
+                  this.#tempContext.clearRect(0, 0, SIZE, SIZE)
+                } else {
+                  this.#tempContext.canvas.width = this.canvas.size.x
+                  this.#tempContext.canvas.height = this.canvas.size.y
+                  this.#tempContext.scale(
+                    ...this.canvas.size.clone().scale(1 / SIZE)
+                  )
+                  this.#tempContext.fillStyle = 'white'
+                }
+                this.#tempContext.font = `${fontSize}px 'BrixSansBold'`
                 const LETTER_DIFF = 0.1
                 let i = 0
                 for (const { content, x, width } of parts) {
@@ -509,20 +522,25 @@
                       : 1) *
                       (y + 60)
                   i++
-                  this.#shadow(200 / fontSize, () => {
-                    c.font = `${fontSize}px 'BrixSansBold'`
-                    if (width !== null) {
-                      c.save()
-                      c.beginPath()
-                      c.rect(textX, textY - fontSize, width, textY)
-                      c.clip()
-                    }
-                    c.fillText(content, textX, textY)
-                    if (width !== null) {
-                      c.restore()
-                    }
-                  })
+                  if (width !== null) {
+                    this.#tempContext.save()
+                    this.#tempContext.beginPath()
+                    this.#tempContext.rect(
+                      textX,
+                      textY - fontSize,
+                      width,
+                      textY
+                    )
+                    this.#tempContext.clip()
+                  }
+                  this.#tempContext.fillText(content, textX, textY)
+                  if (width !== null) {
+                    this.#tempContext.restore()
+                  }
                 }
+                this.#shadow(200 / fontSize, () => {
+                  c.drawImage(this.#tempContext.canvas, 0, 0, SIZE, SIZE)
+                })
               } else {
                 const { width: totalWidth, parts } = this.#textParts([
                   'U',
@@ -549,7 +567,7 @@
                         easeOutCubic(
                           (inTime - WAIT_PER_LETTER * i) / TRANSIT_TIME
                         )
-                  this.#shadow(2.85, () => {
+                  this.#shadow(200 / fontSize, () => {
                     c.font = `${fontSize}px 'BrixSansBold'`
                     c.save()
                     c.transform(1, 0, letterTime * -1, 1, 0, 0)
@@ -617,10 +635,9 @@
           const now = Date.now() * options.speed
           // const time =
           //   (now %
-          //     (timings.events['to-2026'].time +
-          //       1000 -
-          //       timings.events['to-amogus'].time)) +
-          //   timings.events['to-amogus'].time
+          //     (timings.events['to-amogus'].time -
+          //       timings.events['to-ucsd'].time)) +
+          //   timings.events['to-ucsd'].time
           const time = now % timings.duration
           animation.draw(time)
         }
