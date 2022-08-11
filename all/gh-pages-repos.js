@@ -6,12 +6,14 @@ const ghUser = 'SheepTester'
 const ghPagesRepos = [
   'alt-schedule-parser-tester',
   'ascended-cat',
+  'assembly',
   'blockly',
   'calculator',
   // 'chaotic-cube',
   'colour',
   'dating-sim',
   'dulcinea#main',
+  'dumb-multiplayer-server',
   'evo',
   'eyo-dictionary',
   'flex10-protect',
@@ -20,11 +22,13 @@ const ghPagesRepos = [
   'gunn-map',
   'gunn-student-sim',
   'happynumbers',
+  'HEALTH-AMONG-US#gh-pages',
   'hello-world',
   'htmlblocks',
   'htmlifier',
   'intuitive-gunn-website',
   'mars',
+  'offline-ucsd-map#gh-pages',
   'olamreee',
   'ovinetopia',
   'platformre',
@@ -44,15 +48,13 @@ const ghPagesRepos = [
   'toastia',
   'toki-pona',
   'unclear-target-w-very-confusing-critique',
+  'uxdy#gh-pages',
   'word-prediction',
   'words-go-here',
   'yesnt'
 ]
 
-const jekyllRepos = [
-  'blog',
-  'longer-tweets',
-]
+const jekyllRepos = ['blog', 'cse15l-lab-reports#main', 'longer-tweets']
 
 const ignore = [
   '/blockly/',
@@ -79,7 +81,7 @@ const ignore = [
   '/scratch-vm/16-9/docs/',
   '/scratch-vm/16-9/media/',
   '/scratch-vm/docs/',
-  '/scratch-vm/media/',
+  '/scratch-vm/media/'
 ]
 
 if (typeof module !== 'undefined' && module) {

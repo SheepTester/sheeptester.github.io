@@ -13,3 +13,5 @@ npm run all
 `all/get-all.js` gets all the files on the website.
 
 `all/gen.js` generates the /all/ files.
+
+`all/gh-pages-repos.js` lists the repos with GitHub Pages.
