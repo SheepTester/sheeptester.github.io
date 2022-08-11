@@ -143,9 +143,9 @@
       const resizeListener = new WindowResizeListener({ resizers: [canvas] })
 
       const gifOptions = {
-        FPS: 60,
+        FPS: 50,
         SIZE: 300,
-        MP4: true
+        MP4: false
       }
 
       class Timings {
@@ -166,7 +166,7 @@
         }
 
         #between (time, start, end) {
-          if (start < end) {
+          if (start <= end) {
             return start < time && time < end
           } else {
             // end < start
@@ -582,6 +582,23 @@
             }
           })
 
+          // Amogus text
+          timings.component(time, {
+            enter: { at: 'to-amogus', for: 0, offset: 1000 },
+            exit: { at: 'to-2026', for: 700, offset: -200 },
+            render: ({ totalTime, outTime }) => {
+              const TEXT = 'UC San Diego Timely Warning'
+              c.font = '20px Arial'
+              c.textAlign = 'center'
+              c.fillStyle = 'white'
+              c.fillText(
+                TEXT.slice(0, TEXT.length * (totalTime / 0.8) + 1),
+                SIZE / 2,
+                150 + easeInCubic(outTime) * 400
+              )
+            }
+          })
+
           // Crewmate
           timings.component(time, {
             enter: { at: 'to-amogus', for: 500, offset: 700 },
@@ -634,9 +651,10 @@
           const now = Date.now() * options.speed
           // const time =
           //   (now %
-          //     (timings.events['to-amogus'].time -
-          //       timings.events['to-ucsd'].time)) +
-          //   timings.events['to-ucsd'].time
+          //     (timings.events['to-2026'].time +
+          //       1000 -
+          //       timings.events['to-amogus'].time)) +
+          //   timings.events['to-amogus'].time
           const time = now % timings.duration
           animation.draw(time)
         }
