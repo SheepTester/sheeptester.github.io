@@ -95,10 +95,18 @@ function getJekyllSitemap (repo) {
     .then(r => r.text())
     .then(xml2js.parseStringPromise)
     .then(({ urlset: { url } }) =>
-      url.map(({ loc }) => loc[0].replace(hostRegex, '') + 'index.html'))
+      url.map(({ loc }) => {
+        const path = loc[0].replace(hostRegex, '')
+        return path.endsWith('/') ? path + 'index.html' : path
+      }))
 }
 
 const siteRoot = nodePath.resolve(__dirname, '../')
+
+// Paths to ignore in Jekyll repos
+const jekyllIgnore = [
+'.gitignore', 'CNAME', 'LICENSE', 'Gemfile', 'Gemfile.lock'
+]
 
 async function main () {
   console.log('Getting files in this repository')
@@ -112,10 +120,12 @@ async function main () {
     paths.push(...await getJekyllSitemap(repo))
     // Jekyll's pretty weird
     paths.push(...(await getRepoFiles(repo, branch)).map(path => {
+      if (jekyllIgnore.map(name => `/${repo}/${name}`).includes(path)) return null
       // Ignore folders and files that start with _
       if (path.startsWith(`/${repo}/_`)) return null
-      // Markdown files are built and will show up in the sitemap
-      if (path.endsWith(`.md`)) return null
+      // Markdown files are built and will show up in the sitemap (except for
+      // README.md)
+      if (path.endsWith(`.md`) && !path.endsWith('/README.md')) return null
       // It seems, at least for blog, SCSS files are automatically compiled to
       // CSS.
       if (path.endsWith(`.scss`)) return path.replace(/\.scss$/g, '.css')
