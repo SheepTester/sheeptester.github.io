@@ -102,15 +102,16 @@ function generateShowBtns() {
   }
   paths.forEach(path => objectception(pathObj, path.split('/').slice(1)));
   const pathLines = [];
+  const localeCompare = (a, b) => a.localeCompare(b)
   function splatception(obj) {
     const files = obj[folderSymbol];
     delete obj[folderSymbol];
-    Object.keys(obj).sort().forEach(dir => {
+    Object.keys(obj).sort(localeCompare).forEach(dir => {
       pathLines.push('>' + dir);
       splatception(obj[dir]);
       pathLines.push('<');
     });
-    if (files) pathLines.push(...files.sort());
+    if (files) pathLines.push(...files.sort(localeCompare));
   }
   splatception(pathObj);
   await write('./all/everything.txt', pathLines.join('\n'));
