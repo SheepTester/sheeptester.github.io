@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>UCSD 2026 animated logo</title>
+    <title>&pi; = 4</title>
     <meta name="description" content="hhh" />
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -207,7 +207,7 @@
 
       const timings = new Timings()
         .event('roll-start')
-        .then(2000)
+        .then(3000)
         .event('roll-end')
 
       const SIZE = 500
@@ -230,50 +230,67 @@
           c.fillRect(0, 0, SIZE, SIZE)
 
           // BALL
-          timings.component(time, {
-            enter: { at: 'roll-start', for: 0 },
-            exit: { at: 'roll-end', for: 0 },
-            render: ({ totalTime }) => {
-              const RADIUS = 50
-              const diameter = RADIUS * 2
-              const startX = SIZE / 2 - 2 * diameter
-              const PAD_TIME = 0.1
-              const rollTime = (totalTime - PAD_TIME) / (1 - PAD_TIME * 2)
-              const rollClamped = Math.min(1, Math.max(0, rollTime))
-              const x = startX + 4 * diameter * rollTime
-              const y = SIZE / 2
-              c.strokeStyle = 'black'
-              c.lineWidth = 1
-              c.beginPath()
-              c.moveTo(x + RADIUS, y)
-              c.arc(x, y, RADIUS, 0, Math.PI * 2)
-              for (let i = 0; i < 4; i++) {
-                const angle = (i * Math.PI) / 4 + rollTime * Math.PI * 2
-                const cos = Math.cos(angle) * RADIUS
-                const sin = Math.sin(angle) * RADIUS
-                c.moveTo(x + cos, y + sin)
-                c.lineTo(x - cos, y - sin)
-              }
-              c.stroke()
-              c.strokeStyle = 'purple'
-              c.lineWidth = 5
-              c.beginPath()
-              c.moveTo(x, y + RADIUS)
-              c.arc(
-                x,
-                y,
-                RADIUS,
-                Math.PI / 2,
-                rollTime < 0
-                  ? Math.PI * 2.5
-                  : Math.PI * 2 * rollClamped + Math.PI / 2,
-                rollTime >= 0
-              )
-              c.moveTo(startX, y + RADIUS)
-              c.lineTo(startX + 4 * diameter * rollClamped, y + RADIUS)
-              c.stroke()
+          const totalTime = time / timings.duration
+          const RADIUS = 50
+          const diameter = RADIUS * 2
+          const startX = SIZE / 2 - 2 * diameter
+          const PAD_TIME = 0.1
+          const rollTime = (totalTime - PAD_TIME) / (1 - PAD_TIME * 2)
+          const rollClamped = Math.min(1, Math.max(0, rollTime))
+          const x = startX + 4 * diameter * rollTime
+          const y = SIZE / 2
+
+          c.strokeStyle = 'lightskyblue'
+          c.lineWidth = 1
+          c.fillStyle = 'lightskyblue'
+          c.textAlign = 'center'
+          c.textBaseline = 'top'
+          c.font = '16px sans-serif'
+          const TICK_LEN = 10
+          const TEXT_PADDING = 10
+          c.beginPath()
+          c.moveTo(startX, y + RADIUS)
+          c.lineTo(startX + 4 * diameter, y + RADIUS)
+          for (let i = 0; i <= 4; i++) {
+            const x = startX + i * diameter
+            c.moveTo(x, y + RADIUS)
+            c.lineTo(x, y + RADIUS + TICK_LEN)
+            c.fillText(i, x, y + RADIUS + TICK_LEN + TEXT_PADDING)
+            if (i < 4 && rollTime - 0.125 > i * 0.25) {
+              c.moveTo(x + RADIUS, y + RADIUS)
+              c.arc(x + RADIUS, y, RADIUS, Math.PI / 2, Math.PI * 2.5)
             }
-          })
+          }
+          c.stroke()
+
+          c.strokeStyle = 'black'
+          c.lineWidth = 1
+          c.beginPath()
+          c.moveTo(x + RADIUS, y)
+          c.arc(x, y, RADIUS, 0, Math.PI * 2)
+          for (let i = 0; i < 4; i++) {
+            const angle = (i * Math.PI) / 4 + rollTime * Math.PI * 2
+            const cos = Math.cos(angle) * RADIUS
+            const sin = Math.sin(angle) * RADIUS
+            c.moveTo(x + cos, y + sin)
+            c.lineTo(x - cos, y - sin)
+          }
+          c.stroke()
+          c.strokeStyle = 'purple'
+          c.lineWidth = 5
+          c.beginPath()
+          c.moveTo(x, y + RADIUS)
+          c.arc(
+            x,
+            y,
+            RADIUS,
+            Math.PI / 2,
+            Math.PI * 2 * rollClamped - Math.PI * 1.5,
+            true
+          )
+          c.moveTo(startX, y + RADIUS)
+          c.lineTo(startX + 4 * diameter * rollClamped, y + RADIUS)
+          c.stroke()
 
           c.restore()
         }
