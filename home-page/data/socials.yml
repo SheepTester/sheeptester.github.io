@@ -10,6 +10,7 @@ profiles:
   - name: Instagram
     link: https://www.instagram.com/sheeptester/
     type: instagram
+    border: white
 
   - name: Reddit
     link: https://www.reddit.com/user/Sheep_Tester
@@ -23,7 +24,8 @@ profiles:
 
   - name: YouTube
     link: https://www.youtube.com/c/SeanYentheHumansperson
-    ball: '#FF0000'
+    bg: '#FF0000'
+    ball: white
 
   - name: TikTok
     link: https://www.tiktok.com/@sheeptester
@@ -37,6 +39,11 @@ profiles:
     bg: '#FEFC00'
     border: black
     ball: white
+
+  - name: BeReal
+    link: https://bere.al/sheeptester
+    bg: black
+    border: white
 
   - name: JSFiddle
     link: https://jsfiddle.net/user/SheepTester/
@@ -182,6 +189,30 @@ profiles:
   - name: Internet Archive
     link: https://archive.org/details/@sheep_tester
     bg: '#000000'
+
+  - name: Hack The Box
+    link: https://app.hackthebox.com/users/1034768
+    bg: '#111927'
+    border: '#9FEF00'
+
+  - name: CTFtime
+    link: https://ctftime.org/user/134841
+    bg: '#E3000B'
+    border: white
+
+  # I should add a disclaimer that this account is for satire and surveillance
+  # since people assume that everyone on a conservative social media is a
+  # conservative, even though people who post screenshots of Truth Social prove
+  # otherwise.
+  # - name: Gettr
+  #   link: https://gettr.com/user/grimacing
+  #   bg: '#EB0000'
+  #   ball: white
+
+  - name: Tableau Public
+    link: https://public.tableau.com/app/profile/sean.yen
+    bg: '#2D4B65'
+    border: white
 
   - name: lernu!
     link: https://lernu.net/en/uzanto/313379/profilo

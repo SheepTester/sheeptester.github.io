@@ -257,6 +257,16 @@
   tags:
     - utility
 
+- path: /javascripts/large-file-viewer.html
+  image: img/large-file-viewer.png
+  name: Large file viewer
+  description: >-
+    View the contents of a large text file without lagging. Useful for debugging
+    files produced by the HTMLifier.
+  tags:
+    - utility
+    - unintuitive
+
 - path: /javascripts/carecalc.html
   image: img/carecalc-smaller.png
   name: Grade Care Calculator
@@ -266,11 +276,29 @@
     - utility
     - school
 
+- path: /javascripts/height.html
+  image: img/height.png
+  name: Centimeter converter
+  description: >-
+    Convert between centimeters and feet and inches because Google can only
+    convert from centimeters to either feet or inches, but not both, but my dumb
+    American mind can only understand a person's height in feet and inches.
+  tags:
+    - utility
+
 - path: /javascripts/cyrillic-finder.html
   image: img/cyrillic-smaller.png
   name: Special character finder
   description: >-
     A detector of non-US-keyboard characters.
+  tags:
+    - utility
+
+- path: /javascripts/gif-caption.html
+  image: img/gif-caption.png
+  name: GIF caption editor
+  description: >-
+    Add a text label above a GIF.
   tags:
     - utility
 
@@ -383,6 +411,16 @@
   tags:
     - game
 
+- path: /words-go-here/misc/hangman.html
+  image: img/hangman.png
+  name: 3-letter hangman
+  description: >-
+    A simple implementation of the word guessing game Hangman. You have to guess
+    the word randomly chosen on each page load, but to make it easier, you only
+    have to guess three letters.
+  tags:
+    - game
+
 - path: https://orbiit.github.io/gunn-web-app/
   image: img/ugwa-smaller.png
   name: Unofficial Gunn Web App
@@ -422,9 +460,30 @@
     - utility
     - school
 
+- path: /uxdy/classrooms/
+  image: img/classrooms.png
+  name: UCSD classroom schedule
+  description: >-
+    Shows the locations of each building at UCSD, lists their classrooms, and
+    displays each classroom's class schedule. Helps people find interesting
+    lectures to attend or unoccupied classrooms to study in.
+  tags:
+    - utility
+    - school
+
+- path: /words-go-here/misc/fluent-emoji.html
+  image: img/fluent-emoji.png
+  name: Fluent emoji list
+  description: >-
+    A list of Microsoft's animated 3D fluent emoji, shamelessly stolen from
+    Microsoft Teams. Click on an emoji to download its animation as a 100×100
+    gif.
+  tags:
+    - visual
+
 - path: /themes/billy-goat/index-dark.html
   image: img/billy-goat-smaller.png
-  name: Billy Goat Blog Theme
+  name: Billy Goat blog theme
   description: >-
     A blog website design.
   tags:
@@ -454,6 +513,16 @@
   tags:
     - utility
     - incomplete
+
+- path: /javascripts/cheat-sheet.html
+  image: img/js-cheat-sheet.png
+  name: JavaScript reference sheet
+  description: >-
+    A cheat sheet for a portion of the essential JavaScript built-in functions a
+    beginner web developer should know.
+  tags:
+    - visual
+    - unintuitive
 
 - path: /javascripts/terminal/
   image: img/terminal-smaller.png
@@ -485,7 +554,7 @@
 
 - path: /javascripts/mutate.html
   image: img/life.png
-  name: Cell Simulation
+  name: Cell simulation
   description: >-
     A cellular automata attempting to simulate evolution.
   tags:
@@ -570,7 +639,7 @@
 
 - path: /eyo-dictionary/
   image: img/eyo-smaller.png
-  name: Eyo Dictionary
+  name: Eyo dictionary
   description: >-
     A searchable list of words in my first constructed language.
   tags:
@@ -579,7 +648,7 @@
 
 - path: /eyo-dictionary/validator.html
   image: img/die-smaller.png
-  name: Eyo Word Validator
+  name: Eyo word validator
   description: >-
     A validator for the minimalist alphabet in my first constructed language.
   tags:
