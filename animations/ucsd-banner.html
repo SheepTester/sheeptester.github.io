@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>UCSD 2026 animated logo</title>
+    <meta name="description" content="hhh" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" type="text/css" href="/sheep3.css" />
+
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/gif.js/0.2.0/gif.js"
+      charset="utf-8"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/dat.gui@0.7.7/build/dat.gui.min.js"
+      charset="utf-8"
+    ></script>
+    <script
+      src="https://sheeptester.github.io/javascripts/easing.js"
+      charset="utf-8"
+    ></script>
+    <script src="/sheep3.js" charset="utf-8"></script>
+
+    <style>
+      body {
+        justify-content: center;
+        align-items: center;
+        background-image: radial-gradient(circle at 50% 50%, #e2e2e2, #8e8e8e);
+      }
+
+      #canvas-wrapper {
+        width: 500px;
+        height: 500px;
+        overflow: hidden;
+      }
+      #canvas-wrapper.server-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 10px;
+      }
+      #canvas-wrapper.circle {
+        border-radius: 50%;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="canvas-wrapper"></div>
+    <button id="download">Download</button>
+    <script type="module">
+      import { Timings } from './scuffed-animation.js'
+      const { easeInOutCubic, easeInCubic, easeOutCubic } = Easing
+
+      const gifOptions = {
+        FPS: 50,
+        SIZE: 300,
+        MP4: false
+      }
+
+      const timings = new Timings()
+        .event('to-ucsd')
+        .then(2000)
+        .event('to-amogus')
+        .then(3000)
+        .event('to-2026')
+        .then(2500)
+
+      const SIZE = 500
+
+      class Animation {
+        canvas
+        images
+        #gradient
+        #shadowDeferred = []
+        #tempContext
+
+        constructor (canvas, images) {
+          this.canvas = canvas
+          this.images = images
+          this.#tempContext = document.createElement('canvas').getContext('2d')
+        }
+
+        draw (time) {
+          const { canvas, images } = this
+          const { context: c } = canvas
+          c.save()
+          c.scale(...canvas.size.clone().scale(1 / SIZE))
+          c.clearRect(0, 0, SIZE, SIZE)
+
+          // ...
+
+          c.restore()
+        }
+      }
+
+      async function main () {
+        const options = { speed: 1, serverIcon: false, circle: false }
+        const images = {
+          crewmate: await loadImage('./crewmate.webp')
+        }
+        const animation = new Animation(canvas, images)
+        function render () {
+          const now = Date.now() * options.speed
+          // const time =
+          //   (now %
+          //     (timings.events['to-2026'].time +
+          //       1000 -
+          //       timings.events['to-amogus'].time)) +
+          //   timings.events['to-amogus'].time
+          const time = now % timings.duration
+          animation.draw(time)
+        }
+        animator.renderers.push({ render })
+
+        await resizeListener.listen().resizeNow()
+        animator.start()
+
+        const gui = new dat.GUI()
+        gui.add(options, 'speed', 0, 5)
+        const gifOptionsFolder = gui.addFolder('GIF options')
+        for (const key of Object.keys(gifOptions)) {
+          gifOptionsFolder.add(gifOptions, key)
+        }
+        gui.add(options, 'serverIcon').onChange(() => {
+          if (options.serverIcon) {
+            canvas.wrapper.classList.add('server-icon')
+          } else {
+            canvas.wrapper.classList.remove('server-icon')
+          }
+        })
+        gui.add(options, 'circle').onChange(() => {
+          if (options.circle) {
+            canvas.wrapper.classList.add('circle')
+          } else {
+            canvas.wrapper.classList.remove('circle')
+          }
+        })
+
+        const downloadBtn = document.getElementById('download')
+        downloadBtn.addEventListener('click', async e => {
+          downloadBtn.disabled = true
+          const dummyCanvas = new ImitationCanvas({
+            size: new Vector2(gifOptions.SIZE, gifOptions.SIZE)
+          })
+          const animation = new Animation(dummyCanvas, images)
+          const frameDelay = 1000 / gifOptions.FPS
+          if (gifOptions.MP4) {
+            if (!('SharedArrayBuffer' in window)) {
+              downloadBtn.disabled = false
+              alert(
+                "SharedArrayBuffer isn't available. Reload the page and try again. If it still doesn't work, then I guess you can't download an mp4."
+              )
+              return
+            }
+            await import(
+              'https://unpkg.com/@ffmpeg/ffmpeg@0.9.5/dist/ffmpeg.min.js'
+            )
+            const { createFFmpeg, fetchFile } = FFmpeg
+            const ffmpeg = createFFmpeg({ log: true })
+            await ffmpeg.load()
+            let frame = 0
+            for (let i = 0; i < timings.duration; i += frameDelay) {
+              animation.draw(i)
+              const blob = await new Promise(resolve => {
+                dummyCanvas.canvas.toBlob(resolve, 'image/png')
+              })
+              ffmpeg.FS('writeFile', `frame${frame}.png`, await fetchFile(blob))
+              frame++
+            }
+            await ffmpeg.run(
+              '-r',
+              gifOptions.FPS + '',
+              '-i',
+              `frame%d.png`,
+              'output.mp4'
+            )
+            const data = ffmpeg.FS('readFile', 'output.mp4')
+            download(
+              'ucsd26.mp4',
+              new Blob([data.buffer], { type: 'video/mp4' })
+            )
+            downloadBtn.disabled = false
+          } else {
+            const gif = new GIF({
+              workerScript: './gif-worker.js',
+              width: gifOptions.SIZE,
+              height: gifOptions.SIZE
+            })
+            gif.on('finished', blob => {
+              download('ucsd26.gif', blob)
+              animator.start()
+              downloadBtn.disabled = false
+            })
+            for (let i = 0; i < timings.duration; i += frameDelay) {
+              animation.draw(i)
+              gif.addFrame(dummyCanvas.context, {
+                delay: frameDelay,
+                copy: true
+              })
+            }
+            gif.render()
+          }
+        })
+      }
+
+      main()
+    </script>
+  </body>
+</html>
