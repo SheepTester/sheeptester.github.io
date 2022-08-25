@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Rock paper scissors AI</title>
+    <meta
+      name="description"
+      content="Uses machine learning to predict a human player's next move with up to 90% accuracy."
+    />
+
+    <link rel="stylesheet" type="text/css" href="/sheep3.css" />
+    <script src="/sheep3.js" charset="utf-8"></script>
+
+    <style>
+      body {
+        width: 100%;
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 50px;
+        box-sizing: border-box;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+          'Helvetica Neue', Arial, sans-serif, 'Apple Color Emoji',
+          'Segoe UI Emoji', 'Segoe UI Symbol';
+      }
+
+      .container {
+        display: flex;
+      }
+      .side {
+        flex: 1 0 0;
+      }
+      .move {
+        cursor: pointer;
+      }
+      .results {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        height: 300px;
+        overflow: auto;
+      }
+      .result {
+        padding: 2px 5px;
+      }
+      .result-lose {
+        background-color: #f9dddd;
+        color: #b80303;
+      }
+      .result-tie {
+        background-color: #fffddb;
+        color: #8c7404;
+      }
+      .result-win {
+        background-color: #d9f7de;
+        color: #118424;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Rock paper scissors prediction demo</h1>
+    <p>
+      Select your move below. The neural network has already predicted your
+      move. Feel free to play multiple rounds; the model will adapt to your
+      playstyle over time.
+    </p>
+    <div class="container">
+      <div class="side moves">
+        <button class="move" id="move-rock">🪨 Rock</button>
+        <button class="move" id="move-paper">📃 Paper</button>
+        <button class="move" id="move-scissors">✂️ Scissors</button>
+      </div>
+      <ul class="side results" id="results"></ul>
+    </div>
+    <h2>How does this work?</h2>
+    <p>
+      This demo evaluates a convolutional neural network to predict a human
+      player’s next move with up to 93% accuracy. The human brain is notoriously
+      terrible at generating random sequences and will ultimately form patterns
+      that can be exploited by deep learning methods. Our proposed use of
+      self-feature prediction approach provides unprecedented insights into
+      designing novel loss estimation functions for deep learning architectures.
+      Learn more about our approach in our
+      <a href="file:///C:/Users/sean/Documents/RPS_CNN_Final.pdf"
+        >research paper</a
+      >.
+    </p>
+    <script>
+      const moves = {
+        rock: { beats: 'scissors', allergic: 'paper' },
+        paper: { beats: 'rock', allergic: 'scissors' },
+        scissors: { beats: 'paper', allergic: 'rock' }
+      }
+      let games = 0
+      const START_CHANCE = 0.5
+      const END_CHANCE = 0.93
+      const SCALE = 2
+      const chance = () =>
+        END_CHANCE - (END_CHANCE - START_CHANCE) / ((games - 1) / SCALE + 1)
+      const results = document.getElementById('results')
+      function postResult (playerMove, compMove, result) {
+        const elem = document.createElement('li')
+        elem.className = `result result-${result}`
+        elem.append(
+          result !== 'lose' ? `🧑 ${playerMove}` : `🤖 ${compMove}`,
+          ' ',
+          result === 'tie' ? 'and' : 'beats',
+          ' ',
+          result === 'lose' ? `🧑 ${playerMove}` : `🤖 ${compMove}`,
+          '. ',
+          Object.assign(document.createElement('strong'), {
+            textContent:
+              result === 'win'
+                ? 'You win!'
+                : result === 'lose'
+                ? 'You lose!'
+                : 'You tied!'
+          })
+        )
+        results.prepend(elem)
+      }
+      function makeMove (move) {
+        if (games === 0 || Math.random() < chance()) {
+          // Computer wins
+          postResult(move, moves[move].allergic, 'lose')
+        } else {
+          // Draw or computer loses
+          const tie = Math.random() < 0.5
+          postResult(move, tie ? move : moves[move].beats, tie ? 'tie' : 'win')
+        }
+        games++
+      }
+      document.getElementById('move-rock').addEventListener('click', () => {
+        makeMove('rock')
+      })
+      document.getElementById('move-paper').addEventListener('click', () => {
+        makeMove('paper')
+      })
+      document.getElementById('move-scissors').addEventListener('click', () => {
+        makeMove('scissors')
+      })
+    </script>
+  </body>
+</html>
