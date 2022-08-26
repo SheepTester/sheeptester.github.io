@@ -21,6 +21,7 @@ const unwrap = () => {
  * @param {number} options.gifOptions.WIDTH - Default width of the resulting
  * gif/mp4. The height will be scaled accordingly.
  * @param {number} options.gifOptions.MP4
+ * @param {number} options.fileName - File name of the output gif/mp4
  * @param {Timings} options.timings
  * @param {(c: CanvasRenderingContext2D, time: number) => void} options.draw
  */
@@ -29,6 +30,7 @@ export function init ({
   wrapper,
   downloadBtn,
   gifOptions,
+  fileName,
   timings,
   draw
 }) {
@@ -119,7 +121,10 @@ export function init ({
         'output.mp4'
       )
       const data = ffmpeg.FS('readFile', 'output.mp4')
-      download('ucsd26.mp4', new Blob([data.buffer], { type: 'video/mp4' }))
+      download(
+        `${fileName}.mp4`,
+        new Blob([data.buffer], { type: 'video/mp4' })
+      )
       downloadBtn.disabled = false
     } else {
       // @ts-ignore
@@ -131,7 +136,7 @@ export function init ({
         height: gifOptions.WIDTH / ratio
       })
       gif.on('finished', blob => {
-        download('ucsd26.gif', blob)
+        download(`${fileName}.gif`, blob)
         downloadBtn.disabled = false
       })
       for (let i = 0; i < timings.duration; i += frameDelay) {
