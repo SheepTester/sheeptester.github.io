@@ -8,7 +8,18 @@ const WIDTH = 960
 const HEIGHT = 540
 
 const images = {
-  crewmate: await loadImage('./crewmate.webp')
+  background: await loadImage('./ucsd-general-server/bluebg_full.png'),
+  sky: await loadImage('./ucsd-general-server/rainbow_bg.png'),
+  geisel: await loadImage('./ucsd-general-server/Geisel bg.png')
+}
+
+const TRIDENT = {
+  X: 544, // x-axis
+  SPACING: 219, // Distance between the centers of each spear, x-axis
+  GAP: 27, // Gap between two spears, ⊥-axis
+  WIDTH: 128, // ⊥-axis
+  HEIGHT: 623, // //-axis
+  DIFF: 184 // HEIGHT - DIFF is the length of the shorter spears, //-axis
 }
 
 /**
@@ -19,11 +30,16 @@ const images = {
 function draw (c, time) {
   c.save()
   c.scale(c.canvas.width / WIDTH, c.canvas.height / HEIGHT)
-  c.clearRect(0, 0, WIDTH, HEIGHT)
+  c.drawImage(images.background, 0, 0, WIDTH, HEIGHT)
 
-  c.fillStyle = 'red'
-  c.fillRect(time, 0, 100, 100)
+  c.save()
+  c.beginPath()
+  c.rect(time, 350, 100, 100)
+  c.clip()
+  c.drawImage(images.sky, 0, 0, WIDTH, HEIGHT)
+  c.restore()
 
+  c.drawImage(images.geisel, 0, 0, WIDTH, HEIGHT)
   c.restore()
 }
 
