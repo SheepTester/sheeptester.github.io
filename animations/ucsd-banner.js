@@ -1,8 +1,12 @@
 import { loadImage, Timings } from './scuffed-animation.js'
-import { easeInOutCubic, easeInCubic, easeOutCubic } from './easing.js'
+import { easeInCubic } from './easing.js'
 import { init } from './scuffed-animation-ui.js'
 
-const timings = new Timings().then(1000)
+const timings = new Timings()
+  .event('spears-out')
+  .then(100)
+  .event('spears-in')
+  .then(1500)
 
 const WIDTH = 960
 const HEIGHT = 540
@@ -13,14 +17,27 @@ const images = {
   geisel: await loadImage('./ucsd-general-server/Geisel bg.png')
 }
 
-const TRIDENT = {
-  X: 544, // x-axis
-  SPACING: 219, // Distance between the centers of each spear, x-axis
-  GAP: 27, // Gap between two spears, ⊥-axis
-  WIDTH: 128, // ⊥-axis
-  HEIGHT: 623, // //-axis
-  DIFF: 184 // HEIGHT - DIFF is the length of the shorter spears, //-axis
-}
+// Trident measurements
+/** Center point of long spear, x-axis */
+const X = 544
+/** Distance between the centers of each spear, x-axis */
+const SPACING = 219
+/** Gap between two spears, ⊥-axis */
+const GAP = 27
+/** Spear width, ⊥-axis */
+const TWIDTH = 128
+/** Length of longest spear, //-axis */
+const LENGTH = 623
+/** `LENGTH - DIFF` is the length of the shorter spears, //-axis */
+const DIFF = 184
+/** Difference in x/y up/down half a spear, x-axis */
+const HALF_UP = (TWIDTH / 2) * Math.SQRT1_2
+/** Horizontal length of half a spear, x-axis */
+const HALF_LEN = (TWIDTH / 2) * Math.SQRT2
+/** Length of left spear axis from bottom of canvas, //-axis */
+const LEFT_LENGTH = LENGTH - DIFF - SPACING * Math.SQRT1_2
+/** Length of right spear axis from bottom of canvas, //-axis */
+const RIGHT_LENGTH = LENGTH - DIFF + SPACING * Math.SQRT1_2
 
 /**
  *
@@ -34,7 +51,37 @@ function draw (c, time) {
 
   c.save()
   c.beginPath()
-  c.rect(time, 350, 100, 100)
+
+  const clipSpear = (x, length) => {
+    c.moveTo(x + HALF_LEN, HEIGHT)
+    c.lineTo(x - HALF_LEN, HEIGHT)
+    const offset = length * Math.SQRT1_2
+    c.lineTo(x - offset - HALF_UP, HEIGHT - offset + HALF_UP)
+    c.lineTo(x - offset + HALF_UP, HEIGHT - offset - HALF_UP)
+  }
+
+  timings.component(time, {
+    enter: { at: 'spears-in', for: 500 },
+    exit: { at: 'spears-out' },
+    render: ({ inTime }) => {
+      clipSpear(X - SPACING, LEFT_LENGTH - easeInCubic(inTime) * RIGHT_LENGTH)
+    }
+  })
+  timings.component(time, {
+    enter: { at: 'spears-in', for: 500, offset: 200 },
+    exit: { at: 'spears-out' },
+    render: ({ inTime }) => {
+      clipSpear(X, LENGTH - easeInCubic(inTime) * RIGHT_LENGTH)
+    }
+  })
+  timings.component(time, {
+    enter: { at: 'spears-in', for: 500, offset: 400 },
+    exit: { at: 'spears-out' },
+    render: ({ inTime }) => {
+      clipSpear(X + SPACING, RIGHT_LENGTH - easeInCubic(inTime) * RIGHT_LENGTH)
+    }
+  })
+
   c.clip()
   c.drawImage(images.sky, 0, 0, WIDTH, HEIGHT)
   c.restore()
