@@ -4,7 +4,7 @@
  * @param {string} url
  * @returns {Promise<HTMLImageElement>}
  */
-function loadImage (url) {
+export function loadImage (url) {
   return new Promise((resolve, reject) => {
     const image = new Image()
     image.addEventListener('load', () => resolve(image))
@@ -17,7 +17,7 @@ function loadImage (url) {
  * @param {string} filename
  * @param {Blob} content
  */
-function download (filename, content) {
+export function download (filename, content) {
   const url = URL.createObjectURL(content)
   const saveLink = Object.assign(document.createElement('a'), {
     href: url,
