@@ -143,10 +143,15 @@ export function init ({
         draw(dummyContext, i)
         gif.addFrame(dummyContext, {
           delay: frameDelay,
-          copy: true
+          copy: true,
+          quality: 1,
+          dither: 'FloydSteinberg-serpentine',
+          globalPalette: true
         })
       }
       gif.render()
     }
   })
 }
+
+navigator.serviceWorker.register('./sw.js')
