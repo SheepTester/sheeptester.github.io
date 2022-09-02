@@ -2,11 +2,19 @@
 
 // @ts-ignore
 import { GUI } from 'https://cdn.jsdelivr.net/npm/dat.gui@0.7.9/build/dat.gui.module.js'
-import { download, Timings } from './scuffed-animation.js'
+import { download, PlayState, Timings } from './scuffed-animation.js'
 
 const unwrap = () => {
   throw new TypeError('Expected value')
 }
+
+/**
+ * A time for specifying a preview range's start and end time.
+ *
+ * @typedef {object} TimeBound
+ * @property {string} at - Name of the event.
+ * @property {number} [offset] - Offset from the event.
+ */
 
 /**
  * @param {object} options
@@ -23,6 +31,8 @@ const unwrap = () => {
  * @param {number} options.gifOptions.MP4
  * @param {number} options.fileName - File name of the output gif/mp4
  * @param {Timings} options.timings
+ * @param {[TimeBound, TimeBound]} [options.previewRange] - The time range to
+ * bound the preview within.
  * @param {(c: CanvasRenderingContext2D, time: number) => void} options.draw
  */
 export function init ({
@@ -32,19 +42,18 @@ export function init ({
   gifOptions,
   fileName,
   timings,
+  previewRange,
   draw
 }) {
   const options = { speed: 1, serverIcon: false, circle: false }
-  let baseRealTime = Date.now()
-  let baseAnimTime = 0
-  const getAnimTime = (now = Date.now()) =>
-    ((now - baseRealTime) * options.speed + baseAnimTime) % timings.duration
+  const playState = new PlayState(timings)
+  if (previewRange) {
+    playState.setBounds(...previewRange)
+  }
 
   const gui = new GUI()
   gui.add(options, 'speed', 0, 5).onChange(() => {
-    const now = Date.now()
-    baseAnimTime = getAnimTime(now)
-    baseRealTime = now
+    playState.setSpeed(options.speed)
   })
   gui.add(options, 'serverIcon').onChange(() => {
     if (options.serverIcon) {
@@ -78,7 +87,7 @@ export function init ({
   const context = canvas.getContext('2d') ?? unwrap()
 
   function paint () {
-    draw(context, getAnimTime())
+    draw(context, playState.getTime())
     window.requestAnimationFrame(paint)
   }
   paint()

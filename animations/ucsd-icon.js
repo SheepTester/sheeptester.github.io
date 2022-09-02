@@ -156,6 +156,10 @@ init({
   },
   fileName: 'ucsd-gen-icon',
   timings,
+  previewRange: [
+    { at: 'colleges-in', offset: -1000 },
+    { at: 'colleges-out', offset: 200 }
+  ],
   draw
 })
 

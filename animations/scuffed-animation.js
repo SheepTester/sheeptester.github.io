@@ -30,6 +30,20 @@ export function download (filename, content) {
 }
 
 /**
+ * @param {number} time
+ * @param {number} start
+ * @param {number} end
+ */
+function between (time, start, end) {
+  if (start <= end) {
+    return start < time && time < end
+  } else {
+    // end < start
+    return time > start || time < end
+  }
+}
+
+/**
  * @typedef {object} Transition
  * @property {string} at - Name of the event when the transition starts.
  * @property {number} [offset] - Offset from the event when the transition
@@ -84,24 +98,10 @@ export class Timings {
   }
 
   /**
-   * @param {number} time
    * @param {number} start
    * @param {number} end
    */
-  #between (time, start, end) {
-    if (start <= end) {
-      return start < time && time < end
-    } else {
-      // end < start
-      return time > start || time < end
-    }
-  }
-
-  /**
-   * @param {number} start
-   * @param {number} end
-   */
-  #difference (start, end) {
+  difference (start, end) {
     if (start < end) {
       return end - start
     } else {
@@ -113,7 +113,7 @@ export class Timings {
    * @param {number} time
    * @param {number} offset
    */
-  #addTime (time, offset = 0) {
+  addTime (time, offset = 0) {
     return (((time + offset) % this.duration) + this.duration) % this.duration
   }
 
@@ -125,41 +125,41 @@ export class Timings {
    * @param {(options: RenderOptions) => void} options.render
    */
   component (time, { enter, exit, render }) {
-    const enterStart = this.#addTime(this.events[enter.at], enter.offset)
-    const enterEnd = this.#addTime(enterStart, enter.for)
-    const exitStart = this.#addTime(this.events[exit.at], exit.offset)
-    const exitEnd = this.#addTime(exitStart, exit.for)
+    const enterStart = this.addTime(this.events[enter.at], enter.offset)
+    const enterEnd = this.addTime(enterStart, enter.for)
+    const exitStart = this.addTime(this.events[exit.at], exit.offset)
+    const exitEnd = this.addTime(exitStart, exit.for)
     // This math will probably die with certain numbers
-    if (this.#between(time, enterStart, exitEnd)) {
-      const transitioning = this.#between(time, enterStart, enterEnd)
+    if (between(time, enterStart, exitEnd)) {
+      const transitioning = between(time, enterStart, enterEnd)
         ? 'in'
-        : this.#between(time, exitStart, exitEnd)
+        : between(time, exitStart, exitEnd)
         ? 'out'
         : null
       render({
         totalTime:
-          this.#difference(enterStart, time) /
-          this.#difference(enterStart, exitStart),
+          this.difference(enterStart, time) /
+          this.difference(enterStart, exitStart),
         inTime:
           transitioning === 'in'
-            ? 1 - this.#difference(enterStart, time) / (enter.for ?? 0)
+            ? 1 - this.difference(enterStart, time) / (enter.for ?? 0)
             : 0,
         outTime:
           transitioning === 'out'
-            ? this.#difference(exitStart, time) / (exit.for ?? 0)
+            ? this.difference(exitStart, time) / (exit.for ?? 0)
             : 0,
         transitioning,
         getTransition: transition => {
-          const start = this.#addTime(
+          const start = this.addTime(
             this.events[transition.at],
             transition.offset
           )
-          const end = this.#addTime(start, transition.for)
-          const transitioning = this.#between(time, start, end)
+          const end = this.addTime(start, transition.for)
+          const transitioning = between(time, start, end)
           return {
             time: transitioning
-              ? this.#difference(start, time) / (transition.for ?? 0)
-              : time === start || this.#between(time, enterStart, start)
+              ? this.difference(start, time) / (transition.for ?? 0)
+              : time === start || between(time, enterStart, start)
               ? 0
               : 1,
             transitioning
@@ -167,5 +167,63 @@ export class Timings {
         }
       })
     }
+  }
+}
+
+export class PlayState {
+  /** @type {Timings} */
+  #timings
+  #speed = 1
+  #baseRealTime = Date.now()
+  #baseAnimTime = 0
+  #startTime = 0
+  /** @type {number} */
+  #duration
+
+  /**
+   * @param {Timings} timings
+   */
+  constructor (timings) {
+    this.#timings = timings
+    this.#duration = timings.duration
+  }
+
+  /**
+   * @param {Transition} start
+   * @param {Transition} end
+   */
+  setBounds (start, end) {
+    const startTime = this.#timings.addTime(
+      this.#timings.events[start.at],
+      start.offset
+    )
+    const endTime = this.#timings.addTime(
+      this.#timings.events[end.at],
+      end.offset
+    )
+    this.#startTime = startTime
+    this.#duration = this.#timings.difference(startTime, endTime)
+  }
+
+  #getAnimTime (now = Date.now()) {
+    return (
+      ((now - this.#baseRealTime) * this.#speed + this.#baseAnimTime) %
+      this.#duration
+    )
+  }
+
+  getTime () {
+    return this.#timings.addTime(this.#getAnimTime(), this.#startTime)
+  }
+
+  /**
+   * @param {number} speed
+   */
+  setSpeed (speed) {
+    const now = Date.now()
+    const animTime = this.#getAnimTime()
+    this.#speed = speed
+    this.#baseRealTime = now
+    this.#baseAnimTime = animTime
   }
 }
