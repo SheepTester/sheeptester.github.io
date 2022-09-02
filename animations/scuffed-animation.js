@@ -53,7 +53,8 @@ function between (time, start, end) {
 
 /**
  * @typedef {object} RenderOptions
- * @property {number} totalTime
+ * @property {number} totalTime - Value from 0 to 1 representing the progress
+ * through the entire lifetime of the component.
  * @property {number} inTime - Value from 1 to 0 representing the progress
  * through the entering transition. Stays at 0 after the transition ends. NOTE:
  * This value goes backwards down to 0 to require less code to add an entering

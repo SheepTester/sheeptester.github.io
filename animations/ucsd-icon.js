@@ -6,10 +6,12 @@ const timings = new Timings()
   .event('geisel-in')
   .then(3000)
   .event('geisel-out')
-  .then(3000)
+  .then(2000)
   .event('colleges-in')
-  .then(3000)
+  .then(2500)
   .event('colleges-out')
+  .then(800)
+  .event('college-start')
   .then(1000)
 
 const WIDTH = 1000
@@ -17,23 +19,17 @@ const HEIGHT = 1000
 
 const images = {
   geisel: await loadImage('./ucsd-general-server/geiselnobg.png'),
-  revelle: await loadImage('./ucsd-general-server/c1_revelle.png'),
-  muir: await loadImage('./ucsd-general-server/c2_muir.gif'),
-  marshall: await loadImage('./ucsd-general-server/c3_marshall.png'),
-  warren: await loadImage('./ucsd-general-server/c4_warren.png'),
-  erc: await loadImage('./ucsd-general-server/c5_erc.png'),
-  sixth: await loadImage('./ucsd-general-server/c6_sixth.png'),
-  seventh: await loadImage('./ucsd-general-server/c7_seventh.jpg')
+  colleges: await loadImage('./ucsd-general-server/colleges.svg')
 }
 
 const colleges = [
-  images.revelle,
-  images.muir,
-  images.marshall,
-  images.warren,
-  images.erc,
-  images.sixth,
-  images.seventh
+  { name: 'Revelle', color: '#263B80' },
+  { name: 'Muir', color: '#0A5540' },
+  { name: 'Marshall', color: '#B01F28' },
+  { name: 'Warren', color: '#802448' },
+  { name: 'ERC', color: '#5B8AB5' },
+  { name: 'Sixth', color: '#048A96' },
+  { name: 'Seventh', color: '#D09229' }
 ]
 
 /** Width of each trident spear, ⊥-axis */
@@ -127,17 +123,38 @@ function draw (c, time) {
     }
   })
 
-  for (const [i, seal] of colleges.entries()) {
+  for (let i = 0; i < colleges.length; i++) {
+    const period = 2000
     timings.component(time, {
-      enter: { at: 'colleges-in' },
-      exit: { at: 'colleges-out' },
-      render: ({ totalTime }) => {
-        const cycle = totalTime + (i / colleges.length) * Math.PI * 2
-        const x = Math.cos(cycle) * 300 + WIDTH / 2
-        const y = Math.sin(cycle) * 300 + HEIGHT / 2
-        const width = 200
-        const height = (width / seal.naturalWidth) * seal.naturalHeight
-        c.drawImage(seal, x - width / 2, y - height / 2, width, height)
+      enter: {
+        at: 'colleges-in',
+        for: 500,
+        offset: (i / colleges.length) * period
+      },
+      exit: { at: 'colleges-out', for: i === 0 ? 800 : 500 },
+      render: ({ inTime, outTime }) => {
+        const cycle =
+          Math.PI -
+          ((time - timings.events['colleges-in']) / period) * Math.PI * 2 +
+          (i / colleges.length) * Math.PI * 2
+        const radius =
+          325 * (i === 0 ? 1 - easeInOutCubic(outTime) : 1) +
+          (i !== 0 ? easeInCubic(outTime) * 400 : 0)
+        const x = Math.cos(cycle) * radius + WIDTH / 2
+        const y =
+          Math.sin(cycle) * radius + HEIGHT / 2 - easeInCubic(inTime) * 500
+        const size = 300 + (i === 0 ? 700 * easeInOutCubic(outTime) : 0)
+        c.drawImage(
+          images.colleges,
+          0,
+          images.colleges.naturalWidth * i,
+          images.colleges.naturalWidth,
+          images.colleges.naturalWidth,
+          x - size / 2,
+          y - size / 2,
+          size,
+          size
+        )
       }
     })
   }
@@ -157,8 +174,8 @@ init({
   fileName: 'ucsd-gen-icon',
   timings,
   previewRange: [
-    { at: 'colleges-in', offset: -1000 },
-    { at: 'colleges-out', offset: 200 }
+    { at: 'geisel-out', offset: 1500 },
+    { at: 'colleges-out', offset: 800 }
   ],
   draw
 })
