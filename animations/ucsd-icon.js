@@ -1,19 +1,40 @@
 import { loadImage, Timings } from './scuffed-animation.js'
-import { easeInCubic, easeOutCubic } from './easing.js'
+import { easeInCubic, easeInOutCubic, easeOutCubic } from './easing.js'
 import { init } from './scuffed-animation-ui.js'
 
 const timings = new Timings()
   .event('geisel-in')
   .then(3000)
   .event('geisel-out')
-  .then(3100)
+  .then(3000)
+  .event('colleges-in')
+  .then(3000)
+  .event('colleges-out')
+  .then(1000)
 
 const WIDTH = 1000
 const HEIGHT = 1000
 
 const images = {
-  geisel: await loadImage('./ucsd-general-server/geiselnobg.png')
+  geisel: await loadImage('./ucsd-general-server/geiselnobg.png'),
+  revelle: await loadImage('./ucsd-general-server/c1_revelle.png'),
+  muir: await loadImage('./ucsd-general-server/c2_muir.png'),
+  marshall: await loadImage('./ucsd-general-server/c3_marshall.png'),
+  warren: await loadImage('./ucsd-general-server/c4_warren.png'),
+  erc: await loadImage('./ucsd-general-server/c5_erc.png'),
+  sixth: await loadImage('./ucsd-general-server/c6_sixth.png'),
+  seventh: await loadImage('./ucsd-general-server/c7_seventh.png')
 }
+
+const colleges = [
+  images.revelle,
+  images.muir,
+  images.marshall,
+  images.warren,
+  images.erc,
+  images.sixth,
+  images.seventh
+]
 
 /** Width of each trident spear, ⊥-axis */
 const TWIDTH = 205
@@ -37,19 +58,19 @@ function draw (c, time) {
   c.save()
   c.scale(c.canvas.width / WIDTH, c.canvas.height / HEIGHT)
 
-  c.fillStyle = '#a3c0ea'
+  c.fillStyle = '#717FFF'
   c.fillRect(0, 0, WIDTH, HEIGHT)
 
   timings.component(time, {
-    enter: { at: 'geisel-in', for: 5000, offset: -3000 },
-    exit: { at: 'geisel-out' },
-    render: ({ inTime }) => {
-      const y = -HEIGHT + easeInCubic(inTime) * HEIGHT
+    enter: { at: 'geisel-in', for: 3000, offset: -1000 },
+    exit: { at: 'geisel-out', for: 3500 },
+    render: ({ inTime, outTime }) => {
+      const y =
+        -HEIGHT + (easeInCubic(inTime) + easeInOutCubic(outTime)) * HEIGHT * 2
       const gradient = c.createLinearGradient(0, y, 0, y + 2 * HEIGHT)
-      gradient.addColorStop(0, 'red')
+      gradient.addColorStop(0, '#717FFF')
       gradient.addColorStop(0.5, '#a3c0ea')
-      gradient.addColorStop(1, 'blue')
-      // gradient.addColorStop(1, '#d1e1e4')
+      gradient.addColorStop(1, '#d1e1e4')
       c.fillStyle = gradient
       c.fillRect(0, 0, WIDTH, HEIGHT)
     }
@@ -57,9 +78,9 @@ function draw (c, time) {
 
   timings.component(time, {
     enter: { at: 'geisel-in', for: 2000 },
-    exit: { at: 'geisel-out' },
-    render: ({ inTime, getTransition }) => {
-      const y = HEIGHT + easeInCubic(inTime) * 300
+    exit: { at: 'geisel-out', for: 2000 },
+    render: ({ inTime, outTime, getTransition }) => {
+      const y = HEIGHT + easeInCubic(inTime) * 300 + easeInCubic(outTime) * 900
       c.beginPath()
       const drawSpear = (baseLength, offset) => {
         const length =
@@ -94,17 +115,17 @@ function draw (c, time) {
 
   timings.component(time, {
     enter: { at: 'geisel-in', for: 2000 },
-    exit: { at: 'geisel-out' },
-    render: ({ inTime }) => {
+    exit: { at: 'geisel-out', for: 1500 },
+    render: ({ inTime, outTime }) => {
       c.drawImage(
         images.geisel,
         -159,
-        277 + easeInCubic(inTime) * 500,
+        277 + (easeInCubic(inTime) + easeInCubic(outTime)) * 500,
         1448,
         972
       )
     }
-  })
+  }))
 
   c.restore()
 }
@@ -114,11 +135,11 @@ init({
   wrapper: document.getElementById('canvas-wrapper'),
   downloadBtn: document.getElementById('download'),
   gifOptions: {
-    FPS: 30,
-    WIDTH: 960,
-    MP4: true
+    FPS: 10,
+    WIDTH: 100,
+    MP4: false
   },
-  fileName: 'ucsd-gen-banner',
+  fileName: 'ucsd-gen-icon',
   timings,
   draw
 })

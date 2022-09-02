@@ -125,46 +125,41 @@ export class Timings {
    * @param {(options: RenderOptions) => void} options.render
    */
   component (time, { enter, exit, render }) {
-    const enterTime = this.#addTime(this.events[enter.at], enter.offset)
-    const exitTime = this.#addTime(this.events[exit.at], exit.offset)
+    const enterStart = this.#addTime(this.events[enter.at], enter.offset)
+    const enterEnd = this.#addTime(enterStart, enter.for)
+    const exitStart = this.#addTime(this.events[exit.at], exit.offset)
+    const exitEnd = this.#addTime(exitStart, exit.for)
     // This math will probably die with certain numbers
-    if (this.#between(time, enterTime, exitTime + (exit.for ?? 0))) {
-      const transitioning = this.#between(
-        time,
-        enterTime,
-        enterTime + (enter.for ?? 0)
-      )
+    if (this.#between(time, enterStart, exitEnd)) {
+      const transitioning = this.#between(time, enterStart, enterEnd)
         ? 'in'
-        : this.#between(time, exitTime, exitTime + (exit.for ?? 0))
+        : this.#between(time, exitStart, exitEnd)
         ? 'out'
         : null
       render({
         totalTime:
-          this.#difference(enterTime, time) /
-          this.#difference(enterTime, exitTime),
+          this.#difference(enterStart, time) /
+          this.#difference(enterStart, exitStart),
         inTime:
           transitioning === 'in'
-            ? 1 - this.#difference(enterTime, time) / (enter.for ?? 0)
+            ? 1 - this.#difference(enterStart, time) / (enter.for ?? 0)
             : 0,
         outTime:
           transitioning === 'out'
-            ? this.#difference(exitTime, time) / (exit.for ?? 0)
+            ? this.#difference(exitStart, time) / (exit.for ?? 0)
             : 0,
         transitioning,
         getTransition: transition => {
-          const event = this.#addTime(
+          const start = this.#addTime(
             this.events[transition.at],
             transition.offset
           )
-          const transitioning = this.#between(
-            time,
-            event,
-            event + (transition.for ?? 0)
-          )
+          const end = this.#addTime(start, transition.for)
+          const transitioning = this.#between(time, start, end)
           return {
             time: transitioning
-              ? this.#difference(event, time) / (transition.for ?? 0)
-              : time === event || this.#between(time, enterTime, event)
+              ? this.#difference(start, time) / (transition.for ?? 0)
+              : time === start || this.#between(time, enterStart, start)
               ? 0
               : 1,
             transitioning
