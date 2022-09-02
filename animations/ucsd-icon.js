@@ -18,12 +18,12 @@ const HEIGHT = 1000
 const images = {
   geisel: await loadImage('./ucsd-general-server/geiselnobg.png'),
   revelle: await loadImage('./ucsd-general-server/c1_revelle.png'),
-  muir: await loadImage('./ucsd-general-server/c2_muir.png'),
+  muir: await loadImage('./ucsd-general-server/c2_muir.gif'),
   marshall: await loadImage('./ucsd-general-server/c3_marshall.png'),
   warren: await loadImage('./ucsd-general-server/c4_warren.png'),
   erc: await loadImage('./ucsd-general-server/c5_erc.png'),
   sixth: await loadImage('./ucsd-general-server/c6_sixth.png'),
-  seventh: await loadImage('./ucsd-general-server/c7_seventh.png')
+  seventh: await loadImage('./ucsd-general-server/c7_seventh.jpg')
 }
 
 const colleges = [
@@ -125,7 +125,22 @@ function draw (c, time) {
         972
       )
     }
-  }))
+  })
+
+  for (const [i, seal] of colleges.entries()) {
+    timings.component(time, {
+      enter: { at: 'colleges-in' },
+      exit: { at: 'colleges-out' },
+      render: ({ totalTime }) => {
+        const cycle = totalTime + (i / colleges.length) * Math.PI * 2
+        const x = Math.cos(cycle) * 300 + WIDTH / 2
+        const y = Math.sin(cycle) * 300 + HEIGHT / 2
+        const width = 200
+        const height = (width / seal.naturalWidth) * seal.naturalHeight
+        c.drawImage(seal, x - width / 2, y - height / 2, width, height)
+      }
+    })
+  }
 
   c.restore()
 }
