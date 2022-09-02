@@ -3,11 +3,10 @@ import { easeInCubic, easeOutCubic } from './easing.js'
 import { init } from './scuffed-animation-ui.js'
 
 const timings = new Timings()
-  .then(300)
-  .event('spears-out')
-  .then(1500)
-  .event('spears-in')
+  .event('geisel-in')
   .then(3000)
+  .event('geisel-out')
+  .then(3100)
 
 const WIDTH = 1000
 const HEIGHT = 1000
@@ -38,47 +37,74 @@ function draw (c, time) {
   c.save()
   c.scale(c.canvas.width / WIDTH, c.canvas.height / HEIGHT)
 
-  const gradient = c.createLinearGradient(0, 0, 0, HEIGHT)
-  gradient.addColorStop(0, '#a3c0ea')
-  gradient.addColorStop(1, '#d1e1e4')
-  c.fillStyle = gradient
+  c.fillStyle = '#a3c0ea'
   c.fillRect(0, 0, WIDTH, HEIGHT)
 
-  c.beginPath()
-  c.moveTo(WIDTH - TCORNER, HEIGHT + TCORNER)
-  c.lineTo(WIDTH + TCORNER, HEIGHT - TCORNER)
-  c.lineTo(
-    WIDTH + TCORNER - TLENGTH_LONG / Math.SQRT2,
-    HEIGHT - TCORNER - TLENGTH_LONG / Math.SQRT2
-  )
-  c.lineTo(
-    WIDTH - TCORNER - TLENGTH_LONG / Math.SQRT2,
-    HEIGHT + TCORNER - TLENGTH_LONG / Math.SQRT2
-  )
-  c.moveTo(WIDTH - TCORNER - TSPACING, HEIGHT + TCORNER + TSPACING)
-  c.lineTo(WIDTH + TCORNER - TSPACING, HEIGHT - TCORNER + TSPACING)
-  c.lineTo(
-    WIDTH + TCORNER - TSPACING - TLENGTH_SHORT / Math.SQRT2,
-    HEIGHT - TCORNER + TSPACING - TLENGTH_SHORT / Math.SQRT2
-  )
-  c.lineTo(
-    WIDTH - TCORNER - TSPACING - TLENGTH_SHORT / Math.SQRT2,
-    HEIGHT + TCORNER + TSPACING - TLENGTH_SHORT / Math.SQRT2
-  )
-  c.moveTo(WIDTH - TCORNER + TSPACING, HEIGHT + TCORNER - TSPACING)
-  c.lineTo(WIDTH + TCORNER + TSPACING, HEIGHT - TCORNER - TSPACING)
-  c.lineTo(
-    WIDTH + TCORNER + TSPACING - TLENGTH_SHORT / Math.SQRT2,
-    HEIGHT - TCORNER - TSPACING - TLENGTH_SHORT / Math.SQRT2
-  )
-  c.lineTo(
-    WIDTH - TCORNER + TSPACING - TLENGTH_SHORT / Math.SQRT2,
-    HEIGHT + TCORNER - TSPACING - TLENGTH_SHORT / Math.SQRT2
-  )
-  c.fillStyle = '#FFCD00'
-  c.fill()
+  timings.component(time, {
+    enter: { at: 'geisel-in', for: 5000, offset: -3000 },
+    exit: { at: 'geisel-out' },
+    render: ({ inTime }) => {
+      const y = -HEIGHT + easeInCubic(inTime) * HEIGHT
+      const gradient = c.createLinearGradient(0, y, 0, y + 2 * HEIGHT)
+      gradient.addColorStop(0, 'red')
+      gradient.addColorStop(0.5, '#a3c0ea')
+      gradient.addColorStop(1, 'blue')
+      // gradient.addColorStop(1, '#d1e1e4')
+      c.fillStyle = gradient
+      c.fillRect(0, 0, WIDTH, HEIGHT)
+    }
+  })
 
-  c.drawImage(images.geisel, -159, 277, 1448, 972)
+  timings.component(time, {
+    enter: { at: 'geisel-in', for: 2000 },
+    exit: { at: 'geisel-out' },
+    render: ({ inTime, getTransition }) => {
+      const y = HEIGHT + easeInCubic(inTime) * 300
+      c.beginPath()
+      const drawSpear = (baseLength, offset) => {
+        const length =
+          TLENGTH_LONG *
+            easeOutCubic(
+              getTransition({
+                at: 'geisel-in',
+                for: 800,
+                offset: (offset + 1) * 300
+              }).time
+            ) -
+          (TLENGTH_LONG - baseLength)
+        const spacing = TSPACING * offset
+        c.moveTo(WIDTH - TCORNER + spacing, y + TCORNER - spacing)
+        c.lineTo(WIDTH + TCORNER + spacing, y - TCORNER - spacing)
+        c.lineTo(
+          WIDTH + TCORNER + spacing - length / Math.SQRT2,
+          y - TCORNER - spacing - length / Math.SQRT2
+        )
+        c.lineTo(
+          WIDTH - TCORNER + spacing - length / Math.SQRT2,
+          y + TCORNER - spacing - length / Math.SQRT2
+        )
+      }
+      drawSpear(TLENGTH_SHORT, -1)
+      drawSpear(TLENGTH_LONG, 0)
+      drawSpear(TLENGTH_SHORT, 1)
+      c.fillStyle = '#FFCD00'
+      c.fill()
+    }
+  })
+
+  timings.component(time, {
+    enter: { at: 'geisel-in', for: 2000 },
+    exit: { at: 'geisel-out' },
+    render: ({ inTime }) => {
+      c.drawImage(
+        images.geisel,
+        -159,
+        277 + easeInCubic(inTime) * 500,
+        1448,
+        972
+      )
+    }
+  })
 
   c.restore()
 }
