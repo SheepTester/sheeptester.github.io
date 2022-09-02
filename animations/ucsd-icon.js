@@ -2,6 +2,17 @@ import { loadImage, Timings } from './scuffed-animation.js'
 import { easeInCubic, easeInOutCubic, easeOutCubic } from './easing.js'
 import { init } from './scuffed-animation-ui.js'
 
+const colleges = [
+  { name: 'Revelle', colour: '#263B80' },
+  { name: 'Muir', colour: '#0A5540' },
+  { name: 'Marshall', colour: '#B01F28' },
+  { name: 'Warren', colour: '#802448' },
+  { name: 'ERC', colour: '#5B8AB5' },
+  { name: 'Sixth', colour: '#048A96' },
+  { name: 'Seventh', colour: '#D09229' }
+]
+
+const TIME_PER_COLLEGE = 500
 const timings = new Timings()
   .event('geisel-in')
   .then(3000)
@@ -10,9 +21,10 @@ const timings = new Timings()
   .event('colleges-in')
   .then(2500)
   .event('colleges-out')
-  .then(800)
+  .then(500)
   .event('college-start')
-  .then(1000)
+  .then(TIME_PER_COLLEGE * colleges.length)
+  .event('college-end')
 
 const WIDTH = 1000
 const HEIGHT = 1000
@@ -21,16 +33,6 @@ const images = {
   geisel: await loadImage('./ucsd-general-server/geiselnobg.png'),
   colleges: await loadImage('./ucsd-general-server/colleges.svg')
 }
-
-const colleges = [
-  { name: 'Revelle', color: '#263B80' },
-  { name: 'Muir', color: '#0A5540' },
-  { name: 'Marshall', color: '#B01F28' },
-  { name: 'Warren', color: '#802448' },
-  { name: 'ERC', color: '#5B8AB5' },
-  { name: 'Sixth', color: '#048A96' },
-  { name: 'Seventh', color: '#D09229' }
-]
 
 /** Width of each trident spear, ⊥-axis */
 const TWIDTH = 205
@@ -123,6 +125,24 @@ function draw (c, time) {
     }
   })
 
+  for (const [i, { colour }] of colleges.entries()) {
+    timings.component(time, {
+      enter:
+        i === 0
+          ? { at: 'college-start', for: 500, offset: -500 }
+          : { at: 'college-start', for: 400, offset: i * TIME_PER_COLLEGE },
+      exit: {
+        at: 'college-start',
+        offset: (i + 1) * TIME_PER_COLLEGE + 300
+      },
+      render: ({ inTime }) => {
+        c.globalAlpha = 1 - easeInOutCubic(inTime)
+        c.fillStyle = colour
+        c.fillRect(0, 0, WIDTH, HEIGHT)
+        c.globalAlpha = 1
+      }
+    })
+  }
   for (let i = 0; i < colleges.length; i++) {
     const period = 2000
     timings.component(time, {
@@ -157,6 +177,40 @@ function draw (c, time) {
         )
       }
     })
+    timings.component(time, {
+      enter:
+        i === 0
+          ? { at: 'colleges-out', offset: 800 }
+          : {
+              at: 'college-start',
+              for: 400,
+              offset: i * TIME_PER_COLLEGE
+            },
+      exit: {
+        at: 'college-start',
+        for: 400,
+        offset: (i + 1) * TIME_PER_COLLEGE
+      },
+      render: ({ inTime, outTime }) => {
+        const x =
+          WIDTH / 2 +
+          easeInOutCubic(inTime) * 1000 -
+          easeInOutCubic(outTime) * 1000
+        const y = HEIGHT / 2
+        const size = 1000
+        c.drawImage(
+          images.colleges,
+          0,
+          images.colleges.naturalWidth * i,
+          images.colleges.naturalWidth,
+          images.colleges.naturalWidth,
+          x - size / 2,
+          y - size / 2,
+          size,
+          size
+        )
+      }
+    })
   }
 
   c.restore()
@@ -174,8 +228,8 @@ init({
   fileName: 'ucsd-gen-icon',
   timings,
   previewRange: [
-    { at: 'geisel-out', offset: 1500 },
-    { at: 'colleges-out', offset: 800 }
+    { at: 'colleges-in', offset: 2000 },
+    { at: 'college-end', offset: 0 }
   ],
   draw
 })
