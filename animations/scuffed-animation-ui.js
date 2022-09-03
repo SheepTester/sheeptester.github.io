@@ -33,6 +33,7 @@ const unwrap = () => {
  * @param {Timings} options.timings
  * @param {[TimeBound, TimeBound]} [options.previewRange] - The time range to
  * bound the preview within.
+ * @param {number} [options.initSpeed]
  * @param {(c: CanvasRenderingContext2D, time: number) => void} options.draw
  */
 export function init ({
@@ -43,10 +44,11 @@ export function init ({
   fileName,
   timings,
   previewRange,
+  initSpeed = 1,
   draw
 }) {
-  const options = { speed: 1, serverIcon: false, circle: false }
-  const playState = new PlayState(timings)
+  const options = { speed: initSpeed, serverIcon: false, circle: false }
+  const playState = new PlayState(timings, initSpeed)
   if (previewRange) {
     playState.setBounds(...previewRange)
   }

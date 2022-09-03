@@ -36,10 +36,10 @@ export function download (filename, content) {
  */
 function between (time, start, end) {
   if (start <= end) {
-    return start < time && time < end
+    return start <= time && time < end
   } else {
     // end < start
-    return time > start || time < end
+    return time >= start || time < end
   }
 }
 
@@ -99,11 +99,13 @@ export class Timings {
   }
 
   /**
+   * If start and end are the same, then that means a range of 0 rather than the
+   * full loop.
    * @param {number} start
    * @param {number} end
    */
   difference (start, end) {
-    if (start < end) {
+    if (start <= end) {
       return end - start
     } else {
       return end + (this.duration - start)
@@ -141,13 +143,15 @@ export class Timings {
         totalTime:
           this.difference(enterStart, time) /
           this.difference(enterStart, exitStart),
+        // Dividing by enter.for || 1 because if it's 0 then it shouldn't
+        // matter, but it shouldn't be NaN either
         inTime:
           transitioning === 'in'
-            ? 1 - this.difference(enterStart, time) / (enter.for ?? 0)
+            ? 1 - this.difference(enterStart, time) / (enter.for || 1)
             : 0,
         outTime:
           transitioning === 'out'
-            ? this.difference(exitStart, time) / (exit.for ?? 0)
+            ? this.difference(exitStart, time) / (exit.for || 1)
             : 0,
         transitioning,
         getTransition: transition => {
@@ -159,7 +163,7 @@ export class Timings {
           const transitioning = between(time, start, end)
           return {
             time: transitioning
-              ? this.difference(start, time) / (transition.for ?? 0)
+              ? this.difference(start, time) / (transition.for || 1)
               : time === start || between(time, enterStart, start)
               ? 0
               : 1,
@@ -172,21 +176,20 @@ export class Timings {
 }
 
 export class PlayState {
-  /** @type {Timings} */
   #timings
-  #speed = 1
+  #speed
   #baseRealTime = Date.now()
   #baseAnimTime = 0
   #startTime = 0
-  /** @type {number} */
   #duration
 
   /**
    * @param {Timings} timings
    */
-  constructor (timings) {
+  constructor (timings, speed = 1) {
     this.#timings = timings
     this.#duration = timings.duration
+    this.#speed = speed
   }
 
   /**

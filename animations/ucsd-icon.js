@@ -21,10 +21,11 @@ const timings = new Timings()
   .event('colleges-in')
   .then(2500)
   .event('colleges-out')
-  .then(500)
+  .then(300)
   .event('college-start')
   .then(TIME_PER_COLLEGE * colleges.length)
   .event('college-end')
+  .then(800)
 
 const WIDTH = 1000
 const HEIGHT = 1000
@@ -131,12 +132,19 @@ function draw (c, time) {
         i === 0
           ? { at: 'college-start', for: 500, offset: -500 }
           : { at: 'college-start', for: 400, offset: i * TIME_PER_COLLEGE },
-      exit: {
-        at: 'college-start',
-        offset: (i + 1) * TIME_PER_COLLEGE + 300
-      },
-      render: ({ inTime }) => {
-        c.globalAlpha = 1 - easeInOutCubic(inTime)
+      exit:
+        i === colleges.length - 1
+          ? {
+              at: 'college-end',
+              for: 500,
+              offset: 200
+            }
+          : {
+              at: 'college-start',
+              offset: (i + 1) * TIME_PER_COLLEGE + 300
+            },
+      render: ({ inTime, outTime }) => {
+        c.globalAlpha = 1 - easeInOutCubic(inTime) - easeOutCubic(outTime)
         c.fillStyle = colour
         c.fillRect(0, 0, WIDTH, HEIGHT)
         c.globalAlpha = 1
@@ -227,10 +235,11 @@ init({
   },
   fileName: 'ucsd-gen-icon',
   timings,
-  previewRange: [
-    { at: 'colleges-in', offset: 2000 },
-    { at: 'college-end', offset: 0 }
-  ],
+  // previewRange: [
+  //   { at: 'colleges-out', offset: 800 },
+  //   { at: 'college-start', offset: 2000 }
+  // ],
+  // initSpeed: 0,
   draw
 })
 
