@@ -90,7 +90,7 @@ function draw (c, time) {
       const width = 1100
       const height =
         (width / images.khosla.naturalWidth) * images.khosla.naturalHeight
-      c.drawImage(images.khosla, WIDTH - width + 150, y + top, width, height)
+      c.drawImage(images.khosla, (WIDTH - width) / 2, y + top, width, height)
       const gradient = c.createLinearGradient(0, y, 0, y + HEIGHT)
       gradient.addColorStop(0, 'rgba(113, 127, 255, 0.5)')
       gradient.addColorStop(0.4, 'rgba(113, 127, 255, 0.5)')
