@@ -14,8 +14,7 @@ const colleges = [
 
 const TIME_PER_COLLEGE = 500
 const timings = new Timings()
-  .event('geisel-in')
-  .then(3000)
+  .then(200)
   .event('geisel-out')
   .then(2000)
   .event('colleges-in')
@@ -25,14 +24,18 @@ const timings = new Timings()
   .event('college-start')
   .then(TIME_PER_COLLEGE * colleges.length)
   .event('college-end')
-  .then(800)
+  .then(1000)
+  .event('geisel-in')
+  .then(2800)
 
 const WIDTH = 1000
 const HEIGHT = 1000
 
 const images = {
   geisel: await loadImage('./ucsd-general-server/geiselnobg.png'),
-  colleges: await loadImage('./ucsd-general-server/colleges.svg')
+  colleges: await loadImage('./ucsd-general-server/colleges.svg'),
+  // https://i.ytimg.com/vi/Scg-40Eaavc/maxresdefault.jpg
+  khosla: await loadImage('./ucsd-general-server/khosla.png')
 }
 
 /** Width of each trident spear, ⊥-axis */
@@ -60,12 +63,14 @@ function draw (c, time) {
   c.fillStyle = '#717FFF'
   c.fillRect(0, 0, WIDTH, HEIGHT)
 
+  // SKY
   timings.component(time, {
     enter: { at: 'geisel-in', for: 3000, offset: -1000 },
     exit: { at: 'geisel-out', for: 3500 },
     render: ({ inTime, outTime }) => {
       const y =
-        -HEIGHT + (easeInCubic(inTime) + easeInOutCubic(outTime)) * HEIGHT * 2
+        -HEIGHT +
+        (easeInOutCubic(inTime) + easeInOutCubic(outTime)) * HEIGHT * 2
       const gradient = c.createLinearGradient(0, y, 0, y + 2 * HEIGHT)
       gradient.addColorStop(0, '#717FFF')
       gradient.addColorStop(0.5, '#a3c0ea')
@@ -75,6 +80,28 @@ function draw (c, time) {
     }
   })
 
+  // KHOSLA
+  timings.component(time, {
+    enter: { at: 'college-end' },
+    exit: { at: 'geisel-in', for: 3000, offset: -1000 },
+    render: ({ outTime }) => {
+      const y = -easeInOutCubic(outTime) * HEIGHT * 2
+      const top = 100
+      const width = 1100
+      const height =
+        (width / images.khosla.naturalWidth) * images.khosla.naturalHeight
+      c.drawImage(images.khosla, WIDTH - width + 150, y + top, width, height)
+      const gradient = c.createLinearGradient(0, y, 0, y + HEIGHT)
+      gradient.addColorStop(0, 'rgba(113, 127, 255, 0.5)')
+      gradient.addColorStop(0.4, 'rgba(113, 127, 255, 0.5)')
+      gradient.addColorStop((top + height) / HEIGHT, '#717FFF')
+      gradient.addColorStop(1, '#717FFF')
+      c.fillStyle = gradient
+      c.fillRect(0, y, WIDTH, HEIGHT)
+    }
+  })
+
+  // TRIDENT
   timings.component(time, {
     enter: { at: 'geisel-in', for: 2000 },
     exit: { at: 'geisel-out', for: 2000 },
@@ -112,6 +139,7 @@ function draw (c, time) {
     }
   })
 
+  // GEISEL
   timings.component(time, {
     enter: { at: 'geisel-in', for: 2000 },
     exit: { at: 'geisel-out', for: 1500 },
@@ -126,6 +154,7 @@ function draw (c, time) {
     }
   })
 
+  // COLLEGE COLOUR BACKGROUNDS
   for (const [i, { colour }] of colleges.entries()) {
     timings.component(time, {
       enter:
@@ -153,6 +182,7 @@ function draw (c, time) {
   }
   for (let i = 0; i < colleges.length; i++) {
     const period = 2000
+    // COLLEGE SEALS IN A CIRCLE
     timings.component(time, {
       enter: {
         at: 'colleges-in',
@@ -185,6 +215,7 @@ function draw (c, time) {
         )
       }
     })
+    // COLLEGE SEALS ONE BY ONE
     timings.component(time, {
       enter:
         i === 0
@@ -236,8 +267,8 @@ init({
   fileName: 'ucsd-gen-icon',
   timings,
   // previewRange: [
-  //   { at: 'colleges-out', offset: 800 },
-  //   { at: 'college-start', offset: 2000 }
+  //   { at: 'college-end', offset: 0 },
+  //   { at: 'college-end', offset: 3500 }
   // ],
   // initSpeed: 0,
   draw
