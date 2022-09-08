@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Internationalized numbers</title>
+    <meta
+      name="description"
+      content="Apparently JavaScript has a built-in function that translates “69 billion Scandinavian miles per Fahrenheit” to Japanese in Malayalam numerals."
+    />
+
+    <link rel="stylesheet" type="text/css" href="/sheep3.css" />
+    <script src="/sheep3.js" charset="utf-8"></script>
+
+    <style>
+      :root {
+        color-scheme: dark;
+      }
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+          'Helvetica Neue', Arial, sans-serif, 'Apple Color Emoji',
+          'Segoe UI Emoji', 'Segoe UI Symbol';
+      }
+      button {
+        -webkit-appearance: none;
+        border: none;
+        background: none;
+        color: inherit;
+        font: inherit;
+      }
+      button:not(:disabled) {
+        cursor: pointer;
+      }
+
+      #root {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .set-mode {
+        display: flex;
+        border: 1px solid #e34141;
+      }
+      .set-mode-btn {
+        padding: 5px 10px;
+      }
+      .set-mode-btn:not(.selected):hover {
+        background-color: rgba(227, 65, 65, 0.2);
+      }
+      .set-mode-btn.selected {
+        background-color: #e34141;
+      }
+
+      .columns {
+        display: flex;
+      }
+      .column {
+        display: flex;
+        flex-direction: column;
+      }
+      .column-title {
+        margin: 0;
+        font-size: 1em;
+      }
+      .column-item {
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+      }
+      .column-title,
+      .column-item {
+        padding: 2px 10px;
+      }
+      .column-item:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+      }
+      .code {
+        font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo,
+          monospace;
+      }
+      .secondary {
+        color: rgba(255, 255, 255, 0.7);
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module">
+      import { h, render, Fragment } from 'https://esm.sh/preact@10.10.6'
+      import { useState } from 'https://esm.sh/preact@10.10.6/hooks'
+
+      const pairs = []
+      const alphabet = 'abcdefghijklmnopqrstuvwxyz'
+      for (const a of alphabet) {
+        for (const b of alphabet) {
+          pairs.push(a + b)
+        }
+      }
+
+      function random (list) {
+        return list[Math.floor(Math.random() * list.length)]
+      }
+
+      function Column ({ title, list, current, setCurrent, display = null }) {
+        const index = list.indexOf(current)
+        return h(
+          'div',
+          { class: 'column' },
+          h('h2', { class: 'column-title' }, title),
+          [...list.slice(index), ...list.slice(0, index)].map(item =>
+            h(
+              'button',
+              {
+                key: item,
+                class: `column-item ${item === current ? 'selected' : ''}`,
+                onClick: () => setCurrent(item)
+              },
+              display &&
+                h(
+                  Fragment,
+                  null,
+                  h('span', { class: 'display-name' }, display.of(item)),
+                  ' '
+                ),
+              h(
+                'span',
+                { class: `code ${display ? 'secondary' : 'display-name'}` },
+                item
+              )
+            )
+          )
+        )
+      }
+
+      const display = {
+        language: new Intl.DisplayNames(undefined, { type: 'language' }),
+        currency: new Intl.DisplayNames(undefined, { type: 'currency' })
+      }
+
+      function App ({ languages, currencies, numberSystems, units }) {
+        const [language, setLanguage] = useState(() => random(languages))
+        const [system, setSystem] = useState(() => random(numberSystems))
+        const [mode, setMode] = useState('unit')
+        const [currency, setCurrency] = useState(() => random(currencies))
+        const [unit1, setUnit1] = useState(() => random(units))
+        const [unit2, setUnit2] = useState(null)
+        return h(
+          Fragment,
+          null,
+          h(
+            'div',
+            { class: 'set-mode' },
+            h(
+              'button',
+              {
+                class: `set-mode-btn ${mode === 'unit' ? 'selected' : ''}`,
+                onClick: () => setMode('unit')
+              },
+              'Unit'
+            ),
+            h(
+              'button',
+              {
+                class: `set-mode-btn ${mode === 'currency' ? 'selected' : ''}`,
+                onClick: () => setMode('currency')
+              },
+              'Currency'
+            )
+          ),
+          h(
+            'div',
+            { class: 'columns' },
+            h(Column, {
+              title: 'Language',
+              list: languages,
+              current: language,
+              setCurrent: setLanguage,
+              display: display.language
+            }),
+            h(Column, {
+              title: 'Numbering system',
+              list: numberSystems,
+              current: system,
+              setCurrent: setSystem
+            }),
+            mode === 'unit'
+              ? h(
+                  Fragment,
+                  null,
+                  h(Column, {
+                    title: 'Unit',
+                    list: units,
+                    current: unit1,
+                    setCurrent: setUnit1
+                  }),
+                  h(Column, {
+                    title: 'Per unit',
+                    list: units,
+                    current: unit2,
+                    setCurrent: setUnit2
+                  })
+                )
+              : h(Column, {
+                  title: 'Currency',
+                  list: currencies,
+                  current: currency,
+                  setCurrent: setCurrency,
+                  display: display.currency
+                })
+          )
+        )
+      }
+
+      render(
+        h(App, {
+          languages: Intl.NumberFormat.supportedLocalesOf(pairs, {
+            localeMatcher: 'lookup'
+          }),
+          currencies: Intl.supportedValuesOf('currency'),
+          numberSystems: Intl.supportedValuesOf('numberingSystem'),
+          units: Intl.supportedValuesOf('unit')
+        }),
+        document.getElementById('root')
+      )
+    </script>
+  </body>
+</html>
