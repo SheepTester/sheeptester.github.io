@@ -21,8 +21,10 @@
         font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
           'Helvetica Neue', Arial, sans-serif, 'Apple Color Emoji',
           'Segoe UI Emoji', 'Segoe UI Symbol';
+        margin: 0;
       }
-      button {
+      button,
+      input {
         -webkit-appearance: none;
         border: none;
         background: none;
@@ -36,21 +38,36 @@
       #root {
         display: flex;
         flex-direction: column;
-        align-items: flex-start;
       }
 
-      .set-mode {
+      .settings {
+        position: sticky;
+        bottom: 0;
         display: flex;
-        border: 1px solid #e34141;
+        gap: 10px;
+        background-color: black;
+        padding: 10px;
+      }
+      .set-mode {
+        flex: none;
+        display: flex;
+        height: 36px;
+        border: 2px solid #e34141;
       }
       .set-mode-btn {
-        padding: 5px 10px;
+        padding: 0 10px;
       }
       .set-mode-btn:not(.selected):hover {
         background-color: rgba(227, 65, 65, 0.2);
       }
       .set-mode-btn.selected {
         background-color: #e34141;
+      }
+      .number {
+        height: 36px;
+        border: 2px solid #e34141;
+        padding: 0 10px;
+        background-color: rgba(255, 255, 255, 0.1);
       }
 
       .columns {
@@ -59,22 +76,33 @@
       .column {
         display: flex;
         flex-direction: column;
+        flex: none;
       }
       .column-title {
         margin: 0;
         font-size: 1em;
+        position: sticky;
+        top: 0;
+        background-color: black;
       }
       .column-item {
-        display: flex;
         justify-content: space-between;
         gap: 10px;
       }
       .column-title,
-      .column-item {
-        padding: 2px 10px;
+      .column-item,
+      .result {
+        display: flex;
+        padding: 0 10px;
+        height: 25px;
+        align-items: center;
+        flex: none;
       }
       .column-item:hover {
         background-color: rgba(255, 255, 255, 0.1);
+      }
+      .column > :nth-child(2) {
+        background-color: #e34141;
       }
       .code {
         font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo,
@@ -99,36 +127,57 @@
         }
       }
 
-      function random (list) {
-        return list[Math.floor(Math.random() * list.length)]
+      function randomIdx (list) {
+        return Math.floor(Math.random() * list.length)
       }
 
-      function Column ({ title, list, current, setCurrent, display = null }) {
-        const index = list.indexOf(current)
+      function Column ({ title, list, index, setIndex, display = null }) {
         return h(
           'div',
           { class: 'column' },
           h('h2', { class: 'column-title' }, title),
-          [...list.slice(index), ...list.slice(0, index)].map(item =>
+          [...list.slice(index), ...list.slice(0, index)].map((item, i) =>
             h(
               'button',
               {
                 key: item,
-                class: `column-item ${item === current ? 'selected' : ''}`,
-                onClick: () => setCurrent(item)
+                class: `column-item ${i === 0 ? 'selected' : ''}`,
+                onClick: () => setIndex((index + i) % list.length)
               },
-              display &&
+              (display || item === null) &&
                 h(
                   Fragment,
                   null,
-                  h('span', { class: 'display-name' }, display.of(item)),
+                  h(
+                    'span',
+                    { class: 'display-name' },
+                    display ? display.of(item) : 'None'
+                  ),
                   ' '
                 ),
-              h(
-                'span',
-                { class: `code ${display ? 'secondary' : 'display-name'}` },
-                item
-              )
+              item !== null &&
+                h(
+                  'span',
+                  { class: `code ${display ? 'secondary' : 'display-name'}` },
+                  item
+                )
+            )
+          )
+        )
+      }
+
+      function Options ({ options, selected, setOption }) {
+        return h(
+          'div',
+          { class: 'set-mode' },
+          options.map(([option, name]) =>
+            h(
+              'button',
+              {
+                class: `set-mode-btn ${option === selected ? 'selected' : ''}`,
+                onClick: () => setOption(option)
+              },
+              name
             )
           )
         )
@@ -140,50 +189,64 @@
       }
 
       function App ({ languages, currencies, numberSystems, units }) {
-        const [language, setLanguage] = useState(() => random(languages))
-        const [system, setSystem] = useState(() => random(numberSystems))
+        const [language, setLanguage] = useState(() => randomIdx(languages))
+        const [system, setSystem] = useState(() =>
+          numberSystems.indexOf('latn')
+        )
         const [mode, setMode] = useState('unit')
-        const [currency, setCurrency] = useState(() => random(currencies))
-        const [unit1, setUnit1] = useState(() => random(units))
-        const [unit2, setUnit2] = useState(null)
+        const [currency, setCurrency] = useState(() => randomIdx(currencies))
+        const [unit1, setUnit1] = useState(() => randomIdx(units))
+        const [unit2, setUnit2] = useState(units.length)
+        const [notation, setNotation] = useState('standard')
+        const [currencyDisplay, setCurrencyDisplay] = useState('name')
+        const [number, setNumber] = useState('123456789.1234')
+
+        const results = []
+        for (let i = 0; ; i++) {
+          if (i >= languages.length) break
+          if (i >= numberSystems.length) break
+          if (mode === 'unit' && i >= units.length) break
+          if (mode === 'currency' && i >= currencies.length) break
+
+          results.push(
+            new Intl.NumberFormat(
+              languages[(language + i) % languages.length],
+              {
+                style: mode,
+                currency: currencies[(currency + i) % currencies.length],
+                currencyDisplay,
+                unit:
+                  units[(unit1 + i) % units.length] +
+                  ((unit2 + i) % (units.length + 1) !== units.length
+                    ? '-per-' + units[(unit2 + i) % (units.length + 1)]
+                    : ''),
+                unitDisplay: 'long',
+                notation,
+                numberingSystem:
+                  numberSystems[(system + i) % numberSystems.length]
+              }
+            ).format(+number)
+          )
+        }
+
         return h(
           Fragment,
           null,
-          h(
-            'div',
-            { class: 'set-mode' },
-            h(
-              'button',
-              {
-                class: `set-mode-btn ${mode === 'unit' ? 'selected' : ''}`,
-                onClick: () => setMode('unit')
-              },
-              'Unit'
-            ),
-            h(
-              'button',
-              {
-                class: `set-mode-btn ${mode === 'currency' ? 'selected' : ''}`,
-                onClick: () => setMode('currency')
-              },
-              'Currency'
-            )
-          ),
           h(
             'div',
             { class: 'columns' },
             h(Column, {
               title: 'Language',
               list: languages,
-              current: language,
-              setCurrent: setLanguage,
+              index: language,
+              setIndex: setLanguage,
               display: display.language
             }),
             h(Column, {
               title: 'Numbering system',
               list: numberSystems,
-              current: system,
-              setCurrent: setSystem
+              index: system,
+              setIndex: setSystem
             }),
             mode === 'unit'
               ? h(
@@ -192,23 +255,69 @@
                   h(Column, {
                     title: 'Unit',
                     list: units,
-                    current: unit1,
-                    setCurrent: setUnit1
+                    index: unit1,
+                    setIndex: setUnit1
                   }),
                   h(Column, {
                     title: 'Per unit',
-                    list: units,
-                    current: unit2,
-                    setCurrent: setUnit2
+                    list: [...units, null],
+                    index: unit2,
+                    setIndex: setUnit2
                   })
                 )
               : h(Column, {
                   title: 'Currency',
                   list: currencies,
-                  current: currency,
-                  setCurrent: setCurrency,
+                  index: currency,
+                  setIndex: setCurrency,
                   display: display.currency
-                })
+                }),
+            h(
+              'div',
+              { class: 'column' },
+              h('h2', { class: 'column-title' }, 'Result'),
+              results.map(result => h('div', { class: 'result' }, result))
+            )
+          ),
+          h(
+            'div',
+            { class: 'settings' },
+            h(Options, {
+              options: [
+                ['unit', 'Unit'],
+                ['currency', 'Currency']
+              ],
+              selected: mode,
+              setOption: setMode
+            }),
+            h(Options, {
+              options: [
+                ['standard', '12,000'],
+                ['scientific', '1.2e4'],
+                ['engineering', '12e3'],
+                ['compact', '12k']
+              ],
+              selected: notation,
+              setOption: setNotation
+            }),
+            mode === 'currency' &&
+              h(Options, {
+                options: [
+                  ['symbol', 'US$'],
+                  ['narrowSymbol', '$'],
+                  ['code', 'USD'],
+                  ['name', 'dollar']
+                ],
+                selected: currencyDisplay,
+                setOption: setCurrencyDisplay
+              }),
+            h('input', {
+              class: 'number',
+              type: 'text',
+              inputmode: 'numeric',
+              value: number,
+              onInput: e => setNumber(e.currentTarget.value)
+            })
           )
         )
       }
