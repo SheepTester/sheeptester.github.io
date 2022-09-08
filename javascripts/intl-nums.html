@@ -69,6 +69,21 @@
         padding: 0 10px;
         background-color: rgba(255, 255, 255, 0.1);
       }
+      .checkbox-wrapper {
+        align-self: stretch;
+        display: flex;
+        align-items: center;
+      }
+      input[type='checkbox'] {
+        border: 2px solid #e34141;
+        width: 16px;
+        height: 16px;
+        cursor: pointer;
+        margin-right: 5px;
+      }
+      input[type='checkbox']:checked {
+        background-color: rgba(227, 65, 65, 0.8);
+      }
 
       .columns {
         display: flex;
@@ -89,6 +104,9 @@
         justify-content: space-between;
         gap: 10px;
       }
+      .rest-unused .column-item {
+        color: rgba(255, 255, 255, 0.7);
+      }
       .column-title,
       .column-item,
       .result {
@@ -103,6 +121,7 @@
       }
       .column > :nth-child(2) {
         background-color: #e34141;
+        color: white;
       }
       .code {
         font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo,
@@ -131,10 +150,17 @@
         return Math.floor(Math.random() * list.length)
       }
 
-      function Column ({ title, list, index, setIndex, display = null }) {
+      function Column ({
+        class: className = '',
+        title,
+        list,
+        index,
+        setIndex,
+        display = null
+      }) {
         return h(
           'div',
-          { class: 'column' },
+          { class: `column ${className}` },
           h('h2', { class: 'column-title' }, title),
           [...list.slice(index), ...list.slice(0, index)].map((item, i) =>
             h(
@@ -174,6 +200,7 @@
             h(
               'button',
               {
+                key: option,
                 class: `set-mode-btn ${option === selected ? 'selected' : ''}`,
                 onClick: () => setOption(option)
               },
@@ -197,35 +224,35 @@
         const [currency, setCurrency] = useState(() => randomIdx(currencies))
         const [unit1, setUnit1] = useState(() => randomIdx(units))
         const [unit2, setUnit2] = useState(units.length)
-        const [notation, setNotation] = useState('standard')
+        const [notation, setNotation] = useState('compact')
         const [currencyDisplay, setCurrencyDisplay] = useState('name')
         const [number, setNumber] = useState('123456789.1234')
+        const [cycle, setCycle] = useState(false)
 
         const results = []
         for (let i = 0; ; i++) {
-          if (i >= languages.length) break
-          if (i >= numberSystems.length) break
+          if (cycle && i >= languages.length) break
+          if (cycle && i >= numberSystems.length) break
           if (mode === 'unit' && i >= units.length) break
           if (mode === 'currency' && i >= currencies.length) break
 
+          const locale =
+            languages[cycle ? (language + i) % languages.length : language]
+          const numberingSystem =
+            numberSystems[cycle ? (system + i) % numberSystems.length : system]
+          const perUnit = cycle ? (unit2 + i) % (units.length + 1) : unit2
           results.push(
-            new Intl.NumberFormat(
-              languages[(language + i) % languages.length],
-              {
-                style: mode,
-                currency: currencies[(currency + i) % currencies.length],
-                currencyDisplay,
-                unit:
-                  units[(unit1 + i) % units.length] +
-                  ((unit2 + i) % (units.length + 1) !== units.length
-                    ? '-per-' + units[(unit2 + i) % (units.length + 1)]
-                    : ''),
-                unitDisplay: 'long',
-                notation,
-                numberingSystem:
-                  numberSystems[(system + i) % numberSystems.length]
-              }
-            ).format(+number)
+            new Intl.NumberFormat(locale, {
+              style: mode,
+              currency: currencies[(currency + i) % currencies.length],
+              currencyDisplay,
+              unit:
+                units[(unit1 + i) % units.length] +
+                (perUnit !== units.length ? '-per-' + units[perUnit] : ''),
+              unitDisplay: 'long',
+              notation,
+              numberingSystem
+            }).format(+number)
           )
         }
 
@@ -236,6 +263,7 @@
             'div',
             { class: 'columns' },
             h(Column, {
+              class: cycle ? '' : 'rest-unused',
               title: 'Language',
               list: languages,
               index: language,
@@ -243,6 +271,7 @@
               display: display.language
             }),
             h(Column, {
+              class: cycle ? '' : 'rest-unused',
               title: 'Numbering system',
               list: numberSystems,
               index: system,
@@ -259,6 +288,7 @@
                     setIndex: setUnit1
                   }),
                   h(Column, {
+                    class: cycle ? '' : 'rest-unused',
                     title: 'Per unit',
                     list: [...units, null],
                     index: unit2,
@@ -276,7 +306,9 @@
               'div',
               { class: 'column' },
               h('h2', { class: 'column-title' }, 'Result'),
-              results.map(result => h('div', { class: 'result' }, result))
+              results.map((result, i) =>
+                h('div', { key: i, class: 'result' }, result)
+              )
             )
           ),
           h(
@@ -317,7 +349,17 @@
               inputmode: 'numeric',
               value: number,
               onInput: e => setNumber(e.currentTarget.value)
-            })
+            }),
+            h(
+              'label',
+              { class: 'checkbox-wrapper' },
+              h('input', {
+                type: 'checkbox',
+                checked: cycle,
+                onChange: e => setCycle(e.currentTarget.checked)
+              }),
+              ' Cycle through options'
+            )
           )
         )
       }
