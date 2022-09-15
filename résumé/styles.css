@@ -1,5 +1,8 @@
 :root {
   --theme: #22938e;
+  /* Firefox and Edge (but not Chrome!) removes the header background color */
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
 }
 html {
   height: 100%;
