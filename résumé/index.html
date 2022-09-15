@@ -110,7 +110,8 @@
             Parsed, analyzed, and uploaded 7864 unique student academic plans.
           </li>
           <li>
-            Systematically identified errors in publicly available datasets.
+            Systematically identified errors in datasets published to staff and
+            students.
           </li>
           <li>
             Created several Tableau visualizations to highlight areas of
@@ -371,31 +372,34 @@
       <div class="skill-main">
         <h2 class="skill-heading header">Skills</h2>
         <span class="name">HTML/<wbr />CSS/<wbr />JavaScript</span>
-        <span class="desc">Regularly used since 2016</span>
+        <span class="desc"><span id="js-exp"></span>+ years of experience</span>
       </div>
       <div class="other-skills">
         <h3 class="skill-heading label">Other skills</h3>
-        <p class="skills">
-          <span class="wide-skill">Full-stack web development</span>
-          <span>Web scraping</span>
+        <ul class="skills">
+          <li class="wide-skill">Full-stack web development</li>
+          <li>Web scraping</li>
+          <!-- tools -->
+          <li>Git</li>
+          <li>GitHub</li>
           <!-- languages -->
-          <span>TypeScript</span>
-          <span>Python</span>
-          <span>Rust</span>
-          <span>Java</span>
-          <span>Elm</span>
-          <span>Ruby</span>
-          <span>Julia</span>
+          <li>TypeScript</li>
+          <li>Python</li>
+          <li>Rust</li>
+          <li>Java</li>
+          <!-- <li>Elm</li> -->
+          <li>Ruby</li>
+          <li>Julia</li>
           <!-- libraries -->
-          <span>React JS</span>
-          <span>Webpack</span>
-          <!-- <span>Rollup</span> -->
-          <span>jQuery</span>
-          <span>Express.js</span>
+          <li>React JS</li>
+          <li>Webpack</li>
+          <!-- <li>Rollup</li> -->
+          <li>jQuery</li>
+          <li>Express.js</li>
           <!-- runtimes -->
-          <span>Node.js</span>
-          <!-- <span>Deno</span> -->
-        </p>
+          <li>Node.js</li>
+          <!-- <li>Deno</li> -->
+        </ul>
       </div>
     </section>
 
@@ -435,6 +439,14 @@
       document.addEventListener('keydown', handleUserInput, { once: true })
       document.addEventListener('pointerdown', handleUserInput, { once: true })
       document.addEventListener('pointermove', handleUserInput, { once: true })
+
+      const MS_PER_YEAR = 1000 * 60 * 60 * 24 * 365.242199
+      // 2016-03-28 19:25 PT was when I created udemy/1/index.html according to
+      // OneDrive
+      const JS_START = 1459218300000
+      document.getElementById('js-exp').textContent = Math.floor(
+        (Date.now() - JS_START) / MS_PER_YEAR
+      )
     </script>
   </body>
 </html>

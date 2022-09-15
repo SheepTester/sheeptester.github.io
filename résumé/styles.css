@@ -10,8 +10,9 @@ html {
 body {
   display: flex;
   min-height: 100%;
+  max-width: 1000px;
   flex-direction: column;
-  margin: 0;
+  margin: 0 auto;
   font-family: 'Open Sans', sans-serif;
   box-sizing: border-box;
   padding: 0.5in;
@@ -220,7 +221,7 @@ ul.desc {
   display: flex;
   align-items: flex-end;
 }
-.skill-main span {
+.skill-main > span {
   display: block;
 }
 .skill-main .name {
@@ -232,15 +233,22 @@ ul.desc {
 }
 .other-skills {
   flex: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 .other-skills .label {
-  margin-top: 0;
+  margin: 0;
 }
 .skills {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(115px, 1fr));
   margin: 0;
-  column-gap: 5px;
+  padding: 0;
+  /* column-gap: 5px; */
+}
+.skills li {
+  margin-left: 25px;
 }
 .wide-skill {
   grid-column: 1 / 3;
