@@ -4,8 +4,11 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Résumé</title>
-    <meta name="description" content="Ahhh" />
+    <title>Résumé | Sean Yen</title>
+    <meta
+      name="description"
+      content="Note: This page is designed to be printed and saved to a PDF."
+    />
 
     <!-- https://fonts.google.com/share?selection.family=Montserrat:wght@700;900%7CNoto%20Sans%20TC:wght@900%7COpen%20Sans:ital,wght@0,400;0,700;1,400%7CRaleway:wght@900 -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -17,6 +20,19 @@
     <link rel="stylesheet" href="./styles.css" />
   </head>
   <body>
+    <!--
+      I'm unironically using these meme résumés as a reference for my own:
+      - https://i.redd.it/v5qkat91gaw71.jpg
+      - https://images.news18.com/ibnlive/uploads/2022/09/screenshot-2022-09-01-at-3.58.17-pm.png
+
+      My friends' résumés are also helpful:
+      - https://cdn.discordapp.com/attachments/970821970037985333/1012829399286030356/unknown.png
+      - https://aaryan.dev/assets/files/Aaryan_Agrawal_Resume.pdf
+      - https://acrantel.github.io/Serena%20Li%20Resume%208-7-22.pdf
+
+      As is ACM's résume tips document:
+      - https://docs.google.com/document/d/1i19FF-Q7R7pzESYCi8FTES-GQhksRq2vvy_WipQwawc/
+    -->
     <section class="intro">
       <h1 class="my-name">Sean Yen</h1>
 
@@ -27,9 +43,9 @@
         </div>
         <div class="contact-entry">
           <div class="icon globe-icon">Website</div>
-          <a href="https://sheeptester.github.io/" class="contact-link"
-            >sheeptester.github.io</a
-          >
+          <a href="https://sheeptester.github.io/" class="contact-link">
+            sheeptester.github.io
+          </a>
         </div>
         <!-- <div class="contact-entry">
           <div class="icon phone-icon">Phone</div>
@@ -37,15 +53,15 @@
         </div> -->
         <div class="contact-entry">
           <div class="icon linkedin-icon">LinkedIn</div>
-          <a href="https://www.linkedin.com/in/yen-sean/" class="contact-link"
-            >yen-sean</a
-          >
+          <a href="https://www.linkedin.com/in/yen-sean/" class="contact-link">
+            Sean Yen
+          </a>
         </div>
         <div class="contact-entry">
           <div class="icon github-icon-white">GitHub</div>
-          <a href="https://github.com/SheepTester" class="contact-link"
-            >SheepTester</a
-          >
+          <a href="https://github.com/SheepTester" class="contact-link">
+            SheepTester
+          </a>
         </div>
       </div>
 
@@ -79,8 +95,21 @@
         <div class="inline-info sad-info">
           <h3 class="name">Student assistant</h3>
           <p class="sad-city">Office of Educational Innovation, UC San Diego</p>
-          <p class="sad-date">May 2022&ndash;present</p>
+          <p class="sad-date">May 2022&ndash;ongoing</p>
         </div>
+        <ul class="desc">
+          <!-- (164+160+154) * 7 + (1231 - (164+160+154)) * 6 -->
+          <li>
+            Parsed, analyzed, and uploaded 7864 unique student academic plans.
+          </li>
+          <li>
+            Systematically identified errors in publicly available datasets.
+          </li>
+          <li>
+            Created several Tableau visualizations to highlight areas of
+            improvement for college advisors.
+          </li>
+        </ul>
       </article>
     </section>
 
@@ -90,14 +119,15 @@
       <h2 class="header">Projects</h2>
 
       <div class="inline-info project-info">
-        <h3 class="name project-name">Personal website</h3>
-        <a
-          href="https://sheeptester.github.io/"
-          class="icon link-icon"
-          title="Link"
-        >
-          Link
-        </a>
+        <h3 class="name">
+          <a
+            href="https://sheeptester.github.io/"
+            class="link-icon project-name"
+            title="Link"
+          >
+            Personal website
+          </a>
+        </h3>
         <a
           href="https://github.com/SheepTester/sheeptester.github.io"
           class="icon github-icon"
@@ -106,22 +136,25 @@
           Github
         </a>
       </div>
-      <p class="desc project-desc">
-        A portfolio consisting of 600 web pages I’ve made since eighth grade
-        with varying purposes and complexity. Received over 27k clicks from
-        Google Search in the last 3 months. Includes:
-      </p>
+      <ul class="desc">
+        <li>Singlehandedly designed and built over 600 web pages.</li>
+        <li>Created various web tools and games for a diverse audience.</li>
+        <li>
+          Attracted 27,000 visitors from Google Search in the last 3 months.
+        </li>
+      </ul>
       <div class="subprojects">
         <div class="subproject">
           <div class="inline-info project-info">
-            <h4 class="name project-name">HTMLifier</h4>
-            <a
-              href="https://sheeptester.github.io/htmlifier/"
-              class="icon link-icon"
-              title="Link"
-            >
-              Link
-            </a>
+            <h4 class="name">
+              <a
+                href="https://sheeptester.github.io/htmlifier/"
+                class="link-icon project-name"
+                title="Link"
+              >
+                HTMLifier
+              </a>
+            </h4>
             <a
               href="https://github.com/SheepTester/htmlifier/"
               class="icon github-icon"
@@ -130,23 +163,23 @@
               Github
             </a>
           </div>
-          <p class="desc project-desc">
-            Packages projects made with
-            <a href="https://scratch.mit.edu/" class="ext-link">Scratch</a>.
-            Received 18k clicks in the past quarter.
+          <p class="desc">
+            Provided tools for 18,000 children in the past quarter for
+            publishing their own games.
           </p>
         </div>
 
         <div class="subproject">
           <div class="inline-info project-info">
-            <h4 class="name project-name">Discord webhook sender</h4>
-            <a
-              href="https://sheeptester.github.io/javascripts/webhook-sender.html"
-              class="icon link-icon"
-              title="Link"
-            >
-              Link
-            </a>
+            <h4 class="name">
+              <a
+                href="https://sheeptester.github.io/javascripts/webhook-sender.html"
+                class="link-icon project-name"
+                title="Link"
+              >
+                Discord webhook sender
+              </a>
+            </h4>
             <a
               href="https://github.com/SheepTester/sheeptester.github.io/blob/master/javascripts/webhook-sender.html"
               class="icon github-icon"
@@ -155,19 +188,19 @@
               Github
             </a>
           </div>
-          <p class="desc project-desc">
-            A WYSIWYG editor for creating announcements on
-            <a href="https://discord.com/" class="ext-link">Discord</a>.
-            Received 5.5k clicks in the past quarter.
+          <p class="desc">
+            Simplified the process for creating announcements on
+            <a href="https://discord.com/" class="ext-link">Discord</a> for 5500
+            users in the past quarter.
           </p>
         </div>
 
         <!-- <div class="subproject">
           <div class="inline-info project-info">
-            <h4 class="name project-name">E羊icques</h4>
+            <h4 class="name">E羊icques</h4>
             <a
               href="https://sheeptester.github.io/scratch-gui/"
-              class="icon link-icon"
+              class="link-icon project-name"
               title="Link"
             >
               Link
@@ -180,20 +213,20 @@
               Github
             </a>
           </div>
-          <p class="desc project-desc">
+          <p class="desc">
             A modification of
             <a href="https://scratch.mit.edu/" class="ext-link">Scratch</a>
             allowing for more customizability. Allowed me to learn React on my
             own.
           </p>
-        </div> -->
+        </div>
 
         <div class="subproject">
           <div class="inline-info project-info">
-            <h4 class="name project-name">Trig drill generator</h4>
+            <h4 class="name">Trig drill generator</h4>
             <a
               href="https://sheeptester.github.io/hello-world/drills.html"
-              class="icon link-icon"
+              class="link-icon project-name"
               title="Link"
             >
               Link
@@ -206,7 +239,7 @@
               Github
             </a>
           </div>
-          <p class="desc project-desc">
+          <p class="desc">
             A timed quiz that generates questions about trigonometric special
             angles as practice for students in my trigonometry class.
           </p>
@@ -214,10 +247,10 @@
 
         <div class="subproject">
           <div class="inline-info project-info">
-            <h4 class="name project-name">OlamREEE</h4>
+            <h4 class="name">OlamREEE</h4>
             <a
               href="https://sheeptester.github.io/olamreee/"
-              class="icon link-icon"
+              class="link-icon project-name"
               title="Link"
             >
               Link
@@ -230,23 +263,24 @@
               Github
             </a>
           </div>
-          <p class="desc project-desc">
+          <p class="desc">
             A digital version of a chemistry project. Students found it more
             convenient to use, and my teacher switched to it during distance
             learning.
           </p>
-        </div>
+        </div> -->
       </div>
 
       <div class="inline-info project-info">
-        <h3 class="name project-name">Unofficial Gunn Web App</h3>
-        <a
-          href="https://orbiit.github.io/gunn-web-app/"
-          class="icon link-icon"
-          title="Link"
-        >
-          Link
-        </a>
+        <h3 class="name">
+          <a
+            href="https://orbiit.github.io/gunn-web-app/"
+            class="link-icon project-name"
+            title="Link"
+          >
+            Unofficial Gunn Web App
+          </a>
+        </h3>
         <a
           href="https://github.com/Orbiit/gunn-web-app"
           class="icon github-icon"
@@ -255,21 +289,28 @@
           Github
         </a>
       </div>
-      <p class="desc project-desc">
-        A web app that displayed the schedule and provided other utilities for
-        my high school used by students, parents, and staff. Received nearly 1k
-        clicks per month from Google with up to 736 concurrent users.
-      </p>
+      <ul class="desc">
+        <li>
+          Provided reliable schedule information and tools to students, parents,
+          and staff.
+        </li>
+        <li>
+          Garnered nearly 1000 clicks per month from Google with up to 736
+          concurrent users.
+        </li>
+        <li>Made the app accessible to students without smartphones.</li>
+      </ul>
 
       <div class="inline-info project-info">
-        <h3 class="name project-name">Elimination</h3>
-        <a
-          href="https://orbiit.github.io/elimination/"
-          class="icon link-icon"
-          title="Link"
-        >
-          Link
-        </a>
+        <h3 class="name">
+          <a
+            href="https://orbiit.github.io/elimination/"
+            class="link-icon project-name"
+            title="Link"
+          >
+            Elimination
+          </a>
+        </h3>
         <a
           href="https://github.com/Orbiit/elimination"
           class="icon github-icon"
@@ -278,10 +319,10 @@
           Github
         </a>
       </div>
-      <p class="desc project-desc">
-        I volunteered to make and host a website for a school-sponsored
-        assassination game with 323 student participants.
-      </p>
+      <ul class="desc">
+        <li>Volunteered to make a website for a school-sponsored game.</li>
+        <li>Hosted the game for 323 student participants.</li>
+      </ul>
     </section>
 
     <div class="flex"></div>
@@ -296,7 +337,10 @@
           <p class="school-gpa"><span class="label">GPA</span> 3.944</p>
           <p class="sad-date">Sept. 2021&ndash;June 2025</p>
         </div>
-        <p class="desc course-list">Majoring in Computer Science.</p>
+        <p class="desc course-list">
+          B.S. in Computer Engineering. Coursework: Intro to Programming (Java),
+          Data Structures I, Systems Programming.
+        </p>
       </article>
 
       <!-- <article>
@@ -333,18 +377,24 @@
           <span>Rust</span>
           <span>Java</span>
           <span>Elm</span>
+          <span>Ruby</span>
+          <span>Julia</span>
           <!-- libraries -->
-          <span>React</span>
+          <span>React JS</span>
           <span>Webpack</span>
-          <span>Rollup</span>
+          <!-- <span>Rollup</span> -->
           <span>jQuery</span>
-          <span>Express</span>
+          <span>Express.js</span>
           <!-- runtimes -->
-          <span>Node</span>
-          <span>Deno</span>
+          <span>Node.js</span>
+          <!-- <span>Deno</span> -->
         </p>
       </div>
     </section>
+
+    <p class="for-the-bots">
+      (note to self: Google, Amazon, Apple, Microsoft, Facebook, what else)
+    </p>
 
     <script>
       // [...btoa('...')].reverse().join('')

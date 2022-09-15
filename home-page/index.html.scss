@@ -284,6 +284,7 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
       css {
         .card {
           border-radius: 10px;
+          overflow: hidden;
           padding: 20px;
           margin: 20px;
           background-color: #24364a;
@@ -575,6 +576,11 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
             border-top: 1px solid rgba(151, 189, 179, 0.2);
             padding: 20px;
           }
+          .no-subtitle {
+            padding: 0 20px;
+            height: 64px;
+            align-items: center;
+          }
           .block-link:hover {
             background-color: rgba(255, 255, 255, 0.05);
           }
@@ -614,7 +620,7 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
             @import "./templates/social.html.scss";
           }
         }
-        a.block-link[href="/résumé/"] {
+        a.block-link.no-subtitle[href="/résumé/"] {
           span.block-link-content {
             span.block-link-title {
               content: "View my résumé";
