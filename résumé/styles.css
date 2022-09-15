@@ -21,6 +21,18 @@ body {
   flex: auto;
   min-height: 20px;
 }
+.link {
+  text-decoration: none;
+  color: inherit;
+}
+.link:hover {
+  text-decoration: underline;
+}
+/* @media print {
+  .link {
+    text-decoration: underline;
+  }
+} */
 
 .icon {
   display: inline-block;
@@ -90,14 +102,10 @@ body {
 }
 .project-name {
   color: inherit;
-  text-decoration: none;
   padding-right: 30px;
   background-size: 20px;
   background-position: right;
   background-repeat: no-repeat;
-}
-.project-name:hover {
-  text-decoration: underline;
 }
 .sad-city {
   font-style: italic;
@@ -138,17 +146,8 @@ ul.desc {
 }
 .ext-link {
   color: #2c94ff;
-  text-decoration: none;
   font-weight: bold;
 }
-.ext-link[href]:hover {
-  text-decoration: underline;
-}
-/* @media print {
-  .ext-link {
-    text-decoration: underline;
-  }
-} */
 .course-desc {
   color: rgba(0, 0, 0, 0.5);
 }
@@ -174,6 +173,7 @@ ul.desc {
   transform: translateY(8px);
 }
 .logo {
+  display: flex;
   position: absolute;
   border: 10px solid var(--theme);
   fill: var(--theme);
@@ -184,6 +184,9 @@ ul.desc {
   width: 64px;
   padding: 12px;
   border-radius: 50%;
+}
+.logo-svg {
+  width: 100%;
 }
 .contact-info {
   display: grid;
@@ -201,11 +204,7 @@ ul.desc {
 }
 .contact-link {
   color: inherit;
-  text-decoration: none;
   word-break: break-word;
-}
-.contact-link:hover {
-  text-decoration: underline;
 }
 
 .skills-wrapper {
