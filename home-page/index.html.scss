@@ -290,15 +290,19 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
           background-color: #24364a;
           box-shadow: 0 3px 10px rgba(0, 0, 0, 0.5);
         }
-        .card h1,
-        .card h2,
-        .card p {
-          margin: 0;
+        .card p,
+        .card ul {
+          margin: 15px 0;
         }
         .card h2 {
+          margin: 0;
           color: rgba(255, 255, 255, 0.9);
           margin-bottom: 15px;
           font-weight: normal;
+        }
+        .card p:last-child,
+        .card ul:last-child {
+          margin-bottom: 0;
         }
       }
       @media (min-width: 1000px) {
@@ -332,6 +336,8 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
       .card {
         css {
           .card h1 {
+            margin: 0;
+            margin-bottom: -15px;
             display: inline-block;
             -webkit-background-clip: text;
             background-clip: text;
@@ -345,14 +351,10 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
         }
         p {
           content: "I’m Sean, a second-year undergraduate at UC San Diego majoring in ";
-          a.link[href="https://sheeptester.github.io/longer-tweets/major/"][title="might still switch into CE"] {
-            content: "computer science*";
+          a.link[href="https://sheeptester.github.io/longer-tweets/major/"] {
+            content: "computer engineering";
           }
-          content: ", formerly a student at ";
-          a.link[href="https://gunn.pausd.org/"] {
-            content: "Gunn High School";
-          }
-          content: ".";
+          content: ", formerly a student at Gunn High School.";
         }
         css {
           .card .datum {
@@ -429,6 +431,52 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
             content: "他";
           }
           content: ", etc.";
+        }
+
+        p {
+          content: "2023 internship season: ";
+          em {
+            content: "(last updated 2022-11-04)"
+          }
+        }
+        css {
+          .intern-stats {
+            // list-style-type: '· ';
+            padding-left: 30px;
+            margin: 15px 0;
+          }
+        }
+        ul.intern-stats {
+          css {
+            // 300 colors from Tailwind
+            .applied {
+              color: #fdba74;
+            }
+            .denied {
+              color: #fca5a5;
+            }
+            .interviews {
+              color: #fde047;
+            }
+          }
+          li {
+            strong.applied {
+              content: "63";
+            }
+            content: " applied."
+          }
+          li {
+            strong.denied {
+              content: "13";
+            }
+            content: " denied."
+          }
+          li {
+            strong.interviews {
+              content: "0";
+            }
+            content: " interviews."
+          }
         }
       }
 
