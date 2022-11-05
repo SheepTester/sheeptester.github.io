@@ -1,3 +1,8 @@
+/*
+  IMPORTANT: Careful when using position: relative or transform on text, as
+  Chrome's PDF generator will put the text at the end. ¯\_(ツ)_/¯
+*/
+
 :root {
   --theme: #22938e;
   /* Firefox and Edge (but not Chrome!) removes the header background color */
@@ -20,6 +25,10 @@ body {
 }
 @page {
   margin: 0;
+}
+section {
+  /* Allow me to use position: relative without messing up the text order. */
+  position: relative;
 }
 .flex {
   flex: auto;
@@ -136,7 +145,12 @@ body {
   margin-top: 10px;
 }
 ul.desc {
-  padding-left: 25px;
+  /* Default bullet is not selectable in PDFs, which I think confuses ATS. */
+  list-style: '•';
+  padding-left: 15px;
+}
+.desc li {
+  padding-left: 10px;
 }
 .section > .desc {
   margin-top: -10px;
@@ -165,7 +179,6 @@ ul.desc {
   padding-bottom: 20px;
   color: white;
   background-color: var(--theme);
-  position: relative;
 }
 .my-name {
   font-family: 'Montserrat', sans-serif;
@@ -174,7 +187,7 @@ ul.desc {
   font-size: 48px;
   margin-right: 0.5in;
   align-self: flex-end;
-  transform: translateY(8px);
+  margin-bottom: -8px;
 }
 .logo {
   display: flex;
