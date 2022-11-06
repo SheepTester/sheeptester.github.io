@@ -9,6 +9,8 @@
   -webkit-print-color-adjust: exact;
   print-color-adjust: exact;
   font-size: 14px;
+  /* Workday cannot handle ligature glyphs for some reason. */
+  font-variant-ligatures: none;
 }
 html {
   height: 100%;
@@ -32,7 +34,7 @@ section {
 }
 .flex {
   flex: auto;
-  min-height: 20px;
+  min-height: 25px;
 }
 ul {
   /* Default bullet is not selectable in PDFs, which I think confuses ATS. */
