@@ -34,6 +34,14 @@ section {
   flex: auto;
   min-height: 20px;
 }
+ul {
+  /* Default bullet is not selectable in PDFs, which I think confuses ATS. */
+  list-style: '•';
+  padding-left: 15px;
+}
+li {
+  padding-left: 10px;
+}
 .link {
   text-decoration: none;
   color: inherit;
@@ -109,6 +117,11 @@ section {
   margin-top: 0;
   margin-bottom: 0;
 }
+@media screen {
+  .info > .show-link {
+    text-decoration: underline;
+  }
+}
 .name {
   font-family: 'Montserrat', 'Noto Sans TC', sans-serif;
   font-weight: 900;
@@ -150,15 +163,7 @@ section {
   margin: 0;
   margin-top: 10px;
 }
-ul.desc {
-  /* Default bullet is not selectable in PDFs, which I think confuses ATS. */
-  list-style: '•';
-  padding-left: 15px;
-}
-.desc li {
-  padding-left: 10px;
-}
-.section > .desc {
+.list > .desc {
   margin-top: -10px;
 }
 .subprojects {
@@ -224,49 +229,6 @@ ul.desc {
 .contact-link {
   color: inherit;
   word-break: break-word;
-}
-
-.skills-wrapper {
-  display: flex;
-  margin-top: 10px;
-  gap: 30px;
-}
-.skill-heading {
-  height: 16px;
-  display: flex;
-  align-items: flex-end;
-}
-.skill-main > span {
-  display: block;
-}
-.skill-main .name {
-  margin-top: 10px;
-  margin-bottom: 5px;
-}
-.skill-main .desc {
-  margin: 0;
-}
-.other-skills {
-  flex: auto;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-.other-skills .label {
-  margin: 0;
-}
-.skills {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(115px, 1fr));
-  margin: 0;
-  padding: 0;
-  /* column-gap: 5px; */
-}
-.skills li {
-  margin-left: 25px;
-}
-.wide-skill {
-  grid-column: 1 / 3;
 }
 
 .for-the-bots {
