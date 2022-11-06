@@ -8,6 +8,7 @@
   /* Firefox and Edge (but not Chrome!) removes the header background color */
   -webkit-print-color-adjust: exact;
   print-color-adjust: exact;
+  font-size: 14px;
 }
 html {
   height: 100%;
@@ -21,7 +22,6 @@ body {
   font-family: 'Open Sans', sans-serif;
   box-sizing: border-box;
   padding: 0.5in;
-  font-size: 14px;
 }
 @page {
   margin: 0;
@@ -41,11 +41,16 @@ section {
 .link:hover {
   text-decoration: underline;
 }
-/* @media print {
-  .link {
+@media print {
+  /* Show underlines under text to indicate that they're meant to be clicked on. */
+  .show-link {
     text-decoration: underline;
+    text-decoration-color: rgba(0, 0, 0, 0.3);
   }
-} */
+  .intro .show-link {
+    text-decoration-color: rgba(255, 255, 255, 0.5);
+  }
+}
 
 .icon {
   display: inline-block;
@@ -92,20 +97,17 @@ section {
   flex-direction: column;
   gap: 20px;
 }
-.inline-info {
-  display: flex;
-}
-.inline-info p {
-  margin-top: 0;
-  margin-bottom: 0;
-}
-.inline-info .icon {
-  margin-left: 10px;
-  margin-top: 2px;
-}
-.sad-info {
+.info {
   display: flex;
   align-items: baseline;
+  gap: 10px;
+}
+.info-stretch {
+  justify-content: space-between;
+}
+.info p {
+  margin-top: 0;
+  margin-bottom: 0;
 }
 .name {
   font-family: 'Montserrat', 'Noto Sans TC', sans-serif;
@@ -115,17 +117,21 @@ section {
 }
 .project-name {
   color: inherit;
-  padding-right: 30px;
-  background-size: 20px;
-  background-position: right;
-  background-repeat: no-repeat;
 }
-.sad-city {
-  font-style: italic;
-  margin-left: 15px;
+.link-indicator {
+  display: none;
+  font-family: 'Open Sans', sans-serif;
+  font-weight: normal;
+  font-size: 1rem;
 }
-.school-gpa {
-  margin-left: 15px;
+.link-indicator span {
+  text-decoration: underline;
+  text-decoration-color: rgba(0, 0, 0, 0.3);
+}
+@media print {
+  .link-indicator {
+    display: inline;
+  }
 }
 .label {
   font-family: 'Raleway', sans-serif;
@@ -161,10 +167,6 @@ ul.desc {
   gap: 20px;
   padding-left: 20px;
   border-left: 5px solid rgba(0, 0, 0, 0.3);
-}
-.ext-link {
-  color: #2c94ff;
-  font-weight: bold;
 }
 .course-desc {
   color: rgba(0, 0, 0, 0.5);
