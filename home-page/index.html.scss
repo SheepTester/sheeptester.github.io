@@ -436,7 +436,7 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
         p {
           content: "2023 internship season: ";
           em {
-            content: "(last updated 2022-11-04)"
+            content: "(last updated 2022-11-06)"
           }
         }
         css {
@@ -461,21 +461,21 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
           }
           li {
             strong.applied {
-              content: "63";
+              content: "74";
             }
             content: " applied."
-          }
-          li {
-            strong.denied {
-              content: "13";
-            }
-            content: " denied."
           }
           li {
             strong.interviews {
               content: "0";
             }
             content: " interviews."
+          }
+          li {
+            strong.denied {
+              content: "13";
+            }
+            content: " denied."
           }
         }
       }
