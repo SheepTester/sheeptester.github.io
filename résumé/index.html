@@ -117,7 +117,7 @@
         <ul class="desc">
           <!-- (164+160+154) * 7 + (1231 - (164+160+154)) * 6 -->
           <li>
-            Parsed, analyzed, and uploaded 7864 unique student academic plans
+            Parsed, analyzed, and uploaded 7,864 unique student academic plans
             using Python and Julia.
           </li>
           <li>
@@ -161,9 +161,12 @@
           Express.js, and MongoDB.
         </li>
         <li>
-          Designed and built over 600 web pages with HTML, CSS, and JavaScript.
+          Designed and built 600+ web pages over
+          <span class="js-exp"></span> years with HTML, CSS, and JavaScript.
         </li>
-        <li>Created various web tools and games for a diverse audience.</li>
+        <li>
+          Created a multitude of web tools and games for a diverse audience.
+        </li>
         <li>
           Attracted 27,000 visitors from Google Search in the last 3 months.
         </li>
@@ -215,7 +218,7 @@
           </div>
           <p class="desc">
             Simplified the process for creating announcements on Discord for
-            5500 users in the past quarter.
+            5,500 users in the past quarter.
           </p>
         </div>
 
@@ -316,7 +319,7 @@
           and staff.
         </li>
         <li>
-          Garnered nearly 1000 clicks per month from Google with up to 736
+          Garnered nearly 1,000 clicks per month from Google with up to 736
           concurrent users.
         </li>
         <li>Made the app accessible to students without smartphones.</li>
@@ -338,8 +341,10 @@
         </a>
       </div>
       <ul class="desc">
-        <li>Volunteered to make a website for a school-sponsored game.</li>
-        <li>Hosted the game for 323 student participants.</li>
+        <li>
+          Volunteered to make a website for a school-sponsored game for 323
+          student participants.
+        </li>
       </ul>
     </section>
 
@@ -360,7 +365,7 @@
             >
             3.944/4.0)
           </p>
-          <p class="date">Sept. 2021 &ndash; June 2025</p>
+          <p class="date">September 2021 &ndash; June 2025</p>
           <!--
             FA21 start: 2021-09-23
             SP24 end:   2024-06-14
@@ -403,15 +408,15 @@
       <ul class="desc">
         <li>
           <span class="label">Languages</span> HTML, CSS, JavaScript,
-          TypeScript, Python, Rust, Java, Elm, Ruby, Julia.
+          TypeScript, Python, Rust, Java, Elm, Ruby, Julia, Bash, JSON, XML.
         </li>
         <li>
-          <span class="label">Frameworks</span> React JS, Webpack, Rollup,
-          jQuery, Express.js, Node.js, Deno.
+          <span class="label">Frameworks</span> React JS, React Native, Webpack,
+          Rollup, jQuery, Express.js, Node.js, Deno, Three.js, Flask.
         </li>
-        <li><span class="label">Tools</span> Git, GitHub.</li>
+        <li><span class="label">Tools</span> Git, GitHub, VS Code, Figma.</li>
         <li>
-          <span id="js-exp"></span>+ years of experience in full-stack web
+          <span class="js-exp"></span>+ years of experience in full-stack web
           development and web scraping.
         </li>
       </ul>
@@ -458,9 +463,10 @@
       // 2016-03-28 19:25 PT was when I created udemy/1/index.html according to
       // OneDrive
       const JS_START = 1459218300000
-      document.getElementById('js-exp').textContent = Math.floor(
-        (Date.now() - JS_START) / MS_PER_YEAR
-      )
+      const years = Math.floor((Date.now() - JS_START) / MS_PER_YEAR)
+      for (const elem of document.getElementsByClassName('js-exp')) {
+        elem.textContent = years
+      }
     </script>
   </body>
 </html>
