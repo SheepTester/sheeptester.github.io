@@ -371,6 +371,34 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
         }
         p.datum {
           span.attribute {
+            content: "Name";
+          }
+          content: " Sean Yen /ʃɔːn jɛn/";
+        }
+        p.datum {
+          span.attribute {
+            content: "Pronouns";
+          }
+          content: " he/him/his ♂️";
+        }
+        p.datum {
+          span.attribute {
+            content: "Location";
+          }
+          content: " San Francisco Bay Area, San Diego";
+        }
+        p.datum {
+          span.attribute {
+            content: "Time Zone";
+          }
+          content: " Pacific Time (";
+          a.link[href="https://time.is/Los_Angeles"] {
+            content: "America/Los_Angeles";
+          }
+          content: ")";
+        }
+        p.datum {
+          span.attribute {
             content: "Age";
           }
           content: " ";
@@ -406,31 +434,18 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
           content: " years";
         }
         p.datum {
-          css {
-            abbr {
-              text-decoration-color: rgba(255, 255, 255, 0.3);
-            }
-          }
           span.attribute {
-            content: "Pronouns";
+            content: "Zodiac";
           }
-          content: " ";
-          abbr[title="English"][lang="en"] {
-            content: "he";
+          content: " Aries ♈ (Western), sheep 羊 (Chinese)";
+        }
+
+        p {
+          content: "This website, unlike others, is made for current and former children like me rather than employers, who look for ";
+          a.link[href="/résumé/"] {
+            content: "résumés";
           }
-          content: ", ";
-          abbr[title="Spanish"][lang="es"] {
-            content: "él";
-          }
-          content: ", ";
-          abbr[title="Esperanto"][lang="eo"] {
-            content: "li";
-          }
-          content: ", ";
-          abbr[title="Mandarin"][lang="zh"] {
-            content: "他";
-          }
-          content: ", etc.";
+          content: ", not games.";
         }
 
         p {

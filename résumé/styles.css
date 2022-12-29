@@ -28,10 +28,6 @@ body {
 @page {
   margin: 0;
 }
-section {
-  /* Allow me to use position: relative without messing up the text order. */
-  position: relative;
-}
 .flex {
   flex: auto;
   min-height: 25px;
@@ -181,9 +177,8 @@ li {
 
 .intro {
   display: flex;
-  position: relative;
   margin: -0.5in;
-  margin-bottom: 0.5in;
+  margin-bottom: 0;
   padding: 0.5in;
   padding-bottom: 20px;
   color: white;
@@ -198,15 +193,18 @@ li {
   align-self: flex-end;
   margin-bottom: -8px;
 }
+.logo-wrapper {
+  position: relative;
+  margin-bottom: 0.5in;
+}
 .logo {
   display: flex;
   position: absolute;
   border: 10px solid var(--theme);
   fill: var(--theme);
   background-color: white;
-  top: 100%;
   transform: translateY(-50%);
-  right: 0.5in;
+  right: 0;
   width: 64px;
   padding: 12px;
   border-radius: 50%;
