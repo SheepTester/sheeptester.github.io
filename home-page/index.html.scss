@@ -285,24 +285,18 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
         .card {
           border-radius: 10px;
           overflow: hidden;
-          padding: 20px;
+          padding: 0 20px;
           margin: 20px;
           background-color: #24364a;
           box-shadow: 0 3px 10px rgba(0, 0, 0, 0.5);
         }
         .card p,
-        .card ul {
+        .card h2 {
           margin: 15px 0;
         }
         .card h2 {
-          margin: 0;
           color: rgba(255, 255, 255, 0.9);
-          margin-bottom: 15px;
           font-weight: normal;
-        }
-        .card p:last-child,
-        .card ul:last-child {
-          margin-bottom: 0;
         }
       }
       @media (min-width: 1000px) {
@@ -336,7 +330,7 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
       .card {
         css {
           .card h1 {
-            margin: 0;
+            margin-top: 20px;
             margin-bottom: -15px;
             display: inline-block;
             -webkit-background-clip: text;
@@ -385,7 +379,7 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
           span.attribute {
             content: "Location";
           }
-          content: " San Francisco Bay Area, San Diego";
+          content: " San Francisco Bay Area and San Diego";
         }
         p.datum {
           span.attribute {
@@ -441,23 +435,32 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
         }
 
         p {
-          content: "This website, unlike others, is made for current and former children like me rather than employers, who look for ";
+          content: "This website, unlike others, is made for current and former children like me, rather than employers who look for ";
           a.link[href="/résumé/"] {
             content: "résumés";
           }
           content: ", not games.";
         }
 
+        css {
+          .line {
+            border: none;
+            border-top: 1px solid rgba(151, 189, 179, 0.2);
+            margin: 15px -20px;
+          }
+        }
+        hr.line;
+
         p {
           content: "2023 internship season: ";
           em {
-            content: "(last updated 2022-12-05)"
+            content: "(last updated 2023-01-03)"
           }
         }
         css {
           .intern-stats {
             // list-style-type: '· ';
-            padding-left: 30px;
+            padding-left: 27px;
             margin: 15px 0;
           }
         }
@@ -476,7 +479,7 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
           }
           li {
             strong.applied {
-              content: "93";
+              content: "108";
             }
             content: " applied."
           }
@@ -488,7 +491,7 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
           }
           li {
             strong.denied {
-              content: "21";
+              content: "24";
             }
             content: " denied."
           }
@@ -497,66 +500,66 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
 
       .card {
         h2#interests {
-          content: "Phenomena that interest me";
+          content: "Interests";
         }
 
         css {
           .interests {
-            display: flex;
-            text-align: center;
-            align-items: flex-start;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: 100px 200px;
+            grid-template-areas:
+              "sheep webdev"
+              "sheep ling";
+            padding: 0;
+            list-style: none;
             margin: 0 -20px;
           }
         }
-        @media (max-width: 500px) {
-          .interests {
-            flex-direction: column;
-            align-items: center;
-            margin: 0;
-          }
-        }
-        .interests {
+        ul.interests {
           css {
             .interest {
-              flex: 1 0 0;
               display: flex;
-              flex-direction: column;
-              justify-content: center;
-              align-items: center;
+              align-items: flex-end;
+              justify-content: flex-start;
               padding: 10px;
+              background-size: cover;
+              background-position: center;
             }
-            .border {
-              border-left: 1px solid rgba(151, 189, 179, 0.2);
-              border-top: 1px solid rgba(151, 189, 179, 0.2);
-              margin: 20px 0;
-              align-self: stretch;
+            .interest-name {
+              background-color: rgba(0, 0, 0, 0.5);
+              padding: 2px 10px;
+              border-radius: 20px;
             }
 
-            // TEMP
-            .interest img {
-              width: 32px;
+            .interest-sheep {
+              grid-area: sheep;
+              // https://commons.wikimedia.org/wiki/File:Sheep,_Stodmarsh_6.jpg
+              background-image: url('../img/interest-sheep.jpg');
+            }
+            .interest-webdev {
+              grid-area: webdev;
+              background-image: url('../img/interest-webdev.jpg');
+            }
+            .interest-ling {
+              grid-area: ling;
+              // May 9 photo
+              background-image: url('../img/interest-ling.jpg');
             }
           }
-
-          // TODO: Images
-          .interest {
-            img[src="/SHEPS.svg"][alt="A sheep"];
-            p.sheep {
+          li.interest.interest-sheep {
+            .interest-name {
               content: "Sheep";
             }
           }
-          .border {}
-          .interest {
-            img[src="/SHEPS.svg"][alt="A website"];
-            p {
-              content: "Front-end web development";
+          li.interest.interest-webdev {
+            .interest-name {
+              content: "Web development";
             }
           }
-          .border {}
-          .interest {
-            img[src="/SHEPS.svg"][alt="The Tower of Babel flag of conlanging"];
-            p {
-              content: "Constructed languages";
+          li.interest.interest-ling {
+            .interest-name {
+              content: "Linguistics";
             }
           }
         }
@@ -634,8 +637,7 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
             display: flex;
             text-decoration: none;
             color: inherit;
-            margin: -20px;
-            margin-top: 20px;
+            margin: 0 -20px;
             border-top: 1px solid rgba(151, 189, 179, 0.2);
             padding: 20px;
           }
@@ -701,6 +703,24 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
             }
             span.block-link-icon.resume-icon {}
           }
+        }
+      }
+
+      .card {
+        h2#legal {
+          content: "Legal";
+        }
+
+        p {
+          content: "The ";
+          a.link[href="https://commons.wikimedia.org/wiki/File:Sheep,_Stodmarsh_6.jpg"] {
+            content: "photo of the sheep";
+          }
+          content: " is by Kevin Law and is licensed under ";
+          a.link[href="https://creativecommons.org/licenses/by-sa/2.0/deed.en"] {
+            content: "CC BY-SA 2.0";
+          }
+          content: ".";
         }
       }
     }
