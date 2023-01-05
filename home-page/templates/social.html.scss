@@ -24,7 +24,7 @@ css {
     background-image: linear-gradient(#6ca5dd, #1a6ab9);
   }
   .social-piskel {
-    background-image: linear-gradient(-90deg, black, transparent),
+    background-image: linear-gradient(90deg, transparent 0 33.3%, rgba(0, 0, 0, 0.25) 33.3% 66.7%, rgba(0, 0, 0, 0.5) 66.7% 100%),
       linear-gradient(#2A6FFF 0%, #2A6FFF 33.3%, #00EE00 33.3%, #00EE00 66.7%,
       #FF0000 66.7%, #FF0000 100%);
   }
@@ -74,6 +74,9 @@ css {
     border-radius: 5px;
     margin: -2.5px;
     // box-shadow: 0 0 0 3px white;
+  }
+  .social-steam {
+    background-image: linear-gradient(to bottom, #111d2e 0%, #051839 21.2%, #0a1b48 40.7%, #132e62 58.1%, #144b7e 73.8%, #136497 87.3%, #1387b8 100%);
   }
 }
 $bg: "";
