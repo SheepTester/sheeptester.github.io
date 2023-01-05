@@ -401,11 +401,7 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
           span.attribute {
             content: "Time Zone";
           }
-          content: " Pacific Time (";
-          a.link[href="https://time.is/Los_Angeles"] {
-            content: "America/Los_Angeles";
-          }
-          content: ")";
+          content: " Pacific Time";
         }
         p.datum {
           span.attribute {
@@ -449,7 +445,7 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
           span.attribute {
             content: "Zodiac";
           }
-          content: " Aries ♈ (Western), sheep 羊 (Chinese)";
+          content: " sheep 羊, Aries ♈";
         }
 
         p {
@@ -572,7 +568,16 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
           }
           li.interest.interest-webdev {
             .interest-name {
-              content: "Web development";
+              content: "Web dev";
+
+              @media (max-width: 400px) {
+                .webdev-extra {
+                  display: none;
+                }
+              }
+              span.webdev-extra {
+                content: "elopment";
+              }
             }
           }
           li.interest.interest-ling {
@@ -967,14 +972,11 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
         css {
           .description {
             display: flex;
-            justify-content: space-between;
+            flex-direction: column;
+            align-items: center;
             background-color: #24364a;
             grid-column: 1 / -1;
             line-height: 1.5;
-            background-image: linear-gradient(90deg, transparent, rgba(28, 224, 224, 0.2));
-            background-size: 500px;
-            background-position: right;
-            background-repeat: no-repeat;
           }
         }
         @media (min-width: 680px) {
@@ -986,7 +988,8 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
         .description#description-wrapper[style="display:none"][role="contentinfo"] {
           css {
             .description-body {
-              max-width: 560px;
+              width: 100%;
+              max-width: 680px;
               box-sizing: border-box;
               padding: 20px;
             }
@@ -1045,34 +1048,29 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
 
           css {
             .desc-visit {
-              display: flex;
-              flex-direction: column;
-              gap: 20px;
-              align-items: center;
-              justify-content: center;
+              align-self: stretch;
+              text-align: center;
               text-transform: uppercase;
-              border-left: 1px solid rgba(151, 189, 179, 0.2);
-              color: white;
-              padding: 20px;
-              letter-spacing: 1px;
-              font-size: 0.9em;
+              background-color: #1ce0e0;
+              color: black;
+              padding: 10px 0;
+              margin: 20px;
+              margin-top: 0;
+              border-radius: 50px;
+              font-weight: bold;
               transition: background-color .2s;
-              min-width: 150px;
-              min-height: 150px;
-              box-sizing: border-box;
             }
             .desc-visit:hover {
               background-color: rgba(255, 255, 255, 0.05);
             }
-            .arrow {
-              width: 64px;
+            @media (min-width: 680px) {
+              .desc-visit {
+                display: none;
+              }
             }
           }
           a[href="#"].desc-visit#desc-link {
-            img.arrow[src="./home-page/icons/right-arrow.svg"][alt="Right arrow icon"];
-            span {
-              content: "Visit";
-            }
+            content: "Visit";
           }
         }
       }

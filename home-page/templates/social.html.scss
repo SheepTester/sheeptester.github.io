@@ -10,10 +10,6 @@ css {
     z-index: 1;
     overflow: hidden;
   }
-  a.social:hover,
-  a.username:hover .social {
-    transform: scale(1.1);
-  }
   .social-instagram {
     background-image: radial-gradient(circle at 20% 100%, #F9D773, #F5AB3F, #F05431, #DD1D4F, #AA128D, #3D3CE2);
   }
@@ -79,6 +75,12 @@ css {
     background-image: linear-gradient(to bottom, #111d2e 0%, #051839 21.2%, #0a1b48 40.7%, #132e62 58.1%, #144b7e 73.8%, #136497 87.3%, #1387b8 100%);
   }
 }
+@media (hover: hover) {
+  a.social:hover,
+  a.username:hover .social {
+    transform: scale(1.1);
+  }
+}
 $bg: "";
 @if map.get($social, 'bg') {
   $bg: "background-color:#{map.get($social, 'bg')}";
@@ -111,13 +113,15 @@ $name: map.get($social, 'name');
       box-sizing: border-box;
       transition: all .2s;
     }
-    a.social:hover .ball,
-    a.username:hover .ball {
-      transform: scale(1.2);
-    }
     .border-ball {
       border-color: white;
       background-color: transparent;
+    }
+  }
+  @media (hover: hover) {
+    a.social:hover .ball,
+    a.username:hover .ball {
+      transform: scale(1.2);
     }
   }
   $class: "ball";
