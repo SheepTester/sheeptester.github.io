@@ -445,7 +445,16 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
           span.attribute {
             content: "Zodiac";
           }
-          content: " sheep 羊, Aries ♈";
+          content: " sheep 羊, Aries ";
+          css {
+            .emoji {
+              // Opaque color so the color emoji doesn't appear faded
+              color: white;
+            }
+          }
+          span.emoji {
+            content: "♈";
+          }
         }
 
         p {
@@ -720,8 +729,13 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
           span.block-link-icon-wrapper {
             css {
               .resume-icon {
-                background-image: url('./icons/open-directly-white.svg');
-                background-size: contain;
+                background-image: url('/home-page/icons/feather-arrow-right.svg');
+                background-position: center;
+                background-repeat: no-repeat;
+                transition: transform .2s;
+              }
+              .block-link:hover .resume-icon {
+                transform: translateX(5px);
               }
             }
             span.block-link-icon.resume-icon {}
@@ -919,7 +933,7 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
                   width: 30px;
                 }
                 .filter-checkbox:checked + .filter-tag .tag-#{$tag} {
-                  background-image: url("/home-page/icons/checked.svg"),
+                  background-image: url("/home-page/icons/feather-check.svg"),
                     linear-gradient(150deg, #{map.get($tag-data, 'colour1')},
                     #{map.get($tag-data, 'colour2')});
                 }
@@ -927,7 +941,7 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
               @if map.get($tag-data, 'dark') {
                 css {
                   .filter-checkbox:checked + .filter-tag .tag-#{$tag} {
-                    background-image: url("/home-page/icons/checked-dark.svg"),
+                    background-image: url("/home-page/icons/feather-check-black.svg"),
                       linear-gradient(150deg, #{map.get($tag-data, 'colour1')},
                       #{map.get($tag-data, 'colour2')});
                   }

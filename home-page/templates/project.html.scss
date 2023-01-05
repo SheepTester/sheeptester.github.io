@@ -185,22 +185,22 @@ a.#{$classes}[href="#{map.get($project, 'path')}"][data-desc="#{map.get($project
       z-index: 1;
       width: 36px;
       height: 36px;
-      background-color: rgba(28, 224, 224, 0.5);
-      background-image: url('/home-page/icons/show-info.svg');
+      background-color: rgba(0, 0, 0, 0.3);
+      background-image: url('/home-page/icons/feather-info.svg');
       background-size: 24px;
       background-repeat: no-repeat;
       background-position: center;
       padding: 6px;
       margin: 6px;
       border-radius: 50%;
-      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
       opacity: 0;
       transition: opacity .5s, background-color .2s, box-shadow .2s;
       transition-delay: 0.05s, 0, 0;
     }
     .show-info:hover {
-      background-color: #1ce0e0;
-      box-shadow: 0 3px 5px rgba(0, 0, 0, 0.3);
+      background-color: rgba(0, 0, 0, 0.8);
+      box-shadow: 0 3px 5px rgba(0, 0, 0, 0.5);
     }
   }
   @media (hover: hover) {
