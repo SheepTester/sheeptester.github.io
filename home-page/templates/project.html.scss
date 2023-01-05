@@ -87,7 +87,7 @@ a.#{$classes}[href="#{map.get($project, 'path')}"][data-desc="#{map.get($project
       border-radius: 10px;
     }
   }
-  img.thumbnail[src="#{map.get($project, 'image')}"];
+  img.thumbnail[src="#{map.get($project, 'image')}"][alt="Thumbnail for #{map.get($project, 'name')}"];
 
   css {
     .title {
@@ -177,16 +177,16 @@ a.#{$classes}[href="#{map.get($project, 'path')}"][data-desc="#{map.get($project
   }
 
   css {
-    .open-directly {
+    .show-info {
       display: none;
       position: absolute;
       top: 0;
       right: 0;
       z-index: 1;
-      width: 24px;
-      height: 24px;
+      width: 36px;
+      height: 36px;
       background-color: rgba(255, 255, 255, 0.5);
-      background-image: url('/home-page/icons/open-directly.svg');
+      // background-image: url('/home-page/icons/open-directly.svg');
       background-size: 24px;
       background-repeat: no-repeat;
       background-position: center;
@@ -198,20 +198,20 @@ a.#{$classes}[href="#{map.get($project, 'path')}"][data-desc="#{map.get($project
       transition: opacity .5s, background-color .2s, box-shadow .2s;
       transition-delay: 0.05s, 0, 0;
     }
-    .open-directly:hover {
+    .show-info:hover {
       background-color: white;
       box-shadow: 0 3px 5px rgba(0, 0, 0, 0.2);
     }
   }
   @media (hover: hover) {
-    .project:not(.showing-desc):hover .open-directly {
+    .project:not(.showing-desc):hover .show-info {
       opacity: 1;
     }
   }
   @media (min-width: 680px) {
-    .has-js .open-directly {
+    .has-js .show-info {
       display: block;
     }
   }
-  span.open-directly {}
+  button.show-info[title="Show project info"] {}
 }

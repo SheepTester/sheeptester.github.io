@@ -81,7 +81,13 @@ const projectsWrapper = document.getElementById('projects-wrapper')
 let lastSelected = null
 projectsWrapper.addEventListener('click', e => {
   const project = e.target.closest('.project')
-  if (project && !e.target.closest('.open-directly')) {
+  if (!project) {
+    return
+  }
+  const showInfoHidden =
+    window.getComputedStyle(project.querySelector('.show-info')).display ===
+    'none'
+  if (showInfoHidden || e.target.closest('.show-info')) {
     e.preventDefault()
     unselect()
     if (lastSelected !== project) {

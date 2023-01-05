@@ -2,6 +2,7 @@ document.addEventListener("DOMContentLoaded", function(e) {
   var homeButton = document.createElement("sheep-btn");
   homeButton.setAttribute('tabindex', 0);
   homeButton.setAttribute('aria-label', 'Go to SheepTester directory');
+  homeButton.setAttribute('role', 'button');
   homeButton.addEventListener('click', function(e) {
     document.body.classList.add('sheep-blockscreen');
     homeButton.addEventListener('transitionend', function(e) {

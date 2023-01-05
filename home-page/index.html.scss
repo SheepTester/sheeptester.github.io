@@ -16,6 +16,22 @@ css {
     white-space: nowrap;
     width: 1px;
   }
+
+  button {
+    -webkit-appearance: none;
+    border: none;
+    padding: 0;
+    background: none;
+    font: inherit;
+    color: inherit;
+  }
+  button:not(:disabled) {
+    cursor: pointer;
+  }
+  a {
+    text-decoration: none;
+    color: inherit;
+  }
 }
 
 html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
@@ -365,9 +381,9 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
         }
         p.datum {
           span.attribute {
-            content: "Name";
+            content: "Pronounce";
           }
-          content: " Sean Yen /ʃɔːn jɛn/";
+          content: " /ʃɔːn/";
         }
         p.datum {
           span.attribute {
@@ -379,7 +395,7 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
           span.attribute {
             content: "Location";
           }
-          content: " San Francisco Bay Area and San Diego";
+          content: " SF Bay Area and San Diego";
         }
         p.datum {
           span.attribute {
@@ -404,10 +420,12 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
             .age {
               position: relative;
               display: inline-block;
+              -webkit-user-select: none;
               user-select: none;
             }
             .age span {
               position: absolute;
+              -webkit-user-select: text;
               user-select: text;
               color: rgba(255, 255, 255, 0.8);
             }
@@ -435,7 +453,7 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
         }
 
         p {
-          content: "This website, unlike others, is made for current and former children like me, rather than employers who look for ";
+          content: "This website, unlike others, is made for current and former kids like me, rather than employers who look for ";
           a.link[href="/résumé/"] {
             content: "résumés";
           }
@@ -777,7 +795,6 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
             margin-top: 10px;
           }
           .link {
-            text-decoration: none;
             color: #1ce0e0;
           }
           .link:hover {
@@ -949,10 +966,15 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
 
         css {
           .description {
-            padding: 20px;
+            display: flex;
+            justify-content: space-between;
             background-color: #24364a;
             grid-column: 1 / -1;
             line-height: 1.5;
+            background-image: linear-gradient(90deg, transparent, rgba(28, 224, 224, 0.2));
+            background-size: 500px;
+            background-position: right;
+            background-repeat: no-repeat;
           }
         }
         @media (min-width: 680px) {
@@ -961,66 +983,26 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
             box-shadow: 0 3px 10px rgba(0, 0, 0, 0.5);
           }
         }
-        .description#description-wrapper[style="display:none"][aria-role="contentinfo"] {
+        .description#description-wrapper[style="display:none"][role="contentinfo"] {
           css {
             .description-body {
               max-width: 560px;
-              margin: 0 auto;
               box-sizing: border-box;
+              padding: 20px;
             }
           }
           .description-body {
             css {
-              .description-header {
-                display: flex;
-                align-items: flex-start;
+              .desc-title {
+                margin: 0;
+                flex: auto;
+                color: rgba(255, 255, 255, 0.9);
+                font-weight: normal;
+                font-size: 2em;
+                line-height: 1.1;
               }
             }
-            .description-header {
-              css {
-                .desc-title {
-                  margin: 0;
-                  flex: auto;
-                  color: rgba(255, 255, 255, 0.9);
-                  font-weight: normal;
-                  font-size: 2em;
-                  line-height: 1.1;
-                }
-              }
-              h2.desc-title#desc-title {}
-
-              css {
-                .desc-visit {
-                  display: flex;
-                  align-items: center;
-                  background-color: white;
-                  background-image: url('/home-page/icons/open-directly.svg');
-                  background-size: 24px;
-                  background-repeat: no-repeat;
-                  background-position: right 6px center;
-                  height: 36px;
-                  color: rgba(34, 171, 165, 1);
-                  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
-                  font-weight: bold;
-                  text-transform: uppercase;
-                  font-size: 0.9em;
-                  text-decoration: none;
-                  padding-left: 12px;
-                  padding-right: 33px;
-                  border-radius: 30px;
-                  margin-top: 5px;
-                  margin-left: 10px;
-                  flex: none;
-                  transition: box-shadow .2s;
-                }
-                .desc-visit:hover {
-                  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.5);
-                }
-              }
-              a[href="#"].desc-visit#desc-link {
-                content: "Visit";
-              }
-            }
+            h2.desc-title#desc-title {}
 
             .description-tags#desc-tags {
               css {
@@ -1058,6 +1040,38 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
                   margin-bottom: 0;
                 }
               }
+            }
+          }
+
+          css {
+            .desc-visit {
+              display: flex;
+              flex-direction: column;
+              gap: 20px;
+              align-items: center;
+              justify-content: center;
+              text-transform: uppercase;
+              border-left: 1px solid rgba(151, 189, 179, 0.2);
+              color: white;
+              padding: 20px;
+              letter-spacing: 1px;
+              font-size: 0.9em;
+              transition: background-color .2s;
+              min-width: 150px;
+              min-height: 150px;
+              box-sizing: border-box;
+            }
+            .desc-visit:hover {
+              background-color: rgba(255, 255, 255, 0.05);
+            }
+            .arrow {
+              width: 64px;
+            }
+          }
+          a[href="#"].desc-visit#desc-link {
+            img.arrow[src="./home-page/icons/right-arrow.svg"][alt="Right arrow icon"];
+            span {
+              content: "Visit";
             }
           }
         }
