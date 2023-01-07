@@ -75,8 +75,12 @@ css {
     background-image: linear-gradient(to bottom, #111d2e 0%, #051839 21.2%, #0a1b48 40.7%, #132e62 58.1%, #144b7e 73.8%, #136497 87.3%, #1387b8 100%);
   }
 }
+@media (hover: hover) and (min-width: 1000px) {
+  a.social {
+    transform: scale(1.1);
+  }
+}
 @media (hover: hover) {
-  a.social:hover,
   a.username:hover .social {
     transform: scale(1.1);
   }

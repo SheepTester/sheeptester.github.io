@@ -107,7 +107,7 @@
             // Use scientific notation
             const coefficient = this.value / 10 ** exponent
             return r`${coefficient.toFixed(
-              this.sigFigs - 1
+              Math.max(this.sigFigs - 1, 0)
             )} \cdot 10^{${exponent}}`
           } else {
             const string = this.value.toFixed(decimals)

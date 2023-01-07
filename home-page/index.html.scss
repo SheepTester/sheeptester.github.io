@@ -607,8 +607,22 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
         css {
           .socials {
             display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
+            gap: 5px;
+            overflow: hidden;
+            border-radius: 15px;
+          }
+        }
+        @media (min-width: 680px) {
+          .socials {
             grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
+            gap: 10px;
+          }
+        }
+        @media (min-width: 1000px) {
+          .socials {
             gap: 20px;
+            overflow: unset;
           }
         }
         .socials {
@@ -1092,9 +1106,9 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
       css {
         .tinder-note {
           margin: 0;
-          padding: 20px 60px;
+          padding: 20px;
           padding-top: 0;
-          text-align: center;
+          padding-right: 60px;
         }
       }
       p.tinder-note {
