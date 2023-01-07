@@ -932,15 +932,22 @@ fs.readFile(inputFile, 'utf8')
       // logPop: true
     })
     await fs.writeFile(outputHtml, html + '\n')
+    // Sort max-widths large to small, min-widths to small to large
+    const sortKey = mediaQuery => {
+      const match = mediaQuery.match(/(max|min)-width: *(\d+)/)
+      return match ? (match[1] === 'max' ? -match[2] : +match[2]) : -Infinity
+    }
     await fs.writeFile(
       outputCss,
-      `/* Hi! This file was generated, so it's hard to read. The source code is at ${inputFile} */\n${Array.from(
-        css,
-        ([media, styles]) => {
+      `/* Hi! This file was generated, so it's hard to read. The source code is at ${inputFile} */\n${[
+        ...css
+      ]
+        .sort((a, b) => sortKey(a[0]) - sortKey(b[0]))
+        .map(([media, styles]) => {
           const css = [...styles].join('')
           return media === 'main' ? css : `${media}{${css}}`
-        }
-      ).join('')}\n`
+        })
+        .join('')}\n`
     )
   })
   .catch(err => {

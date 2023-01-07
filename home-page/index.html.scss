@@ -1091,10 +1091,10 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
             .desc-visit:hover {
               background-color: rgba(255, 255, 255, 0.05);
             }
-            @media (min-width: 680px) {
-              .desc-visit {
-                display: none;
-              }
+          }
+          @media (min-width: 680px) {
+            .desc-visit {
+              display: none;
             }
           }
           a[href="#"].desc-visit#desc-link {
