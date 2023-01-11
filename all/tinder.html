@@ -834,7 +834,7 @@
                         ? 'Made between 2017-11-30 and 2018-12-14.'
                         : 'Made before 2017-11-30.'
                   },
-                  [`Era ${era}`]
+                  [era === 3 ? '≥ 2018' : era === 2 ? '2017–2018' : '≤ 2017']
                 ),
               requiresJs &&
                 Elem(
@@ -887,8 +887,9 @@
               card.style.transition = null
             }
             if (pointer.dragging) {
-              card.style.transform = `translate(${deltaX}px, ${deltaY *
-                0.5}px) rotate(${Math.atan(deltaX / 1000)}rad) scale(0.5)`
+              card.style.transform = `translate(${deltaX}px, ${
+                deltaY * 0.5
+              }px) rotate(${Math.atan(deltaX / 1000)}rad) scale(0.5)`
               if (deltaX < -MIN_SWIPE_DIST) {
                 card.classList.add('possible-reject')
                 card.classList.remove('possible-accept')
@@ -909,8 +910,9 @@
                 card.style.transition =
                   'transform 0.5s cubic-bezier(1, 0, 1, 1)'
                 const deltaX = e.clientX - pointer.startX
-                card.style.transform = `translate(${deltaX -
-                  500}px, 50vh) translateY(100%) scale(0.5) rotate(-60deg)`
+                card.style.transform = `translate(${
+                  deltaX - 500
+                }px, 50vh) translateY(100%) scale(0.5) rotate(-60deg)`
                 handleDecision('rejected', false)
               } else if (card.classList.contains('possible-accept')) {
                 card.style.transition =

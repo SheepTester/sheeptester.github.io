@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "all": "node ./all/get-all.js && node ./all/gen.js",
+    "all": "node ./all/get-all.mjs && node ./all/gen.js",
     "compress": "node ./img/compress.js"
   },
   "dependencies": {

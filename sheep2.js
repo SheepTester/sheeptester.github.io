@@ -159,6 +159,12 @@ document.addEventListener("DOMContentLoaded", e => {
     if (description) SHEEP.notify(`<h1>${document.title}</h1><p>${SHEEP.escapeHTML(description.content)}</p>`);
     else SHEEP.notify(`<h1>${document.title}</h1><p><em>This page has no description.</em></p>`);
   });
+  SHEEP.registerMenuItem('view source code', () => {
+    let s = document.createElement('script');
+    s.type = 'module';
+    s.src = '/all/go-to-gh.js';
+    document.body.appendChild(s);
+  });
 
   function drag(mouseDownName, mouseMoveName, mouseUpName, eventOptions, isTouch) {
     homeButton.addEventListener(mouseDownName, e => {

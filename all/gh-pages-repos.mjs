@@ -1,9 +1,9 @@
-const domain = 'sheeptester.github.io'
-const ghUser = 'SheepTester'
+export const domain = 'sheeptester.github.io'
+export const ghUser = 'SheepTester'
 
 // Assumes `master` is default branch
 // NOTE: This means that you must explicitly list `main`
-const ghPagesRepos = [
+export const ghPagesRepos = [
   'alt-schedule-parser-tester',
   'ascended-cat',
   'assembly',
@@ -54,9 +54,9 @@ const ghPagesRepos = [
   'yesnt'
 ]
 
-const jekyllRepos = ['blog', 'cse15l-lab-reports#main', 'longer-tweets']
+export const jekyllRepos = ['blog', 'cse15l-lab-reports#main', 'longer-tweets']
 
-const ignore = [
+export const ignore = [
   '/blockly/',
   '!/blockly/SHEEP/',
   '!/blockly/msg/js/en.js',
@@ -83,7 +83,3 @@ const ignore = [
   '/scratch-vm/docs/',
   '/scratch-vm/media/'
 ]
-
-if (typeof module !== 'undefined' && module) {
-  module.exports = { domain, ghUser, ghPagesRepos, jekyllRepos, ignore }
-}

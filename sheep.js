@@ -397,6 +397,12 @@ var SHEEP={
     },
     'eval.js':_=>{
       window.location="javascript:var s=document.createElement('script');s.type='text/javascript';s.src='https://sheeptester.github.io/javascripts/eval.js';document.body.appendChild(s);void(0);";
+    },
+    'view source code':_=>{
+      var s=document.createElement('script');
+      s.type='module';
+      s.src='/all/go-to-gh.js';
+      document.body.appendChild(s);
     }
   }
 };
