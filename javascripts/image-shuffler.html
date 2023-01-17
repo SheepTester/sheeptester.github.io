@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Shuffle rows in an image</title>
+    <meta
+      name="description"
+      content="Suppose you're taking ECE 109, and the provided past quizzes always list the correct answer first, but you don't want to know the answer. This tool will chop up a cropped screenshot of the PDF and shuffle them around."
+    />
+
+    <link rel="stylesheet" type="text/css" href="/sheep3.css" />
+    <script src="/sheep3.js" charset="utf-8"></script>
+
+    <style>
+      #output {
+        box-shadow: 0 0 0 3px rgba(0, 188, 212, 0.4);
+      }
+    </style>
+  </head>
+  <body>
+    <p>
+      <label>
+        Select or paste an image:
+        <input type="file" accept="image/*" id="file" />
+      </label>
+    </p>
+    <p>
+      <label>
+        There are
+        <!-- Allow typing letters -->
+        <input
+          type="text"
+          inputmode="numeric"
+          pattern="[0-9]*"
+          id="rows"
+          value="10"
+        />
+        rows. (You can type J for 10 rows if they are enumerated by letters.)
+      </label>
+    </p>
+    <p>
+      <label>
+        <input type="checkbox" id="lines" />
+        Add lines between rows? (Mostly for my own debugging purposes.)
+      </label>
+    </p>
+    <canvas id="output"></canvas>
+    <p>
+      Intended for shuffling Zeger's ECE 109 past quiz answer options.
+      Screenshot the answers without the letters and paste them here.
+    </p>
+    <script>
+      const file = document.getElementById('file')
+      const rowCountInput = document.getElementById('rows')
+      const linesCheckbox = document.getElementById('lines')
+      const canvas = document.getElementById('output')
+      const c = canvas.getContext('2d')
+      let image = null
+
+      function output () {
+        if (!image) {
+          return
+        }
+        canvas.width = image.width
+        canvas.height = image.height
+        const rowCount = /[a-zA-Z]/.test(rowCountInput.value)
+          ? rowCountInput.value.toLowerCase().codePointAt(0) - 96
+          : +rowCountInput.value
+        if (rowCount % 1 !== 0 || rowCount < 0) {
+          return
+        }
+        const rows = new Array(rowCount)
+        for (let i = 0; i < rowCount; i++) {
+          rows[i] = i
+        }
+        for (let i = rowCount - 1; i > 0; i--) {
+          const index = Math.floor(Math.random() * (i + 1))
+          if (index !== i) {
+            ;[rows[i], rows[index]] = [rows[index], rows[i]]
+          }
+        }
+        const rowHeight = image.height / rowCount
+        for (const [i, row] of rows.entries()) {
+          c.drawImage(
+            image,
+            0,
+            row * rowHeight,
+            image.width,
+            rowHeight,
+            0,
+            i * rowHeight,
+            image.width,
+            rowHeight
+          )
+        }
+        if (linesCheckbox.checked) {
+          c.strokeStyle = 'red'
+          c.beginPath()
+          for (let i = 1; i < rowCount; i++) {
+            c.moveTo(0, i * rowHeight)
+            c.lineTo(image.width, i * rowHeight)
+          }
+          c.stroke()
+        }
+      }
+
+      rowCountInput.addEventListener('input', output)
+      linesCheckbox.addEventListener('input', output)
+
+      function acceptFile (file) {
+        if (!file) {
+          return
+        }
+        if (file.type === 'image/svg+xml') {
+          let image = document.createElement('img')
+          image.addEventListener('load', output)
+          image.src = URL.createObjectURL(file)
+        } else {
+          createImageBitmap(file).then(bitmap => {
+            image = bitmap
+            output()
+          })
+        }
+      }
+      file.addEventListener('change', () => {
+        acceptFile(file.files[0])
+      })
+      document.addEventListener('paste', e => {
+        acceptFile(e.clipboardData.files[0])
+      })
+    </script>
+  </body>
+</html>
