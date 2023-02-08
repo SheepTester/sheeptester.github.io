@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Picture-in-picture image</title>
+    <meta
+      name="description"
+      content="Create a pop-up of an image (e.g. Among Us) that stays above other windows."
+    />
+
+    <link rel="stylesheet" type="text/css" href="/sheep3.css" />
+    <script src="/sheep3.js" charset="utf-8"></script>
+
+    <style>
+      #output {
+        box-shadow: 0 0 0 3px rgba(0, 188, 212, 0.4);
+        max-width: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <p>
+      <label>
+        Select or paste an image:
+        <input type="file" accept="image/*" id="file" />
+      </label>
+    </p>
+    <p><button id="pip">Pop video out on top (picture-in-picture)</button></p>
+    <video id="output" muted autoplay controls></video>
+    <script>
+      const file = document.getElementById('file')
+      const video = document.getElementById('output')
+      const canvas = document.createElement('canvas')
+      const c = canvas.getContext('2d')
+      let image = null
+
+      const stream = canvas.captureStream(0)
+      video.srcObject = stream
+      video.play()
+      c.clearRect(0, 0, 10, 10)
+      stream.getVideoTracks()[0].requestFrame()
+
+      function output () {
+        if (!image) {
+          return
+        }
+        canvas.width = image.width
+        canvas.height = image.height
+        c.drawImage(image, 0, 0)
+        stream.getVideoTracks()[0].requestFrame()
+      }
+
+      function acceptFile (file) {
+        if (!file) {
+          return
+        }
+        if (file.type === 'image/svg+xml') {
+          let image = document.createElement('img')
+          image.addEventListener('load', output)
+          image.src = URL.createObjectURL(file)
+        } else {
+          createImageBitmap(file).then(bitmap => {
+            image = bitmap
+            output()
+          })
+        }
+      }
+      file.addEventListener('change', () => {
+        acceptFile(file.files[0])
+      })
+      document.addEventListener('paste', e => {
+        acceptFile(e.clipboardData.files[0])
+      })
+
+      document.getElementById('pip').addEventListener('click', () => {
+        video.requestPictureInPicture()
+      })
+    </script>
+  </body>
+</html>
