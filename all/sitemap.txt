@@ -20,6 +20,8 @@ https://sheeptester.github.io/animations/pi.html
 https://sheeptester.github.io/animations/seanintro.html
 https://sheeptester.github.io/animations/seanoutro.html
 https://sheeptester.github.io/animations/sheep.html
+https://sheeptester.github.io/animations/ucsd-banner.html
+https://sheeptester.github.io/animations/ucsd-icon.html
 https://sheeptester.github.io/animations/ucsd2026.html
 https://sheeptester.github.io/ascended-cat/blocks/playground.html
 https://sheeptester.github.io/assembly/
@@ -103,6 +105,7 @@ https://sheeptester.github.io/hello-world/minimal-pwa/
 https://sheeptester.github.io/hello-world/questionable-host/
 https://sheeptester.github.io/hello-world/questionable-host/instructions.html
 https://sheeptester.github.io/hello-world/questionable-host/upload.html
+https://sheeptester.github.io/hello-world/test/adminbot.html
 https://sheeptester.github.io/hello-world/test/Charlie_Liu.html
 https://sheeptester.github.io/hello-world/test/comments.html
 https://sheeptester.github.io/hello-world/test/dumb.html
@@ -112,6 +115,7 @@ https://sheeptester.github.io/hello-world/test/embedee.html
 https://sheeptester.github.io/hello-world/test/gh-pages-path-test.html
 https://sheeptester.github.io/hello-world/test/gh-pages-path-test.html.html
 https://sheeptester.github.io/hello-world/test/
+https://sheeptester.github.io/hello-world/test/mastodone.html
 https://sheeptester.github.io/hello-world/test/react-exec-order.html
 https://sheeptester.github.io/hello-world/test/sans-nouveaux-test.html
 https://sheeptester.github.io/hello-world/test/testthing.html
@@ -160,6 +164,7 @@ https://sheeptester.github.io/hello-world/micfreq.html
 https://sheeptester.github.io/hello-world/mirroring.html
 https://sheeptester.github.io/hello-world/mobile-pwa-test.html
 https://sheeptester.github.io/hello-world/nbt-parser.html
+https://sheeptester.github.io/hello-world/no-html.html
 https://sheeptester.github.io/hello-world/offline-online-noise-maker.html
 https://sheeptester.github.io/hello-world/open-graph-testing.html
 https://sheeptester.github.io/hello-world/pi.html
@@ -285,10 +290,12 @@ https://sheeptester.github.io/javascripts/grapher.html
 https://sheeptester.github.io/javascripts/greedy.html
 https://sheeptester.github.io/javascripts/happenings.html
 https://sheeptester.github.io/javascripts/height.html
+https://sheeptester.github.io/javascripts/image-shuffler.html
 https://sheeptester.github.io/javascripts/image-translucentifier.html
 https://sheeptester.github.io/javascripts/imagetoscheme.html
 https://sheeptester.github.io/javascripts/
 https://sheeptester.github.io/javascripts/intense-contrast.html
+https://sheeptester.github.io/javascripts/intl-nums.html
 https://sheeptester.github.io/javascripts/jpg-quality.html
 https://sheeptester.github.io/javascripts/large-file-viewer.html
 https://sheeptester.github.io/javascripts/mp4-analyze.html
@@ -298,11 +305,13 @@ https://sheeptester.github.io/javascripts/one-pdf.html
 https://sheeptester.github.io/javascripts/opacity-calc.html
 https://sheeptester.github.io/javascripts/panchroma.html
 https://sheeptester.github.io/javascripts/peerjs.html
+https://sheeptester.github.io/javascripts/pip-image.html
 https://sheeptester.github.io/javascripts/points.html
 https://sheeptester.github.io/javascripts/qr.html
 https://sheeptester.github.io/javascripts/randomised-music.html
 https://sheeptester.github.io/javascripts/raw-json-img.html
 https://sheeptester.github.io/javascripts/responsivenavbar.html
+https://sheeptester.github.io/javascripts/rps-ai.html
 https://sheeptester.github.io/javascripts/scratchapiexplorer.html
 https://sheeptester.github.io/javascripts/screen-recorder.html
 https://sheeptester.github.io/javascripts/searchparser.html
@@ -339,7 +348,9 @@ https://sheeptester.github.io/longer-tweets/leopard/
 https://sheeptester.github.io/longer-tweets/life-after-death/
 https://sheeptester.github.io/longer-tweets/lol-vocabulary/
 https://sheeptester.github.io/longer-tweets/major/
+https://sheeptester.github.io/longer-tweets/matrix-lab/
 https://sheeptester.github.io/longer-tweets/phonology/
+https://sheeptester.github.io/longer-tweets/pickles/
 https://sheeptester.github.io/longer-tweets/pronouns/
 https://sheeptester.github.io/longer-tweets/racism-response/
 https://sheeptester.github.io/longer-tweets/scratch-www-troubles/
@@ -560,10 +571,14 @@ https://sheeptester.github.io/words-go-here/misc/chunks.html
 https://sheeptester.github.io/words-go-here/misc/circles.html
 https://sheeptester.github.io/words-go-here/misc/decargoifor.html
 https://sheeptester.github.io/words-go-here/misc/dehtmlify.html
+https://sheeptester.github.io/words-go-here/misc/diff.html
 https://sheeptester.github.io/words-go-here/misc/doodle.html
 https://sheeptester.github.io/words-go-here/misc/dumbplatscript.html
+https://sheeptester.github.io/words-go-here/misc/ece109-cumsheet.html
+https://sheeptester.github.io/words-go-here/misc/ece109-histogram.html
 https://sheeptester.github.io/words-go-here/misc/ece45-final-dist.html
 https://sheeptester.github.io/words-go-here/misc/ece45.html
+https://sheeptester.github.io/words-go-here/misc/ece65.html
 https://sheeptester.github.io/words-go-here/misc/evosim-in-js.html
 https://sheeptester.github.io/words-go-here/misc/factorial-bigint.html
 https://sheeptester.github.io/words-go-here/misc/factorial-scinot.html
@@ -575,6 +590,7 @@ https://sheeptester.github.io/words-go-here/misc/fix-x.html
 https://sheeptester.github.io/words-go-here/misc/flappy-again.html
 https://sheeptester.github.io/words-go-here/misc/flappy-bird.html
 https://sheeptester.github.io/words-go-here/misc/fluent-emoji.html
+https://sheeptester.github.io/words-go-here/misc/fonts.html
 https://sheeptester.github.io/words-go-here/misc/fooling-open-graph.html
 https://sheeptester.github.io/words-go-here/misc/format.html
 https://sheeptester.github.io/words-go-here/misc/gemini.html
@@ -585,6 +601,7 @@ https://sheeptester.github.io/words-go-here/misc/intelligent-navbar.html
 https://sheeptester.github.io/words-go-here/misc/keyboard.html
 https://sheeptester.github.io/words-go-here/misc/left-ear.html
 https://sheeptester.github.io/words-go-here/misc/makeludicrous.html
+https://sheeptester.github.io/words-go-here/misc/math20d.html
 https://sheeptester.github.io/words-go-here/misc/minimal-markup.html
 https://sheeptester.github.io/words-go-here/misc/nodes-and-muscles.html
 https://sheeptester.github.io/words-go-here/misc/offscreentest.html
@@ -600,6 +617,7 @@ https://sheeptester.github.io/words-go-here/misc/polygon-stabber.html
 https://sheeptester.github.io/words-go-here/misc/projection.html
 https://sheeptester.github.io/words-go-here/misc/pronouns.html
 https://sheeptester.github.io/words-go-here/misc/proof-of-concept.html
+https://sheeptester.github.io/words-go-here/misc/rimac-people-data.html
 https://sheeptester.github.io/words-go-here/misc/schedulemaker.html
 https://sheeptester.github.io/words-go-here/misc/scratchblocksused.html
 https://sheeptester.github.io/words-go-here/misc/scratchtojs.html
@@ -623,7 +641,10 @@ https://sheeptester.github.io/words-go-here/misc/ucsd-map.html
 https://sheeptester.github.io/words-go-here/misc/varyai.html
 https://sheeptester.github.io/words-go-here/misc/waves.html
 https://sheeptester.github.io/words-go-here/misc/we-are-merely-pawns-of-ucb.html
+https://sheeptester.github.io/words-go-here/misc/wide-gamut-display-p3.html
+https://sheeptester.github.io/words-go-here/misc/win11-emoji.html
 https://sheeptester.github.io/words-go-here/misc/xeno-arrival.html
+https://sheeptester.github.io/words-go-here/misc/yangyangyangyang.html
 https://sheeptester.github.io/words-go-here/misc/zegerian-curve.html
 https://sheeptester.github.io/words-go-here/misc/zelmanov-rref.html
 https://sheeptester.github.io/words-go-here/scratch3-htmlifier/

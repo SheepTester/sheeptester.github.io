@@ -166,7 +166,7 @@ async function main () {
 
   const filtered = paths.filter(keepPath)
   fs.writeFile(
-    nodePath.resolve(__dirname, './more-everything.json'),
+    new URL('./more-everything.json', import.meta.url),
     JSON.stringify(filtered, null, '\t')
   )
 }
