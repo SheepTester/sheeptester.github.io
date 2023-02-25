@@ -9,15 +9,17 @@ css {
   }
   .showing-desc::after {
     content: '';
-    border-bottom: 10px solid #24364a;
-    border-left: 10px solid transparent;
-    border-right: 10px solid transparent;
+    background-color: #24364a;
+    width: 24px;
+    height: 24px;
+    margin: -12px;
+    transform: rotate(45deg);
+    box-sizing: border-box;
+    border-top-left-radius: 5px;
     position: absolute;
     bottom: 0;
     left: 50%;
-    margin-top: 10px;
-    margin-left: -10px;
-    pointer-events: none;
+    // pointer-events: none;
   }
 }
 @media (hover: hover) {
@@ -33,24 +35,12 @@ css {
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
   }
   .showing-desc::after {
-    top: 100%;
+    top: calc(100% + 20px);
     bottom: unset;
-    filter: drop-shadow(0 3px 10px black);
-  }
-  // Cover up shadow of arrow
-  .showing-desc::before {
-    content: '';
-    display: block;
-    background-color: #24364a;
-    position: absolute;
-    top: 100%;
-    left: 50%;
-    margin-top: 20px;
-    margin-left: -30px;
-    width: 60px;
-    height: 23px;
-    z-index: 1;
-    pointer-events: none;
+    border-top-left-radius: 10px;
+    border: 1px solid transparent;
+    border-top-color: rgba(255, 255, 255, 0.2);
+    border-left-color: rgba(255, 255, 255, 0.2);
   }
 }
 $classes: "project";
@@ -201,6 +191,10 @@ a.#{$classes}[href="#{map.get($project, 'path')}"][data-desc="#{map.get($project
     .show-info:hover {
       background-color: rgba(0, 0, 0, 0.8);
       box-shadow: 0 3px 5px rgba(0, 0, 0, 0.5);
+    }
+    .show-info:focus-visible {
+      opacity: 1;
+      background-color: black;
     }
   }
   @media (hover: hover) {

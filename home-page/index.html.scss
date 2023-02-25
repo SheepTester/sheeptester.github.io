@@ -1001,7 +1001,7 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
           .description {
             display: flex;
             flex-direction: column;
-            align-items: center;
+            align-items: flex-start;
             background-color: #24364a;
             grid-column: 1 / -1;
             line-height: 1.5;
@@ -1009,8 +1009,10 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
         }
         @media (min-width: 680px) {
           .description {
+            align-items: center;
             border-radius: 10px;
             box-shadow: 0 3px 10px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.2);
           }
         }
         .description#description-wrapper[style="display:none"][role="contentinfo"] {
@@ -1076,12 +1078,10 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
 
           css {
             .desc-visit {
-              align-self: stretch;
-              text-align: center;
               text-transform: uppercase;
               background-color: #1ce0e0;
               color: black;
-              padding: 10px 0;
+              padding: 10px 20px;
               margin: 20px;
               margin-top: 0;
               border-radius: 50px;
