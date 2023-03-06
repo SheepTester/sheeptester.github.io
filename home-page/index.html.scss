@@ -305,6 +305,7 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
           margin: 20px;
           background-color: #24364a;
           box-shadow: 0 3px 10px rgba(0, 0, 0, 0.5);
+          border: 1px solid rgba(151, 189, 179, 0.2);
         }
         .card p,
         .card h2 {
@@ -346,7 +347,7 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
       .card {
         css {
           .card h1 {
-            margin-top: 20px;
+            margin-top: 15px;
             margin-bottom: -15px;
             display: inline-block;
             -webkit-background-clip: text;
@@ -359,7 +360,40 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
         h1#hello {
           content: "Hello,";
         }
-        p {
+        css {
+          .me-photo {
+            display: block;
+            width: calc(100% + 200px);
+            margin: 0 -100px;
+            aspect-ratio: 2.1;
+            object-fit: cover;
+            object-position: 50% -20px;
+            margin-top: 16px;
+          }
+        }
+        @media (min-width: 1000px) {
+          .me-photo {
+            margin-top: 20px;
+          }
+        }
+        img.me-photo[src="./img/sean-at-sutro-baths-by-cat.jpg"][alt="Me standing on a wall surrounded by water at Sutro Baths with the sun setting behind me."];
+        css {
+          .gradient {
+            margin: 0 -20px;
+            height: 115px;
+            margin-top: -100px;
+            margin-bottom: -60px;
+            background-image: linear-gradient(transparent, #24364a 80%, #24364a);
+            position: relative;
+          }
+        }
+        .gradient {}
+        css {
+          .about-me {
+            position: relative;
+          }
+        }
+        p.about-me {
           content: "I’m Sean, a second-year undergraduate at UC San Diego majoring in ";
           a.link[href="https://sheeptester.github.io/longer-tweets/major/"] {
             content: "computer engineering";
@@ -477,7 +511,7 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
         p {
           content: "2023 internship season: ";
           em {
-            content: "(last updated 2023-01-03)"
+            content: "(last updated 2023-03-05)"
           }
         }
         css {
@@ -502,7 +536,7 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
           }
           li {
             strong.applied {
-              content: "108";
+              content: "113";
             }
             content: " applied."
           }
@@ -514,7 +548,7 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
           }
           li {
             strong.denied {
-              content: "24";
+              content: "42";
             }
             content: " denied."
           }
@@ -530,7 +564,7 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
           .interests {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            grid-template-rows: 100px 200px;
+            grid-template-rows: 150px 130px;
             grid-template-areas:
               "sheep webdev"
               "sheep ling";
@@ -566,7 +600,7 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
             }
             .interest-ling {
               grid-area: ling;
-              // May 9 photo
+              // 2023-01-30 photo
               background-image: url('../img/interest-ling.jpg');
             }
           }
@@ -1012,7 +1046,7 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
             align-items: center;
             border-radius: 10px;
             box-shadow: 0 3px 10px rgba(0, 0, 0, 0.5);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(151, 189, 179, 0.2);
           }
         }
         .description#description-wrapper[style="display:none"][role="contentinfo"] {
