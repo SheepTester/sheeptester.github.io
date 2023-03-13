@@ -27,9 +27,31 @@ export class SigFigNumber {
     this.sigFigs = sigFigs
   }
 
-  /** @type {number} */
+  /**
+   * The number of significant digits after the decimal point. For example, 3.40
+   * has two decimals.
+   * @type {number}
+   */
   get #decimals () {
     return this.sigFigs - SigFigNumber.#intDigits(this.value)
+  }
+
+  /**
+   * The exponent value of the number in scientific notation. The exponent of
+   * 320 is 2, and the exponent of 0.00340 is -3.
+   * @type {number}
+   */
+  get #exponent () {
+    return Math.floor(Math.log10(Math.abs(this.value)))
+  }
+
+  /**
+   * The exponent of the least significant digit. For example, the increment of
+   * 320 is 1, and the increment of 3.40 is -2.
+   * @type {number}
+   */
+  get lsdExponent () {
+    return this.#exponent - this.sigFigs + 1
   }
 
   /**
@@ -119,7 +141,7 @@ export class SigFigNumber {
           : 'Infinity')
       )
     }
-    const exponent = Math.floor(Math.log10(Math.abs(this.value)))
+    const exponent = this.#exponent
     if (exponent < -2 || decimals < 0) {
       // Use scientific notation
       const coefficient = this.value / 10 ** exponent
@@ -166,8 +188,11 @@ export class SigFigNumber {
   }
 
   /**
+   * Determines the number of non-zero integer digits. For example, 321.40 has 3
+   * integer digits.
+   *
    * @param {number} number
-   * @returns {number} The number of non-zero digits in `number`.
+   * @returns {number} The number of non-zero digits in a truncated `number`.
    */
   static #intDigits (number) {
     const abs = Math.abs(number)

@@ -36,21 +36,63 @@
       const results = document.getElementById('results')
 
       function * decToFrac (decimal, tolerance = 1) {
-        const match = (a, b) =>
-          Math.floor(a * tolerance) === Math.floor(b * tolerance) ||
-          Math.ceil(a * tolerance) === Math.ceil(b * tolerance)
+        if (!Number.isFinite(decimal) || decimal === 0) {
+          return
+        }
+        const match = (a, b) => a >= b - tolerance && a <= b + tolerance
         let denominator = 1
-        while (true) {
+        while (denominator < 1e7) {
           const numerator = decimal * denominator
           if (match(Math.floor(numerator) / denominator, decimal)) {
             yield [Math.floor(numerator), denominator]
           }
-          if (match(Math.ceil(numerator) / denominator, decimal)) {
+          if (
+            numerator % 1 !== 0 &&
+            match(Math.ceil(numerator) / denominator, decimal)
+          ) {
             yield [Math.ceil(numerator), denominator]
           }
           denominator++
         }
       }
+
+      function update () {
+        while (results.firstChild) {
+          results.removeChild(results.firstChild)
+        }
+
+        const number = SigFigNumber.from(input.value)
+        const fractions = decToFrac(
+          number.value,
+          +`1e${number.lsdExponent}` / 2
+        )
+        for (let i = 0; i < 100; i++) {
+          const next = fractions.next()
+          if (!next) {
+            break
+          }
+          const [numerator, denominator] = next.value
+          const quotient = numerator / denominator
+
+          const li = document.createElement('li')
+          li.append(
+            Object.assign(document.createElement('span'), {
+              textContent: numerator
+            }),
+            '/',
+            Object.assign(document.createElement('span'), {
+              textContent: denominator
+            }),
+            ' = ',
+            Object.assign(document.createElement('span'), {
+              textContent: quotient
+            })
+          )
+          results.append(li)
+        }
+      }
+      input.addEventListener('input', update)
+      update()
     </script>
   </body>
 </html>
