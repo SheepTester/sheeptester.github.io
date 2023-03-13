@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Rounded decimal to fraction</title>
+    <meta
+      name="description"
+      content="Lists some possible integer ratios that may have produced a rounded decimal value."
+    />
+
+    <link rel="stylesheet" type="text/css" href="/sheep3.css" />
+    <script src="/sheep3.js" charset="utf-8"></script>
+
+    <style>
+      /* TEMP */
+    </style>
+  </head>
+  <body>
+    <p>
+      <input type="number" value="0.9649" aria-label="Decimal" id="input" />
+      &approx;
+    </p>
+    <p>
+      (Use
+      <a href="https://sheeptester.github.io/hello-world/sigfig.html"
+        >sig figs</a
+      >)
+    </p>
+    <ul id="results"></ul>
+    <script type="module">
+      import { SigFigNumber } from './sigfigs.js'
+
+      const input = document.getElementById('input')
+      const results = document.getElementById('results')
+
+      function * decToFrac (decimal, tolerance = 1) {
+        const match = (a, b) =>
+          Math.floor(a * tolerance) === Math.floor(b * tolerance) ||
+          Math.ceil(a * tolerance) === Math.ceil(b * tolerance)
+        let denominator = 1
+        while (true) {
+          const numerator = decimal * denominator
+          if (match(Math.floor(numerator) / denominator, decimal)) {
+            yield [Math.floor(numerator), denominator]
+          }
+          if (match(Math.ceil(numerator) / denominator, decimal)) {
+            yield [Math.ceil(numerator), denominator]
+          }
+          denominator++
+        }
+      }
+    </script>
+  </body>
+</html>
