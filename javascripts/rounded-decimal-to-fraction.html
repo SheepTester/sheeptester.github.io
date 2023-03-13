@@ -40,7 +40,7 @@
       }
 
       .input,
-      span {
+      .span {
         display: flex;
         align-items: center;
         justify-content: center;
@@ -52,9 +52,14 @@
       .input {
         flex-direction: column;
         gap: 5px;
+        padding: 10px;
       }
       .input p {
         margin: 0;
+      }
+      .input-line {
+        display: flex;
+        gap: 10px;
       }
       #input {
         text-align: right;
@@ -124,13 +129,22 @@
         padding-left: 0;
         margin-right: auto;
       }
+      .significant {
+        color: #f8fafc;
+        font-weight: bold;
+      }
+      .round-up-digit {
+        text-decoration: underline;
+        text-decoration-color: #334155;
+      }
     </style>
   </head>
   <body>
     <div class="input">
-      <p>
+      <p class="input-line">
         <input
-          type="number"
+          type="text"
+          inputmode="numeric"
           value="0.9649"
           aria-label="Decimal"
           id="input"
@@ -154,42 +168,52 @@
       const results = document.getElementById('results')
 
       function * decToFrac (decimal, tolerance = 1) {
-        if (!Number.isFinite(decimal) || decimal === 0) {
+        if (!Number.isFinite(decimal)) {
           return
         }
         const match = (a, b) => a >= b - tolerance && a <= b + tolerance
         let denominator = 1
         while (true) {
-          const numerator = decimal * denominator
-          if (match(Math.floor(numerator) / denominator, decimal)) {
-            yield [Math.floor(numerator), denominator]
-          }
-          if (
-            numerator % 1 !== 0 &&
-            match(Math.ceil(numerator) / denominator, decimal)
-          ) {
-            yield [Math.ceil(numerator), denominator]
+          const lower = Math.floor((decimal - tolerance) * denominator)
+          const upper = Math.ceil((decimal + tolerance) * denominator)
+          for (let n = lower; n <= upper; n++) {
+            if (match(n / denominator, decimal)) {
+              yield [n, denominator]
+            }
+            if (n + 1 === n) {
+              // Large floating point integer
+              if (n === upper) {
+                break
+              } else {
+                n = upper
+              }
+            }
           }
           denominator++
         }
       }
 
-      let generator
+      let number, generator
       function update () {
         while (results.firstChild) {
           results.removeChild(results.firstChild)
         }
 
-        const number = SigFigNumber.from(input.value)
-        generator = decToFrac(number.value, +`1e${number.lsdExponent}` / 2)
+        number = SigFigNumber.from(input.value.replaceAll('−', '-'))
+        generator =
+          number.value === 0
+            ? decToFrac(0, 0)
+            : decToFrac(number.value, +`1e${number.lsdExponent}` / 2)
         addResults()
       }
       function addResults () {
+        const ideal = number.value
         let i = 0
+        let failures = 0
         while (
           document.documentElement.scrollHeight <
             window.scrollY + window.innerHeight * 2 &&
-          i < 1e4
+          failures < 1e4
         ) {
           const next = generator.next()
           if (next.done) {
@@ -198,28 +222,85 @@
           const [numerator, denominator] = next.value
           if (
             new Rational(BigInt(numerator), BigInt(denominator)).simplify()
-              .denominator === BigInt(denominator)
+              .denominator !== BigInt(denominator)
           ) {
-            const quotient = numerator / denominator
-
-            const li = document.createElement('li')
-            li.style.animationDelay = `${i * 0.1}s`
-            li.append(
-              Object.assign(document.createElement('span'), {
-                className: 'fraction',
-                textContent: `${numerator}/${denominator}`
-              }),
-              Object.assign(document.createElement('span'), {
-                className: 'equals',
-                textContent: ' = '
-              }),
-              Object.assign(document.createElement('span'), {
-                className: 'decimal',
-                textContent: quotient
-              })
-            )
-            results.append(li)
+            failures++
+            continue
           }
+          let quotient = String(numerator / denominator)
+          const roundUp = numerator / denominator < number.value
+          let sfEndIndex = null
+          let roundDigitIndex = null
+          let sigfigs = number.sigFigs
+          let encounteredNonzero = false
+          for (let i = 0; i < quotient.length; i++) {
+            if (quotient[i] === 'e') {
+              if (sfEndIndex === null) {
+                sfEndIndex = i - 1
+              }
+              break
+            } else if (/\d/.test(quotient[i])) {
+              if (quotient[i] === '0') {
+                if (!encounteredNonzero) {
+                  continue
+                }
+              } else {
+                encounteredNonzero = true
+              }
+              if (sfEndIndex !== null) {
+                roundDigitIndex = i + 1
+                break
+              }
+              sigfigs--
+              if (sigfigs === 0) {
+                sfEndIndex = i + 1
+                if (!roundUp) {
+                  break
+                }
+              }
+            }
+          }
+          if (sfEndIndex === null) {
+            if (!quotient.includes('.')) {
+              quotient += '.'
+            }
+            quotient += '0'.repeat(sigfigs)
+            sfEndIndex = quotient.length
+          }
+          roundDigitIndex ??= sfEndIndex
+
+          const quotientSpan = Object.assign(document.createElement('span'), {
+            className: 'span decimal'
+          })
+          quotientSpan.append(
+            Object.assign(document.createElement('span'), {
+              className: 'significant',
+              textContent: quotient.slice(0, sfEndIndex)
+            }),
+            Object.assign(document.createElement('span'), {
+              className: 'round-up-digit',
+              textContent: quotient.slice(sfEndIndex, roundDigitIndex)
+            }),
+            quotient.slice(roundDigitIndex)
+          )
+          // Would be cool if it showed ellipses/used the approx. symbol as
+          // appropriate. Could use .toPrecision(100).replace(/0+$/, ''), then
+          // determine if the denominator is in powers of 2 and 5.
+
+          const li = document.createElement('li')
+          li.style.animationDelay = `${i * 0.1}s`
+          li.append(
+            Object.assign(document.createElement('span'), {
+              className: 'span fraction',
+              textContent: `${numerator}/${denominator}`
+            }),
+            Object.assign(document.createElement('span'), {
+              className: 'span equals',
+              textContent: ' = '
+            }),
+            quotientSpan
+          )
+          results.append(li)
           i++
         }
       }
