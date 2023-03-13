@@ -14,22 +14,140 @@
     <script src="/sheep3.js" charset="utf-8"></script>
 
     <style>
-      /* TEMP */
+      :root {
+        color-scheme: dark;
+      }
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+          'Helvetica Neue', Arial, sans-serif, 'Apple Color Emoji',
+          'Segoe UI Emoji', 'Segoe UI Symbol';
+        background-color: #0f172a;
+        color: #94a3b8;
+        font-size: 24px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin: 20px;
+        gap: 10px;
+      }
+      input {
+        -webkit-appearance: none;
+        appearance: none;
+        border: none;
+        background: none;
+        color: inherit;
+        font: inherit;
+      }
+
+      .input,
+      span {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #1e293b;
+        border: 1px solid #334155;
+        border-radius: 5px;
+        padding: 10px 20px;
+      }
+      .input {
+        flex-direction: column;
+        gap: 5px;
+      }
+      .input p {
+        margin: 0;
+      }
+      #input {
+        text-align: right;
+        flex: auto;
+        color: #f1f5f9;
+        background-color: #334155;
+        border: 1px solid #475569;
+        border-radius: 2px;
+      }
+      .note {
+        font-size: 16px;
+      }
+      a {
+        color: #22d3ee;
+        text-decoration: none;
+      }
+      a:hover,
+      a:focus {
+        text-decoration: underline;
+      }
+
+      #results {
+        margin: 0;
+        margin-bottom: 100vh;
+        padding: 0;
+        list-style: none;
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+        gap: 10px;
+      }
+      #results li {
+        display: grid;
+        grid-template-columns: 1fr 40px 1fr;
+        animation: appear 0.5s both;
+      }
+      @keyframes appear {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: none;
+        }
+      }
+      .fraction {
+        font-weight: bold;
+        color: #f8fafc;
+        font-size: 30px;
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+        border-right: none;
+        padding-right: 0;
+        margin-left: auto;
+      }
+      .equals {
+        border-radius: 0;
+        border-left: none;
+        border-right: none;
+        padding: 10px 0;
+      }
+      .decimal {
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+        border-left: none;
+        padding-left: 0;
+        margin-right: auto;
+      }
     </style>
   </head>
   <body>
-    <p>
-      <input type="number" value="0.9649" aria-label="Decimal" id="input" />
-      &approx;
-    </p>
-    <p>
-      (Use
-      <a href="https://sheeptester.github.io/hello-world/sigfig.html"
-        >sig figs</a
-      >)
-    </p>
+    <div class="input">
+      <p>
+        <input
+          type="number"
+          value="0.9649"
+          aria-label="Decimal"
+          id="input"
+          autofocus
+        />
+        &approx;
+      </p>
+      <p class="note">
+        (Use
+        <a href="https://sheeptester.github.io/hello-world/sigfig.html"
+          >sig figs</a
+        >)
+      </p>
+    </div>
     <ul id="results"></ul>
     <script type="module">
+      import { Rational } from 'https://sheeptester.github.io/words-go-here/misc/Rational.js'
       import { SigFigNumber } from './sigfigs.js'
 
       const input = document.getElementById('input')
@@ -41,7 +159,7 @@
         }
         const match = (a, b) => a >= b - tolerance && a <= b + tolerance
         let denominator = 1
-        while (denominator < 1e7) {
+        while (true) {
           const numerator = decimal * denominator
           if (match(Math.floor(numerator) / denominator, decimal)) {
             yield [Math.floor(numerator), denominator]
@@ -56,43 +174,58 @@
         }
       }
 
+      let generator
       function update () {
         while (results.firstChild) {
           results.removeChild(results.firstChild)
         }
 
         const number = SigFigNumber.from(input.value)
-        const fractions = decToFrac(
-          number.value,
-          +`1e${number.lsdExponent}` / 2
-        )
-        for (let i = 0; i < 100; i++) {
-          const next = fractions.next()
-          if (!next) {
+        generator = decToFrac(number.value, +`1e${number.lsdExponent}` / 2)
+        addResults()
+      }
+      function addResults () {
+        let i = 0
+        while (
+          document.documentElement.scrollHeight <
+            window.scrollY + window.innerHeight * 2 &&
+          i < 1e4
+        ) {
+          const next = generator.next()
+          if (next.done) {
             break
           }
           const [numerator, denominator] = next.value
-          const quotient = numerator / denominator
+          if (
+            new Rational(BigInt(numerator), BigInt(denominator)).simplify()
+              .denominator === BigInt(denominator)
+          ) {
+            const quotient = numerator / denominator
 
-          const li = document.createElement('li')
-          li.append(
-            Object.assign(document.createElement('span'), {
-              textContent: numerator
-            }),
-            '/',
-            Object.assign(document.createElement('span'), {
-              textContent: denominator
-            }),
-            ' = ',
-            Object.assign(document.createElement('span'), {
-              textContent: quotient
-            })
-          )
-          results.append(li)
+            const li = document.createElement('li')
+            li.style.animationDelay = `${i * 0.1}s`
+            li.append(
+              Object.assign(document.createElement('span'), {
+                className: 'fraction',
+                textContent: `${numerator}/${denominator}`
+              }),
+              Object.assign(document.createElement('span'), {
+                className: 'equals',
+                textContent: ' = '
+              }),
+              Object.assign(document.createElement('span'), {
+                className: 'decimal',
+                textContent: quotient
+              })
+            )
+            results.append(li)
+          }
+          i++
         }
       }
       input.addEventListener('input', update)
       update()
+      window.addEventListener('scroll', addResults)
     </script>
   </body>
 </html>
