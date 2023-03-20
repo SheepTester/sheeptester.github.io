@@ -5,7 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <title>Burrows-Wheeler Transform (BWT)</title>
-    <meta name="description" content="For CSE 100" />
+    <meta
+      name="description"
+      content="For CSE 100. Also creates a suffix array."
+    />
 
     <link rel="stylesheet" type="text/css" href="/sheep3.css" />
     <script src="/sheep3.js" charset="utf-8"></script>
@@ -14,6 +17,8 @@
       pre {
         background-color: #eee;
         padding: 10px;
+      }
+      #matrix {
         letter-spacing: 2px;
       }
     </style>
@@ -22,7 +27,7 @@
     <p>
       <label>
         Input:
-        <input type="text" id="input" value="SHEEP$" />
+        <input type="text" id="input" value="SHEEP" />
       </label>
     </p>
     <p>
@@ -32,15 +37,18 @@
       </label>
     </p>
     <pre id="matrix"></pre>
+    <p>Suffix array:</p>
+    <pre id="array"></pre>
     <script>
       const input = document.getElementById('input')
       const transform = document.getElementById('transform')
       const matrix = document.getElementById('matrix')
+      const array = document.getElementById('array')
 
       function bwtTransform (setTransform = true) {
         const string = (
           input.value.endsWith('$') ? input.value : input.value + '$'
-        ).replace('$', '\0')
+        ).replace(/\$$/, '\0')
         const rotations = []
         for (let i = 0; i < string.length; i++) {
           rotations.push(string.slice(i) + string.slice(0, i))
@@ -69,6 +77,15 @@
             )
             .join('')
         }
+        const stringNoEnd = input.value.endsWith('$')
+          ? input.value.replace(/\$$/, '')
+          : input.value
+        const suffixes = []
+        for (let i = 0; i < stringNoEnd.length; i++) {
+          suffixes.push({ i, s: stringNoEnd.slice(i) })
+        }
+        suffixes.sort((a, b) => a.s.localeCompare(b.s))
+        array.textContent = suffixes.map(({ i, s }) => `${i} ${s}`).join('\n')
       }
       input.addEventListener('input', bwtTransform)
       bwtTransform()
@@ -77,7 +94,7 @@
         if (!transform.value.includes('$')) {
           return
         }
-        const transformed = transform.value.replace('$', '\0')
+        const transformed = transform.value.replace(/\$$/, '\0')
         const chars = Array.from(transformed, (c, i) => ({ c, i }))
         const sorted = [...chars].sort((a, b) => a.c.localeCompare(b.c))
         const map = new Map(
