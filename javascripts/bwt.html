@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Burrows-Wheeler Transform (BWT)</title>
+    <meta name="description" content="For CSE 100" />
+
+    <link rel="stylesheet" type="text/css" href="/sheep3.css" />
+    <script src="/sheep3.js" charset="utf-8"></script>
+
+    <style>
+      pre {
+        background-color: #eee;
+        padding: 10px;
+        letter-spacing: 2px;
+      }
+    </style>
+  </head>
+  <body>
+    <p>
+      <label>
+        Input:
+        <input type="text" id="input" value="SHEEP$" />
+      </label>
+    </p>
+    <p>
+      <label>
+        BWT transform:
+        <input type="text" id="transform" />
+      </label>
+    </p>
+    <pre id="matrix"></pre>
+    <script>
+      const input = document.getElementById('input')
+      const transform = document.getElementById('transform')
+      const matrix = document.getElementById('matrix')
+
+      function bwtTransform (setTransform = true) {
+        const string = (
+          input.value.endsWith('$') ? input.value : input.value + '$'
+        ).replace('$', '\0')
+        const rotations = []
+        for (let i = 0; i < string.length; i++) {
+          rotations.push(string.slice(i) + string.slice(0, i))
+        }
+        rotations.sort()
+        matrix.textContent = ''
+        for (const rotation of rotations) {
+          const line = rotation.replace('\0', '$')
+          matrix.append(
+            Object.assign(document.createElement('strong'), {
+              textContent: line[0]
+            }),
+            line.slice(1, -1),
+            line.length > 1
+              ? Object.assign(document.createElement('strong'), {
+                  textContent: line[line.length - 1]
+                })
+              : '',
+            '\n'
+          )
+        }
+        if (setTransform) {
+          transform.value = rotations
+            .map(line =>
+              line[line.length - 1] === '\0' ? '$' : line[line.length - 1]
+            )
+            .join('')
+        }
+      }
+      input.addEventListener('input', bwtTransform)
+      bwtTransform()
+
+      function bwtReconstruct () {
+        if (!transform.value.includes('$')) {
+          return
+        }
+        const transformed = transform.value.replace('$', '\0')
+        const chars = Array.from(transformed, (c, i) => ({ c, i }))
+        const sorted = [...chars].sort((a, b) => a.c.localeCompare(b.c))
+        const map = new Map(
+          sorted.map((right, leftIndex) => [chars[leftIndex], right])
+        )
+        const end = chars.find(({ c }) => c === '\0')
+        let reconstructed = ''
+        let curr = end
+        do {
+          if (curr === undefined) {
+            throw curr
+          }
+          curr = map.get(curr)
+          reconstructed += curr.c
+        } while (curr !== end)
+        input.value = reconstructed.replace('\0', '$')
+        bwtTransform(false)
+      }
+      transform.addEventListener('input', bwtReconstruct)
+    </script>
+  </body>
+</html>
