@@ -14,6 +14,22 @@
     <script src="/sheep3.js" charset="utf-8"></script>
 
     <style>
+      body {
+        margin: 0 auto;
+        padding: 20px;
+        box-sizing: border-box;
+        max-width: 1000px;
+        width: 100%;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+          'Helvetica Neue', Arial, sans-serif, 'Apple Color Emoji',
+          'Segoe UI Emoji', 'Segoe UI Symbol';
+      }
+      h1,
+      p,
+      pre {
+        margin: 0;
+        margin-bottom: 10px;
+      }
       pre {
         background-color: #eee;
         padding: 10px;
@@ -21,9 +37,45 @@
       #matrix {
         letter-spacing: 2px;
       }
+      input,
+      textarea {
+        color: inherit;
+        box-sizing: border-box;
+        border-radius: 2px;
+        border: 1px solid #ccc;
+      }
+      input:focus,
+      textarea:focus {
+        outline: none;
+        border: 1px solid #66afe9;
+        box-shadow: 0 0 0 3px rgba(102, 175, 233, 0.3);
+      }
+      input {
+        background: none;
+        font: inherit;
+        height: 30px;
+        padding: 0 10px;
+      }
+      textarea {
+        min-height: 100px;
+        width: 100%;
+        resize: vertical;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          color-scheme: dark;
+        }
+        pre {
+          background-color: #222;
+        }
+        input {
+          border-color: #444;
+        }
+      }
     </style>
   </head>
   <body>
+    <h1>BWT/Suffix Array</h1>
     <p>
       <label>
         Input:
@@ -39,6 +91,8 @@
     <pre id="matrix"></pre>
     <p>Suffix array:</p>
     <pre id="array"></pre>
+    <!-- <h1>Aho-Corasick Automaton</h1>
+    <textarea id="aho-input"></textarea> -->
     <script>
       const input = document.getElementById('input')
       const transform = document.getElementById('transform')
@@ -114,6 +168,11 @@
         bwtTransform(false)
       }
       transform.addEventListener('input', bwtReconstruct)
+
+      const ahoInput = document.getElementById('aho-input')
+      ahoInput.value = ['snowman', 'man', 'snowboard', 'board', 'ski', 'skiing']
+        .join('\n')
+        .toUpperCase()
     </script>
   </body>
 </html>
