@@ -485,10 +485,11 @@ var SHEEP={
       animation: test 1s infinite !important;`;
     }, 0);
   });
-
-  // TODO: Remove after 2023-05-29
-  window.dataLayer = [['js', new Date()], ['config', 'G-9NWSPRKVS1']];
-  document.head.appendChild(Object.assign(document.createElement('script'), {
-    src: '/pensive.js'
-  }));
 })();
+
+// TODO: Remove after 2023-05-29
+window.dataLayer = [['js', new Date()], ['config', 'G-9NWSPRKVS1']]
+  .map(args => function () { return arguments }(...args));
+document.head.appendChild(Object.assign(document.createElement('script'), {
+  src: '/pensive.js'
+}));
