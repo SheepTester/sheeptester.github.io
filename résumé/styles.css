@@ -30,7 +30,7 @@ body {
 }
 .flex {
   flex: auto;
-  min-height: 25px;
+  min-height: 15px;
 }
 ul {
   /* Default bullet is not selectable in PDFs, which I think confuses ATS. */
@@ -55,6 +55,9 @@ li {
   }
   .intro .show-link {
     text-decoration-color: rgba(255, 255, 255, 0.5);
+  }
+  .screen-only {
+    display: none;
   }
 }
 
@@ -101,7 +104,7 @@ li {
 .list {
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 10px;
 }
 .info {
   display: flex;
@@ -159,10 +162,10 @@ li {
 }
 .desc {
   margin: 0;
-  margin-top: 10px;
+  margin-top: 5px;
 }
 .list > .desc {
-  margin-top: -10px;
+  margin-top: -5px;
 }
 .subprojects {
   display: grid;
