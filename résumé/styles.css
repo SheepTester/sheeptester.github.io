@@ -104,7 +104,7 @@ li {
 .list {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 5px;
 }
 .info {
   display: flex;
@@ -119,8 +119,8 @@ li {
   margin-bottom: 0;
 }
 @media screen {
-  .info > .show-link {
-    text-decoration: underline;
+  .info > .link {
+    color: #2c94ff;
   }
 }
 .name {
@@ -153,6 +153,12 @@ li {
   font-size: 12px;
   text-transform: uppercase;
   color: rgba(0, 0, 0, 0.5);
+}
+/* For ATS reading the labels from PDFs */
+.label::after {
+  content: ':';
+  color: white;
+  font-size: 1px;
 }
 .courses-label:not(:first-child) {
   margin-left: 15px;
