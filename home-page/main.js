@@ -85,9 +85,9 @@ projectsWrapper.addEventListener('click', e => {
     return
   }
   const showInfoHidden =
-    window.getComputedStyle(project.querySelector('.show-info')).display ===
+    window.getComputedStyle(project.querySelector('.show-info-btn')).display ===
     'none'
-  if (showInfoHidden || e.target.closest('.show-info')) {
+  if (showInfoHidden || e.target.closest('.show-info-btn')) {
     e.preventDefault()
     unselect()
     if (lastSelected !== project) {

@@ -100,6 +100,11 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
         monospace;
     }
   }
+  @media (min-width: 1000px) {
+    body {
+      display: flex;
+    }
+  }
   body {
     script {
       // Need semicolons because the newlines are removed
@@ -281,19 +286,8 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
     }
     @media (min-width: 1000px) {
       .about {
-        overflow: auto;
+        flex: none;
         width: 500px;
-        position: fixed;
-        top: 0;
-        left: 0;
-        bottom: 0;
-
-        // https://stackoverflow.com/a/38994837
-        -ms-overflow-style: none;  // Internet Explorer 10+
-        scrollbar-width: none;  // Firefox
-      }
-      .about::-webkit-scrollbar {
-        display: none; // Safari and Chrome
       }
     }
     section.about {
@@ -347,14 +341,22 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
       .card {
         css {
           .card h1 {
-            margin-top: 15px;
-            margin-bottom: -15px;
-            display: inline-block;
+            margin: 0;
+            height: 105px;
+            box-sizing: border-box;
+            padding: 10px 0;
+            display: inline-flex;
+            align-items: flex-end;
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
             background-image: linear-gradient(90deg, #20de88, #28bbe8);
             font-size: 64px;
+          }
+        }
+        @media (min-width: 1000px) {
+          .card h1 {
+            height: unset;
           }
         }
         h1#hello {
@@ -368,12 +370,6 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
             aspect-ratio: 2.1;
             object-fit: cover;
             object-position: 50% -20px;
-            margin-top: 16px;
-          }
-        }
-        @media (min-width: 1000px) {
-          .me-photo {
-            margin-top: 20px;
           }
         }
         img.me-photo[src="./img/sean-at-sutro-baths-by-cat.jpg"][alt="Me standing on a wall surrounded by water at Sutro Baths with the sun setting behind me."];
@@ -492,11 +488,11 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
         }
 
         p {
-          content: "This website, unlike others, is made for current and former kids like me, rather than employers who look for ";
+          content: "I made this website for current and former kids. If you're an employer, check out my ";
           a.link[href="/résumé/"] {
-            content: "résumés";
+            content: "résumé";
           }
-          content: ", not games.";
+          content: ".";
         }
 
         css {
@@ -815,11 +811,6 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
         flex: auto;
       }
     }
-    @media (min-width: 1000px) {
-      .project-wrapper {
-        margin-left: 500px;
-      }
-    }
     section.project-wrapper {
       $tags: import("./data/tags.yml");
 
@@ -961,8 +952,8 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
                 border-radius: 50px;
                 margin-top: 10px;
                 margin-right: 10px;
-                overflow: hidden;
                 height: 30px;
+                padding: 3px;
               }
               .filter-tag:hover {
                 background-color: #272c31;
@@ -979,7 +970,10 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
               css {
                 .filter-tag-icon {
                   width: 30px;
+                  border-radius: 50%;
                 }
+              }
+              css {
                 .filter-checkbox:checked + .filter-tag .tag-#{$tag} {
                   background-image: url("/home-page/icons/feather-check.svg"),
                     linear-gradient(150deg, #{map.get($tag-data, 'colour1')},
@@ -999,7 +993,8 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
 
               css {
                 .filter-tag-name {
-                  margin: 0 10px;
+                  margin-left: 8px;
+                  margin-right: 10px;
                   align-self: center;
                 }
               }
