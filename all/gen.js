@@ -122,10 +122,9 @@ function generateShowBtns() {
   pathLines.forEach(line => {
     if (line[0] === '>') {
       tempPath.push(line.slice(1));
-      const id = tempPath.join('/');
-      html += `<div class=dir><input type=checkbox id="${id}"><label class=head for="${id}">${line.slice(1)}</label><div class=body>`;
+      html += `<details open><summary>${line.slice(1)}</summary><div class="body">`;
     } else if (line === '<') {
-      html += `</div></div>`;
+      html += `</div></details>`;
       tempPath.pop();
     } else {
       const extension = line.slice(line.lastIndexOf('.') + 1);
@@ -164,7 +163,7 @@ function generateShowBtns() {
     './all/index.html',
     template
       .replace(/{DATE}/g, new Date().toISOString().slice(0, 10))
-      .replace('{ISO}', new Date().toISOString())
+      .replaceAll('{ISO}', new Date().toISOString())
       .replace('{STYLES}', styles)
       .replace('{TARGETS}', targets)
       .replace('{CHECKBOXES}', links)

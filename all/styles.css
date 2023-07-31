@@ -28,6 +28,9 @@ a.html::before {
   background-image: url('../img/html.svg');
   background-size: 1.2em;
 }
+.index {
+  font-weight: bold;
+}
 a.index::before {
   background-color: rgba(0,0,0,0.8);
 }
@@ -47,20 +50,7 @@ a.img::before {
   padding-left: 20px;
   border-left: 1px solid rgba(0,0,0,0.1);
 }
-/* https://www.a11yproject.com/posts/2013-01-11-how-to-hide-content/ */
-.dir input[type=checkbox] {
-  clip: rect(0 0 0 0);
-  clip-path: inset(50%);
-  height: 1px;
-  overflow: hidden;
-  position: absolute;
-  white-space: nowrap;
-  width: 1px;
-}
-.dir input[type=checkbox]:checked ~ .body {
-  display: none;
-}
-.head::before {
+summary::before {
   content: '';
   display: inline-block;
   height: 0;
@@ -68,13 +58,15 @@ a.img::before {
   border-right: 5px solid transparent;
   border-left: 5px solid transparent;
   border-top: 5px solid rgba(0,0,0,0.5);
-  margin: 0 5px;
+  margin-left: 3px;
+  margin-right: 7px;
   margin-bottom: 2px;
-}
-.dir input[type=checkbox]:checked ~ .head::before {
   transform: rotate(-90deg);
 }
-.head, .dir a {
+details[open] summary::before {
+  transform: none;
+}
+summary, .dir a {
   display: block;
   cursor: pointer;
   border: 1px solid transparent;
@@ -82,20 +74,18 @@ a.img::before {
   padding: 2px 2px;
   margin: 10px 0;
 }
-.head:hover, .dir a:hover {
+summary:hover, .dir a:hover {
   background-color: hsl(214, 91%, 97%);
   border-color: hsl(214, 91%, 85%);
 }
-.dir input[type=checkbox]:focus ~ .head, .dir a:focus {
+summary:focus, .dir a:focus, .checkbox:focus {
   background-image: -webkit-linear-gradient(rgba(255, 255, 255, 0.8), rgba(255,255,255,0));
   background-color: hsl(214, 91%, 89%);
   border-color: rgb(125, 162, 206);
 }
 body > .dir {
   max-width: 500px;
-  border: 1px solid rgba(0,0,0,0.1);
   margin: 0 auto;
-  padding: 2px;
 }
 .cached {
   font-weight: bold;
@@ -134,6 +124,7 @@ h1, .btn-wrapper, p {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
+  white-space: pre-wrap;
   max-width: 500px;
   margin: 0 auto;
   font-weight: normal;
@@ -206,7 +197,7 @@ body.hideuncached > .dir a:not(.cached) {
   .btn-wrapper {
     margin: 0 auto;
   }
-  .head, .dir a {
+  summary, .dir a {
     padding: 0 2px;
     margin: 0;
   }
