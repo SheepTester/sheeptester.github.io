@@ -22,7 +22,7 @@ body {
   background-image: url('../img/material_insert_drive_file.svg');
   background-size: 0.7em;
   border-radius: 50%;
-  background-color: rgba(0,0,0,0.3);
+  background-color: rgba(0, 0, 0, 0.3);
 }
 a.html::before {
   background-image: url('../img/html.svg');
@@ -32,7 +32,7 @@ a.html::before {
   font-weight: bold;
 }
 a.index::before {
-  background-color: rgba(0,0,0,0.8);
+  background-color: rgba(0, 0, 0, 0.8);
 }
 a.css::before {
   background-image: url('../img/css.svg');
@@ -48,7 +48,7 @@ a.img::before {
 }
 .body {
   padding-left: 20px;
-  border-left: 1px solid rgba(0,0,0,0.1);
+  border-left: 1px solid rgba(0, 0, 0, 0.1);
 }
 summary::before {
   content: '';
@@ -57,7 +57,7 @@ summary::before {
   width: 0;
   border-right: 5px solid transparent;
   border-left: 5px solid transparent;
-  border-top: 5px solid rgba(0,0,0,0.5);
+  border-top: 5px solid rgba(0, 0, 0, 0.5);
   margin-left: 3px;
   margin-right: 7px;
   margin-bottom: 2px;
@@ -66,7 +66,8 @@ summary::before {
 details[open] summary::before {
   transform: none;
 }
-summary, .dir a {
+summary,
+.dir a {
   display: block;
   cursor: pointer;
   border: 1px solid transparent;
@@ -74,12 +75,18 @@ summary, .dir a {
   padding: 2px 2px;
   margin: 10px 0;
 }
-summary:hover, .dir a:hover {
+summary:hover,
+.dir a:hover {
   background-color: hsl(214, 91%, 97%);
   border-color: hsl(214, 91%, 85%);
 }
-summary:focus, .dir a:focus, .checkbox:focus {
-  background-image: -webkit-linear-gradient(rgba(255, 255, 255, 0.8), rgba(255,255,255,0));
+summary:focus,
+.dir a:focus,
+.checkbox:focus {
+  background-image: -webkit-linear-gradient(
+    rgba(255, 255, 255, 0.8),
+    rgba(255, 255, 255, 0)
+  );
   background-color: hsl(214, 91%, 89%);
   border-color: rgb(125, 162, 206);
 }
@@ -95,7 +102,7 @@ body > .dir {
   font-style: italic;
 }
 .cache-wrapper {
-  border: 1px solid rgba(0,0,0,0.1);
+  border: 1px solid rgba(0, 0, 0, 0.1);
   padding: 2px;
   margin: 5px auto;
   max-width: 500px;
@@ -107,7 +114,7 @@ body > .dir {
   flex: auto;
   -webkit-appearance: none;
   background: none;
-  border: 1px solid rgba(0,0,0,0.15);
+  border: 1px solid rgba(0, 0, 0, 0.15);
   font: inherit;
   border-radius: 2px;
   margin: 2px;
@@ -120,7 +127,9 @@ body > .dir {
 .error {
   color: #bd5555;
 }
-h1, .btn-wrapper, p {
+h1,
+.btn-wrapper,
+p {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
@@ -129,11 +138,13 @@ h1, .btn-wrapper, p {
   margin: 0 auto;
   font-weight: normal;
 }
-button, .button, .checkbox {
+button,
+.button,
+.checkbox {
   -webkit-appearance: none;
   background: none;
-  border: 1px solid rgba(0,0,0,0.15);
-  background-color: rgba(0,0,0,0.05);
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  background-color: rgba(0, 0, 0, 0.05);
   font: inherit;
   border-radius: 2px;
   margin: 5px;
@@ -144,12 +155,17 @@ button, .button, .checkbox {
   padding: 5px 10px;
   text-align: center;
 }
-button:hover, .button:hover {
+button:hover,
+.button:hover {
   background-color: hsl(214, 91%, 97%);
   border-color: hsl(214, 91%, 85%);
 }
-button:focus, .button:focus {
-  background-image: -webkit-linear-gradient(rgba(255, 255, 255, 0.8), rgba(255,255,255,0));
+button:focus,
+.button:focus {
+  background-image: -webkit-linear-gradient(
+    rgba(255, 255, 255, 0.8),
+    rgba(255, 255, 255, 0)
+  );
   background-color: hsl(214, 91%, 89%);
   border-color: rgb(125, 162, 206);
 }
@@ -197,11 +213,14 @@ body.hideuncached > .dir a:not(.cached) {
   .btn-wrapper {
     margin: 0 auto;
   }
-  summary, .dir a {
+  summary,
+  .dir a {
     padding: 0 2px;
     margin: 0;
   }
-  button, .button, .checkbox {
+  button,
+  .button,
+  .checkbox {
     padding: 0 3px;
     margin: 2px;
   }
