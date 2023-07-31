@@ -28,16 +28,15 @@ function generateShowBtns() {
     {label: 'everything else', name: 'hideother', selector: '.other'}
   ];
   const optionNames = options.map(option => option.name);
-  const targets = [[]];
-  const links = {};
-  let styles = '';
-  for (const {name, selector} of options) {
-    targets.push(...targets.map(target => [...target, name]));
-    styles += `:target[id*="${name}"]~* ${selector}{display:none}`;
-    links[name] = new Set();
-  }
   const showSelectors = new Set();
   const hideSelectors = new Set();
+  const targets = [[]];
+  const links = {};
+  for (const {name, selector} of options) {
+    targets.push(...targets.map(target => [...target, name]));
+    hideSelectors.add(`:target[id*="${name}"]~* ${selector}`);
+    links[name] = new Set();
+  }
   for (const target of targets) {
     const id = target.join('_');
     for (const {name, label} of options) {
@@ -65,15 +64,13 @@ function generateShowBtns() {
         }</a>`
       );
       if (id !== '') {
-        showSelectors.add(`:target[id="${id}"]~.checkboxes .${className}`);
+        showSelectors.add(`:target[id="${id}"]~.preamble .${className}`);
       } else {
         showSelectors.add(`.${className}`);
-        hideSelectors.add(`:target~.checkboxes .${className}`);
+        hideSelectors.add(`:target~.preamble .${className}`);
       }
     }
   }
-  styles += `${Array.from(showSelectors).join(',')}{display:inline-flex}`;
-  styles += `${Array.from(hideSelectors).join(',')}{display:none}`;
   return {
     targets: targets
       .filter(target => target.length)
@@ -82,7 +79,7 @@ function generateShowBtns() {
     links: Object.values(links)
       .map(links => Array.from(links).join(''))
       .join(''),
-    styles: `<style>${styles}</style>`
+    styles: `${Array.from(showSelectors).join(',')}{display:inline-flex}${Array.from(hideSelectors).join(',')}{display:none}`
   };
 }
 
@@ -169,7 +166,7 @@ function generateShowBtns() {
     template
       .replaceAll('{DATE}', new Date().toISOString().slice(0, 10))
       .replaceAll('{ISO}', new Date().toISOString())
-      .replace('{STYLES}', styles)
+      .replace('{STYLES}', `<style>${styles}</style>`)
       .replace('{TARGETS}', targets)
       .replace('{CHECKBOXES}', links)
       .replace('{FILES}', html)
