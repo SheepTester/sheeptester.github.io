@@ -2,6 +2,7 @@ body {
   font-family: sans-serif;
   font-size: 14px;
   color: #494949;
+  margin: 10px;
 }
 .dir a {
   text-decoration: none;
@@ -127,32 +128,46 @@ body > .dir {
 .error {
   color: #bd5555;
 }
+.preamble {
+  display: flex;
+  flex-direction: column;
+  max-width: 500px;
+  margin: 0 auto;
+  gap: 10px;
+  margin-bottom: 10px;
+}
 h1,
-.btn-wrapper,
 p {
+  margin: 0;
+}
+h1 {
+  font-weight: normal;
+}
+.btn-wrapper {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  white-space: pre-wrap;
-  max-width: 500px;
-  margin: 0 auto;
-  font-weight: normal;
+  gap: 10px;
+}
+button,
+.button,
+.checkbox,
+#search {
+  -webkit-appearance: none;
+  background: none;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  font: inherit;
+  border-radius: 2px;
+  padding: 5px 10px;
 }
 button,
 .button,
 .checkbox {
-  -webkit-appearance: none;
-  background: none;
-  border: 1px solid rgba(0, 0, 0, 0.15);
   background-color: rgba(0, 0, 0, 0.05);
-  font: inherit;
-  border-radius: 2px;
-  margin: 5px;
   cursor: pointer;
   text-decoration: none;
   color: black;
   display: inline-block;
-  padding: 5px 10px;
   text-align: center;
 }
 button:hover,
@@ -172,6 +187,20 @@ button:focus,
 :disabled {
   opacity: 0.5;
   pointer-events: none;
+}
+#search {
+  width: 100%;
+  background-image: url('../img/material_search.svg');
+  background-position: 5px;
+  background-repeat: no-repeat;
+  padding-left: 34px;
+}
+#search:disabled {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+::placeholder {
+  color: rgba(0, 0, 0, 0.4);
+  font-style: italic;
 }
 body.hideuncached > .dir a:not(.cached) {
   display: none;
@@ -210,19 +239,23 @@ body.hideuncached > .dir a:not(.cached) {
   outline: none;
 }
 @media (hover: hover) {
-  .btn-wrapper {
-    margin: 0 auto;
-  }
   summary,
   .dir a {
     padding: 0 2px;
     margin: 0;
   }
+  .preamble {
+    gap: 2px;
+    margin-bottom: 2px;
+  }
+  .btn-wrapper {
+    gap: 2px;
+  }
   button,
   .button,
-  .checkbox {
+  .checkbox,
+  #search {
     padding: 0 3px;
-    margin: 2px;
   }
   .checkbox {
     padding-left: 0;
@@ -231,5 +264,10 @@ body.hideuncached > .dir a:not(.cached) {
   .checkbox::before {
     margin-right: 3px;
     width: 20px;
+  }
+  #search {
+    padding-left: 20px;
+    background-size: 18px;
+    background-position: left;
   }
 }

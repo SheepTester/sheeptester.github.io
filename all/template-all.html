@@ -16,19 +16,24 @@
   </head>
   <body>
     {TARGETS}
-    <h1>Almost everything</h1>
-    <p>Last updated <time datetime="{ISO}" title="{ISO}">{DATE}</time></p>
-    <div class="btn-wrapper">
-      <a href="/" class="button">Home</a>
-      <a href="./links/" class="button">Other people's pages</a>
-      <a href="./localStorage/" class="button">Manage localStorage</a>
-      <button id="cache" class="button" disabled>Cache files</button>
+    <div class="preamble">
+      <h1>Almost Everything</h1>
+      <p>Last updated <time datetime="{ISO}" title="{ISO}">{DATE}</time></p>
+      <div class="btn-wrapper">
+        <a href="/" class="button">Home</a>
+        <a href="./links/" class="button">Other people's pages</a>
+        <a href="./localStorage/" class="button">Manage localStorage</a>
+        <button id="cache" class="button" disabled>Cache files</button>
+      </div>
+      <div class="btn-wrapper">
+        <button id="collapse" disabled>Collapse all</button>
+        <button id="open" disabled>Open all</button>
+      </div>
+      <div class="btn-wrapper checkboxes">Show: {CHECKBOXES}</div>
+      <div class="btn-wrapper">
+        <input type="search" id="search" placeholder="Filter..." disabled />
+      </div>
     </div>
-    <div class="btn-wrapper">
-      <button id="collapse" disabled>Collapse all</button>
-      <button id="open" disabled>Open all</button>
-    </div>
-    <div class="btn-wrapper checkboxes">Show: {CHECKBOXES}</div>
     <div class="dir" id="files">{FILES}</div>
     <script src="./main.js" charset="utf-8"></script>
   </body>

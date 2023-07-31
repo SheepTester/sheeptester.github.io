@@ -130,22 +130,27 @@ function generateShowBtns() {
       const extension = line.slice(line.lastIndexOf('.') + 1);
       const url = tempPath.join('/') + '/' + (line === 'index.html' || line === 'index.md' ? '' : line);
       let type = 'other';
-      switch (extension) {
+      switch (extension.toLowerCase()) {
         case 'html':
           type = 'html';
           if (line === 'index.html') type += ' index';
           htmlURLs.push(BASE_URL + url);
           break;
         case 'css':
+        case 'scss':
           type = 'other css';
           break;
         case 'js':
+        case 'mjs':
+        case 'ts':
+        case 'gs':
           type = 'other js';
           break;
         case 'svg':
         case 'png':
         case 'gif':
         case 'jpg':
+        case 'webp':
           type = 'img';
           break;
         case 'md':
@@ -155,14 +160,14 @@ function generateShowBtns() {
           }
           break;
       }
-      html += `<a href="${url}" class="${type}">${line}</a>`;
+      html += `<a href="${url}" class="${type}">${decodeURIComponent(line)}</a>`;
     }
   });
   const {targets, links, styles} = generateShowBtns();
   await write(
     './all/index.html',
     template
-      .replace(/{DATE}/g, new Date().toISOString().slice(0, 10))
+      .replaceAll('{DATE}', new Date().toISOString().slice(0, 10))
       .replaceAll('{ISO}', new Date().toISOString())
       .replace('{STYLES}', styles)
       .replace('{TARGETS}', targets)
