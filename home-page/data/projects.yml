@@ -199,6 +199,16 @@
   tags:
     - utility
 
+- path: /words-go-here/misc/left-ear.html
+  image: img/left-ear.webp
+  name: Pan left and right
+  description: >-
+    Lets you pan audio left and right so you can check if your stereo speakers
+    are working, or to see which speaker/earbud is the right one, or to figure
+    out how deaf your left ear is.
+  tags:
+    - utility
+
 - path: /words-go-here/misc/svgtopng.html
   image: img/svgtopng-smaller.png
   name: SVG to PNG

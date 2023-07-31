@@ -43,11 +43,21 @@ profiles:
   - name: BeReal
     link: https://bere.al/sheeptester
     bg: black
+    ball: white
+
+  - name: Threads
+    link: https://www.threads.net/@sheeptester
+    bg: black
     border: white
 
   - name: Steam
     link: https://steamcommunity.com/id/sheeptester/
     type: steam
+
+  - name: Spotify
+    link: https://open.spotify.com/user/31zcjmb6bcjvgtonur5e2miiziz4
+    bg: '#1ed760'
+    border: black
 
   - name: JSFiddle
     link: https://jsfiddle.net/user/SheepTester/
@@ -227,6 +237,20 @@ profiles:
     bg: '#2D4B65'
     border: white
 
+  - name: Autodesk Forums
+    link: https://forums.autodesk.com/t5/user/viewprofilepage/user-id/13411589
+    bg: black
+
+  - name: Chess.com
+    link: https://www.chess.com/member/whatifsheepwasachesspiece
+    ball: '#a3d160'
+    bg: '#262421'
+
+  - name: Tenor
+    link: https://tenor.com/users/sheeptester
+    bg: '#007add'
+    border: white
+
   - name: Hugging Face
     link: https://huggingface.co/sheeptester
     ball: '#ffd21e'
@@ -265,7 +289,7 @@ usernames:
     ball: '#000000'
 
   - name: Discord
-    username: Sean#2422
+    username: sheeptester
     link: https://discord.gg/srtYgbVw4H
     bg: '#7289DA'
 
@@ -279,6 +303,13 @@ usernames:
     link: mailto:seanthesheep22+st@outlook.com
     bg: '#0072C6'
     ball: border
+
+  - name: Amateur Radio License
+    username: KN6ZWB
+    link: https://wireless2.fcc.gov/UlsApp/UlsSearch/license.jsp?licKey=4767849
+    bg: '#ffff9a'
+    border: '#1c3664'
+    ball: white
 
 discord:
   name: Discord
