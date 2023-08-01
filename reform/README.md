@@ -436,3 +436,13 @@ Actually, I think everything should be inside a form. Form elements have nice fe
 Then, instead of using `id`, we can use `name` for form elements. For custom inputs, I guess they'll still have to use `id` because `<canvas>`es can't have `name`.
 
 I'm not sure whether to include the auto-evaluate checkbox and button since it adds a lot of extra noise, at least to the 2-column layout.
+
+## Implementation
+
+Apparently you aren't supposed to have `<p>` tags inside a `<label>`.
+
+I don't like how having `<body>`, `<main>`, and `<form>` results in so many nested levels of indentation. I think I will omit `<main>` unless there's a `<div>` that it can replace.
+
+I will also prefix classes with JavaScript significance with `reform:` so I don't remove them if they don't get CSS. Though, it's probably best if I give a class to everything so it's easier to style in the future.
+
+Apparently, `<label>`s' `[for]` takes an `[id]` and doesn't accept `[name]`s, which complicates file inputs. I think I will make file inputs ID-only as well.

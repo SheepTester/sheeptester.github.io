@@ -1,0 +1,187 @@
+/* CSS variables */
+:root {
+  color-scheme: light;
+  --bg-rgb: 255, 255, 255;
+  --text: rgba(0, 0, 0, 0.8);
+  --heading: black;
+  --line: rgba(0, 0, 0, 0.3);
+
+  --grad1: #20de88;
+  --grad2: #28bbe8;
+
+  --bg: rgb(var(--bg-rgb));
+}
+
+/* Global styles */
+*,
+::before,
+::after {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-overflow-scrolling: touch;
+}
+@media (prefers-reduced-motion) {
+  *,
+  ::before,
+  ::after {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
+/* html and body */
+html,
+body {
+  height: 100%;
+}
+body {
+  display: flex;
+  flex-direction: column;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+    'Helvetica Neue', Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+    'Segoe UI Symbol';
+  margin: 0;
+  background-color: var(--bg);
+  color: var(--text);
+  line-height: 1.5;
+}
+body::before {
+  content: '';
+  display: block;
+  height: 20px;
+  flex: none;
+  background-image: linear-gradient(
+      180deg,
+      transparent 50%,
+      rgb(var(--bg-rgb), 0.75) 50%,
+      rgb(var(--bg-rgb), 0.92),
+      var(--bg)
+    ),
+    linear-gradient(90deg, var(--grad1), var(--grad2));
+}
+
+/* Reset */
+button,
+input,
+optgroup,
+select,
+textarea {
+  -webkit-appearance: none;
+  appearance: none;
+  font: inherit;
+  color: inherit;
+  margin: 0;
+  border: none;
+  padding: 0;
+  background: none;
+}
+button {
+  cursor: pointer;
+}
+:disabled {
+  cursor: default;
+}
+a {
+  text-decoration: unset;
+  color: unset;
+}
+
+/* Utility classes */
+.hidden-accessible {
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  height: 1px;
+  overflow: hidden;
+  position: absolute;
+  white-space: nowrap;
+  width: 1px;
+}
+.link:hover {
+  text-decoration: underline;
+}
+
+/* Opiniated styles */
+h1 {
+  font-weight: lighter;
+  font-size: 56px;
+  margin-top: 20px;
+  margin-bottom: 0;
+  color: var(--heading);
+}
+p {
+  margin: 0;
+  margin-bottom: 10px;
+}
+.main > h1,
+.main > p,
+.main > .radio-set {
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 800px;
+}
+.label-primary,
+.label-secondary {
+  display: block;
+}
+.label-primary {
+  font-weight: bold;
+  color: var(--heading);
+}
+
+.radio-set {
+  border: none;
+  padding: 0;
+  margin-bottom: 10px;
+}
+.radio-set legend {
+  padding: 0;
+  margin-bottom: 5px;
+}
+.radio-label {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+.radio-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 16px;
+  height: 16px;
+  flex: none;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  position: relative;
+  z-index: 0;
+  cursor: pointer;
+  margin-top: 5px;
+}
+[type='radio']:checked + .radio-button {
+  background-image: linear-gradient(45deg, var(--grad1), var(--grad2));
+  border-color: transparent;
+}
+[type='radio']:checked + .radio-button::before,
+[type='radio']:checked + .radio-button::after {
+  content: '';
+  display: block;
+}
+.radio-button::before {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: -1;
+  border-radius: 50%;
+  background-image: linear-gradient(45deg, var(--grad1), var(--grad2));
+  filter: blur(3px);
+}
+.radio-button::after {
+  border-radius: 50%;
+  background-color: white;
+  width: 6px;
+  height: 6px;
+}
+
+.file-input {
+}
