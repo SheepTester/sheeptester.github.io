@@ -723,7 +723,7 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
             align-items: center;
           }
           .block-link:hover {
-            background-color: rgba(255, 255, 255, 0.05);
+            background-color: #1f2e3f;
           }
           .block-link-content {
             flex: auto;
@@ -948,15 +948,16 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
               .filter-tag {
                 display: inline-flex;
                 cursor: pointer;
-                background-color: #111213;
+                background-color: #24364a;
                 border-radius: 50px;
                 margin-top: 10px;
                 margin-right: 10px;
                 height: 30px;
                 padding: 3px;
+                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
               }
               .filter-tag:hover {
-                background-color: #272c31;
+                background-color: #1f2e3f;
               }
               .filter-checkbox:focus-visible + .filter-tag {
                 box-shadow: 0 0 0 1px black, 0 0 0 2px white;
@@ -1074,19 +1075,18 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
                   overflow: hidden;
                   margin-top: 10px;
                   margin-right: 10px;
+                  border: 1px solid rgba(151, 189, 179, 0.2);
+                  border-radius: 50px;
+                  padding: 3px;
                 }
                 .desc-tag-icon {
                   width: 30px;
-                  border-top-left-radius: 25px;
-                  border-bottom-left-radius: 25px;
+                  border-radius: 50%;
                 }
                 .desc-tag-name {
-                  border-top-right-radius: 25px;
-                  border-bottom-right-radius: 25px;
-                  border: 1px solid rgba(151, 189, 179, 0.2);
                   border-left: none;
                   padding-right: 10px;
-                  padding-left: 5px;
+                  padding-left: 8px;
                   display: flex;
                   align-items: center;
                 }

@@ -190,11 +190,11 @@ a.#{$classes}[href="#{map.get($project, 'path')}"][data-desc="#{map.get($project
       transition: opacity .5s, background-color .2s, box-shadow .2s;
       transition-delay: 0.05s, 0, 0;
     }
-    .show-info-btn .show-info-icon:hover {
+    .show-info-btn:hover .show-info-icon {
       background-color: rgba(0, 0, 0, 0.8);
       box-shadow: 0 3px 5px rgba(0, 0, 0, 0.5);
     }
-    .show-info-btn .show-info-icon:focus-visible {
+    .show-info-btn:focus-visible .show-info-icon {
       opacity: 1;
       background-color: black;
     }
