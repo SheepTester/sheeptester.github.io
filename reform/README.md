@@ -7,6 +7,7 @@
 [font-maker]: https://sheeptester.github.io/javascripts/fontmaker.html
 [gif-caption]: https://sheeptester.github.io/javascripts/gif-caption.html
 [encrypt]: https://sheeptester.github.io/javascripts/encrypt.html
+[delegalifier]: https://sheeptester.github.io/javascripts/delegalifier.html
 
 There are a lot of unstyled web pages on my website, characteristically black Times New Roman text on a white background. I didn't bother adding CSS to them because I didn't think it was necessary, and I was lazy. Some examples of web pages that I use frequently are:
 
@@ -236,6 +237,35 @@ Much of the HTML would remain the same, including the radios' fieldset. For each
 </label>
 ```
 
+**NOTE**: MDN says [not to put links in labels](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/label#accessibility_concerns). Instead, move the links outside:
+
+```html
+<!-- ❌ -->
+<label>
+  <p class="label-primary">Full name</p>
+  <p class="label-secondary">
+    Letters only, no hyphens. If your name is in Chinese, use
+    <a href="https://en.wikipedia.org/wiki/Pinyin">Hanyu pinyin</a>.
+  </p>
+  <input type="text" id="name" />
+</label>
+
+<!-- ⭕ -->
+<label>
+  <p class="label-primary">Full name</p>
+  <p class="label-secondary">Letters only, no hyphens.</p>
+  <input type="text" id="name" />
+</label>
+<p>
+  If your name is in Chinese, use
+  <a href="https://en.wikipedia.org/wiki/Pinyin">Hanyu pinyin</a>.
+</p>
+```
+
+**NOTE**: Don't use [placeholders](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#placeholder).
+
+**NOTE**: Don't use [number inputs](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/number#accessibility). (Use `inputmode="numeric"` and `pattern` instead.)
+
 ---
 
 The most interesting thing about [intense-contrast], though, is that it has an additional input in the form of a pointer-selected region.
@@ -302,3 +332,107 @@ The `<label>` element can be a large-ish drop area, while the `<span>` can be th
 ```
 
 In JavaScript, I guess I could just find all elements with the `[data-preview]` attribute (I considered adding a new class, but I think the performance difference between finding elements by attribute vs class is significant).
+
+### Study: [delegalifier]
+
+_I've decided to make `[data-main]` a class and rename `input` to `dep`._
+
+I think many input-output relationships will be done with two textareas/images next to each other, and this can take up the full width of the screen. With a special class on `<body>`, these can take up the entire height of the screen, but this is opt-in if there are multiple input-output relationships.
+
+For [delegalifier], the HTML could look something like this:
+
+```html
+<body class="fullscreen-2col">
+  <header>
+    <h1>legalese informalifier</h1>
+  </header>
+  <main class="2col">
+    <div class="input">
+      <input type="file" id="file" accept="image/*" class="accessible main" />
+      <label class="file-input" for="image">
+        <span class="upload-btn">
+          <span class="icon icon-upload"></span>
+          Choose
+        </span>
+        <span class="hint">or drop/paste a file.</span>
+        <span class="selected">unknown.txt (100 kB)</span>
+      </label>
+      <textarea id="input" data-deps="file"></textarea>
+    </div>
+    <div>
+      <textarea id="output" data-deps="input"></textarea>
+      <div class="output-btns">
+        <button class="output-btn download-btn" data-output="output">
+          <span class="icon icon-download"></span>
+          <span class="rhs">
+            <span class="btn-text">Download</span>
+            <span class="download-name">encrypted.txt (50 kB)</span>
+          </span>
+        </button>
+        <button
+          class="output-btn copy-btn"
+          data-output="output"
+          aria-label="Copy"
+        >
+          <span class="icon icon-copy"></span>
+        </button>
+        <button
+          class="output-btn share-btn"
+          data-output="output"
+          aria-label="Share"
+        >
+          <span class="icon icon-share"></span>
+        </button>
+      </div>
+    </div>
+  </main>
+</body>
+```
+
+- `.fullscreen-2col` sets up a 2-column layout. `<main>` will be `flex: auto`, taking up the height of the page.
+- `.2col` (which would normally applied to a `<div>` in a normal one-column layout) puts its two children side-by-side. On mobile, the `flex-direction` will change to `column`, so the input shows on top of the output.
+- `.input` has `flex-direction: column-reverse` for desktop so that the file input shows _below_ the input textarea. This is not the greatest practice because the tab order disagrees with the visual order, but it aligns the file input with the output buttons on the bottom, and it also places the input and output textareas next to each other in the tab order and on mobile.
+- `.accessible` is a helper class to make the file input accessible but hidden.
+- `.main` indicates that the file input is the main input, so pasting or dropping anywhere will insert the file into `#image`.
+- `.file-input` is a wrapper that draws a drop zone rectangle.
+- `#input` has `data-deps="file"` so that when the user uploads a file, it updates `#input`.
+
+  I think that if any one of `#input`'s dependencies updates, it assumes that `#input` updates too, even if it doesn't actually change, and so it'll update its dependents regardless. This way, the handler for `#input` doesn't have to worry about calling some callback function whenever it changes value.
+
+- The `.output-btn[aria-label]`s are icon buttons. Some CSS will be used to show a tooltip (using a pseudo-element with `content: attr(aria-label)`) on hover/focus.
+
+There are several options for icons:
+
+- Using an icon font is a no-go from me because it loads a lot of other resources I don't need.
+- Using an SVG background image would be the easiest (requires least markup), but it would make it harder to adapt between light and dark mode (requires a lot of CSS).
+- Inserting an SVG element is nice because CSS can interface with it directly. This not only allows me to set the icon color to `currentColor`, but it also lets me add some cool stroke animations as well.
+  - I could include the SVG in the HTML, but this would make the HTML verbose, and it would make it harder to change the icon design in the future.
+  - I could add the SVG via JavaScript, but this wouldn't show if JavaScript is disabled, and it would take some time for the icons to show.
+
+I think I will go for the JavaScript solution for now, which I could replace with the background image approach later on if I want to.
+
+---
+
+Actually, I think everything should be inside a form. Form elements have nice features like `form.elements`, which is an object mapping `name`s to input elements or a list of radios, and `form.elements.radio.value` gives the selected radio value. For single-line inputs, pressing enter also submits the form.
+
+```html
+<body class="fullscreen-2col">
+  <form id="main">
+    <header>
+      <h1>legalese informalifier</h1>
+      <label>
+        <input type="checkbox" name="auto" checked />
+        Convert as you type
+      </label>
+      <button>Informalify</button>
+    </header>
+    <!-- ... -->
+  </form>
+</body>
+```
+
+`#main` is a special ID name that the script uses to get the form that the entire interface sits under. There can only be one form per page.
+
+Then, instead of using `id`, we can use `name` for form elements. For custom inputs, I guess they'll still have to use `id` because `<canvas>`es can't have `name`.
+
+I'm not sure whether to include the auto-evaluate checkbox and button since it adds a lot of extra noise, at least to the 2-column layout.
