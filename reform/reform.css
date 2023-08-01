@@ -2,9 +2,12 @@
 :root {
   color-scheme: light;
   --bg-rgb: 255, 255, 255;
-  --text: rgba(0, 0, 0, 0.8);
   --heading: black;
+  --text: rgba(0, 0, 0, 0.8);
+  --secondary: rgba(0, 0, 0, 0.5);
   --line: rgba(0, 0, 0, 0.3);
+  /* https://contrast-triangle.com/?linkColor=%23009da8&textColor=%23333333 */
+  --link: #009da8;
 
   --grad1: #20de88;
   --grad2: #28bbe8;
@@ -96,9 +99,6 @@ a {
   white-space: nowrap;
   width: 1px;
 }
-.link:hover {
-  text-decoration: underline;
-}
 
 /* Opiniated styles */
 h1 {
@@ -112,9 +112,20 @@ p {
   margin: 0;
   margin-bottom: 10px;
 }
+ol,
+ul {
+  margin: 0;
+  padding-left: 3ch;
+}
+li::marker {
+  color: var(--secondary);
+}
 .main > h1,
 .main > p,
-.main > .radio-set {
+.main > ol,
+.main > ul,
+.main > .radio-set,
+.main > .field-label {
   margin-left: auto;
   margin-right: auto;
   max-width: 800px;
@@ -122,10 +133,21 @@ p {
 .label-primary,
 .label-secondary {
   display: block;
+  margin: 0;
 }
 .label-primary {
   font-weight: bold;
   color: var(--heading);
+}
+.field-label {
+  display: block;
+}
+.link {
+  color: var(--link);
+  font-weight: 500;
+}
+.link:hover {
+  text-decoration: underline;
 }
 
 .radio-set {
@@ -135,7 +157,6 @@ p {
 }
 .radio-set legend {
   padding: 0;
-  margin-bottom: 5px;
 }
 .radio-label {
   display: flex;

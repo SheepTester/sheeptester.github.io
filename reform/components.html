@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Reform components demo</title>
+    <meta
+      name="description"
+      content="Listing all the components I'll have to design for my Reform design system."
+    />
+
+    <link rel="stylesheet" type="text/css" href="/reform/reform.css" />
+  </head>
+  <body>
+    <main>
+      <form class="main">
+        <h1>List of components</h1>
+        <p>
+          List a bunch of uses here, a bit less concisely than the page
+          description. A library of components available under Reform. Lists
+          components that need styling.
+        </p>
+        <p>
+          Perhaps describe how the tool works. I'll collect all the components
+          used across <a href="/" class="link">my website</a>'s unstyled pages,
+          then:
+        </p>
+        <ol>
+          <li>
+            <p>Write possible HTML for what the component could look like.</p>
+          </li>
+          <li>
+            <p>Write CSS for the component, iterating on the HTML as needed.</p>
+          </li>
+          <li>
+            <p>
+              Add functionality with JavaScript (which I'll figure out later).
+            </p>
+          </li>
+        </ol>
+
+        <label class="field-label">
+          <span class="label-primary">Chunk size</span>
+          <span class="label-secondary">
+            This is an integer. Make sure that iOS lets you enter in a number
+            properly.
+          </span>
+          <input
+            type="text"
+            inputmode="numeric"
+            pattern="[0-9]*"
+            name="chunkSize"
+            value="50"
+          />
+        </label>
+
+        <label class="field-label">
+          <span class="label-primary">Tileset</span>
+          <span class="label-secondary">
+            Only use dropdowns for long lists of options, such as voices or, for
+            <a
+              href="https://sheeptester.github.io/words-go-here/misc/ucsd-map.html"
+              class="link"
+              >ucsd-map</a
+            >, map tilesets. Otherwise, prefer radios.
+          </span>
+          <select name="tileset">
+            <option value="1" selected>One option</option>
+            <option value="2">Another option</option>
+          </select>
+        </label>
+
+        <div class="field-label range-wrapper">
+          <label class="range-label">
+            <span class="label-primary">Zoom</span>
+            <input type="range" name="zoom" min="1" max="100" value="30" />
+          </label>
+          <input type="text" inputmode="numeric" pattern="[0-9]*" value="30" />
+        </div>
+
+        <p>Some number pads do not support negative numbers.</p>
+        <div class="field-label 2col-field">
+          <label class="col-label">
+            <span class="label-primary">Min X</span>
+            <input
+              type="text"
+              inputmode="numeric"
+              pattern="-?[0-9]*"
+              name="minX"
+              value="-1"
+            />
+          </label>
+          <label class="col-label">
+            <span class="label-primary">Max X</span>
+            <input
+              type="text"
+              inputmode="numeric"
+              pattern="-?[0-9]*"
+              name="maxX"
+              value="1"
+            />
+          </label>
+        </div>
+
+        <fieldset class="radio-set">
+          <legend class="label-primary">Radio 1</legend>
+          <p class="label-secondary">
+            Make sure that the radio buttons look aligned with the text
+            regardless of the system font.
+          </p>
+          <label class="radio-label">
+            <input
+              type="radio"
+              name="radio1"
+              value="lmao"
+              class="hidden-accessible"
+            />
+            <span class="radio-button"></span>
+            <span class="label-content">
+              <span class="label-primary">Lmao</span>
+              <span class="label-secondary">Very descriptive.</span>
+            </span>
+          </label>
+          <label class="radio-label">
+            <input
+              type="radio"
+              name="radio1"
+              value="no-desc"
+              class="hidden-accessible"
+              checked
+            />
+            <span class="radio-button"></span>
+            <span class="label-content">
+              <span class="label-primary">No description</span>
+            </span>
+          </label>
+          <label class="radio-label">
+            <input
+              type="radio"
+              name="radio1"
+              value="wow"
+              class="hidden-accessible"
+            />
+            <span class="radio-button"></span>
+            <span class="label-content">
+              <span class="label-primary">Wow</span>
+              <span class="label-secondary">Long and lengthy.</span>
+            </span>
+          </label>
+        </fieldset>
+
+        <fieldset class="radio-set">
+          <legend class="label-primary">Radio 2</legend>
+          <label class="radio-label">
+            <input
+              type="radio"
+              name="radio2"
+              value="true"
+              class="hidden-accessible"
+              checked
+            />
+            <span class="radio-button"></span>
+            <span class="label-content">It's only a description.</span>
+          </label>
+          <label class="radio-label">
+            <input
+              type="radio"
+              name="radio2"
+              value="false"
+              class="hidden-accessible"
+            />
+            <span class="radio-button"></span>
+            <span class="label-content">These options.</span>
+          </label>
+        </fieldset>
+
+        <button class="button primary-btn">Spawn</button>
+
+        <div class="2col">
+          <div>
+            <label class="file-input">
+              <input
+                type="file"
+                name="image"
+                accept="image/*"
+                class="hidden-accessible reform:main"
+                autofocus
+              />
+              <span class="upload-btn">
+                <span class="icon icon-upload"></span>
+                Choose
+              </span>
+              <span class="file-hint">or drop/paste an image.</span>
+              <span class="selected-file reform:selected-file"></span>
+            </label>
+            <canvas class="reform:preview" data-deps="image"></canvas>
+          </div>
+          <div>
+            <canvas id="outputImage" data-deps="chunkSize image"></canvas>
+            <div class="output-btns">
+              <button class="output-btn download-btn" data-output="output">
+                <span class="icon icon-download"></span>
+                <span class="rhs">
+                  <span class="btn-text">Download</span>
+                  <span class="download-name"></span>
+                </span>
+              </button>
+              <button
+                class="output-btn copy-btn"
+                data-output="output"
+                aria-label="Copy"
+              >
+                <span class="icon icon-copy"></span>
+              </button>
+              <button
+                class="output-btn share-btn"
+                data-output="output"
+                aria-label="Share"
+              >
+                <span class="icon icon-share"></span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="2col">
+          <div>
+            <label class="file-input">
+              <input
+                type="file"
+                name="original"
+                accept="text/*"
+                class="hidden-accessible"
+                autofocus
+              />
+              <span class="upload-btn">
+                <span class="icon icon-upload"></span>
+                Choose
+              </span>
+              <span class="file-hint">or drop an image.</span>
+              <span class="selected-file reform:selected-file">
+                sample-text.txt (50 kB)
+              </span>
+            </label>
+            <textarea class="reform:preview" data-deps="original">
+Hello, gamers!</textarea
+            >
+          </div>
+          <div>
+            <textarea id="encoded" data-deps="original"></textarea>
+            <div class="output-btns">
+              <button class="output-btn download-btn" data-output="output">
+                <span class="icon icon-download"></span>
+                <span class="rhs">
+                  <span class="btn-text">Download</span>
+                  <span class="download-name">sample-text.txt (50 kB)</span>
+                </span>
+              </button>
+              <button
+                class="output-btn copy-btn"
+                data-output="output"
+                aria-label="Copy"
+              >
+                <span class="icon icon-copy"></span>
+              </button>
+              <button
+                class="output-btn share-btn"
+                data-output="output"
+                aria-label="Share"
+              >
+                <span class="icon icon-share"></span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!--  -->
+      </form>
+    </main>
+  </body>
+</html>

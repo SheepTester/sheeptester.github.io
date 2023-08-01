@@ -96,11 +96,10 @@ Other components:
   - https://sheeptester.github.io/words-go-here/misc/chunks.html Settings, input -> output image.
   - https://sheeptester.github.io/javascripts/intense-contrast.html Input -> output image, with settings. Detailed radios. Output image is interactive.
   - https://sheeptester.github.io/words-go-here/misc/ucsd-map.html Settings, slider. Output image.
-  - https://sheeptester.github.io/javascripts/mutate.html Many tables. Play and next frame button. Image output? (constant size)
   - https://sheeptester.github.io/javascripts/pip-image.html Image input with video output. Action button.
   - https://sheeptester.github.io/javascripts/grapher.html Single-line input, text, error, and image output.
 - https://sheeptester.github.io/javascripts/notifications.html Many inputs with detailed labels linking to documentation. Action button.
-- https://sheeptester.github.io/javascripts/raw-json-img.html Image input, settings, long text output (this could have a copy button!).
+- https://sheeptester.github.io/javascripts/raw-json-img.html Image input, settings, long text output (this could have a copy button!). Dropdown set to custom reveals more fields.
 - https://sheeptester.github.io/javascripts/cryptography.html Various unrelated input -> output text fields. Caesar cipher table.
 - https://sheeptester.github.io/javascripts/image-translucentifier.html Input output image, color inputs, color picker. Shows input and output side-by-side.
 - https://sheeptester.github.io/hello-world/bones-and-muscles.html Action button.
@@ -181,6 +180,7 @@ Other components:
 - https://sheeptester.github.io/words-go-here/misc/svgtopng.html Accepts multiple images.
 - https://sheeptester.github.io/javascripts/byte-sorter.html Immediately downloads result after inputting file.
 - Complicated
+  - https://sheeptester.github.io/javascripts/mutate.html Many tables. Play and next frame button. Image output? (constant size)
   - https://sheeptester.github.io/words-go-here/misc/pixel-font.html A settings form that gets disabled once set. Two live outputs. Has a wide glyph editor.
   - https://sheeptester.github.io/hello-world/nbt-parser.html Takes a file, and outputs a pretty-printed JSON tree. I think I should not touch this until I add my own JSON-tree capabilities.
   - https://sheeptester.github.io/words-go-here/misc/circles.html Input image, settings are set by keyboard only, interactive angles on a circle. This might be tough.
