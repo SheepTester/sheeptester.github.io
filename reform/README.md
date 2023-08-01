@@ -106,19 +106,16 @@ Other components:
 - https://sheeptester.github.io/words-go-here/misc/format.html Textarea input. Output has colors/formatting; how to deal with dark/light theme text colors?
 - https://sheeptester.github.io/theflat/easierjson.html Textarea input, console.log output.
 - https://sheeptester.github.io/words-go-here/misc/animated-painting-maker.html Settings, image input, two output images + textarea output.
-- https://sheeptester.github.io/calculator/calc/ Single-line input and action button produces number output. I think the action button can be replaced with
-  a live input -> output relationship.
+- https://sheeptester.github.io/calculator/calc/ Single-line input and action button produces number output. I think the action button can be replaced with a live input -> output relationship.
 - https://sheeptester.github.io/happynumbers/factoring/RAGE.html I think this page is broken.
 - https://sheeptester.github.io/hello-world/dynamic-sw/ Two-button control panel.
 - https://sheeptester.github.io/hello-world/underground-markup.html Textarea input, formatted output.
 - https://sheeptester.github.io/calculator/oldindex.html A function called `calc`. It wants you to run `calc` in the console.
 - https://sheeptester.github.io/words-go-here/savefiletest.html A simple form (textarea input) with an action button.
 - https://sheeptester.github.io/words-go-here/misc/file-editor.html Four-button control panel. Textarea input.
-- https://sheeptester.github.io/javascripts/zwsp-embedder.html Three inputs, where the first two drive the third. The relationship between the input/output
-  textareas is shown in a table-like layout. SPECIAL LAYOUT
+- https://sheeptester.github.io/javascripts/zwsp-embedder.html Three inputs, where the first two drive the third. The relationship between the input/output textareas is shown in a table-like layout. SPECIAL LAYOUT
 - https://sheeptester.github.io/words-go-here/misc/triangulated-coordinates.html Largely a static page, but it has two input -> output forms.
-- https://sheeptester.github.io/all/generator.html Takes a textarea input (JSON) (maybe we should allow dragging and dropping text files into textareas). Not
-  sure what the output is.
+- https://sheeptester.github.io/all/generator.html Takes a textarea input (JSON) (maybe we should allow dragging and dropping text files into textareas). Not sure what the output is.
 - https://sheeptester.github.io/words-go-here/misc/minimal-markup.html Input textarea -> output rich text.
 - https://sheeptester.github.io/javascripts/imagetoscheme.html Input image + settings -> display text.
 - https://sheeptester.github.io/words-go-here/misc/keyboard.html Input textarea, output is a keyboard SVG. Has a slider for playback and a play button.
@@ -199,3 +196,109 @@ Other components:
   - https://sheeptester.github.io/javascripts/multiplayer/
   - https://sheeptester.github.io/scratch-vm/video-sensing.html
   - https://sheeptester.github.io/javascripts/peerjs.html
+
+## Design
+
+Reform will be driven by inputs and outputs. Each output will independently specify the inputs that it depends on, then it'll be given an object mapping IDs to the input's value, casted to the appropriate type. It might look something like:
+
+```html
+<input type="text" id="message" />
+<input type="number" id="length" />
+<div id="cropped" data-inputs="message length"></div>
+```
+
+```js
+output('cropped', (elem, { message, length }) => {
+  elem.textContent = message.slice(0, length)
+})
+```
+
+The callback function will be called every time one of the specified inputs change.
+
+### Study: How to translate [intense-contrast]
+
+Much of the HTML would remain the same, including the radios' fieldset. For each radio, however, I'd split the description:
+
+> - **Lightened**
+>
+>   Like primitive, but a square root function is applied to make differences in dark pixels more obvious by making the pixels lighter.
+
+```html
+<label>
+  <input type="radio" name="method" value="lightened" />
+  <div class="label">
+    <p class="label-primary">Lightened</p>
+    <p class="label-secondary">
+      Like primitive, but a square root function is applied to make differences
+      in dark pixels more obvious by making the pixels lighter.
+    </p>
+  </div>
+</label>
+```
+
+---
+
+The most interesting thing about [intense-contrast], though, is that it has an additional input in the form of a pointer-selected region.
+
+```html
+<div id="selectionArea" data-inputs="preview">
+  <canvas id="preview"></canvas>
+  <canvas id="contrast" data-inputs="method image selectionArea"></canvas>
+</div>
+```
+
+`#preview` contains the input image. I will treat `#selectionArea` as a custom input, so `#contrast` is an output that depends on `method` (the radio buttons), `#image` (the selected image), and the custom input. Note that these IDs are camelCase for convenience when working in JS.
+
+I think to create custom inputs, you can register them using a function `input`. To get a reference to `#preview`, I've added `preview` as an input/dependency of `#selectionArea` in the HTML. I might rename `data-inputs` to `data-deps` (and `input` to `dep`?), actually.
+
+```js
+input('selectionArea', (elem, setValue, { preview }) => {
+  // Initialize input
+  let regionSetter
+  // ...
+  const handlePointerEnd = e => {
+    if (regionSetter?.pointer === e.pointerId) {
+      if (regionSetter.dragging) {
+        setValue([regionSetter.minX, regionSetter.minY])
+      }
+      regionSetter = null
+    }
+  }
+  elem.addEventListener('pointerup', handlePointerEnd)
+  elem.addEventListener('pointercancel', handlePointerEnd)
+  // Default value
+  return [0, 0]
+})
+```
+
+---
+
+Finally, how about selecting the image? For files, I want to allow many ways to accept files:
+
+- Clicking on the choose file button
+- Dropping a file onto the choose file button/the web page
+- Pasting
+
+I think dropping anywhere and pasting will only be enabled if a file input is marked as "main" or something. For example,
+
+```html
+<label>
+  <p>Target image</p>
+  <input type="file" id="image" accept="image/*" data-main />
+</label>
+```
+
+The markup I use for file inputs is important, though. It's possible that I will want to use the `<label>` as the "choose file" button, in which case, if I want to show a focus ring around it, I'll have to move the `<input>` element outside so I can use the sibling selector:
+
+```html
+<input type="file" id="image" accept="image/*" data-main />
+<label for="image"><span>Choose target image</span></label>
+```
+
+The `<label>` element can be a large-ish drop area, while the `<span>` can be the fake button that receives the focus ring. Then, to immediately show the selected image, I could do
+
+```html
+<canvas data-preview="image"></canvas>
+```
+
+In JavaScript, I guess I could just find all elements with the `[data-preview]` attribute (I considered adding a new class, but I think the performance difference between finding elements by attribute vs class is significant).
