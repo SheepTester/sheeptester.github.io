@@ -3,11 +3,18 @@
   color-scheme: light;
   --bg-rgb: 255, 255, 255;
   --heading: black;
+  --text-field: black;
   --text: rgba(0, 0, 0, 0.8);
   --secondary: rgba(0, 0, 0, 0.5);
-  --line: rgba(0, 0, 0, 0.3);
+  --line: rgba(0, 0, 0, 0.15);
+  --line-darker: rgba(0, 0, 0, 0.3);
   /* https://contrast-triangle.com/?linkColor=%23009da8&textColor=%23333333 */
   --link: #009da8;
+  --icon-dropdown: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='rgba(0, 0, 0, 0.8)' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  --icon-upload: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='rgba(0, 0, 0, 0.8)' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4'%3E%3C/path%3E%3Cpolyline points='17 8 12 3 7 8'%3E%3C/polyline%3E%3Cline x1='12' y1='3' x2='12' y2='15'%3E%3C/line%3E%3C/svg%3E");
+  --icon-download: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='rgba(0, 0, 0, 0.8)' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4'%3E%3C/path%3E%3Cpolyline points='7 10 12 15 17 10'%3E%3C/polyline%3E%3Cline x1='12' y1='15' x2='12' y2='3'%3E%3C/line%3E%3C/svg%3E");
+  --icon-copy: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='rgba(0, 0, 0, 0.8)' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2' ry='2'%3E%3C/rect%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'%3E%3C/path%3E%3C/svg%3E");
+  --icon-share: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='rgba(0, 0, 0, 0.8)' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='18' cy='5' r='3'%3E%3C/circle%3E%3Ccircle cx='6' cy='12' r='3'%3E%3C/circle%3E%3Ccircle cx='18' cy='19' r='3'%3E%3C/circle%3E%3Cline x1='8.59' y1='13.51' x2='15.42' y2='17.49'%3E%3C/line%3E%3Cline x1='15.41' y1='6.51' x2='8.59' y2='10.49'%3E%3C/line%3E%3C/svg%3E");
 
   --grad1: #20de88;
   --grad2: #28bbe8;
@@ -120,12 +127,17 @@ ul {
 li::marker {
   color: var(--secondary);
 }
+.main {
+  padding: 20px;
+  padding-top: 0;
+}
 .main > h1,
 .main > p,
 .main > ol,
 .main > ul,
 .main > .radio-set,
-.main > .field-label {
+.main > .field-label,
+.main > .cols {
   margin-left: auto;
   margin-right: auto;
   max-width: 800px;
@@ -140,7 +152,43 @@ li::marker {
   color: var(--heading);
 }
 .field-label {
-  display: block;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 10px;
+}
+.range-wrapper {
+  flex-direction: row;
+  align-items: flex-end;
+}
+.range-label {
+  flex: auto;
+  display: flex;
+  flex-direction: column;
+}
+.range-wrapper [type='text'] {
+  width: 100px;
+  margin: 0;
+}
+.cols {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.two-col {
+  margin: 0 auto;
+  margin-bottom: 10px;
+  max-width: 1200px;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+.two-col > div {
+  flex: 1 0 0;
+}
+.two-col .output {
+  display: flex;
+  flex-direction: column-reverse;
 }
 .link {
   color: var(--link);
@@ -148,6 +196,42 @@ li::marker {
 }
 .link:hover {
   text-decoration: underline;
+}
+[type='text'],
+select {
+  border: 1px solid var(--line);
+  padding: 5px 15px;
+  border-radius: 10px;
+  color: var(--text-field);
+  margin: 5px 0;
+  align-self: flex-start;
+}
+select {
+  background-image: var(--icon-dropdown);
+  background-size: 24px;
+  background-position: right 10px center;
+  background-repeat: no-repeat;
+  padding-right: 40px;
+}
+.icon {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  background-size: 24px;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+.icon-upload {
+  background-image: var(--icon-upload);
+}
+.icon-download {
+  background-image: var(--icon-download);
+}
+.icon-copy {
+  background-image: var(--icon-copy);
+}
+.icon-share {
+  background-image: var(--icon-share);
 }
 
 .radio-set {
@@ -170,7 +254,7 @@ li::marker {
   width: 16px;
   height: 16px;
   flex: none;
-  border: 1px solid var(--line);
+  border: 1px solid var(--line-darker);
   border-radius: 50%;
   position: relative;
   z-index: 0;
@@ -194,7 +278,7 @@ li::marker {
   bottom: 0;
   z-index: -1;
   border-radius: 50%;
-  background-image: linear-gradient(45deg, var(--grad1), var(--grad2));
+  background-image: linear-gradient(135deg, var(--grad1), var(--grad2));
   filter: blur(3px);
 }
 .radio-button::after {
@@ -204,5 +288,60 @@ li::marker {
   height: 6px;
 }
 
+.button {
+  min-height: 36px;
+  padding: 0 15px;
+  border-radius: 10px;
+  background-color: #eff2f6;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+  display: inline-flex;
+  align-items: center;
+  font-weight: bold;
+  line-height: 1;
+  cursor: pointer;
+}
+.primary-btn {
+  background-image: linear-gradient(100deg, var(--grad1), var(--grad2));
+  color: white;
+}
+.button-strip {
+  display: flex;
+}
+.button-strip .button {
+  border-left: 1px solid rgba(0, 0, 0, 0.1);
+}
+.button-strip .button:not(:first-child) {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+.button-strip .button:not(:last-child) {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+.button-strip .has-icon {
+  flex: auto;
+}
+.has-icon {
+  gap: 8px;
+  padding-left: 8px;
+  text-align: left;
+}
+.file-name {
+  display: block;
+  font-weight: normal;
+  color: var(--secondary);
+}
+
 .file-input {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--line);
+  padding: 10px;
+  border-radius: 10px;
+}
+.choose-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }

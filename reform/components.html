@@ -58,18 +58,22 @@
         <label class="field-label">
           <span class="label-primary">Tileset</span>
           <span class="label-secondary">
-            Only use dropdowns for long lists of options, such as voices or, for
-            <a
-              href="https://sheeptester.github.io/words-go-here/misc/ucsd-map.html"
-              class="link"
-              >ucsd-map</a
-            >, map tilesets. Otherwise, prefer radios.
+            Only use dropdowns for long lists of options, such as voices.
+            Otherwise, prefer radios.
           </span>
           <select name="tileset">
             <option value="1" selected>One option</option>
             <option value="2">Another option</option>
           </select>
         </label>
+        <p>
+          Another use for dropdowns is datasets, as seen in
+          <a
+            href="https://sheeptester.github.io/words-go-here/misc/ucsd-map.html"
+            class="link"
+            >ucsd-map</a
+          >.
+        </p>
 
         <div class="field-label range-wrapper">
           <label class="range-label">
@@ -80,8 +84,8 @@
         </div>
 
         <p>Some number pads do not support negative numbers.</p>
-        <div class="field-label 2col-field">
-          <label class="col-label">
+        <div class="cols">
+          <label class="field-label">
             <span class="label-primary">Min X</span>
             <input
               type="text"
@@ -91,7 +95,7 @@
               value="-1"
             />
           </label>
-          <label class="col-label">
+          <label class="field-label">
             <span class="label-primary">Max X</span>
             <input
               type="text"
@@ -175,46 +179,60 @@
           </label>
         </fieldset>
 
-        <button class="button primary-btn">Spawn</button>
+        <p>
+          <button class="button primary-btn">Spawn</button>
+          <button class="button" type="reset">Reset</button>
+        </p>
 
-        <div class="2col">
-          <div>
+        <div class="two-col">
+          <div class="input">
             <label class="file-input">
-              <input
-                type="file"
-                name="image"
-                accept="image/*"
-                class="hidden-accessible reform:main"
-                autofocus
-              />
-              <span class="upload-btn">
-                <span class="icon icon-upload"></span>
-                Choose
+              <span class="choose-wrapper">
+                <input
+                  type="file"
+                  name="image"
+                  accept="image/*"
+                  class="hidden-accessible reform:main"
+                />
+                <span class="button has-icon upload-btn">
+                  <span class="icon icon-upload"></span>
+                  Choose
+                </span>
+                <span class="file-hint">or drop/paste an image.</span>
               </span>
-              <span class="file-hint">or drop/paste an image.</span>
-              <span class="selected-file reform:selected-file"></span>
+              <span class="file-name reform:selected-file">
+                No file selected.
+              </span>
             </label>
             <canvas class="reform:preview" data-deps="image"></canvas>
           </div>
-          <div>
+          <div class="output">
             <canvas id="outputImage" data-deps="chunkSize image"></canvas>
-            <div class="output-btns">
-              <button class="output-btn download-btn" data-output="output">
+            <div class="button-strip">
+              <button
+                type="button"
+                class="button has-icon reform:download"
+                data-output="output"
+              >
                 <span class="icon icon-download"></span>
-                <span class="rhs">
+                <span class="with-file-name">
                   <span class="btn-text">Download</span>
-                  <span class="download-name"></span>
+                  <span class="file-name reform:download-name">
+                    No file yet.
+                  </span>
                 </span>
               </button>
               <button
-                class="output-btn copy-btn"
+                type="button"
+                class="button reform:copy"
                 data-output="output"
                 aria-label="Copy"
               >
                 <span class="icon icon-copy"></span>
               </button>
               <button
-                class="output-btn share-btn"
+                type="button"
+                class="button reform:share"
                 data-output="output"
                 aria-label="Share"
               >
@@ -224,22 +242,24 @@
           </div>
         </div>
 
-        <div class="2col">
-          <div>
+        <div class="two-col">
+          <div class="input">
             <label class="file-input">
-              <input
-                type="file"
-                name="original"
-                accept="text/*"
-                class="hidden-accessible"
-                autofocus
-              />
-              <span class="upload-btn">
-                <span class="icon icon-upload"></span>
-                Choose
+              <span class="choose-wrapper">
+                <input
+                  type="file"
+                  name="original"
+                  accept="text/*"
+                  class="hidden-accessible"
+                  autofocus
+                />
+                <span class="button has-icon upload-btn">
+                  <span class="icon icon-upload"></span>
+                  Choose
+                </span>
+                <span class="file-hint">or drop an image.</span>
               </span>
-              <span class="file-hint">or drop an image.</span>
-              <span class="selected-file reform:selected-file">
+              <span class="file-name reform:selected-file">
                 sample-text.txt (50 kB)
               </span>
             </label>
@@ -247,26 +267,37 @@
 Hello, gamers!</textarea
             >
           </div>
-          <div>
+          <div class="output">
             <textarea id="encoded" data-deps="original"></textarea>
-            <div class="output-btns">
-              <button class="output-btn download-btn" data-output="output">
+            <div class="button-strip">
+              <button
+                type="button"
+                class="button has-icon reform:download"
+                data-deps="output"
+              >
                 <span class="icon icon-download"></span>
-                <span class="rhs">
+                <span class="with-file-name">
                   <span class="btn-text">Download</span>
-                  <span class="download-name">sample-text.txt (50 kB)</span>
+                  <span
+                    class="file-name reform:download-name"
+                    data-deps="output"
+                  >
+                    sample-text.txt (50 kB)
+                  </span>
                 </span>
               </button>
               <button
-                class="output-btn copy-btn"
-                data-output="output"
+                type="button"
+                class="button reform:copy"
+                data-deps="output"
                 aria-label="Copy"
               >
                 <span class="icon icon-copy"></span>
               </button>
               <button
-                class="output-btn share-btn"
-                data-output="output"
+                type="button"
+                class="button reform:share"
+                data-deps="output"
                 aria-label="Share"
               >
                 <span class="icon icon-share"></span>
