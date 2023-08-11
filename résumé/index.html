@@ -117,7 +117,7 @@
             Bachelor of Science in Computer Engineering (<span class="label"
               >GPA</span
             >
-            3.967/4.0)
+            3.972/4.0)
           </p>
           <p class="date">September 2021 &ndash; June 2025</p>
           <!--
@@ -134,8 +134,8 @@
           <li>
             <span class="label">Coursework</span>
             Data Structures (Java, C++), Systems Programming (C, Assembly),
-            Digital Systems Design (System Verilog). In progress: Software
-            Engineering (HTML, CSS, JavaScript).
+            Digital Systems Design (System Verilog), Software Engineering (HTML,
+            CSS, JavaScript).
           </li>
         </ul>
       </article>
@@ -168,29 +168,70 @@
           <p class="city">San Diego, CA</p>
         </div>
         <div class="info info-stretch">
-          <p class="role">Student Information Technology</p>
+          <p class="role">Student IT</p>
           <p class="date">May 2022 &ndash; Present</p>
           <!-- Begins: 2022-05-23 -->
         </div>
         <ul class="desc">
-          <!-- (164+160+154) * 7 + (1231 - (164+160+154)) * 6 -->
+          <!--
+            - upload every major curriculum and college degree plans
+              - automated instead of manually uploading
+              - cleaned up data errors
+              - reverse engineered internal API to upload plans
+              - adapted code for plans across multiple years and other
+                universities
+              - NUMBER: plans uploaded (7900)
+            - create dashboards with Tableau displaying data
+              - rewrote Python script in Julia to work with Julia package
+              - NUMBER: Tableau pages made (1 + 3 + 1 + 3 + 1 = 9, including the
+                blocking/delay factor thing that isn't on Tableau Public)
+            - systematically flag issues in plans
+              - made it web-accessible for advisors "wide/diverse audience"
+              - NUMBER: issues flagged (3450)
+            - delivered new insights as web-accessible apps
+              - NUMBER: web pages made (5 including the two 2 prereq diffs, +
+                plan editor + plan editor index = 7)
+            - made diffing program for plans to see changes made to plans
+            - listed changes to prereqs with alternate view that focuses on
+              change year-by-ear to see when changes were made
+            - compared how plans varied between colleges
+            - display a tree of prereq relationships using d3.js
+              - provided student perspective/use for tool meant for
+                administrators
+              - graphical representation of data
+              - NUMBER: maximum courses in tree (781)
+            - created GUI for editing plans that automatically verifies
+              prerequisites
+            - identified redundant prerequisites
+            - rewrote Julia-only package in Python
+            - calculated capacity needed per course to ensure enough seats for
+              incoming students
+          -->
+          <!-- degree plans: (164+160+154) * 7 + (1231 - (164+160+154)) * 6 -->
           <li>
-            Parsed, analyzed, and uploaded 7,900 unique student academic plans
-            using Python and Julia.
+            Automated the cleanup and upload of 7,900 student degree
+            plans&mdash;traditionally a tedious task&mdash;by writing versatile
+            code in Python and Julia and reverse engineering internal web APIs.
           </li>
           <li>
-            Systematically identified errors in datasets published to staff and
-            students.
+            Ensured accuracy by identifying 3,450 issues using Python, elevating
+            the quality of plans for students.
           </li>
           <li>
-            Created 13 Tableau and web-based data visualizations with
-            TypeScript, React, and D3.js to highlight areas of improvement for
-            college advisors.
-            <!--
-              Tableau: 1 + 3 + 1 + 3 (counting tabs)
-              web: 5 (prereq diffs count as two)
-              https://educationalinnovation.ucsd.edu/ca-views/
-            -->
+            Developed 16 intuitive and visually captivating web-accessible
+            dashboards with Tableau and React to present actionable insights
+            that empowered university administrators with more informed
+            decisions.
+          </li>
+          <li>
+            Tracked 7 years' worth of changes made to degree plans, unvealing
+            the root causes of previously unexplained fluctuations in degree
+            difficulty to administrators.
+          </li>
+          <li>
+            Represented course prerequisites as an interactive tree structure
+            implemented using D3.js, enabling administrators to visualize how
+            their decisions can cascade down to hundreds of courses.
           </li>
         </ul>
       </article>
@@ -230,10 +271,8 @@
             <span class="js-exp"></span> years with HTML, CSS, and JavaScript.
           </li>
           <li>
-            Created a multitude of web tools and games for a diverse audience.
-          </li>
-          <li>
-            Attracted 27,000 visitors from Google Search in the last 3 months.
+            Created a multitude of web tools and games for a diverse audience to
+            attract 36,000 visitors in 90 days.
           </li>
         </ul>
       </article>
@@ -263,7 +302,7 @@
             course registration website.
           </li>
           <li>
-            Created a web scraper to collect the times and locations of all
+            Engineered a web scraper to collect the times and locations of all
             11,000 meetings across 2,400 courses.
           </li>
           <li>
@@ -299,8 +338,8 @@
         </div>
         <ul class="desc">
           <li>
-            Provided tools for 18,000 students in the past quarter for
-            publishing their own games.
+            Provided tools for 22,000 students in 90 days for publishing their
+            own games.
           </li>
         </ul>
       </article>
@@ -327,7 +366,7 @@
         <ul class="desc">
           <li>
             Simplified the process for creating announcements on Discord for
-            5,500 users in the past quarter.
+            5,500 users in 90 days.
           </li>
         </ul>
       </article>
@@ -501,6 +540,9 @@
         </li>
       </ul>
     </section>
+
+    <!-- Empty div to make sure last line doesn't go to next page -->
+    <div></div>
 
     <!-- <p class="for-the-bots">
       (note to self: Google, Amazon, Apple, Microsoft, Facebook, what else)

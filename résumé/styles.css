@@ -24,13 +24,19 @@ body {
   font-family: 'Open Sans', sans-serif;
   box-sizing: border-box;
   padding: 0.5in;
+  /* line-height: 1.25; */
 }
 @page {
   margin: 0;
 }
 .flex {
   flex: auto;
-  min-height: 15px;
+  min-height: 10px;
+}
+@media print {
+  .flex {
+    min-height: unset;
+  }
 }
 ul {
   /* Default bullet is not selectable in PDFs, which I think confuses ATS. */
@@ -168,10 +174,9 @@ li {
 }
 .desc {
   margin: 0;
-  margin-top: 5px;
 }
-.list > .desc {
-  margin-top: -5px;
+.info-stretch + .desc {
+  margin-top: 5px;
 }
 .subprojects {
   display: grid;
@@ -188,8 +193,7 @@ li {
   display: flex;
   margin: -0.5in;
   margin-bottom: 0;
-  padding: 0.5in;
-  padding-bottom: 20px;
+  padding: 0.3in 0.5in 20px;
   color: white;
   background-color: var(--theme);
 }
@@ -204,7 +208,7 @@ li {
 }
 .logo-wrapper {
   position: relative;
-  margin-bottom: 0.5in;
+  margin-bottom: 0.4in;
 }
 .logo {
   display: flex;

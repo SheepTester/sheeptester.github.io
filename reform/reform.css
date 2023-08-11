@@ -288,13 +288,14 @@ select {
   height: 6px;
 }
 
+/* https://www.figma.com/community/file/1159947337437047524/Windows-UI-3?preview=fullscreen */
 .button {
   min-height: 36px;
   padding: 0 15px;
   border-radius: 10px;
-  background-color: #eff2f6;
-  border-top: 1px solid rgba(255, 255, 255, 0.2);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+  background-color: rgba(0, 0, 0, 0.03);
+  /* border-top-color: rgba(255, 255, 255, 0.2); */
+  border-bottom: 1px solid rgba(0, 0, 0, 0.3);
   display: inline-flex;
   align-items: center;
   font-weight: bold;
