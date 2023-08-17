@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Obfuscate URL</title>
+    <meta
+      name="description"
+      content="Hide plain text in plain sight by URL/percent-encoding every letter, even when you don't need to. Note that noncompliant web servers might shiver and sob at the sight of these paths."
+    />
+
+    <link rel="stylesheet" type="text/css" href="/sheep3.css" />
+    <script src="/sheep3.js" charset="utf-8"></script>
+
+    <style>
+      html {
+        height: 100%;
+      }
+      body {
+        min-height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+        margin: 0;
+        box-sizing: border-box;
+        background-image: radial-gradient(circle, #ebf0f1, #a6adb9);
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+          'Helvetica Neue', Arial, sans-serif, 'Apple Color Emoji',
+          'Segoe UI Emoji', 'Segoe UI Symbol';
+        gap: 20px;
+      }
+      h1 {
+        font-size: 64px;
+        margin: 0;
+        background-image: linear-gradient(120deg, #ff00db, #9a40ff);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        text-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+        text-align: center;
+      }
+      [type='url'] {
+        height: 40px;
+        background-color: white;
+        font: inherit;
+        border: none;
+        padding: 0 20px;
+        border-radius: 20px;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        max-width: 500px;
+        color: inherit;
+      }
+      ::placeholder {
+        font-style: italic;
+        color: inherit;
+        opacity: 0.5;
+      }
+      fieldset {
+        display: flex;
+        flex-direction: column;
+        border: none;
+        margin: 0;
+        padding: 0;
+        align-items: center;
+      }
+      .labels {
+        display: flex;
+        margin-top: 20px;
+      }
+      label {
+        width: 50px;
+        display: flex;
+        flex-direction: column;
+        text-align: center;
+        align-items: center;
+      }
+      [type='radio'] {
+        clip: rect(0 0 0 0);
+        clip-path: inset(50%);
+        height: 1px;
+        overflow: hidden;
+        position: absolute;
+        white-space: nowrap;
+        width: 1px;
+      }
+      .radio-button {
+        display: block;
+        width: 24px;
+        height: 24px;
+        cursor: pointer;
+        background-color: #e8ebf1;
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        box-sizing: border-box;
+        border-radius: 50%;
+        position: relative;
+        z-index: 0;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+      }
+      :checked + .radio-button {
+        border: none;
+        background-image: linear-gradient(120deg, #ff00db, #9a40ff);
+        box-shadow: none;
+      }
+      :checked + .radio-button::before {
+        content: '';
+        inset: 0;
+        border-radius: 50%;
+        display: block;
+        background-image: linear-gradient(120deg, #ff00db, #9a40ff);
+        filter: blur(10px);
+        z-index: -1;
+        position: absolute;
+      }
+      :checked + .radio-button::after {
+        content: '';
+        inset: 0;
+        margin: auto;
+        width: 8px;
+        height: 8px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        border-radius: 50%;
+        background-color: white;
+        position: absolute;
+      }
+      :checked ~ span {
+        font-weight: bold;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Obfuscate URL</h1>
+    <input type="url" id="input" placeholder="Paste your URL here." autofocus />
+    <input
+      type="url"
+      id="output"
+      placeholder="Obfuscated URL will appear here."
+      readonly
+    />
+    <fieldset>
+      <legend>How much do you want to break things?</legend>
+      <div class="labels">
+        <label>
+          <input type="radio" name="breakage" value="1" />
+          <span class="radio-button"></span>
+          <span>Barely</span>
+        </label>
+        <label>
+          <input type="radio" name="breakage" value="2" checked />
+          <span class="radio-button"></span>
+          <span>A bit</span>
+        </label>
+        <label>
+          <input type="radio" name="breakage" value="3" />
+          <span class="radio-button"></span>
+          <span>Some</span>
+        </label>
+        <label>
+          <input type="radio" name="breakage" value="4" />
+          <span class="radio-button"></span>
+          <span>A lot</span>
+        </label>
+        <label>
+          <input type="radio" name="breakage" value="5" />
+          <span class="radio-button"></span>
+          <span>Yes.</span>
+        </label>
+      </div>
+    </fieldset>
+    <script>
+      const elems = {
+        input: document.getElementById('input'),
+        output: document.getElementById('output')
+      }
+      const encoder = new TextEncoder()
+
+      function encode (string, preserve = '') {
+        return Array.from(string, char =>
+          preserve.includes(char)
+            ? char
+            : Array.from(
+                encoder.encode(char),
+                byte => '%' + byte.toString(16).padStart(2, '0')
+              ).join('')
+        ).join('')
+      }
+
+      function update () {
+        const url = elems.input.value
+        const breakage = +document.querySelector('[name=breakage]:checked')
+          .value
+        console.log(breakage)
+
+        // https://en.wikipedia.org/wiki/URL#Syntax
+        const protocolIndex = url.indexOf('://')
+        const pathSlashIndex = url.indexOf(
+          '/',
+          protocolIndex === -1 ? 0 : protocolIndex + 3
+        )
+        const pathStartIndex = !url.includes(':')
+          ? 0 // Invalid URL, so just mangle the entire string
+          : pathSlashIndex === -1
+          ? protocolIndex === -1
+            ? url.indexOf(':') + 1 // In `about:blank`, `blank` is the path
+            : url.length // URL does not have a path, eg `https://google.com`
+          : pathSlashIndex
+        const path = url.slice(pathStartIndex)
+
+        // https://en.wikipedia.org/wiki/URL_encoding#Reserved_characters
+        const newPath =
+          breakage === 1
+            ? encode(decodeURI(path), ' !"#$%&\'()*+,/:;=?@[]')
+            : breakage === 2
+            ? encode(decodeURI(path), '!"#$%&\'()*+,/:;=?@[]')
+            : breakage === 3
+            ? '/' + encode(decodeURI(path.slice(1)), '#&+=?[]')
+            : breakage === 4
+            ? '/' + encode(decodeURI(path.slice(1)), '#&=?')
+            : breakage === 5
+            ? '/' + encode(decodeURI(path.slice(1)))
+            : path
+
+        elems.output.value = url.slice(0, pathStartIndex) + newPath
+      }
+
+      document.body.addEventListener('input', update)
+      update()
+    </script>
+  </body>
+</html>
