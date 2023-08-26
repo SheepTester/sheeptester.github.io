@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Floating sticky note</title>
+    <meta
+      name="description"
+      content="A notepad that floats above other windows, so you can watch videos full-screen and take notes at the same time."
+    />
+
+    <link rel="stylesheet" type="text/css" href="/sheep3.css" />
+    <script src="/sheep3.js" charset="utf-8"></script>
+
+    <style>
+      html,
+      body {
+        height: 100%;
+      }
+      body {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 20px;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+          'Helvetica Neue', Arial, sans-serif, 'Apple Color Emoji',
+          'Segoe UI Emoji', 'Segoe UI Symbol';
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 20px;
+      }
+      .pip {
+        display: block;
+        padding: 0;
+      }
+      #notepad-container {
+        border-radius: 10px;
+        overflow: hidden;
+        width: 400px;
+        height: 400px;
+        max-width: 100%;
+        max-height: 100%;
+        resize: both;
+        border: 1px solid #ebd165;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+        overflow: auto;
+        position: relative;
+        -webkit-overflow-scrolling: touch;
+      }
+      .notepad-floating {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: rgba(235, 209, 101, 0.1);
+      }
+      .notepad-floating::after {
+        content: 'The notepad is floating!';
+        margin: 20px;
+        color: #af9838;
+      }
+      #notepad {
+        min-height: 100%;
+        background-color: #fdf28a;
+        padding: 20px;
+      }
+      #notepad:focus {
+        outline: none;
+      }
+      #pip {
+        position: absolute;
+        bottom: 20px;
+        right: 20px;
+        border: 1px solid #af9838;
+        background: none;
+        font: inherit;
+        cursor: pointer;
+        padding: 5px 15px;
+        border-radius: 5px;
+        color: inherit;
+      }
+      #pip:not(:disabled):hover {
+        background-color: rgba(235, 209, 101, 0.1);
+      }
+      #pip:disabled {
+        cursor: unset;
+        opacity: 0.5;
+      }
+      .no-support {
+        padding: 20px;
+        border-radius: 10px;
+        border: 1px solid #fd1d2c;
+        background-color: rgba(253, 29, 44, 0.1);
+      }
+      .link {
+        color: #d21521;
+        text-decoration: none;
+        font-weight: bold;
+      }
+      .link:hover {
+        text-decoration: underline;
+      }
+      .supports-pip .no-support {
+        display: none;
+      }
+    </style>
+  </head>
+  <body class="supports-pip">
+    <div id="notepad-container">
+      <div id="notepad" contenteditable autofocus>
+        Write anything here! Use ctrl/cmd + <b>B</b>, <i>I</i>, or <u>U</u> to
+        add formatting.
+      </div>
+      <button id="pip">Pop out ↗️</button>
+    </div>
+    <div class="no-support">
+      Your browser doesn't support the
+      <a
+        class="link"
+        href="https://developer.chrome.com/docs/web-platform/document-picture-in-picture/"
+        >Document Picture-in-Picture API</a
+      >. Sad!
+    </div>
+    <script>
+      const container = document.getElementById('notepad-container')
+      const notepad = document.getElementById('notepad')
+      const pipBtn = document.getElementById('pip')
+
+      pipBtn.addEventListener('click', async () => {
+        const win = await documentPictureInPicture.requestWindow({
+          // width: 400,
+          // height: 400
+        })
+        win.addEventListener('pagehide', event => {
+          container.append(notepad)
+          container.classList.remove('notepad-floating')
+          pipBtn.disabled = false
+        })
+        for (const styleSheet of document.styleSheets) {
+          const style = document.createElement('style')
+          style.textContent = Array.from(
+            styleSheet.cssRules,
+            rule => rule.cssText
+          ).join('')
+          win.document.head.prepend(style)
+        }
+        win.document.body.classList.add('pip')
+        win.document.body.append(notepad)
+        container.classList.add('notepad-floating')
+        pipBtn.disabled = true
+      })
+
+      const KEY = '[javascripts] notepad'
+      notepad.addEventListener('input', () => {
+        localStorage[KEY] = notepad.innerHTML
+      })
+      if (localStorage[KEY]) {
+        notepad.setHTML(localStorage[KEY])
+      }
+
+      if (!('documentPictureInPicture' in window)) {
+        document.body.classList.remove('supports-pip')
+        pipBtn.disabled = true
+      }
+    </script>
+  </body>
+</html>
