@@ -25,7 +25,7 @@ export class Program {
     this.#gl = gl
     this.#program = this.#createProgram([
       this.#createShader(gl.VERTEX_SHADER, vertex),
-      this.#createShader(gl.VERTEX_SHADER, fragment)
+      this.#createShader(gl.FRAGMENT_SHADER, fragment)
     ])
   }
 
@@ -42,9 +42,10 @@ export class Program {
     this.#gl.shaderSource(shader, source)
     this.#gl.compileShader(shader)
     if (!this.#gl.getShaderParameter(shader, this.#gl.COMPILE_STATUS)) {
+      console.log(source)
       console.warn(this.#gl.getShaderInfoLog(shader))
       this.#gl.deleteShader(shader)
-      throw new SyntaxError('Shader failed to compile')
+      throw new SyntaxError('Shader failed to compile.')
     }
     return shader
   }
@@ -74,15 +75,24 @@ export class Program {
    * @param {string} name - Name of attribute in shader source code.
    */
   attribute (name) {
+    const location = this.#gl.getAttribLocation(this.#program, name)
+    if (location < 0) {
+      throw new TypeError(
+        `WebGL couldn\'t find attribute location of '${name}'. Is the variable unused?`
+      )
+    }
     const buffer = this.#gl.createBuffer()
     if (!buffer) {
       throw new TypeError("WebGL couldn't create buffer.")
     }
-    return new Attribute(
-      this.#gl,
-      this.#gl.getAttribLocation(this.#program, name),
-      buffer
-    )
+    return new Attribute(this.#gl, location, buffer)
+  }
+
+  /**
+   * @param {string} name - Name of uniform in shader source code.
+   */
+  uniform (name) {
+    return this.#gl.getUniformLocation(this.#program, name)
   }
 
   use () {
@@ -189,6 +199,39 @@ class Attribute {
 }
 
 /**
+ * Generates a fragment shader that performs a convolution on an image with a
+ * square 2r+1 by 2r+1 matrix. `u_kernel` is an array of (2r+1)^2 floats.
+ *
+ * @param {number} radius - The number of entries from the center entry
+ * outwards. For example, a `radius` of 0 produces 1x1 matrix.
+ */
+export function generateFragmentShader (radius) {
+  const values = []
+  for (let y = -radius, i = 0; y <= radius; y++) {
+    for (let x = -radius; x <= radius; x++, i++) {
+      values.push(
+        `texture2D(u_image, v_texCoord + pixel * vec2(${x}, ${y})) * u_kernel[${i}]`
+      )
+    }
+  }
+  return `
+    // Otherwise it complains about the vec2 and float precisions being
+    // unspecified
+    precision mediump float;
+
+    uniform sampler2D u_image;
+    uniform vec2 u_imageSize;
+    uniform float u_kernel[${(2 * radius + 1) ** 2}];
+    varying vec2 v_texCoord;
+
+    void main() {
+      vec2 pixel = vec2(1, 1) / u_imageSize;
+      gl_FragColor = vec4((${values.join('+')}).rgb, 1);
+    }
+    `
+}
+
+/**
  * @param {Context} gl
  */
 function test (gl) {
@@ -198,7 +241,7 @@ function test (gl) {
     .attribute('a_position')
     .bind()
     .data(new Float32Array([10, 20, 80, 20, 10, 30, 10, 30, 80, 20, 80, 30]))
-  const resolution = gl.getUniformLocation(program, 'u_resolution')
+  const resolution = program.uniform('u_resolution')
 
   // Render
   gl.viewport(0, 0, gl.canvas.width, gl.canvas.height)
@@ -206,7 +249,7 @@ function test (gl) {
   gl.clearColor(0, 0, 0, 0)
   gl.clear(gl.COLOR_BUFFER_BIT)
 
-  gl.useProgram(program)
+  program.use()
 
   position.enable().bind().setPointer({ components: 2 })
   gl.uniform2f(resolution, gl.canvas.width, gl.canvas.height)
