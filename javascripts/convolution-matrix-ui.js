@@ -18,7 +18,7 @@ function App () {
     initData[Math.floor(initData.length / 2)] = '1'
     return initData
   })
-  const [normalize, setNormalize] = useState(false)
+  const [normalize, setNormalize] = useState(true)
   const [image, setImage] = useState(null)
   const canvasRef = useRef(null)
   const glRef = useRef(null)
@@ -92,6 +92,13 @@ function App () {
   }, [])
 
   useEffect(() => {
+    fetch('./convolution-matrix-test-image.webp')
+      .then(r => r.blob())
+      .then(createImageBitmap)
+      .then(setImage)
+  }, [])
+
+  useEffect(() => {
     if (!image) {
       return
     }
@@ -108,7 +115,7 @@ function App () {
     position.enable().bind().setPointer({ components: 2 })
     texCoord.enable().bind().setPointer({ components: 2 })
     gl.uniform2f(imageSize, image.width, image.height)
-    const sum = data.reduce((cum, curr) => cum + curr, 0)
+    const sum = data.reduce((cum, curr) => cum + +curr, 0)
     const scale = normalize && sum !== 0 ? sum : 1
     gl.uniform1fv(
       kernel,
@@ -198,6 +205,20 @@ function App () {
             })
           )
         )
+      )
+    ),
+    h(
+      'p',
+      null,
+      h(
+        'label',
+        null,
+        h('input', {
+          type: 'checkbox',
+          checked: normalize,
+          onInput: e => setNormalize(e.currentTarget.checked)
+        }),
+        ' Normalize? (Scales down the matrix so all cells add up to 1.)'
       )
     ),
     h('canvas', { ref: canvasRef })

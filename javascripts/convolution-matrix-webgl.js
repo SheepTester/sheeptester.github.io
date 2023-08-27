@@ -256,4 +256,6 @@ function test (gl) {
 
   // Run vertex shader 6 times
   gl.drawArrays(gl.TRIANGLES, 0, 6)
+
+  gl.texImage2D
 }
