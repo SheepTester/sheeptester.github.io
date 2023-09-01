@@ -3,18 +3,19 @@ profiles:
     link: https://github.com/SheepTester
     bg: '#181717'
 
-  - name: Twitter
-    link: https://twitter.com/Sheep_tester/
-    ball: '#1DA1F2'
-
   - name: Instagram
     link: https://www.instagram.com/sheeptester/
     type: instagram
     border: white
 
-  - name: Reddit
-    link: https://www.reddit.com/user/Sheep_Tester
-    bg: '#FF4500'
+  - name: YouTube
+    link: https://www.youtube.com/@seanthesheep
+    bg: '#FF0000'
+    ball: white
+
+  - name: Twitter
+    link: https://twitter.com/Sheep_tester/
+    ball: '#1DA1F2'
 
   - name: Scratch
     link: https://scratch.mit.edu/users/Sheep_maker/
@@ -22,10 +23,9 @@ profiles:
     ball: '#F8A839'
     border: white
 
-  - name: YouTube
-    link: https://www.youtube.com/@seanthesheep
-    bg: '#FF0000'
-    ball: white
+  - name: Reddit
+    link: https://www.reddit.com/user/Sheep_Tester
+    bg: '#FF4500'
 
   - name: TikTok
     link: https://www.tiktok.com/@sheeptester

@@ -245,13 +245,20 @@ li {
 }
 
 .for-the-bots {
-  color: white;
-  position: fixed;
+  position: inline;
+  z-index: -1;
+  right: 0;
   bottom: 0;
-  left: 0;
-  pointer-events: none;
-  margin: 0;
-  user-select: none;
+  margin-left: -50px;
+  color: white;
+}
+textarea {
+  color: inherit;
+  border: none;
+}
+.for-the-bots:focus-within {
+  margin-left: -500px;
+  color: unset;
 }
 
 @media screen and (max-width: 800px) {

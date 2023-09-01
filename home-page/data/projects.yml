@@ -51,16 +51,6 @@
     - game
     - utility
 
-- path: /platformre/nova/penland/
-  image: img/newpenland.png
-  name: Penland Nova
-  description: >-
-    A tile-based 2D world simulator.
-  tags:
-    - game
-    - incomplete
-    - unintuitive
-
 - path: /gamepro5/minigames/turkeys/
   image: img/turkeys.png
   name: Turkeys
@@ -92,6 +82,15 @@
   name: Dodge dots game thing
   description: >-
     A minimalist dodging game translated from a Scratch project.
+  tags:
+    - game
+
+- path: /gamepro5/minigames/explodeyothello.html
+  image: img/explodeyothello.webp
+  name: Explodey Othello
+  description: >-
+    A clone of a Scratch game by @joshrawesome involving shooting at enemies to
+    prevent them from spreading bad tiles.
   tags:
     - game
 
@@ -166,6 +165,22 @@
   tags:
     - game
 
+- path: /hello-world/hh23-rhythm/src/javascript-impatience/
+  image: img/rhythm.webp
+  name: Rhythm Game
+  description: >-
+    This was our submission for Hard Hacks 2023, a hardware hackathon. The
+    hardware part relied on a circuit board that we no longer had (it was
+    borrowed from the event sponsors), plugged into the computer by a USB cable.
+    The web interface would access the board's sensors using the Web Serial API.
+
+    Since I don't have the board anymore, and neither do you, I've replaced the
+    board controls with keyboard controls: left/right arrows for the left/right
+    buttons, and the mouse/touchscren to swipe left and right.
+  tags:
+    - game
+    - school
+
 - path: /thingkingland/games/PFPFPF/
   image: img/pfpfpf-smaller.png
   name: PFPFPF
@@ -179,6 +194,14 @@
   name: Roshambo
   description: >-
     Fast-paced rock paper scissors.
+  tags:
+    - game
+
+- path: /thingkingland/games/SHF/
+  image: img/shf.webp
+  name: SHF
+  description: >-
+    A typing game.
   tags:
     - game
 
@@ -206,6 +229,36 @@
     Lets you pan audio left and right so you can check if your stereo speakers
     are working, or to see which speaker/earbud is the right one, or to figure
     out how deaf your left ear is.
+  tags:
+    - utility
+
+- path: /javascripts/mp4-analyze.html
+  image: img/mp4.webp
+  name: MP4 analyzer
+  description: >-
+    Analyzes the components of an mp4 file, and allows you to edit its fields
+    and download the result.
+
+    The most compelling use case for this is editing the duration of the video.
+    Even if you don't add any movie data, many video players, like Discord's,
+    will show whatever you set the duration to, at least until near the end of
+    the video when it knows how long it really is. This way, you can create
+    videos that seem to be days long without going over upload limits.
+
+    I know that it works for mp4 files produced by OBS, but it doesn't work with
+    all mp4 files, like the ones taken by my phone.
+  tags:
+    - utility
+
+- path: /words-go-here/misc/path.html
+  image: img/path.webp
+  name: SVG path editor
+  description: >-
+    Edit the vertices of an SVG path, with all of the SVG path types (lines,
+    cubic beziers, arcs) available.
+
+    Although it could benefit with some more features, I still find it
+    occasionally useful for inspecting paths that fit on the canvas.
   tags:
     - utility
 
@@ -267,6 +320,16 @@
   tags:
     - utility
 
+- path: /words-go-here/misc/diff.html
+  image: img/diff.webp
+  name: Diff Checker
+  description: >-
+    Uses the diff checker provided by Monaco (VS Code's text editor) to
+    highlight the differences in two versions of text. The diff checkers online
+    have too many ads; I just want to get straight to the diffing.
+  tags:
+    - visual
+
 - path: /javascripts/large-file-viewer.html
   image: img/large-file-viewer.png
   name: Large file viewer
@@ -301,6 +364,20 @@
   name: Special character finder
   description: >-
     A detector of non-US-keyboard characters.
+  tags:
+    - utility
+
+- path: /hello-world/largetext.html
+  image: img/largetext.webp
+  name: Large Text
+  description: >-
+    Write text in a large font to show to your friend next to you or across the
+    room.
+
+    I initially made this as a local file on my Chromebook for when I couldn't
+    comfortably speak due to a sore throat. I eventually uploaded it online
+    since my friend wanted it too. I now use it to talk to my friends during
+    lecture.
   tags:
     - utility
 
@@ -343,6 +420,41 @@
     A generator of sine and cosine problems with basic angles.
   tags:
     - utility
+    - school
+
+- path: /words-go-here/misc/trig.html
+  image: img/trig.webp
+  name: Trig and calculus cheat sheet
+  description: >-
+    A reference sheet for my high school trigonometry and calculus classes with
+    identities, derivatives, and antiderivatives for trigonometric functions.
+    And Taylor series.
+
+    This basically is a list of math equations I have to memorize and don't want
+    to.
+  tags:
+    - visual
+    - school
+
+- path: /words-go-here/misc/math20d.html
+  image: img/math20d.webp
+  name: Differential calculus cheat sheet
+  description: >-
+    A reference sheet for MATH 20D, my differential calculus class, listing all the
+    types of differential equations we were taught and how to solve them.
+  tags:
+    - visual
+    - school
+
+- path: /words-go-here/misc/big-o.html
+  image: img/big-o.webp
+  name: Big O notations
+  description: >-
+    A reference sheet comparing the various big-O notations and what they mean.
+    Many of my theoretical CS classes keep referencing the different notations,
+    and I keep forgetting what they mean.
+  tags:
+    - visual
     - school
 
 - path: /roots/
@@ -411,6 +523,73 @@
     A 2D sandbox game translated from my Scratch project.
   tags:
     - game
+    - unintuitive
+
+- path: /platformre/nova/penland/
+  image: img/newpenland.png
+  name: Penland Nova
+  description: >-
+    A tile-based 2D world simulator.
+  tags:
+    - game
+    - incomplete
+    - unintuitive
+
+- path: /platformre/penworld/
+  image: img/penworld-canvas2d.webp
+  name: Penworld (Canvas2D)
+  description: >-
+    My first voxel rendering attempt using Canvas2D, which isn't meant for
+    drawing 3D graphics (it's more akin to Scratch pen or Khan Academy's
+    Processing JS).
+
+    Still, it features rudimentary raycasting, breaking and placing blocks, and
+    transparent block faces, though the raycasting algorithm is quite
+    inaccurate.
+  tags:
+    - visual
+    - incomplete
+
+- path: /platformre/webgl/penworld.html
+  image: img/penworld-webgl.webp
+  name: Penworld (WebGL)
+  description: >-
+    A voxel rendering demo using WebGL. I made it after learning enough WebGL to
+    feel confident in making a voxel renderer.
+
+    From my previous attempt with Canvas2D, this demo features textures, a
+    better (but still buggy) raycasting algorithm for placing and breaking
+    blocks, and support for multiple chunks. This demo also features a
+    transparent block, like the Canvas2D version.
+  tags:
+    - visual
+    - incomplete
+
+- path: /words-go-here/misc/kaaba/
+  image: img/kaaba.webp
+  name: Kaaba
+  description: >-
+    Kaaba is my third attempt at rendering voxels. I made it after learning
+    enough WebGPU to feel confident in rendering voxels.
+
+    The chunk size was increased to 32 in each axis, and there is more than one
+    chunk by default, with randomly placed blocks to test performance by adding
+    more block faces. Compared to the previous WebGL version, this verison isn't
+    as powerful: there's no block placing or breaking, and block faces aren't
+    culled between chunks.
+
+    This was mostly a demo on the GPU side. Uploading data to the GPU is slow,
+    so I only uploaded block positions and used instanced rendering to create 6
+    vertices per face (3 vertices for each triangle in the square). I also
+    adjusted how pixels are grabbed from the block texture atlas to prevent
+    atlas bleeding, where a strip of the next texture in the atlas shows on the
+    edges of a block face; this was an issue in the WebGL version.
+
+    I also added post-processing effects mostly for the fun of it, since this
+    was mostly a GPU learning experience.
+  tags:
+    - visual
+    - incomplete
     - unintuitive
 
 - path: /platformre/nova/paint.html
@@ -499,6 +678,27 @@
   tags:
     - visual
 
+- path: /javascripts/countdown.html
+  image: img/countdown.webp
+  name: Countdown
+  description: >-
+    Create a URL that shows the days left or since a selected date. I think I
+    made this to count the days left in summer before school started.
+  tags:
+    - visual
+
+- path: /javascripts/still-2020.html
+  image: img/covid.webp
+  name: It's still March 2020
+  description: >-
+    March 2020 never ended. So what day would it be?
+
+    For non-Americans, March 13, 2020 was when my county's school districts
+    (among other things) were finally forced to close due to Covid-19 (back
+    then, the novel coronavirus).
+  tags:
+    - visual
+
 - path: /contextmenutest.html
   image: img/rightclick-smaller.png
   name: Context Menu Test
@@ -541,6 +741,21 @@
     A terminal design with primitive commands.
   tags:
     - visual
+
+- path: /javascripts/putty-serial.html
+  image: img/usb.webp
+  name: USB PuTTY reader
+  description: >-
+    Uses the Web Serial API to read text from a USB port's terminal console.
+
+    I used this during Hard Hacks 2023 (a hardware hackathon) to read the
+    console from an Infineon circuit board because I was struggling to access
+    the USB ports from WSL2 (which does not support USBs). This was later used
+    to connect our rhythm game's web interface to the circuit board like a
+    controller.
+  tags:
+    - utility
+    - unintuitive
 
 - path: /words-go-here/misc/flappy-again.html
   image: img/flappy-smaller.png
