@@ -52,6 +52,7 @@
     </p>
     <p><label>Rows: <input type="number" id="rows" value="1"></label></p>
     <p><label>Columns: <input type="number" id="cols" value="1"></label></p>
+    <p><label>Size: <input type="number" id="size" value="128"></label></p>
     <p>
       <label>
         Fit:
@@ -73,13 +74,12 @@ const elems = {
   image: document.getElementById('image-file'),
   rows: document.getElementById('rows'),
   cols: document.getElementById('cols'),
+  size: document.getElementById('size'),
   fit: document.getElementById('fit'),
   preview: document.getElementById('preview'),
   overlay: document.getElementById('overlay'),
   chop: document.getElementById('chop')
 }
-// Discord resizes emoji images down to 128 by 128
-const SIZE = 128
 // Size in pixels of large displayed emoji (eg in emoji-only messages) in the
 // Discord client
 const DISPLAY_SIZE = 48
@@ -109,7 +109,8 @@ document.addEventListener('paste', e => {
 function getSize () {
   return {
     rows: Math.max(+elems.rows.value | 0, 1),
-    cols: Math.max(+elems.cols.value | 0, 1)
+    cols: Math.max(+elems.cols.value | 0, 1),
+    size: Math.max(+elems.size.value | 0, 1)
   }
 }
 
@@ -118,10 +119,10 @@ const oc = elems.overlay.getContext('2d')
 function updatePreview () {
   if (!image) return
 
-  const { rows, cols } = getSize()
-  c.canvas.width = SIZE * cols
-  c.canvas.height = SIZE * rows
-  c.canvas.style.width = c.canvas.width * DISPLAY_SIZE / SIZE + 'px'
+  const { rows, cols, size } = getSize()
+  c.canvas.width = size * cols
+  c.canvas.height = size * rows
+  c.canvas.style.width = c.canvas.width * DISPLAY_SIZE / size + 'px'
   switch (elems.fit.value) {
     case 'stretch': {
       c.drawImage(image, 0, 0, c.canvas.width, c.canvas.height)
@@ -188,10 +189,11 @@ function updatePreview () {
 
 elems.rows.addEventListener('input', updatePreview)
 elems.cols.addEventListener('input', updatePreview)
+elems.size.addEventListener('input', updatePreview)
 elems.fit.addEventListener('change', updatePreview)
 
 elems.chop.addEventListener('click', async () => {
-  const { rows, cols } = getSize()
+  const { rows, cols, size } = getSize()
   const rowLength = `${rows}`.length
   const colLength = `${cols}`.length
 
@@ -202,14 +204,14 @@ elems.chop.addEventListener('click', async () => {
   emoji.style.gridTemplateColumns = `repeat(${cols}, ${DISPLAY_SIZE}px)`
 
   const canvas = document.createElement('canvas')
-  canvas.width = SIZE
-  canvas.height = SIZE
+  canvas.width = size
+  canvas.height = size
   const c = canvas.getContext('2d')
   const blobs = []
   for (let y = 0; y < rows; y++) {
     for (let x = 0; x < cols; x++) {
-      c.clearRect(0, 0, SIZE, SIZE)
-      c.drawImage(elems.preview, x * SIZE, y * SIZE, SIZE, SIZE, 0, 0, SIZE, SIZE)
+      c.clearRect(0, 0, size, size)
+      c.drawImage(elems.preview, x * size, y * size, size, size, 0, 0, size, size)
       const blob = await new Promise(resolve => canvas.toBlob(resolve))
       const url = URL.createObjectURL(blob)
       const name = `emoji_${
