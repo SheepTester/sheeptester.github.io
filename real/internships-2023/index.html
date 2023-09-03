@@ -5,7 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <title>Internships summer 2023</title>
-    <meta name="description" content="It's a very simple sankey diagram." />
+    <meta
+      name="description"
+      content="It's a very simple sankey diagram. (It's a very boring sankey diagram.)"
+    />
 
     <link rel="stylesheet" type="text/css" href="/sheep3.css" />
     <script src="/sheep3.js" charset="utf-8"></script>
@@ -37,6 +40,15 @@
         padding: 20px;
         gap: 20px;
       }
+      header {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+      }
+      h1 {
+        margin: 0;
+        line-height: 1;
+      }
 
       .home {
         display: flex;
@@ -64,8 +76,6 @@
       }
 
       #graph {
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: 20px;
         height: 60vh;
         position: relative;
       }
@@ -74,14 +84,27 @@
         top: 0;
         left: 0;
       }
+      #graph text {
+        fill: currentColor;
+        stroke: #191b20;
+        stroke-width: 2;
+        paint-order: stroke;
+        dominant-baseline: central;
+      }
+      .node-name {
+        font-weight: bold;
+      }
     </style>
   </head>
   <body>
     <main>
-      <a href="/" class="home">
-        <span class="icon icon-home"></span>
-        Home
-      </a>
+      <header>
+        <a href="/" class="home">
+          <span class="icon icon-home"></span>
+          Home
+        </a>
+        <h1>Internship season summer 2023</h1>
+      </header>
       <div id="graph"></div>
     </main>
     <script type="module">
@@ -97,15 +120,13 @@
         .nodeWidth(15)
         .nodePadding(10)
 
-      // Nodes
-      const rect = svg.append('g').attr('stroke', '#000').selectAll()
-
       const link = svg
         .append('g')
         .attr('fill', 'none')
         .attr('stroke-opacity', 0.5)
         .selectAll()
 
+      const rect = svg.append('g').selectAll()
       const labels = svg.append('g').selectAll()
 
       function resize (width, height) {
@@ -116,22 +137,28 @@
         ])
 
         const { nodes, links } = sankey({
-          nodes: [{ name: 'test' }, { name: 'test 2' }, { name: 'test 3' }],
+          nodes: [
+            { name: 'Applied', color: '#74e0ff' },
+            { name: 'OA', color: '#b8ff6c' },
+            { name: 'Rejected', color: '#fca5a5' },
+            { name: 'Ghosted', color: '#fde047' }
+          ],
           links: [
-            { source: 'test', target: 'test 2', value: 1 },
-            { source: 'test', target: 'test 3', value: 2 }
+            { source: 'Applied', target: 'Rejected', value: 53 },
+            { source: 'Applied', target: 'Ghosted', value: 51 },
+            { source: 'Applied', target: 'OA', value: 9 },
+            { source: 'OA', target: 'Rejected', value: 5 },
+            { source: 'OA', target: 'Ghosted', value: 4 }
           ]
         })
         rect
           .data(nodes)
           .join('rect')
-          .attr('fill', d => 'red')
+          .attr('fill', d => d.color)
           .attr('x', d => d.x0)
           .attr('y', d => d.y0)
           .attr('height', d => d.y1 - d.y0)
           .attr('width', d => d.x1 - d.x0)
-          .append('title')
-          .text(d => `${d.name}\n${d.value} TWh`)
 
         const ourLink = link
           .data(links)
@@ -147,11 +174,11 @@
         gradient
           .append('stop')
           .attr('offset', '0%')
-          .attr('stop-color', d => 'red')
+          .attr('stop-color', d => d.source.color)
         gradient
           .append('stop')
           .attr('offset', '100%')
-          .attr('stop-color', d => 'blue')
+          .attr('stop-color', d => d.target.color)
 
         ourLink
           .append('path')
@@ -166,9 +193,19 @@
           .join('text')
           .attr('x', d => (d.x0 < width / 2 ? d.x1 + 6 : d.x0 - 6))
           .attr('y', d => (d.y1 + d.y0) / 2)
-          .attr('dy', '0.35em')
+          .attr('dy', '-0.6em')
           .attr('text-anchor', d => (d.x0 < width / 2 ? 'start' : 'end'))
+          .attr('class', 'node-name')
           .text(d => d.name)
+        labels
+          .data(nodes)
+          .join('text')
+          .attr('x', d => (d.x0 < width / 2 ? d.x1 + 6 : d.x0 - 6))
+          .attr('y', d => (d.y1 + d.y0) / 2)
+          .attr('dy', '0.6em')
+          .attr('text-anchor', d => (d.x0 < width / 2 ? 'start' : 'end'))
+          .attr('class', 'node-value')
+          .text(d => d.value)
       }
 
       // Append the SVG element.
