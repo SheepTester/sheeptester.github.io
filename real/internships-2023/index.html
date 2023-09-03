@@ -38,7 +38,9 @@
         padding: 20px;
         gap: 10px;
       }
-      header,
+      nav,
+      h1,
+      h2,
       #sankey,
       footer {
         max-width: 1000px;
@@ -51,7 +53,6 @@
         gap: 20px;
       }
       h1 {
-        margin: 0;
         line-height: 1;
       }
 
@@ -85,6 +86,12 @@
       p {
         margin: 0;
       }
+      footer a {
+        color: #74e0ff;
+      }
+      footer a:hover {
+        text-decoration: underline;
+      }
 
       #sankey {
         height: 60vh;
@@ -94,6 +101,7 @@
         position: absolute;
         top: 0;
         left: 0;
+        overflow: visible;
       }
       text {
         fill: currentColor;
@@ -105,29 +113,30 @@
       .node-name {
         font-weight: bold;
       }
-      #scroll-wrapper {
-        outline: 1px solid lime;
+      h2 {
+        text-align: center;
       }
       #timeline {
         margin: 0 -20px;
         position: sticky;
         top: 20px;
         height: calc(100vh - 40px);
-        outline: 1px solid red;
+        height: calc(100svh - 40px);
         overflow: hidden;
       }
     </style>
   </head>
   <body>
     <main>
-      <header>
+      <nav>
         <a href="/" class="home">
           <span class="icon icon-home"></span>
           Home
         </a>
-        <h1>Internship season summer 2023</h1>
-      </header>
+      </nav>
+      <h1>Internship season summer 2023</h1>
       <div id="sankey"></div>
+      <h2>Timeline</h2>
       <div id="scroll-wrapper">
         <div id="timeline"></div>
       </div>
