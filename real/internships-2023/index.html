@@ -38,7 +38,7 @@
         max-width: 1000px;
         margin: 0 auto;
         padding: 20px;
-        gap: 20px;
+        gap: 10px;
       }
       header {
         display: flex;
@@ -120,14 +120,15 @@
         .nodeWidth(15)
         .nodePadding(10)
 
-      const link = svg
+      let link = svg
         .append('g')
         .attr('fill', 'none')
         .attr('stroke-opacity', 0.5)
         .selectAll()
+      let rect = svg.append('g').selectAll()
+      let labels = svg.append('g').selectAll()
 
-      const rect = svg.append('g').selectAll()
-      const labels = svg.append('g').selectAll()
+      let uid = 0
 
       function resize (width, height) {
         svg.attr('width', width).attr('height', height)
@@ -151,7 +152,8 @@
             { source: 'OA', target: 'Ghosted', value: 4 }
           ]
         })
-        rect
+
+        rect = rect
           .data(nodes)
           .join('rect')
           .attr('fill', d => d.color)
@@ -160,52 +162,58 @@
           .attr('height', d => d.y1 - d.y0)
           .attr('width', d => d.x1 - d.x0)
 
-        const ourLink = link
+        link = link
           .data(links)
-          .join('g')
-          .style('mix-blend-mode', 'plus-lighter')
-
-        const gradient = ourLink
-          .append('linearGradient')
-          .attr('id', d => (d.uid = `${Math.random()}`))
-          .attr('gradientUnits', 'userSpaceOnUse')
+          .join(enter => {
+            const g = enter.append('g').style('mix-blend-mode', 'plus-lighter')
+            const gradient = g
+              .append('linearGradient')
+              .attr('id', d => (d.uid = `gradient-${++uid}`))
+              .attr('gradientUnits', 'userSpaceOnUse')
+            gradient
+              .append('stop')
+              .attr('offset', '0%')
+              .attr('stop-color', d => d.source.color)
+            gradient
+              .append('stop')
+              .attr('offset', '100%')
+              .attr('stop-color', d => d.target.color)
+            const path = g
+              .append('path')
+              .attr('stroke', d => `url(#${d.uid})`)
+              .append('title')
+              .text(d => `${d.source.name} → ${d.target.name}\n${d.value} TWh`)
+            return g
+          })
+          .attr('stroke-width', d => Math.max(1, d.width))
+        link
+          .select('linearGradient')
           .attr('x1', d => d.source.x1)
           .attr('x2', d => d.target.x0)
-        gradient
-          .append('stop')
-          .attr('offset', '0%')
-          .attr('stop-color', d => d.source.color)
-        gradient
-          .append('stop')
-          .attr('offset', '100%')
-          .attr('stop-color', d => d.target.color)
+        link.select('path').attr('d', sankeyLinkHorizontal())
 
-        ourLink
-          .append('path')
-          .attr('d', sankeyLinkHorizontal())
-          .attr('stroke', d => `url(#${d.uid})`)
-          .attr('stroke-width', d => Math.max(1, d.width))
-          .append('title')
-          .text(d => `${d.source.name} → ${d.target.name}\n${d.value} TWh`)
-
-        labels
+        labels = labels
           .data(nodes)
-          .join('text')
-          .attr('x', d => (d.x0 < width / 2 ? d.x1 + 6 : d.x0 - 6))
-          .attr('y', d => (d.y1 + d.y0) / 2)
-          .attr('dy', '-0.6em')
+          .join(enter => {
+            const g = enter.append('g')
+            g.append('text')
+              .attr('dy', '-0.6em')
+              .attr('class', 'node-name')
+              .text(d => d.name)
+            g.append('text')
+              .attr('dy', '0.6em')
+              .attr('class', 'node-value')
+              .text(d => d.value)
+            return g
+          })
+          .attr(
+            'transform',
+            d =>
+              `translate(${d.x0 < width / 2 ? d.x1 + 6 : d.x0 - 6}, ${
+                (d.y1 + d.y0) / 2
+              })`
+          )
           .attr('text-anchor', d => (d.x0 < width / 2 ? 'start' : 'end'))
-          .attr('class', 'node-name')
-          .text(d => d.name)
-        labels
-          .data(nodes)
-          .join('text')
-          .attr('x', d => (d.x0 < width / 2 ? d.x1 + 6 : d.x0 - 6))
-          .attr('y', d => (d.y1 + d.y0) / 2)
-          .attr('dy', '0.6em')
-          .attr('text-anchor', d => (d.x0 < width / 2 ? 'start' : 'end'))
-          .attr('class', 'node-value')
-          .text(d => d.value)
       }
 
       // Append the SVG element.
