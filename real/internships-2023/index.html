@@ -85,49 +85,98 @@
       <div id="graph"></div>
     </main>
     <script type="module">
-      import * as d3 from 'https://cdn.jsdelivr.net/npm/d3@7/+esm'
+      import * as d3 from 'https://cdn.jsdelivr.net/npm/d3@7.8.5/+esm'
+      import {
+        sankey as sankeyJustify,
+        sankeyLinkHorizontal
+      } from 'https://cdn.jsdelivr.net/npm/d3-sankey@0.12.3/+esm'
 
-      // Declare the chart dimensions and margins.
-      const width = 640
-      const height = 400
-      const marginTop = 20
-      const marginRight = 20
-      const marginBottom = 30
-      const marginLeft = 40
-
-      // Declare the x (horizontal position) scale.
-      const x = d3
-        .scaleUtc()
-        .domain([new Date('2023-01-01'), new Date('2024-01-01')])
-        .range([marginLeft, width - marginRight])
-
-      // Declare the y (vertical position) scale.
-      const y = d3
-        .scaleLinear()
-        .domain([0, 100])
-        .range([height - marginBottom, marginTop])
-
-      // Create the SVG container.
       const svg = d3.create('svg')
+      const sankey = sankeyJustify()
+        .nodeId(d => d.name)
+        .nodeWidth(15)
+        .nodePadding(10)
 
-      // Add the x-axis.
-      svg
-        .append('g')
-        .attr('transform', `translate(0,${height - marginBottom})`)
-        .call(d3.axisBottom(x))
+      // Nodes
+      const rect = svg.append('g').attr('stroke', '#000').selectAll()
 
-      // Add the y-axis.
-      svg
+      const link = svg
         .append('g')
-        .attr('transform', `translate(${marginLeft},0)`)
-        .call(d3.axisLeft(y))
+        .attr('fill', 'none')
+        .attr('stroke-opacity', 0.5)
+        .selectAll()
+
+      const labels = svg.append('g').selectAll()
+
+      function resize (width, height) {
+        svg.attr('width', width).attr('height', height)
+        sankey.extent([
+          [1, 5],
+          [width - 1, height - 5]
+        ])
+
+        const { nodes, links } = sankey({
+          nodes: [{ name: 'test' }, { name: 'test 2' }, { name: 'test 3' }],
+          links: [
+            { source: 'test', target: 'test 2', value: 1 },
+            { source: 'test', target: 'test 3', value: 2 }
+          ]
+        })
+        rect
+          .data(nodes)
+          .join('rect')
+          .attr('fill', d => 'red')
+          .attr('x', d => d.x0)
+          .attr('y', d => d.y0)
+          .attr('height', d => d.y1 - d.y0)
+          .attr('width', d => d.x1 - d.x0)
+          .append('title')
+          .text(d => `${d.name}\n${d.value} TWh`)
+
+        const ourLink = link
+          .data(links)
+          .join('g')
+          .style('mix-blend-mode', 'plus-lighter')
+
+        const gradient = ourLink
+          .append('linearGradient')
+          .attr('id', d => (d.uid = `${Math.random()}`))
+          .attr('gradientUnits', 'userSpaceOnUse')
+          .attr('x1', d => d.source.x1)
+          .attr('x2', d => d.target.x0)
+        gradient
+          .append('stop')
+          .attr('offset', '0%')
+          .attr('stop-color', d => 'red')
+        gradient
+          .append('stop')
+          .attr('offset', '100%')
+          .attr('stop-color', d => 'blue')
+
+        ourLink
+          .append('path')
+          .attr('d', sankeyLinkHorizontal())
+          .attr('stroke', d => `url(#${d.uid})`)
+          .attr('stroke-width', d => Math.max(1, d.width))
+          .append('title')
+          .text(d => `${d.source.name} → ${d.target.name}\n${d.value} TWh`)
+
+        labels
+          .data(nodes)
+          .join('text')
+          .attr('x', d => (d.x0 < width / 2 ? d.x1 + 6 : d.x0 - 6))
+          .attr('y', d => (d.y1 + d.y0) / 2)
+          .attr('dy', '0.35em')
+          .attr('text-anchor', d => (d.x0 < width / 2 ? 'start' : 'end'))
+          .text(d => d.name)
+      }
 
       // Append the SVG element.
       const graph = document.getElementById('graph')
       graph.append(svg.node())
       new ResizeObserver(([{ contentBoxSize }]) => {
         const [{ blockSize, inlineSize }] = contentBoxSize
-        svg.attr('width', inlineSize).attr('height', blockSize)
+        resize(inlineSize, blockSize)
       }).observe(graph)
     </script>
   </body>
