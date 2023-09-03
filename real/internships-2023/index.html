@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Internships summer 2023</title>
+    <title>Summer 2023 Internship Season</title>
     <meta
       name="description"
       content="It's a very simple sankey diagram. (It's a very boring sankey diagram.)"
@@ -47,28 +47,36 @@
         margin: 0 auto;
         width: 100%;
       }
-      header {
+      nav {
         display: flex;
-        align-items: center;
         gap: 20px;
       }
       h1 {
         line-height: 1;
       }
 
-      .home {
+      .link-btn {
         display: flex;
         align-self: flex-start;
         align-items: center;
         gap: 8px;
         padding: 8px;
+        padding-right: 10px;
         border-radius: 10px;
       }
-      .home:hover {
+      .home-btn {
+        margin-right: auto;
+      }
+      .link-btn:hover {
         background-color: rgba(255, 255, 255, 0.1);
       }
-      .home:active {
+      .link-btn:active {
         background-color: rgba(255, 255, 255, 0.2);
+      }
+      @media (max-width: 530px) {
+        .resume {
+          display: none;
+        }
       }
       .icon {
         display: inline-block;
@@ -79,6 +87,9 @@
       }
       .icon-home {
         background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='rgba(255, 255, 255, 0.9)' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' class='feather feather-home'%3E%3Cpath d='M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z'%3E%3C/path%3E%3Cpolyline points='9 22 9 12 15 12 15 22'%3E%3C/polyline%3E%3C/svg%3E");
+      }
+      .icon-download {
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='rgba(255, 255, 255, 0.9)' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' class='feather feather-download'%3E%3Cpath d='M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4'%3E%3C/path%3E%3Cpolyline points='7 10 12 15 17 10'%3E%3C/polyline%3E%3Cline x1='12' y1='15' x2='12' y2='3'%3E%3C/line%3E%3C/svg%3E");
       }
       footer {
         color: rgba(255, 255, 255, 0.5);
@@ -119,26 +130,43 @@
       #timeline {
         margin: 0 -20px;
         position: sticky;
-        top: 20px;
-        height: calc(100vh - 40px);
-        height: calc(100svh - 40px);
+        top: 0;
+        height: calc(100vh);
+        height: calc(100svh);
         overflow: hidden;
+      }
+      #date {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 40px;
+      }
+      .note {
+        color: rgba(255, 255, 255, 0.5);
       }
     </style>
   </head>
   <body>
     <main>
       <nav>
-        <a href="/" class="home">
+        <a href="/" class="link-btn home-btn">
           <span class="icon icon-home"></span>
           Home
         </a>
+        <a href="/" class="link-btn">
+          <span class="icon icon-download"></span>
+          <span>September <span class="resume">résumé</span></span>
+        </a>
+        <a href="/" class="link-btn">
+          <span class="icon icon-download"></span>
+          <span>January <span class="resume">résumé</span></span>
+        </a>
       </nav>
-      <h1>Internship season summer 2023</h1>
+      <h1>Summer 2023 Internship Season</h1>
       <div id="sankey"></div>
       <h2>Timeline</h2>
       <div id="scroll-wrapper">
-        <div id="timeline"></div>
+        <div id="timeline"><p id="date">Date</p></div>
       </div>
       <footer>
         <p>Made with <a href="https://d3js.org/">D3.js</a>.</p>
@@ -279,11 +307,12 @@
         ['2023-02-01'],
         ['2023-02-01', '2023-05-11']
       ].map(dates => dates.map(date => new Date(date)))
-      timeline(
-        document.getElementById('scroll-wrapper'),
-        document.getElementById('timeline'),
-        timelineData
-      )
+      timeline({
+        scrollContainer: document.getElementById('scroll-wrapper'),
+        container: document.getElementById('timeline'),
+        dateDisplay: document.getElementById('date'),
+        data: timelineData
+      })
     </script>
   </body>
 </html>

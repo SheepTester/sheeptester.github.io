@@ -1,13 +1,14 @@
 import * as d3 from 'https://cdn.jsdelivr.net/npm/d3@7.8.5/+esm'
 
 const margin = {
+  top: 40,
   bottom: 40
 }
 const gap = 2
 const rejectWidth = 5
 const ghostedPadding = 300
 
-export function timeline (scrollContainer, container, data) {
+export function timeline ({ scrollContainer, container, dateDisplay, data }) {
   const dates = data.flat()
   const minDate = dates.reduce(
     (cum, curr) => Math.min(cum, curr.getTime()),
@@ -29,6 +30,12 @@ export function timeline (scrollContainer, container, data) {
     .append('g')
     .attr('class', 'axis')
     .call(d3.axisBottom(xScale))
+
+  const note = svg
+    .append('text')
+    .attr('class', 'note')
+    .attr('x', 0)
+    .text("In retrospect, I should've started earlier.")
 
   const clipPath = svg
     .append('clipPath')
@@ -82,13 +89,20 @@ export function timeline (scrollContainer, container, data) {
     .attr('width', rejectWidth)
 
   function resize (height) {
-    const effectiveHeight = height - margin.bottom
+    const effectiveHeight = height - margin.top - margin.bottom
     const spacing = effectiveHeight / data.length
     svg.attr('height', height)
-    rectDim.attr('y', (_, i) => i * spacing).attr('height', spacing - gap)
-    rectLit.attr('y', (_, i) => i * spacing).attr('height', spacing - gap)
-    rejected.attr('y', ({ i }) => i * spacing).attr('height', spacing - gap)
+    rectDim
+      .attr('y', (_, i) => i * spacing + margin.top)
+      .attr('height', spacing - gap)
+    rectLit
+      .attr('y', (_, i) => i * spacing + margin.top)
+      .attr('height', spacing - gap)
+    rejected
+      .attr('y', ({ i }) => i * spacing + margin.top)
+      .attr('height', spacing - gap)
     clipPath.attr('height', height)
+    note.attr('y', height - margin.bottom - 20)
     xAxis.attr('transform', `translate(0, ${height - margin.bottom})`)
   }
 
@@ -101,12 +115,21 @@ export function timeline (scrollContainer, container, data) {
     resize(blockSize)
   }).observe(container)
 
-  window.addEventListener('scroll', () => {
+  function handleScroll () {
     const scroll = Math.min(
-      Math.max(20 - scrollContainer.getBoundingClientRect().top, 0),
+      Math.max(-scrollContainer.getBoundingClientRect().top, 0),
       totalWidth
     )
     clipPath.attr('width', scroll)
     svgNode.style.transform = `translateX(${-scroll}px)`
-  })
+    dateDisplay.textContent = new Date(xScale.invert(scroll)).toLocaleString(
+      [],
+      {
+        dateStyle: 'long',
+        timeZone: 'UTC'
+      }
+    )
+  }
+  window.requestAnimationFrame(handleScroll)
+  window.addEventListener('scroll', handleScroll)
 }
