@@ -24,8 +24,8 @@ export function sankey (container, data) {
   function resize (width, height) {
     svg.attr('width', width).attr('height', height)
     sankey.extent([
-      [1, 5],
-      [width - 1, height - 5]
+      [0, 0],
+      [width, height]
     ])
 
     const { nodes, links } = sankey(data)
@@ -33,6 +33,7 @@ export function sankey (container, data) {
     rect = rect
       .data(nodes)
       .join('rect')
+      .attr('class', 'node')
       .attr('fill', d => d.color)
       .attr('x', d => d.x0)
       .attr('y', d => d.y0)
@@ -75,11 +76,11 @@ export function sankey (container, data) {
         g.append('text')
           .attr('dy', '-0.6em')
           .attr('class', 'node-name')
-          .text(d => d.name)
+          .text(d => (d.value > 0 ? d.name : ''))
         g.append('text')
           .attr('dy', '0.6em')
           .attr('class', 'node-value')
-          .text(d => d.value)
+          .text(d => (d.value > 0 ? d.value : ''))
         return g
       })
       .attr(
