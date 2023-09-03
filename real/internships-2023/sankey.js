@@ -55,8 +55,7 @@ export function sankey (container, data) {
           .append('stop')
           .attr('offset', '100%')
           .attr('stop-color', d => d.target.color)
-        const path = g
-          .append('path')
+        g.append('path')
           .attr('stroke', d => `url(#${d.uid})`)
           .append('title')
           .text(d => `${d.source.name} → ${d.target.name}\n${d.value} TWh`)
