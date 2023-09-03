@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Internships summer 2023</title>
+    <meta name="description" content="It's a very simple sankey diagram." />
+
+    <link rel="stylesheet" type="text/css" href="/sheep3.css" />
+    <script src="/sheep3.js" charset="utf-8"></script>
+
+    <style>
+      :root {
+        color-scheme: dark;
+      }
+
+      body {
+        background-color: #191b20;
+        color: rgba(255, 255, 255, 0.9);
+        margin: 0;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+          'Helvetica Neue', Arial, sans-serif, 'Apple Color Emoji',
+          'Segoe UI Emoji', 'Segoe UI Symbol';
+      }
+
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      main {
+        display: flex;
+        flex-direction: column;
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 20px;
+        gap: 20px;
+      }
+
+      .home {
+        display: flex;
+        align-self: flex-start;
+        align-items: center;
+        gap: 8px;
+        padding: 8px;
+        border-radius: 10px;
+      }
+      .home:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+      }
+      .home:active {
+        background-color: rgba(255, 255, 255, 0.2);
+      }
+      .icon {
+        display: inline-block;
+        width: 24px;
+        height: 24px;
+        background-position: center;
+        background-repeat: no-repeat;
+      }
+      .icon-home {
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='rgba(255, 255, 255, 0.9)' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' class='feather feather-home'%3E%3Cpath d='M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z'%3E%3C/path%3E%3Cpolyline points='9 22 9 12 15 12 15 22'%3E%3C/polyline%3E%3C/svg%3E");
+      }
+
+      #graph {
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 20px;
+        height: 60vh;
+        position: relative;
+      }
+      #graph svg {
+        position: absolute;
+        top: 0;
+        left: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <a href="/" class="home">
+        <span class="icon icon-home"></span>
+        Home
+      </a>
+      <div id="graph"></div>
+    </main>
+    <script type="module">
+      import * as d3 from 'https://cdn.jsdelivr.net/npm/d3@7/+esm'
+
+      // Declare the chart dimensions and margins.
+      const width = 640
+      const height = 400
+      const marginTop = 20
+      const marginRight = 20
+      const marginBottom = 30
+      const marginLeft = 40
+
+      // Declare the x (horizontal position) scale.
+      const x = d3
+        .scaleUtc()
+        .domain([new Date('2023-01-01'), new Date('2024-01-01')])
+        .range([marginLeft, width - marginRight])
+
+      // Declare the y (vertical position) scale.
+      const y = d3
+        .scaleLinear()
+        .domain([0, 100])
+        .range([height - marginBottom, marginTop])
+
+      // Create the SVG container.
+      const svg = d3.create('svg')
+
+      // Add the x-axis.
+      svg
+        .append('g')
+        .attr('transform', `translate(0,${height - marginBottom})`)
+        .call(d3.axisBottom(x))
+
+      // Add the y-axis.
+      svg
+        .append('g')
+        .attr('transform', `translate(${marginLeft},0)`)
+        .call(d3.axisLeft(y))
+
+      // Append the SVG element.
+      const graph = document.getElementById('graph')
+      graph.append(svg.node())
+      new ResizeObserver(([{ contentBoxSize }]) => {
+        const [{ blockSize, inlineSize }] = contentBoxSize
+        svg.attr('width', inlineSize).attr('height', blockSize)
+      }).observe(graph)
+    </script>
+  </body>
+</html>
