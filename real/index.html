@@ -10,148 +10,25 @@
     <link rel="stylesheet" type="text/css" href="/sheep3.css" />
     <script src="/sheep3.js" charset="utf-8"></script>
 
+    <link rel="stylesheet" type="text/css" href="./common.css" />
     <style>
-      :root {
-        color-scheme: dark;
-      }
-
-      body {
-        background-color: #191b20;
-        color: rgba(255, 255, 255, 0.9);
-        margin: 0;
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
-          'Helvetica Neue', Arial, sans-serif, 'Apple Color Emoji',
-          'Segoe UI Emoji', 'Segoe UI Symbol';
-      }
-
-      a {
-        color: inherit;
-        text-decoration: none;
-      }
-
-      main {
-        display: flex;
-        flex-direction: column;
-        padding: 20px;
-        gap: 10px;
-      }
-      nav,
-      h1,
-      .content,
-      .summary {
-        max-width: 1000px;
-        margin: 0 auto;
-        width: 100%;
-      }
-      nav {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 10px;
-      }
-      h1 {
-        line-height: 1;
-      }
-
-      .link-btn {
-        display: flex;
-        align-self: flex-start;
-        gap: 8px;
-        padding: 8px;
-        padding-right: 10px;
-        border-radius: 10px;
-      }
-      .home-btn {
-        margin-right: auto;
-      }
-      .link-btn:hover {
-        background-color: rgba(255, 255, 255, 0.1);
-      }
-      .link-btn:active {
-        background-color: rgba(255, 255, 255, 0.2);
-      }
-      @media (max-width: 530px) {
-        .resume {
-          display: none;
-        }
-      }
-
-      .icon {
-        display: inline-block;
-        width: 24px;
-        height: 24px;
-        background-position: center;
-        background-repeat: no-repeat;
-      }
-      .icon-home {
-        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='rgba(255, 255, 255, 0.9)' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' class='feather feather-home'%3E%3Cpath d='M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z'%3E%3C/path%3E%3Cpolyline points='9 22 9 12 15 12 15 22'%3E%3C/polyline%3E%3C/svg%3E");
-      }
-      .icon-download {
-        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='rgba(255, 255, 255, 0.9)' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' class='feather feather-download'%3E%3Cpath d='M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4'%3E%3C/path%3E%3Cpolyline points='7 10 12 15 17 10'%3E%3C/polyline%3E%3Cline x1='12' y1='15' x2='12' y2='3'%3E%3C/line%3E%3C/svg%3E");
-      }
-
-      footer {
-        color: rgba(255, 255, 255, 0.5);
-      }
-      p {
-        margin: 0;
-      }
-      footer a {
+      p a {
         color: #74e0ff;
       }
-      footer a:hover {
-        text-decoration: underline;
-      }
-
-      .summary {
-        padding: 0;
-        list-style: none;
-        display: flex;
-        flex-wrap: wrap;
-        margin-top: 20px;
-        margin-bottom: 20px;
-      }
-      .stat {
-        flex: 1 0 0;
-        display: flex;
-        align-items: center;
-        flex-direction: column;
-      }
-      .stat-num {
-        font-size: 3em;
-        font-weight: bold;
-      }
-      .applied {
-        color: #74e0ff;
-      }
-      .interviews {
-        /* color: #fde047; */
-        color: rgba(255, 255, 255, 0.5);
-      }
-      .offers {
-        /* color: #b8ff6c; */
-        color: rgba(255, 255, 255, 0.5);
-      }
-      .rejected {
-        color: #fca5a5;
-      }
-
-      .content a {
-        color: #74e0ff;
-      }
-      .content a:hover {
+      p a:hover {
         text-decoration: underline;
       }
     </style>
   </head>
   <body>
     <main>
-      <nav>
+      <nav class="content">
         <a href="/" class="link-btn home-btn">
           <span class="icon icon-home"></span>
           Home
         </a>
       </nav>
-      <h1>real</h1>
+      <h1 class="content">real</h1>
       <p class="content">
         I'm planning on putting college admissions stats here as well. This is
         just a temporary/work-in-progress index page.
