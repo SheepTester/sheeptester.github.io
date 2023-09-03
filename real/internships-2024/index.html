@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Summer 2024 Internship Season</title>
+    <meta name="description" content="Still ongoing." />
+
+    <link rel="stylesheet" type="text/css" href="/sheep3.css" />
+    <script src="/sheep3.js" charset="utf-8"></script>
+
+    <style>
+      :root {
+        color-scheme: dark;
+      }
+
+      body {
+        background-color: #191b20;
+        color: rgba(255, 255, 255, 0.9);
+        margin: 0;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+          'Helvetica Neue', Arial, sans-serif, 'Apple Color Emoji',
+          'Segoe UI Emoji', 'Segoe UI Symbol';
+      }
+
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      main {
+        display: flex;
+        flex-direction: column;
+        padding: 20px;
+        gap: 10px;
+      }
+      nav,
+      h1,
+      .updated,
+      .summary {
+        max-width: 1000px;
+        margin: 0 auto;
+        width: 100%;
+      }
+      nav {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      h1 {
+        line-height: 1;
+      }
+
+      .link-btn {
+        display: flex;
+        align-self: flex-start;
+        gap: 8px;
+        padding: 8px;
+        padding-right: 10px;
+        border-radius: 10px;
+      }
+      .back-btn {
+        margin-right: auto;
+      }
+      .link-btn:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+      }
+      .link-btn:active {
+        background-color: rgba(255, 255, 255, 0.2);
+      }
+      @media (max-width: 530px) {
+        .resume {
+          display: none;
+        }
+      }
+
+      .icon {
+        display: inline-block;
+        width: 24px;
+        height: 24px;
+        background-position: center;
+        background-repeat: no-repeat;
+      }
+      .icon-back {
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='rgba(255, 255, 255, 0.9)' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' class='feather feather-arrow-left'%3E%3Cline x1='19' y1='12' x2='5' y2='12'%3E%3C/line%3E%3Cpolyline points='12 19 5 12 12 5'%3E%3C/polyline%3E%3C/svg%3E");
+      }
+      .icon-download {
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='rgba(255, 255, 255, 0.9)' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' class='feather feather-download'%3E%3Cpath d='M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4'%3E%3C/path%3E%3Cpolyline points='7 10 12 15 17 10'%3E%3C/polyline%3E%3Cline x1='12' y1='15' x2='12' y2='3'%3E%3C/line%3E%3C/svg%3E");
+      }
+
+      footer {
+        color: rgba(255, 255, 255, 0.5);
+      }
+      p {
+        margin: 0;
+      }
+      footer a {
+        color: #74e0ff;
+      }
+      footer a:hover {
+        text-decoration: underline;
+      }
+
+      .summary {
+        padding: 0;
+        list-style: none;
+        display: flex;
+        flex-wrap: wrap;
+        margin-top: 20px;
+        margin-bottom: 20px;
+      }
+      .stat {
+        flex: 1 0 0;
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+      }
+      .stat-num {
+        font-size: 3em;
+        font-weight: bold;
+      }
+      .applied {
+        color: #74e0ff;
+      }
+      .interviews {
+        /* color: #fde047; */
+        color: rgba(255, 255, 255, 0.5);
+      }
+      .offers {
+        /* color: #b8ff6c; */
+        color: rgba(255, 255, 255, 0.5);
+      }
+      .rejected {
+        color: #fca5a5;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <nav>
+        <a href="../" class="link-btn back-btn">
+          <span class="icon icon-back"></span>
+          Back
+        </a>
+      </nav>
+      <h1>Summer 2024 Internship Season</h1>
+      <p class="updated">Updated 2023-09-03.</p>
+      <ul class="summary">
+        <li class="stat">
+          <span class="stat-num applied">51</span>
+          <span class="stat-note">applied</span>
+        </li>
+        <li class="stat">
+          <span class="stat-num interviews">0</span>
+          <span class="stat-note">interviews</span>
+        </li>
+        <li class="stat">
+          <span class="stat-num offers">0</span>
+          <span class="stat-note">offers</span>
+        </li>
+        <li class="stat">
+          <span class="stat-num rejected">5</span>
+          <span class="stat-note">rejected</span>
+        </li>
+      </ul>
+    </main>
+  </body>
+</html>
