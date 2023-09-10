@@ -14,6 +14,8 @@
     <script src="/sheep3.js" charset="utf-8"></script>
 
     <link rel="stylesheet" type="text/css" href="../common.css" />
+    <link rel="stylesheet" type="text/css" href="../graph/sankey.css" />
+    <link rel="stylesheet" type="text/css" href="../graph/timeline.css" />
     <style>
       footer {
         color: rgba(255, 255, 255, 0.5);
@@ -62,48 +64,8 @@
         color: #fca5a5;
       }
 
-      #sankey {
-        height: 60vh;
-        position: relative;
-      }
-      svg {
-        position: absolute;
-        top: 0;
-        left: 0;
-        overflow: visible;
-      }
-      text {
-        fill: currentColor;
-        stroke: #191b20;
-        stroke-width: 2;
-        paint-order: stroke;
-        dominant-baseline: central;
-      }
-      .node {
-        stroke: #191b20;
-      }
-      .node-name {
-        font-weight: bold;
-      }
       h2 {
         text-align: center;
-      }
-      #timeline {
-        margin: 0 -20px;
-        position: sticky;
-        top: 0;
-        height: calc(100vh);
-        height: calc(100svh);
-        overflow: hidden;
-      }
-      #date {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        height: 40px;
-      }
-      .note {
-        color: rgba(255, 255, 255, 0.5);
       }
     </style>
   </head>
@@ -158,8 +120,8 @@
       </footer>
     </main>
     <script type="module">
-      import { sankey } from './sankey.js'
-      import { timeline } from './timeline.js'
+      import { sankey } from '../graph/sankey.js'
+      import { timeline } from '../graph/timeline.js'
 
       const params = new URL(window.location.href).searchParams
 

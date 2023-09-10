@@ -1,0 +1,17 @@
+#timeline {
+  margin: 0 -20px;
+  position: sticky;
+  top: 0;
+  height: calc(100vh);
+  height: calc(100svh);
+  overflow: hidden;
+}
+#date {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+}
+.note {
+  color: rgba(255, 255, 255, 0.5);
+}

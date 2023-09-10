@@ -59,7 +59,9 @@ export function sankey (container, data) {
         g.append('path')
           .attr('stroke', d => `url(#${d.uid})`)
           .append('title')
-          .text(d => `${d.source.name} → ${d.target.name}\n${d.value} TWh`)
+          .text(
+            d => `${d.source.name} → ${d.target.name}\n${d.value} applications`
+          )
         return g
       })
       .attr('stroke-width', d => Math.max(1, d.width))

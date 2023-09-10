@@ -1,0 +1,23 @@
+#sankey {
+  height: 60vh;
+  position: relative;
+}
+svg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  overflow: visible;
+}
+text {
+  fill: currentColor;
+  stroke: #191b20;
+  stroke-width: 2;
+  paint-order: stroke;
+  dominant-baseline: central;
+}
+.node {
+  stroke: #191b20;
+}
+.node-name {
+  font-weight: bold;
+}

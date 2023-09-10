@@ -11,6 +11,7 @@
     <script src="/sheep3.js" charset="utf-8"></script>
 
     <link rel="stylesheet" type="text/css" href="../common.css" />
+    <link rel="stylesheet" type="text/css" href="../graph/sankey.css" />
     <style>
       footer {
         color: rgba(255, 255, 255, 0.5);
@@ -68,10 +69,10 @@
         </a>
       </nav>
       <h1 class="content">Summer 2024 Internship Season</h1>
-      <p class="content">Updated 2023-09-03.</p>
+      <p class="content">Updated 2023-09-09.</p>
       <ul class="content summary">
         <li class="stat">
-          <span class="stat-num applied">51</span>
+          <span class="stat-num applied">54</span>
           <span class="stat-note">applied</span>
         </li>
         <li class="stat">
@@ -83,10 +84,32 @@
           <span class="stat-note">offers</span>
         </li>
         <li class="stat">
-          <span class="stat-num rejected">5</span>
+          <span class="stat-num rejected">7</span>
           <span class="stat-note">rejected</span>
         </li>
       </ul>
+      <div class="content" id="sankey"></div>
+      <footer class="content">
+        <p>Made with <a href="https://d3js.org/">D3.js</a>.</p>
+      </footer>
     </main>
+    <script type="module">
+      import { sankey } from '../graph/sankey.js'
+
+      sankey(document.getElementById('sankey'), {
+        nodes: [
+          { name: 'Applied', color: '#74e0ff' },
+          { name: 'OA', color: '#b8ff6c' },
+          { name: 'Rejected', color: '#fca5a5' },
+          { name: 'Waiting', color: '#fde047' }
+        ],
+        links: [
+          { source: 'Applied', target: 'Rejected', value: 7 },
+          { source: 'Applied', target: 'Waiting', value: 43 },
+          { source: 'Applied', target: 'OA', value: 4 },
+          { source: 'OA', target: 'Waiting', value: 4 }
+        ]
+      })
+    </script>
   </body>
 </html>
