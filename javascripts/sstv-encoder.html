@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>SSTV encoder (Scottie S1)</title>
+    <meta
+      name="description"
+      content="Encode a 320 by 256 image into SSTV and blast it out of your speakers."
+    />
+
+    <link rel="stylesheet" type="text/css" href="/sheep3.css" />
+    <script src="/sheep3.js" charset="utf-8"></script>
+
+    <style>
+      #preview {
+        image-rendering: crisp-edges;
+        image-rendering: pixelated;
+        border: 1px solid rgba(0, 0, 0, 0.1);
+      }
+    </style>
+  </head>
+  <body>
+    <p>
+      <label>
+        Select an image:
+        <input type="file" id="image" accept="image/*" autofocus />
+        (or paste an image here).
+      </label>
+      Your image will be forcefully stretched to 320 by 256 pixels.
+    </p>
+    <button id="play">Play</button>
+    <p><canvas id="preview" width="320" height="256"></canvas></p>
+    <p>
+      My friends recommended using
+      <a href="https://hamsoft.ca/pages/mmsstv.php">MMSSTV</a> to decode the
+      image. You can blast this out of your speakers for your microphone to pick
+      up to try it out.
+    </p>
+    <p>
+      Much thanks to
+      <a href="https://en.wikipedia.org/wiki/Slow-scan_television">Wikipedia</a>
+      and
+      <a
+        href="https://radio.clubs.etsit.upm.es/blog/2019-08-10-sstv-scottie1-encoder/"
+        >this based af blog post</a
+      >
+      for specifying the frequencies and timing for all the little beeps.
+    </p>
+    <script>
+      const elems = {
+        image: document.getElementById('image'),
+        play: document.getElementById('play'),
+        preview: document.getElementById('preview')
+      }
+      /** @type {CanvasRenderingContext2D} */
+      const c = elems.preview.getContext('2d')
+
+      const WIDTH = 320
+      const HEIGHT = 256
+
+      let image, oldUrl
+      function loadImage (file) {
+        if (oldUrl) {
+          URL.revokeObjectURL(oldUrl)
+        }
+        const url = URL.createObjectURL(file)
+        image = new Image()
+        image.addEventListener('load', updatePreview, { once: true })
+        image.src = url
+        oldUrl = url
+      }
+      function updatePreview () {
+        c.drawImage(image, 0, 0, WIDTH, HEIGHT)
+      }
+      elems.image.addEventListener('change', () => {
+        if (elems.image.files[0]) {
+          loadImage(elems.image.files[0])
+        }
+      })
+      document.addEventListener('paste', e => {
+        if (e.clipboardData.files[0]) {
+          loadImage(e.clipboardData.files[0])
+        }
+      })
+
+      /** @type {AudioContext} */
+      let context
+
+      class Tone {
+        #oscillator
+        #start
+        #time
+
+        /**
+         * @param {number} delay
+         */
+        constructor (delay) {
+          context ??= new AudioContext()
+          this.#oscillator = context.createOscillator()
+          this.#oscillator.connect(context.destination)
+          this.#start = this.#time = context.currentTime + delay
+        }
+
+        /**
+         * @param {number} frequency - In Hz.
+         * @param {number} duration - In ms.
+         */
+        tone (frequency, duration) {
+          this.#oscillator.frequency.setValueAtTime(frequency, this.#time)
+          this.#time += duration / 1000
+        }
+
+        mode (mode) {
+          const bits = Array.from(
+            mode.toString(2).padStart(7, '0'),
+            Number
+          ).reverse()
+          bits.push(bits.reduce((cum, curr) => cum ^ curr, 0))
+          for (const bit of bits) {
+            this.tone(bit ? 1100 : 1300, 30)
+          }
+          this.tone(1200, 30)
+        }
+
+        play () {
+          return new Promise(resolve => {
+            this.#oscillator.start(this.#start)
+            this.#oscillator.stop(this.#time)
+            this.#oscillator.addEventListener('ended', () => {
+              this.#oscillator.disconnect()
+              resolve()
+            })
+          })
+        }
+      }
+
+      /** In seconds. */
+      const DELAY = 0.1
+      const HELLO = [1900, 1500, 1900, 1500, 2300, 1500, 2300, 1500]
+      /** Scottie S1. */
+      const MODE = 60
+      const COLOR_LOW = 1500
+      const COLOR_HIGH = 2300
+
+      elems.play.addEventListener('click', () => {
+        context ??= new AudioContext()
+        const imageData = c.getImageData(0, 0, WIDTH, HEIGHT)
+        const tone = new Tone(DELAY)
+
+        for (const freq of HELLO) {
+          tone.tone(freq, 100)
+        }
+        tone.tone(1900, 300)
+        tone.tone(1200, 10)
+        tone.tone(1900, 300)
+        tone.tone(1200, 30)
+        tone.mode(MODE)
+
+        // Start sync (first line only)
+        tone.tone(1200, 9)
+        for (let y = 0; y < HEIGHT; y++) {
+          const start = y * WIDTH * 4
+
+          for (const channel of [1, 2, 0]) {
+            if (channel === 0) {
+              // Horizontal sync (red only)
+              tone.tone(1200, 9)
+            }
+            // Seperator
+            tone.tone(1500, 1.5)
+            for (let x = 0; x < WIDTH; x++) {
+              const value = imageData.data[start + x * 4 + channel]
+              tone.tone(
+                COLOR_LOW + (COLOR_HIGH - COLOR_LOW) * (value / 255),
+                0.432
+              )
+            }
+          }
+        }
+
+        elems.play.disabled = true
+        tone.play().then(() => {
+          elems.play.disabled = false
+        })
+      })
+    </script>
+  </body>
+</html>
