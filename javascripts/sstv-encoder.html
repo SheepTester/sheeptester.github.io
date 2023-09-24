@@ -31,6 +31,7 @@
       Your image will be forcefully stretched to 320 by 256 pixels.
     </p>
     <button id="play">Play</button>
+    <button id="stop" disabled>Stop</button>
     <p><canvas id="preview" width="320" height="256"></canvas></p>
     <p>
       My friends recommended using
@@ -52,27 +53,23 @@
       const elems = {
         image: document.getElementById('image'),
         play: document.getElementById('play'),
+        stop: document.getElementById('stop'),
         preview: document.getElementById('preview')
       }
       /** @type {CanvasRenderingContext2D} */
-      const c = elems.preview.getContext('2d')
+      const c = elems.preview.getContext('2d', { willReadFrequently: true })
 
       const WIDTH = 320
       const HEIGHT = 256
 
-      let image, oldUrl
       function loadImage (file) {
-        if (oldUrl) {
-          URL.revokeObjectURL(oldUrl)
-        }
         const url = URL.createObjectURL(file)
         image = new Image()
-        image.addEventListener('load', updatePreview, { once: true })
+        image.addEventListener('load', () => {
+          c.drawImage(image, 0, 0, WIDTH, HEIGHT)
+          URL.revokeObjectURL(url)
+        })
         image.src = url
-        oldUrl = url
-      }
-      function updatePreview () {
-        c.drawImage(image, 0, 0, WIDTH, HEIGHT)
       }
       elems.image.addEventListener('change', () => {
         if (elems.image.files[0]) {
@@ -84,6 +81,9 @@
           loadImage(e.clipboardData.files[0])
         }
       })
+      fetch('./sstv-test-image.png')
+        .then(r => r.blob())
+        .then(loadImage)
 
       /** @type {AudioContext} */
       let context
@@ -134,6 +134,10 @@
             })
           })
         }
+
+        stop () {
+          this.#oscillator.stop()
+        }
       }
 
       /** In seconds. */
@@ -144,11 +148,11 @@
       const COLOR_LOW = 1500
       const COLOR_HIGH = 2300
 
-      elems.play.addEventListener('click', () => {
-        context ??= new AudioContext()
-        const imageData = c.getImageData(0, 0, WIDTH, HEIGHT)
-        const tone = new Tone(DELAY)
-
+      /**
+       * @param {ImageData} imageData
+       * @param {Tone} tone
+       */
+      function writeImageToTone (imageData, tone) {
         for (const freq of HELLO) {
           tone.tone(freq, 100)
         }
@@ -179,11 +183,22 @@
             }
           }
         }
+      }
+
+      elems.play.addEventListener('click', () => {
+        context ??= new AudioContext()
+        const imageData = c.getImageData(0, 0, WIDTH, HEIGHT)
+        const tone = new Tone(DELAY)
+        writeImageToTone(imageData, tone)
 
         elems.play.disabled = true
+        elems.stop.disabled = false
         tone.play().then(() => {
           elems.play.disabled = false
+          elems.stop.disabled = true
         })
+
+        elems.stop.onclick = () => tone.stop()
       })
     </script>
   </body>
