@@ -19,6 +19,9 @@
         image-rendering: pixelated;
         border: 1px solid rgba(0, 0, 0, 0.1);
       }
+      audio {
+        width: 100%;
+      }
     </style>
   </head>
   <body>
@@ -32,7 +35,9 @@
     </p>
     <button id="play">Play</button>
     <button id="stop" disabled>Stop</button>
+    <button id="render">Render</button>
     <p><canvas id="preview" width="320" height="256"></canvas></p>
+    <div id="audio"></div>
     <p>
       My friends recommended using
       <a href="https://hamsoft.ca/pages/mmsstv.php">MMSSTV</a> to decode the
@@ -54,7 +59,9 @@
         image: document.getElementById('image'),
         play: document.getElementById('play'),
         stop: document.getElementById('stop'),
-        preview: document.getElementById('preview')
+        render: document.getElementById('render'),
+        preview: document.getElementById('preview'),
+        audio: document.getElementById('audio')
       }
       /** @type {CanvasRenderingContext2D} */
       const c = elems.preview.getContext('2d', { willReadFrequently: true })
@@ -94,10 +101,10 @@
         #time
 
         /**
-         * @param {number} delay
+         * @param {AudioContext} context
+         * @param {number} [delay]
          */
-        constructor (delay) {
-          context ??= new AudioContext()
+        constructor (context, delay = 0) {
           this.#oscillator = context.createOscillator()
           this.#oscillator.connect(context.destination)
           this.#start = this.#time = context.currentTime + delay
@@ -187,9 +194,8 @@
 
       elems.play.addEventListener('click', () => {
         context ??= new AudioContext()
-        const imageData = c.getImageData(0, 0, WIDTH, HEIGHT)
-        const tone = new Tone(DELAY)
-        writeImageToTone(imageData, tone)
+        const tone = new Tone(context, DELAY)
+        writeImageToTone(c.getImageData(0, 0, WIDTH, HEIGHT), tone)
 
         elems.play.disabled = true
         elems.stop.disabled = false
@@ -199,6 +205,67 @@
         })
 
         elems.stop.onclick = () => tone.stop()
+      })
+
+      const encoder = new TextEncoder()
+      function header (byteCount, sampleRate, channelCount = 1) {
+        // https://isip.piconepress.com/projects/speech/software/tutorials/production/fundamentals/v1.0/section_02/s02_01_p05.html
+        // https://github.com/higuma/wav-audio-encoder-js/blob/master/lib/WavAudioEncoder.js
+        // wav files are little endian
+        const header = new DataView(new ArrayBuffer(44))
+        const byteView = new Uint8Array(header.buffer)
+        byteView.set(encoder.encode('RIFF'), 0)
+        header.setUint32(4, byteCount + 36, true)
+        byteView.set(encoder.encode('WAVE'), 8)
+        byteView.set(encoder.encode('fmt '), 12)
+        header.setUint32(16, 16, true)
+        header.setUint16(20, 1, true)
+        header.setUint16(22, channelCount, true)
+        header.setUint32(24, sampleRate, true)
+        header.setUint32(28, sampleRate * 4, true)
+        header.setUint16(32, channelCount * 2, true)
+        header.setUint16(34, 16, true)
+        byteView.set(encoder.encode('data'), 36)
+        header.setUint32(40, byteCount, true)
+        return header
+      }
+
+      /**
+       * In milliseconds.
+       * 8*100+300*2+10+30+9*30+9+256*(9+1.5*3+0.432*320*3)
+       */
+      const TOTAL_LENGTH = 111343.32
+      const SAMPLE_RATE = 44100
+      elems.render.addEventListener('click', async () => {
+        elems.render.disabled = true
+
+        const context = new OfflineAudioContext({
+          numberOfChannels: 1,
+          length: Math.ceil((TOTAL_LENGTH * SAMPLE_RATE) / 1000),
+          sampleRate: SAMPLE_RATE
+        })
+        const tone = new Tone(context)
+        writeImageToTone(c.getImageData(0, 0, WIDTH, HEIGHT), tone)
+        tone.play()
+
+        // await new Promise(resolve => setTimeout(resolve, 1000))
+
+        const buffer = await context.startRendering()
+        const floats = buffer.getChannelData(0)
+        // wav format is little endian; 2 bytes per sample (for i16)
+        const view = new DataView(new ArrayBuffer(floats.length * 2))
+        for (const [i, float] of floats.entries()) {
+          view.setInt16(i * 2, Math.min(Math.max(float, -1), 1) * 0x7fff, true)
+        }
+        const blob = new Blob([header(view.byteLength, SAMPLE_RATE), view], {
+          type: 'audio/wav'
+        })
+        const audio = new Audio()
+        audio.src = URL.createObjectURL(blob)
+        audio.controls = true
+        elems.audio.append(audio)
+
+        elems.render.disabled = false
       })
     </script>
   </body>
