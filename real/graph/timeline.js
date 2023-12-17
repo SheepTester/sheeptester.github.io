@@ -57,7 +57,10 @@ export function timeline ({
     .attr('x1', width)
     .attr('x2', totalWidth)
   gradient.append('stop').attr('offset', '0%').attr('stop-color', '#74e0ff')
-  gradient.append('stop').attr('offset', '100%').attr('stop-color', '#fde047')
+  gradient
+    .append('stop')
+    .attr('offset', '100%')
+    .attr('stop-color', 'rgba(255, 255, 255, 0.5)')
 
   const rectDim = svg
     .append('g')

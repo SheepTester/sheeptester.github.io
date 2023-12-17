@@ -128,9 +128,9 @@
       sankey(document.getElementById('sankey'), {
         nodes: [
           { name: 'Applied', color: '#74e0ff' },
-          { name: 'OA', color: '#b8ff6c' },
+          { name: 'OA', color: '#fde047' },
           { name: 'Rejected', color: '#fca5a5' },
-          { name: 'Ghosted', color: '#fde047' }
+          { name: 'Ghosted', color: 'rgba(255, 255, 255, 0.5)' }
         ],
         links:
           params.get('sankey') === 'simplified'
