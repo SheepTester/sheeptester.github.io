@@ -1,4 +1,4 @@
-import * as d3 from 'https://cdn.jsdelivr.net/npm/d3@7.8.5/+esm'
+import * as d3 from './d3.min.mjs'
 
 const margin = {
   top: 40,
@@ -8,8 +8,14 @@ const gap = 2
 const rejectWidth = 5
 const ghostedPadding = 300
 
-export function timeline ({ scrollContainer, container, dateDisplay, data }) {
-  const dates = data.flat()
+export function timeline ({
+  scrollContainer,
+  container,
+  dateDisplay,
+  data,
+  note
+}) {
+  const dates = data.flatMap(Object.values).filter(date => date)
   const minDate = dates.reduce(
     (cum, curr) => Math.min(cum, curr.getTime()),
     Infinity
@@ -31,11 +37,11 @@ export function timeline ({ scrollContainer, container, dateDisplay, data }) {
     .attr('class', 'axis')
     .call(d3.axisBottom(xScale))
 
-  const note = svg
+  const noteElem = svg
     .append('text')
     .attr('class', 'note')
     .attr('x', 0)
-    .text("In retrospect, I should've started earlier.")
+    .text(note)
 
   const clipPath = svg
     .append('clipPath')
@@ -59,11 +65,11 @@ export function timeline ({ scrollContainer, container, dateDisplay, data }) {
     .selectAll()
     .data(data)
     .join('rect')
-    .attr('x', d => xScale(d[0].getTime()))
+    .attr('x', d => xScale(d.applied.getTime()))
     .attr('width', d =>
-      d[1]
-        ? xScale(d[1].getTime()) - xScale(d[0].getTime())
-        : totalWidth - xScale(d[0].getTime())
+      d.rejected
+        ? xScale(d.rejected.getTime()) - xScale(d.applied.getTime())
+        : totalWidth - xScale(d.applied.getTime())
     )
 
   const clipped = svg.append('g').attr('clip-path', 'url(#clip)').selectAll()
@@ -71,15 +77,18 @@ export function timeline ({ scrollContainer, container, dateDisplay, data }) {
     .data(data)
     .join('rect')
     .attr('fill', 'url(#gradient)')
-    .attr('x', d => xScale(d[0].getTime()))
+    .attr('x', d => xScale(d.applied.getTime()))
     .attr('width', d =>
-      d[1]
-        ? xScale(d[1].getTime()) - xScale(d[0].getTime()) - rejectWidth - gap
-        : totalWidth - xScale(d[0].getTime())
+      d.rejected
+        ? xScale(d.rejected.getTime()) -
+          xScale(d.applied.getTime()) -
+          rejectWidth -
+          gap
+        : totalWidth - xScale(d.applied.getTime())
     )
   const rejected = clipped
     .data(
-      data.flatMap(([, rejected], i) =>
+      data.flatMap(({ rejected }, i) =>
         rejected ? { date: rejected.getTime(), i } : []
       )
     )
@@ -102,7 +111,7 @@ export function timeline ({ scrollContainer, container, dateDisplay, data }) {
       .attr('y', ({ i }) => i * spacing + margin.top)
       .attr('height', spacing - gap)
     clipPath.attr('height', height)
-    note.attr('y', height - margin.bottom - 20)
+    noteElem.attr('y', height - margin.bottom - 20)
     xAxis.attr('transform', `translate(0, ${height - margin.bottom})`)
   }
 

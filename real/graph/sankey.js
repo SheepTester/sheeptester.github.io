@@ -1,8 +1,8 @@
-import * as d3 from 'https://cdn.jsdelivr.net/npm/d3@7.8.5/+esm'
+import * as d3 from './d3.min.mjs'
 import {
   sankey as sankeyJustify,
   sankeyLinkHorizontal
-} from 'https://cdn.jsdelivr.net/npm/d3-sankey@0.12.3/+esm'
+} from './d3-sankey.min.mjs'
 
 export function sankey (container, data) {
   const svg = d3.create('svg')

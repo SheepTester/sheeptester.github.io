@@ -12,6 +12,7 @@
 
     <link rel="stylesheet" type="text/css" href="../common.css" />
     <link rel="stylesheet" type="text/css" href="../graph/sankey.css" />
+    <link rel="stylesheet" type="text/css" href="../graph/timeline.css" />
     <style>
       footer {
         color: rgba(255, 255, 255, 0.5);
@@ -48,12 +49,10 @@
         color: #74e0ff;
       }
       .interviews {
-        /* color: #fde047; */
-        color: rgba(255, 255, 255, 0.5);
+        color: #fde047;
       }
       .offers {
-        /* color: #b8ff6c; */
-        color: rgba(255, 255, 255, 0.5);
+        color: #b8ff6c;
       }
       .rejected {
         color: #fca5a5;
@@ -86,43 +85,111 @@
       <p class="content">Updated 2023-09-09.</p>
       <ul class="content summary">
         <li class="stat">
-          <span class="stat-num applied">54</span>
+          <span class="stat-num applied">92</span>
           <span class="stat-note">applied</span>
         </li>
         <li class="stat">
-          <span class="stat-num interviews">0</span>
-          <span class="stat-note">interviews</span>
+          <span class="stat-num interviews">1</span>
+          <span class="stat-note">interview</span>
         </li>
         <li class="stat">
-          <span class="stat-num offers">0</span>
-          <span class="stat-note">offers</span>
+          <span class="stat-num offers">1</span>
+          <span class="stat-note">offer</span>
         </li>
         <li class="stat">
-          <span class="stat-num rejected">7</span>
+          <span class="stat-num rejected">40</span>
           <span class="stat-note">rejected</span>
         </li>
       </ul>
       <div class="content" id="sankey"></div>
+      <h2 class="content">Timeline</h2>
+      <div id="scroll-wrapper">
+        <div id="timeline"><p id="date">Date</p></div>
+      </div>
       <footer class="content">
         <p>Made with <a href="https://d3js.org/">D3.js</a>.</p>
       </footer>
     </main>
     <script type="module">
       import { sankey } from '../graph/sankey.js'
+      import { timeline } from '../graph/timeline.js'
+
+      const TOTAL_APPLIED = 92
+      const TOTAL_REJECTED = 40
+      const TOTAL_OA = 8
+      const REJECTED_AFTER_OA = 4
+      const TOTAL_INTERVIEW_OFFER = 1
 
       sankey(document.getElementById('sankey'), {
         nodes: [
           { name: 'Applied', color: '#74e0ff' },
-          { name: 'OA', color: '#b8ff6c' },
+          { name: 'OA', color: '#fde047' },
+          { name: 'Interview', color: '#fde047' },
+          { name: 'Offer', color: '#b8ff6c' },
           { name: 'Rejected', color: '#fca5a5' },
           { name: 'Waiting', color: '#fde047' }
         ],
         links: [
-          { source: 'Applied', target: 'Rejected', value: 7 },
-          { source: 'Applied', target: 'Waiting', value: 43 },
-          { source: 'Applied', target: 'OA', value: 4 },
-          { source: 'OA', target: 'Waiting', value: 4 }
+          {
+            source: 'Applied',
+            target: 'Rejected',
+            value: TOTAL_REJECTED - REJECTED_AFTER_OA
+          },
+          {
+            source: 'Applied',
+            target: 'Interview',
+            value: TOTAL_INTERVIEW_OFFER
+          },
+          {
+            source: 'Applied',
+            target: 'Waiting',
+            value:
+              TOTAL_APPLIED -
+              (TOTAL_REJECTED - REJECTED_AFTER_OA + TOTAL_INTERVIEW_OFFER)
+          },
+          { source: 'Applied', target: 'OA', value: TOTAL_OA },
+          {
+            source: 'Interview',
+            target: 'Offer',
+            value: TOTAL_INTERVIEW_OFFER
+          },
+          { source: 'OA', target: 'Rejected', value: REJECTED_AFTER_OA },
+          {
+            source: 'OA',
+            target: 'Waiting',
+            value: TOTAL_OA - REJECTED_AFTER_OA
+          }
         ]
+      })
+
+      timeline({
+        scrollContainer: document.getElementById('scroll-wrapper'),
+        container: document.getElementById('timeline'),
+        dateDisplay: document.getElementById('date'),
+        data: await fetch('./dates.csv')
+          .then(r => r.text())
+          .then(csv =>
+            csv
+              .trim()
+              .split(/\r?\n/)
+              .flatMap(line => {
+                const [applied, rejected, oaAssign, oaDone] = line.split(',')
+                if (!applied) {
+                  return []
+                }
+                return [
+                  {
+                    applied: new Date(applied),
+                    rejected: rejected ? new Date(rejected) : null
+                  }
+                ]
+              })
+              .sort(
+                (a, b) =>
+                  a.applied - b.applied ||
+                  (a.rejected ?? Infinity) - (b.rejected ?? Infinity)
+              )
+          )
       })
     </script>
   </body>

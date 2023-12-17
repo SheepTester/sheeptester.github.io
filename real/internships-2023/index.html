@@ -229,7 +229,7 @@
         ['2022-11-12', '2023-02-09'],
         ['2022-11-12', '2023-04-05'],
         ['2022-11-12', '2023-04-25'],
-        ['2022-11-12'],
+        ['2022-11-12', '2023-11-12'],
         ['2022-11-12'],
         ['2022-11-12'],
         ['2022-11-12'],
@@ -261,12 +261,16 @@
         ['2023-02-01', '2023-03-09'],
         ['2023-02-01', '2023-05-11'],
         ['2023-02-01']
-      ].map(dates => dates.map(date => new Date(date)))
+      ].map(([applied, rejected]) => ({
+        applied: new Date(applied),
+        rejected: rejected ? new Date(rejected) : null
+      }))
       timeline({
         scrollContainer: document.getElementById('scroll-wrapper'),
         container: document.getElementById('timeline'),
         dateDisplay: document.getElementById('date'),
-        data: timelineData
+        data: timelineData,
+        note: "In retrospect, I should've started earlier."
       })
     </script>
   </body>

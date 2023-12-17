@@ -263,7 +263,7 @@
         const audio = new Audio()
         audio.src = URL.createObjectURL(blob)
         audio.controls = true
-        elems.audio.append(audio)
+        elems.audio.prepend(audio)
 
         elems.render.disabled = false
       })
