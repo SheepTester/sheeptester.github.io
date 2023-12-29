@@ -11,9 +11,12 @@ css {
     overflow: hidden;
   }
   .social-instagram {
-    background-image: radial-gradient(circle at 20% 100%, #F9D773, #F5AB3F, #F05431, #DD1D4F, #AA128D, #3D3CE2);
+    // Approximated based on https://upload.wikimedia.org/wikipedia/commons/e/e7/Instagram_logo_2016.svg
+    background-image:
+      linear-gradient(168.6776deg, #3771c8, transparent 40%),
+      radial-gradient(100% 100% at 26.3651908% 107.693077%, #fd5 10%, #ff543e 50%, #c837ab 100%);
   }
-  .social-replit .ball {
+  .social-thick .ball {
     border-width: 10px;
   }
   .social-jsperf {
@@ -73,6 +76,18 @@ css {
   }
   .social-steam {
     background-image: linear-gradient(to bottom, #111d2e 0%, #051839 21.2%, #0a1b48 40.7%, #132e62 58.1%, #144b7e 73.8%, #136497 87.3%, #1387b8 100%);
+  }
+  .social-acm {
+    background-image: conic-gradient(
+      from 135deg,
+      #ff6d6d 0%,
+      #fda44e 17.1875%,
+      #ffdc24 34.8958%,
+      #38cf6b 52.6042%,
+      #62b0ff 71.3542%,
+      #816dff 87.5%,
+      #ff6d6d 100%
+    );
   }
 }
 @media (hover: hover) and (min-width: 1000px) {

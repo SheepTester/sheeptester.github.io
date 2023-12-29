@@ -50,6 +50,10 @@ profiles:
     bg: black
     border: white
 
+  - name: Venmo
+    link: https://account.venmo.com/u/sheeptester
+    bg: '#008CFF'
+
   - name: Steam
     link: https://steamcommunity.com/id/sheeptester/
     type: steam
@@ -79,15 +83,22 @@ profiles:
 
   - name: Duolingo
     link: https://www.duolingo.com/syen5
-    bg: '#30A7E4'
-    ball: '#77C700'
+    bg: '#50C800'
+    border: '#8EE000'
+    ball: white
+    type: thick
 
   - name: Replit
     link: https://replit.com/@Sheep_tester
     bg: '#F4F4F5'
     ball: '#4F5151'
     border: '#697C84'
-    type: replit
+    type: thick
+
+  - name: CodeSignal
+    link: https://app.codesignal.com/profile/sheeptester
+    bg: '#dde4f8'
+    border: '#1062FB'
 
   - name: CodinGame
     link: https://www.codingame.com/profile/7338447a65f53edd10117a7ad07622c14994643
@@ -102,6 +113,11 @@ profiles:
   - name: JSPerf
     link: https://jsperf.com/browse/SheepTester
     type: jsperf
+
+  - name: Shadertoy
+    link: https://www.shadertoy.com/user/sheeptester
+    bg: '#404040'
+    border: white
 
   - name: Gravatar
     link: https://en.gravatar.com/sheeptester
@@ -139,9 +155,15 @@ profiles:
     bg: '#FA015A'
     ball: '#FFC502'
 
-  - name: NPM
+  - name: npm
     link: https://www.npmjs.com/~sheeptester
     bg: '#CB3837'
+
+  - name: PyPI
+    link: https://pypi.org/user/sheeptester/
+    # TODO: could this be improved?
+    ball: '#efeeea'
+    border: '#ccc'
 
   - name: Devpost
     link: https://devpost.com/SheepTester
@@ -237,6 +259,10 @@ profiles:
     bg: '#2D4B65'
     border: white
 
+  - name: ACM @ UCSD
+    link: https://members.acmucsd.com/profile/38095aec-5a2f-4e06-9d46-7629393b6d3f
+    type: acm
+
   - name: Autodesk Forums
     link: https://forums.autodesk.com/t5/user/viewprofilepage/user-id/13411589
     bg: black
@@ -261,7 +287,7 @@ profiles:
     bg: '#347F78'
 
   - name: Storyboard That
-    link: https://www.storyboardthat.com/storyboards/you_egg
+    link: https://web.archive.org/web/20210119204535/https://www.storyboardthat.com/storyboards/you_egg
     ball: '#729DC8'
 
   - name: Truth Social
