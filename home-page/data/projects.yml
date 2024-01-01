@@ -1,3 +1,26 @@
+# index
+# - featured
+# - games for kids visiting my site
+#   - Gunn games
+#   - the House series
+#   - more games?
+# - tools
+#   - video editors
+#   - image transformers
+#   - Scratch
+#   - text files
+#   - calculators
+#   - memey stuff
+#   - school math
+# - blogs
+# - penland/penworld
+# - school tools
+# - more visual things
+# - nerdy things
+#   - AI attempts
+# - directories
+# - Eyo
+
 - path: /all/
   image: img/all2-smaller.png
   name: Almost everything
@@ -149,6 +172,18 @@
     - game
     - school
 
+- path: /gamepro5/minigames/choice.html
+  image: img/choice.webp
+  name: Escape from SELF
+  description: >-
+    A short and simple choose-your-own adventure game.
+
+    It was mostly a proof-of-concept or base engine that could be used for a
+    larger game in the future.
+  tags:
+    - game
+    - school
+
 - path: /thingkingland/bookmarklets/theHouse.html
   image: img/house-smaller.png
   name: The House
@@ -202,6 +237,17 @@
   name: SHF
   description: >-
     A typing game.
+  tags:
+    - game
+
+- path: /javascripts/towering-game.html
+  image: img/tower.webp
+  name: Tower builder
+  description: >-
+    A clone of those tower builder games where you stack blocks by timing your
+    release so that the block lands on the tower. If you mistime releasing the
+    block, then the tower gets narrower. The block moves back and forth faster
+    over time.
   tags:
     - game
 
@@ -270,12 +316,33 @@
   tags:
     - utility
 
+- path: /javascripts/tosvg.html
+  image: img/bitmap-to-vector.webp
+  name: Embed image inside SVG
+  description: >-
+    Embeds an image (which can be a GIF) inside an SVG file. This allows you to
+    upload bitmap images of any size to Scratch, which would otherwise reduce
+    its resolution to 480 by 360.
+
+    This is basically PNG to SVG.
+  tags:
+    - utility
+
 - path: /javascripts/jpg-quality.html
   image: img/jpg-quality.jpg
   name: JPG Quality
   description: >-
     An image-to-JPG converter with an option to reduce the quality for maximum
     artifacts.
+  tags:
+    - utility
+
+- path: /javascripts/chopper.html
+  image: img/chopper.webp
+  name: Image chopper
+  description: >-
+    Chop an image into square pieces. This can be used for turning a large image into a
+    grid of Discord emoji or Instagram posts.
   tags:
     - utility
 
@@ -317,6 +384,19 @@
   description: >-
     A mod of Scratch 3.0 that adds small changes like custom aspect ratio
     support and loading extensions from a URL.
+  tags:
+    - utility
+
+- path: /javascripts/webhook-sender.html
+  image: img/webhook.webp
+  name: Discord webhook sender
+  description: >-
+    A WYSIWYG editor for creating messages to send to a webhook. It allows you
+    to add embeds and see (more or less) what your message will look like before
+    sending it.
+
+    To send a message to a webhook, paste the webhook URL in the bar at the
+    bottom then press enter while your cursor is blinking in the URL field.
   tags:
     - utility
 
@@ -364,6 +444,24 @@
   name: Special character finder
   description: >-
     A detector of non-US-keyboard characters.
+  tags:
+    - utility
+
+- path: /javascripts/discord-transformer.html
+  image: img/transformer.webp
+  name: Text transformer
+  description: >-
+    Transform each letter in a message for Discord. You can put each letter in
+    its own spoiler to annoy people, or convert each letter into its
+    corresponding regional indicator emoji to show them in big blue box letters.
+  tags:
+    - utility
+
+- path: /javascripts/tts.html
+  image: img/tts.webp
+  name: Text to Speech
+  description: >-
+    Lets you use your browser's built-in text-to-speech engine.
   tags:
     - utility
 
@@ -455,6 +553,34 @@
     and I keep forgetting what they mean.
   tags:
     - visual
+    - school
+
+- path: /javascripts/rounded-decimal-to-fraction.html
+  image: img/convert-to-fraction.webp
+  name: Convert decimal to fraction
+  description: >-
+    Convert a decimal expansion to possible fractions that may be rounded as the
+    decimal. Fairly useful for figuring out what fraction a decimal may have
+    come from.
+  tags:
+    - utility
+
+- path: /hello-world/sigfig.html
+  image: img/sigfig.webp
+  name: Sig fig counter
+  description: >-
+    Counts the number of significant figures in a number, at least according to
+    the rules taught in my high school Chemistry Honors class.
+
+    To specify ×10^, use e. For example, 2.3e-2 is equal to 0.023.
+
+    100 is assumed to have one sig fig. To specify that the trailing zeroes are
+    significant, leave a trailing decimal point (e.g. 100.). This goes against
+    sig fig conventions that I've seen in other contexts, like AP Physics. This
+    alternate convention treats 100 as having three significant figures, and
+    uses 1e2 to specify one sig fig.
+  tags:
+    - utility
     - school
 
 - path: /roots/
@@ -610,6 +736,21 @@
   tags:
     - game
 
+- path: /javascripts/sudoku-ruiner.html
+  image: img/sudoku.webp
+  name: Sudoku solver
+  description: >-
+    Ruins the fun of sudoku by automatically calculating hints, the possible
+    numbers that could go in each space, to help solve the puzzles. If a space
+    has exactly one option for it, then you can fill it in to eliminate more
+    options.
+
+    This was inspired by a sudoku app my dad made, which had an option to do the
+    same thing.
+  tags:
+    - utility
+    - game
+
 - path: https://orbiit.github.io/gunn-web-app/
   image: img/ugwa-smaller.png
   name: Unofficial Gunn Web App
@@ -660,6 +801,16 @@
     - utility
     - school
 
+- path: /ucsd-sunset/
+  image: img/sunset.jpg
+  name: SunSET
+  description: >-
+    An initiative to crowdsource grade distributions for past classes at UCSD to
+    better inform students about what electives are most likely to give A's.
+  tags:
+    - utility
+    - school
+
 - path: /words-go-here/misc/fluent-emoji.html
   image: img/fluent-emoji.png
   name: Fluent emoji list
@@ -699,6 +850,15 @@
   tags:
     - visual
 
+- path: /animations/pi.html
+  image: img/pi.webp
+  name: Proof that π = 4
+  description: >-
+    An animation of a wheel of diameter 1 unravelling its circumference onto a
+    number line, showing that its circumference is 4 and therefore π = 4.
+  tags:
+    - visual
+
 - path: /contextmenutest.html
   image: img/rightclick-smaller.png
   name: Context Menu Test
@@ -706,6 +866,27 @@
     An infuriating custom context menu design.
   tags:
     - visual
+
+- path: /hello-world/plaincolour.html
+  image: img/plaincolor.webp
+  name: PNG bomb
+  description: >-
+    Create a massive image that's only a few kilobytes in size. For example, a
+    10000 by 10000 image (a hundred million pixels) can be expressed in a single
+    12 kB PNG file.
+
+    This is the PNG equivalent of a ZIP bomb. You can sneak a large image past a
+    file size restriction, and whoever ends up trying to process the image will
+    trip up deflating thousands of pixels from a single byte.
+
+    Since these images only have one color, we can use a 2-color palette for the
+    image, using one bit per pixel, or 8 pixels per byte. PNG files use the
+    Deflate algorithm to compress the pixel data. Since there's only one color,
+    all the bytes are the same, so we hit Deflate's maximum compression ratio of
+    1000:1. All in all, up to around 8000 pixels can be represented by one byte
+    in a PNG image.
+  tags:
+    - utility
 
 - path: /javascripts/imagetoscheme.html
   image: img/scheme-smaller.png
@@ -777,6 +958,28 @@
     - visual
     - unintuitive
 
+- path: /gamepro5/minigames/particles.html
+  image: img/particles.webp
+  name: Chain reaction particles
+  description: >-
+    Popping a circle with a particle will make it explode into more particles,
+    which can go on to pop more circles, resulting in a chain reaction.
+  tags:
+    - visual
+
+- path: /life/
+  image: img/life.webp
+  name: Conway's Game of Life
+  description: >-
+    Draw cells on an infinite expanse, then simulate Conway's Game of Life.
+
+    Being an old project, the interface doesn't work well on mobile, and it
+    doesn't perform any optimizations such as memoizing large patterns of cells.
+    This was inspired by a Scratch project that also had a UI to add patterns
+    from a library, but I never got around to adding it.
+  tags:
+    - visual
+
 - path: /javascripts/mutate.html
   image: img/life.png
   name: Cell simulation
@@ -802,6 +1005,39 @@
   tags:
     - visual
     - incomplete
+
+- path: /gamepro5/minigames/elements.html
+  image: img/elements.webp
+  name: Elements
+  description: >-
+    Discover all the substances by combining pairs of the basic 5 elements.
+
+    I didn't add many substances to discover because the project served as a
+    backbone or proof-of-concept for a possible larger game. Inspired by
+    Elemental on the HTwins website.
+  tags:
+    - game
+
+- path: /gamepro5/minigames/traffic.html
+  image: img/traffic.webp
+  name: Red Light, Green Light
+  description: >-
+    A simple implementation of red light, green light. To move, press the space
+    bar or tap on the screen as quickly as possible. If you move when you're not
+    supposed to, your progress resets.
+
+    In Chinese school, we played a version like this called 一二三木頭人. The
+    name translates to "one, two, three, wooden person," and I think it means
+    that you're supposed to act like you're made of wood when time is up. It's
+    kind of like Sneaky Statues, where after the person counts down, they turn
+    around, and if they see you move, you lose. Your goal is to tag the person
+    counting down.
+
+    Squid Game also adapted this, but they sing a song to count down instead.
+    Both Asian versions let you know how much time you have to move, while this
+    American version does not.
+  tags:
+    - game
 
 - path: /javascripts/
   image: img/js-smaller.png
