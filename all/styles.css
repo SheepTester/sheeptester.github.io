@@ -75,6 +75,7 @@ summary,
   border-radius: 2px;
   padding: 2px 2px;
   margin: 10px 0;
+  white-space: pre-wrap;
 }
 summary:hover,
 .dir a:hover {

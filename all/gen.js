@@ -125,7 +125,8 @@ function generateShowBtns() {
       tempPath.pop();
     } else {
       const extension = line.slice(line.lastIndexOf('.') + 1);
-      const url = tempPath.join('/') + '/' + (line === 'index.html' || line === 'index.md' ? '' : line);
+      const url = encodeURI(tempPath.join('/') + '/' + (line === 'index.html' || line === 'index.md' ? '' : line))
+        .replaceAll('?', encodeURIComponent('?'));
       let type = 'other';
       switch (extension.toLowerCase()) {
         case 'html':
@@ -157,7 +158,7 @@ function generateShowBtns() {
           }
           break;
       }
-      html += `<a href="${url}" class="${type}">${decodeURIComponent(line)}</a>`;
+      html += `<a href="${url}" class="${type}">${line}</a>`;
     }
   });
   const {targets, links, styles} = generateShowBtns();

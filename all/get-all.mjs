@@ -98,7 +98,6 @@ function getRepoFiles (repo, branch = 'master') {
     })
 }
 
-const hostRegex = new RegExp(`^https?://${domain.replace(/\./g, '\\.')}`)
 function getJekyllSitemap (repo) {
   // https://sheeptester.github.io/blog/sitemap.xml
   return fetch(`https://${domain}/${repo}/sitemap.xml`)
@@ -106,7 +105,7 @@ function getJekyllSitemap (repo) {
     .then(xml2js.parseStringPromise)
     .then(({ urlset: { url } }) =>
       url.map(({ loc }) => {
-        const path = loc[0].replace(hostRegex, '')
+        const path = decodeURI(new URL(loc[0]).pathname)
         return path.endsWith('/') ? path + 'index.html' : path
       })
     )
@@ -144,7 +143,7 @@ async function main () {
           sitemap
             .trim()
             .split(/\r?\n/)
-            .map(url => new URL(url).pathname)
+            .map(url => decodeURI(new URL(url).pathname))
         ))
     )
   }

@@ -108,10 +108,7 @@ https://sheeptester.github.io/hello-world/questionable-host/
 https://sheeptester.github.io/hello-world/questionable-host/instructions.html
 https://sheeptester.github.io/hello-world/questionable-host/upload.html
 https://sheeptester.github.io/hello-world/redpitaya_FPGA/
-https://sheeptester.github.io/hello-world/test/ 
- 
-/
-newline.html
+https://sheeptester.github.io/hello-world/test/%20%0A%20%0A/%0Anewline.html
 https://sheeptester.github.io/hello-world/test/adminbot.html
 https://sheeptester.github.io/hello-world/test/Charlie_Liu.html
 https://sheeptester.github.io/hello-world/test/comments.html
@@ -261,7 +258,7 @@ https://sheeptester.github.io/javascripts/video/text.html
 https://sheeptester.github.io/javascripts/video/video-test.html
 https://sheeptester.github.io/javascripts/webgl/
 https://sheeptester.github.io/javascripts/abbrevator.html
-https://sheeptester.github.io/javascripts/análisis-poético.html
+https://sheeptester.github.io/javascripts/an%C3%A1lisis-po%C3%A9tico.html
 https://sheeptester.github.io/javascripts/anonchat.html
 https://sheeptester.github.io/javascripts/autocomplete.html
 https://sheeptester.github.io/javascripts/battery-inspection.html
@@ -440,7 +437,7 @@ https://sheeptester.github.io/real/internships-2024/
 https://sheeptester.github.io/real/
 https://sheeptester.github.io/reform/components.html
 https://sheeptester.github.io/reiglutopia/
-https://sheeptester.github.io/résumé/
+https://sheeptester.github.io/r%C3%A9sum%C3%A9/
 https://sheeptester.github.io/roots/
 https://sheeptester.github.io/scratch-blocks/playgrounds/tests/custom_procedure_playground.html
 https://sheeptester.github.io/scratch-blocks/playgrounds/tests/horizontal_playground.html
@@ -518,7 +515,7 @@ https://sheeptester.github.io/thingkingland/Sean/home2.html
 https://sheeptester.github.io/thingkingland/Sean/
 https://sheeptester.github.io/thingkingland/Sean/materialDesign.html
 https://sheeptester.github.io/thingkingland/Sean/newtab.html
-https://sheeptester.github.io/thingkingland/Sean/OxySean's Followers.html
+https://sheeptester.github.io/thingkingland/Sean/OxySean's%20Followers.html
 https://sheeptester.github.io/thingkingland/Sean/prime.html
 https://sheeptester.github.io/thingkingland/Sean/random_fun.html
 https://sheeptester.github.io/thingkingland/Sean/scratch.html

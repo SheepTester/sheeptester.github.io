@@ -292,7 +292,7 @@ report2-diff2.png
 report2-diff3.png
 report3.png
 <
-any%20name%20you%20choose.html
+any name you choose.html
 index.html
 lab-report-1-week-2.html
 lab-report-2-week-4.html
