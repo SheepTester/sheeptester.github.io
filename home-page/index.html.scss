@@ -927,17 +927,29 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
           @each $tag, $tag-data in $tags {
             css {
               .base-tag {
-                background-position: center;
+                background-position: center, 30px 30px, 0 0;
                 background-repeat: no-repeat;
-                background-size: 75%, auto;
+                background-size: 75%, 75%, auto;
+                transition: opacity .5s, background-position .2s;
               }
             }
             css {
               .tag-#{$tag} {
                 background-color: #{map.get($tag-data, 'colour1')};
                 background-image: url("/home-page/icons/tag-#{$tag}.svg"),
+                  url("/home-page/icons/feather-check.svg"),
                   linear-gradient(150deg, #{map.get($tag-data, 'colour1')},
                   #{map.get($tag-data, 'colour2')});
+              }
+            }
+            @if map.get($tag-data, 'dark') {
+              css {
+                .tag-#{$tag} {
+                  background-image: url("/home-page/icons/tag-#{$tag}.svg"),
+                    url("/home-page/icons/feather-check-black.svg"),
+                    linear-gradient(150deg, #{map.get($tag-data, 'colour1')},
+                    #{map.get($tag-data, 'colour2')});
+                }
               }
             }
 
@@ -954,6 +966,7 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
                 height: 30px;
                 padding: 3px;
                 box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+                transition: background-color .2s, color .2s;
               }
               .filter-tag:hover {
                 background-color: #1f2e3f;
@@ -975,18 +988,7 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
               }
               css {
                 .filter-checkbox:checked + .filter-tag .tag-#{$tag} {
-                  background-image: url("/home-page/icons/feather-check.svg"),
-                    linear-gradient(150deg, #{map.get($tag-data, 'colour1')},
-                    #{map.get($tag-data, 'colour2')});
-                }
-              }
-              @if map.get($tag-data, 'dark') {
-                css {
-                  .filter-checkbox:checked + .filter-tag .tag-#{$tag} {
-                    background-image: url("/home-page/icons/feather-check-black.svg"),
-                      linear-gradient(150deg, #{map.get($tag-data, 'colour1')},
-                      #{map.get($tag-data, 'colour2')});
-                  }
+                  background-position: -30px -30px, center, 0 0;
                 }
               }
               span.filter-tag-icon.base-tag.tag-#{$tag} {}
