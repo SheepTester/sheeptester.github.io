@@ -13,6 +13,7 @@ import {
   ghUser,
   ghPagesRepos,
   jekyllRepos,
+  actionsRepos,
   ignore as ignorePatterns
 } from './gh-pages-repos.mjs'
 import { fileURLToPath } from 'url'
@@ -100,7 +101,7 @@ function getRepoFiles (repo, branch = 'master') {
 const hostRegex = new RegExp(`^https?://${domain.replace(/\./g, '\\.')}`)
 function getJekyllSitemap (repo) {
   // https://sheeptester.github.io/blog/sitemap.xml
-  return fetch(`https://${domain}/${repo}/sitemap.xml`, { headers })
+  return fetch(`https://${domain}/${repo}/sitemap.xml`)
     .then(r => r.text())
     .then(xml2js.parseStringPromise)
     .then(({ urlset: { url } }) =>
@@ -133,6 +134,20 @@ async function main () {
     .split('\0')
     .slice(0, -1)
     .map(f => `/${f}`)
+
+  for (const repo of actionsRepos) {
+    console.log(`Getting ${repo} (sitemap.txt)`)
+    paths.push(
+      ...(await fetch(`https://${domain}/${repo}/sitemap.txt`)
+        .then(r => r.text())
+        .then(sitemap =>
+          sitemap
+            .trim()
+            .split(/\r?\n/)
+            .map(url => new URL(url).pathname)
+        ))
+    )
+  }
 
   for (const repoBranch of jekyllRepos) {
     console.log(`Getting ${repoBranch} (jekyll)`)

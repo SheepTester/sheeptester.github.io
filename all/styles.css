@@ -64,7 +64,7 @@ summary::before {
   margin-bottom: 2px;
   transform: rotate(-90deg);
 }
-details[open] summary::before {
+details[open] > summary::before {
   transform: none;
 }
 summary,

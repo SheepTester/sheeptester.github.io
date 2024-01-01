@@ -1,8 +1,10 @@
 export const domain = 'sheeptester.github.io'
 export const ghUser = 'SheepTester'
 
-// Assumes `master` is default branch
-// NOTE: This means that you must explicitly list `main`
+/**
+ * Assumes `master` is default branch
+ * NOTE: This means that you must explicitly list `main`
+ */
 export const ghPagesRepos = [
   'alt-schedule-parser-tester',
   'ascended-cat',
@@ -55,6 +57,14 @@ export const ghPagesRepos = [
 ]
 
 export const jekyllRepos = ['blog', 'cse15l-lab-reports#main', 'longer-tweets']
+
+/**
+ * These repositories build and deploy to GitHub Pages directly from GitHub
+ * Actions. By my own convention, the list of all files deployed is stored in
+ * sitemap.txt. However, we still lose a 1-to-1 connection between output and
+ * source file.
+ */
+export const actionsRepos = ['ucsd-sunset']
 
 export const ignore = [
   '/blockly/',
