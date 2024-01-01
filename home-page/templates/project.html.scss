@@ -77,7 +77,7 @@ a.#{$classes}[href="#{map.get($project, 'path')}"][data-desc="#{map.get($project
       border-radius: 10px;
     }
   }
-  img.thumbnail[src="#{map.get($project, 'image')}"][alt="Thumbnail for #{map.get($project, 'name')}"][loading="lazy"];
+  img.thumbnail[src="#{map.get($project, 'image')}"][alt="Thumbnail for #{map.get($project, 'name')}"][width="100"][loading="lazy"];
 
   css {
     .title {
@@ -208,7 +208,7 @@ a.#{$classes}[href="#{map.get($project, 'path')}"][data-desc="#{map.get($project
       display: block;
     }
   }
-  button.show-info-btn[title="Show project info"] {
+  button.show-info-btn[type="button"][title="Show project info"][aria-controls="description-wrapper"] {
     span.show-info-icon {}
   }
 }

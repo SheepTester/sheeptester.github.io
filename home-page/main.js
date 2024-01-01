@@ -73,7 +73,7 @@ function unselect () {
   descElems.wrapper.style.display = 'none'
   if (lastSelected) {
     lastSelected.classList.remove('showing-desc')
-    lastSelected.ariaExpanded = 'false'
+    lastSelected.querySelector('.show-info-btn').ariaExpanded = 'false'
   }
 }
 
@@ -84,10 +84,9 @@ projectsWrapper.addEventListener('click', e => {
   if (!project) {
     return
   }
-  const showInfoHidden =
-    window.getComputedStyle(project.querySelector('.show-info-btn')).display ===
-    'none'
-  if (showInfoHidden || e.target.closest('.show-info-btn')) {
+  const showInfoBtn = project.querySelector('.show-info-btn')
+  const showInfoHidden = window.getComputedStyle(showInfoBtn).display === 'none'
+  if (showInfoHidden || showInfoBtn.contains(e.target)) {
     e.preventDefault()
     unselect()
     if (lastSelected !== project) {
@@ -96,15 +95,18 @@ projectsWrapper.addEventListener('click', e => {
       descElems.wrapper.style.display = null
       lastSelected = project
       project.classList.add('showing-desc')
-      project.ariaExpanded = 'true'
+      showInfoBtn.ariaExpanded = 'true'
+      const id = `temp_${Date.now()}`
+      showInfoBtn.id = id
+      descElems.wrapper.setAttribute('aria-labelledby', id)
     } else {
       lastSelected = null
     }
   }
 })
 
-for (const project of document.getElementsByClassName('project')) {
-  project.ariaExpanded = 'false'
+for (const showInfoBtn of document.getElementsByClassName('show-info-btn')) {
+  showInfoBtn.ariaExpanded = 'false'
 }
 
 function easeInOutCubic (t) {

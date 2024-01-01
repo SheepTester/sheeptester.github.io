@@ -81,8 +81,7 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
   }
 
   css {
-    html,
-    body {
+    html {
       height: 100%;
     }
     body {
@@ -93,6 +92,7 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
       background-color: #171931;
       color: rgba(255, 255, 255, 0.7);
       word-break: break-word;
+      min-height: 100%;
     }
     code,
     pre {
@@ -105,7 +105,7 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
       display: flex;
     }
   }
-  body {
+  body[role="main"] {
     script {
       // Need semicolons because the newlines are removed
       // Using ?. to weed out incompetent browsers
@@ -222,7 +222,7 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
           pointer-events: none;
         }
       }
-      svg.logo[xmlns="http://www.w3.org/2000/svg"][viewBox="0 0 480 480"] {
+      svg.logo[xmlns="http://www.w3.org/2000/svg"][viewBox="0 0 480 480"][width="45"][aria-hidden="true"] {
         $path: """
           M90 90
           a50 50 0 0 0 0 100
@@ -287,7 +287,7 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
         width: 500px;
       }
     }
-    section.about {
+    .about {
       css {
         .card {
           border-radius: 10px;
@@ -369,7 +369,7 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
             object-position: 50% -20px;
           }
         }
-        img.me-photo[src="./img/sean-at-sutro-baths-by-cat.jpg"][alt="Me standing on a wall surrounded by water at Sutro Baths with the sun setting behind me."];
+        img.me-photo[src="./img/sean-at-sutro-baths-by-cat.jpg"][alt="Me standing on a wall surrounded by water at Sutro Baths with the sun setting behind me."][width="700"];
         css {
           .gradient {
             margin: 0 -20px;
@@ -403,38 +403,56 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
             font-size: 0.8em;
             padding: 5px 10px;
             border-radius: 50px;
-            margin-right: 5px;
+          }
+          .colon {
+            color: transparent;
           }
         }
         p.datum {
           span.attribute {
             content: "Pronounce";
           }
-          content: " /ʃɔːn/";
+          span.colon {
+            content: ": ";
+          }
+          span[lang="en-fonipa"] {
+            content: "/ʃɔːn/";
+          }
         }
         p.datum {
           span.attribute {
             content: "Pronouns";
           }
-          content: " he/him/his ♂️";
+          span.colon {
+            content: ": ";
+          }
+          content: "he/him/his ♂️";
         }
         p.datum {
           span.attribute {
             content: "Location";
           }
-          content: " SF Bay Area and San Diego";
+          span.colon {
+            content: ": ";
+          }
+          content: "SF Bay Area and San Diego";
         }
         p.datum {
           span.attribute {
             content: "Time Zone";
           }
-          content: " Pacific Time";
+          span.colon {
+            content: ": ";
+          }
+          content: "Pacific Time";
         }
         p.datum {
           span.attribute {
             content: "Age";
           }
-          content: " ";
+          span.colon {
+            content: ": ";
+          }
           css {
             .age-clickable {
               cursor: pointer;
@@ -472,7 +490,14 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
           span.attribute {
             content: "Zodiac";
           }
-          content: " sheep 羊, Aries ";
+          span.colon {
+            content: ": ";
+          }
+          content: "sheep ";
+          span[lang="zh"] {
+            content: "羊";
+          }
+          content: ", Aries ";
           css {
             .emoji {
               // Opaque color so the color emoji doesn't appear faded
@@ -576,12 +601,13 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
               background-size: cover;
               background-position: center;
             }
-            .interest-name {
+            .card .interest-name {
               background-color: rgba(0, 0, 0, 0.5);
               backdrop-filter: blur(10px);
               box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
               padding: 2px 10px;
               border-radius: 20px;
+              margin: 0;
             }
 
             .interest-sheep {
@@ -600,12 +626,12 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
             }
           }
           li.interest.interest-sheep {
-            .interest-name {
+            p.interest-name {
               content: "Sheep";
             }
           }
           li.interest.interest-webdev {
-            .interest-name {
+            p.interest-name {
               content: "Web dev";
 
               @media (max-width: 400px) {
@@ -619,7 +645,7 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
             }
           }
           li.interest.interest-ling {
-            .interest-name {
+            p.interest-name {
               content: "Linguistics";
             }
           }
@@ -640,6 +666,7 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
             gap: 5px;
             overflow: hidden;
             border-radius: 15px;
+            margin: 0;
           }
         }
         @media (min-width: 680px) {
@@ -654,10 +681,11 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
             overflow: unset;
           }
         }
-        .socials {
+        p.socials {
           $type: "a";
           @each $social in map.get($socials, 'profiles') {
             @import "./templates/social.html.scss";
+            content: " ";
           }
         }
 
@@ -685,23 +713,31 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
               }
               // TODO: Gmail icon has a hover effect; remove?
               .username-icon {
-                display: block;
                 width: 32px;
                 height: 32px;
                 padding: 0;
-                margin-right: 10px;
               }
             }
             @if map.get($social, 'link') {
               a.username[href="#{map.get($social, 'link')}"] {
                 @import "./templates/social.html.scss";
-                content: "#{map.get($social, 'username')}";
+                span {
+                  span.colon {
+                    content: ": ";
+                  }
+                  content: "#{map.get($social, 'username')}";
+                }
               }
             }
             @if not map.get($social, 'link') {
               span.username {
                 @import "./templates/social.html.scss";
-                content: "#{map.get($social, 'username')}";
+                span {
+                  span.colon {
+                    content: ": ";
+                  }
+                  content: "#{map.get($social, 'username')}";
+                }
               }
             }
           }
@@ -748,9 +784,12 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
           span.block-link-content {
             span.block-link-title {
               content: "Contact me through Discord";
+              span.colon {
+                content: "; ";
+              }
             }
             span.block-link-subtitle {
-              content: "Join my server to DM me without sending a friend request.";
+              content: "Join my server to DM me without sending a friend request. ";
             }
           }
           span.block-link-icon-wrapper {
@@ -760,6 +799,7 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
             @import "./templates/social.html.scss";
           }
         }
+        content: " ";
         a.block-link.no-subtitle[href="/résumé/"] {
           span.block-link-content {
             span.block-link-title {
@@ -810,7 +850,7 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
         flex: auto;
       }
     }
-    section.project-wrapper {
+    .project-wrapper {
       $tags: import("./data/tags.yml");
 
       css {
@@ -902,28 +942,37 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
         }
 
         css {
+          .filter-by,
           .filters {
             display: none;
           }
+          .has-js .filter-by,
           .has-js .filters {
-            display: block;
+            display: flex;
           }
         }
-        .filters {
-          css {
-            .filter-by {
-              margin: 0;
-              font-weight: normal;
-              font-size: 0.9em;
-              text-transform: uppercase;
-              margin-top: 20px;
-              color: rgba(255, 255, 255, 0.5);
-            }
+        css {
+          .filter-by {
+            margin: 0;
+            font-weight: normal;
+            font-size: 0.9em;
+            text-transform: uppercase;
+            margin-top: 20px;
+            color: rgba(255, 255, 255, 0.5);
           }
-          h2.filter-by#filter-by {
-            content: "Filter by";
+        }
+        h2.filter-by#filter-by {
+          content: "Filter by";
+        }
+        css {
+          .filters {
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 0;
+            margin-top: 10px;
           }
-
+        }
+        p.filters {
           @each $tag, $tag-data in $tags {
             css {
               .base-tag {
@@ -936,10 +985,16 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
             css {
               .tag-#{$tag} {
                 background-color: #{map.get($tag-data, 'colour1')};
-                background-image: url("/home-page/icons/tag-#{$tag}.svg"),
-                  url("/home-page/icons/feather-check.svg"),
-                  linear-gradient(150deg, #{map.get($tag-data, 'colour1')},
-                  #{map.get($tag-data, 'colour2')});
+              }
+            }
+            @if not map.get($tag-data, 'dark') {
+              css {
+                .tag-#{$tag} {
+                  background-image: url("/home-page/icons/tag-#{$tag}.svg"),
+                    url("/home-page/icons/feather-check.svg"),
+                    linear-gradient(150deg, #{map.get($tag-data, 'colour1')},
+                    #{map.get($tag-data, 'colour2')});
+                }
               }
             }
             @if map.get($tag-data, 'dark') {
@@ -957,12 +1012,10 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
 
             css {
               .filter-tag {
-                display: inline-flex;
+                display: flex;
                 cursor: pointer;
                 background-color: #24364a;
                 border-radius: 50px;
-                margin-top: 10px;
-                margin-right: 10px;
                 height: 30px;
                 padding: 3px;
                 box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
@@ -1004,6 +1057,7 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
                 content: "#{map.get($tag-data, 'name')}";
               }
             }
+            content: " ";
           }
         }
       }
@@ -1014,6 +1068,7 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
           grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
           padding: 20px 0;
           grid-auto-flow: dense;
+          margin: 0;
         }
       }
       @media (min-width: 680px) {
@@ -1023,113 +1078,114 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
           padding: 20px;
         }
       }
-      .projects#projects-wrapper {
+      p.projects#projects-wrapper {
         @each $project in import("./data/projects.yml") {
           @import "./templates/project.html.scss";
+          content: " ";
+        }
+      }
+
+      css {
+        .description {
+          display: flex;
+          flex-direction: column;
+          align-items: flex-start;
+          background-color: #24364a;
+          grid-column: 1 / -1;
+          line-height: 1.5;
+        }
+      }
+      @media (min-width: 680px) {
+        .description {
+          align-items: center;
+          border-radius: 10px;
+          box-shadow: 0 3px 10px rgba(0, 0, 0, 0.5);
+          border: 1px solid rgba(151, 189, 179, 0.2);
+        }
+      }
+      .description#description-wrapper[style="display:none"][role="contentinfo"] {
+        css {
+          .description-body {
+            width: 100%;
+            max-width: 680px;
+            box-sizing: border-box;
+            padding: 20px;
+          }
+        }
+        .description-body {
+          css {
+            .desc-title {
+              margin: 0;
+              flex: auto;
+              color: rgba(255, 255, 255, 0.9);
+              font-weight: normal;
+              font-size: 2em;
+              line-height: 1.1;
+            }
+          }
+          h2.desc-title#desc-title {}
+
+          .description-tags#desc-tags {
+            css {
+              .desc-tag {
+                display: inline-flex;
+                height: 30px;
+                overflow: hidden;
+                margin-top: 10px;
+                margin-right: 10px;
+                border: 1px solid rgba(151, 189, 179, 0.2);
+                border-radius: 50px;
+                padding: 3px;
+              }
+              .desc-tag-icon {
+                width: 30px;
+                border-radius: 50%;
+              }
+              .desc-tag-name {
+                border-left: none;
+                padding-right: 10px;
+                padding-left: 8px;
+                display: flex;
+                align-items: center;
+              }
+            }
+          }
+
+          .description-text#description {
+            css {
+              .description-text p {
+                margin: 10px 0;
+              }
+              .description-text p:last-child {
+                margin-bottom: 0;
+              }
+            }
+          }
         }
 
         css {
-          .description {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            background-color: #24364a;
-            grid-column: 1 / -1;
-            line-height: 1.5;
+          .desc-visit {
+            text-transform: uppercase;
+            background-color: #1ce0e0;
+            color: black;
+            padding: 10px 20px;
+            margin: 20px;
+            margin-top: 0;
+            border-radius: 50px;
+            font-weight: bold;
+            transition: background-color .2s;
+          }
+          .desc-visit:hover {
+            background-color: rgba(255, 255, 255, 0.05);
           }
         }
         @media (min-width: 680px) {
-          .description {
-            align-items: center;
-            border-radius: 10px;
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.5);
-            border: 1px solid rgba(151, 189, 179, 0.2);
+          .desc-visit {
+            display: none;
           }
         }
-        .description#description-wrapper[style="display:none"][role="contentinfo"] {
-          css {
-            .description-body {
-              width: 100%;
-              max-width: 680px;
-              box-sizing: border-box;
-              padding: 20px;
-            }
-          }
-          .description-body {
-            css {
-              .desc-title {
-                margin: 0;
-                flex: auto;
-                color: rgba(255, 255, 255, 0.9);
-                font-weight: normal;
-                font-size: 2em;
-                line-height: 1.1;
-              }
-            }
-            h2.desc-title#desc-title {}
-
-            .description-tags#desc-tags {
-              css {
-                .desc-tag {
-                  display: inline-flex;
-                  height: 30px;
-                  overflow: hidden;
-                  margin-top: 10px;
-                  margin-right: 10px;
-                  border: 1px solid rgba(151, 189, 179, 0.2);
-                  border-radius: 50px;
-                  padding: 3px;
-                }
-                .desc-tag-icon {
-                  width: 30px;
-                  border-radius: 50%;
-                }
-                .desc-tag-name {
-                  border-left: none;
-                  padding-right: 10px;
-                  padding-left: 8px;
-                  display: flex;
-                  align-items: center;
-                }
-              }
-            }
-
-            .description-text#description {
-              css {
-                .description-text p {
-                  margin: 10px 0;
-                }
-                .description-text p:last-child {
-                  margin-bottom: 0;
-                }
-              }
-            }
-          }
-
-          css {
-            .desc-visit {
-              text-transform: uppercase;
-              background-color: #1ce0e0;
-              color: black;
-              padding: 10px 20px;
-              margin: 20px;
-              margin-top: 0;
-              border-radius: 50px;
-              font-weight: bold;
-              transition: background-color .2s;
-            }
-            .desc-visit:hover {
-              background-color: rgba(255, 255, 255, 0.05);
-            }
-          }
-          @media (min-width: 680px) {
-            .desc-visit {
-              display: none;
-            }
-          }
-          a[href="#"].desc-visit#desc-link {
-            content: "Visit";
-          }
+        a[href="#"].desc-visit#desc-link {
+          content: "Visit";
         }
       }
 

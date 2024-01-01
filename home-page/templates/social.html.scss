@@ -119,7 +119,7 @@ $link: "";
   $link: map.get($social, 'link');
 }
 $name: map.get($social, 'name');
-#{$type}.#{$ball-type}[href="#{$link}"][style="#{$bg}"][title="#{$name}"][aria-label="#{$name}"] {
+#{$type}.#{$ball-type}[href="#{$link}"][style="#{$bg}"][title="#{$name}"] {
   css {
     .ball {
       position: absolute;
@@ -161,7 +161,8 @@ $name: map.get($social, 'name');
 
   css {
     .social-name {
-      display: none;
+      font-size: 0;
+      position: absolute;
     }
   }
   span.social-name {
