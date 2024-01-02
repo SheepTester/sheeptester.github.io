@@ -278,6 +278,32 @@
   tags:
     - utility
 
+- path: /words-go-here/misc/fft.html
+  image: img/fft.webp
+  name: Spectrogram
+  description: >-
+    Analyze the frequencies received by your device's microphone.
+  tags:
+    - utility
+
+- path: /javascripts/sstv-encoder.html
+  image: img/sstv.webp
+  name: SSTV encoder
+  description: >-
+    Encodes the given image for SSTV, using Scottie S1. This allows you to
+    transmit images over radio.
+  tags:
+    - utility
+
+- path: /words-go-here/misc/8bit-sound.html
+  image: img/8bit.webp
+  name: Make audio low quality
+  description: >-
+    Reduces the bit depth of the samples in your audio to 8 bits, resulting in
+    very crunchy, compressed audio.
+  tags:
+    - utility
+
 - path: /javascripts/mp4-analyze.html
   image: img/mp4.webp
   name: MP4 analyzer
@@ -400,6 +426,18 @@
   tags:
     - utility
 
+- path: /javascripts/floating-sticky-note.html
+  image: img/sticky.webp
+  name: Pin sticky note on top
+  description: >-
+    The new Document Picture-in-Picture API lets websites make a pop-up window
+    that always stays on top, even above other non-browser windows. This lets
+    you take notes on a little floating notepad while browsing a news article,
+    for example, instead of having to split your screen in half. For some
+    reason, many notes apps do not have this feature.
+  tags:
+    - utility
+
 - path: /words-go-here/misc/diff.html
   image: img/diff.webp
   name: Diff Checker
@@ -492,6 +530,27 @@
   name: Weird flex but ok
   description: >-
     A generator replacing each word in the phrase with a synonym.
+  tags:
+    - utility
+
+- path: /words-go-here/misc/no-prereqs.html
+  image: img/prereqs.webp
+  name: There are no prereqs
+  description: >-
+    Make UCSD roast someone for you! UCSD's Schedule of Classes will print
+    whatever is given in the URL, and "There are no prerequisites for" leaves
+    room for a number of creative phrases.
+
+    You can disguise your message in the URL using the URL obfuscator.
+  tags:
+    - school
+
+- path: /javascripts/obfuscate-url.html
+  image: img/obfuscate.webp
+  name: URL obfuscator
+  description: >-
+    Obfuscate words in a URL by URL-encoding every letter, even though it's not
+    necessary.
   tags:
     - utility
 
