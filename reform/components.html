@@ -13,301 +13,207 @@
     <link rel="stylesheet" type="text/css" href="/reform/reform.css" />
   </head>
   <body>
-    <main>
-      <form class="main">
-        <h1>List of components</h1>
-        <p>
-          List a bunch of uses here, a bit less concisely than the page
-          description. A library of components available under Reform. Lists
-          components that need styling.
-        </p>
-        <p>
-          Perhaps describe how the tool works. I'll collect all the components
-          used across <a href="/" class="link">my website</a>'s unstyled pages,
-          then:
-        </p>
-        <ol>
-          <li>
-            <p>Write possible HTML for what the component could look like.</p>
-          </li>
-          <li>
-            <p>Write CSS for the component, iterating on the HTML as needed.</p>
-          </li>
-          <li>
-            <p>
-              Add functionality with JavaScript (which I'll figure out later).
-            </p>
-          </li>
-        </ol>
+    <form class="main" role="main">
+      <h1>List of components</h1>
+      <p>
+        List a bunch of uses here, a bit less concisely than the page
+        description. A library of components available under Reform. Lists
+        components that need styling.
+      </p>
+      <p>
+        Perhaps describe how the tool works. I'll collect all the components
+        used across <a href="/" class="link">my website</a>'s unstyled pages,
+        then:
+      </p>
+      <ol>
+        <li>
+          <p>Write possible HTML for what the component could look like.</p>
+        </li>
+        <li>
+          <p>Write CSS for the component, iterating on the HTML as needed.</p>
+        </li>
+        <li>
+          <p>
+            Add functionality with JavaScript (which I'll figure out later).
+          </p>
+        </li>
+      </ol>
 
-        <label class="field-label">
-          <span class="label-primary">Chunk size</span>
-          <span class="label-secondary">
-            This is an integer. Make sure that iOS lets you enter in a number
-            properly.
+      <div class="two-col-io">
+        <label class="input-controls file">
+          <input
+            type="file"
+            name="image"
+            accept="image/*"
+            class="hidden-accessible"
+          />
+          <span class="icon icon-upload"></span>
+          <span class="file-label">
+            <span class="upload-btn">Choose</span>, drop, or paste an image.
           </span>
+          <span class="file-name">(From clipboard) &middot; 90 kB</span>
+        </label>
+        <div class="image-content input-content"><canvas></canvas></div>
+        <div class="image-content output-content"><canvas></canvas></div>
+        <div class="output-controls">
+          <a class="file" download="whatever.png" href="#">
+            <span class="icon icon-download"></span>
+            <span class="file-label">Download</span>
+            <span class="file-name">whatever.png &middot; 30 kB</span>
+          </a>
+          <button
+            type="button"
+            class="icon icon-copy reform:copy"
+            data-output="output"
+            aria-label="Copy"
+          ></button>
+          <button
+            type="button"
+            class="icon icon-share reform:share"
+            data-output="output"
+            aria-label="Share"
+          ></button>
+        </div>
+      </div>
+
+      <label class="field-label">
+        <span class="label-primary">Chunk size</span>
+        <span class="label-secondary">
+          This is an integer. Make sure that iOS lets you enter in a number
+          properly.
+        </span>
+        <input
+          type="text"
+          inputmode="numeric"
+          pattern="[0-9]*"
+          name="chunkSize"
+          value="50"
+        />
+      </label>
+
+      <label class="field-label">
+        <span class="label-primary">Tileset</span>
+        <span class="label-secondary">
+          Only use dropdowns for long lists of options, such as voices.
+          Otherwise, prefer radios.
+        </span>
+        <select name="tileset">
+          <option value="1" selected>One option</option>
+          <option value="2">Another option</option>
+        </select>
+      </label>
+      <p>
+        Another use for dropdowns is datasets, as seen in
+        <a
+          href="https://sheeptester.github.io/words-go-here/misc/ucsd-map.html"
+          class="link"
+          >ucsd-map</a
+        >.
+      </p>
+
+      <div class="field-label range-wrapper">
+        <label class="range-label">
+          <span class="label-primary">Zoom</span>
+          <input type="range" name="zoom" min="1" max="100" value="30" />
+        </label>
+        <input type="text" inputmode="numeric" pattern="[0-9]*" value="30" />
+      </div>
+
+      <p>Some number pads do not support negative numbers.</p>
+      <div class="cols">
+        <label class="field-label">
+          <span class="label-primary">Min X</span>
           <input
             type="text"
             inputmode="numeric"
-            pattern="[0-9]*"
-            name="chunkSize"
-            value="50"
+            pattern="-?[0-9]*"
+            name="minX"
+            value="-1"
           />
         </label>
-
         <label class="field-label">
-          <span class="label-primary">Tileset</span>
-          <span class="label-secondary">
-            Only use dropdowns for long lists of options, such as voices.
-            Otherwise, prefer radios.
-          </span>
-          <select name="tileset">
-            <option value="1" selected>One option</option>
-            <option value="2">Another option</option>
-          </select>
+          <span class="label-primary">Max X</span>
+          <input
+            type="text"
+            inputmode="numeric"
+            pattern="-?[0-9]*"
+            name="maxX"
+            value="1"
+          />
         </label>
-        <p>
-          Another use for dropdowns is datasets, as seen in
-          <a
-            href="https://sheeptester.github.io/words-go-here/misc/ucsd-map.html"
-            class="link"
-            >ucsd-map</a
-          >.
+      </div>
+
+      <fieldset class="radio-set">
+        <legend class="label-primary">Radio 1</legend>
+        <p class="label-secondary">
+          Make sure that the radio buttons look aligned with the text regardless
+          of the system font.
         </p>
+        <label class="radio-label">
+          <input
+            type="radio"
+            name="radio1"
+            value="lmao"
+            class="hidden-accessible"
+          />
+          <span class="radio-button"></span>
+          <span class="label-content">
+            <span class="label-primary">Lmao</span>
+            <span class="label-secondary">Very descriptive.</span>
+          </span>
+        </label>
+        <label class="radio-label">
+          <input
+            type="radio"
+            name="radio1"
+            value="no-desc"
+            class="hidden-accessible"
+            checked
+          />
+          <span class="radio-button"></span>
+          <span class="label-content">
+            <span class="label-primary">No description</span>
+          </span>
+        </label>
+        <label class="radio-label">
+          <input
+            type="radio"
+            name="radio1"
+            value="wow"
+            class="hidden-accessible"
+          />
+          <span class="radio-button"></span>
+          <span class="label-content">
+            <span class="label-primary">Wow</span>
+            <span class="label-secondary">Long and lengthy.</span>
+          </span>
+        </label>
+      </fieldset>
 
-        <div class="field-label range-wrapper">
-          <label class="range-label">
-            <span class="label-primary">Zoom</span>
-            <input type="range" name="zoom" min="1" max="100" value="30" />
-          </label>
-          <input type="text" inputmode="numeric" pattern="[0-9]*" value="30" />
-        </div>
-
-        <p>Some number pads do not support negative numbers.</p>
-        <div class="cols">
-          <label class="field-label">
-            <span class="label-primary">Min X</span>
-            <input
-              type="text"
-              inputmode="numeric"
-              pattern="-?[0-9]*"
-              name="minX"
-              value="-1"
-            />
-          </label>
-          <label class="field-label">
-            <span class="label-primary">Max X</span>
-            <input
-              type="text"
-              inputmode="numeric"
-              pattern="-?[0-9]*"
-              name="maxX"
-              value="1"
-            />
-          </label>
-        </div>
-
-        <fieldset class="radio-set">
-          <legend class="label-primary">Radio 1</legend>
-          <p class="label-secondary">
-            Make sure that the radio buttons look aligned with the text
-            regardless of the system font.
-          </p>
-          <label class="radio-label">
-            <input
-              type="radio"
-              name="radio1"
-              value="lmao"
-              class="hidden-accessible"
-            />
-            <span class="radio-button"></span>
-            <span class="label-content">
-              <span class="label-primary">Lmao</span>
-              <span class="label-secondary">Very descriptive.</span>
-            </span>
-          </label>
-          <label class="radio-label">
-            <input
-              type="radio"
-              name="radio1"
-              value="no-desc"
-              class="hidden-accessible"
-              checked
-            />
-            <span class="radio-button"></span>
-            <span class="label-content">
-              <span class="label-primary">No description</span>
-            </span>
-          </label>
-          <label class="radio-label">
-            <input
-              type="radio"
-              name="radio1"
-              value="wow"
-              class="hidden-accessible"
-            />
-            <span class="radio-button"></span>
-            <span class="label-content">
-              <span class="label-primary">Wow</span>
-              <span class="label-secondary">Long and lengthy.</span>
-            </span>
-          </label>
-        </fieldset>
-
-        <fieldset class="radio-set">
-          <legend class="label-primary">Radio 2</legend>
-          <label class="radio-label">
-            <input
-              type="radio"
-              name="radio2"
-              value="true"
-              class="hidden-accessible"
-              checked
-            />
-            <span class="radio-button"></span>
-            <span class="label-content">It's only a description.</span>
-          </label>
-          <label class="radio-label">
-            <input
-              type="radio"
-              name="radio2"
-              value="false"
-              class="hidden-accessible"
-            />
-            <span class="radio-button"></span>
-            <span class="label-content">These options.</span>
-          </label>
-        </fieldset>
-
-        <p>
-          <button class="button primary-btn">Spawn</button>
-          <button class="button" type="reset">Reset</button>
-        </p>
-
-        <div class="two-col">
-          <div class="input">
-            <label class="file-input">
-              <span class="choose-wrapper">
-                <input
-                  type="file"
-                  name="image"
-                  accept="image/*"
-                  class="hidden-accessible reform:main"
-                />
-                <span class="button has-icon upload-btn">
-                  <span class="icon icon-upload"></span>
-                  Choose
-                </span>
-                <span class="file-hint">or drop/paste an image.</span>
-              </span>
-              <span class="file-name reform:selected-file">
-                No file selected.
-              </span>
-            </label>
-            <canvas class="reform:preview" data-deps="image"></canvas>
-          </div>
-          <div class="output">
-            <canvas id="outputImage" data-deps="chunkSize image"></canvas>
-            <div class="button-strip">
-              <button
-                type="button"
-                class="button has-icon reform:download"
-                data-output="output"
-              >
-                <span class="icon icon-download"></span>
-                <span class="with-file-name">
-                  <span class="btn-text">Download</span>
-                  <span class="file-name reform:download-name">
-                    No file yet.
-                  </span>
-                </span>
-              </button>
-              <button
-                type="button"
-                class="button reform:copy"
-                data-output="output"
-                aria-label="Copy"
-              >
-                <span class="icon icon-copy"></span>
-              </button>
-              <button
-                type="button"
-                class="button reform:share"
-                data-output="output"
-                aria-label="Share"
-              >
-                <span class="icon icon-share"></span>
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <div class="two-col">
-          <div class="input">
-            <label class="file-input">
-              <span class="choose-wrapper">
-                <input
-                  type="file"
-                  name="original"
-                  accept="text/*"
-                  class="hidden-accessible"
-                  autofocus
-                />
-                <span class="button has-icon upload-btn">
-                  <span class="icon icon-upload"></span>
-                  Choose
-                </span>
-                <span class="file-hint">or drop an image.</span>
-              </span>
-              <span class="file-name reform:selected-file">
-                sample-text.txt (50 kB)
-              </span>
-            </label>
-            <textarea class="reform:preview" data-deps="original">
-Hello, gamers!</textarea
-            >
-          </div>
-          <div class="output">
-            <textarea id="encoded" data-deps="original"></textarea>
-            <div class="button-strip">
-              <button
-                type="button"
-                class="button has-icon reform:download"
-                data-deps="output"
-              >
-                <span class="icon icon-download"></span>
-                <span class="with-file-name">
-                  <span class="btn-text">Download</span>
-                  <span
-                    class="file-name reform:download-name"
-                    data-deps="output"
-                  >
-                    sample-text.txt (50 kB)
-                  </span>
-                </span>
-              </button>
-              <button
-                type="button"
-                class="button reform:copy"
-                data-deps="output"
-                aria-label="Copy"
-              >
-                <span class="icon icon-copy"></span>
-              </button>
-              <button
-                type="button"
-                class="button reform:share"
-                data-deps="output"
-                aria-label="Share"
-              >
-                <span class="icon icon-share"></span>
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <!--  -->
-      </form>
-    </main>
+      <fieldset class="radio-set">
+        <legend class="label-primary">Radio 2</legend>
+        <label class="radio-label">
+          <input
+            type="radio"
+            name="radio2"
+            value="true"
+            class="hidden-accessible"
+            checked
+          />
+          <span class="radio-button"></span>
+          <span class="label-content">It's only a description.</span>
+        </label>
+        <label class="radio-label">
+          <input
+            type="radio"
+            name="radio2"
+            value="false"
+            class="hidden-accessible"
+          />
+          <span class="radio-button"></span>
+          <span class="label-content">These options.</span>
+        </label>
+      </fieldset>
+    </form>
   </body>
 </html>

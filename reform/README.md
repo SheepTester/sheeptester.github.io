@@ -22,7 +22,7 @@ For a while, I've been thinking of establishing a design/component library for m
 
 A lot of "unstyled pages" listed below already do have a bit of style. The Reform program is mainly to get rid of Times New Roman, unless it's clear that the rest of the app has been graced with enough styling that the Times New Roman may be intentional (OlamREEE).
 
-## Implementation
+## Plan
 
 I will introduce Reform in four stages:
 
@@ -53,6 +53,7 @@ I'll focus on interactive web pages first, but I've settled on about five Reform
 - A sidebar with settings with an output image prominently taking up the rest of the screen, like [gif-caption].
   - I'm not sure if the sidebar layout is best, though. It gives little room for detailed labels.
 - A two column textarea, where one side is the input and the other side is the output, like [encrypt].
+- A directory page.
 - A redirect page with a drawing of a sheep.
 - A 404 page with a drawing of a sheep.
 
@@ -62,7 +63,7 @@ Common themes:
   - Text fields tend to be input textareas
   - Number fields (sometimes integer-only)
   - Sliders
-    - Sometimes used to select a time during playback
+    - Sometimes used to select a time during playback (i.e. a scrubber)
   - Radios with descriptions
   - Dropdowns (which are basically radios but harder to style)
     - Dropdowns only make sense for long lists of options, like for TTS voice
@@ -437,7 +438,7 @@ Then, instead of using `id`, we can use `name` for form elements. For custom inp
 
 I'm not sure whether to include the auto-evaluate checkbox and button since it adds a lot of extra noise, at least to the 2-column layout.
 
-## Implementation
+## Implementation notes
 
 Apparently you aren't supposed to have `<p>` tags inside a `<label>`.
 
