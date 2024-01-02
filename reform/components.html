@@ -10,7 +10,7 @@
       content="Listing all the components I'll have to design for my Reform design system."
     />
 
-    <link rel="stylesheet" type="text/css" href="/reform/reform.css" />
+    <link rel="stylesheet" type="text/css" href="/reform/v1/index.css" />
   </head>
   <body>
     <form class="main" role="main">
@@ -45,18 +45,16 @@
             type="file"
             name="image"
             accept="image/*"
-            class="hidden-accessible"
+            class="hidden-accessible reform:image-input reform:paste-target"
           />
           <span class="icon icon-upload"></span>
-          <span class="file-label">
-            <span class="upload-btn">Choose</span>, drop, or paste an image.
-          </span>
-          <span class="file-name">(From clipboard) &middot; 90 kB</span>
+          <span class="file-label">Choose, drop, or paste an image.</span>
+          <span class="file-name">No file selected</span>
         </label>
         <div class="image-content input-content"><canvas></canvas></div>
         <div class="image-content output-content"><canvas></canvas></div>
         <div class="output-controls">
-          <a class="file" download="whatever.png" href="#">
+          <a class="file download" download="whatever.png" href="#">
             <span class="icon icon-download"></span>
             <span class="file-label">Download</span>
             <span class="file-name">whatever.png &middot; 30 kB</span>
@@ -215,5 +213,10 @@
         </label>
       </fieldset>
     </form>
+
+    <script type="module">
+      import * as wow from './v1/index.js'
+      console.log(wow)
+    </script>
   </body>
 </html>

@@ -1,7 +1,9 @@
 {
   "scripts": {
     "all": "node ./all/get-all.mjs && node ./all/gen.js",
-    "compress": "node ./img/compress.js"
+    "compress": "node ./img/compress.js",
+    "reform:build": "esbuild --bundle --format=esm reform/index.ts --outdir=reform/v1/ --supported:nesting=false --minify",
+    "reform:dev": "esbuild --bundle --format=esm reform/index.ts --outdir=reform/v1/ --servedir=. --sourcemap"
   },
   "dependencies": {
     "@discordjs/opus": "^0.4.0",
@@ -15,7 +17,9 @@
   "description": "GitHub pages",
   "version": "1.0.0",
   "main": "main.js",
-  "devDependencies": {},
+  "devDependencies": {
+    "esbuild": "^0.19.11"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/SheepTester/sheeptester.github.io.git"

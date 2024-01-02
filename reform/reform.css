@@ -6,10 +6,14 @@
   --text-field: black;
   --text: rgba(0, 0, 0, 0.8);
   --secondary: rgba(0, 0, 0, 0.5);
+  --hover: rgba(0, 0, 0, 0.03);
   --line: rgba(0, 0, 0, 0.15);
   --line-darker: rgba(0, 0, 0, 0.3);
   /* https://contrast-triangle.com/?linkColor=%23009da8&textColor=%23333333 */
   --link: #009da8;
+  --link-transparent: #009da822;
+  /* https://contrast-triangle.com/?linkColor=%23fa002e&textColor=%23333333 */
+  --error: #fa002e;
   --icon-dropdown: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='rgba(0, 0, 0, 0.8)' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
   --icon-upload: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='rgba(0, 0, 0, 0.8)' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4'%3E%3C/path%3E%3Cpolyline points='17 8 12 3 7 8'%3E%3C/polyline%3E%3Cline x1='12' y1='3' x2='12' y2='15'%3E%3C/line%3E%3C/svg%3E");
   --icon-download: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='rgba(0, 0, 0, 0.8)' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4'%3E%3C/path%3E%3Cpolyline points='7 10 12 15 17 10'%3E%3C/polyline%3E%3Cline x1='12' y1='15' x2='12' y2='3'%3E%3C/line%3E%3C/svg%3E");
@@ -320,6 +324,10 @@ button.icon {
 
   & button {
     border-left: 1px solid var(--line);
+
+    &:hover {
+      background-color: var(--hover);
+    }
   }
 }
 .file {
@@ -330,7 +338,11 @@ button.icon {
     'icon label'
     'icon name';
   align-items: center;
-  line-height: 1.2;
+  cursor: pointer;
+
+  &:hover {
+    background-color: var(--hover);
+  }
 
   & .icon {
     grid-area: icon;
@@ -340,18 +352,32 @@ button.icon {
 .file-label {
   grid-area: label;
   align-self: end;
+  line-height: 1;
+  margin-top: 0.1em;
+
+  .download & {
+    font-weight: bold;
+  }
 }
 .file-name {
   grid-area: name;
   color: var(--secondary);
+  font-size: 0.8em;
+  white-space: pre;
+  overflow: hidden;
+  text-overflow: ellipsis;
   align-self: start;
+  transition: color 0.2s;
+}
+.file-error {
+  color: var(--error);
 }
 .input-content,
 .output-content {
   border-bottom-left-radius: 10px;
   border-bottom-right-radius: 10px;
   border: 1px solid var(--line);
-  border-top: 0;
+  border-top: none;
   position: relative;
   overflow: hidden;
 
@@ -374,12 +400,13 @@ button.icon {
   display: flex;
   justify-content: center;
   align-items: center;
+  padding: 20px;
 
   & canvas {
-    margin: 20px;
     border: 1px solid var(--line);
     border-radius: 10px;
-    max-height: 200px;
+    max-width: 100%;
+    max-height: 70vh;
   }
 }
 .input-content {
@@ -387,4 +414,13 @@ button.icon {
 }
 .output-content {
   grid-area: output-content;
+}
+.input-controls,
+.input-content {
+  transition: border-color 0.2s, background-color 0.2s;
+
+  .drag-over & {
+    border-color: var(--link);
+    background-color: var(--link-transparent);
+  }
 }
