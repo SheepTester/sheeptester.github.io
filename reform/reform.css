@@ -209,15 +209,15 @@ select {
   background-size: 24px;
   background-position: center;
   background-repeat: no-repeat;
-}
-span.icon {
-  display: inline-block;
-  width: 24px;
-  height: 24px;
-}
-button.icon {
-  width: 48px;
-  height: 48px;
+  span& {
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+  }
+  button& {
+    width: 48px;
+    height: 48px;
+  }
 }
 .icon-upload {
   background-image: var(--icon-upload);
@@ -396,6 +396,12 @@ button.icon {
     z-index: -1;
   }
 }
+.input-content {
+  grid-area: input-content;
+}
+.output-content {
+  grid-area: output-content;
+}
 .image-content {
   display: flex;
   justify-content: center;
@@ -408,12 +414,6 @@ button.icon {
     max-width: 100%;
     max-height: 70vh;
   }
-}
-.input-content {
-  grid-area: input-content;
-}
-.output-content {
-  grid-area: output-content;
 }
 .input-controls,
 .input-content {

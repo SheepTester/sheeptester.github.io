@@ -1,9 +1,9 @@
 import { displayBytes } from './utils'
 
-export class Input<T> {
+export abstract class Source<T> {
   dependents: ((value: T) => void)[] = []
 
-  setValue (value: T): void {
+  handleValue (value: T): void {
     for (const dependent of this.dependents) {
       dependent(value)
     }
@@ -11,18 +11,18 @@ export class Input<T> {
 }
 
 export type FileInputOptions<T> = {
-  fileName?: Element
-  input?: HTMLInputElement
-  dropTarget?: HTMLElement
+  fileName?: Element | null
+  input?: HTMLInputElement | null
+  dropTarget?: HTMLElement | null
   pasteTarget?: boolean
   onFile: (file: File) => Promise<T>
 }
-export class FileInput<T> extends Input<T> {
-  #fileName?: Element
+export class FileInput<T> extends Source<T> {
+  #fileName: Element | null
   #onFile: (file: File) => Promise<T>
 
   constructor ({
-    fileName,
+    fileName = null,
     input,
     dropTarget,
     pasteTarget,
@@ -70,7 +70,7 @@ export class FileInput<T> extends Input<T> {
         this.#fileName.classList.remove('file-error')
       }
       try {
-        this.setValue(await this.#onFile(file))
+        this.handleValue(await this.#onFile(file))
       } catch (error) {
         console.error(error)
         if (this.#fileName) {
@@ -79,5 +79,43 @@ export class FileInput<T> extends Input<T> {
         }
       }
     }
+  }
+
+  static fromImageInput (input?: Element | null): FileInput<HTMLCanvasElement> {
+    const dropTarget = input?.closest('.two-col-io')
+    if (input && !(input instanceof HTMLInputElement)) {
+      console.warn(input, 'is not an <input> element')
+      input = null
+    }
+    let maybeCanvas = dropTarget?.querySelector('.input-content canvas')
+    if (maybeCanvas && !(maybeCanvas instanceof HTMLCanvasElement)) {
+      console.warn(maybeCanvas, 'is not a <canvas> element')
+      maybeCanvas = null
+    }
+    const canvas = maybeCanvas ?? document.createElement('canvas')
+    const context = canvas.getContext('2d')
+    return new FileInput({
+      fileName: input?.parentElement?.querySelector('.file-name'),
+      input,
+      dropTarget: dropTarget instanceof HTMLElement ? dropTarget : undefined,
+      pasteTarget: input?.classList.contains('reform:paste-target'),
+      onFile: async file => {
+        const url = URL.createObjectURL(file)
+        try {
+          const image = document.createElement('img')
+          image.src = url
+          await new Promise((resolve, reject) => {
+            image.addEventListener('load', resolve)
+            image.addEventListener('error', reject)
+          })
+          canvas.width = image.width
+          canvas.height = image.height
+          context?.drawImage(image, 0, 0)
+          return canvas
+        } finally {
+          URL.revokeObjectURL(url)
+        }
+      }
+    })
   }
 }

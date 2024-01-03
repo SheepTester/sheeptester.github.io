@@ -52,22 +52,24 @@
           <span class="file-name">No file selected</span>
         </label>
         <div class="image-content input-content"><canvas></canvas></div>
-        <div class="image-content output-content"><canvas></canvas></div>
+        <div class="image-content output-content">
+          <canvas id="output"></canvas>
+        </div>
         <div class="output-controls">
           <a class="file download" download="whatever.png" href="#">
             <span class="icon icon-download"></span>
             <span class="file-label">Download</span>
-            <span class="file-name">whatever.png &middot; 30 kB</span>
+            <span class="file-name">No file available</span>
           </a>
           <button
             type="button"
-            class="icon icon-copy reform:copy"
+            class="icon icon-copy"
             data-output="output"
             aria-label="Copy"
           ></button>
           <button
             type="button"
-            class="icon icon-share reform:share"
+            class="icon icon-share"
             data-output="output"
             aria-label="Share"
           ></button>
@@ -215,8 +217,15 @@
     </form>
 
     <script type="module">
-      import * as wow from './v1/index.js'
-      console.log(wow)
+      import {} from './v1/index.js'
+
+      something('output')
+        .listen({
+          image: something('image')
+        })
+        .then(async (context, { image }) => {
+          context.canvas.width
+        })
     </script>
   </body>
 </html>
