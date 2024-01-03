@@ -10,7 +10,9 @@
       content="Listing all the components I'll have to design for my Reform design system."
     />
 
+    <link rel="stylesheet" type="text/css" href="../sheep3.css" />
     <link rel="stylesheet" type="text/css" href="/reform/v1/index.css" />
+    <script src="../sheep3.js" charset="utf-8"></script>
   </head>
   <body>
     <form class="main" role="main">
@@ -39,7 +41,7 @@
         </li>
       </ol>
 
-      <div class="two-col-io">
+      <div class="two-col-io reform:io">
         <label class="input-controls file">
           <input
             type="file"
@@ -76,7 +78,7 @@
         </div>
       </div>
 
-      <div class="two-col-io">
+      <div class="two-col-io reform:io">
         <label class="input-controls file">
           <input
             type="file"
@@ -114,6 +116,21 @@
             aria-label="Share"
           ></button>
         </div>
+      </div>
+
+      <div class="col-input reform:io">
+        <label class="input-controls file">
+          <input
+            type="file"
+            name="image2"
+            accept="image/*"
+            class="hidden-accessible reform:image-input"
+          />
+          <span class="icon icon-upload"></span>
+          <span class="file-label">Choose, drop, or paste an image</span>
+          <span class="file-name">No file selected</span>
+        </label>
+        <div class="image-content input-content"><canvas></canvas></div>
       </div>
 
       <label class="field-label">
@@ -256,7 +273,7 @@
     </form>
 
     <script type="module">
-      import { on } from './v1/index.js'
+      import { on } from '/reform/v1/index.js'
 
       on('output', async (context, { image, radio1 }) => {
         console.log(image, radio1)

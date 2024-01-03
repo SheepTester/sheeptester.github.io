@@ -2,75 +2,125 @@
 <html lang="en">
   <head>
     <title>JPG quality</title>
-    <meta charset="UTF-8">
-    <meta name="description" content="JavaScript lets you set how crappy your JPG is lol"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <link rel="stylesheet" type="text/css" href="../sheep3.css">
+    <meta charset="UTF-8" />
+    <meta
+      name="description"
+      content="JavaScript lets you set how crappy your JPG is lol"
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <link rel="stylesheet" type="text/css" href="../sheep3.css" />
+    <link rel="stylesheet" type="text/css" href="/reform/v1/index.css" />
     <script src="../sheep3.js" charset="utf-8"></script>
-    <style>
-      /**/
-    </style>
   </head>
   <body>
-    <p><label for="image">image to ruin: </label><input type="file" id="image" accept="image/*">(you can also paste in an image)</p>
-    <p><select id="format">
-      <option value="image/jpeg" selected>jpeg</option>
-      <option value="image/webp">webp</option>
-    </select><label for="quality"> quality: </label><input type="range" id="quality" value="0.92" min="0" max="1" step="any"><span id="quality-value">0.92</span></p>
-    <img id="output">
-    <p>remember that jpeg has no transparency!</p>
-    <script>
-const image = document.getElementById('image');
-const quality = document.getElementById('quality');
-const qualityValue = document.getElementById('quality-value');
-const format = document.getElementById('format');
-const output = document.getElementById('output');
-const canvas = document.createElement('canvas');
-const c = canvas.getContext('2d');
-let selectedImage = false;
-function outputImage() {
-  output.src = canvas.toDataURL(format.value, +quality.value);
-}
-format.addEventListener('change', e => {
-  if (selectedImage) outputImage();
-});
-quality.addEventListener('input', e => {
-  qualityValue.textContent = quality.value;
-  if (selectedImage) outputImage();
-});
-function loadFile(file) {
-  if (!file) {
-    selectedImage = false;
-    return;
-  }
-  if (file.type === 'image/svg+xml') {
-    const img = document.createElement('img');
-    img.addEventListener('load', e => {
-      canvas.width = img.width;
-      canvas.height = img.height;
-      c.drawImage(img, 0, 0);
-      selectedImage = true;
-      outputImage();
-    }, {once: true});
-    img.src = URL.createObjectURL(file);
-  } else {
-    createImageBitmap(file).then(bitmap => {
-      canvas.width = bitmap.width;
-      canvas.height = bitmap.height;
-      c.drawImage(bitmap, 0, 0);
-      selectedImage = true;
-      outputImage();
-    }).catch(err => {
-      console.dir(err);
-    });
-  }
-}
-image.addEventListener('change', e => {
-  loadFile(image.files[0]);
-});
-document.addEventListener('paste', e => {
-  loadFile(e.clipboardData.files[0]);
-});
+    <form class="main" role="main">
+      <h1>JPEG compression artifacts</h1>
+      <p>
+        Intentionally add JPEG compression artifacts to any image for the
+        ✨aesthetic✨.
+      </p>
+      <div class="two-col-io reform:io">
+        <label class="input-controls file">
+          <input
+            type="file"
+            name="image"
+            accept="image/*"
+            class="hidden-accessible reform:image-input reform:paste-target"
+          />
+          <span class="icon icon-upload"></span>
+          <span class="file-label">Choose, drop, or paste an image</span>
+          <span class="file-name">No file selected</span>
+        </label>
+        <div class="image-content input-content"><canvas></canvas></div>
+        <div class="image-content output-content">
+          <img id="output" data-deps="image quality format" />
+        </div>
+        <div class="output-controls">
+          <a class="file download">
+            <span class="icon icon-download"></span>
+            <span class="file-label">Download</span>
+            <span class="file-name">No file available</span>
+          </a>
+          <button
+            type="button"
+            class="icon icon-copy"
+            data-output="output"
+            aria-label="Copy"
+          ></button>
+          <button
+            type="button"
+            class="icon icon-share"
+            data-output="output"
+            aria-label="Share"
+          ></button>
+        </div>
+      </div>
+
+      <div class="field-label range-wrapper">
+        <label class="range-label">
+          <span class="label-primary">Quality</span>
+          <input
+            type="range"
+            name="quality"
+            value="0.1"
+            min="0"
+            max="1"
+            step="any"
+          />
+        </label>
+        <input type="number" />
+      </div>
+
+      <fieldset class="radio-set">
+        <legend class="label-primary">Compression algorithm</legend>
+        <label class="radio-label">
+          <input
+            type="radio"
+            name="format"
+            value="image/jpeg"
+            class="hidden-accessible"
+            checked
+          />
+          <span class="radio-button"></span>
+          <span class="label-content">
+            <span class="label-primary">JPEG</span>
+            <span class="label-secondary">
+              The classic compressed image format. Does not support
+              transparency.
+            </span>
+          </span>
+        </label>
+        <label class="radio-label">
+          <input
+            type="radio"
+            name="format"
+            value="image/webp"
+            class="hidden-accessible"
+          />
+          <span class="radio-button"></span>
+          <span class="label-content">
+            <span class="label-primary">WebP</span>
+            <span class="label-secondary">
+              A relatively new format by Google. Supports transparency.
+            </span>
+          </span>
+        </label>
+      </fieldset>
+    </form>
+    <script type="module">
+      import { on } from '/reform/v1/index.js'
+
+      on('output', async (image, { image: canvas, quality, format }) => {
+        const url = canvas.toDataURL(format, quality)
+        image.src = url
+        const blob = await fetch(url).then(r => r.blob())
+        return new File(
+          [blob],
+          format === 'image/jpeg' ? 'compressed.jpg' : 'compressed.webp',
+          { type: blob.type }
+        )
+      })
     </script>
   </body>
 </html>
