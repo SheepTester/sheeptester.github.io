@@ -1,50 +1,15 @@
 import { displayBytes } from './utils'
 
 export class Source<T> {
-  lastValue: T | null = null
+  lastValue?: T
   dependents: ((value: T) => void)[] = []
 
   handleValue (value: T): void {
-    if (this.lastValue === value) {
-      return
-    }
+    // TODO: skip if the value is the same
     this.lastValue = value
-    console.log('handleValue', value)
     for (const dependent of this.dependents) {
       dependent(value)
     }
-  }
-
-  static fromTextInput (input: HTMLInputElement): Source<string> {
-    const source = new Source<string>()
-    source.handleValue(input.value)
-    input.addEventListener('input', () => source.handleValue(input.value))
-    return source
-  }
-
-  static fromNumberInput (input: HTMLInputElement): Source<number> {
-    const source = new Source<number>()
-    source.handleValue(+input.value)
-    input.addEventListener('input', () => source.handleValue(+input.value))
-    return source
-  }
-
-  static fromFileInput (input: HTMLInputElement): Source<File[]> {
-    const source = new Source<File[]>()
-    input.addEventListener('change', () => {
-      if (input.files && input.files.length > 0) {
-        source.handleValue(Array.from(input.files))
-        input.value = ''
-      }
-    })
-    return source
-  }
-
-  static fromCheckbox (input: HTMLInputElement): Source<boolean> {
-    const source = new Source<boolean>()
-    source.handleValue(input.checked)
-    input.addEventListener('input', () => source.handleValue(input.checked))
-    return source
   }
 }
 

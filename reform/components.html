@@ -53,7 +53,7 @@
         </label>
         <div class="image-content input-content"><canvas></canvas></div>
         <div class="image-content output-content">
-          <canvas id="output"></canvas>
+          <canvas id="output" data-deps="image radio1"></canvas>
         </div>
         <div class="output-controls">
           <a class="file download" download="whatever.png" href="#">
@@ -89,6 +89,11 @@
           name="chunkSize"
           value="50"
         />
+      </label>
+
+      <label class="field-label">
+        <span class="label-primary">Computed value</span>
+        <input type="text" name="computed" data-deps="chunkSize" />
       </label>
 
       <label class="field-label">
@@ -217,15 +222,25 @@
     </form>
 
     <script type="module">
-      import {} from './v1/index.js'
+      import { on } from './v1/index.js'
 
-      something('output')
-        .listen({
-          image: something('image')
-        })
-        .then(async (context, { image }) => {
-          context.canvas.width
-        })
+      on('output', async (context, { image, radio1 }) => {
+        console.log(image, radio1)
+        context.canvas.width = image.width
+        context.canvas.height = image.height
+        context.drawImage(image, 0, 0)
+        context.fillStyle = 'magenta'
+        context.font = '50px serif'
+        context.fillText(radio1, 50, 50)
+        const blob = await new Promise(resolve =>
+          context.canvas.toBlob(resolve)
+        )
+        return new File([blob], 'out.png', { type: blob.type })
+      })
+
+      on('computed', async (element, { chunkSize }) => {
+        element.value = chunkSize
+      })
     </script>
   </body>
 </html>

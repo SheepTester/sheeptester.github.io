@@ -56,3 +56,52 @@ for (const form of document.forms) {
 
 document.addEventListener('input', e => handleElement(e.target))
 document.addEventListener('change', e => handleElement(e.target))
+
+export function on<T> (
+  name: string,
+  callback: (
+    element: HTMLElement | CanvasRenderingContext2D,
+    args: Record<string, unknown>
+  ) => Promise<T>
+): void {
+  sources[name] ??= new Source()
+  let element = document.getElementById(name)
+  if (!element) {
+    const elements = document.getElementsByName(name)
+    if (elements.length > 1) {
+      console.warn(
+        'More than one element with name',
+        name,
+        Array.from(elements)
+      )
+    }
+    element = elements[0]
+  }
+
+  const deps = element?.dataset.deps?.split(' ') ?? []
+  const args: Record<string, unknown> = {}
+
+  const object =
+    element instanceof HTMLCanvasElement
+      ? element.getContext('2d') ?? element
+      : element
+
+  const ready = new Set<string>()
+  for (const dep of deps) {
+    sources[dep] ??= new Source()
+    if (sources[dep].lastValue !== undefined) {
+      args[dep] = sources[dep].lastValue
+      ready.add(dep)
+    }
+    sources[dep].dependents.push(value => {
+      args[dep] = value
+      ready.add(dep)
+      if (ready.size === deps.length) {
+        callback(object, args)
+      }
+    })
+  }
+  if (ready.size === deps.length) {
+    callback(object, args)
+  }
+}
