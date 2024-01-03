@@ -38,6 +38,7 @@ export class FileInput<T> extends Source<T> {
 
     input?.addEventListener('change', () => {
       this.#handleFile(input.files?.[0])
+      input.value = ''
     })
 
     dropTarget?.addEventListener('drop', e => {

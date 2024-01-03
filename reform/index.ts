@@ -1,5 +1,6 @@
 import './reform.css'
 import { FileInput, Source } from './src/inputs'
+import { Output } from './src/output'
 
 const sources: Record<string, Source<any>> = {}
 
@@ -86,6 +87,21 @@ export function on<T> (
       ? element.getContext('2d') ?? element
       : element
 
+  const outputControls = element
+    .closest('.two-col-io')
+    ?.querySelector('.output-controls')
+  if (outputControls) {
+    const output = Output.fromOutputControls(outputControls)
+    sources[name].dependents.push(file => output.handleFile(file))
+  }
+
+  const compute = async () => {
+    if (ready.size === deps.length) {
+      const value = await callback(object, args)
+      sources[name].handleValue(value)
+    }
+  }
+
   const ready = new Set<string>()
   for (const dep of deps) {
     sources[dep] ??= new Source()
@@ -96,12 +112,8 @@ export function on<T> (
     sources[dep].dependents.push(value => {
       args[dep] = value
       ready.add(dep)
-      if (ready.size === deps.length) {
-        callback(object, args)
-      }
+      compute()
     })
   }
-  if (ready.size === deps.length) {
-    callback(object, args)
-  }
+  compute()
 }
