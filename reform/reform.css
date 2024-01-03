@@ -172,13 +172,35 @@ li::marker {
 }
 .range-wrapper {
   flex-direction: row;
-  align-items: flex-end;
+  gap: 20px;
 
   & [type='number'],
   & [inputmode='numeric'] {
     width: 100px;
     margin: 0;
+    margin-top: auto;
   }
+}
+[type='range'] {
+  cursor: ew-resize;
+  height: 40px;
+}
+::-webkit-slider-runnable-track {
+  border: 1px solid var(--line);
+  height: 5px;
+  border-radius: 10px;
+}
+/* Must be kept a separate rule or it won't parse */
+::-moz-range-track {
+  /* TODO */
+}
+::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 15px;
+  height: 15px;
+  background-color: var(--grad2);
+  border-radius: 50%;
+  margin-top: -5px;
 }
 .range-label {
   flex: auto;
@@ -204,7 +226,8 @@ li::marker {
 [type='number'],
 select {
   border: 1px solid var(--line);
-  padding: 5px 15px;
+  padding: 0 15px;
+  height: 40px;
   border-radius: 10px;
   color: var(--text-field);
   margin: 5px 0;

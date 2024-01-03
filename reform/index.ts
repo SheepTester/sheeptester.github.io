@@ -20,7 +20,29 @@ function handleElement (element: unknown): void {
       element.type === 'range' ||
       element.inputMode === 'numeric'
     ) {
+      if (element.value === '') {
+        return
+      }
+      // valueAsNumber is not available for type=text
+      // https://stackoverflow.com/a/18062487
       sources[element.name].handleValue(+element.value)
+      const rangeWrapper = element.closest('.range-wrapper')
+      if (rangeWrapper) {
+        if (element.type === 'range') {
+          const input = rangeWrapper.lastElementChild
+          if (input instanceof HTMLInputElement) {
+            input.value =
+              element.step === 'any' || (element.step && +element.step < 0.1)
+                ? (+element.value).toFixed(2)
+                : element.value
+          }
+        } else {
+          const range = rangeWrapper.querySelector('[type="range"]')
+          if (range instanceof HTMLInputElement) {
+            range.value = element.value
+          }
+        }
+      }
     } else if (element.type === 'checkbox') {
       sources[element.name].handleValue(element.checked)
     } else if (element.type === 'file') {
@@ -98,7 +120,7 @@ export function on<T> (
       : element
 
   const outputControls = element
-    .closest('.two-col-io')
+    .closest('.reform\\:io')
     ?.querySelector('.output-controls')
   if (outputControls) {
     const output = Output.fromOutputControls(outputControls)

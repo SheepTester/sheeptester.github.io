@@ -18,3 +18,13 @@ export function displayBytes (bytes: number): string {
     return '1 byte'
   }
 }
+
+/**
+ * Removes the extension of the given file name:
+ * - `hello.min.js` -> `hello.min`
+ * - `hey` -> `hey`
+ */
+export function fileName (name: string): string {
+  const index = name.lastIndexOf('.')
+  return index === -1 ? name : name.slice(0, index)
+}

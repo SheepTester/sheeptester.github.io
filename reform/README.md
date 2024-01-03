@@ -447,3 +447,13 @@ I don't like how having `<body>`, `<main>`, and `<form>` results in so many nest
 I will also prefix classes with JavaScript significance with `reform:` so I don't remove them if they don't get CSS. Though, it's probably best if I give a class to everything so it's easier to style in the future.
 
 Apparently, `<label>`s' `[for]` takes an `[id]` and doesn't accept `[name]`s, which complicates file inputs. I think I will make file inputs ID-only as well.
+
+## Documentation
+
+- All inputs with a `name` attribute are sources
+- Any element with a `name` or `id` attribute and a `data-deps` attribute can be selected using `on` to define a custom source or listener on its dependencies.
+  - Return a value in the callback to make it a custom source
+  - If `output-controls` is available as a sibling, then return a `File` to populate the download/copy/share buttons
+- `reform:io` defines a fancy file input. Use `reform:image-input` on a file input to preview an image in a `<canvas>`, or `reform:text-input` to preview text in a `<textarea>`. You can optionally add `reform:paste-target` to make it listen to global `paste` events.
+  - `reform:image-input` makes the file input a source of `<canvas>` elements with `data-name` set to the file name, without the file extension
+  - `reform:text-input` makes the textarea a source of string values

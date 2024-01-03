@@ -69,7 +69,7 @@
             step="any"
           />
         </label>
-        <input type="number" />
+        <input type="number" name="quality" aria-label="Quality value" />
       </div>
 
       <fieldset class="radio-set">
@@ -117,7 +117,7 @@
         const blob = await fetch(url).then(r => r.blob())
         return new File(
           [blob],
-          format === 'image/jpeg' ? 'compressed.jpg' : 'compressed.webp',
+          canvas.dataset.name + (format === 'image/jpeg' ? '.jpg' : '.webp'),
           { type: blob.type }
         )
       })

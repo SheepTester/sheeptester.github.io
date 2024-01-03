@@ -1,5 +1,5 @@
 import { Source } from './source'
-import { displayBytes } from './utils'
+import { displayBytes, fileName } from './utils'
 
 const encoder = new TextEncoder()
 
@@ -122,6 +122,7 @@ export function handleImageInput (
           image.addEventListener('load', resolve)
           image.addEventListener('error', reject)
         })
+        canvas.dataset.name = fileName(file.name)
         canvas.width = image.width
         canvas.height = image.height
         context?.drawImage(image, 0, 0)
