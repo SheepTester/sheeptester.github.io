@@ -29,9 +29,13 @@ export class Output {
       }
     })
 
-    shareButton?.addEventListener('click', () => {
+    shareButton?.addEventListener('click', async () => {
       if (this.#file) {
-        navigator.share({ files: [this.#file] })
+        if (this.#file.type === 'text/plain' && this.#file.size < 4000) {
+          navigator.share({ text: await this.#file.text() })
+        } else {
+          navigator.share({ files: [this.#file] })
+        }
       }
     })
   }

@@ -48,7 +48,7 @@
             class="hidden-accessible reform:image-input reform:paste-target"
           />
           <span class="icon icon-upload"></span>
-          <span class="file-label">Choose, drop, or paste an image.</span>
+          <span class="file-label">Choose, drop, or paste an image</span>
           <span class="file-name">No file selected</span>
         </label>
         <div class="image-content input-content"><canvas></canvas></div>
@@ -56,7 +56,47 @@
           <canvas id="output" data-deps="image radio1"></canvas>
         </div>
         <div class="output-controls">
-          <a class="file download" download="whatever.png" href="#">
+          <a class="file download">
+            <span class="icon icon-download"></span>
+            <span class="file-label">Download</span>
+            <span class="file-name">No file available</span>
+          </a>
+          <button
+            type="button"
+            class="icon icon-copy"
+            data-output="output"
+            aria-label="Copy"
+          ></button>
+          <button
+            type="button"
+            class="icon icon-share"
+            data-output="output"
+            aria-label="Share"
+          ></button>
+        </div>
+      </div>
+
+      <div class="two-col-io">
+        <label class="input-controls file">
+          <input
+            type="file"
+            name="text"
+            class="hidden-accessible reform:text-input"
+          />
+          <span class="icon icon-upload"></span>
+          <span class="file-label">
+            Choose or drop a text file or type below
+          </span>
+          <span class="file-name">No file selected</span>
+        </label>
+        <textarea name="text" class="input-content">hello</textarea>
+        <textarea
+          class="output-content"
+          id="outputText"
+          data-deps="text radio2"
+        ></textarea>
+        <div class="output-controls">
+          <a class="file download">
             <span class="icon icon-download"></span>
             <span class="file-label">Download</span>
             <span class="file-name">No file available</span>
@@ -93,7 +133,7 @@
 
       <label class="field-label">
         <span class="label-primary">Computed value</span>
-        <input type="text" name="computed" data-deps="chunkSize" />
+        <input type="number" name="computed" data-deps="chunkSize" readonly />
       </label>
 
       <label class="field-label">
@@ -138,13 +178,7 @@
         </label>
         <label class="field-label">
           <span class="label-primary">Max X</span>
-          <input
-            type="text"
-            inputmode="numeric"
-            pattern="-?[0-9]*"
-            name="maxX"
-            value="1"
-          />
+          <input type="number" name="maxX" value="1" />
         </label>
       </div>
 
@@ -240,6 +274,11 @@
 
       on('computed', async (element, { chunkSize }) => {
         element.value = chunkSize
+      })
+
+      on('outputText', async (element, { text, radio2 }) => {
+        element.value = text.toUpperCase() + '\nradio2 = ' + radio2
+        return new File([element.value], 'out.txt', { type: 'text/plain' })
       })
     </script>
   </body>

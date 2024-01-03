@@ -20,6 +20,7 @@
   --icon-copy: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='rgba(0, 0, 0, 0.8)' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2' ry='2'%3E%3C/rect%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'%3E%3C/path%3E%3C/svg%3E");
   --icon-share: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='rgba(0, 0, 0, 0.8)' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='18' cy='5' r='3'%3E%3C/circle%3E%3Ccircle cx='6' cy='12' r='3'%3E%3C/circle%3E%3Ccircle cx='18' cy='19' r='3'%3E%3C/circle%3E%3Cline x1='8.59' y1='13.51' x2='15.42' y2='17.49'%3E%3C/line%3E%3Cline x1='15.41' y1='6.51' x2='8.59' y2='10.49'%3E%3C/line%3E%3C/svg%3E");
   --icon-arrow-right: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='rgba(0, 0, 0, 0.2)' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12H19M12 5L19 12L12 19'/%3E%3C/svg%3E");
+  --icon-arrow-down: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='rgba(0, 0, 0, 0.2)' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 5V19M19 12L12 19L5 12'/%3E%3C/svg%3E");
 
   --grad1: #20de88;
   --grad2: #28bbe8;
@@ -59,20 +60,21 @@ body {
   background-color: var(--bg);
   color: var(--text);
   line-height: 1.5;
-}
-body::before {
-  content: '';
-  display: block;
-  height: 20px;
-  flex: none;
-  background-image: linear-gradient(
-      180deg,
-      transparent 50%,
-      rgb(var(--bg-rgb), 0.75) 50%,
-      rgb(var(--bg-rgb), 0.92),
-      var(--bg)
-    ),
-    linear-gradient(90deg, var(--grad1), var(--grad2));
+
+  &::before {
+    content: '';
+    display: block;
+    height: 20px;
+    flex: none;
+    background-image: linear-gradient(
+        180deg,
+        transparent 50%,
+        rgb(var(--bg-rgb), 0.75) 50%,
+        rgb(var(--bg-rgb), 0.92),
+        var(--bg)
+      ),
+      linear-gradient(90deg, var(--grad1), var(--grad2));
+  }
 }
 
 /* Reset */
@@ -90,7 +92,11 @@ textarea {
   padding: 0;
   background: none;
 }
-button {
+textarea {
+  resize: vertical;
+}
+button,
+select {
   cursor: pointer;
 }
 :disabled {
@@ -116,8 +122,9 @@ a {
 h1 {
   font-weight: lighter;
   font-size: 56px;
-  margin-top: 20px;
-  margin-bottom: 0;
+  line-height: 1;
+  margin-top: 40px;
+  margin-bottom: 20px;
   color: var(--heading);
 }
 p {
@@ -135,17 +142,18 @@ li::marker {
 .main {
   padding: 20px;
   padding-top: 0;
-}
-.main > h1,
-.main > p,
-.main > ol,
-.main > ul,
-.main > .radio-set,
-.main > .field-label,
-.main > .cols {
-  margin-left: auto;
-  margin-right: auto;
-  max-width: 800px;
+
+  & > h1,
+  & > p,
+  & > ol,
+  & > ul,
+  & > .radio-set,
+  & > .field-label,
+  & > .cols {
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 800px;
+  }
 }
 .label-primary,
 .label-secondary {
@@ -164,15 +172,17 @@ li::marker {
 .range-wrapper {
   flex-direction: row;
   align-items: flex-end;
+
+  & [type='number'],
+  & [inputmode='numeric'] {
+    width: 100px;
+    margin: 0;
+  }
 }
 .range-label {
   flex: auto;
   display: flex;
   flex-direction: column;
-}
-.range-wrapper [type='text'] {
-  width: 100px;
-  margin: 0;
 }
 .cols {
   display: flex;
@@ -183,11 +193,14 @@ li::marker {
 .link {
   color: var(--link);
   font-weight: 500;
-}
-.link:hover {
-  text-decoration: underline;
+
+  &:hover {
+    text-decoration: underline;
+  }
 }
 [type='text'],
+[type='url'],
+[type='number'],
 select {
   border: 1px solid var(--line);
   padding: 5px 15px;
@@ -293,11 +306,10 @@ select {
   margin-bottom: 10px;
   max-width: 1200px;
   display: grid;
-  grid-template-columns: 1fr 24px 1fr;
+  grid-template-columns: 1fr auto 1fr;
   grid-template-areas:
     'input-controls arrow output-controls'
     'input-content arrow output-content';
-  column-gap: 10px;
 
   &::after {
     content: '';
@@ -307,6 +319,30 @@ select {
     background-size: 24px;
     background-position: center;
     background-repeat: no-repeat;
+    width: 24px;
+    height: 24px;
+    margin: 10px;
+    align-self: center;
+    justify-self: center;
+  }
+
+  @media (max-width: 700px) {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      'input-controls'
+      'input-content'
+      'arrow'
+      'output-controls'
+      'output-content';
+
+    &::after {
+      background-image: var(--icon-arrow-down);
+    }
+  }
+
+  & textarea {
+    padding: 20px;
+    min-height: 150px;
   }
 }
 .input-controls,
@@ -379,7 +415,7 @@ select {
   border: 1px solid var(--line);
   border-top: none;
   position: relative;
-  overflow: hidden;
+  overflow: auto;
 
   &::after {
     content: '';

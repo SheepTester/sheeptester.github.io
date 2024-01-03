@@ -1,6 +1,7 @@
 import './reform.css'
-import { FileInput, Source } from './src/inputs'
+import { handleImageInput, handleTextInput } from './src/inputs'
 import { Output } from './src/output'
+import { Source } from './src/source'
 
 const sources: Record<string, Source<any>> = {}
 
@@ -46,7 +47,16 @@ for (const input of document.getElementsByClassName('reform:image-input')) {
   if (!(input instanceof HTMLInputElement)) {
     continue
   }
-  sources[input.name] = FileInput.fromImageInput(input)
+  sources[input.name] ??= new Source()
+  handleImageInput(sources[input.name], input)
+}
+
+for (const input of document.getElementsByClassName('reform:text-input')) {
+  if (!(input instanceof HTMLInputElement)) {
+    continue
+  }
+  sources[input.name] ??= new Source()
+  handleTextInput(sources[input.name], input)
 }
 
 for (const form of document.forms) {
