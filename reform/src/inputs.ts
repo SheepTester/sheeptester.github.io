@@ -1,12 +1,50 @@
 import { displayBytes } from './utils'
 
-export abstract class Source<T> {
+export class Source<T> {
+  lastValue: T | null = null
   dependents: ((value: T) => void)[] = []
 
   handleValue (value: T): void {
+    if (this.lastValue === value) {
+      return
+    }
+    this.lastValue = value
+    console.log('handleValue', value)
     for (const dependent of this.dependents) {
       dependent(value)
     }
+  }
+
+  static fromTextInput (input: HTMLInputElement): Source<string> {
+    const source = new Source<string>()
+    source.handleValue(input.value)
+    input.addEventListener('input', () => source.handleValue(input.value))
+    return source
+  }
+
+  static fromNumberInput (input: HTMLInputElement): Source<number> {
+    const source = new Source<number>()
+    source.handleValue(+input.value)
+    input.addEventListener('input', () => source.handleValue(+input.value))
+    return source
+  }
+
+  static fromFileInput (input: HTMLInputElement): Source<File[]> {
+    const source = new Source<File[]>()
+    input.addEventListener('change', () => {
+      if (input.files && input.files.length > 0) {
+        source.handleValue(Array.from(input.files))
+        input.value = ''
+      }
+    })
+    return source
+  }
+
+  static fromCheckbox (input: HTMLInputElement): Source<boolean> {
+    const source = new Source<boolean>()
+    source.handleValue(input.checked)
+    input.addEventListener('input', () => source.handleValue(input.checked))
+    return source
   }
 }
 
@@ -86,6 +124,9 @@ export class FileInput<T> extends Source<T> {
     if (input && !(input instanceof HTMLInputElement)) {
       console.warn(input, 'is not an <input> element')
       input = null
+    }
+    if (input) {
+      input.dataset.ignore = 'true'
     }
     let maybeCanvas = dropTarget?.querySelector('.input-content canvas')
     if (maybeCanvas && !(maybeCanvas instanceof HTMLCanvasElement)) {
