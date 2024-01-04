@@ -12,6 +12,8 @@
   /* https://contrast-triangle.com/?linkColor=%23009da8&textColor=%23333333 */
   --link: #009da8;
   --link-transparent: #009da822;
+  --focus: #029bfd;
+  --focus-transparent: #029bfd66;
   /* https://contrast-triangle.com/?linkColor=%23fa002e&textColor=%23333333 */
   --error: #fa002e;
   /* Icons from https://github.com/feathericons/feather/ converted to an inline
@@ -23,10 +25,11 @@
   --icon-share: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='rgba(0, 0, 0, 0.8)' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='18' cy='5' r='3'%3E%3C/circle%3E%3Ccircle cx='6' cy='12' r='3'%3E%3C/circle%3E%3Ccircle cx='18' cy='19' r='3'%3E%3C/circle%3E%3Cline x1='8.59' y1='13.51' x2='15.42' y2='17.49'%3E%3C/line%3E%3Cline x1='15.41' y1='6.51' x2='8.59' y2='10.49'%3E%3C/line%3E%3C/svg%3E");
   --icon-arrow-right: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='rgba(0, 0, 0, 0.2)' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12H19M12 5L19 12L12 19'/%3E%3C/svg%3E");
   --icon-arrow-down: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='rgba(0, 0, 0, 0.2)' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 5V19M19 12L12 19L5 12'/%3E%3C/svg%3E");
-  --icon-check: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E");
+  --icon-check: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E");
 
   --grad1: #20de88;
   --grad2: #28bbe8;
+  --grad2-transparent: #28bbe866;
 
   --bg: rgb(var(--bg-rgb));
 }
@@ -184,7 +187,11 @@ li::marker {
   color: var(--link);
   font-weight: 500;
 
-  &:hover {
+  &:focus {
+    outline: none;
+  }
+  &:hover,
+  &:focus-visible {
     text-decoration: underline;
   }
 }
@@ -199,6 +206,15 @@ select {
   color: var(--text-field);
   margin: 5px 0;
   align-self: flex-start;
+  transition: border-color 0.2s, box-shadow 0.2s;
+
+  &:focus {
+    outline: none;
+  }
+  &:focus-visible {
+    border-color: var(--focus);
+    box-shadow: 0 0 0 3px var(--focus-transparent);
+  }
 }
 select {
   background-image: var(--icon-dropdown);
@@ -265,9 +281,9 @@ select {
   border-radius: 50%;
   background-origin: border-box;
   position: relative;
-  /* z-index: 0; */
   cursor: pointer;
   margin-top: 5px;
+  transition: border-color 0.2s, box-shadow 0.2s;
 
   &::before {
     position: absolute;
@@ -292,10 +308,9 @@ select {
   inset: 0;
   background-image: var(--icon-check);
   background-size: contain;
-  background-position: center;
 }
 :checked + .radio-button {
-  border-color: transparent;
+  border: 0;
   background-image: linear-gradient(135deg, var(--grad1), var(--grad2));
 
   /* TEMP: ::before is hidden for now for consistency with the range input */
@@ -303,6 +318,10 @@ select {
     content: '';
     display: block;
   }
+}
+:focus-visible + .radio-button {
+  border-color: var(--focus);
+  box-shadow: 0 0 0 5px var(--focus-transparent);
 }
 .range-wrapper {
   flex-direction: row;
@@ -318,6 +337,10 @@ select {
 [type='range'] {
   cursor: ew-resize;
   height: 40px;
+
+  &:focus {
+    outline: none;
+  }
 }
 ::-webkit-slider-runnable-track {
   background-color: var(--line);
@@ -350,6 +373,10 @@ select {
   background-color: var(--grad2);
   border-radius: 50%;
   margin-top: -5px;
+  transition: box-shadow 0.2s;
+}
+:focus-visible::-webkit-slider-thumb {
+  box-shadow: 0 0 0 10px var(--grad2-transparent);
 }
 ::-moz-range-thumb {
   border: none;
@@ -357,6 +384,10 @@ select {
   height: 15px;
   background-color: var(--grad2);
   border-radius: 50%;
+  transition: box-shadow 0.2s;
+}
+:focus-visible::-moz-range-thumb {
+  box-shadow: 0 0 0 10px var(--grad2-transparent);
 }
 .range-label {
   flex: auto;
@@ -407,6 +438,14 @@ select {
   & textarea {
     padding: 20px;
     min-height: 150px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    &:focus {
+      outline: none;
+    }
+    &:focus-visible {
+      border-color: var(--focus);
+      box-shadow: 0 0 0 3px var(--focus-transparent);
+    }
   }
 }
 .col-input {
@@ -427,12 +466,16 @@ select {
   grid-area: output-controls;
   display: flex;
 
+  & :first-child {
+    border-top-left-radius: 10px;
+  }
+
+  & :last-child {
+    border-top-right-radius: 10px;
+  }
+
   & button {
     border-left: 1px solid var(--line);
-
-    &:hover {
-      background-color: var(--hover);
-    }
   }
 }
 .file {
@@ -444,18 +487,34 @@ select {
     'icon name';
   align-items: center;
 
-  &[href],
   label& {
     cursor: pointer;
-
-    &:hover {
-      background-color: var(--hover);
-    }
   }
 
   & .icon {
     grid-area: icon;
     margin: 10px;
+  }
+}
+label.file,
+.file[href],
+.output-controls button {
+  transition: border-color 0.2s, box-shadow 0.2s;
+  &:hover {
+    background-color: var(--hover);
+  }
+}
+label.file:has(:focus-visible) {
+  border-color: var(--focus);
+  box-shadow: 0 0 0 3px var(--focus-transparent);
+}
+.file[href],
+.output-controls button {
+  &:focus {
+    outline: none;
+  }
+  &:focus-visible {
+    box-shadow: 0 0 0 3px var(--focus-transparent);
   }
 }
 .file-label {
