@@ -9,6 +9,7 @@
       name="description"
       content="Listing all the components I'll have to design for my Reform design system."
     />
+    <meta name="theme-color" content="#4fa1a7" />
 
     <link rel="stylesheet" type="text/css" href="../sheep3.css" />
     <link rel="stylesheet" type="text/css" href="/reform/v1/index.css" />
@@ -91,11 +92,15 @@
           </span>
           <span class="file-name">No file selected</span>
         </label>
-        <textarea name="text" class="input-content">hello</textarea>
+        <textarea name="text" aria-label="Input" class="input-content">
+hello</textarea
+        >
         <textarea
           class="output-content"
           id="outputText"
           data-deps="text radio2"
+          aria-label="Output"
+          readonly
         ></textarea>
         <div class="output-controls">
           <a class="file download">

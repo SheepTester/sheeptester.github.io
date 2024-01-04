@@ -462,3 +462,5 @@ Converted:
 
 - https://sheeptester.github.io/javascripts/jpg-quality.html
 - https://sheeptester.github.io/javascripts/byte-sorter.html
+- https://sheeptester.github.io/javascripts/caretdemo.html
+- https://sheeptester.github.io/javascripts/blur.html

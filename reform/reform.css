@@ -470,18 +470,18 @@ select {
       background-image: var(--icon-arrow-down);
     }
   }
-
-  & textarea {
-    padding: 20px;
-    min-height: 150px;
-    transition: border-color 0.2s, box-shadow 0.2s;
-    &:focus {
-      outline: none;
-    }
-    &:focus-visible {
-      border-color: var(--focus);
-      box-shadow: 0 0 0 3px var(--focus-transparent);
-    }
+}
+textarea.input-content,
+textarea.output-content {
+  padding: 20px;
+  min-height: 150px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  &:focus {
+    outline: none;
+  }
+  &:focus-visible {
+    border-color: var(--focus);
+    box-shadow: 0 0 0 3px var(--focus-transparent);
   }
 }
 .col-input {
@@ -587,7 +587,19 @@ label.file:has(:focus-visible) {
   border: 1px solid var(--line);
   border-top: none;
   position: relative;
-  overflow: auto;
+}
+.input-content {
+  grid-area: input-content;
+}
+.output-content {
+  grid-area: output-content;
+}
+.image-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  overflow: hidden;
 
   &::after {
     content: '';
@@ -603,18 +615,6 @@ label.file:has(:focus-visible) {
     opacity: 0.3;
     z-index: -1;
   }
-}
-.input-content {
-  grid-area: input-content;
-}
-.output-content {
-  grid-area: output-content;
-}
-.image-content {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 20px;
 
   & canvas,
   & img {
