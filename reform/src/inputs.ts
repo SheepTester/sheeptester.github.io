@@ -8,7 +8,8 @@ type FileInputOptions = {
   input?: HTMLInputElement | null
   dropTarget?: HTMLElement | null
   pasteTarget?: boolean
-  onFile: (file: File | string) => Promise<void>
+  /** Returns whether the file was accepted. */
+  onFile: (file: File | string) => Promise<boolean | void>
 }
 function handleFileInput ({
   fileName = null,
@@ -37,19 +38,20 @@ function handleFileInput ({
     if (file === null) {
       return
     }
-    if (fileName) {
-      fileName.textContent =
-        file instanceof File
-          ? `${file.name} · ${displayBytes(file.size)}`
-          : `Plain text · ${displayBytes(encoder.encode(file).length)}`
-      fileName.classList.remove('file-error')
-    }
+    const fileNameContent =
+      file instanceof File
+        ? `${file.name} · ${displayBytes(file.size)}`
+        : `Plain text · ${displayBytes(encoder.encode(file).length)}`
     try {
-      await onFile(file)
+      const accepted = (await onFile(file)) ?? true
+      if (accepted && fileName) {
+        fileName.textContent = fileNameContent
+        fileName.classList.remove('file-error')
+      }
     } catch (error) {
       console.error(error)
       if (fileName) {
-        fileName.textContent += ' — failed to load'
+        fileName.textContent = fileNameContent + ' — failed to load'
         fileName.classList.add('file-error')
       }
     }
@@ -87,6 +89,33 @@ function handleFileInput ({
   }
 }
 
+export function handleSingleFileInput (
+  source: Source<File>,
+  input?: Element | null
+): void {
+  const wrapper = input?.closest('.reform\\:io')
+  if (input && !(input instanceof HTMLInputElement)) {
+    console.warn(input, 'is not an <input> element')
+    input = null
+  } else if (input) {
+    input.dataset.ignore = 'true'
+  }
+  const dropTarget = wrapper?.querySelector('.input-controls')
+  handleFileInput({
+    fileName: input?.parentElement?.querySelector('.file-name'),
+    input,
+    dropTarget: dropTarget instanceof HTMLElement ? dropTarget : undefined,
+    pasteTarget: input?.classList.contains('reform:paste-target'),
+    onFile: async file => {
+      source.handleValue(
+        file instanceof File
+          ? file
+          : new File([file], 'text.txt', { type: 'text/plain' })
+      )
+    }
+  })
+}
+
 export function handleImageInput (
   source: Source<HTMLCanvasElement>,
   input?: Element | null
@@ -112,7 +141,7 @@ export function handleImageInput (
     pasteTarget: input?.classList.contains('reform:paste-target'),
     onFile: async file => {
       if (typeof file === 'string') {
-        return
+        return false
       }
       const url = URL.createObjectURL(file)
       try {

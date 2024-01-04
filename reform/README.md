@@ -457,3 +457,8 @@ Apparently, `<label>`s' `[for]` takes an `[id]` and doesn't accept `[name]`s, wh
 - `reform:io` defines a fancy file input. Use `reform:image-input` on a file input to preview an image in a `<canvas>`, or `reform:text-input` to preview text in a `<textarea>`. You can optionally add `reform:paste-target` to make it listen to global `paste` events.
   - `reform:image-input` makes the file input a source of `<canvas>` elements with `data-name` set to the file name, without the file extension
   - `reform:text-input` makes the textarea a source of string values
+
+Converted:
+
+- https://sheeptester.github.io/javascripts/jpg-quality.html
+- https://sheeptester.github.io/javascripts/byte-sorter.html

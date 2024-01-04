@@ -1,46 +1,59 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
     <title>Byte sorter</title>
-    <meta name="description" content="Ruins a file by sorting its bytes"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <link rel="stylesheet" type="text/css" href="/sheep3.css">
-    <script src="/sheep3.js" charset="utf-8"></script>
-    <style>
-      html,
-      body {
-        height: 100%;
-      }
-      body {
-        margin: 0;
-
-        display: flex;
-        flex-direction: column;
-      }
-      #file {
-        flex: auto;
-      }
-    </style>
+    <meta name="description" content="Ruins a file by sorting its bytes" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" type="text/css" href="../sheep3.css" />
+    <link rel="stylesheet" type="text/css" href="/reform/v1/index.css" />
+    <script src="../sheep3.js" charset="utf-8"></script>
   </head>
   <body>
-    <input type="file" id="file">
-    <script>
-document.getElementById('file').addEventListener('change', async function (e) {
-  if (this.files[0]) {
-    const url = URL.createObjectURL(new Blob([new Uint8Array(await this.files[0].arrayBuffer()).sort()]))
-    // https://stackoverflow.com/a/30832210
-    const downloader = document.createElement('a')
-    downloader.href = url
-    downloader.download = this.files[0].name
-    document.body.appendChild(downloader)
-    downloader.click()
-    setTimeout(() => {
-      URL.revokeObjectURL(url)
-      document.body.removeChild(downloader)
-    })
-  }
-})
+    <form class="main" role="main">
+      <h1>Sort the bytes in a file</h1>
+      <div class="two-col-io reform:io no-contents" id="main" data-deps="file">
+        <label class="input-controls file">
+          <input
+            type="file"
+            name="file"
+            class="hidden-accessible reform:file-input reform:paste-target"
+          />
+          <span class="icon icon-upload"></span>
+          <span class="file-label">Choose, drop, or paste a file</span>
+          <span class="file-name">No file selected</span>
+        </label>
+        <div class="output-controls">
+          <a class="file download">
+            <span class="icon icon-download"></span>
+            <span class="file-label">Download</span>
+            <span class="file-name">No file available</span>
+          </a>
+          <button
+            type="button"
+            class="icon icon-copy"
+            data-output="output"
+            aria-label="Copy"
+          ></button>
+          <button
+            type="button"
+            class="icon icon-share"
+            data-output="output"
+            aria-label="Share"
+          ></button>
+        </div>
+      </div>
+    </form>
+    <script type="module">
+      import { on } from '/reform/v1/index.js'
+
+      on('main', async (_, { file }) => {
+        return new File(
+          [new Uint8Array(await file.arrayBuffer()).sort()],
+          file.name,
+          { type: file.type }
+        )
+      })
     </script>
   </body>
 </html>
