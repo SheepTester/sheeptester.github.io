@@ -263,25 +263,11 @@ select {
   flex: none;
   border: 1px solid var(--line-darker);
   border-radius: 50%;
+  background-origin: border-box;
   position: relative;
   /* z-index: 0; */
   cursor: pointer;
   margin-top: 5px;
-  background-image: linear-gradient(
-    45deg,
-    transparent 25%,
-    var(--grad1) 50%,
-    var(--grad2) 75%
-  );
-  background-size: 90px;
-  background-origin: border-box;
-  transition: background-position 0.2s, border-color 0.2s;
-
-  &::before,
-  &::after {
-    content: '';
-    display: block;
-  }
 
   &::before {
     position: absolute;
@@ -290,8 +276,6 @@ select {
     border-radius: 50%;
     background-image: linear-gradient(135deg, var(--grad1), var(--grad2));
     filter: blur(3px);
-    opacity: 0;
-    transition: opacity 0.2s;
   }
 }
 [type='checkbox'] + .radio-button {
@@ -312,10 +296,12 @@ select {
 }
 :checked + .radio-button {
   border-color: transparent;
-  background-position: -45px;
+  background-image: linear-gradient(135deg, var(--grad1), var(--grad2));
 
-  &::before {
-    /* opacity: 1; */
+  /* TEMP: ::before is hidden for now for consistency with the range input */
+  &::after {
+    content: '';
+    display: block;
   }
 }
 .range-wrapper {
@@ -334,22 +320,43 @@ select {
   height: 40px;
 }
 ::-webkit-slider-runnable-track {
-  border: 1px solid var(--line);
+  background-color: var(--line);
   height: 5px;
   border-radius: 10px;
+  background-image: linear-gradient(
+    to right,
+    var(--grad1),
+    var(--grad2) var(--progress),
+    transparent var(--progress)
+  );
 }
 /* Must be kept a separate rule or it won't parse. :is() doesn't work with
 ::-webkit-slider-runnable-track */
 ::-moz-range-track {
-  /* TODO */
+  background-color: var(--line);
+  height: 5px;
+  border-radius: 10px;
+  background-image: linear-gradient(
+    to right,
+    var(--grad1),
+    var(--grad2) var(--progress),
+    transparent var(--progress)
+  );
 }
 ::-webkit-slider-thumb {
   -webkit-appearance: none;
   width: 15px;
   height: 15px;
-  background-image: linear-gradient(45deg, var(--grad1), var(--grad2));
+  background-color: var(--grad2);
   border-radius: 50%;
   margin-top: -5px;
+}
+::-moz-range-thumb {
+  border: none;
+  width: 15px;
+  height: 15px;
+  background-color: var(--grad2);
+  border-radius: 50%;
 }
 .range-label {
   flex: auto;

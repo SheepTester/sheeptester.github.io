@@ -28,6 +28,7 @@ function handleElement (element: unknown): void {
       sources[element.name].handleValue(+element.value)
       const rangeWrapper = element.closest('.range-wrapper')
       if (rangeWrapper) {
+        let range = element
         if (element.type === 'range') {
           const input = rangeWrapper.lastElementChild
           if (input instanceof HTMLInputElement) {
@@ -37,11 +38,17 @@ function handleElement (element: unknown): void {
                 : element.value
           }
         } else {
-          const range = rangeWrapper.querySelector('[type="range"]')
-          if (range instanceof HTMLInputElement) {
-            range.value = element.value
+          const rangeInput = rangeWrapper.querySelector('[type="range"]')
+          if (rangeInput instanceof HTMLInputElement) {
+            range = rangeInput
+          } else {
+            return
           }
+          range.value = element.value
         }
+        const progress =
+          (+element.value - +range.min) / (+range.max - +range.min)
+        range.style.setProperty('--progress', `${progress * 100}%`)
       }
     } else if (element.type === 'checkbox') {
       sources[element.name].handleValue(element.checked)
