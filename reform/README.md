@@ -460,7 +460,8 @@ Apparently, `<label>`s' `[for]` takes an `[id]` and doesn't accept `[name]`s, wh
 
 Converted:
 
-- https://sheeptester.github.io/javascripts/jpg-quality.html
-- https://sheeptester.github.io/javascripts/byte-sorter.html
-- https://sheeptester.github.io/javascripts/caretdemo.html
-- https://sheeptester.github.io/javascripts/blur.html
+- https://sheeptester.github.io/javascripts/jpg-quality.html: image -> image, with settings
+- https://sheeptester.github.io/javascripts/byte-sorter.html: file -> file
+- https://sheeptester.github.io/javascripts/caretdemo.html: text input
+- https://sheeptester.github.io/javascripts/blur.html: image -> image
+- https://sheeptester.github.io/all/generator.html: text -> text (code)

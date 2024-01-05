@@ -231,6 +231,11 @@ li::marker {
     text-decoration-color: var(--link);
   }
 }
+pre,
+code,
+.code {
+  font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+}
 [type='text'],
 [type='url'],
 [type='number'],
@@ -474,7 +479,7 @@ select {
 textarea.input-content,
 textarea.output-content {
   padding: 20px;
-  min-height: 150px;
+  min-height: 300px;
   transition: border-color 0.2s, box-shadow 0.2s;
   &:focus {
     outline: none;
