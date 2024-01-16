@@ -191,7 +191,7 @@ li::marker {
   & > .radio-label,
   & > .field-label,
   & > .cols,
-  & > .col-input {
+  & > .col-io {
     margin-left: auto;
     margin-right: auto;
     max-width: 800px;
@@ -489,10 +489,13 @@ textarea.output-content {
     box-shadow: 0 0 0 3px var(--focus-transparent);
   }
 }
-.col-input {
+.col-io {
   display: flex;
   flex-direction: column;
   margin-bottom: 10px;
+}
+.col-output {
+  flex-direction: column-reverse;
 }
 .input-controls,
 .output-controls {

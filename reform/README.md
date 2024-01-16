@@ -465,3 +465,5 @@ Converted:
 - https://sheeptester.github.io/javascripts/caretdemo.html: text input
 - https://sheeptester.github.io/javascripts/blur.html: image -> image
 - https://sheeptester.github.io/all/generator.html: text -> text (code)
+- https://sheeptester.github.io/words-go-here/misc/chunks.html: image -> image
+- https://sheeptester.github.io/words-go-here/misc/ucsd-map.html: options -> image
