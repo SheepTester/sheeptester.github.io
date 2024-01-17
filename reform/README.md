@@ -467,3 +467,11 @@ Converted:
 - https://sheeptester.github.io/all/generator.html: text -> text (code)
 - https://sheeptester.github.io/words-go-here/misc/chunks.html: image -> image
 - https://sheeptester.github.io/words-go-here/misc/ucsd-map.html: options -> image
+  - col-output should be wider
+  - cancel output when dependencies update while loading
+- https://sheeptester.github.io/words-go-here/misc/imgtosvg.html: image -> image
+  - ~~support svg~~
+- https://sheeptester.github.io/words-go-here/misc/simplex.html: options -> image
+- https://sheeptester.github.io/words-go-here/misc/schedulemaker.html: file, options -> image
+  - error log
+  - svg resizing is weird

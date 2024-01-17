@@ -109,13 +109,18 @@ for (const form of document.forms) {
 document.addEventListener('input', e => handleElement(e.target))
 document.addEventListener('change', e => handleElement(e.target))
 
+export type SourceSpec = {
+  name: string
+  deps?: string[]
+}
 export function on<T> (
-  name: string,
+  spec: SourceSpec | string,
   callback: (
-    element: HTMLElement | CanvasRenderingContext2D,
+    element: HTMLElement | CanvasRenderingContext2D | null,
     args: Record<string, unknown>
   ) => Promise<T>
 ): void {
+  const name = typeof spec === 'string' ? spec : spec.name
   sources[name] ??= new Source()
   let element = document.getElementById(name)
   if (!element) {
@@ -127,19 +132,20 @@ export function on<T> (
         Array.from(elements)
       )
     }
-    element = elements[0]
+    element = elements[0] ?? null
   }
 
-  const deps = element?.dataset.deps?.split(' ') ?? []
+  const deps =
+    (typeof spec !== 'string' && spec.deps) ||
+    element?.dataset.deps?.split(' ') ||
+    []
   const args: Record<string, unknown> = {}
 
   const object =
-    element instanceof HTMLCanvasElement
-      ? element.getContext('2d') ?? element
-      : element
+    element instanceof HTMLCanvasElement ? element.getContext('2d') : element
 
   const outputControls = element
-    .closest('.reform\\:io')
+    ?.closest('.reform\\:io')
     ?.querySelector('.output-controls')
   if (outputControls) {
     const output = Output.fromOutputControls(outputControls)

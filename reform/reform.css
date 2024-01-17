@@ -215,7 +215,7 @@ li::marker {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  gap: 10px;
+  column-gap: 10px;
 }
 .link {
   color: var(--link);
@@ -524,6 +524,8 @@ textarea.output-content {
 
   & button {
     border-left: 1px solid var(--line);
+    min-height: 48px;
+    height: 100%;
   }
 }
 .file {
@@ -534,6 +536,8 @@ textarea.output-content {
     'icon label'
     'icon name';
   align-items: center;
+  padding: 5px;
+  padding-left: 0;
 
   label& {
     cursor: pointer;
@@ -541,7 +545,7 @@ textarea.output-content {
 
   & .icon {
     grid-area: icon;
-    margin: 10px;
+    margin: 0 10px;
   }
 }
 label.file,
@@ -625,7 +629,8 @@ label.file:has(:focus-visible) {
   }
 
   & canvas,
-  & img {
+  & img,
+  & svg {
     border: 1px solid var(--line);
     border-radius: 10px;
     max-width: 100%;
