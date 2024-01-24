@@ -115,7 +115,7 @@
     <script type="module">
       import { on } from '/reform/v1/index.js'
 
-      on('output', async (image, { image: canvas, quality, format }) => {
+      on('output', async (image, { image: { canvas }, quality, format }) => {
         const url = canvas.toDataURL(format, quality)
         image.src = url
         const blob = await fetch(url).then(r => r.blob())

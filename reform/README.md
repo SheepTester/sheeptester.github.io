@@ -94,9 +94,7 @@ Other components:
   - Should include file name and size
 
 - Image output
-  - https://sheeptester.github.io/words-go-here/misc/chunks.html Settings, input -> output image.
   - https://sheeptester.github.io/javascripts/intense-contrast.html Input -> output image, with settings. Detailed radios. Output image is interactive.
-  - https://sheeptester.github.io/words-go-here/misc/ucsd-map.html Settings, slider. Output image.
   - https://sheeptester.github.io/javascripts/pip-image.html Image input with video output. Action button.
   - https://sheeptester.github.io/javascripts/grapher.html Single-line input, text, error, and image output.
 - https://sheeptester.github.io/javascripts/notifications.html Many inputs with detailed labels linking to documentation. Action button.
@@ -116,7 +114,6 @@ Other components:
 - https://sheeptester.github.io/words-go-here/misc/file-editor.html Four-button control panel. Textarea input.
 - https://sheeptester.github.io/javascripts/zwsp-embedder.html Three inputs, where the first two drive the third. The relationship between the input/output textareas is shown in a table-like layout. SPECIAL LAYOUT
 - https://sheeptester.github.io/words-go-here/misc/triangulated-coordinates.html Largely a static page, but it has two input -> output forms.
-- https://sheeptester.github.io/all/generator.html Takes a textarea input (JSON) (maybe we should allow dragging and dropping text files into textareas). Not sure what the output is.
 - https://sheeptester.github.io/words-go-here/misc/minimal-markup.html Input textarea -> output rich text.
 - https://sheeptester.github.io/javascripts/imagetoscheme.html Input image + settings -> display text.
 - https://sheeptester.github.io/words-go-here/misc/keyboard.html Input textarea, output is a keyboard SVG. Has a slider for playback and a play button.
@@ -124,7 +121,6 @@ Other components:
 - https://sheeptester.github.io/words-go-here/misc/fix-x.html Select file, has an output log, then downloads output.
 - https://sheeptester.github.io/sentence/mspllesier.html Action button edits the input textarea. I think overwriting the user input is a bad idea, so we should change this to an input -> output kind of thing.
 - https://sheeptester.github.io/sentence/ Action button with output text with large font.
-- https://sheeptester.github.io/javascripts/jpg-quality.html Input image. Slider. Dropdown.
 - https://sheeptester.github.io/hello-world/pi.html A table.
 - https://sheeptester.github.io/javascripts/delegalifier.html Input -> output textarea.
 - https://sheeptester.github.io/javascripts/video/text.html Input video, output video and downloads file.
@@ -148,7 +144,6 @@ Other components:
 - https://sheeptester.github.io/hello-world/bell.html Can just be an action button or something.
 - https://sheeptester.github.io/hello-world/zdsfghnjvc.html (what is this??) Needs UI
 - https://sheeptester.github.io/animations/kjlsintro.html
-- https://sheeptester.github.io/words-go-here/misc/simplex.html Run button because this is potentially computationally expensive. Maybe there should be a checkbox to disable immediate re-runs.
 - https://sheeptester.github.io/javascripts/video/video-test.html Input video, previews video, downloads webm.
 - https://sheeptester.github.io/happynumbers/bytwos/ Ten numbers, outputs five numbers.
 - https://sheeptester.github.io/animations/svg/pies.html Two sliders.
@@ -161,9 +156,7 @@ Other components:
 - https://sheeptester.github.io/words-go-here/misc/2048simplified.html Four buttons, table view.
 - https://sheeptester.github.io/words-go-here/misc/dehtmlify.html Input file, downloads ZIP and outputs message.
 - https://sheeptester.github.io/javascripts/fontmaker.html (this also needs to be fixed for Scratch 3.0)
-- https://sheeptester.github.io/javascripts/blur.html
 - https://sheeptester.github.io/hello-world/test/embedder.html
-- https://sheeptester.github.io/words-go-here/misc/imgtosvg.html SVG output (rather than canvas), necessitating a download button (can't right click > copy).
 - https://sheeptester.github.io/platformre/keypresses.html
 - https://sheeptester.github.io/hello-world/flappybirdwithifstatements.html Canvas and code output. Play/stop button + two more buttons.
 - https://sheeptester.github.io/javascripts/searchparser.html Uses `?`. Could also have a text field input. Outputs code.
@@ -171,15 +164,12 @@ Other components:
 - https://sheeptester.github.io/hello-world/attitude.html Table layout with font sizes and large input.
 - https://sheeptester.github.io/javascripts/semi-what.html
 - https://sheeptester.github.io/hello-world/mirroring.html Two-way input.
-- https://sheeptester.github.io/words-go-here/misc/schedulemaker.html SVG output.
 - https://sheeptester.github.io/sentence/word.html Multiple sections each with a generate button that outputs a list of words. Shift-clicking the button generates many words at once (this should be turned into a long press for touch users I think).
 - https://sheeptester.github.io/calculator/leapday/ Date input, table output.
 - https://sheeptester.github.io/calculator/base/ Inline number inputs in a sentence. I think this could be made two-way.
 - https://sheeptester.github.io/hello-world/tenmillionpages.html Uses `?`.
-- https://sheeptester.github.io/javascripts/caretdemo.html Just a textarea.
 - https://sheeptester.github.io/words-go-here/misc/opentype.html
 - https://sheeptester.github.io/words-go-here/misc/svgtopng.html Accepts multiple images.
-- https://sheeptester.github.io/javascripts/byte-sorter.html Immediately downloads result after inputting file.
 - Complicated
   - https://sheeptester.github.io/javascripts/mutate.html Many tables. Play and next frame button. Image output? (constant size)
   - https://sheeptester.github.io/words-go-here/misc/pixel-font.html A settings form that gets disabled once set. Two live outputs. Has a wide glyph editor.

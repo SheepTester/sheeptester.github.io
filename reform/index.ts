@@ -109,40 +109,76 @@ for (const form of document.forms) {
 document.addEventListener('input', e => handleElement(e.target))
 document.addEventListener('change', e => handleElement(e.target))
 
-export type SourceSpec = {
+export type SourceSpec =
+  | {
+      name: string
+      deps?: string[]
+    }
+  | string
+type Dep = {
   name: string
-  deps?: string[]
+  reference: boolean
 }
+type Object = {
+  name: string
+  element: HTMLElement
+  object: HTMLElement | CanvasRenderingContext2D | null
+  deps: Dep[]
+}
+const objects: Record<string, Object> = {}
+
+function findObjectByName (spec: SourceSpec): Object {
+  const name = typeof spec === 'string' ? spec : spec.name
+  if (!objects[name]) {
+    let element = document.getElementById(name)
+    if (!element) {
+      const elements = document.getElementsByName(name)
+      if (elements.length > 1) {
+        console.warn(
+          'More than one element with name',
+          name,
+          Array.from(elements)
+        )
+      }
+      element = elements[0] ?? null
+    }
+    const object =
+      element instanceof HTMLCanvasElement ? element.getContext('2d') : element
+    const deps =
+      (typeof spec !== 'string' && spec.deps) ||
+      element?.dataset.deps?.split(' ') ||
+      []
+    objects[name] = {
+      name,
+      element,
+      object,
+      deps: deps.map(dep =>
+        dep.startsWith('&')
+          ? { name: dep.slice(1), reference: true }
+          : { name: dep, reference: false }
+      )
+    }
+  }
+
+  return objects[name]
+}
+
 export function on<T> (
-  spec: SourceSpec | string,
+  spec: SourceSpec,
   callback: (
-    element: HTMLElement | CanvasRenderingContext2D | null,
+    object: HTMLElement | CanvasRenderingContext2D | null,
     args: Record<string, unknown>
   ) => Promise<T>
 ): void {
-  const name = typeof spec === 'string' ? spec : spec.name
+  const { name, element, object, deps } = findObjectByName(spec)
   sources[name] ??= new Source()
-  let element = document.getElementById(name)
-  if (!element) {
-    const elements = document.getElementsByName(name)
-    if (elements.length > 1) {
-      console.warn(
-        'More than one element with name',
-        name,
-        Array.from(elements)
-      )
+
+  const args: Record<string, unknown> = {
+    // Call `callback` to return multiple values
+    callback: (value: unknown) => {
+      sources[name].handleValue(value)
     }
-    element = elements[0] ?? null
   }
-
-  const deps =
-    (typeof spec !== 'string' && spec.deps) ||
-    element?.dataset.deps?.split(' ') ||
-    []
-  const args: Record<string, unknown> = {}
-
-  const object =
-    element instanceof HTMLCanvasElement ? element.getContext('2d') : element
 
   const outputControls = element
     ?.closest('.reform\\:io')
@@ -155,22 +191,30 @@ export function on<T> (
   const compute = async () => {
     if (ready.size === deps.length) {
       const value = await callback(object, args)
-      sources[name].handleValue(value)
+      if (value !== undefined) {
+        sources[name].handleValue(value)
+      }
     }
   }
 
   const ready = new Set<string>()
-  for (const dep of deps) {
-    sources[dep] ??= new Source()
-    if (sources[dep].lastValue !== undefined) {
-      args[dep] = sources[dep].lastValue
+  for (const { name: dep, reference } of deps) {
+    if (reference) {
+      const { object } = findObjectByName(dep)
+      args[dep] = object
       ready.add(dep)
+    } else {
+      sources[dep] ??= new Source()
+      if (sources[dep].lastValue !== undefined) {
+        args[dep] = sources[dep].lastValue
+        ready.add(dep)
+      }
+      sources[dep].dependents.push(value => {
+        args[dep] = value
+        ready.add(dep)
+        compute()
+      })
     }
-    sources[dep].dependents.push(value => {
-      args[dep] = value
-      ready.add(dep)
-      compute()
-    })
   }
   compute()
 }

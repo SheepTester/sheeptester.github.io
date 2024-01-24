@@ -8,8 +8,10 @@
       content="Maximizes the differences between pixels to reveal badly smudged out names"
     />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="stylesheet" type="text/css" href="/reform/reform.css" />
+    <meta name="theme-color" content="#4fa1a7" />
+
     <link rel="stylesheet" type="text/css" href="/sheep3.css" />
+    <link rel="stylesheet" type="text/css" href="/reform/v1/index.css" />
     <script src="/sheep3.js" charset="utf-8"></script>
     <style>
       .preview {
@@ -22,11 +24,8 @@
       .no-data .preview {
         display: none;
       }
-      #contrast {
-        display: none;
+      #highContrast {
         position: absolute;
-        top: 0;
-        left: 0;
         box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.3);
       }
       .temp-warning {
@@ -41,139 +40,142 @@
     </style>
   </head>
   <body>
-    <main>
-      <div class="temp-warning">
-        As part of the planning stages of a redesign, this page will
-        indefinitely remain nonfunctional. Apologies for any inconvenience.
-      </div>
-      <form class="main">
-        <h1>Intense contrast</h1>
-        <p>
-          Exaggerate differences between pixels. Works best if you select a
-          region of similarly coloured pixels. It usually reveals compression
-          artefacts but it may also reveal poorly (eg with a translucent pen
-          texture) smudged out names in screenshots.
-        </p>
-        <p>
-          This gets the minimum and maximum R, G, and B values in the region and
-          scales each channel up, so one differently coloured pixel can skew
-          results quite a bit.
-        </p>
-        <fieldset class="radio-set">
-          <legend class="label-primary">Method</legend>
-          <label class="radio-label">
-            <input
-              type="radio"
-              name="method"
-              value="primitive"
-              class="hidden-accessible"
-            />
-            <span class="radio-button"></span>
-            <span class="label-content">
-              <span class="label-primary">Primitive</span>
-              <span class="label-secondary">
-                Each channel of each pixel is scaled such that the darkest
-                colour in the region becomes black and the lightest becomes
-                white (but each channel is independent, so the hue will change).
-              </span>
-            </span>
-          </label>
-          <label class="radio-label">
-            <input
-              type="radio"
-              name="method"
-              value="lightened"
-              class="hidden-accessible"
-            />
-            <span class="radio-button"></span>
-            <span class="label-content">
-              <span class="label-primary">Lightened</span>
-              <span class="label-secondary">
-                Like primitive, but a square root function is applied to make
-                differences in dark pixels more obvious by making the pixels
-                lighter.
-              </span>
-            </span>
-          </label>
-          <label class="radio-label">
-            <input
-              type="radio"
-              name="method"
-              value="accentuated"
-              class="hidden-accessible"
-            />
-            <span class="radio-button"></span>
-            <span class="label-content">
-              <span class="label-primary">Accentuated</span>
-              <span class="label-secondary">
-                Each channel value is multiplied by 7 so that the differences in
-                pixel colours are exaggerated. To prevent lighter colours from
-                being capped at white, mod 255 is applied so they'll just wrap
-                around to black; since this is independent of the other
-                channels, the hue will change.
-              </span>
-            </span>
-          </label>
-          <label class="radio-label">
-            <input
-              type="radio"
-              name="method"
-              value="unique"
-              class="hidden-accessible"
-              checked
-            />
-            <span class="radio-button"></span>
-            <span class="label-content">
-              <span class="label-primary">Unique</span>
-              <span class="label-secondary">
-                Like accentuated, but the values are multiplied by 50, so each
-                coloured pixel effectively has a unique colour that is very
-                different from a similar one. A chunk of the same colour
-                indicates that all the pixels in that chunk are the exact same.
-              </span>
-            </span>
-          </label>
-        </fieldset>
-        <div>
-          <label class="file-input" for="image">
-            <input
-              type="file"
-              name="image"
-              accept="image/*"
-              class="hidden-accessible reform:main"
-              autofocus
-            />
-            <span class="upload-btn">
-              <span class="icon icon-upload"></span>
-              Choose
-            </span>
-            <span class="file-hint">or drop/paste an image.</span>
-            <span class="selected-file reform:selected-file"></span>
-          </label>
-          <div class="preview" id="previewDiv" data-deps="contrast">
-            <canvas class="reform:preview" data-deps="image"></canvas>
-            <canvas id="contrast" data-deps="method image previewDiv"></canvas>
-          </div>
-        </div>
-      </form>
-    </main>
-    <script type="module">
-      import { dep, output } from '/reform/reform.js'
+    <div class="temp-warning">
+      As part of the planning stages of a redesign, this page will indefinitely
+      remain nonfunctional. Apologies for any inconvenience.
+    </div>
+    <form class="main" role="main">
+      <h1>Intense contrast</h1>
+      <p>
+        Exaggerate differences between pixels. Works best if you select a region
+        of similarly coloured pixels. It usually reveals compression artefacts
+        but it may also reveal poorly (eg with a translucent pen texture)
+        smudged out names in screenshots.
+      </p>
+      <p>
+        This gets the minimum and maximum R, G, and B values in the region and
+        scales each channel up, so one differently coloured pixel can skew
+        results quite a bit.
+      </p>
 
-      const methods = [
-        (channel, min, max) => {
+      <div class="col-io reform:io">
+        <label class="input-controls file">
+          <input
+            type="file"
+            name="image"
+            accept="image/*"
+            class="hidden-accessible reform:image-input reform:paste-target"
+          />
+          <span class="icon icon-upload"></span>
+          <span class="file-label">Choose, drop, or paste an image</span>
+          <span class="file-name">No file selected</span>
+        </label>
+        <div
+          class="image-content input-content"
+          id="previewDiv"
+          data-deps="image &highContrast"
+        >
+          <canvas></canvas>
+          <canvas
+            id="highContrast"
+            data-deps="image previewDiv method"
+          ></canvas>
+        </div>
+      </div>
+
+      <fieldset class="radio-set">
+        <legend class="label-primary">Method</legend>
+        <label class="radio-label">
+          <input
+            type="radio"
+            name="method"
+            value="primitive"
+            class="hidden-accessible"
+          />
+          <span class="radio-button"></span>
+          <span class="label-content">
+            <span class="label-primary">Primitive</span>
+            <span class="label-secondary">
+              Each channel of each pixel is scaled such that the darkest colour
+              in the region becomes black and the lightest becomes white (but
+              each channel is independent, so the hue will change).
+            </span>
+          </span>
+        </label>
+        <label class="radio-label">
+          <input
+            type="radio"
+            name="method"
+            value="lightened"
+            class="hidden-accessible"
+          />
+          <span class="radio-button"></span>
+          <span class="label-content">
+            <span class="label-primary">Lightened</span>
+            <span class="label-secondary">
+              Like primitive, but a square root function is applied to make
+              differences in dark pixels more obvious by making the pixels
+              lighter.
+            </span>
+          </span>
+        </label>
+        <label class="radio-label">
+          <input
+            type="radio"
+            name="method"
+            value="accentuated"
+            class="hidden-accessible"
+          />
+          <span class="radio-button"></span>
+          <span class="label-content">
+            <span class="label-primary">Accentuated</span>
+            <span class="label-secondary">
+              Each channel value is multiplied by 7 so that the differences in
+              pixel colours are exaggerated. To prevent lighter colours from
+              being capped at white, mod 255 is applied so they'll just wrap
+              around to black; since this is independent of the other channels,
+              the hue will change.
+            </span>
+          </span>
+        </label>
+        <label class="radio-label">
+          <input
+            type="radio"
+            name="method"
+            value="unique"
+            class="hidden-accessible"
+            checked
+          />
+          <span class="radio-button"></span>
+          <span class="label-content">
+            <span class="label-primary">Unique</span>
+            <span class="label-secondary">
+              Like accentuated, but the values are multiplied by 50, so each
+              coloured pixel effectively has a unique colour that is very
+              different from a similar one. A chunk of the same colour indicates
+              that all the pixels in that chunk are the exact same.
+            </span>
+          </span>
+        </label>
+      </fieldset>
+    </form>
+    <script type="module">
+      import { on } from '/reform/v1/index.js'
+
+      const methods = {
+        primitive: (channel, min, max) => {
           return ((channel - min) / (max - min)) * 255
         },
-        (channel, min, max) => {
+        lightened: (channel, min, max) => {
           return Math.sqrt((channel - min) / (max - min)) * 255
         },
-        (channel, min, max) => {
+        accentuated: (channel, min, max) => {
           return (channel * 7) % 255
         },
-        (channel, min, max) => {
+        unique: (channel, min, max) => {
           return (channel * 50) % 255
         }
-      ]
+      }
 
       function processImage (context, func, imageData, startX, startY) {
         const data = context.createImageData(
@@ -224,61 +226,80 @@
         context.putImageData(data, 0, 0)
       }
 
-      dep('previewDiv', (div, onChange, { contrast: { canvas } }) => {
+      let cleanup
+      on('previewDiv', (div, { image: { canvas }, callback }) => {
+        cleanup?.()
+
         let regionSetter
-        div.addEventListener('pointerdown', e => {
+        const handlePointerDown = e => {
           if (!regionSetter && e.which === 1) {
             regionSetter = {
               pointer: e.pointerId,
               initX: e.clientX,
               initY: e.clientY,
               dragging: false,
-              rect: preview.getBoundingClientRect()
+              rect: canvas.getBoundingClientRect()
             }
+            regionSetter.scale = canvas.height / regionSetter.rect.height
             div.setPointerCapture(e.pointerId)
           }
-        })
-        div.addEventListener('pointermove', e => {
-          if (regionSetter && regionSetter.pointer === e.pointerId) {
+        }
+        const handlePointerMove = e => {
+          if (regionSetter?.pointer === e.pointerId) {
             if (!regionSetter.dragging) {
               regionSetter.dragging = true
-              canvas.style.display = 'block'
             }
             const minX = Math.max(Math.min(e.clientX, regionSetter.initX), 0)
-            const minY = Math.max(Math.min(e.clientY, regionSetter.initY))
-            regionSetter.minX = Math.floor(minX - regionSetter.rect.left)
-            regionSetter.minY = Math.floor(minY - regionSetter.rect.top)
-            canvas.style.left = regionSetter.minX + 'px'
-            canvas.style.top = regionSetter.minY + 'px'
-            canvas.width = Math.min(
-              Math.ceil(Math.max(e.clientX, regionSetter.initX) - minX),
-              preview.width
-            )
-            canvas.height = Math.min(
-              Math.ceil(Math.max(e.clientY, regionSetter.initY) - minY),
-              preview.height
-            )
+            const minY = Math.max(Math.min(e.clientY, regionSetter.initY), 0)
+            callback({
+              left: Math.floor(minX - regionSetter.rect.left),
+              top: Math.floor(minY - regionSetter.rect.top),
+              width:
+                Math.min(
+                  Math.ceil(Math.max(e.clientX, regionSetter.initX) - minX),
+                  regionSetter.rect.width
+                ) * regionSetter.scale,
+              height:
+                Math.min(
+                  Math.ceil(Math.max(e.clientY, regionSetter.initY) - minY),
+                  regionSetter.rect.height
+                ) * regionSetter.scale
+            })
           }
-        })
+        }
         const handlePointerEnd = e => {
-          if (regionSetter && regionSetter.pointer === e.pointerId) {
-            if (regionSetter.dragging) {
-              onChange(regionSetter)
-            }
+          if (regionSetter?.pointer === e.pointerId) {
             regionSetter = null
           }
         }
+        div.addEventListener('pointerdown', handlePointerDown)
+        div.addEventListener('pointermove', handlePointerMove)
         div.addEventListener('pointerup', handlePointerEnd)
         div.addEventListener('pointercancel', handlePointerEnd)
+
+        cleanup = () => {
+          div.removeEventListener('pointerdown', handlePointerDown)
+          div.removeEventListener('pointermove', handlePointerMove)
+          div.removeEventListener('pointerup', handlePointerEnd)
+          div.removeEventListener('pointercancel', handlePointerEnd)
+        }
       })
 
-      output('contrast', (c, { method, image, previewDiv }) => {
+      on('highContrast', (context, { method, image, previewDiv }) => {
+        context.canvas.style.left = previewDiv.left + 'px'
+        context.canvas.style.top = previewDiv.top + 'px'
+        if (previewDiv.width !== context.canvas.width) {
+          context.canvas.width = previewDiv.width
+        }
+        if (previewDiv.height !== context.canvas.height) {
+          context.canvas.height = previewDiv.height
+        }
         processImage(
-          c,
-          methods[document.querySelector('[name=method]:checked').value],
-          image.getImageData(0, 0, image.width, image.height),
-          previewDiv.minX,
-          previewDiv.minY
+          context,
+          methods[method],
+          image.getImageData(0, 0, image.canvas.width, image.canvas.height),
+          previewDiv.left,
+          previewDiv.top
         )
       })
     </script>

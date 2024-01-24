@@ -117,7 +117,7 @@ export function handleSingleFileInput (
 }
 
 export function handleImageInput (
-  source: Source<HTMLCanvasElement>,
+  source: Source<CanvasRenderingContext2D>,
   input?: Element | null
 ): void {
   if (input && !(input instanceof HTMLInputElement)) {
@@ -134,6 +134,11 @@ export function handleImageInput (
   }
   const canvas = maybeCanvas ?? document.createElement('canvas')
   const context = canvas.getContext('2d')
+  if (!context) {
+    throw new TypeError(
+      'Failed to get canvas context for the image input preview.'
+    )
+  }
   handleFileInput({
     fileName: input?.parentElement?.querySelector('.file-name'),
     input,
@@ -154,8 +159,8 @@ export function handleImageInput (
         canvas.dataset.name = fileName(file.name)
         canvas.width = image.width
         canvas.height = image.height
-        context?.drawImage(image, 0, 0)
-        source.handleValue(canvas)
+        context.drawImage(image, 0, 0)
+        source.handleValue(context)
       } finally {
         URL.revokeObjectURL(url)
       }
