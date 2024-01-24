@@ -19,22 +19,22 @@ function handleFileInput ({
   onFile
 }: FileInputOptions): void {
   async function handleFile (
-    items: FileList | DataTransfer | null
+    items: ArrayLike<File> | DataTransfer | null
   ): Promise<void> {
     if (
       items === null ||
-      (items instanceof FileList ? items : items.items).length === 0
+      (items instanceof DataTransfer ? items.items : items).length === 0
     ) {
       return
     }
     const file =
-      items instanceof FileList
-        ? items[0]
-        : items.items[0].kind === 'string'
-        ? await new Promise<string>(resolve =>
-            items.items[0].getAsString(resolve)
-          )
-        : items.items[0].getAsFile()
+      items instanceof DataTransfer
+        ? items.items[0].kind === 'string'
+          ? await new Promise<string>(resolve =>
+              items.items[0].getAsString(resolve)
+            )
+          : items.items[0].getAsFile()
+        : items[0]
     if (file === null) {
       return
     }
@@ -49,11 +49,11 @@ function handleFileInput ({
         fileName.classList.remove('file-error')
       }
     } catch (error) {
-      console.error(error)
       if (fileName) {
         fileName.textContent = fileNameContent + ' — failed to load'
         fileName.classList.add('file-error')
       }
+      throw error
     }
   }
 
@@ -62,6 +62,20 @@ function handleFileInput ({
     // Reset files array (so can resubmit the same file multiple times)
     input.value = ''
   })
+  if (input?.dataset.default) {
+    const url = input.dataset.default
+    const name = url.slice(url.lastIndexOf('/') + 1)
+    fetch(url)
+      .then(r => r.blob())
+      .catch(error => {
+        if (fileName) {
+          fileName.textContent = name + ' — failed to load'
+          fileName.classList.add('file-error')
+        }
+        throw error
+      })
+      .then(blob => handleFile([new File([blob], name, blob)]))
+  }
 
   dropTarget?.addEventListener('drop', async e => {
     handleFile(e.dataTransfer)

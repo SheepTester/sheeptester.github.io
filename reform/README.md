@@ -94,7 +94,6 @@ Other components:
   - Should include file name and size
 
 - Image output
-  - https://sheeptester.github.io/javascripts/intense-contrast.html Input -> output image, with settings. Detailed radios. Output image is interactive.
   - https://sheeptester.github.io/javascripts/pip-image.html Image input with video output. Action button.
   - https://sheeptester.github.io/javascripts/grapher.html Single-line input, text, error, and image output.
 - https://sheeptester.github.io/javascripts/notifications.html Many inputs with detailed labels linking to documentation. Action button.
@@ -454,6 +453,7 @@ Converted:
 - https://sheeptester.github.io/javascripts/byte-sorter.html: file -> file
 - https://sheeptester.github.io/javascripts/caretdemo.html: text input
 - https://sheeptester.github.io/javascripts/blur.html: image -> image
+- https://sheeptester.github.io/javascripts/intense-contrast.html: image + interactivity
 - https://sheeptester.github.io/all/generator.html: text -> text (code)
 - https://sheeptester.github.io/words-go-here/misc/chunks.html: image -> image
 - https://sheeptester.github.io/words-go-here/misc/ucsd-map.html: options -> image
@@ -465,4 +465,3 @@ Converted:
 - https://sheeptester.github.io/words-go-here/misc/schedulemaker.html: file, options -> image
   - error log
   - svg resizing is weird
-- https://sheeptester.github.io/javascripts/intense-contrast.html: image + interactivity
