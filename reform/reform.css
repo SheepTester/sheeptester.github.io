@@ -597,7 +597,7 @@ label.file:has(:focus-visible) {
   border-bottom-left-radius: 10px;
   border-bottom-right-radius: 10px;
   border: 1px solid var(--line);
-  border-top: none;
+  border-top-width: 0;
   position: relative;
 }
 .input-content {
@@ -605,6 +605,13 @@ label.file:has(:focus-visible) {
 }
 .output-content {
   grid-area: output-content;
+
+  .no-output-controls & {
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    border-top-width: 1px;
+    margin-top: -1px;
+  }
 }
 .image-content {
   display: flex;

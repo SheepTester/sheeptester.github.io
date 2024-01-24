@@ -97,7 +97,6 @@ Other components:
   - https://sheeptester.github.io/javascripts/pip-image.html Image input with video output. Action button.
   - https://sheeptester.github.io/javascripts/grapher.html Single-line input, text, error, and image output.
 - https://sheeptester.github.io/javascripts/notifications.html Many inputs with detailed labels linking to documentation. Action button.
-- https://sheeptester.github.io/javascripts/raw-json-img.html Image input, settings, long text output (this could have a copy button!). Dropdown set to custom reveals more fields.
 - https://sheeptester.github.io/javascripts/cryptography.html Various unrelated input -> output text fields. Caesar cipher table.
 - https://sheeptester.github.io/javascripts/image-translucentifier.html Input output image, color inputs, color picker. Shows input and output side-by-side.
 - https://sheeptester.github.io/hello-world/bones-and-muscles.html Action button.
@@ -454,6 +453,8 @@ Converted:
 - https://sheeptester.github.io/javascripts/caretdemo.html: text input
 - https://sheeptester.github.io/javascripts/blur.html: image -> image
 - https://sheeptester.github.io/javascripts/intense-contrast.html: image + interactivity
+- https://sheeptester.github.io/javascripts/raw-json-img.html: image -> text
+  - set display size of canvas without making it stretch when it's large
 - https://sheeptester.github.io/all/generator.html: text -> text (code)
 - https://sheeptester.github.io/words-go-here/misc/chunks.html: image -> image
 - https://sheeptester.github.io/words-go-here/misc/ucsd-map.html: options -> image

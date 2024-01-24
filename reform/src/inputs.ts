@@ -3,11 +3,27 @@ import { displayBytes, fileName } from './utils'
 
 const encoder = new TextEncoder()
 
+function selectItem<T extends { type: string }> (
+  items: T[],
+  preferredType = ''
+): T {
+  return items.find(({ type }) => type.startsWith(preferredType)) ?? items[0]
+}
+function getDataTransfer (
+  item: DataTransferItem
+): Promise<string | File | null> {
+  return item.kind === 'string'
+    ? new Promise<string>(resolve => item.getAsString(resolve))
+    : Promise.resolve(item.getAsFile())
+}
+
 type FileInputOptions = {
   fileName?: Element | null
   input?: HTMLInputElement | null
   dropTarget?: HTMLElement | null
   pasteTarget?: boolean
+  /** A MIME type prefix, such as `image/` or `text/plain`. */
+  preferredType?: string
   /** Returns whether the file was accepted. */
   onFile: (file: File | string) => Promise<boolean | void>
 }
@@ -16,6 +32,7 @@ function handleFileInput ({
   input,
   dropTarget,
   pasteTarget,
+  preferredType,
   onFile
 }: FileInputOptions): void {
   async function handleFile (
@@ -29,12 +46,10 @@ function handleFileInput ({
     }
     const file =
       items instanceof DataTransfer
-        ? items.items[0].kind === 'string'
-          ? await new Promise<string>(resolve =>
-              items.items[0].getAsString(resolve)
-            )
-          : items.items[0].getAsFile()
-        : items[0]
+        ? await getDataTransfer(
+            selectItem(Array.from(items.items), preferredType)
+          )
+        : selectItem(Array.from(items), preferredType)
     if (file === null) {
       return
     }
@@ -160,6 +175,7 @@ export function handleImageInput (
     input,
     dropTarget: dropTarget instanceof HTMLElement ? dropTarget : undefined,
     pasteTarget: input?.classList.contains('reform:paste-target'),
+    preferredType: 'image/',
     onFile: async file => {
       if (typeof file === 'string') {
         return false
@@ -202,6 +218,7 @@ export function handleTextInput (
     input,
     dropTarget: dropTarget instanceof HTMLElement ? dropTarget : undefined,
     pasteTarget: input?.classList.contains('reform:paste-target'),
+    preferredType: 'text/',
     onFile: async file => {
       const text = file instanceof File ? await file.text() : file
       if (textarea instanceof HTMLTextAreaElement) {

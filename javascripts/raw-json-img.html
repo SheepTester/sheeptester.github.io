@@ -1,255 +1,349 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
     <title>Render image in Minecraft</title>
-    <meta name="description" content="20w17a adds support for hexadecimal colours in raw JSON. You know what that means!"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <link rel="stylesheet" type="text/css" href="/sheep3.css">
+    <meta
+      name="description"
+      content="20w17a adds support for hexadecimal colours in raw JSON. You know what that means!"
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#4fa1a7" />
+
+    <link rel="stylesheet" type="text/css" href="/sheep3.css" />
+    <link rel="stylesheet" type="text/css" href="/reform/v1/index.css" />
     <script src="/sheep3.js" charset="utf-8"></script>
     <style>
-      canvas {
-        width: 100%;
-        height: 50vh;
-        object-fit: contain;
+      #preview {
         image-rendering: pixelated;
-      }
-
-      .textarea-wrapper {
-        display: flex;
-        width: 100%:
-      }
-      .textarea-wrapper textarea {
-        flex: auto;
-        height: 100px;
-        resize: vertical;
-      }
-
-      #custom-size {
-        display: none;
+        width: 100%; /* TODO: it does not preserve aspect ratio */
       }
     </style>
   </head>
   <body>
-    <p id="file-input-wrapper"></p>
-    <canvas id="canvas" width="1" height="1"></canvas>
-    <p><label>Fit: <select id="fit">
-      <option value="stretch">Stretch</option>
-      <option value="contain">Contain</option>
-      <option value="cover" selected>Cover</option>
-    </select></label></p>
-    <p><label>Dimensions: <select id="size">
-      <option value="book" selected>Book (12x14)</option>
-      <option value="chat">Chat (35x10) - May vary</option>
-      <option value="openChat">Open chat (35x20) - May vary</option>
-      <option value="custom">Custom</option>
-    </select></label></p>
-    <fieldset id="custom-size">
-      <legend>Custom size</legend>
-      <p><label>Width: <input type="number" id="width"></label></p>
-      <p><label>Height: <input type="number" id="height"></label></p>
-    </fieldset>
-    <h2>Output</h2>
-    <p>Use command blocks for longer commands</p>
-    <fieldset id="output-tellraw">
-      <legend>/tellraw</legend>
-    </fieldset>
-    <fieldset id="output-book">
-      <legend>Book</legend>
-    </fieldset>
+    <form class="main" role="main">
+      <h1>Image to Minecraft text</h1>
+      <p>
+        20w17a adds support for hexadecimal colours in raw JSON. You know what
+        that means!
+      </p>
+      <div class="two-col-io reform:io no-output-controls">
+        <label class="input-controls file">
+          <input
+            type="file"
+            name="image"
+            accept="image/*"
+            class="hidden-accessible reform:image-input reform:paste-target"
+            data-default="./raw-json-img-default.jpg"
+          />
+          <span class="icon icon-upload"></span>
+          <span class="file-label">Choose, drop, or paste an image</span>
+          <span class="file-name">No file selected</span>
+        </label>
+        <div class="image-content input-content"><canvas></canvas></div>
+        <div class="image-content output-content">
+          <canvas id="preview" data-deps="image size width height fit"></canvas>
+        </div>
+      </div>
+
+      <fieldset class="radio-set">
+        <legend class="label-primary">Image dimensions</legend>
+        <label class="radio-label">
+          <input
+            type="radio"
+            name="size"
+            value="book"
+            class="hidden-accessible"
+            checked
+          />
+          <span class="radio-button"></span>
+          <span class="label-primary">Book and quill (12&times;14)</span>
+        </label>
+        <label class="radio-label">
+          <input
+            type="radio"
+            name="size"
+            value="chat"
+            class="hidden-accessible"
+          />
+          <span class="radio-button"></span>
+          <span class="label-primary">Chat (35&times;10)</span>
+          <span class="label-secondary">
+            The lines of chat visible when chat is closed, so only the most
+            recent messages are shown. Chat window dimensions may vary.
+          </span>
+        </label>
+        <label class="radio-label">
+          <input
+            type="radio"
+            name="size"
+            value="openChat"
+            class="hidden-accessible"
+          />
+          <span class="radio-button"></span>
+          <span class="label-primary">Open chat (35&times;20)</span>
+          <span class="label-secondary">
+            The lines of chat visible when chat history is open. Chat window
+            dimensions may vary.
+          </span>
+        </label>
+        <label class="radio-label">
+          <input
+            type="radio"
+            name="size"
+            value="custom"
+            class="hidden-accessible"
+          />
+          <span class="radio-button"></span>
+          <span class="label-primary">Custom</span>
+          <span class="label-secondary">
+            Specify a custom width and height below.
+          </span>
+        </label>
+      </fieldset>
+
+      <div class="cols" id="custom-size" data-deps="size">
+        <label class="field-label">
+          <span class="label-primary">Width</span>
+          <input type="number" name="width" value="10" min="1" />
+        </label>
+        <label class="field-label">
+          <span class="label-primary">Height</span>
+          <input type="number" name="height" value="5" min="1" />
+        </label>
+      </div>
+
+      <fieldset class="radio-set">
+        <legend class="label-primary">Fit</legend>
+        <p class="label-secondary">
+          Determines how your image will be resized to fit the aspect ratio of
+          your selected dimensions.
+        </p>
+        <label class="radio-label">
+          <input
+            type="radio"
+            name="fit"
+            value="stretch"
+            class="hidden-accessible"
+          />
+          <span class="radio-button"></span>
+          <span class="label-primary">Stretch</span>
+          <span class="label-secondary">Does not preserve aspect ratio.</span>
+        </label>
+        <label class="radio-label">
+          <input
+            type="radio"
+            name="fit"
+            value="cover"
+            class="hidden-accessible"
+            checked
+          />
+          <span class="radio-button"></span>
+          <span class="label-primary">Cover</span>
+          <span class="label-secondary">Crops off edges of the image.</span>
+        </label>
+        <label class="radio-label">
+          <input
+            type="radio"
+            name="fit"
+            value="contain"
+            class="hidden-accessible"
+          />
+          <span class="radio-button"></span>
+          <span class="label-primary">Contain</span>
+          <span class="label-secondary">
+            The final image may be smaller than the specified dimensions so that
+            the entire image is visible.
+          </span>
+        </label>
+      </fieldset>
+
+      <div class="col-io col-output reform:io">
+        <textarea
+          class="output-content code"
+          id="tellraw"
+          data-deps="json target"
+          aria-label="/tellraw command"
+          readonly
+        ></textarea>
+        <div class="output-controls">
+          <a class="file download">
+            <span class="icon icon-download"></span>
+            <span class="file-label">Download</span>
+            <span class="file-name">No file available</span>
+          </a>
+          <button
+            type="button"
+            class="icon icon-copy"
+            data-output="output"
+            aria-label="Copy"
+          ></button>
+          <button
+            type="button"
+            class="icon icon-share"
+            data-output="output"
+            aria-label="Share"
+          ></button>
+        </div>
+      </div>
+
+      <div class="col-io col-output reform:io">
+        <textarea
+          class="output-content code"
+          id="book"
+          data-deps="json target title author"
+          aria-label="Book and quill /give command"
+          readonly
+        ></textarea>
+        <div class="output-controls">
+          <a class="file download">
+            <span class="icon icon-download"></span>
+            <span class="file-label">Download</span>
+            <span class="file-name">No file available</span>
+          </a>
+          <button
+            type="button"
+            class="icon icon-copy"
+            data-output="output"
+            aria-label="Copy"
+          ></button>
+          <button
+            type="button"
+            class="icon icon-share"
+            data-output="output"
+            aria-label="Share"
+          ></button>
+        </div>
+      </div>
+
+      <p>Use command blocks for long commands.</p>
+
+      <label class="field-label">
+        <span class="label-primary">Target</span>
+        <input type="text" name="target" value="@s" />
+      </label>
+
+      <div class="cols">
+        <label class="field-label">
+          <span class="label-primary">Book title</span>
+          <input type="text" name="title" value="Image" />
+        </label>
+        <label class="field-label">
+          <span class="label-primary">Book author</span>
+          <input type="text" name="author" value="20w17a" />
+        </label>
+      </div>
+
+      <p>
+        As seen in
+        <a
+          class="link"
+          href="https://www.reddit.com/r/Minecraft/comments/g6ysp0/minecraft_20w17a_added_support_for_custom_colours/"
+          >my post on Reddit</a
+        >.
+      </p>
+    </form>
+
     <script type="module">
-import { AcceptImage } from './accept-image.mjs'
+      import { on } from '/reform/v1/index.js'
 
-const block = '\u2588'
+      const block = '\u2588'
 
-const canvas = document.getElementById('canvas')
-const c = canvas.getContext('2d')
+      on('tellraw', (textarea, { json, target }) => {
+        textarea.value = `tellraw ${target} ${json}`
+        return new File([textarea.value], 'tellraw.mcfunction', {
+          type: 'text/plain'
+        })
+      })
 
-let image = null
+      on('book', (textarea, { json, target, title, author }) => {
+        textarea.value = `give ${target} minecraft:written_book{ pages: [${makeInterpretedable(
+          json
+        )}], title: ${JSON.stringify(title)}, author: ${JSON.stringify(
+          author
+        )} }`
+        return new File([textarea.value], 'give-book.mcfunction', {
+          type: 'text/plain'
+        })
+      })
 
-class Input {
-  constructor (labelText, value = '', type = 'text') {
-    const input = document.createElement('input')
-    this._input = input
-    input.type = type
-    input.value = value
+      on('custom-size', (div, { size }) => {
+        div.style.display = size === 'custom' ? null : 'none'
+      })
 
-    this._isNumber = type === 'number'
+      on({ name: 'json', deps: ['preview'] }, (_, { preview }) => {
+        return getRawJSON({ context: preview })
+      })
 
-    const label = document.createElement('label')
-    label.appendChild(document.createTextNode(labelText))
-    label.appendChild(input)
+      const sizes = {
+        book: { width: 12, height: 14 },
+        chat: { width: 35, height: 10 },
+        openChat: { width: 35, height: 20 }
+      }
+      on('preview', (c, { image, size, fit, ...custom }) => {
+        const { width, height } = sizes[size] ?? custom
+        c.canvas.width = width
+        c.canvas.height = height
+        if (
+          fit === 'stretch' ||
+          width / height === image.canvas.width / image.canvas.height
+        ) {
+          // BUG: Going from contain -> stretch produces a different result?
+          c.drawImage(image.canvas, 0, 0, width, height)
+        } else if (fit === 'cover') {
+          if (image.canvas.width / image.canvas.height > width / height) {
+            // Image is wider
+            const offset =
+              (height / image.canvas.height) * image.canvas.width - width
+            c.drawImage(image.canvas, -offset / 2, 0, width + offset, height)
+          } else {
+            // Image is taller
+            const offset =
+              (width / image.canvas.width) * image.canvas.height - height
+            c.drawImage(image.canvas, 0, -offset / 2, width, height + offset)
+          }
+        } else if (fit === 'contain') {
+          if (image.canvas.width / image.canvas.height > width / height) {
+            // Image is wider
+            c.canvas.height = (width / image.canvas.width) * image.canvas.height
+          } else {
+            // Image is taller
+            c.canvas.width = (height / image.canvas.height) * image.canvas.width
+          }
+          c.drawImage(image.canvas, 0, 0, c.canvas.width, c.canvas.height)
+        }
+        return c
+      })
 
-    const p = document.createElement('p')
-    this._wrapper = p
-    p.appendChild(label)
-  }
+      function getRawJSON ({ context: c } = {}) {
+        const { width, height, data } = c.getImageData(
+          0,
+          0,
+          c.canvas.width,
+          c.canvas.height
+        )
+        const components = ['']
+        const rowLength = width * 4
+        for (let i = 0; i < data.length; i += 4) {
+          if (i > 0 && i % rowLength === 0) {
+            components.push('\n')
+          }
+          components.push({
+            text: block,
+            color:
+              '#' +
+              ((data[i] << 16) | (data[i + 1] << 8) | data[i + 2])
+                .toString(16)
+                .padStart(6, '0')
+          })
+        }
+        const json = JSON.stringify(components)
+        return json
+      }
 
-  onChange (fn) {
-    this._input.addEventListener('change', fn)
-    return this
-  }
-
-  addTo (parent) {
-    parent.appendChild(this._wrapper)
-    return this
-  }
-
-  value () {
-    return this._isNumber ? +this._input.value : this._input.value
-  }
-}
-
-class Output {
-  constructor (onUpdate, onInit = null) {
-    this.meta = {}
-
-    this._onUpdate = onUpdate
-
-    const textarea = document.createElement('textarea')
-    this._textarea = textarea
-
-    const wrapper = document.createElement('div')
-    wrapper.className = 'textarea-wrapper'
-    wrapper.appendChild(textarea)
-
-    const elems = document.createDocumentFragment()
-    this._elems = elems
-    if (onInit) onInit(elems, this.meta)
-    elems.appendChild(wrapper)
-  }
-
-  update (json) {
-    this._textarea.value = this._onUpdate(json, this.meta)
-    return this
-  }
-
-  addTo (parent) {
-    parent.appendChild(this._elems)
-    return this
-  }
-}
-
-const outputs = [
-  new Output((json, { target }) => {
-    return `tellraw ${target.value()} ${json}`
-  }, (wrapper, meta) => {
-    meta.target = new Input('Target: ', '@a')
-      .onChange(updateInput).addTo(wrapper)
-  })
-    .addTo(document.getElementById('output-tellraw')),
-  new Output((json, { target, title, author }) => {
-    return `give ${target.value()} minecraft:written_book{ pages: [${
-      makeInterpretedable(json)
-    }], title: ${
-      JSON.stringify(title.value())
-    }, author: ${
-      JSON.stringify(author.value())
-    } }`
-  }, (wrapper, meta) => {
-    meta.target = new Input('Target: ', '@p')
-      .onChange(updateInput).addTo(wrapper)
-    meta.title = new Input('Title: ', 'Image')
-      .onChange(updateInput).addTo(wrapper)
-    meta.author = new Input('Author: ', '20w17a')
-      .onChange(updateInput).addTo(wrapper)
-  })
-    .addTo(document.getElementById('output-book'))
-]
-
-const fitSelect = document.getElementById('fit')
-const sizeSelect = document.getElementById('size')
-const customSizeWrapper = document.getElementById('custom-size')
-const widthInput = document.getElementById('width')
-const heightInput = document.getElementById('height')
-const sizes = {
-  book: { width: 12, height: 14 },
-  chat: { width: 35, height: 10 },
-  openChat: { width: 35, height: 20 },
-  custom: { width: 1, height: 1 }
-}
-function updateInput () {
-  customSizeWrapper.style.display = sizeSelect.value === 'custom' ? 'block' : null
-  sizes.custom.width = +widthInput.value
-  sizes.custom.height = +heightInput.value
-
-  updateImage({ image, ...sizes[sizeSelect.value], fit: fitSelect.value })
-
-  const json = getRawJSON({ context: c })
-  for (const output of outputs) {
-    output.update(json)
-  }
-}
-for (const input of [fitSelect, sizeSelect, widthInput, heightInput]) {
-  input.addEventListener('change', updateInput)
-}
-updateInput()
-
-function updateImage ({ image, width, height, fit = 'stretch' } = {}) {
-  if (!image) return
-  if (width < 1) width = 1
-  if (height < 1) height = 1
-  if (fit === 'stretch' || width / height === image.width / image.height) {
-    // BUG: Going from contain -> stretch produces a different result?
-    canvas.width = width
-    canvas.height = height
-    c.drawImage(image, 0, 0, canvas.width, canvas.height)
-  } else if (fit === 'cover') {
-    canvas.width = width
-    canvas.height = height
-    if (image.width / image.height > width / height) {
-      // Image is wider
-      const offset = height / image.height * image.width - width
-      c.drawImage(image, -offset / 2, 0, canvas.width + offset, canvas.height)
-    } else {
-      // Image is taller
-      const offset = width / image.width * image.height - height
-      c.drawImage(image, 0, -offset / 2, canvas.width, canvas.height + offset)
-    }
-  } else if (fit === 'contain') {
-    if (image.width / image.height > width / height) {
-      // Image is wider
-      canvas.width = width
-      canvas.height = width / image.width * image.height
-    } else {
-      // Image is taller
-      canvas.height = height
-      canvas.width = height / image.height * image.width
-    }
-    c.drawImage(image, 0, 0, canvas.width, canvas.height)
-  }
-}
-
-function getRawJSON ({ context: c } = {}) {
-  const { width, height, data } = c.getImageData(0, 0, c.canvas.width, c.canvas.height)
-  const components = ['']
-  const rowLength = width * 4
-  for (let i = 0; i < data.length; i += 4) {
-    if (i > 0 && i % rowLength === 0) {
-      components.push('\n')
-    }
-    components.push({
-      text: block,
-      color: '#' + (data[i] << 16 | data[i + 1] << 8 | data[i + 2])
-        .toString(16)
-        .padStart(6, '0')
-    })
-  }
-  const json = JSON.stringify(components)
-  return json
-}
-
-function makeInterpretedable (json) {
-  return `'${json.replace(/\\/g, '\\\\').replace(/'/g, '\\\'')}'`
-}
-
-const imageInput = new AcceptImage()
-  .addFileInputTo(document.getElementById('file-input-wrapper'), 'Select an image (or paste): ')
-  .listen()
-  .onImage(imageFile => {
-    image = imageFile
-    updateInput()
-  })
+      function makeInterpretedable (json) {
+        return `'${json.replace(/\\/g, '\\\\').replace(/'/g, "\\'")}'`
+      }
     </script>
   </body>
 </html>
