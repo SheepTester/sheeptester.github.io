@@ -133,7 +133,9 @@ export function handleImageInput (
     maybeCanvas = null
   }
   const canvas = maybeCanvas ?? document.createElement('canvas')
-  const context = canvas.getContext('2d')
+  const context = canvas.getContext('2d', {
+    willReadFrequently: !!canvas.dataset.willReadFrequently
+  })
   if (!context) {
     throw new TypeError(
       'Failed to get canvas context for the image input preview.'

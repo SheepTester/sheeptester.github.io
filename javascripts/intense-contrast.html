@@ -14,36 +14,19 @@
     <link rel="stylesheet" type="text/css" href="/reform/v1/index.css" />
     <script src="/sheep3.js" charset="utf-8"></script>
     <style>
-      .preview {
-        display: inline-block;
-        position: relative;
+      #previewDiv {
         cursor: crosshair;
-        overflow: hidden;
         touch-action: none;
-      }
-      .no-data .preview {
-        display: none;
+        position: relative;
       }
       #highContrast {
         position: absolute;
-        box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.3);
-      }
-      .temp-warning {
-        margin-left: auto;
-        margin-right: auto;
-        max-width: 800px;
-        border: 1px solid #ef4444;
-        background-color: #ef444422;
-        padding: 20px;
-        border-radius: 10px;
+        inset: 0;
+        border-color: transparent;
       }
     </style>
   </head>
   <body>
-    <div class="temp-warning">
-      As part of the planning stages of a redesign, this page will indefinitely
-      remain nonfunctional. Apologies for any inconvenience.
-    </div>
     <form class="main" role="main">
       <h1>Intense contrast</h1>
       <p>
@@ -70,16 +53,14 @@
           <span class="file-label">Choose, drop, or paste an image</span>
           <span class="file-name">No file selected</span>
         </label>
-        <div
-          class="image-content input-content"
-          id="previewDiv"
-          data-deps="image &highContrast"
-        >
-          <canvas></canvas>
-          <canvas
-            id="highContrast"
-            data-deps="image previewDiv method"
-          ></canvas>
+        <div class="image-content input-content">
+          <div id="previewDiv" data-deps="image &highContrast">
+            <canvas data-will-read-frequently="true"></canvas>
+            <canvas
+              id="highContrast"
+              data-deps="image previewDiv method"
+            ></canvas>
+          </div>
         </div>
       </div>
 
@@ -177,22 +158,24 @@
         }
       }
 
-      function processImage (context, func, imageData, startX, startY) {
-        const data = context.createImageData(
-          context.canvas.width,
-          context.canvas.height
-        )
-        const endX = startX + context.canvas.width
-        const endY = startY + context.canvas.height
+      function processImage (
+        context,
+        func,
+        imageData,
+        { left, top, width, height }
+      ) {
+        const data = context.createImageData(width, height)
+        const endX = left + width
+        const endY = top + height
         let minR = 255,
           maxR = 0,
           minG = 255,
           maxG = 0,
           minB = 255,
           maxB = 0
-        for (let x = startX; x < endX; x++) {
-          for (let y = startY; y < endY; y++) {
-            const index = (y * preview.width + x) * 4
+        for (let x = left; x < endX; x++) {
+          for (let y = top; y < endY; y++) {
+            const index = (y * imageData.width + x) * 4
             if (imageData.data[index] < minR) minR = imageData.data[index]
             if (imageData.data[index] > maxR) maxR = imageData.data[index]
             if (imageData.data[index + 1] < minG)
@@ -205,10 +188,10 @@
               maxB = imageData.data[index + 2]
           }
         }
-        for (let x = 0; x < context.canvas.width; x++) {
-          for (let y = 0; y < context.canvas.height; y++) {
-            const index = ((startY + y) * preview.width + startX + x) * 4
-            const newIndex = (y * context.canvas.width + x) * 4
+        for (let x = 0; x < width; x++) {
+          for (let y = 0; y < height; y++) {
+            const index = ((top + y) * imageData.width + left + x) * 4
+            const newIndex = (y * width + x) * 4
             data.data[newIndex] = func(imageData.data[index], minR, maxR)
             data.data[newIndex + 1] = func(
               imageData.data[index + 1],
@@ -223,7 +206,7 @@
             data.data[newIndex + 3] = 255
           }
         }
-        context.putImageData(data, 0, 0)
+        context.putImageData(data, left, top)
       }
 
       let cleanup
@@ -233,37 +216,48 @@
         let regionSetter
         const handlePointerDown = e => {
           if (!regionSetter && e.which === 1) {
+            const rect = canvas.getBoundingClientRect()
+            const scale = canvas.height / rect.height
             regionSetter = {
               pointer: e.pointerId,
-              initX: e.clientX,
-              initY: e.clientY,
+              initX: Math.floor((e.clientX - rect.left) * scale),
+              initY: Math.floor((e.clientY - rect.top) * scale),
               dragging: false,
-              rect: canvas.getBoundingClientRect()
+              rect,
+              scale
             }
-            regionSetter.scale = canvas.height / regionSetter.rect.height
             div.setPointerCapture(e.pointerId)
           }
         }
         const handlePointerMove = e => {
           if (regionSetter?.pointer === e.pointerId) {
-            if (!regionSetter.dragging) {
-              regionSetter.dragging = true
-            }
-            const minX = Math.max(Math.min(e.clientX, regionSetter.initX), 0)
-            const minY = Math.max(Math.min(e.clientY, regionSetter.initY), 0)
-            callback({
-              left: Math.floor(minX - regionSetter.rect.left),
-              top: Math.floor(minY - regionSetter.rect.top),
-              width:
+            regionSetter.dragging = true
+            const { initX, initY, rect, scale } = regionSetter
+            const mouseX = Math.floor(
+              Math.max(
                 Math.min(
-                  Math.ceil(Math.max(e.clientX, regionSetter.initX) - minX),
+                  e.clientX - regionSetter.rect.left,
                   regionSetter.rect.width
-                ) * regionSetter.scale,
-              height:
+                ),
+                0
+              ) * regionSetter.scale
+            )
+            const mouseY = Math.floor(
+              Math.max(
                 Math.min(
-                  Math.ceil(Math.max(e.clientY, regionSetter.initY) - minY),
+                  e.clientY - regionSetter.rect.top,
                   regionSetter.rect.height
-                ) * regionSetter.scale
+                ),
+                0
+              ) * regionSetter.scale
+            )
+            const minX = Math.min(initX, mouseX)
+            const minY = Math.min(initY, mouseY)
+            callback({
+              left: minX,
+              top: minY,
+              width: Math.max(Math.max(initX, mouseX) - minX, 1),
+              height: Math.max(Math.max(initY, mouseY) - minY, 1)
             })
           }
         }
@@ -286,20 +280,13 @@
       })
 
       on('highContrast', (context, { method, image, previewDiv }) => {
-        context.canvas.style.left = previewDiv.left + 'px'
-        context.canvas.style.top = previewDiv.top + 'px'
-        if (previewDiv.width !== context.canvas.width) {
-          context.canvas.width = previewDiv.width
-        }
-        if (previewDiv.height !== context.canvas.height) {
-          context.canvas.height = previewDiv.height
-        }
+        context.canvas.width = image.canvas.width
+        context.canvas.height = image.canvas.height
         processImage(
           context,
           methods[method],
           image.getImageData(0, 0, image.canvas.width, image.canvas.height),
-          previewDiv.left,
-          previewDiv.top
+          previewDiv
         )
       })
     </script>

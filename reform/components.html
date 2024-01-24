@@ -297,9 +297,9 @@ hello</textarea
 
       on('output', async (context, { image, radio1 }) => {
         console.log(image, radio1)
-        context.canvas.width = image.width
-        context.canvas.height = image.height
-        context.drawImage(image, 0, 0)
+        context.canvas.width = image.canvas.width
+        context.canvas.height = image.canvas.height
+        context.drawImage(image.canvas, 0, 0)
         context.fillStyle = 'magenta'
         context.font = '50px serif'
         context.fillText(radio1, 50, 50)
