@@ -122,7 +122,7 @@
           <input
             type="radio"
             name="fit"
-            value="contain"
+            value="stretch"
             class="hidden-accessible"
           />
           <span class="radio-button"></span>
@@ -139,80 +139,25 @@
       // Discord client
       const DISPLAY_SIZE = 48
 
-      function updatePreview () {
-        if (!image) return
-
-        const { rows, cols, size } = getSize()
-        c.canvas.width = size * cols
-        c.canvas.height = size * rows
-        c.canvas.style.width = (c.canvas.width * DISPLAY_SIZE) / size + 'px'
-        switch (elems.fit.value) {
-          case 'stretch': {
-            c.drawImage(image, 0, 0, c.canvas.width, c.canvas.height)
-            break
-          }
-          case 'contain': {
-            const scale =
-              image.width / image.height > c.canvas.width / c.canvas.height
-                ? // Image is wider, so base on width
-                  c.canvas.width / image.width
-                : // Image is taller, so base on height
-                  c.canvas.height / image.height
-            c.drawImage(
-              image,
-              (c.canvas.width - image.width * scale) / 2,
-              (c.canvas.height - image.height * scale) / 2,
-              image.width * scale,
-              image.height * scale
-            )
-            break
-          }
-          case 'cover': {
-            const scale =
-              image.width / image.height < c.canvas.width / c.canvas.height
-                ? // Image is taller, so base on width
-                  c.canvas.width / image.width
-                : // Image is height, so base on height
-                  c.canvas.height / image.height
-            c.drawImage(
-              image,
-              (c.canvas.width - image.width * scale) / 2,
-              (c.canvas.height - image.height * scale) / 2,
-              image.width * scale,
-              image.height * scale
-            )
-            break
+      function calculateFit ({ width, height }, rows, cols, fit) {
+        if (fit === 'stretch') {
+          return {
+            baseX: 0,
+            baseY: 0,
+            stepX: width / cols,
+            stepY: height / rows
           }
         }
-
-        oc.canvas.width = cols * DISPLAY_SIZE
-        oc.canvas.height = rows * DISPLAY_SIZE
-        oc.strokeStyle = 'white'
-        oc.imageSmoothingEnabled = false
-        oc.beginPath()
-        for (let x = 0; x < cols; x++) {
-          for (let y = 0; y < rows; y++) {
-            oc.moveTo((x + 1) * DISPLAY_SIZE + 0.5, y * DISPLAY_SIZE + 0.5)
-            oc.lineTo(x * DISPLAY_SIZE + 0.5, y * DISPLAY_SIZE + 0.5)
-            oc.lineTo(x * DISPLAY_SIZE + 0.5, (y + 1) * DISPLAY_SIZE + 0.5)
-          }
+        const size = (fit === 'cover' ? Math.min : Math.max)(
+          width / cols,
+          height / rows
+        )
+        return {
+          baseX: (width - size * cols) / 2,
+          baseY: (height - size * rows) / 2,
+          stepX: size,
+          stepY: size
         }
-        oc.stroke()
-        oc.strokeStyle = 'black'
-        oc.beginPath()
-        for (let x = 0; x < cols; x++) {
-          for (let y = 0; y < rows; y++) {
-            oc.moveTo((x + 1) * DISPLAY_SIZE - 0.5, y * DISPLAY_SIZE - 0.5)
-            oc.lineTo(
-              (x + 1) * DISPLAY_SIZE - 0.5,
-              (y + 1) * DISPLAY_SIZE - 0.5
-            )
-            oc.lineTo(x * DISPLAY_SIZE - 0.5, (y + 1) * DISPLAY_SIZE - 0.5)
-          }
-        }
-        oc.stroke()
-
-        elems.chop.disabled = false
       }
 
       let urls = []
@@ -230,6 +175,8 @@
 
         urls.forEach(URL.revokeObjectURL)
         urls = []
+
+        const tile = calculateFit(preview.canvas, rows, cols, fit)
         const canvas = document.createElement('canvas')
         canvas.width = size
         canvas.height = size
@@ -240,10 +187,10 @@
             c.clearRect(0, 0, size, size)
             c.drawImage(
               preview.canvas,
-              x * size,
-              y * size,
-              size,
-              size,
+              tile.baseX + x * tile.stepX,
+              tile.baseY + y * tile.stepY,
+              tile.stepX,
+              tile.stepY,
               0,
               0,
               size,
