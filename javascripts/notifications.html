@@ -1,58 +1,245 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <title>notifications</title>
     <meta name="description" content="notifs" />
+    <meta name="theme-color" content="#4fa1a7" />
 
-    <link rel="stylesheet" type="text/css" href="/sheep3.css">
+    <link rel="stylesheet" type="text/css" href="/sheep3.css" />
+    <link rel="stylesheet" type="text/css" href="/reform/v1/index.css" />
     <script src="/sheep3.js" charset="utf-8"></script>
-
-    <style>
-      label {
-        font-weight: bold;
-      }
-    </style>
   </head>
   <body>
-    <p><a href="https://developer.mozilla.org/en-US/docs/Web/API/Notification/Notification">descriptions from MDN</a></p>
-    <form method="get">
-      <p><label>title <input type="text" name="title"></label> Defines a title for the notification, which is shown at the top of the notification window.</p>
-      <p><label>dir <select name="dir">
-        <option value="ltr">ltr</option>
-        <option value="rtl">rtl</option>
-        <option value="auto" selected>auto</option>
-      </select></label> The direction in which to display the notification. It defaults to <code>auto</code>, which just adopts the browser's language setting behavior, but you can override that behaviour by setting values of <code>ltr</code> and <code>rtl</code> (although most browsers seem to ignore these settings.)</p>
-  <p><label>lang <input type="text" name="lang"></label> The notification's language, as specified using a <a href="https://developer.mozilla.org/en-US/docs/Web/API/DOMString"><code>DOMString</code></a> representing a <a href="http://www.rfc-editor.org/rfc/bcp/bcp47.txt">BCP 47 language tag</a>. See the Sitepoint <a href="http://www.sitepoint.com/web-foundations/iso-2-letter-language-codes/">ISO 2 letter language codes</a> page for a simple reference.</p>
-      <p><label>badge <input type="url" name="badge"></label> A <a href="https://developer.mozilla.org/en-US/docs/Web/API/USVString"><code>USVString</code></a> containing the URL of the image used to represent the notification when there isn't enough space to display the notification itself.</p>
-      <p><label>body <input type="text" name="body"></label> A <a href="https://developer.mozilla.org/en-US/docs/Web/API/DOMString"><code>DOMString</code></a> representing the body text of the notification, which is displayed below the title.</p>
-      <p><label>tag <input type="text" name="tag"></label> A <a href="https://developer.mozilla.org/en-US/docs/Web/API/DOMString"><code>DOMString</code></a> representing an identifying tag for the notification.</p>
-      <p><label>icon <input type="url" name="icon"></label> A <a href="https://developer.mozilla.org/en-US/docs/Web/API/USVString"><code>USVString</code></a> containing the URL of an icon to be displayed in the notification.</p>
-      <p><label>image <input type="url" name="image"></label> a <a href="https://developer.mozilla.org/en-US/docs/Web/API/USVString"><code>USVString</code></a> containing the URL of an image to be displayed in the notification.</p>
-      <p><label>renotify <input type="checkbox" name="renotify"></label> A <a href="https://developer.mozilla.org/en-US/docs/Web/API/Boolean"><code>Boolean</code></a> specifying whether the user should be notified after a new notification replaces an old one. The default is <code>false</code>, which means they won't be notified.</p>
-      <p><label>requireInteraction <input type="checkbox" name="requireInteraction"></label> Indicates that a notification should remain active until the user clicks or dismisses it, rather than closing automatically. The default value is <code>false</code>.</p>
-      <p><label>silent <input type="checkbox" name="silent"></label> A <a href="https://developer.mozilla.org/en-US/docs/Web/API/Boolean"><code>Boolean</code></a> specifying whether the notification is silent (no sounds or vibrations issued), regardless of the device settings. The default is <code>false</code>, which means it won't be silent.</p>
-      <input type="submit" value="spawn">
+    <form class="main" role="main" id="spawn" action="javascript:">
+      <h1>Notification creator</h1>
+
+      <label class="field-label">
+        <span class="label-primary">Title (<code>title</code>)</span>
+        <span class="label-secondary">
+          Defines a title for the notification, which is shown at the top of the
+          notification window.
+        </span>
+        <input type="text" name="title" />
+      </label>
+
+      <fieldset class="radio-set">
+        <legend class="label-primary">Direction (<code>dir</code>)</legend>
+        <p class="label-secondary">
+          The direction in which to display the notification. It defaults to
+          <code>auto</code>, which just adopts the browser's language setting
+          behavior, but you can override that behaviour by setting values of
+          <code>ltr</code> and <code>rtl</code> (although most browsers seem to
+          ignore these settings.)
+        </p>
+        <label class="radio-label">
+          <input
+            type="radio"
+            name="dir"
+            value="auto"
+            class="hidden-accessible"
+            checked
+          />
+          <span class="radio-button"></span>
+          <span class="label-primary"><code>auto</code></span>
+          <span class="label-secondary"
+            >Let device determine automatically. (default)</span
+          >
+        </label>
+        <label class="radio-label">
+          <input
+            type="radio"
+            name="dir"
+            value="ltr"
+            class="hidden-accessible"
+          />
+          <span class="radio-button"></span>
+          <span class="label-primary"><code>ltr</code></span>
+          <span class="label-secondary">Left-to-right.</span>
+        </label>
+        <label class="radio-label">
+          <input
+            type="radio"
+            name="dir"
+            value="rtl"
+            class="hidden-accessible"
+          />
+          <span class="radio-button"></span>
+          <span class="label-primary"><code>rtl</code></span>
+          <span class="label-secondary">Right-to-left.</span>
+        </label>
+      </fieldset>
+
+      <label class="field-label">
+        <span class="label-primary">Language (<code>lang</code>)</span>
+        <span class="label-secondary">
+          The notification's language, as specified using a
+          <code>DOMString</code> representing a BCP 47 language tag.
+        </span>
+        <input type="text" name="lang" />
+      </label>
+      <p>
+        Learn more about
+        <a class="link" href="http://www.rfc-editor.org/rfc/bcp/bcp47.txt"
+          >BCP 47 language tags</a
+        >. See the Sitepoint
+        <a
+          class="link"
+          href="http://www.sitepoint.com/web-foundations/iso-2-letter-language-codes/"
+          >ISO 2 letter language codes</a
+        >
+        page for a simple reference.
+      </p>
+
+      <label class="field-label">
+        <span class="label-primary">Badge image URL (<code>badge</code>)</span>
+        <span class="label-secondary">
+          A <code>USVString</code> containing the URL of the image used to
+          represent the notification when there isn't enough space to display
+          the notification itself.
+        </span>
+        <input type="url" name="badge" />
+      </label>
+
+      <label class="field-label">
+        <span class="label-primary">Body text (<code>body</code>)</span>
+        <span class="label-secondary">
+          A <code>DOMString</code> representing the body text of the
+          notification, which is displayed below the title.
+        </span>
+        <input type="text" name="body" />
+      </label>
+
+      <label class="field-label">
+        <span class="label-primary">Identifying tag (<code>tag</code>)</span>
+        <span class="label-secondary">
+          A <code>DOMString</code> representing an identifying tag for the
+          notification.
+        </span>
+        <input type="text" name="tag" />
+      </label>
+
+      <label class="field-label">
+        <span class="label-primary">Icon image URL (<code>icon</code>)</span>
+        <span class="label-secondary">
+          A <code>USVString</code> containing the URL of an icon to be displayed
+          in the notification.
+        </span>
+        <input type="url" name="icon" />
+      </label>
+
+      <label class="field-label">
+        <span class="label-primary">Image URL (<code>image</code>)</span>
+        <span class="label-secondary">
+          A <code>USVString</code> containing the URL of an image to be
+          displayed in the notification.
+        </span>
+        <input type="url" name="image" />
+      </label>
+
+      <label class="radio-label">
+        <input type="checkbox" name="renotify" class="hidden-accessible" />
+        <span class="radio-button"></span>
+        <span class="label-primary">Notify again? (<code>renotify</code>)</span>
+        <span class="label-secondary">
+          A <code>Boolean</code> specifying whether the user should be notified
+          after a new notification replaces an old one. The default is
+          <code>false</code>, which means they won't be notified.
+        </span>
+      </label>
+
+      <label class="radio-label">
+        <input
+          type="checkbox"
+          name="requireInteraction"
+          class="hidden-accessible"
+        />
+        <span class="radio-button"></span>
+        <span class="label-primary">
+          Do not close automatically. (<code>requireInteraction</code>)
+        </span>
+        <span class="label-secondary">
+          A <code>Boolean</code> specifying whether the user should be notified
+          after a new notification replaces an old one. The default is
+          <code>false</code>, which means they won't be notified.
+        </span>
+      </label>
+
+      <label class="radio-label">
+        <input type="checkbox" name="silent" class="hidden-accessible" />
+        <span class="radio-button"></span>
+        <span class="label-primary">
+          Do not close automatically. (<code>silent</code>)
+        </span>
+        <span class="label-secondary">
+          A <code>Boolean</code> specifying whether the notification is silent
+          (no sounds or vibrations issued), regardless of the device settings.
+          The default is <code>false</code>, which means it won't be silent.
+        </span>
+      </label>
+
+      <div class="button-row">
+        <button type="submit" class="button primary-btn">
+          Spawn notification
+        </button>
+      </div>
+      <p>
+        Descriptions of each field were taken from
+        <a
+          class="link"
+          href="https://developer.mozilla.org/en-US/docs/Web/API/Notification/Notification"
+          >MDN</a
+        >. They used to have documentation for the
+        <a
+          class="link"
+          href="https://developer.mozilla.org/en-US/docs/Web/API/DOMString"
+          ><code>DOMString</code></a
+        >,
+        <a
+          class="link"
+          href="https://developer.mozilla.org/en-US/docs/Web/API/USVString"
+          ><code>USVString</code></a
+        >,and
+        <a
+          class="link"
+          href="https://developer.mozilla.org/en-US/docs/Web/API/Boolean"
+          ><code>Boolean</code></a
+        >
+        types, but it seems some of them have since been removed, probably
+        because they were confusing.
+      </p>
     </form>
     <script type="module">
-      const params = [...new URL(window.location).searchParams.entries()]
+      import { on } from '/reform/v1/index.js'
 
-      if (params.length) {
-        const { title, ...options } = Object.fromEntries(params)
-        async function main () {
+      let notificationOptions
+      const spec = {
+        name: 'options',
+        deps: [
+          'title',
+          'dir',
+          'lang',
+          'badge',
+          'body',
+          'tag',
+          'icon',
+          'image',
+          'renotify',
+          'requireInteraction',
+          'silent'
+        ]
+      }
+      on(spec, (_, options) => (notificationOptions = options))
+
+      on('spawn', form => {
+        form.addEventListener('submit', async () => {
+          const { title, ...options } = notificationOptions
           await Notification.requestPermission()
           console.log(new Notification(title, options))
-        }
-        main()
-
-        for (const [name, value] of params) {
-          const input = document.querySelector(`[name=${JSON.stringify(name)}]`)
-          input.value = value
-          input.checked = value
-        }
-      }
+        })
+      })
     </script>
   </body>
 </html>

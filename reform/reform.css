@@ -17,8 +17,7 @@
   --shadow-soft: rgba(0, 0, 0, 0.1);
   --shadow-hard: rgba(0, 0, 0, 0.2);
   --primary-btn-bg: linear-gradient(135deg, var(--grad1), var(--grad2));
-  --primary-btn-blur-enabled-content: none;
-  --primary-btn-blur-enabled-filter: none;
+  --primary-btn-blur-enabled: none;
   --outline-btn-bg: transparent;
   --outline-btn-bg-hover: rgba(0, 0, 0, 0.2);
   --outline-btn-bg-active: rgba(0, 0, 0, 0.4);
@@ -64,8 +63,7 @@
     --shadow-hard: transparent;
     --primary-btn-bg: linear-gradient(var(--bg), var(--bg)),
       linear-gradient(135deg, var(--grad1), var(--grad2));
-    --primary-btn-blur-enabled-content: '';
-    --primary-btn-blur-enabled-filter: blur(10px);
+    --primary-btn-blur-enabled: '';
     --outline-btn-bg: rgba(255, 255, 255, 0.05);
     --outline-btn-bg-hover: rgba(255, 255, 255, 0.1);
     --outline-btn-bg-active: rgba(255, 255, 255, 0.15);
@@ -707,14 +705,14 @@ label.file:has(:focus-visible) {
   position: relative;
 
   &::before {
-    content: var(--primary-btn-blur-enabled-content);
+    content: var(--primary-btn-blur-enabled);
     display: block;
     position: absolute;
     z-index: -1;
     inset: -1px;
     border-radius: 10px;
     background-image: linear-gradient(135deg, var(--grad1), var(--grad2));
-    filter: var(--primary-btn-blur-enabled-filter);
+    filter: blur(10px);
     opacity: 0.3;
     transition: opacity 0.2s;
   }

@@ -96,7 +96,6 @@ Other components:
 - Image output
   - https://sheeptester.github.io/javascripts/pip-image.html Image input with video output. Action button.
   - https://sheeptester.github.io/javascripts/grapher.html Single-line input, text, error, and image output.
-- https://sheeptester.github.io/javascripts/notifications.html Many inputs with detailed labels linking to documentation. Action button.
 - https://sheeptester.github.io/javascripts/cryptography.html Various unrelated input -> output text fields. Caesar cipher table.
 - https://sheeptester.github.io/javascripts/image-translucentifier.html Input output image, color inputs, color picker. Shows input and output side-by-side.
 - https://sheeptester.github.io/hello-world/bones-and-muscles.html Action button.
@@ -120,7 +119,6 @@ Other components:
 - https://sheeptester.github.io/sentence/mspllesier.html Action button edits the input textarea. I think overwriting the user input is a bad idea, so we should change this to an input -> output kind of thing.
 - https://sheeptester.github.io/sentence/ Action button with output text with large font.
 - https://sheeptester.github.io/hello-world/pi.html A table.
-- https://sheeptester.github.io/javascripts/delegalifier.html Input -> output textarea.
 - https://sheeptester.github.io/javascripts/video/text.html Input video, output video and downloads file.
 - https://sheeptester.github.io/life/scrolltest.html Three output numbers.
 - https://sheeptester.github.io/javascripts/voice-control.html Dropdown and action button.
@@ -466,3 +464,8 @@ Converted:
 - https://sheeptester.github.io/words-go-here/misc/schedulemaker.html: file, options -> image
   - error log
   - svg resizing is weird
+- https://sheeptester.github.io/javascripts/notifications.html
+  - textarea for `body`
+  - lost ability to save options in URL
+- https://sheeptester.github.io/javascripts/delegalifier.html
+  - lost ability to sync resize/scroll
