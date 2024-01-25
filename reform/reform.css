@@ -14,6 +14,14 @@
   --link-transparent: #009da844;
   --focus: #029bfd;
   --focus-transparent: #029bfd66;
+  --shadow-soft: rgba(0, 0, 0, 0.1);
+  --shadow-hard: rgba(0, 0, 0, 0.2);
+  --primary-btn-bg: linear-gradient(135deg, var(--grad1), var(--grad2));
+  --primary-btn-blur-enabled-content: none;
+  --primary-btn-blur-enabled-filter: none;
+  --outline-btn-bg: transparent;
+  --outline-btn-bg-hover: rgba(0, 0, 0, 0.2);
+  --outline-btn-bg-active: rgba(0, 0, 0, 0.4);
   /* https://contrast-triangle.com/?linkColor=%23fa002e&textColor=%23333333 */
   --error: #fa002e;
   /* Icons from https://github.com/feathericons/feather/ converted to an inline
@@ -52,6 +60,15 @@
     --link-transparent: #00e0f044;
     --focus: #029bfd;
     --focus-transparent: #029bfd66;
+    --shadow-soft: transparent;
+    --shadow-hard: transparent;
+    --primary-btn-bg: linear-gradient(var(--bg), var(--bg)),
+      linear-gradient(135deg, var(--grad1), var(--grad2));
+    --primary-btn-blur-enabled-content: '';
+    --primary-btn-blur-enabled-filter: blur(10px);
+    --outline-btn-bg: rgba(255, 255, 255, 0.05);
+    --outline-btn-bg-hover: rgba(255, 255, 255, 0.1);
+    --outline-btn-bg-active: rgba(255, 255, 255, 0.15);
     /* https://contrast-triangle.com/?linkColor=%23fa002e&textColor=%23333333 */
     --error: #fe6c87;
 
@@ -191,10 +208,14 @@ li::marker {
   & > .radio-label,
   & > .field-label,
   & > .cols,
-  & > .col-io {
+  & > .col-io,
+  & > .button-row {
     margin-left: auto;
     margin-right: auto;
     max-width: 800px;
+  }
+  & > .radio-label {
+    margin-bottom: 10px;
   }
 }
 .label-primary,
@@ -652,5 +673,80 @@ label.file:has(:focus-visible) {
   &.drag-over {
     border-color: var(--link);
     background-color: var(--link-transparent);
+  }
+}
+
+.button-row {
+  display: flex;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+  gap: 10px;
+}
+.button {
+  border-radius: 10px;
+  height: 40px;
+  padding: 0 15px;
+  border: 1px solid transparent;
+  transition: border-color 0.2s, box-shadow 0.2s;
+
+  &:focus {
+    outline: none;
+  }
+  &:focus-visible {
+    border-color: var(--focus);
+    box-shadow: 0 0 0 3px var(--focus-transparent);
+  }
+}
+.primary-btn {
+  background-image: var(--primary-btn-bg);
+  background-origin: border-box;
+  background-clip: padding-box, border-box;
+  color: white;
+  text-shadow: 0 1px 5px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 2px 5px var(--shadow-soft);
+  position: relative;
+
+  &::before {
+    content: var(--primary-btn-blur-enabled-content);
+    display: block;
+    position: absolute;
+    z-index: -1;
+    inset: -1px;
+    border-radius: 10px;
+    background-image: linear-gradient(135deg, var(--grad1), var(--grad2));
+    filter: var(--primary-btn-blur-enabled-filter);
+    opacity: 0.3;
+    transition: opacity 0.2s;
+  }
+
+  &:hover {
+    box-shadow: 0 3px 10px var(--shadow-hard);
+
+    &::before {
+      opacity: 0.5;
+    }
+  }
+  &:active {
+    box-shadow: 0 0 0 var(--shadow-hard);
+    &::before {
+      opacity: 0.1;
+    }
+  }
+}
+.outline-btn {
+  border-color: var(--line);
+  background-color: var(--outline-btn-bg);
+  &:hover {
+    background-color: var(--outline-btn-bg-hover);
+  }
+  &:active {
+    background-color: var(--outline-btn-bg-active);
+  }
+}
+.text-btn {
+  padding: 0 5px;
+  &:hover {
+    text-decoration: underline;
+    text-decoration-color: var(--line);
   }
 }
