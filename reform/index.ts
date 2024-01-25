@@ -2,7 +2,8 @@ import './reform.css'
 import {
   handleImageInput,
   handleSingleFileInput,
-  handleTextInput
+  handleTextInput,
+  handleVideoInput
 } from './src/inputs'
 import { Output } from './src/output'
 import { Source } from './src/source'
@@ -83,7 +84,13 @@ for (const input of document.getElementsByClassName('reform:image-input')) {
   sources[input.name] ??= new Source()
   handleImageInput(sources[input.name], input)
 }
-
+for (const input of document.getElementsByClassName('reform:video-input')) {
+  if (!(input instanceof HTMLInputElement)) {
+    continue
+  }
+  sources[input.name] ??= new Source()
+  handleVideoInput(sources[input.name], input)
+}
 for (const input of document.getElementsByClassName('reform:text-input')) {
   if (!(input instanceof HTMLInputElement)) {
     continue
@@ -91,7 +98,6 @@ for (const input of document.getElementsByClassName('reform:text-input')) {
   sources[input.name] ??= new Source()
   handleTextInput(sources[input.name], input)
 }
-
 for (const input of document.getElementsByClassName('reform:file-input')) {
   if (!(input instanceof HTMLInputElement)) {
     continue

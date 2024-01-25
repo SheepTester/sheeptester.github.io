@@ -119,7 +119,6 @@ Other components:
 - https://sheeptester.github.io/sentence/mspllesier.html Action button edits the input textarea. I think overwriting the user input is a bad idea, so we should change this to an input -> output kind of thing.
 - https://sheeptester.github.io/sentence/ Action button with output text with large font.
 - https://sheeptester.github.io/hello-world/pi.html A table.
-- https://sheeptester.github.io/javascripts/video/text.html Input video, output video and downloads file.
 - https://sheeptester.github.io/life/scrolltest.html Three output numbers.
 - https://sheeptester.github.io/javascripts/voice-control.html Dropdown and action button.
 - https://sheeptester.github.io/javascripts/chopper.html Image input, action button. Output is a grid of clickable images to download and a button to download all as zip.
@@ -469,3 +468,5 @@ Converted:
   - lost ability to save options in URL
 - https://sheeptester.github.io/javascripts/delegalifier.html
   - lost ability to sync resize/scroll
+- https://sheeptester.github.io/javascripts/video/text.html
+  - should show that it's loading

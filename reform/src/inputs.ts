@@ -200,6 +200,53 @@ export function handleImageInput (
   })
 }
 
+export function handleVideoInput (
+  source: Source<HTMLVideoElement>,
+  input?: Element | null
+): void {
+  if (input && !(input instanceof HTMLInputElement)) {
+    console.warn(input, 'is not an <input> element')
+    input = null
+  } else if (input) {
+    input.dataset.ignore = 'true'
+  }
+  const dropTarget = input?.closest('.reform\\:io')
+  let maybeVideo = dropTarget?.querySelector('.input-content video')
+  if (maybeVideo && !(maybeVideo instanceof HTMLVideoElement)) {
+    console.warn(maybeVideo, 'is not a <video> element')
+    maybeVideo = null
+  }
+  const video = maybeVideo ?? document.createElement('video')
+  let url: string | undefined
+  handleFileInput({
+    fileName: input?.parentElement?.querySelector('.file-name'),
+    input,
+    dropTarget: dropTarget instanceof HTMLElement ? dropTarget : undefined,
+    pasteTarget: input?.classList.contains('reform:paste-target'),
+    preferredType: 'video/',
+    onFile: async file => {
+      if (typeof file === 'string') {
+        return false
+      }
+      if (url) {
+        URL.revokeObjectURL(url)
+      }
+      // Do not revoke URL or rest of video won't load
+      url = URL.createObjectURL(file)
+      video.src = url
+      video.dataset.name = fileName(file.name)
+      await new Promise<void>((resolve, reject) => {
+        video.onloadeddata = () => {
+          if (video.readyState < 2) return
+          resolve()
+        }
+        video.onerror = reject
+      })
+      source.handleValue(video)
+    }
+  })
+}
+
 export function handleTextInput (
   source: Source<string>,
   input?: Element | null

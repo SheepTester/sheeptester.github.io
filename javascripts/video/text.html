@@ -1,96 +1,137 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
     <title>Text.</title>
-    <meta name="description" content="Adds 'TEXT' to a video."/>
-    <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <link rel="stylesheet" type="text/css" href="../../sheep3.css">
-    <link href="https://fonts.googleapis.com/css?family=Oswald&display=swap" rel="stylesheet">
-    <script src="../../sheep3.js" charset="utf-8"></script>
+    <meta name="description" content="Adds 'TEXT' to a video." />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#4fa1a7" />
+
+    <link
+      href="https://fonts.googleapis.com/css?family=Oswald&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" type="text/css" href="/sheep3.css" />
+    <link rel="stylesheet" type="text/css" href="/reform/v1/index.css" />
+    <script src="/sheep3.js" charset="utf-8"></script>
+
     <style>
-      video, canvas {
-        max-width: 100%;
+      #render {
+        display: none;
       }
     </style>
   </head>
   <body>
-    <p><label>Video: <input type="file" id="video" accept="video/*"></label></p>
-    <p>wait 10 seconds as it processes</p>
-    <script>
-const START_TIME = 10; // s
-const LENGTH = 10000; // ms
+    <form class="main" role="main">
+      <h1>Add text to video</h1>
+      <p>wait 10 seconds as it processes</p>
 
-const videoInput = document.getElementById('video');
-videoInput.addEventListener('change', e => {
-  if (videoInput.files[0]) {
-    const videoElem = document.createElement('video');
-    videoElem.src = URL.createObjectURL(videoInput.files[0]);
-    videoElem.addEventListener('loadeddata', e => {
-      if (videoElem.readyState < 2) return;
-      const canvas = document.createElement('canvas');
-      const c = canvas.getContext('2d');
-      canvas.width = videoElem.videoWidth;
-      canvas.height = videoElem.videoHeight;
-      c.font = `100px 'Oswald', Impact, sans-serif`;
-      c.textAlign = 'center';
-      c.textBaseline = 'middle';
-      c.fillStyle = 'blue';
-      const stream = canvas.captureStream();
+      <div class="two-col-io reform:io">
+        <label class="input-controls file">
+          <input
+            type="file"
+            name="video"
+            accept="video/*"
+            class="hidden-accessible reform:video-input reform:paste-target"
+          />
+          <span class="icon icon-upload"></span>
+          <span class="file-label">Choose, drop, or paste a video</span>
+          <span class="file-name">No file selected</span>
+        </label>
+        <div class="image-content input-content"><video></video></div>
+        <div class="image-content output-content">
+          <video id="output" data-deps="render" controls></video>
+        </div>
+        <div class="output-controls">
+          <a class="file download">
+            <span class="icon icon-download"></span>
+            <span class="file-label">Download</span>
+            <span class="file-name">No file available</span>
+          </a>
+          <button
+            type="button"
+            class="icon icon-share"
+            data-output="output"
+            aria-label="Share"
+          ></button>
+        </div>
+      </div>
 
-      // https://stackoverflow.com/a/39302994
-      const audioContext = new AudioContext();
-      const dest = audioContext.createMediaStreamDestination();
-      const source = audioContext.createMediaElementSource(videoElem);
-      source.connect(dest);
-      stream.addTrack(dest.stream.getAudioTracks()[0]);
+      <canvas id="render" data-deps="video"></canvas>
+    </form>
 
-      const recorder = new MediaRecorder(stream, {
-        mimeType: 'video/webm;codecs=h264',
-        videoBitsPerSecond: 8000000
-      });
-      recorder.addEventListener('dataavailable', e => {
-        const newVideo = document.createElement('video');
-        const url = URL.createObjectURL(e.data);
-        newVideo.src = url;
-        newVideo.controls = true;
-        document.body.appendChild(newVideo);
-        newVideo.play();
-        window.download = function download() {
-          const saveLink = document.createElement('a');
-          saveLink.href = url;
-          saveLink.download = 'wigglesplat.webm';
-          document.body.appendChild(saveLink);
-          saveLink.click();
-          document.body.removeChild(saveLink);
-        };
-        console.log('window.download available for execution');
-      });
-      videoElem.addEventListener('timeupdate', e => {
-        const start = Date.now();
-        function draw() {
-          c.drawImage(videoElem, 0, 0, canvas.width, canvas.height);
-          c.save();
-          c.translate(canvas.width / 2 + Math.sin(Date.now() / 1000) * 500, canvas.height / 2);
-          c.rotate(Math.sin(Date.now() / 90) * Math.PI / 3);
-          c.fillText('TEXT', 0, 0);
-          c.restore();
-          if (Date.now() - start < LENGTH) {
-            window.requestAnimationFrame(draw);
-          } else {
-            recorder.stop();
-            videoElem.pause();
-          }
+    <script type="module">
+      import { on } from '/reform/v1/index.js'
+
+      const START_TIME = 10 // s
+      const LENGTH = 10000 // ms
+
+      on('render', (c, { video: videoElem, callback }) => {
+        c.canvas.width = videoElem.videoWidth
+        c.canvas.height = videoElem.videoHeight
+        c.font = `100px 'Oswald', Impact, sans-serif`
+        c.textAlign = 'center'
+        c.textBaseline = 'middle'
+        c.fillStyle = 'blue'
+        const stream = c.canvas.captureStream()
+
+        // https://stackoverflow.com/a/39302994
+        const audioContext = new AudioContext()
+        const dest = audioContext.createMediaStreamDestination()
+        const source = audioContext.createMediaElementSource(videoElem)
+        source.connect(dest)
+        stream.addTrack(dest.stream.getAudioTracks()[0])
+
+        const recorder = new MediaRecorder(stream, {
+          mimeType: 'video/webm;codecs=h264',
+          videoBitsPerSecond: 8000000
+        })
+        recorder.addEventListener('dataavailable', e => {
+          callback(
+            new File([e.data], 'wigglesplat.webm', { type: 'video/webm' })
+          )
+        })
+        videoElem.addEventListener(
+          'timeupdate',
+          e => {
+            const start = Date.now()
+            function draw () {
+              c.drawImage(videoElem, 0, 0, c.canvas.width, c.canvas.height)
+              c.save()
+              c.translate(
+                c.canvas.width / 2 + Math.sin(Date.now() / 1000) * 500,
+                c.canvas.height / 2
+              )
+              c.rotate((Math.sin(Date.now() / 90) * Math.PI) / 3)
+              c.fillText('TEXT', 0, 0)
+              c.restore()
+              if (Date.now() - start < LENGTH) {
+                window.requestAnimationFrame(draw)
+              } else {
+                recorder.stop()
+                videoElem.pause()
+              }
+            }
+            draw()
+            recorder.start()
+            videoElem.play()
+          },
+          { once: true }
+        )
+        videoElem.currentTime = START_TIME
+      })
+
+      let url
+      on('output', (video, { render: file }) => {
+        if (url) {
+          URL.revokeObjectURL(url)
         }
-        draw();
-        recorder.start();
-        videoElem.play();
-      }, {once: true});
-      videoElem.currentTime = START_TIME;
-    });
-  }
-});
-/*
+        url = URL.createObjectURL(file)
+        video.src = url
+        video.play()
+        return file
+      })
+      /*
 notes: `timeupdate` event exists for video
 */
     </script>

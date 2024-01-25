@@ -656,7 +656,8 @@ label.file:has(:focus-visible) {
 
   & canvas,
   & img,
-  & svg {
+  & svg,
+  & video {
     border: 1px solid var(--line);
     border-radius: 10px;
     max-width: 100%;
