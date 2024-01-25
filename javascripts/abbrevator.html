@@ -6,114 +6,110 @@
 
     <title>Abbrev.ator</title>
     <meta name="description" content="Abbrevs. words for you" />
+    <meta name="theme-color" content="#4fa1a7" />
 
-    <link rel="stylesheet" type="text/css" href="/sheep3.css">
+    <link rel="stylesheet" type="text/css" href="/sheep3.css" />
+    <link rel="stylesheet" type="text/css" href="/reform/v1/index.css" />
     <script src="/sheep3.js" charset="utf-8"></script>
-
-    <script src="https://unpkg.com/react@17/umd/react.production.min.js" crossorigin></script>
-    <script src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js" crossorigin></script>
-
-    <style>
-      html,
-      body {
-        height: 100%;
-      }
-      body {
-        margin: 0;
-        display: flex;
-      }
-      textarea {
-        -webkit-appearance: none;
-        border: none;
-        background: none;
-        font: inherit;
-        color: inherit;
-      }
-
-      #root {
-        flex: auto;
-        display: flex;
-      }
-      .text {
-        flex: 1 0 0;
-        resize: none;
-        padding: 20px;
-      }
-    </style>
   </head>
   <body>
-    <div id="root"></div>
-    <script>
-const { createElement: e, useState } = React
+    <form class="main" role="main">
+      <h1>Abbreviator</h1>
+      <p>
+        This generates unique abbreviations for every word by chopping off as
+        many letters as possible without confusing two words' abbreviations.
+      </p>
+      <div class="two-col-io reform:io">
+        <label class="input-controls file">
+          <input
+            type="file"
+            name="text"
+            class="hidden-accessible reform:text-input"
+          />
+          <span class="icon icon-upload"></span>
+          <span class="file-label">
+            Choose or drop a text file or type below
+          </span>
+          <span class="file-name">No file selected</span>
+        </label>
+        <textarea name="text" aria-label="Original text" class="input-content">
+Cong you bing, also known as scallion pancake or "green onion pancake", is a Chinese savory, unleavened flatbread folded with oil and minced scallions (green onions). Unlike Western pancakes, it is made from dough instead of batter. It is pan-fried, which gives it crisp edges and a chewy texture. Many layers make up the interior, contributing to its chewy texture. Variations exist on the basic method of preparation that incorporate other flavors and fillings.
 
-const REMOVE = Symbol('remove')
+Scallion pancakes are served both as a street food item and as a restaurant dish. They are also sold commercially, either fresh or frozen in plastic packages (often in Asian supermarkets).</textarea
+        >
+        <textarea
+          class="output-content"
+          id="output"
+          data-deps="text"
+          aria-label="Abbreviated text"
+          readonly
+        ></textarea>
+        <div class="output-controls">
+          <a class="file download">
+            <span class="icon icon-download"></span>
+            <span class="file-label">Download</span>
+            <span class="file-name">No file available</span>
+          </a>
+          <button
+            type="button"
+            class="icon icon-copy"
+            data-output="output"
+            aria-label="Copy"
+          ></button>
+          <button
+            type="button"
+            class="icon icon-share"
+            data-output="output"
+            aria-label="Share"
+          ></button>
+        </div>
+      </div>
+    </form>
+    <script type="module">
+      import { on } from '/reform/v1/index.js'
 
-const replacements = {
-  the: REMOVE,
-  and: '&'
-}
+      const REMOVE = Symbol('remove')
 
-function abbreviate (text) {
-  const match = text.match(/[\w'’]+/g) || []
-  const words = new Map()
-  for (const word of match) {
-    const normalized = word.toLowerCase().replace(/['’]/g, '')
-    if (!normalized || /^\d+$/.test(normalized)) continue
-    words.set(normalized, (words.get(normalized) || 0) + 1)
-  }
-  const sorted = [...words]
-    .sort((a, b) => b[1] - a[1])
-    .map(entry => entry[0])
-  const abbreviations = new Map(Object.entries(replacements))
-  words:
-  for (const word of sorted) {
-    if (abbreviations.has(word)) continue
-    for (let i = 2; i < sorted.length; i++) {
-      const portion = word.slice(0, i)
-      if (!abbreviations.has(portion)) {
-        abbreviations.set(word, portion)
-        continue words
+      const replacements = {
+        the: REMOVE,
+        and: '&'
       }
-    }
-  }
-  return text.replace(/[\w'’]+/g, word => {
-    const normalized = word.toLowerCase().replace(/['’]/g, '')
-    const abbrev = abbreviations.get(normalized)
-    return abbrev ? (abbrev === REMOVE ? '' : abbrev) : word
-  })
-}
 
-function App () {
-  const [text, setText] = useState('')
-
-  return e(
-    React.Fragment,
-    null,
-    e(
-      'textarea',
-      {
-        className: 'text',
-        placeholder: 'Put your text here',
-        value: text,
-        autoFocus: true,
-        onChange (e) {
-          setText(e.target.value)
+      function abbreviate (text) {
+        const match = text.match(/[\w'’]+/g) || []
+        const words = new Map()
+        for (const word of match) {
+          const normalized = word.toLowerCase().replace(/['’]/g, '')
+          if (!normalized || /^\d+$/.test(normalized)) continue
+          words.set(normalized, (words.get(normalized) || 0) + 1)
         }
+        const sorted = [...words]
+          .sort((a, b) => b[1] - a[1])
+          .map(entry => entry[0])
+        const abbreviations = new Map(Object.entries(replacements))
+        words: for (const word of sorted) {
+          if (abbreviations.has(word)) continue
+          for (let i = 2; i < sorted.length; i++) {
+            const portion = word.slice(0, i)
+            if (!abbreviations.has(portion)) {
+              abbreviations.set(word, portion)
+              continue words
+            }
+          }
+        }
+        return text.replace(/[\w'’]+/g, word => {
+          const normalized = word.toLowerCase().replace(/['’]/g, '')
+          const abbrev = abbreviations.get(normalized)
+          return abbrev ? (abbrev === REMOVE ? '' : abbrev) : word
+        })
       }
-    ),
-    e(
-      'textarea',
-      {
-        className: 'text',
-        placeholder: 'abbrev here',
-        value: abbreviate(text),
-        readonly: true
-      }
-    )
-  )
-}
 
-ReactDOM.render(e(App), document.getElementById('root'))
+      on('output', (output, { text }) => {
+        output.value = abbreviate(text)
+        return new File([output.value], 'abbreviated.txt', {
+          type: 'text/plain'
+        })
+      })
     </script>
   </body>
 </html>

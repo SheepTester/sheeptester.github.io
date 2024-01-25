@@ -498,7 +498,7 @@ select {
 textarea.input-content,
 textarea.output-content {
   padding: 20px;
-  min-height: 300px;
+  min-height: 400px;
   transition: border-color 0.2s, box-shadow 0.2s;
   &:focus {
     outline: none;
@@ -506,6 +506,10 @@ textarea.output-content {
   &:focus-visible {
     border-color: var(--focus);
     box-shadow: 0 0 0 3px var(--focus-transparent);
+  }
+
+  @media (max-width: 700px) {
+    min-height: 150px;
   }
 }
 .col-io {
@@ -515,6 +519,10 @@ textarea.output-content {
 }
 .col-output {
   flex-direction: column-reverse;
+
+  textarea.output-content {
+    min-height: 150px;
+  }
 }
 .input-controls,
 .output-controls {
@@ -695,6 +703,9 @@ label.file:has(:focus-visible) {
     border-color: var(--focus);
     box-shadow: 0 0 0 3px var(--focus-transparent);
   }
+  &:disabled {
+    opacity: 0.5;
+  }
 }
 .primary-btn {
   background-image: var(--primary-btn-bg);
@@ -704,8 +715,12 @@ label.file:has(:focus-visible) {
   text-shadow: 0 1px 5px rgba(0, 0, 0, 0.5);
   box-shadow: 0 2px 5px var(--shadow-soft);
   position: relative;
+  &:disabled {
+    border-color: var(--line);
+    background-image: none;
+  }
 
-  &::before {
+  &:not(:disabled)::before {
     content: var(--primary-btn-blur-enabled);
     display: block;
     position: absolute;
@@ -718,14 +733,14 @@ label.file:has(:focus-visible) {
     transition: opacity 0.2s;
   }
 
-  &:hover {
+  &:not(:disabled):hover {
     box-shadow: 0 3px 10px var(--shadow-hard);
 
     &::before {
       opacity: 0.5;
     }
   }
-  &:active {
+  &:not(:disabled):active {
     box-shadow: 0 0 0 var(--shadow-hard);
     &::before {
       opacity: 0.1;
@@ -735,16 +750,19 @@ label.file:has(:focus-visible) {
 .outline-btn {
   border-color: var(--line);
   background-color: var(--outline-btn-bg);
-  &:hover {
+  &:disabled {
+    background-color: transparent;
+  }
+  &:not(:disabled):hover {
     background-color: var(--outline-btn-bg-hover);
   }
-  &:active {
+  &:not(:disabled):active {
     background-color: var(--outline-btn-bg-active);
   }
 }
 .text-btn {
   padding: 0 5px;
-  &:hover {
+  &:not(:disabled):hover {
     text-decoration: underline;
     text-decoration-color: var(--line);
   }

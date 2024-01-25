@@ -9,65 +9,88 @@
       name="description"
       content="Suppose you're taking ECE 109, and the provided past quizzes always list the correct answer first, but you don't want to know the answer. This tool will chop up a cropped screenshot of the PDF and shuffle them around."
     />
+    <meta name="theme-color" content="#4fa1a7" />
 
     <link rel="stylesheet" type="text/css" href="/sheep3.css" />
+    <link rel="stylesheet" type="text/css" href="/reform/v1/index.css" />
     <script src="/sheep3.js" charset="utf-8"></script>
-
-    <style>
-      #output {
-        box-shadow: 0 0 0 3px rgba(0, 188, 212, 0.4);
-      }
-    </style>
   </head>
   <body>
-    <p>
-      <label>
-        Select or paste an image:
-        <input type="file" accept="image/*" id="file" />
-      </label>
-    </p>
-    <p>
-      <label>
-        There are
-        <!-- Allow typing letters -->
-        <input
-          type="text"
-          inputmode="numeric"
-          pattern="[0-9]*"
-          id="rows"
-          value="10"
-        />
-        rows. (You can type J for 10 rows if they are enumerated by letters.)
-      </label>
-    </p>
-    <p>
-      <label>
-        <input type="checkbox" id="lines" />
-        Add lines between rows? (Mostly for my own debugging purposes.)
-      </label>
-    </p>
-    <canvas id="output"></canvas>
-    <p>
-      Intended for shuffling Zeger's ECE 109 past quiz answer options.
-      Screenshot the answers without the letters and paste them here.
-    </p>
-    <script>
-      const file = document.getElementById('file')
-      const rowCountInput = document.getElementById('rows')
-      const linesCheckbox = document.getElementById('lines')
-      const canvas = document.getElementById('output')
-      const c = canvas.getContext('2d')
-      let image = null
+    <form class="main" role="main">
+      <h1>Row shuffler</h1>
+      <div class="two-col-io reform:io">
+        <label class="input-controls file">
+          <input
+            type="file"
+            name="file"
+            accept="image/*"
+            class="hidden-accessible reform:image-input reform:paste-target"
+            data-default="./image-shuffler-default.webp"
+          />
+          <span class="icon icon-upload"></span>
+          <span class="file-label">Choose, drop, or paste an image</span>
+          <span class="file-name">No file selected</span>
+        </label>
+        <div class="image-content input-content"><canvas></canvas></div>
+        <div class="image-content output-content">
+          <canvas id="output" data-deps="file rawRows showLines"></canvas>
+        </div>
+        <div class="output-controls">
+          <a class="file download">
+            <span class="icon icon-download"></span>
+            <span class="file-label">Download</span>
+            <span class="file-name">No file available</span>
+          </a>
+          <button
+            type="button"
+            class="icon icon-copy"
+            data-output="output"
+            aria-label="Copy"
+          ></button>
+          <button
+            type="button"
+            class="icon icon-share"
+            data-output="output"
+            aria-label="Share"
+          ></button>
+        </div>
+      </div>
 
-      function output () {
+      <label class="field-label">
+        <span class="label-primary">Rows</span>
+        <span class="label-secondary">
+          Number of rows in the screenshot. You can type J for 10 rows, M for 13
+          rows, etc. if the rows are enumerated by letters.
+        </span>
+        <input type="text" name="rawRows" value="L" />
+      </label>
+
+      <label class="radio-label">
+        <input type="checkbox" name="showLines" class="hidden-accessible" />
+        <span class="radio-button"></span>
+        <span class="label-primary">Add lines between rows?</span>
+        <span class="label-secondary">
+          This is mostly for my own debugging purposes.
+        </span>
+      </label>
+      <p>
+        Intended for shuffling Zeger's ECE 109 past quiz answer options.
+        Screenshot the answers without the letters and paste them here.
+      </p>
+    </form>
+    <script type="module">
+      import { on } from '/reform/v1/index.js'
+
+      on('output', async (c, { file, rawRows, showLines }) => {
+        const image = file.canvas
         if (!image) {
           return
         }
-        canvas.width = image.width
-        canvas.height = image.height
-        const rowCount = /[a-zA-Z]/.test(rowCountInput.value)
-          ? rowCountInput.value.toLowerCase().codePointAt(0) - 96
-          : +rowCountInput.value
+        c.canvas.width = image.width
+        c.canvas.height = image.height
+        const rowCount = /[a-zA-Z]/.test(rawRows)
+          ? rawRows.toLowerCase().codePointAt(0) - 96
+          : +rawRows
         if (rowCount % 1 !== 0 || rowCount < 0) {
           return
         }
@@ -95,7 +118,7 @@
             rowHeight
           )
         }
-        if (linesCheckbox.checked) {
+        if (showLines) {
           c.strokeStyle = 'red'
           c.beginPath()
           for (let i = 1; i < rowCount; i++) {
@@ -104,31 +127,9 @@
           }
           c.stroke()
         }
-      }
 
-      rowCountInput.addEventListener('input', output)
-      linesCheckbox.addEventListener('input', output)
-
-      function acceptFile (file) {
-        if (!file) {
-          return
-        }
-        if (file.type === 'image/svg+xml') {
-          let image = document.createElement('img')
-          image.addEventListener('load', output)
-          image.src = URL.createObjectURL(file)
-        } else {
-          createImageBitmap(file).then(bitmap => {
-            image = bitmap
-            output()
-          })
-        }
-      }
-      file.addEventListener('change', () => {
-        acceptFile(file.files[0])
-      })
-      document.addEventListener('paste', e => {
-        acceptFile(e.clipboardData.files[0])
+        const blob = await new Promise(resolve => c.canvas.toBlob(resolve))
+        return new File([blob], 'out.png', { type: blob.type })
       })
     </script>
   </body>

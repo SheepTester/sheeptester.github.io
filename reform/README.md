@@ -120,9 +120,7 @@ Other components:
 - https://sheeptester.github.io/sentence/ Action button with output text with large font.
 - https://sheeptester.github.io/hello-world/pi.html A table.
 - https://sheeptester.github.io/life/scrolltest.html Three output numbers.
-- https://sheeptester.github.io/javascripts/voice-control.html Dropdown and action button.
 - https://sheeptester.github.io/javascripts/chopper.html Image input, action button. Output is a grid of clickable images to download and a button to download all as zip.
-- https://sheeptester.github.io/javascripts/abbrevator.html Two column input -> output.
 - https://sheeptester.github.io/yesnt/simple-reverb-test.html Play and stop buttons.
 - https://sheeptester.github.io/words-go-here/misc/factorial.html Large number input inside a bit of math. Output is a number.
   - https://sheeptester.github.io/words-go-here/misc/factorial-bigint.html
@@ -135,7 +133,6 @@ Other components:
 - https://sheeptester.github.io/hello-world/mobile-pwa-test.html Left/right buttons to move an arrow.
 - https://sheeptester.github.io/words-go-here/misc/gcal.html Row of fields. Date and time fields.
 - https://sheeptester.github.io/hello-world/merge-horiz.html Contenteditable input. Checkboxes. Rich text output.
-- https://sheeptester.github.io/javascripts/image-shuffler.html There's an outline around the output so you can tell what part of it is the image.
 - https://sheeptester.github.io/hello-world/bell.html Can just be an action button or something.
 - https://sheeptester.github.io/hello-world/zdsfghnjvc.html (what is this??) Needs UI
 - https://sheeptester.github.io/animations/kjlsintro.html
@@ -470,3 +467,6 @@ Converted:
   - lost ability to sync resize/scroll
 - https://sheeptester.github.io/javascripts/video/text.html
   - should show that it's loading
+- https://sheeptester.github.io/javascripts/voice-control.html Dropdown and action button.
+- https://sheeptester.github.io/javascripts/abbrevator.html
+- https://sheeptester.github.io/javascripts/image-shuffler.html
