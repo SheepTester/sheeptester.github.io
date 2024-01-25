@@ -272,7 +272,7 @@
         c.restore()
 
         const blob = await new Promise(resolve => c.canvas.toBlob(resolve))
-        return new File([blob], 'graph.png', { type: blob.type })
+        return new File([blob], 'graph.png', blob)
       })
 
       on('expression', (input, { callback }) => {

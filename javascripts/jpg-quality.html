@@ -123,7 +123,7 @@
         return new File(
           [blob],
           canvas.dataset.name + (format === 'image/jpeg' ? '.jpg' : '.webp'),
-          { type: blob.type }
+          blob
         )
       })
     </script>

@@ -5,36 +5,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <title>Chop an image into squares</title>
-    <meta name="description" content="To turn a large image into smaller Discord emoji" />
+    <meta
+      name="description"
+      content="To turn a large image into smaller Discord emoji"
+    />
+    <meta name="theme-color" content="#4fa1a7" />
 
-    <link rel="stylesheet" type="text/css" href="/sheep3.css">
+    <link rel="stylesheet" type="text/css" href="/sheep3.css" />
+    <link rel="stylesheet" type="text/css" href="/reform/v1/index.css" />
     <script src="/sheep3.js" charset="utf-8"></script>
 
     <style>
-      .wrapper {
-        display: inline-block;
-        position: relative;
-      }
-      #overlay {
-        position: absolute;
-        top: 0;
-        left: 0;
-        opacity: 0.1;
-        image-rendering: pixelated;
-        image-rendering: crisp-edges;
-        transition: opacity .2s;
-      }
-      #overlay:hover {
-        opacity: 1;
-      }
-      #overlay:active {
-        opacity: 0;
+      .output-content {
+        display: flex;
+        overflow: auto;
+        max-height: calc(70vh + 40px);
+        padding: 10px;
       }
       .emoji-grid {
         display: grid;
-        font-size: 0;
+        margin: auto;
+        border: 1px solid var(--line);
       }
       .emoji {
+        /* For some reason without this, it causes scrollbars to appear on hover
+              */
+        transform: scale(1);
         transition: transform 0.2s;
       }
       .download:hover .emoji {
@@ -43,230 +39,253 @@
     </style>
   </head>
   <body>
-    <p>
-      <label>
-        Select an image:
-        <input type="file" id="image-file" accept="image/*" autofocus>
-        (or paste an image here)
+    <form class="main" role="main">
+      <h1>Chop image into squares</h1>
+      <p>
+        I made this to chop an image into multiple Discord emoji, but you can
+        also use this to make slides for Instagram posts so the slides form a
+        <a class="link" href="https://www.instagram.com/p/CwrBu2kLIds/"
+          >very long continuous image</a
+        >.
+      </p>
+      <div class="two-col-io reform:io">
+        <label class="input-controls file">
+          <input
+            type="file"
+            name="preview"
+            accept="image/*"
+            class="hidden-accessible reform:image-input reform:paste-target"
+          />
+          <span class="icon icon-upload"></span>
+          <span class="file-label">Choose, drop, or paste an image</span>
+          <span class="file-name">No file selected</span>
+        </label>
+        <div class="image-content input-content"><canvas></canvas></div>
+        <div class="output-content">
+          <div
+            class="emoji-grid"
+            id="output"
+            data-deps="preview rows cols size fit"
+          ></div>
+        </div>
+        <div class="output-controls">
+          <a class="file download">
+            <span class="icon icon-download"></span>
+            <span class="file-label">Download</span>
+            <span class="file-name">No file available</span>
+          </a>
+        </div>
+      </div>
+      <div class="cols">
+        <label class="field-label">
+          <span class="label-primary">Rows</span>
+          <input type="number" name="rows" value="3" min="1" />
+        </label>
+        <label class="field-label">
+          <span class="label-primary">Columns</span>
+          <input type="number" name="cols" value="3" min="1" />
+        </label>
+      </div>
+      <label class="field-label">
+        <span class="label-primary">Size</span>
+        <span class="label-secondary">
+          The width and height of each individual chopped square images.
+        </span>
+        <input type="number" name="size" value="50" min="1" />
       </label>
-    </p>
-    <p><label>Rows: <input type="number" id="rows" value="1"></label></p>
-    <p><label>Columns: <input type="number" id="cols" value="1"></label></p>
-    <p><label>Size: <input type="number" id="size" value="128"></label></p>
-    <p>
-      <label>
-        Fit:
-        <select id="fit">
-          <option value="cover">Cover area, crop sides</option>
-          <option value="contain" selected>Contain inside area, transparent bars</option>
-          <option value="stretch">S t r e t c h</option>
-        </select>
-      </label>
-    </p>
-    <div class="wrapper">
-      <canvas id="preview"></canvas>
-      <canvas id="overlay"></canvas>
-    </div>
-    <p><button id="chop" disabled>Chop!</button></p>
+      <fieldset class="radio-set">
+        <legend class="label-primary">Fit</legend>
+        <label class="radio-label">
+          <input
+            type="radio"
+            name="fit"
+            value="cover"
+            class="hidden-accessible"
+          />
+          <span class="radio-button"></span>
+          <span class="label-primary">Cover area</span>
+          <span class="label-secondary">Crop sides.</span>
+        </label>
+        <label class="radio-label">
+          <input
+            type="radio"
+            name="fit"
+            value="contain"
+            class="hidden-accessible"
+            checked
+          />
+          <span class="radio-button"></span>
+          <span class="label-primary">Contain inside area</span>
+          <span class="label-secondary">Adds transparent bars.</span>
+        </label>
+        <label class="radio-label">
+          <input
+            type="radio"
+            name="fit"
+            value="contain"
+            class="hidden-accessible"
+          />
+          <span class="radio-button"></span>
+          <span class="label-primary">S t r e t c h</span>
+        </label>
+      </fieldset>
+    </form>
+
     <script src="./jszip.min.js" charset="utf-8"></script>
-    <script>
-const elems = {
-  image: document.getElementById('image-file'),
-  rows: document.getElementById('rows'),
-  cols: document.getElementById('cols'),
-  size: document.getElementById('size'),
-  fit: document.getElementById('fit'),
-  preview: document.getElementById('preview'),
-  overlay: document.getElementById('overlay'),
-  chop: document.getElementById('chop')
-}
-// Size in pixels of large displayed emoji (eg in emoji-only messages) in the
-// Discord client
-const DISPLAY_SIZE = 48
+    <script type="module">
+      import { on } from '/reform/v1/index.js'
 
-let image, oldUrl
-function loadImage (file) {
-  if (oldUrl) {
-    URL.revokeObjectURL(oldUrl)
-  }
-  const url = URL.createObjectURL(file)
-  image = new Image()
-  image.addEventListener('load', updatePreview, { once: true })
-  image.src = url
-  oldUrl = url
-}
-elems.image.addEventListener('change', () => {
-  if (elems.image.files[0]) {
-    loadImage(elems.image.files[0])
-  }
-})
-document.addEventListener('paste', e => {
-  if (e.clipboardData.files[0]) {
-    loadImage(e.clipboardData.files[0])
-  }
-})
+      // Size in pixels of large displayed emoji (eg in emoji-only messages) in the
+      // Discord client
+      const DISPLAY_SIZE = 48
 
-function getSize () {
-  return {
-    rows: Math.max(+elems.rows.value | 0, 1),
-    cols: Math.max(+elems.cols.value | 0, 1),
-    size: Math.max(+elems.size.value | 0, 1)
-  }
-}
+      function updatePreview () {
+        if (!image) return
 
-const c = elems.preview.getContext('2d')
-const oc = elems.overlay.getContext('2d')
-function updatePreview () {
-  if (!image) return
+        const { rows, cols, size } = getSize()
+        c.canvas.width = size * cols
+        c.canvas.height = size * rows
+        c.canvas.style.width = (c.canvas.width * DISPLAY_SIZE) / size + 'px'
+        switch (elems.fit.value) {
+          case 'stretch': {
+            c.drawImage(image, 0, 0, c.canvas.width, c.canvas.height)
+            break
+          }
+          case 'contain': {
+            const scale =
+              image.width / image.height > c.canvas.width / c.canvas.height
+                ? // Image is wider, so base on width
+                  c.canvas.width / image.width
+                : // Image is taller, so base on height
+                  c.canvas.height / image.height
+            c.drawImage(
+              image,
+              (c.canvas.width - image.width * scale) / 2,
+              (c.canvas.height - image.height * scale) / 2,
+              image.width * scale,
+              image.height * scale
+            )
+            break
+          }
+          case 'cover': {
+            const scale =
+              image.width / image.height < c.canvas.width / c.canvas.height
+                ? // Image is taller, so base on width
+                  c.canvas.width / image.width
+                : // Image is height, so base on height
+                  c.canvas.height / image.height
+            c.drawImage(
+              image,
+              (c.canvas.width - image.width * scale) / 2,
+              (c.canvas.height - image.height * scale) / 2,
+              image.width * scale,
+              image.height * scale
+            )
+            break
+          }
+        }
 
-  const { rows, cols, size } = getSize()
-  c.canvas.width = size * cols
-  c.canvas.height = size * rows
-  c.canvas.style.width = c.canvas.width * DISPLAY_SIZE / size + 'px'
-  switch (elems.fit.value) {
-    case 'stretch': {
-      c.drawImage(image, 0, 0, c.canvas.width, c.canvas.height)
-      break
-    }
-    case 'contain': {
-      const scale = image.width / image.height > c.canvas.width / c.canvas.height
-        // Image is wider, so base on width
-        ? c.canvas.width / image.width
-        // Image is taller, so base on height
-        : c.canvas.height / image.height
-      c.drawImage(
-        image,
-        (c.canvas.width - image.width * scale) / 2,
-        (c.canvas.height - image.height * scale) / 2,
-        image.width * scale,
-        image.height * scale
-      )
-      break
-    }
-    case 'cover': {
-      const scale = image.width / image.height < c.canvas.width / c.canvas.height
-        // Image is taller, so base on width
-        ? c.canvas.width / image.width
-        // Image is height, so base on height
-        : c.canvas.height / image.height
-      c.drawImage(
-        image,
-        (c.canvas.width - image.width * scale) / 2,
-        (c.canvas.height - image.height * scale) / 2,
-        image.width * scale,
-        image.height * scale
-      )
-      break
-    }
-  }
+        oc.canvas.width = cols * DISPLAY_SIZE
+        oc.canvas.height = rows * DISPLAY_SIZE
+        oc.strokeStyle = 'white'
+        oc.imageSmoothingEnabled = false
+        oc.beginPath()
+        for (let x = 0; x < cols; x++) {
+          for (let y = 0; y < rows; y++) {
+            oc.moveTo((x + 1) * DISPLAY_SIZE + 0.5, y * DISPLAY_SIZE + 0.5)
+            oc.lineTo(x * DISPLAY_SIZE + 0.5, y * DISPLAY_SIZE + 0.5)
+            oc.lineTo(x * DISPLAY_SIZE + 0.5, (y + 1) * DISPLAY_SIZE + 0.5)
+          }
+        }
+        oc.stroke()
+        oc.strokeStyle = 'black'
+        oc.beginPath()
+        for (let x = 0; x < cols; x++) {
+          for (let y = 0; y < rows; y++) {
+            oc.moveTo((x + 1) * DISPLAY_SIZE - 0.5, y * DISPLAY_SIZE - 0.5)
+            oc.lineTo(
+              (x + 1) * DISPLAY_SIZE - 0.5,
+              (y + 1) * DISPLAY_SIZE - 0.5
+            )
+            oc.lineTo(x * DISPLAY_SIZE - 0.5, (y + 1) * DISPLAY_SIZE - 0.5)
+          }
+        }
+        oc.stroke()
 
-  oc.canvas.width = cols * DISPLAY_SIZE
-  oc.canvas.height = rows * DISPLAY_SIZE
-  oc.strokeStyle = 'white'
-  oc.imageSmoothingEnabled = false
-  oc.beginPath()
-  for (let x = 0; x < cols; x++) {
-    for (let y = 0; y < rows; y++) {
-      oc.moveTo((x + 1) * DISPLAY_SIZE + 0.5, y * DISPLAY_SIZE + 0.5)
-      oc.lineTo(x * DISPLAY_SIZE + 0.5, y * DISPLAY_SIZE + 0.5)
-      oc.lineTo(x * DISPLAY_SIZE + 0.5, (y + 1) * DISPLAY_SIZE + 0.5)
-    }
-  }
-  oc.stroke()
-  oc.strokeStyle = 'black'
-  oc.beginPath()
-  for (let x = 0; x < cols; x++) {
-    for (let y = 0; y < rows; y++) {
-      oc.moveTo((x + 1) * DISPLAY_SIZE - 0.5, y * DISPLAY_SIZE - 0.5)
-      oc.lineTo((x + 1) * DISPLAY_SIZE - 0.5, (y + 1) * DISPLAY_SIZE - 0.5)
-      oc.lineTo(x * DISPLAY_SIZE - 0.5, (y + 1) * DISPLAY_SIZE - 0.5)
-    }
-  }
-  oc.stroke()
+        elems.chop.disabled = false
+      }
 
-  elems.chop.disabled = false
-}
+      let urls = []
+      let process = 0
+      on('output', async (emoji, { preview, rows, cols, size, fit }) => {
+        const processId = ++process
+        const rowLength = `${rows}`.length
+        const colLength = `${cols}`.length
 
-elems.rows.addEventListener('input', updatePreview)
-elems.cols.addEventListener('input', updatePreview)
-elems.size.addEventListener('input', updatePreview)
-elems.fit.addEventListener('change', updatePreview)
+        while (emoji.firstChild) {
+          emoji.removeChild(emoji.firstChild)
+        }
+        emoji.style.gridTemplateRows = `repeat(${rows}, ${DISPLAY_SIZE}px)`
+        emoji.style.gridTemplateColumns = `repeat(${cols}, ${DISPLAY_SIZE}px)`
 
-elems.chop.addEventListener('click', async () => {
-  const { rows, cols, size } = getSize()
-  const rowLength = `${rows}`.length
-  const colLength = `${cols}`.length
+        urls.forEach(URL.revokeObjectURL)
+        urls = []
+        const canvas = document.createElement('canvas')
+        canvas.width = size
+        canvas.height = size
+        const c = canvas.getContext('2d')
+        const blobs = []
+        for (let y = 0; y < rows; y++) {
+          for (let x = 0; x < cols; x++) {
+            c.clearRect(0, 0, size, size)
+            c.drawImage(
+              preview.canvas,
+              x * size,
+              y * size,
+              size,
+              size,
+              0,
+              0,
+              size,
+              size
+            )
+            const blob = await new Promise(resolve => canvas.toBlob(resolve))
+            if (process !== processId) {
+              return
+            }
+            const url = URL.createObjectURL(blob)
+            urls.push(url)
+            const name = `${preview.canvas.dataset.name}-${x
+              .toString()
+              .padStart(colLength, '0')}-${y
+              .toString()
+              .padStart(rowLength, '0')}.png`
+            blobs.push({ blob, name })
+            const image = Object.assign(document.createElement('img'), {
+              src: url,
+              className: 'emoji'
+            })
+            image.style.width = DISPLAY_SIZE + 'px'
+            const download = Object.assign(document.createElement('a'), {
+              download: name,
+              href: url,
+              className: 'download'
+            })
+            download.append(image)
+            emoji.append(download)
+          }
+        }
 
-  const output = document.createElement('fieldset')
-  const emoji = Object.assign(document.createElement('div'), {
-    className: 'emoji-grid'
-  })
-  emoji.style.gridTemplateColumns = `repeat(${cols}, ${DISPLAY_SIZE}px)`
-
-  const canvas = document.createElement('canvas')
-  canvas.width = size
-  canvas.height = size
-  const c = canvas.getContext('2d')
-  const blobs = []
-  for (let y = 0; y < rows; y++) {
-    for (let x = 0; x < cols; x++) {
-      c.clearRect(0, 0, size, size)
-      c.drawImage(elems.preview, x * size, y * size, size, size, 0, 0, size, size)
-      const blob = await new Promise(resolve => canvas.toBlob(resolve))
-      const url = URL.createObjectURL(blob)
-      const name = `emoji_${
-        x.toString().padStart(colLength, '0')
-      }-${
-        y.toString().padStart(rowLength, '0')
-      }.png`
-      blobs.push({ blob, name })
-      const image = Object.assign(document.createElement('img'), {
-        src: url,
-        className: 'emoji'
+        const zip = new JSZip()
+        for (const { name, blob } of blobs) {
+          zip.file(name, blob)
+        }
+        const blob = await zip.generateAsync({ type: 'blob' })
+        if (process !== processId) {
+          return
+        }
+        return new File([blob], 'emoji.zip', blob)
       })
-      image.style.width = DISPLAY_SIZE + 'px'
-      const download = Object.assign(document.createElement('a'), {
-        download: name,
-        href: url,
-        className: 'download'
-      })
-      download.append(image)
-      emoji.append(download)
-    }
-  }
-
-  const downloadZipBtn = Object.assign(document.createElement('button'), {
-    textContent: 'Download all as .zip'
-  })
-  downloadZipBtn.addEventListener('click', async () => {
-    const zip = new JSZip()
-    for (const { name, blob } of blobs) {
-      zip.file(name, blob)
-    }
-    const blob = await zip.generateAsync({ type: 'blob' })
-    const url = URL.createObjectURL(blob)
-    const download = Object.assign(document.createElement('a'), {
-      download: 'emoji.zip',
-      href: url
-    })
-    document.body.append(download)
-    download.click()
-    download.remove()
-    URL.revokeObjectURL(url)
-  })
-
-  output.append(
-    Object.assign(document.createElement('legend'), {
-      textContent: 'Result'
-    }),
-    Object.assign(document.createElement('p'), {
-      textContent: 'Click on a tile to download an individual emoji.'
-    }),
-    emoji,
-    downloadZipBtn
-  )
-  document.body.append(output)
-})
     </script>
   </body>
 </html>

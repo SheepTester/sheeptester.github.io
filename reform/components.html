@@ -324,7 +324,7 @@ hello</textarea
         const blob = await new Promise(resolve =>
           context.canvas.toBlob(resolve)
         )
-        return new File([blob], 'out.png', { type: blob.type })
+        return new File([blob], 'out.png', blob)
       })
 
       on('computed', async (element, { chunkSize }) => {

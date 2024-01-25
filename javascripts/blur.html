@@ -149,7 +149,7 @@
         c.putImageData(imageData, 0, 0)
 
         const blob = await new Promise(resolve => c.canvas.toBlob(resolve))
-        return new File([blob], 'out.png', { type: blob.type })
+        return new File([blob], 'out.png', blob)
       })
     </script>
   </body>

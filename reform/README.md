@@ -101,7 +101,6 @@ To redesign:
 - https://sheeptester.github.io/javascripts/zwsp-embedder.html Three inputs, where the first two drive the third. The relationship between the input/output textareas is shown in a table-like layout. SPECIAL LAYOUT
   - Need to think about layout and how to show relationship better
   - Could redesign it as a mutual dependency sort of thing
-- https://sheeptester.github.io/javascripts/chopper.html Image input, action button. Output is a grid of clickable images to download and a button to download all as zip.
 - https://sheeptester.github.io/hello-world/bones-and-muscles.html Action button.
 - https://sheeptester.github.io/words-go-here/misc/format.html Textarea input. Output has colors/formatting; how to deal with dark/light theme text colors?
 - https://sheeptester.github.io/theflat/easierjson.html Textarea input, console.log output.
@@ -462,6 +461,9 @@ Converted:
 - https://sheeptester.github.io/javascripts/image-shuffler.html
 - https://sheeptester.github.io/javascripts/pip-image.html
 - https://sheeptester.github.io/javascripts/grapher.html
+- https://sheeptester.github.io/javascripts/imagetoscheme.html
+  - preview is smaller
+- https://sheeptester.github.io/javascripts/chopper.html
 - https://sheeptester.github.io/all/generator.html: text -> text (code)
 - https://sheeptester.github.io/words-go-here/misc/chunks.html: image -> image
 - https://sheeptester.github.io/words-go-here/misc/ucsd-map.html: options -> image
@@ -473,5 +475,3 @@ Converted:
 - https://sheeptester.github.io/words-go-here/misc/schedulemaker.html: file, options -> image
   - error log
   - svg resizing is weird
-- https://sheeptester.github.io/javascripts/imagetoscheme.html
-  - preview is smaller
