@@ -9,73 +9,69 @@
       name="description"
       content="Create a pop-up of an image (e.g. Among Us) that stays above other windows."
     />
+    <meta name="theme-color" content="#4fa1a7" />
 
     <link rel="stylesheet" type="text/css" href="/sheep3.css" />
+    <link rel="stylesheet" type="text/css" href="/reform/v1/index.css" />
     <script src="/sheep3.js" charset="utf-8"></script>
-
-    <style>
-      #output {
-        box-shadow: 0 0 0 3px rgba(0, 188, 212, 0.4);
-        max-width: 100%;
-      }
-    </style>
   </head>
   <body>
-    <p>
-      <label>
-        Select or paste an image:
-        <input type="file" accept="image/*" id="file" />
-      </label>
-    </p>
-    <p><button id="pip">Pop video out on top (picture-in-picture)</button></p>
-    <video id="output" muted autoplay controls></video>
-    <script>
-      const file = document.getElementById('file')
-      const video = document.getElementById('output')
-      const canvas = document.createElement('canvas')
-      const c = canvas.getContext('2d')
-      let image = null
+    <form
+      class="main"
+      role="main"
+      id="pip"
+      action="javascript:"
+      data-deps="&output"
+    >
+      <h1>Pin an image on top</h1>
+      <p>
+        I made this for overlaying an image of a crewmate from
+        <em>Among Us</em> while projecting my laptop onto a display.
+      </p>
 
-      const stream = canvas.captureStream(0)
-      video.srcObject = stream
-      video.play()
-      c.clearRect(0, 0, 10, 10)
-      stream.getVideoTracks()[0].requestFrame()
+      <div class="two-col-io reform:io no-output-controls">
+        <label class="input-controls file">
+          <input
+            type="file"
+            name="image"
+            accept="image/*"
+            class="hidden-accessible reform:image-input reform:paste-target"
+          />
+          <span class="icon icon-upload"></span>
+          <span class="file-label">Choose, drop, or paste an image</span>
+          <span class="file-name">No file selected</span>
+        </label>
+        <div class="image-content input-content"><canvas></canvas></div>
+        <div class="image-content output-content">
+          <video id="output" data-deps="image" muted autoplay controls></video>
+        </div>
+      </div>
 
-      function output () {
-        if (!image) {
-          return
+      <p>Press the button below to put the video in picture-in-picture mode.</p>
+      <div class="button-row">
+        <button type="submit" class="button primary-btn">
+          Pop video out on top
+        </button>
+      </div>
+    </form>
+
+    <script type="module">
+      import { on } from '/reform/v1/index.js'
+
+      let stream
+      on('output', (video, { image: c }) => {
+        if (!stream) {
+          stream = c.canvas.captureStream(0)
+          video.srcObject = stream
+          video.play()
         }
-        canvas.width = image.width
-        canvas.height = image.height
-        c.drawImage(image, 0, 0)
         stream.getVideoTracks()[0].requestFrame()
-      }
-
-      function acceptFile (file) {
-        if (!file) {
-          return
-        }
-        if (file.type === 'image/svg+xml') {
-          let image = document.createElement('img')
-          image.addEventListener('load', output)
-          image.src = URL.createObjectURL(file)
-        } else {
-          createImageBitmap(file).then(bitmap => {
-            image = bitmap
-            output()
-          })
-        }
-      }
-      file.addEventListener('change', () => {
-        acceptFile(file.files[0])
-      })
-      document.addEventListener('paste', e => {
-        acceptFile(e.clipboardData.files[0])
       })
 
-      document.getElementById('pip').addEventListener('click', () => {
-        video.requestPictureInPicture()
+      on('pip', (form, { output: video }) => {
+        form.addEventListener('submit', () => {
+          video.requestPictureInPicture()
+        })
       })
     </script>
   </body>

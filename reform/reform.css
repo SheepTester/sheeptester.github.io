@@ -16,7 +16,7 @@
   --focus-transparent: #029bfd66;
   --shadow-soft: rgba(0, 0, 0, 0.1);
   --shadow-hard: rgba(0, 0, 0, 0.2);
-  --primary-btn-bg: linear-gradient(135deg, var(--grad1), var(--grad2));
+  --primary-btn-bg: none, linear-gradient(135deg, var(--grad1), var(--grad2));
   --primary-btn-blur-enabled: none;
   --outline-btn-bg: transparent;
   --outline-btn-bg-hover: rgba(0, 0, 0, 0.2);
@@ -718,6 +718,8 @@ label.file:has(:focus-visible) {
   &:disabled {
     border-color: var(--line);
     background-image: none;
+    color: inherit;
+    text-shadow: none;
   }
 
   &:not(:disabled)::before {

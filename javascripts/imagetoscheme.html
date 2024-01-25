@@ -2,86 +2,147 @@
 <html>
   <head>
     <title>Image to Scheme</title>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#4fa1a7" />
+
+    <link rel="stylesheet" type="text/css" href="/sheep3.css" />
+    <link rel="stylesheet" type="text/css" href="/reform/v1/index.css" />
+    <script src="/sheep3.js" charset="utf-8"></script>
     <style>
-      body{max-width:1000px;margin:20px auto;padding:0 20px;font-family:sans-serif;}input,button,select,textarea{font:inherit;}a {text-decoration:none;}a:hover{text-decoration:underline;}
-      textarea {
-        width: 100%;
-      }
-      code {
+      #output {
         white-space: pre;
         letter-spacing: 0;
         line-height: 1ch;
-        display: block;
-      }
-      label {
-        font-weight: bold;
-        padding-right: 10px;
+        overflow: auto;
+        max-height: 70vh;
+        font-size: 0.5em;
       }
     </style>
   </head>
   <body>
-    <h1>Image to Scheme</h1>
-    <p><label>image:</label><input type="file" id="input" accept="image/*"><label>resolution (pixel square size to group):</label><input type="number" id="resolution" value='3'/></p>
-    <code id="output"></code>
-    <script src="../sheep.js"></script>
-    <script>
-      function getPixelXY(imgData,x,y) {
+    <form class="main" role="main">
+      <h1>Image to Scheme</h1>
+      <p>
+        In <a class="link" href="https://paleyontology.com/foop/">FOOP</a>, we
+        were taught Scheme, a functional programming language. A classmate
+        thought the language was useless, so I made this image-to-text converter
+        to draw images like the Mona Lisa by printing a massive string to the
+        <a
+          class="link"
+          href="https://docs.racket-lang.org/drracket/interactions-window.html"
+          >interactions window</a
+        >.
+      </p>
+
+      <div class="two-col-io reform:io">
+        <label class="input-controls file">
+          <input
+            type="file"
+            name="image"
+            accept="image/*"
+            class="hidden-accessible reform:image-input reform:paste-target"
+          />
+          <span class="icon icon-upload"></span>
+          <span class="file-label">Choose, drop, or paste an image</span>
+          <span class="file-name">No file selected</span>
+        </label>
+        <div class="image-content input-content"><canvas></canvas></div>
+        <div
+          class="output-content code"
+          id="output"
+          data-deps="image resolution"
+        ></div>
+        <div class="output-controls">
+          <a class="file download">
+            <span class="icon icon-download"></span>
+            <span class="file-label">Download</span>
+            <span class="file-name">No file available</span>
+          </a>
+          <button
+            type="button"
+            class="icon icon-copy"
+            data-output="output"
+            aria-label="Copy"
+          ></button>
+          <button
+            type="button"
+            class="icon icon-share"
+            data-output="output"
+            aria-label="Share"
+          ></button>
+        </div>
+      </div>
+
+      <label class="field-label">
+        <span class="label-primary">Resolution</span>
+        <span class="label-secondary">
+          Group pixels into squares of this size.
+        </span>
+        <input type="number" name="resolution" value="3" />
+      </label>
+    </form>
+
+    <script type="module">
+      import { on } from '/reform/v1/index.js'
+
+      function getPixelXY (imgData, x, y) {
         // https://stackoverflow.com/questions/667045/getpixel-from-html-canvas
-        var i=(y*imgData.width+x)*4,d=imgData.data;
-        return [d[i],d[i+1],d[i+2],d[i+3]];
+        var i = (y * imgData.width + x) * 4,
+          d = imgData.data
+        return [d[i], d[i + 1], d[i + 2], d[i + 3]]
       }
-      function darkness(r,g,b) {
-        return Math.round(((parseInt(r)*299)+(parseInt(g)*587)+(parseInt(b)*114))/1000);
+      function darkness (r, g, b) {
+        return Math.round(
+          (parseInt(r) * 299 + parseInt(g) * 587 + parseInt(b) * 114) / 1000
+        )
       }
-      function avg(arr) {
-        return arr.reduce((a,b)=>a+b)/arr.length;
+      function avg (arr) {
+        return arr.reduce((a, b) => a + b) / arr.length
       }
-      var input=document.querySelector('#input'),
-      resinput=document.querySelector('#resolution'),
-      output=document.querySelector('#output'),
-      canvas=document.createElement('canvas'),
-      c=canvas.getContext('2d'),
-      RESOLUTION;
-      input.onchange=e=>{
-        RESOLUTION=+resinput.value;
-        var image=new Image(),
-        t=window.URL.createObjectURL(input.files[0]);
-        image.onload=e=>{
-          canvas.width=image.width,
-          canvas.height=image.height;
-          c.drawImage(image,0,0,image.width,image.height);
-          window.URL.revokeObjectURL(t);
-          var data=c.getImageData(0,0,canvas.width,canvas.height),
-          newpixels=[];
-          for (var y=0;y<canvas.height;y+=RESOLUTION) {
-            var pixelrow=[];
-            for (var x=0;x<canvas.width;x+=RESOLUTION) {
-              var darknesses=[];
-              for (var i=0,l=RESOLUTION*RESOLUTION;i<l;i++) {
-                var t=getPixelXY(data,x+i%RESOLUTION,y+Math.floor(i/RESOLUTION));
-                if (t[0]!==undefined) darknesses.push(darkness(...t));
-              }
-              pixelrow.push(Math.round(avg(darknesses)));
+
+      on('output', (div, { image: c, resolution: RESOLUTION }) => {
+        var data = c.getImageData(0, 0, c.canvas.width, c.canvas.height),
+          newpixels = []
+        for (var y = 0; y < c.canvas.height; y += RESOLUTION) {
+          var pixelrow = []
+          for (var x = 0; x < c.canvas.width; x += RESOLUTION) {
+            var darknesses = []
+            for (var i = 0, l = RESOLUTION * RESOLUTION; i < l; i++) {
+              var t = getPixelXY(
+                data,
+                x + (i % RESOLUTION),
+                y + Math.floor(i / RESOLUTION)
+              )
+              if (t[0] !== undefined) darknesses.push(darkness(...t))
             }
-            newpixels.push(pixelrow);
+            pixelrow.push(Math.round(avg(darknesses)))
           }
-          output.innerHTML=newpixels.map(a=>a.map(a=>{
-            if (a<25) return '@';
-            else if (a<50) return '%';
-            else if (a<75) return '#';
-            else if (a<100) return '*';
-            else if (a<125) return '+';
-            else if (a<150) return '=';
-            else if (a<175) return '-';
-            else if (a<200) return ':';
-            else if (a<225) return '.';
-            else return ' ';
-          }).join('')).join('\n');
-        };
-        image.src=t;
-      };
+          newpixels.push(pixelrow)
+        }
+        const output = newpixels
+          .map(a =>
+            a
+              .map(a => {
+                if (a < 25) return '@'
+                else if (a < 50) return '%'
+                else if (a < 75) return '#'
+                else if (a < 100) return '*'
+                else if (a < 125) return '+'
+                else if (a < 150) return '='
+                else if (a < 175) return '-'
+                else if (a < 200) return ':'
+                else if (a < 225) return '.'
+                else return ' '
+              })
+              .join('')
+          )
+          .join('\n')
+        div.innerHTML = output
+        return new File([output], `${c.canvas.dataset.name}.txt`, {
+          type: 'text/plain'
+        })
+      })
     </script>
   </body>
   <!-- MADE BY SEAN -->

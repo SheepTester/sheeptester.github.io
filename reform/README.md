@@ -90,14 +90,18 @@ Other components:
 
 - Color input
 - Download button
-
   - Should include file name and size
 
-- Image output
-  - https://sheeptester.github.io/javascripts/pip-image.html Image input with video output. Action button.
-  - https://sheeptester.github.io/javascripts/grapher.html Single-line input, text, error, and image output.
+To redesign:
+
 - https://sheeptester.github.io/javascripts/cryptography.html Various unrelated input -> output text fields. Caesar cipher table.
+  - Mutual dependencies
 - https://sheeptester.github.io/javascripts/image-translucentifier.html Input output image, color inputs, color picker. Shows input and output side-by-side.
+  - Color input
+- https://sheeptester.github.io/javascripts/zwsp-embedder.html Three inputs, where the first two drive the third. The relationship between the input/output textareas is shown in a table-like layout. SPECIAL LAYOUT
+  - Need to think about layout and how to show relationship better
+  - Could redesign it as a mutual dependency sort of thing
+- https://sheeptester.github.io/javascripts/chopper.html Image input, action button. Output is a grid of clickable images to download and a button to download all as zip.
 - https://sheeptester.github.io/hello-world/bones-and-muscles.html Action button.
 - https://sheeptester.github.io/words-go-here/misc/format.html Textarea input. Output has colors/formatting; how to deal with dark/light theme text colors?
 - https://sheeptester.github.io/theflat/easierjson.html Textarea input, console.log output.
@@ -109,10 +113,8 @@ Other components:
 - https://sheeptester.github.io/calculator/oldindex.html A function called `calc`. It wants you to run `calc` in the console.
 - https://sheeptester.github.io/words-go-here/savefiletest.html A simple form (textarea input) with an action button.
 - https://sheeptester.github.io/words-go-here/misc/file-editor.html Four-button control panel. Textarea input.
-- https://sheeptester.github.io/javascripts/zwsp-embedder.html Three inputs, where the first two drive the third. The relationship between the input/output textareas is shown in a table-like layout. SPECIAL LAYOUT
 - https://sheeptester.github.io/words-go-here/misc/triangulated-coordinates.html Largely a static page, but it has two input -> output forms.
 - https://sheeptester.github.io/words-go-here/misc/minimal-markup.html Input textarea -> output rich text.
-- https://sheeptester.github.io/javascripts/imagetoscheme.html Input image + settings -> display text.
 - https://sheeptester.github.io/words-go-here/misc/keyboard.html Input textarea, output is a keyboard SVG. Has a slider for playback and a play button.
 - https://sheeptester.github.io/yesnt/timing-thing.html Output table.
 - https://sheeptester.github.io/words-go-here/misc/fix-x.html Select file, has an output log, then downloads output.
@@ -120,7 +122,6 @@ Other components:
 - https://sheeptester.github.io/sentence/ Action button with output text with large font.
 - https://sheeptester.github.io/hello-world/pi.html A table.
 - https://sheeptester.github.io/life/scrolltest.html Three output numbers.
-- https://sheeptester.github.io/javascripts/chopper.html Image input, action button. Output is a grid of clickable images to download and a button to download all as zip.
 - https://sheeptester.github.io/yesnt/simple-reverb-test.html Play and stop buttons.
 - https://sheeptester.github.io/words-go-here/misc/factorial.html Large number input inside a bit of math. Output is a number.
   - https://sheeptester.github.io/words-go-here/misc/factorial-bigint.html
@@ -449,6 +450,18 @@ Converted:
 - https://sheeptester.github.io/javascripts/intense-contrast.html: image + interactivity
 - https://sheeptester.github.io/javascripts/raw-json-img.html: image -> text
   - set display size of canvas without making it stretch when it's large
+- https://sheeptester.github.io/javascripts/notifications.html
+  - textarea for `body`
+  - lost ability to save options in URL
+- https://sheeptester.github.io/javascripts/delegalifier.html
+  - lost ability to sync resize/scroll
+- https://sheeptester.github.io/javascripts/video/text.html
+  - should show that it's loading
+- https://sheeptester.github.io/javascripts/voice-control.html Dropdown and action button.
+- https://sheeptester.github.io/javascripts/abbrevator.html
+- https://sheeptester.github.io/javascripts/image-shuffler.html
+- https://sheeptester.github.io/javascripts/pip-image.html
+- https://sheeptester.github.io/javascripts/grapher.html
 - https://sheeptester.github.io/all/generator.html: text -> text (code)
 - https://sheeptester.github.io/words-go-here/misc/chunks.html: image -> image
 - https://sheeptester.github.io/words-go-here/misc/ucsd-map.html: options -> image
@@ -460,13 +473,5 @@ Converted:
 - https://sheeptester.github.io/words-go-here/misc/schedulemaker.html: file, options -> image
   - error log
   - svg resizing is weird
-- https://sheeptester.github.io/javascripts/notifications.html
-  - textarea for `body`
-  - lost ability to save options in URL
-- https://sheeptester.github.io/javascripts/delegalifier.html
-  - lost ability to sync resize/scroll
-- https://sheeptester.github.io/javascripts/video/text.html
-  - should show that it's loading
-- https://sheeptester.github.io/javascripts/voice-control.html Dropdown and action button.
-- https://sheeptester.github.io/javascripts/abbrevator.html
-- https://sheeptester.github.io/javascripts/image-shuffler.html
+- https://sheeptester.github.io/javascripts/imagetoscheme.html
+  - preview is smaller
