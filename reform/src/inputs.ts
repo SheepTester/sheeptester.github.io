@@ -110,8 +110,10 @@ function handleFileInput ({
   if (pasteTarget) {
     document.addEventListener('paste', e => {
       if (
-        e.target instanceof HTMLTextAreaElement ||
-        e.target instanceof HTMLInputElement
+        (e.target instanceof HTMLTextAreaElement ||
+          e.target instanceof HTMLInputElement) &&
+        !e.target.readOnly &&
+        !e.target.disabled
       ) {
         return
       }

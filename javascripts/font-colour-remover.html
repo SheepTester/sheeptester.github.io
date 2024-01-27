@@ -124,6 +124,19 @@
         for (const element of [...doc.getElementsByTagName('style')]) {
           element.remove()
         }
+        // Replace <p> with <div> to remove margin
+        for (const element of [...doc.getElementsByTagName('p')]) {
+          element.outerHTML = element.outerHTML
+            .replace('<p', '<div')
+            .replace(/<\/p>$/, '</div>')
+        }
+        // Remove margin from other semantic elemens
+        for (const element of doc.querySelectorAll(
+          'h1, h2, h3, h4, h5, h6, ol, ul'
+        )) {
+          element.style.marginTop = '0'
+          element.style.marginBottom = '0'
+        }
         const html = doc.documentElement.outerHTML
         preview.innerHTML = html
         return new File([html], 'clean.html', { type: 'text/html' })
