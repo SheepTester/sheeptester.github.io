@@ -296,7 +296,9 @@ hello</textarea
         <button type="button" class="button outline-btn" disabled>
           Think about it
         </button>
-        <button type="button" class="button text-btn">Never mind</button>
+        <button type="button" class="button text-btn" id="error">
+          Create an error
+        </button>
       </div>
 
       <div class="button-row">
@@ -334,6 +336,12 @@ hello</textarea
       on('outputText', async (element, { text, radio2 }) => {
         element.value = text.toUpperCase() + '\nradio2 = ' + radio2
         return new File([element.value], 'out.txt', { type: 'text/plain' })
+      })
+
+      on('error', button => {
+        button.addEventListener('click', () => {
+          throw new Error('An error occurred!')
+        })
       })
     </script>
   </body>

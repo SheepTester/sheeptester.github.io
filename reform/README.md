@@ -474,5 +474,5 @@ Converted:
   - ~~support svg~~
 - https://sheeptester.github.io/words-go-here/misc/simplex.html: options -> image
 - https://sheeptester.github.io/words-go-here/misc/schedulemaker.html: file, options -> image
-  - error log
+  - ~~error log~~
   - svg resizing is weird

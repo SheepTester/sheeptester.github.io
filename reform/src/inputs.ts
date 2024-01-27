@@ -189,7 +189,9 @@ export function handleImageInput (
         image.src = url
         await new Promise((resolve, reject) => {
           image.addEventListener('load', resolve)
-          image.addEventListener('error', reject)
+          image.addEventListener('error', () =>
+            reject(new TypeError(`Could not load '${file.name}' as image.`))
+          )
         })
         canvas.dataset.name = fileName(file.name)
         canvas.width = image.width
@@ -242,7 +244,8 @@ export function handleVideoInput (
           if (video.readyState < 2) return
           resolve()
         }
-        video.onerror = reject
+        video.onerror = () =>
+          reject(new TypeError(`Could not load '${file.name}' as video.`))
       })
       source.handleValue(video)
     }

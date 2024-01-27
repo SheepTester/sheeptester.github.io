@@ -1,4 +1,5 @@
 import './reform.css'
+import './src/handle-error'
 import {
   handleImageInput,
   handleSingleFileInput,
