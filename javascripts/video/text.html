@@ -87,9 +87,7 @@
           videoBitsPerSecond: 8000000
         })
         recorder.addEventListener('dataavailable', e => {
-          callback(
-            new File([e.data], 'wigglesplat.webm', { type: 'video/webm' })
-          )
+          callback(new File([e.data], 'wigglesplat.webm', e.data))
         })
         videoElem.addEventListener(
           'timeupdate',

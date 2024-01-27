@@ -5,9 +5,13 @@ const encoder = new TextEncoder()
 
 function selectItem<T extends { type: string }> (
   items: T[],
-  preferredType = ''
+  preferredTypes: string[] = []
 ): T {
-  return items.find(({ type }) => type.startsWith(preferredType)) ?? items[0]
+  return (
+    items.find(({ type }) =>
+      preferredTypes.some(prefix => type.startsWith(prefix))
+    ) ?? items[0]
+  )
 }
 function getDataTransfer (
   item: DataTransferItem
@@ -22,8 +26,6 @@ type FileInputOptions = {
   input?: HTMLInputElement | null
   dropTarget?: HTMLElement | null
   pasteTarget?: boolean
-  /** A MIME type prefix, such as `image/` or `text/plain`. */
-  preferredType?: string
   /** Returns whether the file was accepted. */
   onFile: (file: File | string) => Promise<boolean | void>
 }
@@ -32,9 +34,9 @@ function handleFileInput ({
   input,
   dropTarget,
   pasteTarget,
-  preferredType,
   onFile
 }: FileInputOptions): void {
+  const preferredTypes = input?.accept.replaceAll('*', '').split(',') ?? []
   async function handleFile (
     items: ArrayLike<File> | DataTransfer | null
   ): Promise<void> {
@@ -47,9 +49,9 @@ function handleFileInput ({
     const file =
       items instanceof DataTransfer
         ? await getDataTransfer(
-            selectItem(Array.from(items.items), preferredType)
+            selectItem(Array.from(items.items), preferredTypes)
           )
-        : selectItem(Array.from(items), preferredType)
+        : selectItem(Array.from(items), preferredTypes)
     if (file === null) {
       return
     }
@@ -175,7 +177,6 @@ export function handleImageInput (
     input,
     dropTarget: dropTarget instanceof HTMLElement ? dropTarget : undefined,
     pasteTarget: input?.classList.contains('reform:paste-target'),
-    preferredType: 'image/',
     onFile: async file => {
       if (typeof file === 'string') {
         return false
@@ -223,7 +224,6 @@ export function handleVideoInput (
     input,
     dropTarget: dropTarget instanceof HTMLElement ? dropTarget : undefined,
     pasteTarget: input?.classList.contains('reform:paste-target'),
-    preferredType: 'video/',
     onFile: async file => {
       if (typeof file === 'string') {
         return false
@@ -265,7 +265,6 @@ export function handleTextInput (
     input,
     dropTarget: dropTarget instanceof HTMLElement ? dropTarget : undefined,
     pasteTarget: input?.classList.contains('reform:paste-target'),
-    preferredType: 'text/',
     onFile: async file => {
       const text = file instanceof File ? await file.text() : file
       if (textarea instanceof HTMLTextAreaElement) {

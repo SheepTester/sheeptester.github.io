@@ -9,36 +9,22 @@
       name="description"
       content="Removes some formatting from text while keeping things like lists, italics, links, etc. so it can be pasted into a Google Doc with your own styling."
     />
+    <meta name="theme-color" content="#4fa1a7" />
 
     <link rel="stylesheet" type="text/css" href="/sheep3.css" />
+    <link rel="stylesheet" type="text/css" href="/reform/v1/index.css" />
     <script src="/sheep3.js" charset="utf-8"></script>
 
     <style>
-      html,
-      body {
-        height: 100%;
-      }
-      body {
-        margin: 0;
-        display: flex;
-        flex-direction: column;
-      }
-      .info {
-        flex: none;
-      }
-      .textareas {
-        display: flex;
-      }
-      .textareas,
-      #input,
-      #output,
       #preview {
-        flex: 1 0 0;
+        padding: 10px;
+        overflow: auto;
       }
     </style>
   </head>
   <body>
-    <div class="info">
+    <form class="main" role="main">
+      <h1>Remove formatting from text</h1>
       <p>
         Sometimes, I want to copy text from one site to a Google Doc or email
         and keep the existing default text formatting that I already have,
@@ -48,28 +34,57 @@
         text. However, I also want to keep some formatting, such as
         <em>italicized text</em>.
       </p>
-      <p>
-        If you paste text with formatting into a text box, it will automatically
-        clean the formatting in your clipboard. (If it doesn't automatically
-        copy a clean version, try clicking
-        <button id="copy">Copy</button>.)
-      </p>
+      <ol>
+        <li><p>Paste text with formatting into the text box below.</p></li>
+        <li><p>Click the "Copy clean text" button.</p></li>
+      </ol>
       <p>
         The left text box shows the HTML that was in your clipboard, and the
         right side shows the cleaned HTML.
       </p>
-    </div>
-    <div class="textareas">
-      <textarea
-        id="input"
-        placeholder="Paste text here"
-        autofocus
-        readonly
-      ></textarea>
-      <textarea id="output" readonly></textarea>
-    </div>
-    <iframe id="preview" sandbox="allow-same-origin"></iframe>
-    <script>
+      <div class="two-col-io reform:io">
+        <label class="input-controls file">
+          <input
+            type="file"
+            accept="text/html"
+            name="input"
+            class="hidden-accessible reform:text-input reform:paste-target"
+          />
+          <span class="icon icon-upload"></span>
+          <span class="file-label">
+            Choose or drop an HTML file or paste below
+          </span>
+          <span class="file-name">No file selected</span>
+        </label>
+        <textarea
+          name="input"
+          aria-label="Paste text with formatting"
+          class="input-content code"
+          readonly
+        ></textarea>
+        <div class="output-content" id="preview" data-deps="input"></div>
+        <div class="output-controls">
+          <button type="button" data-output="output" class="reform:copy">
+            <span class="icon icon-copy"></span>
+            <span>Copy clean text</span>
+          </button>
+          <a
+            class="download icon-btn icon icon-download"
+            aria-label="Download"
+          ></a>
+          <button
+            type="button"
+            class="icon icon-share"
+            data-output="output"
+            aria-label="Share"
+          ></button>
+        </div>
+      </div>
+    </form>
+
+    <script type="module">
+      import { on } from '/reform/v1/index.js'
+
       if (!('ClipboardItem' in window)) {
         alert(
           "Your browser doesn't support copying HTML. This won't work very well."
@@ -92,67 +107,26 @@
         'text-transform',
         'text-decoration'
       ]
-      let item
-      function sadError (error) {
-        console.dir(error)
-        alert(
-          `I wasn't able to copy the cleaned HTML. Maybe try pressing the "Copy" button?\n\n${error?.stack ??
-            error}`
-        )
-      }
-      document.addEventListener('paste', e => {
-        const html = e.clipboardData.getData('text/html')
-        if (html) {
-          input.value = html
-          const doc = parser.parseFromString(html, 'text/html')
-          for (const element of doc.querySelectorAll('[style]')) {
-            /** @type {HTMLElement} */
-            const elem = element
-            for (const prop of [...elem.style]) {
-              if (!allowList.includes(prop)) {
-                elem.style[prop] = null
-              }
+      on('preview', (preview, { input }) => {
+        const doc = parser.parseFromString(input, 'text/html')
+        for (const element of doc.querySelectorAll('[style]')) {
+          /** @type {HTMLElement} */
+          const elem = element
+          for (const prop of [...elem.style]) {
+            if (!allowList.includes(prop)) {
+              elem.style[prop] = null
             }
           }
-          for (const element of doc.querySelectorAll('[class]')) {
-            element.removeAttribute('class')
-          }
-          for (const element of [...doc.getElementsByTagName('style')]) {
-            element.remove()
-          }
-          output.value = doc.documentElement.outerHTML
-          preview.contentDocument.documentElement.innerHTML = output.value
-          const items = {}
-          for (const type of e.clipboardData.types) {
-            if (type !== 'text/html' && type.startsWith('text/')) {
-              items[type] = new Blob([e.clipboardData.getData(type)], { type })
-            }
-          }
-          items['text/html'] = new Blob([output.value], { type: 'text/html' })
-          item = new ClipboardItem(items)
-          navigator.clipboard.write([item]).catch(error => {
-            if (error.name === 'NotAllowedError') {
-              const mime = error.message.match(/text\/\S+/)[0]
-              if (mime in items) {
-                delete items[mime]
-                item = new ClipboardItem(items)
-                alert(
-                  'Your browser didn\'t let me copy something for you. Can you click "Copy" again?'
-                )
-                return
-              }
-            }
-            sadError(error)
-          })
-        } else {
-          input.value = ''
-          output.value = ''
         }
-      })
-      document.getElementById('copy').addEventListener('click', () => {
-        navigator.clipboard.write([item]).catch(error => {
-          sadError(error)
-        })
+        for (const element of doc.querySelectorAll('[class]')) {
+          element.removeAttribute('class')
+        }
+        for (const element of [...doc.getElementsByTagName('style')]) {
+          element.remove()
+        }
+        const html = doc.documentElement.outerHTML
+        preview.innerHTML = html
+        return new File([html], 'clean.html', { type: 'text/html' })
       })
     </script>
   </body>

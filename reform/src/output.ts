@@ -64,8 +64,8 @@ export class Output {
     return new Output({
       fileName: wrapper?.querySelector('.file-name'),
       downloadLink,
-      copyButton: wrapper?.querySelector('.icon-copy'),
-      shareButton: wrapper?.querySelector('.icon-share')
+      copyButton: wrapper?.querySelector('button.icon-copy, .reform\\:copy'),
+      shareButton: wrapper?.querySelector('button.icon-share')
     })
   }
 }

@@ -101,6 +101,8 @@ To redesign:
 - https://sheeptester.github.io/javascripts/zwsp-embedder.html Three inputs, where the first two drive the third. The relationship between the input/output textareas is shown in a table-like layout. SPECIAL LAYOUT
   - Need to think about layout and how to show relationship better
   - Could redesign it as a mutual dependency sort of thing
+- https://sheeptester.github.io/javascripts/greedy.html Interactive canvas.
+  - I think a toolbar (connected buttons, maybe with selected state) would still be useful
 - https://sheeptester.github.io/hello-world/bones-and-muscles.html Action button.
 - https://sheeptester.github.io/words-go-here/misc/format.html Textarea input. Output has colors/formatting; how to deal with dark/light theme text colors?
 - https://sheeptester.github.io/theflat/easierjson.html Textarea input, console.log output.
@@ -128,7 +130,6 @@ To redesign:
 - https://sheeptester.github.io/animations/kjlsintro2.html Action button (play button).
 - https://sheeptester.github.io/hello-world/scheme-interpret.html Just a JavaScript function. Needs an input/output textarea.
 - https://sheeptester.github.io/words-go-here/misc/yangyangyangyang.html Settings and an output.
-- https://sheeptester.github.io/javascripts/greedy.html Interactive canvas.
 - https://sheeptester.github.io/gamepro5/minigames/color.html Game board.
 - https://sheeptester.github.io/hello-world/mobile-pwa-test.html Left/right buttons to move an arrow.
 - https://sheeptester.github.io/words-go-here/misc/gcal.html Row of fields. Date and time fields.
@@ -136,7 +137,6 @@ To redesign:
 - https://sheeptester.github.io/hello-world/bell.html Can just be an action button or something.
 - https://sheeptester.github.io/hello-world/zdsfghnjvc.html (what is this??) Needs UI
 - https://sheeptester.github.io/animations/kjlsintro.html
-- https://sheeptester.github.io/javascripts/video/video-test.html Input video, previews video, downloads webm.
 - https://sheeptester.github.io/happynumbers/bytwos/ Ten numbers, outputs five numbers.
 - https://sheeptester.github.io/animations/svg/pies.html Two sliders.
 - https://sheeptester.github.io/javascripts/font-colour-remover.html Input must be pasted. Two outputs: code and rich text.
@@ -464,6 +464,7 @@ Converted:
 - https://sheeptester.github.io/javascripts/imagetoscheme.html
   - preview is smaller
 - https://sheeptester.github.io/javascripts/chopper.html
+- https://sheeptester.github.io/javascripts/video/video-test.html
 - https://sheeptester.github.io/all/generator.html: text -> text (code)
 - https://sheeptester.github.io/words-go-here/misc/chunks.html: image -> image
 - https://sheeptester.github.io/words-go-here/misc/ucsd-map.html: options -> image

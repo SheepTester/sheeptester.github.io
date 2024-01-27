@@ -294,7 +294,8 @@ select {
     width: 24px;
     height: 24px;
   }
-  button& {
+  button&,
+  &.icon-btn {
     width: 48px;
     height: 48px;
   }
@@ -543,13 +544,24 @@ textarea.output-content {
 
   & :first-child {
     border-top-left-radius: 10px;
+
+    &:is(button) {
+      flex: auto;
+      display: flex;
+      padding: 5px;
+      align-items: center;
+
+      & .icon {
+        margin: 0 10px;
+      }
+    }
   }
 
   & :last-child {
     border-top-right-radius: 10px;
   }
 
-  & button {
+  & > .icon {
     border-left: 1px solid var(--line);
     min-height: 48px;
     height: 100%;
@@ -577,7 +589,8 @@ textarea.output-content {
 }
 label.file,
 .file[href],
-.output-controls button {
+.output-controls button,
+.output-controls .icon-btn[href] {
   transition: background-color 0.2s, border-color 0.2s, box-shadow 0.2s;
   &:hover {
     background-color: var(--hover);
@@ -588,7 +601,8 @@ label.file:has(:focus-visible) {
   box-shadow: 0 0 0 3px var(--focus-transparent);
 }
 .file[href],
-.output-controls button {
+.output-controls button,
+.output-controls .icon-btn[href] {
   &:focus {
     outline: none;
   }
