@@ -79,7 +79,7 @@
         <span class="label-secondary">
           Group pixels into squares of this size.
         </span>
-        <input type="number" name="resolution" value="3" />
+        <input type="number" name="resolution" value="3" min="1" />
       </label>
     </form>
 
@@ -102,6 +102,9 @@
       }
 
       on('output', (div, { image: c, resolution: RESOLUTION }) => {
+        // if the RESOLUTION isn't a positive integer then set it to 3
+        RESOLUTION = Number.isInteger(RESOLUTION) && RESOLUTION > 0 ? RESOLUTION : 3;
+        
         var data = c.getImageData(0, 0, c.canvas.width, c.canvas.height),
           newpixels = []
         for (var y = 0; y < c.canvas.height; y += RESOLUTION) {
@@ -123,18 +126,9 @@
         const output = newpixels
           .map(a =>
             a
-              .map(a => {
-                if (a < 25) return '@'
-                else if (a < 50) return '%'
-                else if (a < 75) return '#'
-                else if (a < 100) return '*'
-                else if (a < 125) return '+'
-                else if (a < 150) return '='
-                else if (a < 175) return '-'
-                else if (a < 200) return ':'
-                else if (a < 225) return '.'
-                else return ' '
-              })
+              .map(a =>
+                "@%*+=-:.  "[Math.floor(a / 25)] // what were those if-else statements
+              )
               .join('')
           )
           .join('\n')
