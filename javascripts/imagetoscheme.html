@@ -102,9 +102,8 @@
       }
 
       on('output', (div, { image: c, resolution: RESOLUTION }) => {
-        
         // if the RESOLUTION isn't a positive integer then set it to 3
-        RESOLUTION = (!(Number.isInteger(RESOLUTION) && RESOLUTION > 0)) ? 3 : RESOLUTION;
+        RESOLUTION = Number.isInteger(RESOLUTION) && RESOLUTION > 0 ? RESOLUTION : 3;
         
         var data = c.getImageData(0, 0, c.canvas.width, c.canvas.height),
           newpixels = []
