@@ -45,6 +45,9 @@
         font-size: 3em;
         font-weight: bold;
       }
+      .stat [href]:hover {
+        text-decoration: underline;
+      }
       .applied {
         color: #74e0ff;
       }
@@ -82,22 +85,27 @@
         </a>
       </nav>
       <h1 class="content">Summer 2024 Internship Season</h1>
-      <p class="content">Updated 2023-09-09.</p>
+      <p class="content">Updated 2024-04-03.</p>
       <ul class="content summary">
         <li class="stat">
           <span class="stat-num applied">92</span>
           <span class="stat-note">applied</span>
         </li>
         <li class="stat">
-          <span class="stat-num interviews">1</span>
-          <span class="stat-note">interview</span>
+          <span class="stat-num interviews">2</span>
+          <span class="stat-note">interviews</span>
         </li>
         <li class="stat">
-          <span class="stat-num offers">1</span>
+          <a
+            href="https://www.linkedin.com/posts/yen-sean_tesla-teslainterns2024-activity-7130695634340233216-IInF/"
+            class="stat-num offers"
+          >
+            1
+          </a>
           <span class="stat-note">offer</span>
         </li>
         <li class="stat">
-          <span class="stat-num rejected">40</span>
+          <span class="stat-num rejected">54</span>
           <span class="stat-note">rejected</span>
         </li>
       </ul>
@@ -114,11 +122,10 @@
       import { sankey } from '../graph/sankey.js'
       import { timeline } from '../graph/timeline.js'
 
-      const TOTAL_APPLIED = 92
-      const TOTAL_REJECTED = 40
-      const TOTAL_OA = 8
-      const REJECTED_AFTER_OA = 4
-      const TOTAL_INTERVIEW_OFFER = 1
+      const TOTAL_APPLIED = 93
+      const TOTAL_REJECTED = 54
+      const TOTAL_OA = 9
+      const REJECTED_IMMEDIATELY_AFTER_OA = 7 - 1
 
       sankey(document.getElementById('sankey'), {
         nodes: [
@@ -133,31 +140,29 @@
           {
             source: 'Applied',
             target: 'Rejected',
-            value: TOTAL_REJECTED - REJECTED_AFTER_OA
+            value: TOTAL_REJECTED - REJECTED_IMMEDIATELY_AFTER_OA
           },
-          {
-            source: 'Applied',
-            target: 'Interview',
-            value: TOTAL_INTERVIEW_OFFER
-          },
+          { source: 'Applied', target: 'Interview', value: 1 },
+          { source: 'Applied', target: 'OA', value: TOTAL_OA },
           {
             source: 'Applied',
             target: 'Waiting',
             value:
               TOTAL_APPLIED -
-              (TOTAL_REJECTED - REJECTED_AFTER_OA + TOTAL_INTERVIEW_OFFER)
+              (TOTAL_REJECTED - REJECTED_IMMEDIATELY_AFTER_OA + TOTAL_OA + 2)
           },
-          { source: 'Applied', target: 'OA', value: TOTAL_OA },
+          { source: 'Interview', target: 'Offer', value: 1 },
+          { source: 'Interview', target: 'Rejected', value: 1 },
+          { source: 'OA', target: 'Interview', value: 1 },
           {
-            source: 'Interview',
-            target: 'Offer',
-            value: TOTAL_INTERVIEW_OFFER
+            source: 'OA',
+            target: 'Rejected',
+            value: REJECTED_IMMEDIATELY_AFTER_OA
           },
-          { source: 'OA', target: 'Rejected', value: REJECTED_AFTER_OA },
           {
             source: 'OA',
             target: 'Waiting',
-            value: TOTAL_OA - REJECTED_AFTER_OA
+            value: TOTAL_OA - (REJECTED_IMMEDIATELY_AFTER_OA + 1)
           }
         ]
       })
