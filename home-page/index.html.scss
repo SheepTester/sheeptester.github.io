@@ -615,7 +615,6 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
 
             .interest-sheep {
               grid-area: sheep;
-              // https://commons.wikimedia.org/wiki/File:Sheep,_Stodmarsh_6.jpg
               background-image: url('../img/interest-sheep.jpg');
             }
             .interest-webdev {
@@ -637,7 +636,7 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
             p.interest-name {
               content: "Web dev";
 
-              @media (max-width: 400px) {
+              @media (max-width: 500px) {
                 .webdev-extra {
                   display: none;
                 }
@@ -792,13 +791,33 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
               }
             }
             span.block-link-subtitle {
-              content: "Join my server to DM me without sending a friend request. ";
+              content: "Join my server to message me without sending a friend request. ";
             }
           }
           span.block-link-icon-wrapper {
             $type: "span";
             $extra-class: "block-link-icon";
             $social: map.get($socials, 'discord');
+            @import "./templates/social.html.scss";
+          }
+        }
+        content: " ";
+        a.block-link[href="https://www.instagram.com/sheeptester/"] {
+          span.block-link-content {
+            span.block-link-title {
+              content: "Follow me on Instagram";
+              span.colon {
+                content: "; ";
+              }
+            }
+            span.block-link-subtitle {
+              content: "I like big numbers. ";
+            }
+          }
+          span.block-link-icon-wrapper {
+            $type: "span";
+            $extra-class: "block-link-icon";
+            $social: map.get($socials, 'instagram');
             @import "./templates/social.html.scss";
           }
         }
@@ -826,24 +845,6 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
             }
             span.block-link-icon.resume-icon {}
           }
-        }
-      }
-
-      .card {
-        h2#legal {
-          content: "Legal";
-        }
-
-        p {
-          content: "The ";
-          a.link[href="https://commons.wikimedia.org/wiki/File:Sheep,_Stodmarsh_6.jpg"] {
-            content: "photo of the sheep";
-          }
-          content: " is by Kevin Law and is licensed under ";
-          a.link[href="https://creativecommons.org/licenses/by-sa/2.0/deed.en"] {
-            content: "CC BY-SA 2.0";
-          }
-          content: ".";
         }
       }
     }

@@ -340,3 +340,8 @@ usernames:
 discord:
   name: Discord
   bg: '#7289DA'
+
+instagram:
+  name: Instagram
+  type: instagram
+  border: white
