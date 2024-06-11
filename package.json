@@ -2,7 +2,7 @@
   "scripts": {
     "all": "node ./all/get-all.mjs && node ./all/gen.js",
     "compress": "node ./img/compress.js",
-    "reform:build": "esbuild --bundle --format=esm reform/index.ts --outdir=reform/v1/ --supported:nesting=false --minify",
+    "reform:build": "esbuild --bundle --format=esm reform/index.ts --outdir=reform/v1/ --supported:nesting=false --minify --sourcemap",
     "reform:dev": "esbuild --bundle --format=esm reform/index.ts --outdir=reform/v1/ --servedir=. --sourcemap"
   },
   "dependencies": {

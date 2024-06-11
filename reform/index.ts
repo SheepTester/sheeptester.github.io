@@ -192,7 +192,9 @@ export function on<T> (
     ?.querySelector('.output-controls')
   if (outputControls) {
     const output = Output.fromOutputControls(outputControls)
-    sources[name].dependents.push(file => output.handleFile(file))
+    sources[name].dependents.push(
+      file => file instanceof File && output.handleFile(file)
+    )
   }
 
   const compute = async () => {
