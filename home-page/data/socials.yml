@@ -63,6 +63,11 @@ profiles:
     bg: '#1ed760'
     border: black
 
+  - name: Monkeytype
+    link: https://monkeytype.com/profile/sheeptester
+    border: '#e2b714'
+    bg: '#323437'
+
   - name: JSFiddle
     link: https://jsfiddle.net/user/SheepTester/
     bg: '#0483FF'
