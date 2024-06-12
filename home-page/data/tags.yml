@@ -10,6 +10,12 @@ game:
   colour2: '#2ac213'
   dark: true
 
+new:
+  name: Recently added
+  colour1: '#0accb9'
+  colour2: '#0689a7'
+  dark: true
+
 utility:
   name: Utility
   colour1: '#24b1f8'
@@ -24,11 +30,13 @@ directory:
   name: Directory
   colour1: '#97a6b4'
   colour2: '#7b8098'
+  dark: true
 
 school:
   name: For school
   colour1: '#e09304'
   colour2: '#fe7716'
+  dark: true
 
 incomplete:
   name: Incomplete

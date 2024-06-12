@@ -251,6 +251,21 @@
   tags:
     - game
 
+- path: /javascripts/one-pdf.html
+  image: img/one-pdf.webp
+  name: Combine images into single PDF
+  description: >-
+    During Covid, we often had to submit photos or screenshots of our work as a
+    single PDF.
+
+    This just puts each image on one page. It can support pages of different
+    sizes, if you want that. You can also add pages containing text if you want,
+    but honestly they're kind of ugly (and a bit buggy).
+  tags:
+    - utility
+    - school
+    - new
+
 - path: /javascripts/video/shit/
   image: img/openshit-smaller.png
   name: OpenShit
@@ -869,6 +884,126 @@
   tags:
     - utility
     - school
+
+- path: https://cse110-sp23-group20.github.io/8ball/
+  image: img/8ball.webp
+  name: Magic 8 Ball
+  description: >-
+    This was our first mini-project for CSE 110: Software Engineering at UCSD.
+    It was spring 2023, and our professor, Thomas A. Powell, had recently
+    discovered ChatGPT and was immediately enthralled by its potential to
+    disrupt the future, so he made the quarter fortune telling themed.
+
+    This assignment was an "exploratory project" to play around with ChatGPT and
+    other generative AI models and use it to create a magic 8-ball web app. I
+    think he wanted us to discover the limits of using AI to generate code, but
+    we didn't really encounter any issues. We were also encouraged to take
+    advantage of web features like the Web Speech API.
+
+    Our group used ChatGPT to slap together the functionality of the app. Then,
+    I came in to pimp up the design. I took this opportunity to gain more
+    experience with CSS gradient animations.
+
+    Here's the original assignment description:
+
+    Generative AI systems like GitHub Copilot, ChatGPT4, and others could
+    significantly change how we build software. However, the specifics of such
+    changes are still to be determined.  When you face an unknown, especially
+    for something you may come to really need, it is advisable to do an
+    exploratory project.
+
+    In this assignment, we are going to perform some exploratory programming
+    specifically in support of LLMs and other generative AI systems such as
+    image, audio, and video generators so that we "derisk" their use in the
+    large project.  To evaluate the use of these technologies, we are doing a
+    small warm-up project that is related to our overall "fortune telling"
+    prompt - to code a "Magic 8-ball" application.
+
+    Your test 8-ball app should use standard HTML, CSS, and JavaScript and
+    should not use libraries or frameworks, as they simply aren't needed.  The
+    level of visual presentation is up to you; depending on how your efforts
+    progress, you can make it much more visual with sound effects, animations,
+    voice, etc. or not.  Most importantly, you will need to focus the most on
+    code quality, including tests, documentation, and other aspects of a
+    well-engineered piece of code.  At the completion of your mini-sprint, you
+    demonstrate your app in a short video, access to the working app for your TA
+    mentor, and a short 12-slide or less presentation of what you uncovered
+    while using the AI tools.  Our main goal of the presentation is to
+    understand how we might use these tools (or not) in our project and share
+    findings, good and bad, with your fellow classmates.
+
+    The top 5 teams in terms of code and analysis will receive a prize, some
+    bonus points, and class recognition.
+
+    Note: The discovery phase for the prompt should proceed in parallel with
+    your overall research, brainstorming, and design effort.  Because of this,
+    you may consider breaking your team into two pieces to tackle each part and
+    regroup mid-week, sharing thoughts and providing feedback for each other.
+  tags:
+    - school
+    - visual
+    - new
+
+- path: https://cse110-sp23-group20.github.io/fortune-teller/source/home-page/
+  image: img/cse110.webp
+  name: Envision Your Destinty
+  description: >-
+    This was our final project for CSE 110: Software Engineering at UCSD. It was
+    spring 2023, and our professor, Thomas A. Powell, had recently discovered
+    ChatGPT and was immediately enthralled by its potential to disrupt the
+    future, so he made us make a fortune-telling app.
+
+    We were encouraged to use AI to generate code and images for the app, so
+    that's what our team did. We split up our team members into different
+    fortune telling concepts, and we each developed a prototype with basic
+    functionality. Then, in the final week, I went through and pimped up all the
+    styling so that not only did the website look cohesive, but there were also
+    many fancy animations and effects. I learned more techniques for CSS
+    animations, like how visibility can be "animated" to create exit animations,
+    so it was somewhat worthwhile.
+
+    As a software engineering class, we were expected to follow software
+    engineering principles, such as writing tests, doing code reviews, and
+    pacing our workload evenly, and supposedly this was supposed to be reflected
+    in our grade. However, we did none of that. Instead, we approached it more
+    like a hackathon, grinding out features in the final days of the project.
+
+    Our TA did not care. She was dazzled by the fancy CSS animations and gave us
+    an A. Meanwhile, other students who followed AGILE more meticulously
+    received lower grades, which for some of them were their first B's. In
+    addition to the midterm being graded on quantity over quality (i.e. long, BS
+    answers), I came out of the class with one of the higher grades without
+    knowing what AGILE is. Scuffed class.
+  tags:
+    - school
+    - visual
+    - new
+
+- path: https://members.acmucsd.com/
+  image: img/acm.webp
+  name: ACM Membership Portal
+  description: >-
+    ACM at UCSD, which stands for many words that don't mean anything, is
+    basicially the computer science org at UC San Diego.
+
+    The membership portal was originally created to facilitate tracking how many
+    students attended our events to prove to our student council that their
+    funding wasn't going to waste. Its scope was later expanded to have a
+    leaderboard for students who attended the most events, and a merch store
+    where attendance points can be used to buy ACM-branded clothes and other
+    swag.
+
+    The original website was written in React, and client-side rendering wasn't
+    that trendy anymore, so around the time I joined ACM, they were starting to
+    rewrite and redesign the entire website in Next.js.
+
+    I helped to speed up the rewrite, as well as making the website look fancier
+    with fancy animations for the home dashboard, storefront, and user profile
+    pages.
+  tags:
+    - school
+    - unintuitive
+    - new
 
 - path: /words-go-here/misc/fluent-emoji.html
   image: img/fluent-emoji.png
