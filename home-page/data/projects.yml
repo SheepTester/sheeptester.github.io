@@ -903,42 +903,6 @@
     Our group used ChatGPT to slap together the functionality of the app. Then,
     I came in to pimp up the design. I took this opportunity to gain more
     experience with CSS gradient animations.
-
-    Here's the original assignment description:
-
-    Generative AI systems like GitHub Copilot, ChatGPT4, and others could
-    significantly change how we build software. However, the specifics of such
-    changes are still to be determined.  When you face an unknown, especially
-    for something you may come to really need, it is advisable to do an
-    exploratory project.
-
-    In this assignment, we are going to perform some exploratory programming
-    specifically in support of LLMs and other generative AI systems such as
-    image, audio, and video generators so that we "derisk" their use in the
-    large project.  To evaluate the use of these technologies, we are doing a
-    small warm-up project that is related to our overall "fortune telling"
-    prompt - to code a "Magic 8-ball" application.
-
-    Your test 8-ball app should use standard HTML, CSS, and JavaScript and
-    should not use libraries or frameworks, as they simply aren't needed.  The
-    level of visual presentation is up to you; depending on how your efforts
-    progress, you can make it much more visual with sound effects, animations,
-    voice, etc. or not.  Most importantly, you will need to focus the most on
-    code quality, including tests, documentation, and other aspects of a
-    well-engineered piece of code.  At the completion of your mini-sprint, you
-    demonstrate your app in a short video, access to the working app for your TA
-    mentor, and a short 12-slide or less presentation of what you uncovered
-    while using the AI tools.  Our main goal of the presentation is to
-    understand how we might use these tools (or not) in our project and share
-    findings, good and bad, with your fellow classmates.
-
-    The top 5 teams in terms of code and analysis will receive a prize, some
-    bonus points, and class recognition.
-
-    Note: The discovery phase for the prompt should proceed in parallel with
-    your overall research, brainstorming, and design effort.  Because of this,
-    you may consider breaking your team into two pieces to tackle each part and
-    regroup mid-week, sharing thoughts and providing feedback for each other.
   tags:
     - school
     - visual
