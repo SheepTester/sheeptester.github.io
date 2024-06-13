@@ -17,7 +17,10 @@
       href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&family=Noto+Sans+TC:wght@900&family=Open+Sans:ital,wght@0,400;0,700;1,400&family=Raleway:wght@900&display=swap"
       rel="stylesheet"
     />
+    <link rel="stylesheet" type="text/css" href="/sheep3.css" />
     <link rel="stylesheet" href="./styles.css" />
+
+    <script src="/sheep3.js" charset="utf-8"></script>
   </head>
   <body>
     <!--
@@ -33,16 +36,15 @@
       As is ACM's résume tips document:
       - https://docs.google.com/document/d/1i19FF-Q7R7pzESYCi8FTES-GQhksRq2vvy_WipQwawc/
     -->
+
+    <div class="blur"></div>
+
     <section class="intro">
       <h1 class="my-name">
         <a href="https://sheeptester.github.io/" class="link">Sean Yen</a>
       </h1>
 
       <div class="contact-info">
-        <div class="contact-entry">
-          <div class="icon mail-icon">Email</div>
-          <a id="email" class="contact-link link show-link">iggle@gmail.com</a>
-        </div>
         <div class="contact-entry">
           <div class="icon globe-icon">Website</div>
           <a
@@ -52,12 +54,16 @@
             sheeptester.github.io
           </a>
         </div>
+        <div class="contact-entry">
+          <div class="icon mail-icon">Email</div>
+          <a id="email" class="contact-link link show-link">iggle@gmail.com</a>
+        </div>
         <!-- <div class="contact-entry">
           <div class="icon phone-icon">Phone</div>
           <a id="phone" class="contact-link link show-link">(000) 000-0000</a>
         </div> -->
         <div class="contact-entry">
-          <div class="icon github-icon-white">GitHub</div>
+          <div class="icon github-icon">GitHub</div>
           <a
             href="https://github.com/SheepTester"
             class="contact-link link show-link"
@@ -75,34 +81,34 @@
           </a>
         </div>
       </div>
-    </section>
 
-    <div class="logo-wrapper">
       <a href="https://sheeptester.github.io/" class="logo">
         <svg
-          width="48"
-          viewBox="0 0 480 480"
+          viewBox="40 90 400 300"
           xmlns="http://www.w3.org/2000/svg"
           class="logo-svg"
           aria-label="SheepTester logo"
         >
           <path
             d="
-          M90 90
-          a50 50 0 0 0 0 100
-          H98.579
-          A150 150 0 1 0 381.421 190
-          H390
-          a50 50 0 0 0 0 -100
-          a50 50 0 1 1 -100 0
-          a50 50 0 1 1 -100 0
-          a50 50 0 1 1 -100 0
-          z
-        "
+              M90 90
+              a50 50 0 0 0 0 100
+              H98.579
+              A150 150 0 1 0 381.421 190
+              H390
+              a50 50 0 0 0 0 -100
+              a50 50 0 1 1 -100 0
+              a50 50 0 1 1 -100 0
+              a50 50 0 1 1 -100 0
+              z
+            "
+            vector-effect="non-scaling-stroke"
           />
         </svg>
       </a>
-    </div>
+    </section>
+
+    <div class="flex"></div>
 
     <section class="section list">
       <h2 class="header">Education</h2>
@@ -552,11 +558,13 @@
             Garnered nearly 1,000 clicks per month from Google with up to 736
             concurrent users.
           </li>
-          <li>Made the app accessible to students without smartphones.</li>
+          <li class="screen-only">
+            Made the app accessible to students without smartphones.
+          </li>
         </ul>
       </article>
 
-      <article>
+      <article class="screen-only">
         <div class="info">
           <h3 class="name">
             <a
