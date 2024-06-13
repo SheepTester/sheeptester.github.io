@@ -5,6 +5,7 @@
 
 :root {
   --theme: #22938e;
+  --margin: 0.4in;
   /* Firefox and Edge (but not Chrome!) removes the header background color */
   -webkit-print-color-adjust: exact;
   print-color-adjust: exact;
@@ -23,7 +24,7 @@ body {
   margin: 0 auto;
   font-family: 'Open Sans', sans-serif;
   box-sizing: border-box;
-  padding: 0.5in;
+  padding: var(--margin);
   border-top: 10px solid var(--theme);
   /* line-height: 1.25; */
 }
@@ -129,7 +130,7 @@ li {
 }
 .name {
   font-family: 'Montserrat', 'Noto Sans TC', sans-serif;
-  font-weight: 900;
+  font-weight: 700;
   margin: 0;
   font-size: 18px;
 }
@@ -188,6 +189,7 @@ li {
   display: flex;
   height: 40px;
   align-items: end;
+  margin-top: -5px;
 }
 .my-name {
   font-family: 'Montserrat', sans-serif;
@@ -229,17 +231,28 @@ li {
   word-break: break-word;
 }
 
+.bg-anchor {
+  position: relative;
+  z-index: -1;
+}
+.bg {
+  position: absolute;
+  left: calc(var(--margin) * -1);
+  right: calc(var(--margin) * -1);
+  top: calc(var(--margin) * -1 - 10px);
+  height: 500px;
+  overflow: hidden;
+}
 .blur {
-  position: fixed;
+  position: absolute;
   top: 0;
-  right: -80px;
+  right: -90px;
   width: 300px;
   height: 80px;
   border-radius: 500px;
   background-image: linear-gradient(90deg, #20de88, #28bbe8);
   filter: blur(50px);
   transform: rotate(30deg);
-  z-index: -1;
 }
 
 .for-the-bots {
