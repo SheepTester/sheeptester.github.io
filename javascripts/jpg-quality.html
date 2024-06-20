@@ -35,7 +35,7 @@
         </label>
         <div class="image-content input-content"><canvas></canvas></div>
         <div class="image-content output-content">
-          <img id="output" data-deps="image quality format" />
+          <img id="output" data-deps="image quality format shrink" />
         </div>
         <div class="output-controls">
           <a class="file download">
@@ -111,21 +111,73 @@
           </span>
         </label>
       </fieldset>
+
+      <div class="field-label range-wrapper">
+        <label class="range-label">
+          <span class="label-primary">Shrink factor</span>
+          <span class="label-secondary">
+            For high resolution images, the compression artifacts aren't as
+            apparent. This shrinks the image first, compresses, then scales it
+            back up.
+          </span>
+          <input
+            type="range"
+            name="shrink"
+            value="1"
+            min="1"
+            max="10"
+            step="any"
+          />
+        </label>
+        <input
+          type="number"
+          name="shrink"
+          value="1"
+          min="1"
+          max="10"
+          step="0.01"
+          aria-label="Shrink factor value"
+        />
+      </div>
     </form>
 
     <script type="module">
       import { on } from '/reform/v1/index.js'
 
-      on('output', async (image, { image: { canvas }, quality, format }) => {
-        const url = canvas.toDataURL(format, quality)
-        image.src = url
-        const blob = await fetch(url).then(r => r.blob())
-        return new File(
-          [blob],
-          canvas.dataset.name + (format === 'image/jpeg' ? '.jpg' : '.webp'),
-          blob
-        )
-      })
+      on(
+        'output',
+        async (image, { image: { canvas }, quality, format, shrink }) => {
+          const original = canvas
+          let context
+          if (shrink > 1) {
+            const newCanvas = document.createElement('canvas')
+            newCanvas.width = canvas.width / shrink
+            newCanvas.height = canvas.height / shrink
+            context = newCanvas.getContext('2d')
+            context.drawImage(canvas, 0, 0, newCanvas.width, newCanvas.height)
+            canvas = newCanvas
+          }
+          let url = canvas.toDataURL(format, quality)
+          image.src = url
+          if (shrink > 1) {
+            await new Promise((resolve, reject) => {
+              image.addEventListener('load', resolve)
+              image.addEventListener('error', reject)
+            })
+            canvas.width = original.width
+            canvas.height = original.height
+            context.drawImage(image, 0, 0, canvas.width, canvas.height)
+            url = canvas.toDataURL(format, quality)
+            image.src = url
+          }
+          const blob = await fetch(url).then(r => r.blob())
+          return new File(
+            [blob],
+            canvas.dataset.name + (format === 'image/jpeg' ? '.jpg' : '.webp'),
+            blob
+          )
+        }
+      )
     </script>
   </body>
 </html>
