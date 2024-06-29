@@ -1276,6 +1276,9 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
         color: white;
         text-align: center;
       }
+      footer img {
+        max-width: 100%
+      }
     }
     footer {
       css {
