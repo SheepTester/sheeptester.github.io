@@ -1267,7 +1267,7 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
 
     css {
       footer {
-        background-image: url('./geocities/stars.gif');
+        background-image: url('./geocities/stars2.gif');
         background-size: 400px;
         grid-area: footer;
         display: flex;
@@ -1287,12 +1287,13 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
       .footer-gradient {}
       css {
         .footer-content {
-          height: 500px;
           padding: 20px;
         }
       }
       .footer-content {
-
+        p { img[src="/home-page/geocities/spinning construction sign.gif"][alt="spinning construction sign"][loading="lazy"]; }
+        p { img[src="/home-page/geocities/under construction.gif"][alt="under construction"][loading="lazy"]; }
+        p { img[src="/home-page/geocities/workers.gif"][alt="workers"][loading="lazy"]; }
       }
     }
 
