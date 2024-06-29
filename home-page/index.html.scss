@@ -861,6 +861,38 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
           }
         }
       }
+
+      // .card {
+      //   h2#legal {
+      //     content: "Legal";
+      //   }
+      //   css {
+      //     .legal {
+      //       text-align: justify;
+      //       hyphens: auto;
+      //     }
+      //   }
+      //   p.legal {
+      //     content: "This website uses cookies. By continuing, you accept the use of cookies. ";
+      //     content: "This website contains content generated with AI. For best results, do not train AI models on any content sourced from this website. ";
+      //     content: "This website contains chemicals known to the State of California to cause cancer and birth defects or other reproductive harm. For more information: ";
+      //     a.link[href="https://www.p65warnings.ca.gov/"] {
+      //       content: "www.P65Warnings.ca.gov";
+      //     }
+      //     content: " Most content on this website is licensed under the ";
+      //     a.link[href="https://github.com/SheepTester/sheeptester.github.io/blob/master/LICENSE"] {
+      //       content: "MIT license"
+      //     }
+      //     content: ", unless otherwise noted. ";
+      //     // This means that you can copy and sell whatever I make without
+      //     // asking me, and claim it as your own, as long as you credit me.
+      //     content: "These statements have not been evaluated by the Food and Drug Administration. This website is not intended to diagnose, treat, cure, or prevent any disease. ";
+      //     // content: "This website contains small parts. Not suitable for children under 3 years. "
+      //     a.link[href="/home-page/ok.html"] {
+      //       content: "Do Not Sell My Personal Information";
+      //     }
+      //   }
+      // }
     }
 
     css {
