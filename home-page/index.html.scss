@@ -85,6 +85,12 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
       height: 100%;
     }
     body {
+      display: grid;
+      grid-template-columns: 1fr;
+      grid-template-areas:
+        'sidebar'
+        'projects'
+        'footer';
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
         'Helvetica Neue', Arial, sans-serif, 'Apple Color Emoji',
         'Segoe UI Emoji', 'Segoe UI Symbol';
@@ -102,7 +108,11 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
   }
   @media (min-width: 1000px) {
     body {
-      display: flex;
+      display: grid;
+      grid-template-columns: auto 1fr;
+      grid-template-areas:
+        'sidebar projects'
+        'footer footer';
     }
   }
   body[role="main"] {
@@ -279,6 +289,7 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
         max-width: 600px;
         width: 100%;
         margin: 0 auto;
+        grid-area: sidebar;
       }
     }
     @media (min-width: 1000px) {
@@ -897,7 +908,7 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
 
     css {
       .project-wrapper {
-        flex: auto;
+        grid-area: projects;
       }
     }
     .project-wrapper {
@@ -923,7 +934,6 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
             font-weight: lighter;
             font-size: 56px;
             margin: 0;
-            margin-top: 20px;
             color: rgba(255, 255, 255, 0.9);
           }
         }
@@ -1252,6 +1262,37 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
         a.link[href="./all/tinder.html"] {
           content: "Explore and sort through everything else.";
         }
+      }
+    }
+
+    css {
+      footer {
+        background-image: url('./geocities/stars.gif');
+        background-size: 400px;
+        grid-area: footer;
+        display: flex;
+        flex-direction: column;
+        font: unset;
+        color: white;
+        text-align: center;
+      }
+    }
+    footer {
+      css {
+        .footer-gradient {
+          height: 500px;
+          background-image: linear-gradient(to bottom, #171931, black, transparent);
+        }
+      }
+      .footer-gradient {}
+      css {
+        .footer-content {
+          height: 500px;
+          padding: 20px;
+        }
+      }
+      .footer-content {
+
       }
     }
 
