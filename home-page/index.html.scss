@@ -387,9 +387,9 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
           }
         }
         p.about-me {
-          content: "I’m Sean, a third-year undergraduate at UC San Diego majoring in ";
+          content: "I’m Sean, entering my fourth year at ";
           a.link[href="https://sheeptester.github.io/longer-tweets/major/"] {
-            content: "computer engineering";
+            content: "UC San Diego";
           }
           content: ", formerly a student at Gunn High School.";
         }
@@ -782,6 +782,20 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
             height: 32px;
           }
         }
+        a.block-link[href="./guestbook/"] {
+          span.block-link-content {
+            span.block-link-title {
+              content: "Sign the Guestbook";
+              span.colon {
+                content: ": ";
+              }
+            }
+            span.block-link-subtitle {
+              content: "Leave comments, ask questions, or say what's on your mind. ";
+            }
+          }
+        }
+        content: " ";
         a.block-link[href="https://discord.gg/srtYgbVw4H"] {
           span.block-link-content {
             span.block-link-title {
