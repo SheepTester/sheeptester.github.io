@@ -314,6 +314,29 @@ main.js
 README.md
 styles.css
 <
+>doufu
+>client
+>mesh
+index.js
+index.js.map
+<
+<
+>server
+>generate
+index.js
+index.js.map
+<
+worker.js
+worker.js.map
+<
+atlas-FNVLU72E.png
+index.css
+index.css.map
+index.html
+index.js
+index.js.map
+pancake-YUTCT4IZ.png
+<
 >dulcinea
 >css
 >games
@@ -559,6 +582,11 @@ gamepro5.js
 index.html
 README.md
 sidebar.js
+<
+>guestbook
+index.css
+index.html
+sitemap.txt
 <
 >gunn-map
 >map-making
@@ -835,6 +863,18 @@ bash.bashrc
 .profile
 .vimrc
 <
+>dotfiles-vscode
+>snippets
+css.json
+html.json
+javascript.json
+scss.json
+xml.json
+<
+code --list-extensions
+keybindings.json
+settings.json
+<
 >dynamic-sw
 index.html
 sw.js
@@ -1048,6 +1088,7 @@ defs.h
 demo-btns.md
 discord-wassup.ahk
 doll.asm
+drunk.html
 dumb-json.js
 dumb-query.js
 dumb.html
@@ -1081,6 +1122,7 @@ hello-gamers.svg
 hello-server.js
 help.cpp
 hexell thing.rkt
+heyy.html
 imperichat-bot.js
 imperichat-bot2.js
 imperichat-register.js
@@ -1103,6 +1145,7 @@ orbiit.svg
 orthonormalize.rkt
 package.json
 pensive-test.html
+polyfill.html
 pq2.ts
 pq3.ts
 proc.vhd
@@ -1116,6 +1159,8 @@ resize.html
 ronnie-hw.py
 sans-nouveaux-test.html
 schoology-get-seniors.js
+scrape-finance.mjs
+scrape-finance.ts
 server-list-ping.mjs
 sesame.py
 sesame.ts
@@ -1155,6 +1200,27 @@ vim-demo.mcfunction
 wot.rkt
 wow.html
 wow.txt
+<
+>ucsd-commencement-voices
+>audio
+.gitignore
+<
+>images
+.gitignore
+<
+>video
+.gitignore
+<
+.gitignore
+bg.png
+download.ts
+draw-images.ts
+ffmpeg-list.ts
+image.png
+list.txt
+prelude.js
+README.md
+voices.ts
 <
 >ucsd-schedule-gen
 courses.js
@@ -1203,6 +1269,7 @@ tiktok-sort-views.user.js
 touch-piskel.user.js
 ucsd-account-history-expand.user.css
 ucsd-account-lookup-student-id.user.js
+ucsd-sets-auto-ta-eval.user.js
 user-identifier.user.css
 wide-minecraft-wiki.user.css
 wider-realidades-audio-controls.user.css
@@ -1335,6 +1402,7 @@ sgy-get-users.js
 sgy-pendo.html
 shy.html
 sigfig.html
+spamsound.html
 sstv-image.html
 svgception.html
 system-colours.html
@@ -1353,6 +1421,7 @@ underground-schoology-terrible-logo.svg
 underground-schoology.user.js
 upar.ts
 upload-download.bundle.js
+violin-screech-sound-effect-made-with-Voicemod.mp3
 vm.html
 waffleconcept.html
 waitz-rimac-gym-usage.mjs
@@ -1367,6 +1436,199 @@ projects.yml
 socials.yml
 tags.yml
 <
+>geocities
+0 religion.gif
+2000 windows now anime girl.png
+3d cultural head.gif
+4 days without an accident.gif
+a ufo has appeared! believe.gif
+agree button.png
+am alien.png
+are we alone.gif
+ask a question.gif
+astronomía.png
+balloons.gif
+balls thru rings.gif
+balls.gif
+best 800x600 hi colors.gif
+best viewed 800x600.gif
+best viewed in srgb.png
+best viewed with netscape_ie.gif
+bird flying.gif
+bird.gif
+black cat.gif
+blinking asian guy in armor.gif
+blow dandilion.gif
+book.gif
+bubblegum jackhammer.gif
+bug.gif
+bug2.gif
+bunny.gif
+candle.gif
+candle2.gif
+cant sleep clowns will eat me.png
+capybara now.png
+cat stretch.gif
+cat with wings.gif
+cat.gif
+cats.gif
+christmas lights.gif
+chrome evil.gif
+closing door.gif
+computer.gif
+computer2.gif
+construction.gif
+countdown from 10.gif
+crazy chinese dragon.png
+cyberbunk.gif
+dancing guy.gif
+delete system 32.gif
+dino.gif
+do not eat.gif
+dove.gif
+dream.gif
+dripping green.gif
+duck.gif
+earth.gif
+eclipse.gif
+email on fires.gif
+embrace the moon.gif
+emoticon.gif
+esheep now.gif
+exploding barrel.gif
+facedesk.gif
+fan.gif
+fetch.mjs
+fewer weasels.gif
+fire.gif
+fish.gif
+fish.png
+free stuff.gif
+freeware guide.gif
+freeware.gif
+gears.gif
+genie.gif
+get a computer now.jpg
+ghibli critter with green onion.gif
+glitch.png
+google.gif
+got html.gif
+graphic design is my passion.png
+graphs.gif
+guy jamming.gif
+handshake offer.gif
+handshake.gif
+happy face.gif
+happy new year 2006.gif
+happy thoughts your way.png
+heart.gif
+hell on the web.gif
+home.gif
+hot.png
+house.gif
+hypercube.gif
+i didnt survive 2016.png
+i support lgbt rights.gif
+i support randomly screwing around in ms paint.jpg
+i use ms paint.gif
+im gonna eat you.jpg
+images.html
+incorrect password screen freaks me out.png
+inferno.gif
+internet free.gif
+jewel.gif
+kitkat.gif
+lantern.png
+lava lamp.gif
+lol.gif
+made with windows.gif
+mailbox.gif
+melted bunny.gif
+miku approved.gif
+miku blink.gif
+miku dance.jpg
+miku.gif
+minecraft.png
+moon.gif
+ms frontpage.png
+my music.gif
+new.gif
+newtons cradle.gif
+observatory.gif
+pacing.gif
+paint.gif
+paw point right.gif
+paw.gif
+pocky.gif
+powered by imagination.gif
+proud to be plague rat.png
+purple face.gif
+pyramid.gif
+rainbow cat.gif
+ramen.gif
+README.md
+really fast spinning dancers.gif
+rings.gif
+rotating cat.gif
+rotating chemical structure.gif
+run for your life.png
+scissors.gif
+shark.gif
+shark2.gif
+sheep.png
+ship around planet.gif
+skull trumpet.gif
+skull.gif
+skulls.gif
+smiley.gif
+social distancing survivor 2020.png
+spaceship.gif
+sparkle cat.gif
+sparkles.gif
+spinning construction sign.gif
+spinning counter.gif
+spinning dvd.gif
+spinning flowers.gif
+spinning frog.gif
+spinning lemon slice.gif
+spinning metal body.gif
+spinning milk.gif
+spinning music note.gif
+spinning skull.gif
+spinning sword.gif
+spinning treble clef.gif
+spiral.gif
+squid.gif
+star.gif
+stars.gif
+stars2.gif
+stars3.gif
+strawberry !?.gif
+strawberry.gif
+strawberry2.gif
+sunset.gif
+thank you for not smoking.gif
+this is how i feel.gif
+tv.gif
+ubo now.png
+under construction.gif
+updated.gif
+vortex.gif
+w3c hates me.gif
+water drinker.gif
+web search.gif
+welcome to internet.gif
+wikia sucks.gif
+wikipedia.gif
+windows media player.jpg
+windows neko.gif
+windows.gif
+winrar click here.gif
+workers.gif
+you are dead.jpg
+you are wonderful.gif
+you must die.png
+<
 >icons
 feather-arrow-right.svg
 feather-check-black.svg
@@ -1375,6 +1637,7 @@ feather-info.svg
 tag-directory.svg
 tag-game.svg
 tag-incomplete.svg
+tag-new.svg
 tag-recommend.svg
 tag-school.svg
 tag-unintuitive.svg
@@ -1395,6 +1658,7 @@ social.html.scss
 imitation-scss-parser.js
 index.html.scss
 main.js
+ok.html
 README.md
 style.css
 <
@@ -1514,6 +1778,10 @@ README.md
 tsconfig.json
 <
 >img
+_wow.png
+8ball.webp
+8bit.webp
+acm.webp
 all.png
 all2-smaller.png
 anima.png
@@ -1543,6 +1811,7 @@ convert-to-fraction.webp
 countdown.webp
 covid.webp
 crypto-smaller.png
+cse110.webp
 css.svg
 cyrillic-smaller.png
 darkforest.jpg
@@ -1555,6 +1824,7 @@ elimination-smaller.png
 explodeyothello.webp
 eyangicques-smaller.png
 eyo-smaller.png
+fft.webp
 fgr-smaller.png
 flappy-smaller.png
 fluent-emoji.png
@@ -1602,7 +1872,9 @@ misc-smaller.png
 mp4.webp
 mspaint-smaller.png
 newpenland.png
+obfuscate.webp
 olamreee-smaller.png
+one-pdf.webp
 open-directly.svg
 openshit-smaller.png
 ovinetopia-smaller.png
@@ -1619,6 +1891,7 @@ plaincolor.webp
 plat.svg
 platformre.png
 platmakre-smaller.png
+prereqs.webp
 reds-smaller.png
 rhythm.webp
 rightclick-smaller.png
@@ -1633,7 +1906,9 @@ sieve-smaller.png
 sigfig.webp
 smothered-smaller.png
 social-icon.svg
+sstv.webp
 star.svg
+sticky.webp
 sudoku.webp
 sunset.jpg
 svgtopng-smaller.png
@@ -1969,14 +2244,15 @@ happenings.html
 height.html
 height.jpg
 hsluv-0.1.0.min.js
+image-shuffler-default.webp
 image-shuffler.html
 image-transformer.mjs
 image-translucentifier.html
 imagetoscheme.html
 index.html
+intense-contrast-default.png
 intense-contrast.html
 intl-nums.html
-intl-nums.ts
 jpg-quality.html
 jszip.min.js
 large-file-viewer.html
@@ -2003,6 +2279,7 @@ putty-serial.html
 qr-worker.js
 qr.html
 randomised-music.html
+raw-json-img-default.jpg
 raw-json-img.html
 Rectangle.js
 responsivenavbar.html
@@ -2067,7 +2344,18 @@ yan-hui.jpg
 index.html
 <
 >longer-tweets
+>.github
+>workflows
+comment.yml
+<
+<
+>always-var
+index.html
+<
 >better-tests
+index.html
+<
+>closing-html
 index.html
 <
 >creating-this-blog
@@ -2086,6 +2374,13 @@ index.html
 >js
 contributor-spotlight.png
 <
+>lactf
+bubby.py
+heyy.html
+jsfudge-codegen.js
+lactf-jsfudge.js
+weeno.js
+<
 <
 >flatland-chem
 index.html
@@ -2100,6 +2395,9 @@ index.html
 index.html
 <
 >google-ctf
+index.html
+<
+>html-xss
 index.html
 <
 >images
@@ -2131,9 +2429,28 @@ granted.png
 i-sus.png
 js-safe-4.png
 no-devtools.png
+shirt.webp
 view-source.png
 vscode-line-terminators.png
 vscode-sus-chars.png
+<
+>lactf
+0619.jpg
+0629.jpg
+css-flag.png
+css-string-reconstruction.png
+css-success.png
+glot-free-deal.png
+glot-js-guess.png
+glot-permutes.png
+golt-solve.png
+nhp-fail-post.png
+nhp-flag.png
+nhp-home.png
+nhp-invite-sent.png
+nhp-invite.png
+nhp-login.png
+nhp-request.png
 <
 >matrix-lab
 iteration-order.png
@@ -2149,6 +2466,35 @@ melter-skelter.jpg
 spicy-ham-and-swiss-melt.jpg
 turkey-apple-brie-melt.jpg
 <
+>sdctf24
+>crypto
+>RaccoonRun
+bet.png
+blur.png
+race.png
+<
+<
+>web
+>calculator
+landing.png
+wtf.png
+<
+>open-source
+debugger.png
+disable.png
+firefox-pretty.png
+firefox.png
+landing.png
+listeners.png
+<
+>utf-wait
+default.png
+normal.png
+wiki-utf8.png
+<
+<
+bingo.png
+<
 2d-projections.svg
 background.jpg
 blur.png
@@ -2156,6 +2502,7 @@ bond-lobes.svg
 eda-to-edf.svg
 edaeda-to-edfedf.svg
 git-clone-fail.png
+khan-academy-var.png
 linear_vsepr.svg
 lol-securproblems.png
 preview-project.png
@@ -2172,7 +2519,13 @@ index.html
 main.js
 post.js
 <
+>json-is-hard
+index.html
+<
 >json-lang
+index.html
+<
+>lactf
 index.html
 <
 >leopard
@@ -2205,6 +2558,9 @@ index.html
 >scratch-www-troubles
 index.html
 <
+>sdctf24
+index.html
+<
 >securly-bypass
 index.html
 <
@@ -2223,8 +2579,14 @@ index.html
 >underground-schoology
 index.html
 <
+>vertex-buffer-not-big-enough
+index.html
+<
+.prettierignore
 404.html
 index.html
+package-lock.json
+package.json
 README.md
 <
 >mars
@@ -2605,10 +2967,23 @@ common.css
 index.html
 <
 >reform
+>src
+handle-error.ts
+inputs.ts
+output.ts
+source.ts
+utils.ts
+<
+>v1
+index.css
+index.css.map
+index.js
+index.js.map
+<
 components.html
+index.ts
 README.md
 reform.css
-reform.js
 <
 >reiglutopia
 >engine
@@ -3463,20 +3838,34 @@ classrooms-FA22-full.txt
 classrooms-FA22.txt
 classrooms-FA23-full.txt
 classrooms-FA23.txt
+classrooms-FA24-full.txt
+classrooms-FA24.txt
 classrooms-S123-full.txt
 classrooms-S123.txt
+classrooms-S124-full.txt
+classrooms-S124.txt
 classrooms-S222-full.txt
 classrooms-S222.txt
 classrooms-S223-full.txt
 classrooms-S223.txt
+classrooms-S224-full.txt
+classrooms-S224.txt
 classrooms-S323-full.txt
 classrooms-S323.txt
+classrooms-S324-full.txt
+classrooms-S324.txt
 classrooms-SP23-full.txt
 classrooms-SP23.txt
+classrooms-SP24-full.txt
+classrooms-SP24.txt
+classrooms-SU24-full.txt
+classrooms-SU24.txt
 classrooms-WI23-full.txt
 classrooms-WI23.txt
 classrooms-WI24-full.txt
 classrooms-WI24.txt
+classrooms-WI95-full.txt
+classrooms-WI95.txt
 <
 background.svg
 index.html
@@ -3703,6 +4092,9 @@ index.html
 index.js
 index.ts
 post-processing.wgsl
+raycast.ts
+README.md
+serve.ts
 shader-test.wgsl
 shader.wgsl
 textures.png
@@ -3834,6 +4226,8 @@ polygon-stabber.html
 projection.html
 pronouns.html
 proof-of-concept.html
+queens-default.png
+queens.html
 Rational.js
 rimac-people-data.html
 rref.js
@@ -3892,6 +4286,7 @@ a2.js
 attempt1.html
 attempt2.html
 deno.json
+deno.lock
 index.html
 LICENSE
 README.md
@@ -4083,3 +4478,4 @@ SHEPS.svg
 showads.js
 style.css
 sw.js
+tsconfig.json
