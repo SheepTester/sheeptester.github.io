@@ -1,0 +1,224 @@
+[
+	{
+		"path": "/all/cacher/",
+		"title": "File Cacher",
+		"description": "Cache pages and files on SheepTester for offline use.",
+		"sheep": 3
+	},
+	{
+		"path": "/all/links/",
+		"title": "Links",
+		"description": "3D links viewer. Links of what, you ask. Links to some people's websites, I answer.",
+		"sheep": 2
+	},
+	{
+		"path": "/all/localStorage/",
+		"title": "localStorage manager",
+		"description": "Add, edit, and delete stuff locally stored in your browser using localStorage by this website in case it got corrupted or something.",
+		"sheep": 2
+	},
+	{
+		"path": "/all/generator.html",
+		"title": "sitemap html maker",
+		"description": "not for human use",
+		"sheep": 3
+	},
+	{
+		"path": "/all/",
+		"title": "/all/ - Almost Everything",
+		"description": "Links to almost all files on this site (since 2024-07-19)",
+		"sheep": 3
+	},
+	{
+		"path": "/all/sitemap.html",
+		"title": "site map dot hetuml",
+		"description": "grabs /all/sitemap.txt and turns it into links bc the wizard wanted it so",
+		"sheep": 3
+	},
+	{
+		"path": "/all/template-all.html",
+		"title": "/all/ - Almost Everything",
+		"description": "Links to almost all files on this site (since {DATE})",
+		"sheep": 3
+	},
+	{
+		"path": "/all/tinder.html",
+		"title": "Tinder but for web pages",
+		"description": "Quickly preview and reject the many web pages on this website.",
+		"sheep": 3
+	},
+	{
+		"path": "/alt-schedule-parser-tester/",
+		"title": "Alternate Schedule Parser Tester",
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/amend1/",
+		"title": "Freedom of Assembly - 1st Amendment",
+		"description": "A school project about the first amendment to the Constitution.",
+		"sheep": 1
+	},
+	{
+		"path": "/animations/actually-not-animated/minimalion.html",
+		"title": "Minimalion",
+		"description": "Based on “DDR1 Entry” by MinimaIion on Scratch",
+		"sheep": null
+	},
+	{
+		"path": "/animations/svg/pies.html",
+		"title": "Pie thing I suppose",
+		"description": "Hi!",
+		"sheep": 1
+	},
+	{
+		"path": "/animations/blur.html",
+		"title": "blurred glass",
+		"description": "A CSS test, I suppose",
+		"sheep": 1
+	},
+	{
+		"path": "/animations/gunn-cesspool.html",
+		"title": "Unofficial Gunn Discord cesspool animated logo",
+		"description": "Uses CANVAS owo",
+		"sheep": 3
+	},
+	{
+		"path": "/animations/gunnschedule.html",
+		"title": "Gunn Schedule Mnemonic",
+		"description": "An animated mnemonic for the Gunn schedule.",
+		"sheep": 2
+	},
+	{
+		"path": "/animations/",
+		"title": "Animation Directory",
+		"description": null,
+		"sheep": 1
+	},
+	{
+		"path": "/animations/kjlsintro.html",
+		"title": "KJLS Intro",
+		"description": null,
+		"sheep": 1
+	},
+	{
+		"path": "/animations/kjlsintro2.html",
+		"title": "KJLS Intro 2",
+		"description": null,
+		"sheep": 1
+	},
+	{
+		"path": "/animations/pi.html",
+		"title": "π = 4",
+		"description": "hhh",
+		"sheep": 3
+	},
+	{
+		"path": "/animations/seanintro.html",
+		"title": "Sean Intro",
+		"description": "An intro animation",
+		"sheep": null
+	},
+	{
+		"path": "/animations/seanoutro.html",
+		"title": "Sean Outro",
+		"description": "An outro animation",
+		"sheep": null
+	},
+	{
+		"path": "/animations/sheep.html",
+		"title": "Sheep animations",
+		"description": "logo animations",
+		"sheep": 2
+	},
+	{
+		"path": "/animations/ucsd-banner.html",
+		"title": "UCSD-wide general server animated banner",
+		"description": "🤫 requested by luna",
+		"sheep": 3
+	},
+	{
+		"path": "/animations/ucsd-icon.html",
+		"title": "UCSD-wide general server animated ICON",
+		"description": "😱 requested by luna",
+		"sheep": 3
+	},
+	{
+		"path": "/animations/ucsd2026.html",
+		"title": "UCSD 2026 animated logo",
+		"description": "hhh",
+		"sheep": 3
+	},
+	{
+		"path": "/ascended-cat/blocks/playground.html",
+		"title": "Ascended Cat blocks playground",
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/assembly/",
+		"title": "Assembly",
+		"description": "WIP game",
+		"sheep": null
+	},
+	{
+		"path": "/blockly/SHEEP/tset.html",
+		"title": "no tset is not a typo",
+		"description": "giggles",
+		"sheep": null
+	},
+	{
+		"path": "/blog/404/",
+		"title": "404 - Page not found - Blog de Sean",
+		"description": "A human",
+		"sheep": null
+	},
+	{
+		"path": "/blog/ABOUT/",
+		"title": "Who is this person? - Blog de Sean",
+		"description": "A human",
+		"sheep": null
+	},
+	{
+		"path": "/blog/HELLO-WORLD/",
+		"title": "Hello world! - Blog de Sean",
+		"description": "Testing, testing,\n1, 6, 48.\n\n",
+		"sheep": null
+	},
+	{
+		"path": "/blog/SECOND-POST/",
+		"title": "Post 2 - Blog de Sean",
+		"description": "P\n\n",
+		"sheep": null
+	},
+	{
+		"path": "/blog/SHOWBALL-PROBLEM-JOURNAL/",
+		"title": "Showball Problem Journal - Blog de Sean",
+		"description": "Problem\n\n",
+		"sheep": null
+	},
+	{
+		"path": "/blog/",
+		"title": "Blog de Sean",
+		"description": "A human",
+		"sheep": null
+	},
+	{
+		"path": "/calculator/base/",
+		"title": "Convert between bases",
+		"description": null,
+		"sheep": 1
+	},
+	{
+		"path": "/calculator/calc/",
+		"title": "Solve an expression",
+		"description": null,
+		"sheep": 1
+	},
+	{
+		"path": "/calculator/calc2/",
+		"title": "Expression calculator",
+		"description": "solves for an expression",
+		"sheep": 2
+	}
+]
