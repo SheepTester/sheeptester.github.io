@@ -233,6 +233,11 @@ async function startSearch () {
       threshold: 0.1,
       limit: 100
     })
+    if (results.length === 0) {
+      suggestions.classList.add('no-results')
+      return
+    }
+    suggestions.classList.remove('no-results')
     while (rows.length < results.length) {
       const wrapper = document.createElement('a')
       wrapper.className = 'suggestion'
@@ -270,7 +275,6 @@ async function startSearch () {
       }
       row.path.replaceChildren(...highlight(result[2], result.obj.path))
     }
-    console.log(results)
     markSelected(0)
   }
 
@@ -284,6 +288,7 @@ async function startSearch () {
     selected = index
     rows[selected].wrapper.classList.add('selected')
     form.action = results[selected].obj.path
+    rows[selected].wrapper.scrollIntoView({ block: 'nearest' })
   }
   search.addEventListener('keydown', e => {
     if (results.length === 0) {
