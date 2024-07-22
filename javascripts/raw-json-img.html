@@ -91,6 +91,16 @@
           <input
             type="radio"
             name="size"
+            value="hoverEvent"
+            class="hidden-accessible"
+          />
+          <span class="radio-button"></span>
+          <span class="label-primary">hoverEvent (23&times;23)</span>
+        </label>
+        <label class="radio-label">
+          <input
+            type="radio"
+            name="size"
             value="custom"
             class="hidden-accessible"
           />
@@ -278,7 +288,8 @@
       const sizes = {
         book: { width: 12, height: 14 },
         chat: { width: 35, height: 10 },
-        openChat: { width: 35, height: 20 }
+        openChat: { width: 35, height: 20 },
+        hoverEvent: { width: 23, height: 23 }
       }
       on('preview', (c, { image, size, fit, ...custom }) => {
         const { width, height } = sizes[size] ?? custom
