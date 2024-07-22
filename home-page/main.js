@@ -131,74 +131,177 @@ ageSpan.textContent = Math.floor((Date.now() - BIRTHDAY) / MS_IN_YR)
 ageSpan.classList.add('age-clickable')
 ageSpan.tabIndex = 0
 ageSpan.title = 'Click to see me age in real time'
-ageSpan.addEventListener(
-  'click',
-  e => {
-    const ageWrapper = document.createElement('code')
-    ageWrapper.classList.add('age')
-    ageWrapper.role = 'text'
-    const age = getAge()
-    ageWrapper.style.width = age.length + 'ch'
-    const decimal = age.indexOf('.')
-    const digits = new Array(age.length)
-    let sigfigs = Math.floor((Date.now() - BIRTHDAY) / 10000).toString().length
+ageSpan.addEventListener('click', startAgeAnim, { once: true })
+
+function startAgeAnim () {
+  const ageWrapper = document.createElement('code')
+  ageWrapper.classList.add('age')
+  ageWrapper.role = 'text'
+  const age = getAge()
+  ageWrapper.style.width = age.length + 'ch'
+  const decimal = age.indexOf('.')
+  const digits = new Array(age.length)
+  let sigfigs = Math.floor((Date.now() - BIRTHDAY) / 10000).toString().length
+  for (let i = 0; i < age.length; i++) {
+    const digit = document.createElement('span')
+    digits[i] = {
+      elem: digit,
+      exponent:
+        i === decimal ? null : i < decimal ? decimal - i - 1 : decimal - i
+    }
+    if (age[i] !== '.') {
+      if (sigfigs <= 0) {
+        digit.classList.add('insignificant')
+        digit.title = 'This digit is purely an estimation.'
+      }
+      sigfigs--
+    } else {
+      digit.textContent = '.'
+      digit.style.transform = `translate3d(${i}ch, 0, 0)`
+    }
+    ageWrapper.append(digit)
+  }
+  ageWrapper.append('\xa0') // nbsp
+  ageSpan.replaceWith(ageWrapper)
+  function display () {
+    const now = Date.now()
+    const age = getAge(now)
     for (let i = 0; i < age.length; i++) {
-      const digit = document.createElement('span')
-      digits[i] = {
-        elem: digit,
-        exponent:
-          i === decimal ? null : i < decimal ? decimal - i - 1 : decimal - i
-      }
-      if (age[i] !== '.') {
-        if (sigfigs <= 0) {
-          digit.classList.add('insignificant')
-          digit.title = 'This digit is purely an estimation.'
+      const digit = digits[i]
+      if (digit.exponent !== null) {
+        const interval = 10 ** digit.exponent * MS_IN_YR
+        const animationTime = Math.min(interval, ANIM_LENGTH)
+        const time = (now - BIRTHDAY) % interval
+        if (digit.elem.textContent !== age[i]) {
+          digit.elem.textContent = age[i]
         }
-        sigfigs--
+        if (time < animationTime) {
+          const interp = easeInOutCubic(time / animationTime)
+          digit.elem.style.transform = `translate3d(${i}ch, ${interp - 1}em, 0)`
+          digit.elem.style.color = `rgba(255, 255, 255, ${interp * ALPHA})`
+          digit.elem.style.setProperty(
+            '--last',
+            `rgba(255, 255, 255, ${(1 - interp) * ALPHA})`
+          )
+          digit.elem.dataset.last = (+age[i] + 9) % 10
+          digit.wasStatic = false
+        } else if (!digit.wasStatic) {
+          digit.elem.style.transform = `translate3d(${i}ch, 0, 0)`
+          digit.elem.style.color = null
+          digit.elem.style.removeProperty('--last')
+          delete digit.elem.dataset.last
+          digit.wasStatic = true
+        }
+      }
+    }
+    window.requestAnimationFrame(display)
+  }
+  display()
+}
+
+const search = document.getElementById('search')
+search.addEventListener('focus', startSearch, { once: true })
+async function startSearch () {
+  const fuzzysortLoad = new Promise((resolve, reject) => {
+    const script = document.createElement('script')
+    script.src = 'https://cdn.jsdelivr.net/npm/fuzzysort@3.0.2/fuzzysort.min.js'
+    script.addEventListener('load', resolve)
+    script.addEventListener('error', reject)
+    document.head.append(script)
+  })
+  const entries = await fetch('/all/title-desc.json').then(r => r.json())
+  await fuzzysortLoad
+
+  const form = document.getElementById('search-form')
+  const suggestions = document.getElementById('suggestions')
+  const rows = []
+  let results = []
+  let selected = -1
+
+  function highlight (result, defaultValue) {
+    return result.score > 0
+      ? result.highlight(match =>
+          Object.assign(document.createElement('strong'), {
+            textContent: match
+          })
+        )
+      : [defaultValue]
+  }
+  function performSearch () {
+    results = fuzzysort.go(search.value, entries, {
+      keys: ['title', 'description', 'path'],
+      threshold: 0.1,
+      limit: 100
+    })
+    while (rows.length < results.length) {
+      const wrapper = document.createElement('a')
+      wrapper.className = 'suggestion'
+      const title = document.createElement('div')
+      title.className = 'suggestion-title'
+      const desc = document.createElement('div')
+      desc.className = 'suggestion-desc'
+      const path = document.createElement('div')
+      path.className = 'suggestion-path'
+      wrapper.append(title, desc, path)
+      suggestions.append(wrapper)
+      rows.push({ wrapper, title, desc, path })
+    }
+    for (const [i, row] of rows.entries()) {
+      if (i >= results.length) {
+        row.wrapper.style.display = 'none'
+        continue
+      }
+      const result = results[i]
+      row.wrapper.style.display = null
+      row.wrapper.href = result.obj.path
+      if (result.obj.title !== null) {
+        row.title.replaceChildren(...highlight(result[0], result.obj.title))
+        row.title.style.display = null
       } else {
-        digit.textContent = '.'
-        digit.style.transform = `translate3d(${i}ch, 0, 0)`
+        row.title.style.display = 'none'
       }
-      ageWrapper.append(digit)
-    }
-    ageWrapper.append('\xa0') // nbsp
-    ageSpan.replaceWith(ageWrapper)
-    function display () {
-      const now = Date.now()
-      const age = getAge(now)
-      for (let i = 0; i < age.length; i++) {
-        const digit = digits[i]
-        if (digit.exponent !== null) {
-          const interval = 10 ** digit.exponent * MS_IN_YR
-          const animationTime = Math.min(interval, ANIM_LENGTH)
-          const time = (now - BIRTHDAY) % interval
-          if (digit.elem.textContent !== age[i]) {
-            digit.elem.textContent = age[i]
-          }
-          if (time < animationTime) {
-            const interp = easeInOutCubic(time / animationTime)
-            digit.elem.style.transform = `translate3d(${i}ch, ${
-              interp - 1
-            }em, 0)`
-            digit.elem.style.color = `rgba(255, 255, 255, ${interp * ALPHA})`
-            digit.elem.style.setProperty(
-              '--last',
-              `rgba(255, 255, 255, ${(1 - interp) * ALPHA})`
-            )
-            digit.elem.dataset.last = (+age[i] + 9) % 10
-            digit.wasStatic = false
-          } else if (!digit.wasStatic) {
-            digit.elem.style.transform = `translate3d(${i}ch, 0, 0)`
-            digit.elem.style.color = null
-            digit.elem.style.removeProperty('--last')
-            delete digit.elem.dataset.last
-            digit.wasStatic = true
-          }
-        }
+      if (result.obj.description !== null) {
+        row.desc.replaceChildren(
+          ...highlight(result[1], result.obj.description)
+        )
+        row.desc.style.display = null
+      } else {
+        row.desc.style.display = 'none'
       }
-      window.requestAnimationFrame(display)
+      row.path.replaceChildren(...highlight(result[2], result.obj.path))
     }
-    display()
-  },
-  { once: true }
-)
+    console.log(results)
+    markSelected(0)
+  }
+
+  function markSelected (index) {
+    if (selected !== -1) {
+      rows[selected].wrapper.classList.remove('selected')
+    }
+    if (results.length === 0) {
+      return
+    }
+    selected = index
+    rows[selected].wrapper.classList.add('selected')
+    form.action = results[selected].obj.path
+  }
+  search.addEventListener('keydown', e => {
+    if (results.length === 0) {
+      return
+    }
+    if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+      markSelected(
+        (e.key === 'ArrowUp' ? selected + results.length - 1 : selected + 1) %
+          results.length
+      )
+      e.preventDefault()
+    }
+    if (e.key === 'Enter') {
+      window.location.href = results[selected].obj.path
+      e.preventDefault()
+    }
+  })
+
+  search.addEventListener('input', performSearch)
+  performSearch()
+}

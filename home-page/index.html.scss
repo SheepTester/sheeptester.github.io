@@ -1002,6 +1002,37 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
         }
 
         css {
+          .suggestions {
+            max-height: 800px;
+            overflow: auto;
+          }
+          .suggestion {
+            display: flex;
+            flex-direction: column;
+            padding: 5px;
+          }
+          .selected {
+            background-color: #24364a;
+          }
+          .suggestion:not(.selected):hover {
+            background-color: #1f2e3f;
+          }
+          .suggestion strong {
+            color: #1ce0e0;
+          }
+          .suggestion-desc {
+            font-size: 0.8em;
+          }
+          .suggestion-path {
+            font-size: 0.8em;
+          }
+        }
+        form.search-wrapper#search-form {
+          input.search#search[type="search"][placeholder="Search"][aria-label="Search"];
+          .suggestions#suggestions {}
+        }
+
+        css {
           .filter-by,
           .filters {
             display: none;

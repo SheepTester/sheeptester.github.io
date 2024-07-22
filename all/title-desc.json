@@ -220,5 +220,4097 @@
 		"title": "Expression calculator",
 		"description": "solves for an expression",
 		"sheep": 2
+	},
+	{
+		"path": "/calculator/leapday/",
+		"title": "Leap day offset calculator",
+		"description": "Years are not exactly 365 days long, so your birthday gets offset every year.",
+		"sheep": 3
+	},
+	{
+		"path": "/calculator/",
+		"title": "Calculator",
+		"description": "Doesn't solve for x. Sorry.",
+		"sheep": 1
+	},
+	{
+		"path": "/calculator/oldindex.html",
+		"title": "Solve for X",
+		"description": null,
+		"sheep": 1
+	},
+	{
+		"path": "/colour/",
+		"title": "colour",
+		"description": "For when someone sends me a hexadecimal colour and I'm too lazy to use alternative methods to read it.",
+		"sheep": null
+	},
+	{
+		"path": "/converters/",
+		"title": "Convert files",
+		"description": "A directory of file converters on my website.",
+		"sheep": 3
+	},
+	{
+		"path": "/cse15l-lab-reports/any%20name%20you%20choose.html",
+		"title": "cse15l-lab-reports | CSE 15L lab 2: https://ucsd-cse15l-w22.github.io/week/week2/",
+		"description": "CSE 15L lab 2: https://ucsd-cse15l-w22.github.io/week/week2/",
+		"sheep": 3
+	},
+	{
+		"path": "/cse15l-lab-reports/",
+		"title": "cse15l-lab-reports | CSE 15L lab 2: https://ucsd-cse15l-w22.github.io/week/week2/",
+		"description": "CSE 15L lab 2: https://ucsd-cse15l-w22.github.io/week/week2/",
+		"sheep": 3
+	},
+	{
+		"path": "/cse15l-lab-reports/lab-report-1-week-2.html",
+		"title": "Lab report 1 | cse15l-lab-reports",
+		"description": "CSE 15L lab 2: https://ucsd-cse15l-w22.github.io/week/week2/",
+		"sheep": 3
+	},
+	{
+		"path": "/cse15l-lab-reports/lab-report-2-week-4.html",
+		"title": "Lab report 2 | cse15l-lab-reports",
+		"description": "CSE 15L lab 2: https://ucsd-cse15l-w22.github.io/week/week2/",
+		"sheep": 3
+	},
+	{
+		"path": "/cse15l-lab-reports/lab-report-3-week-6.html",
+		"title": "Streamlining SSH configuration | cse15l-lab-reports",
+		"description": "CSE 15L lab 2: https://ucsd-cse15l-w22.github.io/week/week2/",
+		"sheep": 3
+	},
+	{
+		"path": "/cse15l-lab-reports/lab-report-4-week-8.html",
+		"title": "Week 8 lab report | cse15l-lab-reports",
+		"description": "CSE 15L lab 2: https://ucsd-cse15l-w22.github.io/week/week2/",
+		"sheep": 3
+	},
+	{
+		"path": "/cse15l-lab-reports/lab-report-5-week-10.html",
+		"title": "Lab report 5 | cse15l-lab-reports",
+		"description": "CSE 15L lab 2: https://ucsd-cse15l-w22.github.io/week/week2/",
+		"sheep": 3
+	},
+	{
+		"path": "/dating-sim/",
+		"title": "Dating in the Juul Room",
+		"description": "A dating simulator based on confessions from Gunn Confessions.",
+		"sheep": null
+	},
+	{
+		"path": "/doufu/",
+		"title": "Doufu",
+		"description": "WebGPU voxel engine",
+		"sheep": 3
+	},
+	{
+		"path": "/dulcinea/",
+		"title": "Dulcinea",
+		"description": "Jackbox's Quiplash but for Discord.",
+		"sheep": null
+	},
+	{
+		"path": "/dumb-multiplayer-server/client/",
+		"title": "Dumb client",
+		"description": "A dumb client",
+		"sheep": null
+	},
+	{
+		"path": "/evo/codons/",
+		"title": "Codon-based evolution simulator",
+		"description": "DNA codons are used for a rudimentary programming-language-like thing to ideally simulate evolution.",
+		"sheep": 3
+	},
+	{
+		"path": "/evo/",
+		"title": "Evolution simulator attempts",
+		"description": "A directory of evolution simulator attempts",
+		"sheep": 3
+	},
+	{
+		"path": "/eyo-dictionary/",
+		"title": "Eyo Dictionary",
+		"description": "A place.",
+		"sheep": 1
+	},
+	{
+		"path": "/eyo-dictionary/validator.html",
+		"title": "Eyo Word Validator",
+		"description": null,
+		"sheep": 1
+	},
+	{
+		"path": "/flex10-protect/",
+		"title": "FLEX10 Protect",
+		"description": "Protect the FLEX10 Lernejologio course from the Great Grand Google Translator of Arabic!",
+		"sheep": null
+	},
+	{
+		"path": "/flex10-protect/intersections.html",
+		"title": "Intersections test",
+		"description": "ray and boxes",
+		"sheep": null
+	},
+	{
+		"path": "/fun-gunn-run/",
+		"title": "\"Fun\" Gunn Run",
+		"description": "A Gunn-themed temple run game with bad 3D graphics.",
+		"sheep": 2
+	},
+	{
+		"path": "/gamepro5/minigames/turkeys/images/combiner.html",
+		"title": "generate textures - turkeys",
+		"description": "generate png with all tiles",
+		"sheep": 1
+	},
+	{
+		"path": "/gamepro5/minigames/turkeys/",
+		"title": "turkeys",
+		"description": "turkey shoot shoot game",
+		"sheep": 1
+	},
+	{
+		"path": "/gamepro5/minigames/choice.html",
+		"title": "Escape from SELF",
+		"description": "Kind of choose your own adventure but not really",
+		"sheep": 3
+	},
+	{
+		"path": "/gamepro5/minigames/color.html",
+		"title": "color fight thing",
+		"description": "a fight game thing like splatoon but im stealing from a different game teehee",
+		"sheep": 1
+	},
+	{
+		"path": "/gamepro5/minigames/dodgedots.html",
+		"title": "dodge dots game thing",
+		"description": "i guess this is a game where you dodge things on a tic tac board",
+		"sheep": 1
+	},
+	{
+		"path": "/gamepro5/minigames/elements.html",
+		"title": "elements",
+		"description": "A copy of Elemental essentially.",
+		"sheep": 1
+	},
+	{
+		"path": "/gamepro5/minigames/explodeyothello.html",
+		"title": "Explodey Othello",
+		"description": "Recreation of Swatch on Scratch",
+		"sheep": 2
+	},
+	{
+		"path": "/gamepro5/minigames/",
+		"title": "index page",
+		"description": "A temporary index page so navigation noobs can find my game concepts.",
+		"sheep": 1
+	},
+	{
+		"path": "/gamepro5/minigames/particles.html",
+		"title": "Exploding Particles",
+		"description": "Satisfying particles, explosions, and chain reactions, not guaranteed!",
+		"sheep": 1
+	},
+	{
+		"path": "/gamepro5/minigames/rpgconcept.html",
+		"title": "RPG Concept",
+		"description": "Concept CSS for a game I guess.",
+		"sheep": 1
+	},
+	{
+		"path": "/gamepro5/minigames/ships.html",
+		"title": "Battle Ships",
+		"description": "",
+		"sheep": 1
+	},
+	{
+		"path": "/gamepro5/minigames/text.html",
+		"title": "A Game Concept",
+		"description": "In which you type and things happen.",
+		"sheep": 1
+	},
+	{
+		"path": "/gamepro5/minigames/town.html",
+		"title": "Town Tycoon Game",
+		"description": "I really should make a tycoon game one day...",
+		"sheep": 3
+	},
+	{
+		"path": "/gamepro5/minigames/traffic.html",
+		"title": "Red light green light",
+		"description": "Isn't there a Chinese version of this game? Oh yeah 一二三木頭人.",
+		"sheep": 1
+	},
+	{
+		"path": "/gamepro5/minigames/uttt.html",
+		"title": "Ultimate Tic Tac Toe",
+		"description": "UTTT for people with friends.",
+		"sheep": 1
+	},
+	{
+		"path": "/gamepro5/weekly/1.html",
+		"title": null,
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/gamepro5/weekly/2.html",
+		"title": null,
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/gamepro5/weekly/",
+		"title": "The Weekly News",
+		"description": "An unsophisticated friend writes unsophisticated text.",
+		"sheep": 1
+	},
+	{
+		"path": "/gamepro5/weekly/welcome.html",
+		"title": null,
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/gamepro5/",
+		"title": ";)",
+		"description": ";)",
+		"sheep": 1
+	},
+	{
+		"path": "/gamepro5.github.io/contact/",
+		"title": "Contact - Gamepro5",
+		"description": "",
+		"sheep": null
+	},
+	{
+		"path": "/gamepro5.github.io/flat.html",
+		"title": "Gamepro5 (unofficial)",
+		"description": "Unofficial Gamepro5 redesign",
+		"sheep": 1
+	},
+	{
+		"path": "/gamepro5.github.io/",
+		"title": "Home - Gamepro5",
+		"description": "",
+		"sheep": null
+	},
+	{
+		"path": "/guestbook/",
+		"title": "Guestbook",
+		"description": "The comments section of my website. Ask questions, give feedback, your opinions, or say what's on your mind!",
+		"sheep": 3
+	},
+	{
+		"path": "/gunn-map/map-making/map.html",
+		"title": "rectanclunks on map",
+		"description": "put rectangles on map for three.js to three.js ify yay",
+		"sheep": null
+	},
+	{
+		"path": "/gunn-map/textures/noise-maker.html",
+		"title": "noisemaker",
+		"description": "visual noise not the one you can hear",
+		"sheep": null
+	},
+	{
+		"path": "/gunn-map/textures/tile-test.html",
+		"title": "tile tester",
+		"description": "just in case",
+		"sheep": null
+	},
+	{
+		"path": "/gunn-map/",
+		"title": "Map of Gunn",
+		"description": "A 3D first-person map of Gunn High School",
+		"sheep": null
+	},
+	{
+		"path": "/gunn-map/test-j-building.html",
+		"title": "J Building test",
+		"description": "A 3D first-person map of the J building maybe",
+		"sheep": null
+	},
+	{
+		"path": "/gunn-student-sim/",
+		"title": "Gunn student simulator",
+		"description": "A simple text-based game that aims to accurately portray the life of a student at Gunn high school.",
+		"sheep": 2
+	},
+	{
+		"path": "/gunn-student-sim/info.html",
+		"title": "More info - Gunn student simulator",
+		"description": "More information about a simple text-based game that aims to accurately portray the life of a student at Gunn high school.",
+		"sheep": 2
+	},
+	{
+		"path": "/gunn-student-sim/leaderboard.html",
+		"title": "Global Leaderboard - Gunn student simulator",
+		"description": "A leaderboard of scores for a simple text-based game that aims to accurately portray the life of a student at Gunn high school.",
+		"sheep": 2
+	},
+	{
+		"path": "/gunnhacks-lol/",
+		"title": null,
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/happynumbers/bytwos/",
+		"title": "Weighing by Twos",
+		"description": "A calculator for those unfortunate people who have to deal with people who for some random reason weigh things two at a time.",
+		"sheep": 1
+	},
+	{
+		"path": "/happynumbers/factoring/",
+		"title": "Factoring",
+		"description": "I really hate guess and check. Hate isn't a strong word.",
+		"sheep": 1
+	},
+	{
+		"path": "/happynumbers/factoring/RAGE.html",
+		"title": "GUESS AND CHECK?",
+		"description": "NO ME GUSTAN GUESS KAJ CHECK.",
+		"sheep": 1
+	},
+	{
+		"path": "/happynumbers/parabolas/",
+		"title": "Parabola Calculator Thing",
+		"description": "I'm not a math person.",
+		"sheep": 1
+	},
+	{
+		"path": "/happynumbers/sieve/",
+		"title": "Sieve of Eratosthenes",
+		"description": "Sieve of Eratosthenes",
+		"sheep": 1
+	},
+	{
+		"path": "/happynumbers/tables/",
+		"title": "Do you know your times tables?",
+		"description": "An interactive and colourful times table for ages 3 and above.",
+		"sheep": 1
+	},
+	{
+		"path": "/happynumbers/",
+		"title": "Happy Number Calculator",
+		"description": null,
+		"sheep": 1
+	},
+	{
+		"path": "/HEALTH-AMONG-US/",
+		"title": "Health Among Us",
+		"description": "Web site created using create-react-app obv",
+		"sheep": null
+	},
+	{
+		"path": "/hello-world/advent-of-code/2023/day21.html",
+		"title": null,
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/hello-world/audio-to-video/",
+		"title": "make",
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/hello-world/detect-inspect-element/node/",
+		"title": "Detect inspect element (Node version)",
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/hello-world/detect-inspect-element/",
+		"title": "Detect inspect element",
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/hello-world/dynamic-sw/",
+		"title": "dynamic pages w/ service workers test",
+		"description": "A test to see if dynamic pages can be done with service workers.",
+		"sheep": 2
+	},
+	{
+		"path": "/hello-world/hh23-rhythm/src/javascript-impatience/",
+		"title": "hard hacc",
+		"description": "No description yet.",
+		"sheep": null
+	},
+	{
+		"path": "/hello-world/minimal-pwa/",
+		"title": null,
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/hello-world/questionable-host/",
+		"title": "Load an uploaded file",
+		"description": "This won't automatically download anything until you press the \"Download\" button.",
+		"sheep": 3
+	},
+	{
+		"path": "/hello-world/questionable-host/instructions.html",
+		"title": "How to upload files",
+		"description": "Instructions for installing the file uploading script.",
+		"sheep": 3
+	},
+	{
+		"path": "/hello-world/questionable-host/upload.html",
+		"title": "Upload a file",
+		"description": "This page doesn't work on its own. You'll need to install a userscript first.",
+		"sheep": 3
+	},
+	{
+		"path": "/hello-world/redpitaya_FPGA/",
+		"title": "among us",
+		"description": "susys",
+		"sheep": 3
+	},
+	{
+		"path": "/hello-world/test/%20%0A%20%0A/%0Anewline.html",
+		"title": "\nthis\n\n \npage has a newline",
+		"description": "\nits true\n<br>\nuh\n ",
+		"sheep": null
+	},
+	{
+		"path": "/hello-world/test/adminbot.html",
+		"title": null,
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/hello-world/test/Charlie_Liu.html",
+		"title": null,
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/hello-world/test/comments.html",
+		"title": null,
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/hello-world/test/drunk.html",
+		"title": null,
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/hello-world/test/dumb.html",
+		"title": null,
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/hello-world/test/dumb2.html",
+		"title": null,
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/hello-world/test/embedder.html",
+		"title": "I embed",
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/hello-world/test/embedee.html",
+		"title": "I am embedded",
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/hello-world/test/fake.html",
+		"title": null,
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/hello-world/test/ga-test.html",
+		"title": null,
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/hello-world/test/gh-pages-path-test.html",
+		"title": null,
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/hello-world/test/gh-pages-path-test.html.html",
+		"title": null,
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/hello-world/test/heyy.html",
+		"title": null,
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/hello-world/test/",
+		"title": null,
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/hello-world/test/mastodone.html",
+		"title": null,
+		"description": "1 Post, 9 Following, 2 Followers · ",
+		"sheep": null
+	},
+	{
+		"path": "/hello-world/test/pensive-test.html",
+		"title": null,
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/hello-world/test/polyfill.html",
+		"title": "Bitcoin Miner",
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/hello-world/test/react-exec-order.html",
+		"title": null,
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/hello-world/test/resize.html",
+		"title": "does the browser call resize before printing?",
+		"description": "sdfsdf",
+		"sheep": null
+	},
+	{
+		"path": "/hello-world/test/sans-nouveaux-test.html",
+		"title": null,
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/hello-world/test/testthing.html",
+		"title": null,
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/hello-world/test/trans-dic.html",
+		"title": "Trans Dic",
+		"description": "Translation dictation",
+		"sheep": null
+	},
+	{
+		"path": "/hello-world/test/wow.html",
+		"title": "Wow",
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/hello-world/userscripts/",
+		"title": "Helpful userscripts and userstyles",
+		"description": null,
+		"sheep": 3
+	},
+	{
+		"path": "/hello-world/404.html",
+		"title": "This is a 404 page.",
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/hello-world/access-console-api.html",
+		"title": "Access the Chrome Command Line API",
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/hello-world/alerter.html",
+		"title": null,
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/hello-world/attitude.html",
+		"title": "if [alphabet] equals [numbers 1-26] then...",
+		"description": "knowledge = 96% and hardwork = 98% but attitude = 100%",
+		"sheep": 3
+	},
+	{
+		"path": "/hello-world/bell.html",
+		"title": "alexander graham bell",
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/hello-world/big-file-viewer.html",
+		"title": "big file viewer",
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/hello-world/blank-tags.html",
+		"title": null,
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/hello-world/blank.html",
+		"title": null,
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/hello-world/bones-and-muscles.html",
+		"title": "Bones and Muscles",
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/hello-world/bookmarklet.html",
+		"title": "Bookmarklet",
+		"description": "Quickly add a bookmarklet to run something cool on another site",
+		"sheep": null
+	},
+	{
+		"path": "/hello-world/calc.html",
+		"title": "open calculator",
+		"description": "no weird wasm memory exploitation with unsandboxed chrome needed!",
+		"sheep": null
+	},
+	{
+		"path": "/hello-world/cards.html",
+		"title": "Flashcards",
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/hello-world/charcode.html",
+		"title": "charcodes",
+		"description": "list of characters by charcode",
+		"sheep": 3
+	},
+	{
+		"path": "/hello-world/code-golf-boomer01-clicker-game.html",
+		"title": "Clicker game!",
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/hello-world/css-fizzbuzz.html",
+		"title": "Fizzbuzz in CSS",
+		"description": "and HTML",
+		"sheep": null
+	},
+	{
+		"path": "/hello-world/css-identifiers.html",
+		"title": null,
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/hello-world/deltamath-time.html",
+		"title": "how much time are people taking on deltamath problems?",
+		"description": "this public info is more accessible with just a single clicc of a bookmark",
+		"sheep": null
+	},
+	{
+		"path": "/hello-world/discord-website-embed.html",
+		"title": "😎 Discord",
+		"description": "> Discord *Discord* **Discord** ***Discord*** __Discord__ ||Discord|| `Discord` `` `Discord` `` [||***__`` `Discord` ``__***||](https://scratch.mit.edu/users/ScratchCat/)\n\n> <a:dancingbannana:403729127099727892> @everyone <a:dancingbannana:403729127099727892> <@1> <a:dancingbannana:403729127099727892> <@212253818828750848> <a:dancingbannana:403729127099727892>\n\n```elm\ntype Discord = Discord\ndiscord discord = discord\n```",
+		"sheep": null
+	},
+	{
+		"path": "/hello-world/drills.html",
+		"title": "Trig Drill Generator",
+		"description": "A drill quiz generator for my trigonometry class.",
+		"sheep": null
+	},
+	{
+		"path": "/hello-world/elements.html",
+		"title": "OC's Basement",
+		"description": "Element name to atomic symbol practice!",
+		"sheep": 2
+	},
+	{
+		"path": "/hello-world/f.html",
+		"title": "does iOS SAFARI support 'sourceCapabilities'??!?!?!",
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/hello-world/flappybirdwithifstatements.html",
+		"title": "flappy bird",
+		"description": null,
+		"sheep": 2
+	},
+	{
+		"path": "/hello-world/flashcards-hormone-effect-places.html",
+		"title": "Flash Cards",
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/hello-world/flashcards-hormone-effects.html",
+		"title": "Flash Cards",
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/hello-world/flashcards-hormone-places.html",
+		"title": "Flash Cards",
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/hello-world/flashcards-sato-macbeth.html",
+		"title": "Flash Cards",
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/hello-world/flashcards.html",
+		"title": "Flash Cards",
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/hello-world/fuck.html",
+		"title": "fuck.",
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/hello-world/graduation-rehearsal-is-boring.html",
+		"title": "graduation rehearsal is boring",
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/hello-world/graph.html",
+		"title": "ugwa views",
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/hello-world/gunn-confessions.html",
+		"title": "Gunn Confessions posts",
+		"description": "The posts on Gunn Confessions",
+		"sheep": 3
+	},
+	{
+		"path": "/hello-world/ic-get-schedule.html",
+		"title": "egg tarts",
+		"description": "join https://discord.gg/hq64nRE NOW.",
+		"sheep": null
+	},
+	{
+		"path": "/hello-world/idle.html",
+		"title": "🐑",
+		"description": "🐑",
+		"sheep": null
+	},
+	{
+		"path": "/hello-world/",
+		"title": "test | hello-world",
+		"description": "Innocent first test.",
+		"sheep": null
+	},
+	{
+		"path": "/hello-world/julienbtn.html",
+		"title": "Buttons for Julien",
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/hello-world/largetext.html",
+		"title": "large text",
+		"description": "A large text field so you can show what you're typing to someone else if you can't speak (e.g. because you have a sore throat or are in lecture).",
+		"sheep": 3
+	},
+	{
+		"path": "/hello-world/merge-horiz.html",
+		"title": "merge rows horizontally, preserve text and formatting",
+		"description": "very naïve",
+		"sheep": 3
+	},
+	{
+		"path": "/hello-world/meta-test.html",
+		"title": "TITLE",
+		"description": "DESCRIPTION",
+		"sheep": null
+	},
+	{
+		"path": "/hello-world/micfreq.html",
+		"title": "microphone frequency",
+		"description": "get audio frequencies in microphone input",
+		"sheep": 3
+	},
+	{
+		"path": "/hello-world/mirroring.html",
+		"title": " unicode mirroring",
+		"description": "Unicode mirroring characters in ltr and rtl is quite sophisticated",
+		"sheep": null
+	},
+	{
+		"path": "/hello-world/mobile-pwa-test.html",
+		"title": "testing pwa things on mobile",
+		"description": "yeet",
+		"sheep": null
+	},
+	{
+		"path": "/hello-world/nbt-parser.html",
+		"title": "nbt parser",
+		"description": "parse nbt lol",
+		"sheep": null
+	},
+	{
+		"path": "/hello-world/no-html.html",
+		"title": null,
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/hello-world/offline-online-noise-maker.html",
+		"title": "If your device goes offline or online, I will make a noise.",
+		"description": "This is because my broken Chromebook likes to go offline randomly a lot, so this serves as a nice PING.",
+		"sheep": null
+	},
+	{
+		"path": "/hello-world/open-graph-testing.html",
+		"title": "Sheep<h1>hello</h1>Tes\"tertest\" idneed!",
+		"description": "A <h1>hello</h1>list of some projects I have made using fancy web technologies.",
+		"sheep": null
+	},
+	{
+		"path": "/hello-world/pi.html",
+		"title": null,
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/hello-world/plaincolour.html",
+		"title": "generate a png of a single colour",
+		"description": "computation of cyclic redundancy my asfffg-phg",
+		"sheep": null
+	},
+	{
+		"path": "/hello-world/profile-redirector.html",
+		"title": null,
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/hello-world/pumpkin.html",
+		"title": null,
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/hello-world/questionmarkquestionmarkquestionmark.html",
+		"title": null,
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/hello-world/quick-brown-fox.html",
+		"title": "The Quick Brown Fox",
+		"description": "Intended to facilitate making 'quick brown fox'-style sentences.",
+		"sheep": null
+	},
+	{
+		"path": "/hello-world/redirect-top.html",
+		"title": null,
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/hello-world/scheme-interpret.html",
+		"title": "scheme interpret",
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/hello-world/sgy-pendo.html",
+		"title": null,
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/hello-world/shy.html",
+		"title": null,
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/hello-world/sigfig.html",
+		"title": "Sig fig shower",
+		"description": "Highlights the significant figures",
+		"sheep": 2
+	},
+	{
+		"path": "/hello-world/spamsound.html",
+		"title": null,
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/hello-world/sstv-image.html",
+		"title": null,
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/hello-world/svgception.html",
+		"title": "nested svgs",
+		"description": "how far can it go?",
+		"sheep": null
+	},
+	{
+		"path": "/hello-world/system-colours.html",
+		"title": null,
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/hello-world/tabletest.html",
+		"title": "tree maker",
+		"description": null,
+		"sheep": 2
+	},
+	{
+		"path": "/hello-world/tenmillionpages.html",
+		"title": null,
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/hello-world/underground-markup.html",
+		"title": "Underground markup",
+		"description": "A Minecraft-like markup language for Underground Schoology",
+		"sheep": null
+	},
+	{
+		"path": "/hello-world/vm.html",
+		"title": "the VM",
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/hello-world/waffleconcept.html",
+		"title": "Waffle Programming Concept Design",
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/hello-world/website.html",
+		"title": "lol a website",
+		"description": "Imagine using \"standard\" HTML tags",
+		"sheep": null
+	},
+	{
+		"path": "/hello-world/weird-flex.html",
+		"title": "but ok",
+		"description": "replaces words in phrase \"weird flex but ok\" with synonyms",
+		"sheep": 3
+	},
+	{
+		"path": "/hello-world/wiseguy.html",
+		"title": "wiseguy catchphrases",
+		"description": "Henry's Discord bot wiseguy had amazing phrases",
+		"sheep": null
+	},
+	{
+		"path": "/hello-world/zdsfghnjvc.html",
+		"title": "Untitled document",
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/home-page/geocities/images.html",
+		"title": null,
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/home-page/preview/preview.html",
+		"title": null,
+		"description": null,
+		"sheep": 3
+	},
+	{
+		"path": "/home-page/ok.html",
+		"title": "ok",
+		"description": "ok",
+		"sheep": 3
+	},
+	{
+		"path": "/htmlblocks/css/colour.html",
+		"title": "html colours",
+		"description": "colour picker for css and things",
+		"sheep": 1
+	},
+	{
+		"path": "/htmlblocks/css/concept.html",
+		"title": "CSS concept thing",
+		"description": "weeeee",
+		"sheep": 1
+	},
+	{
+		"path": "/htmlblocks/css/",
+		"title": "temporary",
+		"description": "temporary",
+		"sheep": 1
+	},
+	{
+		"path": "/htmlblocks/forum/suggestions/",
+		"title": "Hyperblocks Forums",
+		"description": "forum index page",
+		"sheep": 1
+	},
+	{
+		"path": "/htmlblocks/forum/topic/",
+		"title": "Hyperblocks Forums",
+		"description": "forum index page",
+		"sheep": 1
+	},
+	{
+		"path": "/htmlblocks/forum/",
+		"title": "Hyperblocks Forums",
+		"description": "forum index page",
+		"sheep": 1
+	},
+	{
+		"path": "/htmlblocks/attempt123.html",
+		"title": "\"Attempt 123\"",
+		"description": "in case it fails, im not giving a very useful name to this.",
+		"sheep": 2
+	},
+	{
+		"path": "/htmlblocks/blocktest.html",
+		"title": "Block rendering test",
+		"description": "My second test for rendering and dragging blocks.",
+		"sheep": 1
+	},
+	{
+		"path": "/htmlblocks/concept.html",
+		"title": "HTML Blocks Concept",
+		"description": "The concept art for the HTML Blocks editor.",
+		"sheep": 1
+	},
+	{
+		"path": "/htmlblocks/dragdropstack.html",
+		"title": "Drag and drop for stack blocks",
+		"description": "The goal is to have a Scratch/Blockly-like drag-and-drop for at least stack blocks.",
+		"sheep": 2
+	},
+	{
+		"path": "/htmlblocks/dragtest.html",
+		"title": "Block test",
+		"description": null,
+		"sheep": 1
+	},
+	{
+		"path": "/htmlblocks/dragtest2.html",
+		"title": "I think this is the fourth one",
+		"description": "This time this won't just support Hyperblocks.",
+		"sheep": 1
+	},
+	{
+		"path": "/htmlblocks/",
+		"title": "Hyperblocks one day will come!",
+		"description": null,
+		"sheep": 1
+	},
+	{
+		"path": "/htmlblocks/renderattempt.html",
+		"title": "Block Rendering Attempt",
+		"description": "Yet again I'm trying to render blocks :/",
+		"sheep": 1
+	},
+	{
+		"path": "/htmlblocks/rendertest.html",
+		"title": "Block Renderer",
+		"description": "Renders blocks.",
+		"sheep": 1
+	},
+	{
+		"path": "/htmlblocks/test1.html",
+		"title": "Hyperblocks Test 1",
+		"description": "Using the somewhat successful drag test attempt 3...",
+		"sheep": 1
+	},
+	{
+		"path": "/htmlifier/src/template/template.html",
+		"title": "{TITLE}",
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/htmlifier/",
+		"title": "HTMLifier",
+		"description": "Converts a Scratch project to HTML/JavaScript",
+		"sheep": 3
+	},
+	{
+		"path": "/intuitive-gunn-website/content/attendance.html",
+		"title": null,
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/intuitive-gunn-website/content/home.html",
+		"title": null,
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/intuitive-gunn-website/content/schedule.html",
+		"title": null,
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/intuitive-gunn-website/failures/",
+		"title": "Henry M. Gunn High School |",
+		"description": "The deep, dark secrets of Gunn.",
+		"sheep": null
+	},
+	{
+		"path": "/intuitive-gunn-website/",
+		"title": "Henry M. Gunn High School Web Site",
+		"description": "Welcome To Our Web Site!",
+		"sheep": null
+	},
+	{
+		"path": "/javascripts/audio-editor/about.html",
+		"title": "About Audio Editor",
+		"description": "More information about the audio editor I made based on code stolen from Scratch 3.0.",
+		"sheep": 3
+	},
+	{
+		"path": "/javascripts/audio-editor/",
+		"title": "Audio Editor",
+		"description": "Sound editor built with stolen code from Scratch 3.0",
+		"sheep": 3
+	},
+	{
+		"path": "/javascripts/audio-nodes/",
+		"title": "Web Audio API node explorer",
+		"description": "An interactive explorer to play with audio nodes.",
+		"sheep": 3
+	},
+	{
+		"path": "/javascripts/clicker/dungeon.html",
+		"title": "Le Dungeon - The Generic Clicker Game",
+		"description": "A generic clicker game.",
+		"sheep": 1
+	},
+	{
+		"path": "/javascripts/clicker/",
+		"title": "The Generic Clicker Game",
+		"description": "A generic clicker game.",
+		"sheep": 1
+	},
+	{
+		"path": "/javascripts/colour/",
+		"title": "Colour picker",
+		"description": "A colour selector with an unnecessary quantity of features, built with chroma.js",
+		"sheep": 3
+	},
+	{
+		"path": "/javascripts/discord/",
+		"title": "discord.js in the browser",
+		"description": "Playing around with discord.js",
+		"sheep": 3
+	},
+	{
+		"path": "/javascripts/dumbascii/",
+		"title": "Dumb ASCII game",
+		"description": "some random 'game' i made using ascii characters (though it doesn't make much of a difference)",
+		"sheep": 2
+	},
+	{
+		"path": "/javascripts/mccommands/",
+		"title": "\"Minecraft\" Command Maker",
+		"description": "A command creator for small screens.",
+		"sheep": 1
+	},
+	{
+		"path": "/javascripts/multiplayer/",
+		"title": "Online list",
+		"description": "Lists the people who are online.",
+		"sheep": 2
+	},
+	{
+		"path": "/javascripts/multiplayer/kicked.html",
+		"title": "u were kicked",
+		"description": "page for kicked users to land on",
+		"sheep": 2
+	},
+	{
+		"path": "/javascripts/multiplayer/list.html",
+		"title": "moved to index.html",
+		"description": "moved",
+		"sheep": 2
+	},
+	{
+		"path": "/javascripts/particles/collidingparticles.html",
+		"title": "Particles are cool",
+		"description": "Particles are cool, so I want to make some happen.",
+		"sheep": 2
+	},
+	{
+		"path": "/javascripts/particles/demo.html",
+		"title": "Particles are cool",
+		"description": "Particles are cool, so I want to make some happen.",
+		"sheep": 2
+	},
+	{
+		"path": "/javascripts/particles/flameybits.html",
+		"title": "Flamey bits",
+		"description": "Some coals that produce smoke when you click.",
+		"sheep": 2
+	},
+	{
+		"path": "/javascripts/particles/",
+		"title": "Particle test directory",
+		"description": "Directory of particle effect animations and tests.",
+		"sheep": 2
+	},
+	{
+		"path": "/javascripts/particles/littleboom.html",
+		"title": "Little boom",
+		"description": "A little explosion of particle effects upon click.",
+		"sheep": 2
+	},
+	{
+		"path": "/javascripts/pixels/",
+		"title": "Pixel manipulator",
+		"description": "Manipulate pixels using modern web technologies!",
+		"sheep": 2
+	},
+	{
+		"path": "/javascripts/sadbooks/sadbooks.html",
+		"title": null,
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/javascripts/shepform/colour.html",
+		"title": "Colour Input II",
+		"description": "A better-made colour input.",
+		"sheep": 1
+	},
+	{
+		"path": "/javascripts/shepform/",
+		"title": "ShepForm Test",
+		"description": "A test page that should not concern you.",
+		"sheep": 1
+	},
+	{
+		"path": "/javascripts/terminal/",
+		"title": "Terminal",
+		"description": "I don't know how to terminal",
+		"sheep": 1
+	},
+	{
+		"path": "/javascripts/terminal/mml.html",
+		"title": "MML",
+		"description": "MML renderer",
+		"sheep": 1
+	},
+	{
+		"path": "/javascripts/three/box.html",
+		"title": "box maybe",
+		"description": "*sigh* let's do some THREE.js again",
+		"sheep": null
+	},
+	{
+		"path": "/javascripts/three/helloworld.html",
+		"title": "hello world - three.js",
+		"description": "boof da doof",
+		"sheep": 1
+	},
+	{
+		"path": "/javascripts/three/",
+		"title": "Three.js tests",
+		"description": "Three.js tests",
+		"sheep": 1
+	},
+	{
+		"path": "/javascripts/three/penworld.html",
+		"title": "penworld - three.js",
+		"description": "boof da doof",
+		"sheep": 1
+	},
+	{
+		"path": "/javascripts/three/square.html",
+		"title": "hello world - three.js",
+		"description": "boof da doof",
+		"sheep": 1
+	},
+	{
+		"path": "/javascripts/video/shit/",
+		"title": "OpenShit",
+		"description": "A dumb video editor",
+		"sheep": null
+	},
+	{
+		"path": "/javascripts/video/censored.html",
+		"title": null,
+		"description": "A redirect page to some video editor",
+		"sheep": null
+	},
+	{
+		"path": "/javascripts/video/",
+		"title": "Smothered Rock",
+		"description": "Trim and put together videos, that's it.",
+		"sheep": 3
+	},
+	{
+		"path": "/javascripts/video/os.html",
+		"title": "O*S*",
+		"description": "You may refer to this app by OpenSh*t, 'the Open thing,' or similar variants.",
+		"sheep": 3
+	},
+	{
+		"path": "/javascripts/video/text.html",
+		"title": "Text.",
+		"description": "Adds 'TEXT' to a video.",
+		"sheep": 3
+	},
+	{
+		"path": "/javascripts/video/video-test.html",
+		"title": "Video playback?",
+		"description": "A test to see if a video can be selected from the file system and be directly played. This test gets a three second clip of a video starting from the two-second mark.",
+		"sheep": 3
+	},
+	{
+		"path": "/javascripts/webgl/",
+		"title": "WebGL Tests",
+		"description": "In which I find out how WebGL works and if I should like it or not.",
+		"sheep": 1
+	},
+	{
+		"path": "/javascripts/abbrevator.html",
+		"title": "Abbrev.ator",
+		"description": "Abbrevs. words for you",
+		"sheep": 3
+	},
+	{
+		"path": "/javascripts/an%C3%A1lisis-po%C3%A9tico.html",
+		"title": "Análisis poético",
+		"description": "Analisar poemas en español",
+		"sheep": 3
+	},
+	{
+		"path": "/javascripts/anonchat.html",
+		"title": "Anonymousish chat",
+		"description": "Chat without authentication",
+		"sheep": 3
+	},
+	{
+		"path": "/javascripts/autocomplete.html",
+		"title": "Autocomplete",
+		"description": "Autocompletes as you type when you press tab",
+		"sheep": 3
+	},
+	{
+		"path": "/javascripts/battery-inspection.html",
+		"title": "Battery inspection",
+		"description": "Uses the Battery Status API to inspect your battery. Only supported in Chrome.",
+		"sheep": 3
+	},
+	{
+		"path": "/javascripts/bignummathtester.html",
+		"title": "bignummath.js testing page",
+		"description": "test page for bignummath.js",
+		"sheep": 2
+	},
+	{
+		"path": "/javascripts/blur.html",
+		"title": "Blurr",
+		"description": "Manually blurs each pixel",
+		"sheep": 3
+	},
+	{
+		"path": "/javascripts/bwt.html",
+		"title": "Burrows-Wheeler Transform (BWT)",
+		"description": "For CSE 100. Also creates a suffix array.",
+		"sheep": 3
+	},
+	{
+		"path": "/javascripts/byte-sorter.html",
+		"title": "Byte sorter",
+		"description": "Ruins a file by sorting its bytes",
+		"sheep": 3
+	},
+	{
+		"path": "/javascripts/carecalc.html",
+		"title": "How much should I care about my final? calculator",
+		"description": "Uses extremely sophisticated and modern algorithms to determine the minimum score you should get on your final to get you to your minimum desired score. Useful for prioritising studying for one subject over another.",
+		"sheep": 2
+	},
+	{
+		"path": "/javascripts/caretdemo.html",
+		"title": "brackets and x-sistemo",
+		"description": "autoclose brackets and add the circumflex/breve to your esperanto",
+		"sheep": 3
+	},
+	{
+		"path": "/javascripts/charcopy.html",
+		"title": "Character copy area",
+		"description": "Quickly copy special characters with a single click",
+		"sheep": 3
+	},
+	{
+		"path": "/javascripts/cheat-sheet.html",
+		"title": "JavaScript Reference Sheet",
+		"description": "A cheat sheet for all the essential JavaScript built-in functions you should know.",
+		"sheep": 3
+	},
+	{
+		"path": "/javascripts/cho.html",
+		"title": "Empirical formula of CHO combustion calculator",
+		"description": "Calculates the empirical formula of a compound containing only carbon, hydrogen, and oxygen based on the amount of CO2 and H2O produced.",
+		"sheep": 3
+	},
+	{
+		"path": "/javascripts/chopper.html",
+		"title": "Chop an image into squares",
+		"description": "To turn a large image into smaller Discord emoji",
+		"sheep": 3
+	},
+	{
+		"path": "/javascripts/clickanywhere.html",
+		"title": "Click anywhere",
+		"description": "A test.",
+		"sheep": 1
+	},
+	{
+		"path": "/javascripts/combining.html",
+		"title": "Combining characters",
+		"description": "Add combining characters to text",
+		"sheep": 3
+	},
+	{
+		"path": "/javascripts/connection-inspection.html",
+		"title": "Connection inspection",
+		"description": "Uses the Network Inspection API, which is only supported in Chromium browsers.",
+		"sheep": 3
+	},
+	{
+		"path": "/javascripts/convolution-matrix.html",
+		"title": "Convolution matrix",
+		"description": "Blur an image or find edges.",
+		"sheep": 3
+	},
+	{
+		"path": "/javascripts/countdown-react.html",
+		"title": "Countdown",
+		"description": "Visualize the days left until or since a date in a calendar-like format. Made using React, but without JSX 😎.",
+		"sheep": 3
+	},
+	{
+		"path": "/javascripts/countdown.html",
+		"title": "Countdown",
+		"description": "Shows days/weeks left until a given date",
+		"sheep": 3
+	},
+	{
+		"path": "/javascripts/cryptography.html",
+		"title": "\"Cryptography\"",
+		"description": "Tools for most common codes used: morse code, binary, alphabet, base64, and caesar ciphers.",
+		"sheep": 3
+	},
+	{
+		"path": "/javascripts/cyrillic-finder.html",
+		"title": "Extraneous character finder",
+		"description": "Finds characters that you can't type on a US keyboard (in case someone inserted a lookalike)",
+		"sheep": 2
+	},
+	{
+		"path": "/javascripts/delegalifier.html",
+		"title": "legalese informalifier",
+		"description": "does some text transformations to make your legal text more familiar",
+		"sheep": 3
+	},
+	{
+		"path": "/javascripts/discord-transformer.html",
+		"title": "Discord text transformer",
+		"description": "Miscellaneous text transforms for my own personal use on Discord",
+		"sheep": 3
+	},
+	{
+		"path": "/javascripts/easing.html",
+		"title": "Easing equations",
+		"description": "A HTML5 version of Robert Penner's easing equations visual aid.",
+		"sheep": 3
+	},
+	{
+		"path": "/javascripts/encrypt.html",
+		"title": "crypt",
+		"description": "Uses a very sophisticated proprietary encryption technique based on base64.",
+		"sheep": 3
+	},
+	{
+		"path": "/javascripts/events.html",
+		"title": "Javascript Events",
+		"description": "A boring page where you can experience some of the JavaScript events.",
+		"sheep": 1
+	},
+	{
+		"path": "/javascripts/events2.html",
+		"title": "Events 2.0",
+		"description": "Using a for-in loop to expose all events of an EventTarget.",
+		"sheep": 3
+	},
+	{
+		"path": "/javascripts/fek-fshka-hangul.html",
+		"title": "Hangul sinke babeben",
+		"description": "Si no noi. Si no ki?",
+		"sheep": 3
+	},
+	{
+		"path": "/javascripts/fill-perf.html",
+		"title": "Flood fill algorithm comparisons",
+		"description": "Wikipedia has a few flood fill algorithms. I wonder which one's the fastest?",
+		"sheep": 2
+	},
+	{
+		"path": "/javascripts/flashcards.html",
+		"title": "Flashcards",
+		"description": "Simple flashcard web app lol",
+		"sheep": 3
+	},
+	{
+		"path": "/javascripts/floating-sticky-note.html",
+		"title": "Floating sticky note",
+		"description": "A notepad that floats above other windows, so you can watch videos full-screen and take notes at the same time.",
+		"sheep": 3
+	},
+	{
+		"path": "/javascripts/floats.html",
+		"title": "Float explorer",
+		"description": "",
+		"sheep": 3
+	},
+	{
+		"path": "/javascripts/font-colour-remover.html",
+		"title": "Remove font and colours from copied text",
+		"description": "Removes some formatting from text while keeping things like lists, italics, links, etc. so it can be pasted into a Google Doc with your own styling.",
+		"sheep": 3
+	},
+	{
+		"path": "/javascripts/fontmaker.html",
+		"title": "Scratch Text Engine Maker",
+		"description": "For cloning/stamping use; not a PTE maker.",
+		"sheep": 1
+	},
+	{
+		"path": "/javascripts/footer.html",
+		"title": "Footer demo",
+		"description": "Material footer for copy-pasters",
+		"sheep": 1
+	},
+	{
+		"path": "/javascripts/french.html",
+		"title": "spoken french",
+		"description": "uses TTS to speak french",
+		"sheep": 3
+	},
+	{
+		"path": "/javascripts/frictioney-balls.html",
+		"title": "Frictioney Balls",
+		"description": "Step one in recreating carykh's evolution simulator",
+		"sheep": 3
+	},
+	{
+		"path": "/javascripts/gif-caption.html",
+		"title": "Add a caption to a gif",
+		"description": "When the",
+		"sheep": 3
+	},
+	{
+		"path": "/javascripts/good-password.html",
+		"title": "Very well-designed secret emtry message typing area",
+		"description": null,
+		"sheep": 2
+	},
+	{
+		"path": "/javascripts/grapher.html",
+		"title": "dumb grapher",
+		"description": "lazy grapher with DYNAMIC PRECISION SAMPLING",
+		"sheep": 3
+	},
+	{
+		"path": "/javascripts/greedy.html",
+		"title": "Greedy meshing",
+		"description": "Following some random almost decade old blog post for meshing tiles.",
+		"sheep": 3
+	},
+	{
+		"path": "/javascripts/happenings.html",
+		"title": "What's Happening?",
+		"description": "A better designed What's Happening section.",
+		"sheep": 1
+	},
+	{
+		"path": "/javascripts/height.html",
+		"title": "cm to feet and inches converter",
+		"description": "Unfortunately, I only have an intuition for heights in feet and inches, and ONLY feet and inches. Not centimetres, not even a decimal number of feet. This is so sad Alexa play Despacito",
+		"sheep": 3
+	},
+	{
+		"path": "/javascripts/image-shuffler.html",
+		"title": "Shuffle rows in an image",
+		"description": "Suppose you're taking ECE 109, and the provided past quizzes always list the correct answer first, but you don't want to know the answer. This tool will chop up a cropped screenshot of the PDF and shuffle them around.",
+		"sheep": 3
+	},
+	{
+		"path": "/javascripts/image-translucentifier.html",
+		"title": "Image translucentifier",
+		"description": "Specify the foreground and background colour, and it'll make the background transparent",
+		"sheep": 3
+	},
+	{
+		"path": "/javascripts/imagetoscheme.html",
+		"title": "Image to Scheme",
+		"description": null,
+		"sheep": 3
+	},
+	{
+		"path": "/javascripts/",
+		"title": "Javascripts",
+		"description": null,
+		"sheep": 2
+	},
+	{
+		"path": "/javascripts/intense-contrast.html",
+		"title": "Intense contrast",
+		"description": "Maximizes the differences between pixels to reveal badly smudged out names",
+		"sheep": 3
+	},
+	{
+		"path": "/javascripts/intl-nums.html",
+		"title": "Internationalized numbers",
+		"description": "Apparently JavaScript has a built-in function that translates “69 billion Scandinavian miles per Fahrenheit” to Japanese in Malayalam numerals.",
+		"sheep": 3
+	},
+	{
+		"path": "/javascripts/jpg-quality.html",
+		"title": "JPG quality",
+		"description": "JavaScript lets you set how crappy your JPG is lol",
+		"sheep": 3
+	},
+	{
+		"path": "/javascripts/large-file-viewer.html",
+		"title": "Large file viewer",
+		"description": "Preview a large text file without lag, hopefully.",
+		"sheep": 3
+	},
+	{
+		"path": "/javascripts/mp4-analyze.html",
+		"title": "Analyze MP4s",
+		"description": "Binary files are powerful",
+		"sheep": 3
+	},
+	{
+		"path": "/javascripts/mutate.html",
+		"title": "Mutations and stuff",
+		"description": "An evolution simulator attempt.",
+		"sheep": 1
+	},
+	{
+		"path": "/javascripts/notifications.html",
+		"title": "notifications",
+		"description": "notifs",
+		"sheep": 3
+	},
+	{
+		"path": "/javascripts/obfuscate-url.html",
+		"title": "Obfuscate URL",
+		"description": "Hide plain text in plain sight by URL/percent-encoding every letter, even when you don't need to. Note that noncompliant web servers might shiver and sob at the sight of these paths.",
+		"sheep": 3
+	},
+	{
+		"path": "/javascripts/one-pdf.html",
+		"title": "One PDF",
+		"description": "Combine multiple images into one PDF to make your teachers' lives easier.",
+		"sheep": 3
+	},
+	{
+		"path": "/javascripts/opacity-calc.html",
+		"title": "Opacity calculator",
+		"description": "Calculates the opacity of a colour on top of another colour.",
+		"sheep": 2
+	},
+	{
+		"path": "/javascripts/panchroma.html",
+		"title": "Panchroma",
+		"description": "ALL the colours!",
+		"sheep": 3
+	},
+	{
+		"path": "/javascripts/peerjs.html",
+		"title": "PeerJS test",
+		"description": "Testing out how PeerJS works",
+		"sheep": 3
+	},
+	{
+		"path": "/javascripts/pip-image.html",
+		"title": "Picture-in-picture image",
+		"description": "Create a pop-up of an image (e.g. Among Us) that stays above other windows.",
+		"sheep": 3
+	},
+	{
+		"path": "/javascripts/points.html",
+		"title": "Dragging points test",
+		"description": "A scary failure that was once an attempt to make draggable points.",
+		"sheep": 1
+	},
+	{
+		"path": "/javascripts/putty-serial.html",
+		"title": "Web-based PuTTY for serial destinations",
+		"description": "Want to read console output from an Arduino or other board connected by USB to your computer? There's apparently no need to install PuTTY because Chrome can do it too.",
+		"sheep": 3
+	},
+	{
+		"path": "/javascripts/qr.html",
+		"title": "Scan QR code in image",
+		"description": "Uses the QR Scanner library",
+		"sheep": 3
+	},
+	{
+		"path": "/javascripts/randomised-music.html",
+		"title": "Randomised music",
+		"description": "Randomised notes along the C# major scale with Tone.js. Based on a Scratch project",
+		"sheep": 3
+	},
+	{
+		"path": "/javascripts/raw-json-img.html",
+		"title": "Render image in Minecraft",
+		"description": "20w17a adds support for hexadecimal colours in raw JSON. You know what that means!",
+		"sheep": 3
+	},
+	{
+		"path": "/javascripts/responsivenavbar.html",
+		"title": "The Responsive Navbar",
+		"description": "Responsive design is cool, and since we use iPads at school, I want to make my pages responsive.",
+		"sheep": 1
+	},
+	{
+		"path": "/javascripts/rounded-decimal-to-fraction.html",
+		"title": "Rounded decimal to fraction",
+		"description": "Lists some possible integer ratios that may have produced a rounded decimal value.",
+		"sheep": 3
+	},
+	{
+		"path": "/javascripts/rps-ai.html",
+		"title": "Rock paper scissors AI",
+		"description": "Uses machine learning to predict a human player's next move with up to 93% accuracy.",
+		"sheep": 3
+	},
+	{
+		"path": "/javascripts/scratchapiexplorer.html",
+		"title": "Scratch API Explorer",
+		"description": "Explore the Scratch APIs with this hard-to-use API explorer.",
+		"sheep": 2
+	},
+	{
+		"path": "/javascripts/screen-recorder.html",
+		"title": "Screen recorder",
+		"description": "Imagine needing to install an extension for this.",
+		"sheep": 3
+	},
+	{
+		"path": "/javascripts/searchparser.html",
+		"title": "Search Parser",
+		"description": "Turns the stuff in the URL after ? into an object.",
+		"sheep": 1
+	},
+	{
+		"path": "/javascripts/semi-what.html",
+		"title": "Semi-what;",
+		"description": "Encoding using semicolons and Greek question marks; this probably won't work well for some computers.",
+		"sheep": 3
+	},
+	{
+		"path": "/javascripts/shortcuts.html",
+		"title": "Keyboard Shortcut Guide",
+		"description": "A little thing appears when you hold down, say, ctrl.",
+		"sheep": 1
+	},
+	{
+		"path": "/javascripts/snowflake.html",
+		"title": "Snowflake analyser",
+		"description": "Snowflakes, conceptualized by Twitter, are unique IDs generated from a timestamp and a looping incremental ID. This tool can expose when an ID was generated.",
+		"sheep": 3
+	},
+	{
+		"path": "/javascripts/sstv-encoder.html",
+		"title": "SSTV encoder (Scottie S1)",
+		"description": "Encode a 320 by 256 image into SSTV and blast it out of your speakers.",
+		"sheep": 3
+	},
+	{
+		"path": "/javascripts/still-2020.html",
+		"title": "It’s still March 2020",
+		"description": "COVID-19 never ends.",
+		"sheep": 3
+	},
+	{
+		"path": "/javascripts/subtract-frames.html",
+		"title": "Subtract hh:mm:ss:frames",
+		"description": "For getting the difference in time between two points in a video editor to slow down a clip to a certain length.",
+		"sheep": 3
+	},
+	{
+		"path": "/javascripts/sudoku-ruiner.html",
+		"title": "Sudoku ruiner",
+		"description": "For all empty cells in a sudoku puzzle it outputs possible numbers",
+		"sheep": 3
+	},
+	{
+		"path": "/javascripts/tosvg.html",
+		"title": "Bitmap to vector",
+		"description": "Convert PNG to SVG by embedding it as an image",
+		"sheep": 3
+	},
+	{
+		"path": "/javascripts/towering-game.html",
+		"title": "towering game",
+		"description": "stack blocks on each other haphazardly and hope they don't fall",
+		"sheep": 3
+	},
+	{
+		"path": "/javascripts/tts.html",
+		"title": "Speech synthesis (Text-to-speech)",
+		"description": "The good browsers have text-to-speech built in!",
+		"sheep": 3
+	},
+	{
+		"path": "/javascripts/unicode-canvas.html",
+		"title": "Unicode character explorer",
+		"description": "Unicode is divided into planes containing blocks of characters.",
+		"sheep": 3
+	},
+	{
+		"path": "/javascripts/unicode.html",
+		"title": "Unicode characters",
+		"description": "Unicode is divided into planes of 65536 characters, which are further divided into blocks.",
+		"sheep": 3
+	},
+	{
+		"path": "/javascripts/voice-control.html",
+		"title": "Voice control",
+		"description": "Your voice box has a lot of potential; it's a shame to see it go to waste.",
+		"sheep": 3
+	},
+	{
+		"path": "/javascripts/webhook-sender.html",
+		"title": "Discord webhook sender",
+		"description": "A WYSIWYG editor for Discord webhooks",
+		"sheep": 3
+	},
+	{
+		"path": "/javascripts/when-zoom.html",
+		"title": "When be my ZOOM??",
+		"description": "Thanck to ol' corono, time zones are no longer a thing. this makes it hard to remember when your teachers' zoomy-zooms are. sometimes you do remember, but you forget the time. why do work when computer can for you?",
+		"sheep": 3
+	},
+	{
+		"path": "/javascripts/written_book.html",
+		"title": "minecraft:written_book maker",
+		"description": "gives commands.",
+		"sheep": 1
+	},
+	{
+		"path": "/javascripts/zwsp-embedder.html",
+		"title": "Z​​​​​​​​​​​​​​​​​​​e​​​​​r​​​​​o-​​​​​​​​​​​​​w​​​​​i​​​​​​​​​​​​​​​​​​​​d​th​​​​ ​​​​​s​​​​​​​​​​​​​​​​​​​p​​​ac​​​​​​​​e​​​​​​​​​ ​​​​​​​​​​​​​​e​​​​​​​​​​​​​​​​​​​​mb​​e​​​​​​​​​d​​​​​​​​​​​​​​d​e​​​​​​​​​​​​​​​​​​r​​​​​​​​​​​​​​​​​​​​​​​​​",
+		"description": "E‌​​​‌​​n‌‌​‌‌‌‌c‌‌‌​‌‌‌o‌‌​‌‌‌​d‌​​​​​e‌‌‌​‌‌‌s‌‌​‌​​‌ ‌‌‌​‌​​t‌‌​‌​​​e‌​​​​​x‌​‌​​‌‌t‌​​​‌​‌ ‌​​‌‌​​a‌​​​‌‌​s‌‌‌​‌‌ ‌​​​​​z‌‌​‌​​​e‌‌​​​​‌r‌‌​‌​​‌o‌‌​‌‌​​-‌​​​​​w‌‌‌​​‌‌i‌‌​‌​​​d‌‌​​‌​‌t‌‌​​‌​‌h‌‌‌​​​​ ‌​​​​‌spaces and embeds it in more text.",
+		"sheep": 3
+	},
+	{
+		"path": "/life/",
+		"title": "Conway's Game of Life",
+		"description": "Life is just a game.",
+		"sheep": 1
+	},
+	{
+		"path": "/life/scrolltest.html",
+		"title": "onwheel test",
+		"description": "tests",
+		"sheep": 1
+	},
+	{
+		"path": "/living-skills/sean-yen/",
+		"title": "Personal presentation",
+		"description": "A presentation about me for living skills",
+		"sheep": 3
+	},
+	{
+		"path": "/living-skills/",
+		"title": "Living skills",
+		"description": "A directory for anything web-based I do for living skills.",
+		"sheep": 3
+	},
+	{
+		"path": "/longer-tweets/always-var/",
+		"title": "3 Tips for JavaScript​: Always use var",
+		"description": "Best practices for JavaScript: Always use var!",
+		"sheep": 3
+	},
+	{
+		"path": "/longer-tweets/better-tests/",
+		"title": "studying is cheating",
+		"description": "a different testing system",
+		"sheep": 3
+	},
+	{
+		"path": "/longer-tweets/closing-html/",
+		"title": "Why closing HTML tags is dangerous practice",
+		"description": "Closing your HTML tags can be dangerous! Here's why.",
+		"sheep": 3
+	},
+	{
+		"path": "/longer-tweets/creating-this-blog/",
+		"title": "creating this blog",
+		"description": "showing off",
+		"sheep": 3
+	},
+	{
+		"path": "/longer-tweets/ctf/",
+		"title": "sdctf 22 write-up",
+		"description": "How I did the challenges for San Diego CTF 2022",
+		"sheep": 3
+	},
+	{
+		"path": "/longer-tweets/files/lactf/heyy.html",
+		"title": null,
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/longer-tweets/flatland-chem/",
+		"title": "flatland chemistry",
+		"description": "What if the world were 2D?",
+		"sheep": 3
+	},
+	{
+		"path": "/longer-tweets/flawless-new-english/",
+		"title": "Sean's flawless new English spelling reform",
+		"description": "English has never been spelled better",
+		"sheep": 3
+	},
+	{
+		"path": "/longer-tweets/gamepro5-translation/",
+		"title": "analysis of gamepro5's server history translation",
+		"description": "I recently made an alarming development in my dumb conlang.",
+		"sheep": 3
+	},
+	{
+		"path": "/longer-tweets/google-anal/",
+		"title": "fyi, I'm letting Google track you now",
+		"description": "It's for my résumé!",
+		"sheep": 3
+	},
+	{
+		"path": "/longer-tweets/google-ctf/",
+		"title": "google ctf: js safe 4.0",
+		"description": "Cursed JavaScript, fresh from Google's oven.",
+		"sheep": 3
+	},
+	{
+		"path": "/longer-tweets/html-xss/",
+		"title": "XSS in HTML",
+		"description": "Spread awareness about this #security #vulnerability!",
+		"sheep": 3
+	},
+	{
+		"path": "/longer-tweets/js/",
+		"title": "JavaScript.",
+		"description": "a list of quirks from \\#n-building",
+		"sheep": 3
+	},
+	{
+		"path": "/longer-tweets/json-is-hard/",
+		"title": "Why JSON is a hard programming language",
+		"description": "Everyone knows what JSON is, but we can all attest to it being a difficult programming language.",
+		"sheep": 3
+	},
+	{
+		"path": "/longer-tweets/json-lang/",
+		"title": "JSON is a language",
+		"description": "So is Scratch",
+		"sheep": 3
+	},
+	{
+		"path": "/longer-tweets/lactf/",
+		"title": "LA CTF 2024",
+		"description": "With graph theory, CSS can steal your password.",
+		"sheep": 3
+	},
+	{
+		"path": "/longer-tweets/leopard/",
+		"title": "leopard",
+		"description": "A random rant about the new Scratch to JavaScript converter",
+		"sheep": 3
+	},
+	{
+		"path": "/longer-tweets/life-after-death/",
+		"title": "your patient soul",
+		"description": "yet another afterlife idea",
+		"sheep": 3
+	},
+	{
+		"path": "/longer-tweets/lol-vocabulary/",
+		"title": "fancy vocabulary is bad",
+		"description": "prioritise communication",
+		"sheep": 3
+	},
+	{
+		"path": "/longer-tweets/major/",
+		"title": "cs major iceberg",
+		"description": "My major situation at UCSD",
+		"sheep": 3
+	},
+	{
+		"path": "/longer-tweets/matrix-lab/",
+		"title": "matrix labs",
+		"description": "Writeups for the two easiest Matrix Lab reverse engineering challenges from Project Sekai CTF 2022.",
+		"sheep": 3
+	},
+	{
+		"path": "/longer-tweets/phonology/",
+		"title": "l'fonoloj d'm'leng",
+		"description": "The phonology of my language.",
+		"sheep": 3
+	},
+	{
+		"path": "/longer-tweets/pickles/",
+		"title": "Why do these sandwiches come with pickles?",
+		"description": "If you think that question is stupid, I wrote this piece for you.",
+		"sheep": 3
+	},
+	{
+		"path": "/longer-tweets/pronouns/",
+		"title": "pronouns in my dumb conlang",
+		"description": "I recently made an alarming development in my dumb conlang.",
+		"sheep": 3
+	},
+	{
+		"path": "/longer-tweets/racism-response/",
+		"title": "radical racism response",
+		"description": "Responding to Gamepro5's article about racism.",
+		"sheep": 3
+	},
+	{
+		"path": "/longer-tweets/scratch-www-troubles/",
+		"title": "scratch-www troubles",
+		"description": "I tried and kind of succeeded in building Scratch WWW.",
+		"sheep": 3
+	},
+	{
+		"path": "/longer-tweets/sdctf24/",
+		"title": "SDCTF 2024",
+		"description": "The challenges I contributed to UCSD's CTF.",
+		"sheep": 3
+	},
+	{
+		"path": "/longer-tweets/securly-bypass/",
+		"title": "bypassing securly",
+		"description": "A little mistake by the student right robbers",
+		"sheep": 3
+	},
+	{
+		"path": "/longer-tweets/test/",
+		"title": "test post",
+		"description": "testing this cool little blog system I made",
+		"sheep": 3
+	},
+	{
+		"path": "/longer-tweets/ucsd-colleges/",
+		"title": "UCSD Colleges Ranked",
+		"description": "What's the best college?",
+		"sheep": 3
+	},
+	{
+		"path": "/longer-tweets/ugwa-alt-schedules/",
+		"title": "hypercomplex UGWA",
+		"description": "How UGWA deals with alternate schedules",
+		"sheep": 3
+	},
+	{
+		"path": "/longer-tweets/ugwa-colours/",
+		"title": "colourful accident",
+		"description": "When a programming mistake results in a nice-looking range of colours",
+		"sheep": 3
+	},
+	{
+		"path": "/longer-tweets/underground-schoology/",
+		"title": "underground schoology difficulties",
+		"description": "I made a secret social medium.",
+		"sheep": 3
+	},
+	{
+		"path": "/longer-tweets/vertex-buffer-not-big-enough/",
+		"title": "Vertex buffer is not big enough on Mac only",
+		"description": "A weird bug that only occurred on Mac computers.",
+		"sheep": 3
+	},
+	{
+		"path": "/longer-tweets/404.html",
+		"title": "404: Not found",
+		"description": "",
+		"sheep": 3
+	},
+	{
+		"path": "/longer-tweets/",
+		"title": "Longer Tweets",
+		"description": "Yet another blog by SheepTester",
+		"sheep": 3
+	},
+	{
+		"path": "/mars/",
+		"title": "Mars",
+		"description": "Martian math for intellectual Earthlings.",
+		"sheep": null
+	},
+	{
+		"path": "/offline-ucsd-map/",
+		"title": "Offline UCSD map",
+		"description": "The UC San Diego campus map, stolen, but it works offline!",
+		"sheep": null
+	},
+	{
+		"path": "/olamreee/colour-squares.html",
+		"title": "Coloured squares | OlamREEE",
+		"description": "Periodic trends activity",
+		"sheep": 3
+	},
+	{
+		"path": "/olamreee/",
+		"title": "OlamREEE - Olamite Periodic Table Editor",
+		"description": "A tool to brainstorm a periodic table for the elements on planet Olam.",
+		"sheep": null
+	},
+	{
+		"path": "/olamreee/override-editor.html",
+		"title": "OlamREEE override editor",
+		"description": "A tool to brainstorm a periodic table for the elements on planet Olam.",
+		"sheep": 2
+	},
+	{
+		"path": "/oldindex/new/",
+		"title": "SheepTester",
+		"description": "This is a page for humans to look at. But bots are welcome too.",
+		"sheep": 2
+	},
+	{
+		"path": "/oldindex/new2/",
+		"title": "SheepTester Directory",
+		"description": "I made a bunch of stuff; here's a more interactive list of stuff I made",
+		"sheep": null
+	},
+	{
+		"path": "/oldindex/oldest/",
+		"title": "Sean aka SheepTester",
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/oldindex/",
+		"title": "SheepTester Directory",
+		"description": "This is a page that you can look at.",
+		"sheep": null
+	},
+	{
+		"path": "/opinions/",
+		"title": "Opinions",
+		"description": null,
+		"sheep": 1
+	},
+	{
+		"path": "/os-design/",
+		"title": "OS design concept",
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/ovine-archive/",
+		"title": "𝘱Apers foun\"\"“d',",
+		"description": "A portfolio of some writing from my Analysis of the Writer's Craft class.",
+		"sheep": 3
+	},
+	{
+		"path": "/ovinetopia/images/tile-test.html",
+		"title": "cloud tile tester - Ovinetopia",
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/ovinetopia/",
+		"title": "Ovinetopia",
+		"description": "An incremental game based on sheep",
+		"sheep": 1
+	},
+	{
+		"path": "/platformre/a/actualdatagetter.html",
+		"title": "a platformer data getter",
+		"description": "very dumb!",
+		"sheep": 3
+	},
+	{
+		"path": "/platformre/a/",
+		"title": "A Platformer",
+		"description": "JavaScript port of A Platformer",
+		"sheep": 3
+	},
+	{
+		"path": "/platformre/a/texturemapmaker.html",
+		"title": "texture map maker",
+		"description": "reee",
+		"sheep": 3
+	},
+	{
+		"path": "/platformre/box2d/",
+		"title": "Box2D test",
+		"description": "Playing with Box2DWeb",
+		"sheep": 3
+	},
+	{
+		"path": "/platformre/explore/",
+		"title": "Explore levels - Plaformre",
+		"description": "In which one may find levels made by other human beings.",
+		"sheep": 1
+	},
+	{
+		"path": "/platformre/explore/submit.html",
+		"title": "Publish a level - Platformre",
+		"description": null,
+		"sheep": 1
+	},
+	{
+		"path": "/platformre/maker/",
+		"title": "Makitor - Platformre",
+		"description": "You can make a puzzle for other bored people to solve.",
+		"sheep": 1
+	},
+	{
+		"path": "/platformre/maker/submit.html",
+		"title": "Submit a level-bit - Platformre",
+		"description": null,
+		"sheep": 1
+	},
+	{
+		"path": "/platformre/nova/penland/choppy.html",
+		"title": "Will it be choppy? - UGWA",
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/platformre/nova/penland/",
+		"title": "Skribilmondo Nova",
+		"description": "Penland, but this time as a canvas",
+		"sheep": 1
+	},
+	{
+		"path": "/platformre/nova/customise.html",
+		"title": "Agordeblaj Kaheloj",
+		"description": "",
+		"sheep": 1
+	},
+	{
+		"path": "/platformre/nova/",
+		"title": "Nova platformludo venos!",
+		"description": "Don't bother",
+		"sheep": 1
+	},
+	{
+		"path": "/platformre/nova/paint.html",
+		"title": "Agordeblaj Kaheloj",
+		"description": "",
+		"sheep": 2
+	},
+	{
+		"path": "/platformre/nova/player.html",
+		"title": "Novan Platformludon",
+		"description": "adding the player and things",
+		"sheep": 1
+	},
+	{
+		"path": "/platformre/nova/render.html",
+		"title": "Desegnu Novan Platformludon",
+		"description": "Work in progress",
+		"sheep": 1
+	},
+	{
+		"path": "/platformre/penland/editingworld.html",
+		"title": "Penland Mining/Placing test",
+		"description": null,
+		"sheep": 1
+	},
+	{
+		"path": "/platformre/penland/gotamoveitmoveit.html",
+		"title": "Penland World Generation test",
+		"description": null,
+		"sheep": 1
+	},
+	{
+		"path": "/platformre/penland/inv.html",
+		"title": "Penland Inventory test",
+		"description": null,
+		"sheep": 1
+	},
+	{
+		"path": "/platformre/penland/render.html",
+		"title": "Penland Rendering test",
+		"description": null,
+		"sheep": 1
+	},
+	{
+		"path": "/platformre/penland/worldgen.html",
+		"title": "Penland World Generation test",
+		"description": null,
+		"sheep": 1
+	},
+	{
+		"path": "/platformre/penworld/",
+		"title": "Penworld",
+		"description": "Penworld: Penland to a new dimension",
+		"sheep": 1
+	},
+	{
+		"path": "/platformre/webgl/happy-webgl-tester.html",
+		"title": "test happy [ABANDONED, NOT WORK]",
+		"description": "hope",
+		"sheep": 3
+	},
+	{
+		"path": "/platformre/webgl/",
+		"title": "webgl",
+		"description": "clunk",
+		"sheep": 3
+	},
+	{
+		"path": "/platformre/webgl/penworld.html",
+		"title": "Penworld",
+		"description": "3D Penland, this time using WebGL",
+		"sheep": 3
+	},
+	{
+		"path": "/platformre/webgl/raycast-2d.html",
+		"title": "2d raycasting test",
+		"description": "hope can generalize to 3d",
+		"sheep": 3
+	},
+	{
+		"path": "/platformre/webgl/test-cube.html",
+		"title": "webgl testu but with CUBE",
+		"description": "time for CUBE",
+		"sheep": 3
+	},
+	{
+		"path": "/platformre/webgl/test.html",
+		"title": "webgl testu",
+		"description": "uau uau webgl",
+		"sheep": 3
+	},
+	{
+		"path": "/platformre/creds.html",
+		"title": "Credits - Platformre",
+		"description": null,
+		"sheep": 1
+	},
+	{
+		"path": "/platformre/gotit.html",
+		"title": "Received level - Platformre",
+		"description": null,
+		"sheep": 1
+	},
+	{
+		"path": "/platformre/",
+		"title": "Platformre",
+		"description": "A boring game where a human has complete control over the location a circle and tries to get the circle to touch a green square.",
+		"sheep": 1
+	},
+	{
+		"path": "/platformre/keypresses.html",
+		"title": "Keypress test",
+		"description": null,
+		"sheep": 1
+	},
+	{
+		"path": "/platformre/level.html",
+		"title": "Level rendering test",
+		"description": null,
+		"sheep": 1
+	},
+	{
+		"path": "/platformre/levelmaker.html",
+		"title": "lol this page moved - Platformre",
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/platformre/levelplaytest.html",
+		"title": "Platformre level test",
+		"description": null,
+		"sheep": 1
+	},
+	{
+		"path": "/platformre/mspaint.html",
+		"title": "Ms. Paint",
+		"description": null,
+		"sheep": 1
+	},
+	{
+		"path": "/platformre/randomlevelgen.html",
+		"title": "lol this page moved - Platformre",
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/platformre/submit.html",
+		"title": "Submit a level - Platformre",
+		"description": null,
+		"sheep": 1
+	},
+	{
+		"path": "/platformre/updates.html",
+		"title": "Changelog - Platformre",
+		"description": null,
+		"sheep": 1
+	},
+	{
+		"path": "/prop67/",
+		"title": "Proposition 67",
+		"description": null,
+		"sheep": 1
+	},
+	{
+		"path": "/real/internships-2023/",
+		"title": "Summer 2023 Internship Season",
+		"description": "It's a very simple sankey diagram. (It's a very boring sankey diagram.)",
+		"sheep": 3
+	},
+	{
+		"path": "/real/internships-2024/",
+		"title": "Summer 2024 Internship Season",
+		"description": "Still ongoing.",
+		"sheep": 3
+	},
+	{
+		"path": "/real/",
+		"title": "real",
+		"description": "Still ongoing.",
+		"sheep": 3
+	},
+	{
+		"path": "/reform/components.html",
+		"title": "Reform components demo",
+		"description": "Listing all the components I'll have to design for my Reform design system.",
+		"sheep": 3
+	},
+	{
+		"path": "/reiglutopia/",
+		"title": "Reiglutopia",
+		"description": "A dumb city simulator game",
+		"sheep": null
+	},
+	{
+		"path": "/r%C3%A9sum%C3%A9/",
+		"title": "Résumé · Sean Yen",
+		"description": "Note: This page is designed to be printed and saved to a PDF.",
+		"sheep": 3
+	},
+	{
+		"path": "/roots/",
+		"title": "Roots and Affixes",
+		"description": "Some Greek and Latin roots and affixes you'll find in English.",
+		"sheep": 1
+	},
+	{
+		"path": "/scratch-blocks/playgrounds/tests/custom_procedure_playground.html",
+		"title": "Custom Procedure Playground",
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/scratch-blocks/playgrounds/tests/horizontal_playground.html",
+		"title": "Horizontal Playground",
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/scratch-blocks/playgrounds/tests/multi_playground.html",
+		"title": "Multi-toolbox Playground",
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/scratch-blocks/playgrounds/tests/vertical_playground_compressed.html",
+		"title": "Compressed Vertical Playground",
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/scratch-blocks/playgrounds/tests/vertical_playground.html",
+		"title": "Vertical Playground",
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/scratch-blocks/",
+		"title": "scratch-blocks | Scratch Blocks is a library for building creative computing interfaces.",
+		"description": "Scratch Blocks is a library for building creative computing interfaces.",
+		"sheep": null
+	},
+	{
+		"path": "/scratch-gui/16-9/",
+		"title": "E羊icques: A Scratch mod with an alternative aspect ratio",
+		"description": null,
+		"sheep": 2
+	},
+	{
+		"path": "/scratch-gui/flags.html",
+		"title": "E羊icques: URL settings",
+		"description": null,
+		"sheep": 2
+	},
+	{
+		"path": "/scratch-gui/",
+		"title": "E羊icques: A Scratch mod with a custom aspect ratio that can load an extension from a URL",
+		"description": null,
+		"sheep": 2
+	},
+	{
+		"path": "/scratch-vm/",
+		"title": "Scratch VM Benchmark",
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/scratch-vm/suite.html",
+		"title": "Scratch VM Benchmark Suite",
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/scratch-vm/video-sensing.html",
+		"title": "Video Motion Test Playground",
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/sentence/",
+		"title": "Random Sentence Generator",
+		"description": null,
+		"sheep": 1
+	},
+	{
+		"path": "/sentence/mspllesier.html",
+		"title": "A Misspeller",
+		"description": "Supposedly humans can read misspelled words.",
+		"sheep": 1
+	},
+	{
+		"path": "/sentence/sean.html",
+		"title": "Having some pun today",
+		"description": "There's too many words in English that end with -sion or -tion.",
+		"sheep": 1
+	},
+	{
+		"path": "/sentence/word.html",
+		"title": "Random word generator",
+		"description": "An attempt to make very strange and foreign-looking words using different methods.",
+		"sheep": 1
+	},
+	{
+		"path": "/sheep-sim/src/playground/crowd.html",
+		"title": "Crowd",
+		"description": "Crowd.",
+		"sheep": 3
+	},
+	{
+		"path": "/sheep-sim/src/playground/grid.html",
+		"title": "Grid",
+		"description": "Grid.",
+		"sheep": 3
+	},
+	{
+		"path": "/sheep-sim/src/playground/infection.html",
+		"title": "Infection",
+		"description": "Infection.",
+		"sheep": 3
+	},
+	{
+		"path": "/sheep-sim/src/playground/pathfinding.html",
+		"title": "Pathfinding",
+		"description": "Pathfinding.",
+		"sheep": 3
+	},
+	{
+		"path": "/sheep-sim/",
+		"title": "Sheep sim",
+		"description": "Temporary playground directory",
+		"sheep": 3
+	},
+	{
+		"path": "/skejl/",
+		"title": "Skejl",
+		"description": "Skejl",
+		"sheep": null
+	},
+	{
+		"path": "/stalk/",
+		"title": "Stalker Bios",
+		"description": "Some people's very private information.",
+		"sheep": null
+	},
+	{
+		"path": "/telegraph/cited.html",
+		"title": "Civil War/Telegraph/Works Cited",
+		"description": "Works cited for /telegraph",
+		"sheep": 1
+	},
+	{
+		"path": "/telegraph/",
+		"title": "Civil War/Telegraph",
+		"description": "Civil war school project",
+		"sheep": 1
+	},
+	{
+		"path": "/telegraph/player.html",
+		"title": "Morse Code Player",
+		"description": "plays/translates morse code",
+		"sheep": 1
+	},
+	{
+		"path": "/text-save/404.html",
+		"title": "text-save / [LOADING]",
+		"description": "A simple web app that saves plain text documents to your browser",
+		"sheep": null
+	},
+	{
+		"path": "/text-save/dir.html",
+		"title": "text-save / [LIST]",
+		"description": "A simple web app that saves plain text documents to your browser",
+		"sheep": 3
+	},
+	{
+		"path": "/text-save/",
+		"title": "text-save / [LOADING]",
+		"description": "A simple web app that saves plain text documents to your browser",
+		"sheep": null
+	},
+	{
+		"path": "/text-save/invalid-id.html",
+		"title": "text-save / [INVALID ID]",
+		"description": "A simple web app that saves plain text documents to your browser",
+		"sheep": null
+	},
+	{
+		"path": "/text-save/template.html",
+		"title": "text-save / %id%",
+		"description": "A simple web app that saves plain text documents to your browser",
+		"sheep": null
+	},
+	{
+		"path": "/theflat/easierjson.html",
+		"title": "Easier JSON",
+		"description": "In which I try to make it easier for me to make the Flat levels.",
+		"sheep": 1
+	},
+	{
+		"path": "/theflat/",
+		"title": "The Flat",
+		"description": "The sequel to the Hotel and the House.",
+		"sheep": 1
+	},
+	{
+		"path": "/themes/billy-goat/index-dark.html",
+		"title": "Billy Goat home page",
+		"description": "The home page of the Billy Goat dark theme by SheepTester.",
+		"sheep": null
+	},
+	{
+		"path": "/themes/billy-goat/",
+		"title": "Billy Goat home page",
+		"description": "The home page of the Billy Goat light theme by SheepTester.",
+		"sheep": null
+	},
+	{
+		"path": "/themes/billy-goat/post-dark.html",
+		"title": "Billy Goat post page",
+		"description": "The post page of the Billy Goat dark theme by SheepTester.",
+		"sheep": null
+	},
+	{
+		"path": "/themes/billy-goat/post.html",
+		"title": "Billy Goat post page",
+		"description": "The post page of the Billy Goat light theme by SheepTester.",
+		"sheep": null
+	},
+	{
+		"path": "/themes/f9-key/",
+		"title": "F9 Key theme",
+		"description": "Example page for the F9 Key theme by SheepTester.",
+		"sheep": null
+	},
+	{
+		"path": "/thingkingland/axolotls/axolotls.html",
+		"title": null,
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/thingkingland/axolotls/seanaxolotl.html",
+		"title": null,
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/thingkingland/axolotls/tree.html",
+		"title": "Trees",
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/thingkingland/bookmarklets/boredom.html",
+		"title": "Libs",
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/thingkingland/bookmarklets/drawer.html",
+		"title": "Drawer",
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/thingkingland/bookmarklets/theHouse.html",
+		"title": "The House",
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/thingkingland/calculator/calc.html",
+		"title": "Calculator v3",
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/thingkingland/calculator/calculator.html",
+		"title": "Calculator v3",
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/thingkingland/coders/block.html",
+		"title": "Block Rendering Test",
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/thingkingland/coders/dragTest.html",
+		"title": "Drag test",
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/thingkingland/coders/explorer.html",
+		"title": "Libs",
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/thingkingland/coders/turtle.html",
+		"title": "Turtle v1",
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/thingkingland/eyo-dictionary/",
+		"title": "Test",
+		"description": "A place.",
+		"sheep": null
+	},
+	{
+		"path": "/thingkingland/games/PFPFPF/",
+		"title": "PFPFPF",
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/thingkingland/games/Roshambo/roshambo.html",
+		"title": "Roshambo",
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/thingkingland/games/SHF/",
+		"title": "SHF",
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/thingkingland/naror~tep/",
+		"title": "naror~tep",
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/thingkingland/number-tests/eight/eight.html",
+		"title": "Happy Holidays",
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/thingkingland/number-tests/five.html",
+		"title": "Five",
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/thingkingland/number-tests/four.html",
+		"title": "Four",
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/thingkingland/number-tests/nine.html",
+		"title": "Nine",
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/thingkingland/number-tests/one.html",
+		"title": "One",
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/thingkingland/number-tests/seven.html",
+		"title": "Seven",
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/thingkingland/number-tests/six.html",
+		"title": "Six",
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/thingkingland/number-tests/ten.html",
+		"title": "Ten",
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/thingkingland/number-tests/three.html",
+		"title": "Three",
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/thingkingland/number-tests/two.html",
+		"title": "Two",
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/thingkingland/OCC/occ.html",
+		"title": "One Command Creator",
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/thingkingland/OCC/occ1-9.html",
+		"title": "OCC v2",
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/thingkingland/OCC/occ2.html",
+		"title": "OCC v2",
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/thingkingland/profile/",
+		"title": "Test",
+		"description": "A place.",
+		"sheep": null
+	},
+	{
+		"path": "/thingkingland/Sean/blueScratch.html",
+		"title": "Scratch - Imagine, Program, Share",
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/thingkingland/Sean/broadway.html",
+		"title": null,
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/thingkingland/Sean/home.html",
+		"title": "Home",
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/thingkingland/Sean/home2.html",
+		"title": "Sean Dot Com",
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/thingkingland/Sean/",
+		"title": "InsertTitleHere",
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/thingkingland/Sean/materialDesign.html",
+		"title": "Material Design Attempt",
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/thingkingland/Sean/newtab.html",
+		"title": "New Tab",
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/thingkingland/Sean/OxySean's%20Followers.html",
+		"title": "OxySean's Profile",
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/thingkingland/Sean/prime.html",
+		"title": "Prime Number Finder",
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/thingkingland/Sean/random_fun.html",
+		"title": null,
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/thingkingland/Sean/scratch.html",
+		"title": "Scratch Projects",
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/thingkingland/Sean/seanattack.html",
+		"title": " SEAN ATTACKED CityBlock Server",
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/thingkingland/Sean/sitemap.html",
+		"title": "Sitemap",
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/thingkingland/Sean/sitemap2.html",
+		"title": "Sitemap - Sean Dot Com",
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/thingkingland/Sean/sos.html",
+		"title": null,
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/thingkingland/Sean/sworldianschools.html",
+		"title": null,
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/thingkingland/Sean/table.html",
+		"title": "Table Test",
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/thingkingland/sentence-generator/sentenceGen.html",
+		"title": "Sentence Generator",
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/thingkingland/social-media-thingy/",
+		"title": "Test",
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/thingkingland/social-media-thingy/loading.html",
+		"title": "Test",
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/thingkingland/the-hotel/",
+		"title": "The Hotel",
+		"description": "A game in which you must escape out of a hotel via multiple choice questions.",
+		"sheep": null
+	},
+	{
+		"path": "/thingkingland/udemy/1/helloworld.html",
+		"title": null,
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/thingkingland/udemy/1/",
+		"title": "First Page",
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/thingkingland/udemy/1/lesson.html",
+		"title": "sheep",
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/thingkingland/udemy/2/div.html",
+		"title": "border test",
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/thingkingland/udemy/2/",
+		"title": "fancy sheeping",
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/thingkingland/udemy/2/sbc.html",
+		"title": "sbc",
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/thingkingland/udemy/3/",
+		"title": "control sheeping",
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/thingkingland/udemy/3/smasher.html",
+		"title": "shaper clicker",
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/thingkingland/udemy/4/codeplayer.html",
+		"title": "codeplayer",
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/thingkingland/udemy/4/",
+		"title": "learning jquery",
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/thingkingland/udemy/5/",
+		"title": "bootstrap test",
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/thingkingland/udemy/5/sheep.html",
+		"title": "objects from sheep",
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/thingkingland/404.html",
+		"title": "OCC v2",
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/thingkingland/",
+		"title": "Hellos",
+		"description": "Thingking - A wonderous place where Sean becomes productive.",
+		"sheep": null
+	},
+	{
+		"path": "/thingkingland/sitemap.html",
+		"title": "Thingkingland sitemap",
+		"description": "List of HTML files in Thingkingland.",
+		"sheep": null
+	},
+	{
+		"path": "/thirty-eight/src/playground/sheep-anim.html",
+		"title": "Sheep animation",
+		"description": "Sheep",
+		"sheep": 3
+	},
+	{
+		"path": "/thirty-eight/src/playground/walk.html",
+		"title": "Walk",
+		"description": "Arrow keys to walk, perhaps?",
+		"sheep": 3
+	},
+	{
+		"path": "/thirty-eight/",
+		"title": "37",
+		"description": "Expert project for my Analysis of the Writer's Craft class.",
+		"sheep": 3
+	},
+	{
+		"path": "/toastia/editor/",
+		"title": "Tile editor - Toastia",
+		"description": "Tile editor for Toastia maps",
+		"sheep": null
+	},
+	{
+		"path": "/toastia/",
+		"title": "Toastia will come eventually",
+		"description": "Soon!",
+		"sheep": null
+	},
+	{
+		"path": "/toki-pona/",
+		"title": "toki pona",
+		"description": "desc todo",
+		"sheep": null
+	},
+	{
+		"path": "/trumpdays/inseconds/",
+		"title": "Trump Seconds",
+		"description": "Keeping track of the number of seconds Trump has left for his first term.",
+		"sheep": 1
+	},
+	{
+		"path": "/trumpdays/",
+		"title": "Trump Days",
+		"description": "Keeping track of the number of days Trump has left for his first term.",
+		"sheep": 1
+	},
+	{
+		"path": "/ucsd-sunset/",
+		"title": "SunSET for UCSD",
+		"description": "A crowd-sourced dataset for grade distributions for courses at UC San Diego.",
+		"sheep": 3
+	},
+	{
+		"path": "/unclear-target-w-very-confusing-critique/",
+		"title": "Pistole offers a wide range of opportunities",
+		"description": "Slash s.",
+		"sheep": null
+	},
+	{
+		"path": "/uxdy/classrooms/",
+		"title": "UCSD Classroom Schedules",
+		"description": "See what lectures are happening around you, or when a classroom isn't being used.",
+		"sheep": 3
+	},
+	{
+		"path": "/uxdy/",
+		"title": "uxdy - Ucsd schedule (X) Dumb thingY",
+		"description": "schedule notifer for my classes at ucsd",
+		"sheep": null
+	},
+	{
+		"path": "/vertical/about.html",
+		"title": "아바웉・羊試兒",
+		"description": "羊試兒스網사이트",
+		"sheep": 3
+	},
+	{
+		"path": "/vertical/contact.html",
+		"title": "콘타크트・羊試兒",
+		"description": "羊試兒스網사이트",
+		"sheep": 3
+	},
+	{
+		"path": "/vertical/",
+		"title": "羊試兒",
+		"description": "羊試兒스網사이트",
+		"sheep": 3
+	},
+	{
+		"path": "/vertical/projects.html",
+		"title": "事業스・羊試兒",
+		"description": "羊試兒스網사이트",
+		"sheep": 3
+	},
+	{
+		"path": "/word-prediction/js/test.html",
+		"title": "Test page",
+		"description": null,
+		"sheep": 3
+	},
+	{
+		"path": "/word-prediction/",
+		"title": "Word prediction using markov chains",
+		"description": "Analysis project",
+		"sheep": 3
+	},
+	{
+		"path": "/word-prediction/movement-with-dpr.html",
+		"title": "movementX/Y with devicePixelRatio =/= 1",
+		"description": null,
+		"sheep": 3
+	},
+	{
+		"path": "/words-go-here/f-word/",
+		"title": "F Word",
+		"description": "Basically Twitter but worse.",
+		"sheep": 3
+	},
+	{
+		"path": "/words-go-here/htmlifier/large-file-editor/",
+		"title": "Large File Editor",
+		"description": "Truncates and locks very long lines; for editing the large files produced by the HTMLifier",
+		"sheep": 3
+	},
+	{
+		"path": "/words-go-here/htmlifier/",
+		"title": null,
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/words-go-here/misc/artificial-thonkulos/evo-sim/",
+		"title": "evo sim",
+		"description": "based on carykh's evolution simulator",
+		"sheep": 3
+	},
+	{
+		"path": "/words-go-here/misc/artificial-thonkulos/evo-sim/playground.html",
+		"title": "evo sim playground",
+		"description": "based on carykh's evolution simulator",
+		"sheep": 3
+	},
+	{
+		"path": "/words-go-here/misc/artificial-thonkulos/khwvahy/",
+		"title": "κλωναλγ",
+		"description": "Flappy bird AI but they drive cars around a race track with five magic laser beam sensors",
+		"sheep": 3
+	},
+	{
+		"path": "/words-go-here/misc/artificial-thonkulos/khwvahy/map-maker.html",
+		"title": "κλωναλγ map maker",
+		"description": "Draw a race track out of polylines",
+		"sheep": 3
+	},
+	{
+		"path": "/words-go-here/misc/kaaba/",
+		"title": "🕋 kaaba 🕋",
+		"description": "learning webgpu and using it to write a primitive voxel renderer + some post-processing effects",
+		"sheep": 3
+	},
+	{
+		"path": "/words-go-here/misc/min-sw-test/",
+		"title": "Minimal self-auto-reloading service worker example (v5)",
+		"description": "A minimal example of automatically reloading the page whenever there's an update available. Updates won't happen on GitHub Pages; you'll have to clone the repo and run inc.mjs.",
+		"sheep": 3
+	},
+	{
+		"path": "/words-go-here/misc/sw-test/",
+		"title": "Service worker updating test (v13)",
+		"description": "This demo doesn't really work on GitHub Pages since it requires me editing the service worker file.",
+		"sheep": 3
+	},
+	{
+		"path": "/words-go-here/misc/utility-maximisation/",
+		"title": "Utility maximisation",
+		"description": "Utility maximisation from AP Econ",
+		"sheep": 3
+	},
+	{
+		"path": "/words-go-here/misc/15min.html",
+		"title": "\n      🕒 every 15 minutes, ❓ i ask: ⚠️ what are you doing?? ⚠️ (time tracking\n      ⌚ app poc 🤨)\n    ",
+		"description": "⁉️ wtf it's been two 2️⃣✌️🐫 hours already?? 😵😖😕 👈 this is unacceptable 😤",
+		"sheep": 3
+	},
+	{
+		"path": "/words-go-here/misc/2048simplified.html",
+		"title": "2048 simplified",
+		"description": "2048 made by gabrielecirulli without animations and all that fancy stuff",
+		"sheep": 1
+	},
+	{
+		"path": "/words-go-here/misc/3dcube.html",
+		"title": "3d cube",
+		"description": "3d cube maybe",
+		"sheep": 1
+	},
+	{
+		"path": "/words-go-here/misc/3dhall.html",
+		"title": "3d hall meh",
+		"description": "2 lazy 4 me",
+		"sheep": 1
+	},
+	{
+		"path": "/words-go-here/misc/8bit-sound.html",
+		"title": "8-bit sound",
+		"description": "compress audio into an 8-bit .wav file",
+		"sheep": 3
+	},
+	{
+		"path": "/words-go-here/misc/accelerationtest.html",
+		"title": "acceleration test",
+		"description": "physics is hard",
+		"sheep": 2
+	},
+	{
+		"path": "/words-go-here/misc/acm-dvd.html",
+		"title": "Bouncing DVD logo but it's ACM",
+		"description": "Could be used as an idle animation to entertain people waiting for ACM Kickoff to start.",
+		"sheep": 3
+	},
+	{
+		"path": "/words-go-here/misc/acm.html",
+		"title": "ACM Bug",
+		"description": "Introducing ACM's newest community",
+		"sheep": 3
+	},
+	{
+		"path": "/words-go-here/misc/animated-painting-maker.html",
+		"title": "Minecraft GIF to animated texture",
+		"description": "A bit hard to use; meant for those who know what they're doing.",
+		"sheep": 3
+	},
+	{
+		"path": "/words-go-here/misc/autocomplete.html",
+		"title": "autocomplete hijacking",
+		"description": "i was thinking about it while lying in bed",
+		"sheep": 3
+	},
+	{
+		"path": "/words-go-here/misc/battery-graph.html",
+		"title": "battery graph",
+		"description": "graph how quickly your battery is dying",
+		"sheep": 3
+	},
+	{
+		"path": "/words-go-here/misc/biangbiang.html",
+		"title": "𰻞𰻞麵",
+		"description": "biángbiángmiàn isn't supported on many computers.",
+		"sheep": 3
+	},
+	{
+		"path": "/words-go-here/misc/big-o.html",
+		"title": "Asymptotic class notation (order of growth)",
+		"description": "I keep forgetting what big theta and little o are, so I'm making this cheat sheet for myself.",
+		"sheep": 3
+	},
+	{
+		"path": "/words-go-here/misc/bioconcept.html",
+		"title": "bio concept thing i guess",
+		"description": "shtf",
+		"sheep": 1
+	},
+	{
+		"path": "/words-go-here/misc/bmp.html",
+		"title": "basic multilingual plane",
+		"description": "inspired by the unifont map thing on wikimedia commons",
+		"sheep": 3
+	},
+	{
+		"path": "/words-go-here/misc/board-meeting.html",
+		"title": "PAUSD Board Meeting",
+		"description": "Channel 28 on Midpen Media Center",
+		"sheep": 3
+	},
+	{
+		"path": "/words-go-here/misc/bug.html",
+		"title": "🐛",
+		"description": "Change the colour of the bug",
+		"sheep": 3
+	},
+	{
+		"path": "/words-go-here/misc/c10n.html",
+		"title": "c10n",
+		"description": "Condense words as is done with i18n, l10n, and a11y.",
+		"sheep": 3
+	},
+	{
+		"path": "/words-go-here/misc/camera.html",
+		"title": "camera 3dness",
+		"description": "spaces",
+		"sheep": 1
+	},
+	{
+		"path": "/words-go-here/misc/certainly-google-docs.html",
+		"title": "Untitled document - Google Docs",
+		"description": "certainly Google Docs",
+		"sheep": null
+	},
+	{
+		"path": "/words-go-here/misc/chooper3d.html",
+		"title": "projection 3dness",
+		"description": "you see as a scratcher we make everything from scratch. we don't use those silly renderer things that do everything for us. on scratch we don't even get a build in text renderer! [insert more rambling]",
+		"sheep": 1
+	},
+	{
+		"path": "/words-go-here/misc/chunks.html",
+		"title": "Chunk image scramble",
+		"description": "randomise square chunks in image",
+		"sheep": 3
+	},
+	{
+		"path": "/words-go-here/misc/circles.html",
+		"title": "circles",
+		"description": "streets be like",
+		"sheep": 3
+	},
+	{
+		"path": "/words-go-here/misc/decargoifor.html",
+		"title": "DECARGOIFER",
+		"description": "LI OBTEN LDECARGOS",
+		"sheep": 3
+	},
+	{
+		"path": "/words-go-here/misc/dehtmlify.html",
+		"title": "dehtmlify",
+		"description": "tired",
+		"sheep": 3
+	},
+	{
+		"path": "/words-go-here/misc/dialog.html",
+		"title": "html native dialog close animation?",
+		"description": "since i found out visibility is pretty good for animating dialogs",
+		"sheep": 3
+	},
+	{
+		"path": "/words-go-here/misc/diff.html",
+		"title": "Diff",
+		"description": "Shows the differences between two pieces of text using Monaco (VS Code)'s diff editor",
+		"sheep": 3
+	},
+	{
+		"path": "/words-go-here/misc/doodle.html",
+		"title": "\"Draw an image\"",
+		"description": "like on Google Hangouts",
+		"sheep": 1
+	},
+	{
+		"path": "/words-go-here/misc/dumbplatscript.html",
+		"title": "hello i am platty script",
+		"description": "dumbest platty script of them all. checks x axis then y axis (or maybe other way around)",
+		"sheep": 3
+	},
+	{
+		"path": "/words-go-here/misc/ece109-cumsheet.html",
+		"title": "ece 109 cumsheet",
+		"description": "cumulative cheat sheet for ece 109 (will turn into better cheatsheet for final later)",
+		"sheep": 3
+	},
+	{
+		"path": "/words-go-here/misc/ece109-histogram.html",
+		"title": "ECE 109 WI23 class leaderboard",
+		"description": "A quiz score histogram to see how many classmates do worse than you. Add `?final=true` to the URL to see final scores. Add `&scores=FA22` or `FA21` to see past quarters'.",
+		"sheep": 3
+	},
+	{
+		"path": "/words-go-here/misc/ece109.html",
+		"title": "ECE 109 cheat sheet",
+		"description": "cumulative cheat sheet for ece 109 (for the final)",
+		"sheep": 3
+	},
+	{
+		"path": "/words-go-here/misc/ece45-final-dist.html",
+		"title": "ECE 45 SP22 final exam leaderboard",
+		"description": "How do you fare in the class? Your grade depends on it.",
+		"sheep": 3
+	},
+	{
+		"path": "/words-go-here/misc/ece45.html",
+		"title": "ECE 45 reference sheet",
+		"description": "When Zeger tests more on calculator resourcefulness than actual understanding",
+		"sheep": 3
+	},
+	{
+		"path": "/words-go-here/misc/ece65.html",
+		"title": "ECE 65 reference sheet",
+		"description": "hmm maybe i shouldn't have spent this much effort on drawing circuits with tikz",
+		"sheep": 3
+	},
+	{
+		"path": "/words-go-here/misc/evosim-in-js.html",
+		"title": "Evolution Simulator Port",
+		"description": "An attempt to translate carykh's evolution simulator physics to JavaScript",
+		"sheep": 3
+	},
+	{
+		"path": "/words-go-here/misc/factorial-bigint.html",
+		"title": "BigInt-based factorial calculator",
+		"description": "Uses BigInt to multiply a lot of numbers (a lot faster than using strings, as it turns out)",
+		"sheep": 3
+	},
+	{
+		"path": "/words-go-here/misc/factorial-scinot.html",
+		"title": "Factorial calculator but the exponent is just decoration",
+		"description": "Although the factorial is in scientific notation, BigInt is still used for maximum accuracy in the coefficient.",
+		"sheep": 3
+	},
+	{
+		"path": "/words-go-here/misc/factorial.html",
+		"title": "String-based factorial calculator",
+		"description": "Uses elementary school level methods to multiply a lot of numbers",
+		"sheep": 3
+	},
+	{
+		"path": "/words-go-here/misc/fek-sinke-babeben.html",
+		"title": "Aræn sinke Fek sinke babeben",
+		"description": "",
+		"sheep": 3
+	},
+	{
+		"path": "/words-go-here/misc/fft.html",
+		"title": "javascript built in fft",
+		"description": "playing around with fft/analysernode",
+		"sheep": 3
+	},
+	{
+		"path": "/words-go-here/misc/file-editor.html",
+		"title": "File System Access API demo",
+		"description": "I want to use this for an NBT editor",
+		"sheep": 3
+	},
+	{
+		"path": "/words-go-here/misc/filledcube.html",
+		"title": "3d cube",
+		"description": "3d cube maybe",
+		"sheep": 1
+	},
+	{
+		"path": "/words-go-here/misc/fix-x.html",
+		"title": "Fix .x in Scratch projects",
+		"description": "For some reason, when E羊icques saves projects, some audio files' file extensions suddenly become .x (???), which prevents the project from being loaded properly. No idea why.",
+		"sheep": 3
+	},
+	{
+		"path": "/words-go-here/misc/flappy-again.html",
+		"title": "falppy again",
+		"description": "i look at XVINIETTE for reverefnece",
+		"sheep": 3
+	},
+	{
+		"path": "/words-go-here/misc/flappy-bird.html",
+		"title": "falppy bird",
+		"description": "extreme aia goo",
+		"sheep": 3
+	},
+	{
+		"path": "/words-go-here/misc/flip-sound.html",
+		"title": "Flip sound",
+		"description": "if you multiplied sound by -1, then played it at the same time as the original, does it cancel each other out?",
+		"sheep": 3
+	},
+	{
+		"path": "/words-go-here/misc/fluent-emoji.html",
+		"title": "Microsoft fluent emoji animations",
+		"description": "Stolen from Microsoft Teams.",
+		"sheep": 3
+	},
+	{
+		"path": "/words-go-here/misc/fonts.html",
+		"title": "your fonts",
+		"description": "chrome lets you give me your fonts now",
+		"sheep": 3
+	},
+	{
+		"path": "/words-go-here/misc/fooling-open-graph.html",
+		"title": "YouTube",
+		"description": "Enjoy the videos and music you love, upload original content, and share it all with friends, family, and the world on YouTube.",
+		"sheep": 3
+	},
+	{
+		"path": "/words-go-here/misc/format.html",
+		"title": "formatting",
+		"description": "meh",
+		"sheep": 1
+	},
+	{
+		"path": "/words-go-here/misc/gcal.html",
+		"title": "better google calendar event creation screen",
+		"description": "no animations, loads faster, more accessible, fewer clicks",
+		"sheep": 3
+	},
+	{
+		"path": "/words-go-here/misc/gemini.html",
+		"title": "Gemini Logo Customiser",
+		"description": "for alguien",
+		"sheep": 1
+	},
+	{
+		"path": "/words-go-here/misc/hangman.html",
+		"title": "Hangman game",
+		"description": "Easy difficulty because you are the guesser, and the computer is not very smart.",
+		"sheep": 3
+	},
+	{
+		"path": "/words-go-here/misc/imgtosvg.html",
+		"title": "Bitmap to SVG",
+		"description": "Every pixel becomes a square path",
+		"sheep": 3
+	},
+	{
+		"path": "/words-go-here/misc/",
+		"title": "cramland",
+		"description": null,
+		"sheep": 3
+	},
+	{
+		"path": "/words-go-here/misc/intelligent-navbar.html",
+		"title": "Intelligent Navbar",
+		"description": "A very user-friendly and well-designed navbar dropdown interface UI UX blockchain synergy thing",
+		"sheep": 3
+	},
+	{
+		"path": "/words-go-here/misc/keyboard.html",
+		"title": "when you dont lift your finger",
+		"description": "keyboard playback",
+		"sheep": 3
+	},
+	{
+		"path": "/words-go-here/misc/left-ear.html",
+		"title": "rip my left ear",
+		"description": "Figure out which earbud is which. Test your stereo speakers. Is one ear more deaf than the other?",
+		"sheep": 3
+	},
+	{
+		"path": "/words-go-here/misc/makeludicrous.html",
+		"title": "Ludicrous Loops Level Creator",
+		"description": "eventually will make into game",
+		"sheep": 1
+	},
+	{
+		"path": "/words-go-here/misc/math20d.html",
+		"title": "Math 20D cheat sheet",
+		"description": "must memorize every way the differential equations can be DEMOLISHED",
+		"sheep": 3
+	},
+	{
+		"path": "/words-go-here/misc/minimal-markup.html",
+		"title": "Minimal markup",
+		"description": "Only support for italics, links, and escaping.",
+		"sheep": 3
+	},
+	{
+		"path": "/words-go-here/misc/nfctest.html",
+		"title": "nfc??",
+		"description": "test",
+		"sheep": 3
+	},
+	{
+		"path": "/words-go-here/misc/no-prereqs.html",
+		"title": "There are no prerequisites for",
+		"description": "Make UCSD's website say whatever you want.",
+		"sheep": 3
+	},
+	{
+		"path": "/words-go-here/misc/nodes-and-muscles.html",
+		"title": "nodes and muscles",
+		"description": "weeee inspired by cary kh's evo sim, with ap physics 1 semester 1 knwoeldge yety",
+		"sheep": 3
+	},
+	{
+		"path": "/words-go-here/misc/offscreentest.html",
+		"title": "Offscreen test",
+		"description": "speed tests",
+		"sheep": 1
+	},
+	{
+		"path": "/words-go-here/misc/opentype.html",
+		"title": "opentype.js fun",
+		"description": "playing with a font parser",
+		"sheep": 1
+	},
+	{
+		"path": "/words-go-here/misc/pan-rotate-zoom.html",
+		"title": "Pan, rotate, and zoom an image",
+		"description": "For WATT. Uses MATRICES :o",
+		"sheep": 3
+	},
+	{
+		"path": "/words-go-here/misc/path.html",
+		"title": "path maker thigne",
+		"description": "path makin'",
+		"sheep": 1
+	},
+	{
+		"path": "/words-go-here/misc/people.html",
+		"title": "list of people",
+		"description": "some people",
+		"sheep": 1
+	},
+	{
+		"path": "/words-go-here/misc/pixel-font.html",
+		"title": "pixel font",
+		"description": "pixel font maker and renderer?",
+		"sheep": 3
+	},
+	{
+		"path": "/words-go-here/misc/platscript.html",
+		"title": "Platformer Script?",
+		"description": "Uses an image I think.",
+		"sheep": 1
+	},
+	{
+		"path": "/words-go-here/misc/platscript2.html",
+		"title": "Platformer Script? #2",
+		"description": "Redoing because why not.",
+		"sheep": 1
+	},
+	{
+		"path": "/words-go-here/misc/platscript3.html",
+		"title": "Platformer Script? #3",
+		"description": "And yet things weren't working :(",
+		"sheep": 1
+	},
+	{
+		"path": "/words-go-here/misc/polygon-stabber.html",
+		"title": "Polygon stabber",
+		"description": "Ray intersecting a polygon",
+		"sheep": 3
+	},
+	{
+		"path": "/words-go-here/misc/projection.html",
+		"title": "projection 3dness",
+		"description": "you see as a scratcher we make everything from scratch. we don't use those silly renderer things that do everything for us. on scratch we don't even get a build in text renderer! [insert more rambling]",
+		"sheep": 1
+	},
+	{
+		"path": "/words-go-here/misc/pronouns.html",
+		"title": "Custom pronouns",
+		"description": "English is a terrible language.",
+		"sheep": 1
+	},
+	{
+		"path": "/words-go-here/misc/proof-of-concept.html",
+		"title": "please dont use this",
+		"description": "made it because it could be made, doesn't mean it's meant to be used",
+		"sheep": null
+	},
+	{
+		"path": "/words-go-here/misc/queens.html",
+		"title": "LinkedIn Queens solver",
+		"description": "Ruin the fun(?) and mental challenge from LinkedIn's sudoku-like game Queens.",
+		"sheep": 3
+	},
+	{
+		"path": "/words-go-here/misc/rimac-people-data.html",
+		"title": "People in RIMAC over time",
+		"description": "See the activity diminish over time. When is the best time to go to RIMAC?",
+		"sheep": 3
+	},
+	{
+		"path": "/words-go-here/misc/schedulemaker.html",
+		"title": "schedule maker",
+		"description": "wow!",
+		"sheep": 3
+	},
+	{
+		"path": "/words-go-here/misc/scratchblocksused.html",
+		"title": "Scratch Blocks used",
+		"description": "Get a list of the blocks used in a project.",
+		"sheep": 1
+	},
+	{
+		"path": "/words-go-here/misc/scratchtojs.html",
+		"title": "scratch to js",
+		"description": "turns project.json to javascripts",
+		"sheep": 1
+	},
+	{
+		"path": "/words-go-here/misc/server-icon.html",
+		"title": "Discord server icon thing",
+		"description": "Designing an icon for my Discord server based on my logo",
+		"sheep": 3
+	},
+	{
+		"path": "/words-go-here/misc/seventh-tiles.html",
+		"title": "The Tiles at Seventh College",
+		"description": "Building 2, West",
+		"sheep": 3
+	},
+	{
+		"path": "/words-go-here/misc/simplex.html",
+		"title": "Simplex noise test",
+		"description": "simplex noise",
+		"sheep": 3
+	},
+	{
+		"path": "/words-go-here/misc/skin.html",
+		"title": "skin tones",
+		"description": "skin tones????",
+		"sheep": 3
+	},
+	{
+		"path": "/words-go-here/misc/solidrectangles.html",
+		"title": "walking into rectangles",
+		"description": "it hurts",
+		"sheep": 1
+	},
+	{
+		"path": "/words-go-here/misc/stack-heap-diagram.html",
+		"title": "stack and heap",
+		"description": "for cs class",
+		"sheep": 3
+	},
+	{
+		"path": "/words-go-here/misc/storage-room.html",
+		"title": "Storage room",
+		"description": "Autosorter too BIG, must FIND",
+		"sheep": 3
+	},
+	{
+		"path": "/words-go-here/misc/strattonsday.html",
+		"title": "6-day week",
+		"description": "Featuring Strattonsday from Gunn's proposed 8-day week schedule and Friday from the undecimalized 7-day week.",
+		"sheep": 3
+	},
+	{
+		"path": "/words-go-here/misc/svg-pen-canvas.html",
+		"title": "SVG Canvas",
+		"description": "So I can draw SVG sheep with my pen",
+		"sheep": 3
+	},
+	{
+		"path": "/words-go-here/misc/svgtopng.html",
+		"title": "SVG to PNG",
+		"description": "Meh.",
+		"sheep": 1
+	},
+	{
+		"path": "/words-go-here/misc/tiles1.html",
+		"title": "tiles 1",
+		"description": "2lazi4desc",
+		"sheep": 1
+	},
+	{
+		"path": "/words-go-here/misc/tiles2.html",
+		"title": "tiles 2",
+		"description": "2lazi4desc",
+		"sheep": 1
+	},
+	{
+		"path": "/words-go-here/misc/tiles3.html",
+		"title": "tiles 3",
+		"description": "Using a completely different tile-based platformer engine",
+		"sheep": 3
+	},
+	{
+		"path": "/words-go-here/misc/triangulated-coordinates.html",
+		"title": "Triangulated coordinates",
+		"description": "Using two angles to represent a point on a plane (or three in 3D space)",
+		"sheep": 3
+	},
+	{
+		"path": "/words-go-here/misc/trig.html",
+		"title": "Trig formulas",
+		"description": "Memorizing these were a pain",
+		"sheep": 3
+	},
+	{
+		"path": "/words-go-here/misc/ucsd-college-colours.html",
+		"title": "UCSD college colours as text",
+		"description": "Figuring out good colours to use for Discord roles that contrast well on Discord",
+		"sheep": 3
+	},
+	{
+		"path": "/words-go-here/misc/ucsd-map.html",
+		"title": "Get UCSD map tiles",
+		"description": "Into a single image",
+		"sheep": 3
+	},
+	{
+		"path": "/words-go-here/misc/varyai.html",
+		"title": "VaryAI Logo Customiser",
+		"description": "for alguien",
+		"sheep": 2
+	},
+	{
+		"path": "/words-go-here/misc/waves.html",
+		"title": "👁️〰️👁️",
+		"description": "randomised waves! and animated!",
+		"sheep": 3
+	},
+	{
+		"path": "/words-go-here/misc/we-are-merely-pawns-of-ucb.html",
+		"title": "UC r/place thingy",
+		"description": "why is RWAC so stinky",
+		"sheep": 3
+	},
+	{
+		"path": "/words-go-here/misc/wide-gamut-display-p3.html",
+		"title": "Colors redder than red",
+		"description": "Every image and web page you've seen has been limited to sRGB, but it's possible your display supports wide-gamut colors, so there are colors redder than your standard #FF0000.",
+		"sheep": 3
+	},
+	{
+		"path": "/words-go-here/misc/win11-emoji.html",
+		"title": "Windows 11 emoji are more saturated than CSS can ever be",
+		"description": "They probably take advantage of wide-gamut displays, while CSS is limited to sRGB.",
+		"sheep": 3
+	},
+	{
+		"path": "/words-go-here/misc/xeno-arrival.html",
+		"title": "Xeno Arrival",
+		"description": "HTML/CSS rendition of some website made in Scratch.",
+		"sheep": null
+	},
+	{
+		"path": "/words-go-here/misc/yangyangyangyang.html",
+		"title": "羊羊羊羊羊羊羊羊羊羊羊羊羊羊羊羊羊羊",
+		"description": "羊羊羊羊羊羊羊羊羊羊羊羊羊羊羊羊羊羊羊羊羊羊羊羊羊羊羊羊羊羊羊羊羊羊羊羊羊羊羊羊羊羊羊羊羊羊羊羊羊羊羊羊羊羊羊",
+		"sheep": 3
+	},
+	{
+		"path": "/words-go-here/misc/zegerian-curve.html",
+		"title": "\n      Zegerian Curve (for ECE45 SP22) [doesn't actually try to curve]\n    ",
+		"description": "Figuring out what my grade might be after Zeger's curve in ECE 45",
+		"sheep": 3
+	},
+	{
+		"path": "/words-go-here/misc/zelmanov-rref.html",
+		"title": "Row reduce to echelon form, the Zelmanov way",
+		"description": "Not efficient. Intended to model how a human may row reduce a matrix.",
+		"sheep": 3
+	},
+	{
+		"path": "/words-go-here/scratch3-htmlifier/",
+		"title": null,
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/words-go-here/attempt1.html",
+		"title": "Words go here 1",
+		"description": "An attempt to make a place where people can type their words even though better alternatives exist.",
+		"sheep": 1
+	},
+	{
+		"path": "/words-go-here/attempt2.html",
+		"title": "Words go here 2",
+		"description": "in which you type and things appear maybe",
+		"sheep": 1
+	},
+	{
+		"path": "/words-go-here/",
+		"title": "stuff will happen one day! i promise!!!",
+		"description": "dont click on me yet pls",
+		"sheep": 1
+	},
+	{
+		"path": "/words-go-here/savefiletest.html",
+		"title": "Download file test",
+		"description": "A simple test that should be disregarded.",
+		"sheep": 1
+	},
+	{
+		"path": "/yearbook-signing/",
+		"title": "Signing yearbooks",
+		"description": "Sheep!",
+		"sheep": 3
+	},
+	{
+		"path": "/yesnt/",
+		"title": "YESNT",
+		"description": "Your school is pushing their psuedoscientific agenda on you; you must escape before things get worse.",
+		"sheep": null
+	},
+	{
+		"path": "/yesnt/leaderboard.html",
+		"title": "YESNT / Leaderboard",
+		"description": "Global leaderboard in YESNT",
+		"sheep": null
+	},
+	{
+		"path": "/yesnt/settings.html",
+		"title": "YESNT / Settings",
+		"description": "Introductory settings page shown to users before they are fully exposed to YESNT.",
+		"sheep": null
+	},
+	{
+		"path": "/yesnt/simple-reverb-test.html",
+		"title": "reverb test",
+		"description": "testing simple-reverb",
+		"sheep": 3
+	},
+	{
+		"path": "/yesnt/source.html",
+		"title": "YESNT",
+		"description": "Your school is pushing their psuedoscientific agenda on you; you must escape before things get worse.",
+		"sheep": null
+	},
+	{
+		"path": "/yesnt/squiggly-line-maker.html",
+		"title": "Squiggly maker tester",
+		"description": "Generates a squiggly line maze",
+		"sheep": 3
+	},
+	{
+		"path": "/yesnt/timing-thing.html",
+		"title": "Timing thing",
+		"description": "Measures the time between key presses",
+		"sheep": 3
+	},
+	{
+		"path": "/404.html",
+		"title": "Wrong Way",
+		"description": null,
+		"sheep": 3
+	},
+	{
+		"path": "/all.html",
+		"title": "Most of the files here",
+		"description": "See all the files in one place. Except for a few files. So it really isn't ALL the files. Eh.",
+		"sheep": null
+	},
+	{
+		"path": "/contextmenutest.html",
+		"title": "Context menu",
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/draw.html",
+		"title": "Draw",
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/",
+		"title": "SheepTester",
+		"description": "A list of some projects I have made using fancy web technologies.",
+		"sheep": 3
 	}
 ]
