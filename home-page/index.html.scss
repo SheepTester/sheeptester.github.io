@@ -949,6 +949,7 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
         css {
           .projects-note {
             margin: 10px 0;
+            margin-bottom: 20px;
           }
           .link {
             color: #1ce0e0;
@@ -1022,9 +1023,15 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
           }
           .search {
             height: 40px;
+            width: 100%;
+            max-width: 400px;
             border-radius: 40px;
             border: 0;
             padding: 0 20px;
+            padding-left: 36px;
+            background-image: url('./icons/feather-search.svg');
+            background-position: 8px;
+            background-repeat: no-repeat;
             font: inherit;
             color: inherit;
             background-color: #24364a;
@@ -1046,6 +1053,8 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
             overflow: auto;
             -webkit-overflow-scrolling: touch;
             background-color: #24364a;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(151, 189, 179, 0.2);
             box-sizing: border-box;
             padding: 10px;
             border-radius: 20px;
@@ -1054,25 +1063,26 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
           }
           .search-form:focus-within .suggestions {
             display: block;
+            transition: opacity .5s, transform .5s, visibility .5s;
             animation: suggestions-appear .5s;
           }
-          .no-results {
-            padding: 0;
-            animation: none;
+          .search-form:focus-within .no-results {
+            animation-duration: 0s;
+            opacity: 0;
+            pointer-events: none;
+            visibility: hidden;
+            transform: translateY(20px);
           }
           .no-results .suggestion {
-            display: none;
+            // display: none;
           }
           // pointer-events: none to prevent clicking on a result when clicking
           // on the search input to focus
           @keyframes suggestions-appear {
             from {
-              opacity: 0;
               pointer-events: none;
-              transform: translateY(20px);
             }
             to {
-              opacity: 1;
               pointer-events: none;
             }
           }
