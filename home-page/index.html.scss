@@ -1073,9 +1073,6 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
             visibility: hidden;
             transform: translateY(20px);
           }
-          .no-results .suggestion {
-            // display: none;
-          }
           // pointer-events: none to prevent clicking on a result when clicking
           // on the search input to focus
           @keyframes suggestions-appear {
@@ -1100,6 +1097,10 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
           }
           .suggestion strong {
             color: #1ce0e0;
+          }
+          .suggestion-desc,
+          .suggestion-path {
+            white-space: pre-wrap;
           }
           .suggestion-desc {
             font-size: 0.8em;

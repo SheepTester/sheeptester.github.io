@@ -199,6 +199,10 @@ function startAgeAnim () {
   display()
 }
 
+function normalize (string) {
+  return string?.normalize('NFD').replace(/[\u0300-\u036f]/g, '') ?? null
+}
+
 const search = document.getElementById('search')
 search.addEventListener('focus', startSearch, { once: true })
 async function startSearch () {
@@ -209,7 +213,23 @@ async function startSearch () {
     script.addEventListener('error', reject)
     document.head.append(script)
   })
-  const entries = await fetch('/all/title-desc.json').then(r => r.json())
+  const entries = await fetch('/all/title-desc.json')
+    .then(r => r.json())
+    .then(entries =>
+      entries.map(entry => {
+        const title = entry.title?.trim() ?? null
+        const description = entry.description?.trim() ?? null
+        const path = decodeURI(entry.path)
+        return {
+          title,
+          description,
+          path,
+          titleNormalized: normalize(title),
+          descriptionNormalized: normalize(description),
+          pathNormalized: normalize(path)
+        }
+      })
+    )
   await fuzzysortLoad
 
   const form = document.getElementById('search-form')
@@ -228,10 +248,10 @@ async function startSearch () {
       : [defaultValue]
   }
   function performSearch () {
-    results = fuzzysort.go(search.value, entries, {
-      keys: ['title', 'description', 'path'],
+    results = fuzzysort.go(normalize(search.value), entries, {
+      keys: ['titleNormalized', 'descriptionNormalized', 'pathNormalized'],
       threshold: 0.1,
-      limit: 100
+      limit: 50
     })
     if (results.length === 0) {
       suggestions.classList.add('no-results')
@@ -260,12 +280,14 @@ async function startSearch () {
       row.wrapper.style.display = null
       row.wrapper.href = result.obj.path
       if (result.obj.title !== null) {
+        result[0].target = result.obj.title
         row.title.replaceChildren(...highlight(result[0], result.obj.title))
         row.title.style.display = null
       } else {
         row.title.style.display = 'none'
       }
       if (result.obj.description !== null) {
+        result[1].target = result.obj.description
         row.desc.replaceChildren(
           ...highlight(result[1], result.obj.description)
         )
@@ -273,6 +295,7 @@ async function startSearch () {
       } else {
         row.desc.style.display = 'none'
       }
+      result[2].target = result.obj.path
       row.path.replaceChildren(...highlight(result[2], result.obj.path))
     }
     markSelected(0)
