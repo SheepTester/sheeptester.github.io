@@ -359,7 +359,7 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
             background-clip: text;
             color: transparent;
             background-image: linear-gradient(90deg, #20de88, #28bbe8);
-            font-size: 64px;
+            font-size: 4rem;
           }
         }
         @media (min-width: 1000px) {
@@ -932,7 +932,7 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
         css {
           .projects-header {
             font-weight: lighter;
-            font-size: 56px;
+            font-size: 3.5rem;
             margin: 0;
             color: rgba(255, 255, 255, 0.9);
           }

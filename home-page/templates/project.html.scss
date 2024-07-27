@@ -102,7 +102,7 @@ a.#{$classes}[href="#{map.get($project, 'path')}"][data-desc="#{map.get($project
   }
   @media (min-width: 680px) {
     .title {
-      font-size: 24px;
+      font-size: 1.5rem;
       opacity: 0.5;
     }
     .project.showing-desc .title {
