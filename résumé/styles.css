@@ -101,7 +101,7 @@ li {
   font-family: 'Raleway', sans-serif;
   font-weight: 900;
   text-transform: uppercase;
-  font-size: 14px;
+  font-size: 12px;
   letter-spacing: 1px;
   margin: 0;
   color: var(--theme);
@@ -132,7 +132,7 @@ li {
   font-family: 'Montserrat', 'Noto Sans TC', sans-serif;
   font-weight: 700;
   margin: 0;
-  font-size: 18px;
+  font-size: 16px;
 }
 .project-name {
   color: inherit;
