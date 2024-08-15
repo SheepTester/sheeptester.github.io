@@ -1,0 +1,36 @@
+:root {
+  --margin: 1in;
+}
+body {
+  padding-bottom: 0;
+}
+
+.intro {
+  margin: -0.5in;
+  margin-bottom: calc(0.5in - 40px);
+}
+
+.letter-line {
+  margin: 0;
+  line-height: 1.5;
+  margin-bottom: 1em;
+}
+
+.company,
+#name {
+  cursor: pointer;
+  animation: flash 1s;
+}
+
+@keyframes flash {
+  from {
+    background-color: #22938e;
+  }
+  to {
+    background-color: transparent;
+  }
+}
+
+@page {
+  size: 8.5in 7.5in;
+}
