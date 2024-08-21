@@ -13,7 +13,8 @@ export function timeline ({
   container,
   dateDisplay,
   data,
-  note
+  note,
+  noteDate
 }) {
   const dates = data.flatMap(Object.values).filter(date => date)
   const minDate = dates.reduce(
@@ -40,7 +41,7 @@ export function timeline ({
   const noteElem = svg
     .append('text')
     .attr('class', 'note')
-    .attr('x', 0)
+    .attr('x', xScale(noteDate ?? minDate))
     .text(note)
 
   const clipPath = svg
