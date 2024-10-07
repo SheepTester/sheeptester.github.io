@@ -58,6 +58,22 @@
     <script type="module">
       import { on } from '/reform/v1/index.js'
 
+      if (window.location.search === '?cyber=kickoff') {
+        on('image', async () => {
+          const image = new Image()
+          image.src = './acm-cyber-kickoff-checkin.jpg'
+          await new Promise(resolve => {
+            image.addEventListener('load', resolve)
+          })
+          const canvas = document.createElement('canvas')
+          canvas.width = image.width
+          canvas.height = image.height
+          const c = canvas.getContext('2d')
+          c.drawImage(image, 0, 0)
+          return c
+        })
+      }
+
       let stream
       on('output', (video, { image: c }) => {
         if (!stream) {
