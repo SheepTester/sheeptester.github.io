@@ -1,3 +1,6 @@
+>.well-known
+discord
+<
 >all
 >assets
 card-back.svg
@@ -51,6 +54,8 @@ sitemap.txt
 styles.css
 template-all.html
 tinder.html
+title-desc-get.mjs
+title-desc.json
 <
 >alt-schedule-parser-tester
 >css
@@ -816,6 +821,8 @@ README.md
 >2023
 day-06.js
 day21.html
+help.py
+what.rs
 <
 .gitignore
 <
@@ -1078,6 +1085,7 @@ Charlie_Liu.html
 chem43a.js
 co-authored-by.ts
 colour-server.js
+commencement.html
 comments.html
 contactstealer.ahk
 control.ts
@@ -1117,7 +1125,9 @@ gh-pages-path-test.html
 gh-pages-path-test.html.html
 git-notes.md
 git-pull-stuff.txt
+google-contacts-directory-api-test.html
 gunnmnemonic.txt
+h.c
 hello-gamers.svg
 hello-server.js
 help.cpp
@@ -1137,12 +1147,14 @@ lol.py
 lol.rkt
 mastodone.html
 mdmdmdd.md
+minecfafg-srevr.pem
 mongodb.js
 mwt.ts
 never-resolves.js
 ol3.ahk
 orbiit.svg
 orthonormalize.rkt
+OVERWRITE ME.png
 package.json
 pensive-test.html
 polyfill.html
@@ -1200,6 +1212,16 @@ vim-demo.mcfunction
 wot.rkt
 wow.html
 wow.txt
+<
+>turbo-fiesta
+>nfc-reader
+error.wav
+index.html
+scan-error.mp3
+scan-ready.mp3
+scan-success.mp3
+success.wav
+<
 <
 >ucsd-commencement-voices
 >audio
@@ -1634,6 +1656,7 @@ feather-arrow-right.svg
 feather-check-black.svg
 feather-check.svg
 feather-info.svg
+feather-search.svg
 tag-directory.svg
 tag-game.svg
 tag-incomplete.svg
@@ -2183,6 +2206,7 @@ _dom2.js
 2048.js
 abbrevator.html
 accept-image.mjs
+acm-cyber-kickoff-checkin.jpg
 análisis-poético.html
 anonchat.html
 autocomplete.html
@@ -2947,6 +2971,12 @@ index.html
 info.svg
 plasticBag.svg
 <
+>qr
+index.css
+index.html
+index.js
+sitemap.txt
+<
 >real
 >graph
 d3-sankey.min.mjs
@@ -3002,7 +3032,10 @@ index.html
 README.md
 <
 >résumé
+cover.css
+cover.html
 index.html
+latin.js
 styles.css
 <
 >roots
@@ -3858,6 +3891,8 @@ classrooms-SP23-full.txt
 classrooms-SP23.txt
 classrooms-SP24-full.txt
 classrooms-SP24.txt
+classrooms-SP95-full.txt
+classrooms-SP95.txt
 classrooms-SU24-full.txt
 classrooms-SU24.txt
 classrooms-WI23-full.txt
@@ -4135,6 +4170,7 @@ accelerationtest.html
 acm-dvd.html
 acm.html
 animated-painting-maker.html
+as-attendance-prefill.html
 autocomplete.html
 battery-graph.html
 bervous.webp
@@ -4154,6 +4190,8 @@ certainly-google-docs.html
 chooper3d.html
 chunks.html
 circles.html
+coconut-tree-twemoji.svg
+coconut-tree-win10.png
 decargoifor.html
 dehtmlify.html
 dialog.html
@@ -4175,6 +4213,8 @@ fek-sinke-babeben.html
 fft.html
 file-editor.html
 filledcube.html
+filter.html
+filter2.html
 fix-x.html
 flappy-again.html
 flappy-bird.html
@@ -4191,12 +4231,15 @@ gcal.html
 gemini.html
 gender.svg
 geometrystuff.js
+google-directory-names.html
+google-directory-scrape.html
 google-doc-dropdown-arrow.png
 google-doc-icons.svg
 hangman.html
 imgtosvg.html
 index.html
 intelligent-navbar.html
+kamala.html
 keyboard.html
 keykeykey.svg
 left-ear.html
@@ -4269,6 +4312,8 @@ waves.html
 we-are-merely-pawns-of-ucb.html
 wide-gamut-display-p3.html
 win11-emoji.html
+world-map.html
+world-map.svg
 xeno-arrival-thumbnail.png
 xeno-arrival.html
 yangyang.svg

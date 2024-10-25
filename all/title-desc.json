@@ -4312,5 +4312,77 @@
 		"title": "SheepTester",
 		"description": "A list of some projects I have made using fancy web technologies.",
 		"sheep": 3
+	},
+	{
+		"path": "/hello-world/test/commencement.html",
+		"title": null,
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/hello-world/test/google-contacts-directory-api-test.html",
+		"title": "google contacts people api quickstart tutorial lol",
+		"description": "my api key is internal to ucsd only i think",
+		"sheep": 3
+	},
+	{
+		"path": "/hello-world/turbo-fiesta/nfc-reader/",
+		"title": "NFC reader",
+		"description": "yee",
+		"sheep": null
+	},
+	{
+		"path": "/qr/",
+		"title": "QR Code Generator and Scanner",
+		"description": "Generate QR codes, scan QR codes in an image, or scan them with your webcam.",
+		"sheep": 3
+	},
+	{
+		"path": "/r%C3%A9sum%C3%A9/cover.html",
+		"title": "Cover Letter Template · Sean Yen",
+		"description": "Note: This page is designed to be printed and saved to a PDF.",
+		"sheep": 3
+	},
+	{
+		"path": "/words-go-here/misc/as-attendance-prefill.html",
+		"title": "Generate prefill link for AS attendance form",
+		"description": "The link can set the default selection and value for the event name and food received. To help comply with A.S. UCSD's 2024 funding guide.",
+		"sheep": 3
+	},
+	{
+		"path": "/words-go-here/misc/filter.html",
+		"title": "Audio frequency filter explorer",
+		"description": "Uses JavaScript's built-in BiquadFilterNode to filter out or amplify certain frequencies in your audio. Supports low-pass, high-pass, band-pass, low-shelf, high-shelf, peaking, notch, and all-pass filters.",
+		"sheep": 3
+	},
+	{
+		"path": "/words-go-here/misc/filter2.html",
+		"title": "low high pass screwer arounder",
+		"description": "repeatedly fools around with low and high pass",
+		"sheep": 3
+	},
+	{
+		"path": "/words-go-here/misc/google-directory-names.html",
+		"title": "Most Frequent Names",
+		"description": "lists most common and longest names in your university's google contacts directory",
+		"sheep": 3
+	},
+	{
+		"path": "/words-go-here/misc/google-directory-scrape.html",
+		"title": "Scrape your school's entire Google Contacts directory",
+		"description": "Uses the Google People API to scrape your Google account org's directory. For API keys used within the organization, no approval is needed.",
+		"sheep": 3
+	},
+	{
+		"path": "/words-go-here/misc/kamala.html",
+		"title": "brat album cover maker",
+		"description": "kamala harris is brat",
+		"sheep": 3
+	},
+	{
+		"path": "/words-go-here/misc/world-map.html",
+		"title": "World map coloring",
+		"description": "Quickly color countries on a world map just by listing their names",
+		"sheep": 3
 	}
 ]

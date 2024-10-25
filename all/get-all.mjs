@@ -1,11 +1,10 @@
 import fs from 'fs/promises'
 import nodePath, { dirname } from 'path'
 import { exec } from 'child_process'
-import fetch from 'node-fetch'
 import xml2js from 'xml2js'
 
 // https://developer.github.com/v3/auth/#via-oauth-and-personal-access-tokens
-import ghAuth from './basic-gh-auth.json' assert { type: 'json' }
+import ghAuth from './basic-gh-auth.json' with { type: 'json' }
 const { username, personalAccessToken } = ghAuth
 
 import {
