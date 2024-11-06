@@ -577,13 +577,13 @@
   tags:
     - utility
 
-# - path: /trumpdays/
-#   image: img/trumpdays-smaller.png
-#   name: Trump days
-#   description: >-
-#     A countdown for Trump's first term.
-#   tags:
-#     - visual
+- path: /trumpdays/
+  image: img/trumpdays-smaller.png
+  name: Trump days
+  description: >-
+    A countdown for Trump's second term.
+  tags:
+    - visual
 
 - path: /hello-world/drills.html
   image: img/drills-smaller.png
