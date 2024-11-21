@@ -6,14 +6,13 @@ SCSS-like syntax to generate HTML.
 ## Build
 
 ```sh
-node home-page/imitation-scss-parser.js home-page/index.html.scss index.html home-page/style.css
+npm run home:build
 ```
 
 ## Development
 
 ```sh
-http-server -c-1 -s &
-nodemon --watch home-page --ext scss,yml,js home-page/imitation-scss-parser.js home-page/index.html.scss index.html home-page/style.css
+npm run home:dev
 ```
 
 http://localhost:8080/

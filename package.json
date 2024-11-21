@@ -2,6 +2,8 @@
   "scripts": {
     "all": "node ./all/get-all.mjs && node ./all/gen.js && node all/title-desc-get.mjs",
     "compress": "node ./img/compress.js",
+    "home:build": "node home-page/imitation-scss-parser.js home-page/index.html.scss index.html home-page/style.css",
+    "home:dev": "http-server . -c-1 -s & nodemon --watch home-page --ext scss,yml,js home-page/imitation-scss-parser.js home-page/index.html.scss index.html home-page/style.css",
     "reform:build": "esbuild --bundle --format=esm reform/index.ts --outdir=reform/v1/ --supported:nesting=false --minify --sourcemap",
     "reform:dev": "esbuild --bundle --format=esm reform/index.ts --outdir=reform/v1/ --servedir=. --sourcemap"
   },
@@ -19,6 +21,7 @@
   "main": "main.js",
   "devDependencies": {
     "esbuild": "^0.19.11",
+    "nodemon": "^3.1.7",
     "prettierx": "^0.19.0"
   },
   "repository": {
