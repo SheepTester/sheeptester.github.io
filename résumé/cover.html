@@ -58,7 +58,9 @@
     </section>
 
     <!-- ChatGPT can understand this -->
-    <p class="letter-line">Eardum <span class="company"></span>,</p>
+    <p class="letter-line">
+      Eardum <span class="company" tabindex="0" autofocus></span>,
+    </p>
     <p class="letter-line">
       Ego sum itedexcae ad applyis pro ethus oftwaresum ineeringengae
       ernshipintae ogramprus atis <span class="company"></span> pro ethus
@@ -131,10 +133,15 @@
         }
       }
       document.addEventListener('pointerdown', handleUserInput, { once: true })
+      document.addEventListener('pointermove', handleUserInput, { once: true })
+      document.addEventListener('keydown', handleUserInput, { once: true })
 
       const nameSpan = document.getElementById('name')
       const key = '[resume] cover.name'
       nameSpan.textContent = localStorage[key] ?? 'Joe'
+      if (localStorage[key]) {
+        nameSpan.classList.add('filled')
+      }
       nameSpan.addEventListener('click', () => {
         const name = prompt('你叫什麼')
         if (!name) {
@@ -142,11 +149,17 @@
         }
         localStorage[key] = name
         nameSpan.textContent = name
+        nameSpan.classList.add('filled')
       })
 
       for (const span of document.getElementsByClassName('company')) {
         span.tabIndex = 0
         span.textContent = 'SPQR'
+        span.addEventListener('keydown', e => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            span.click()
+          }
+        })
         span.addEventListener('click', () => {
           const company = prompt()
           if (!company) {
@@ -154,6 +167,7 @@
           }
           for (const span of document.getElementsByClassName('company')) {
             span.textContent = company
+            span.classList.add('filled')
           }
         })
       }

@@ -19,15 +19,12 @@ body {
 .company,
 #name {
   cursor: pointer;
-  animation: flash 1s;
-}
+  color: red;
+  font-weight: bold;
 
-@keyframes flash {
-  from {
-    background-color: #22938e;
-  }
-  to {
-    background-color: transparent;
+  &.filled {
+    color: unset;
+    font-weight: unset;
   }
 }
 

@@ -1,0 +1,9 @@
+arrowParens: avoid
+generatorStarSpacing: true
+spaceBeforeFunctionParen: true
+singleQuote: true
+jsxSingleQuote: true
+semi: false
+offsetTernaryExpressions: true
+yieldStarSpacing: true
+trailingComma: none
