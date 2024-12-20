@@ -188,9 +188,17 @@ h1 {
   margin-bottom: 20px;
   color: var(--heading);
 }
-p {
+p,
+pre {
   margin: 0;
   margin-bottom: 10px;
+}
+pre {
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  padding: 10px;
+  line-height: 1.4;
+  font-size: 14px;
 }
 ol,
 ul {
@@ -207,6 +215,7 @@ li::marker {
   & > p,
   & > ol,
   & > ul,
+  & > pre,
   & > .radio-set,
   & > .radio-label,
   & > .field-label,

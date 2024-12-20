@@ -49,8 +49,8 @@ function handleFileInput ({
     const file =
       items instanceof DataTransfer
         ? await getDataTransfer(
-            selectItem(Array.from(items.items), preferredTypes)
-          )
+          selectItem(Array.from(items.items), preferredTypes)
+        )
         : selectItem(Array.from(items), preferredTypes)
     if (file === null) {
       return
@@ -126,14 +126,13 @@ export function handleSingleFileInput (
   source: Source<File>,
   input?: Element | null
 ): void {
-  const wrapper = input?.closest('.reform\\:io')
   if (input && !(input instanceof HTMLInputElement)) {
     console.warn(input, 'is not an <input> element')
     input = null
   } else if (input) {
     input.dataset.ignore = 'true'
   }
-  const dropTarget = wrapper?.querySelector('.input-controls')
+  const dropTarget = input?.closest('.reform\\:io')
   handleFileInput({
     fileName: input?.parentElement?.querySelector('.file-name'),
     input,

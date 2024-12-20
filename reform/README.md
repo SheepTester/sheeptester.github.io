@@ -1,5 +1,36 @@
 # Reform: sheeptester.github.io design reform
 
+```shell
+$ npm run reform:build
+$ npm run reform:dev
+```
+
+## Feedback for v2
+
+Developer experience issues:
+
+- Need at least a Markdown file of type signatures and HTML templates for components
+  - Placeholders should be clearly marked to encourage more specific labels than "Select a file"
+- "Smart" behaviors like auto-converting image files to canvas contexts should be explicit and opt-in
+- Get blob URL from files
+- Automatically turn output canvas into image file
+
+Known issues:
+
+- Cannot copy JPG from JPG quality
+
+Potential user experience issues:
+
+- Copy and share buttons should get text labels
+- Changing rangeInput.max is (1) not ergonomic (requires setting separate IDs then separate listeners) and (2) doesn't update `--progress`
+
+Ideas:
+
+- Try to be easily upgradable from v1 and upgrade some existing pages to v2 to ensure v2 remains versatile
+- Adapt a naming convention for sources, like `_sourceName`, so they stand out in the HTML
+
+# Background
+
 [intense-contrast]: https://sheeptester.github.io/javascripts/intense-contrast.html
 [jpg-quality]: https://sheeptester.github.io/javascripts/jpg-quality.html
 [image-translucentifier]: https://sheeptester.github.io/javascripts/image-translucentifier.html

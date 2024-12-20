@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>View individual frames of a GIF</title>
+    <meta
+      name="description"
+      content="If a GIF is too fast for you, this allows you to pause and scrub through each frame"
+    />
+    <meta name="theme-color" content="#4fa1a7" />
+
+    <link rel="stylesheet" type="text/css" href="/sheep3.css" />
+    <link rel="stylesheet" type="text/css" href="/reform/v1/index.css" />
+    <script src="/sheep3.js" charset="utf-8"></script>
+  </head>
+  <body>
+    <form class="main" role="main">
+      <h1>GIF frame viewer</h1>
+      <p>
+        Have you ever wanted to pause a GIF? If a GIF moves too fast for you,
+        drag and drop it here and scrub through individual frames of a GIF.
+      </p>
+      <div class="two-col-io reform:io">
+        <label class="input-controls file">
+          <input
+            type="file"
+            name="gif"
+            accept="image/gif"
+            class="hidden-accessible reform:file-input reform:paste-target"
+            data-default="/home-page/geocities/emoticon.gif"
+          />
+          <span class="icon icon-upload"></span>
+          <span class="file-label">Choose, drop, or paste a GIF</span>
+          <span class="file-name">No GIF selected</span>
+        </label>
+        <div class="image-content input-content">
+          <img
+            id="gifUrl"
+            data-deps="gif"
+            src="/home-page/geocities/emoticon.gif"
+            alt="Preview of selected GIF"
+          />
+        </div>
+        <div class="image-content output-content">
+          <canvas id="frame" data-deps="frames index"></canvas>
+        </div>
+        <div class="output-controls">
+          <a class="file download">
+            <span class="icon icon-download"></span>
+            <span class="file-label">Download</span>
+            <span class="file-name">No file available</span>
+          </a>
+          <button
+            type="button"
+            class="icon icon-copy"
+            data-output="output"
+            aria-label="Copy"
+          ></button>
+          <button
+            type="button"
+            class="icon icon-share"
+            data-output="output"
+            aria-label="Share"
+          ></button>
+        </div>
+      </div>
+
+      <div class="field-label range-wrapper">
+        <label class="range-label">
+          <span class="label-primary">Frame</span>
+          <span class="label-secondary">
+            The maximum of this slider is set to one more than the total number
+            of frames. This makes it easier to use the arrow keys to compare the
+            final and first frames in looping GIFs.
+          </span>
+          <input
+            type="range"
+            name="index"
+            value="1"
+            min="1"
+            max="2"
+            id="index-range"
+            data-deps="frames"
+          />
+        </label>
+        <input
+          type="number"
+          name="index"
+          value="1"
+          min="1"
+          max="2"
+          id="index-number"
+          data-deps="frames"
+          aria-label="Frame index value"
+        />
+      </div>
+
+      <pre id="metadata" data-deps="frames index"></pre>
+    </form>
+
+    <script type="module">
+      import { on } from '/reform/v1/index.js'
+      import 'https://unpkg.com/gif-frames@1.0.1/dist/gif-frames.min.js'
+
+      let url = null
+      on('gifUrl', (img, { gif }) => {
+        if (url) {
+          URL.revokeObjectURL(url)
+        }
+        url = URL.createObjectURL(gif)
+        img.src = url
+        return url
+      })
+
+      on({ name: 'frames', deps: ['gifUrl'] }, (_, { gifUrl }) => {
+        return gifFrames({
+          url: gifUrl,
+          frames: 'all',
+          outputType: 'canvas',
+          cumulative: true
+        })
+      })
+
+      on('index-range', (input, { frames }) => {
+        input.max = frames.length + 1
+      })
+
+      on('index-number', (input, { frames }) => {
+        input.max = frames.length + 1
+      })
+
+      function mod (a, b) {
+        return ((a % b) + b) % b
+      }
+
+      on('frame', (c, { frames, index }) => {
+        const { getImage } = frames[mod(index - 1, frames.length)]
+        const {
+          frameInfo: { width, height }
+        } = frames[0]
+        c.canvas.width = width
+        c.canvas.height = height
+        c.drawImage(getImage(), 0, 0)
+      })
+
+      on('metadata', (pre, { frames, index }) => {
+        const { frameInfo } = frames[mod(index - 1, frames.length)]
+        pre.textContent =
+          '# Metadata\n' +
+          Object.entries(frameInfo)
+            .map(([key, value]) => `${key}: ${value}`)
+            .join('\n')
+      })
+    </script>
+  </body>
+</html>
