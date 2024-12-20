@@ -165,6 +165,16 @@ document.addEventListener("DOMContentLoaded", e => {
     s.src = '/all/go-to-gh.js';
     document.body.appendChild(s);
   });
+  SHEEP.registerMenuItem('site search', () => {
+    let s = document.createElement('script');
+    s.src = '/all/search-start.js';
+    document.body.appendChild(s);
+    let style = document.createElement('link');
+    style.type = 'text/css';
+    style.rel = 'stylesheet';
+    style.href = '/all/search.css';
+    document.head.appendChild(style);
+  });
 
   function drag(mouseDownName, mouseMoveName, mouseUpName, eventOptions, isTouch) {
     homeButton.addEventListener(mouseDownName, e => {

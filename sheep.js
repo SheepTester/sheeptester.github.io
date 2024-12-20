@@ -403,6 +403,16 @@ var SHEEP={
       s.type='module';
       s.src='/all/go-to-gh.js';
       document.body.appendChild(s);
+    },
+    'site search':_=>{
+      var s=document.createElement('script');
+      s.src='/all/search-start.js';
+      document.body.appendChild(s);
+      var style=document.createElement("link");
+      style.type="text/css";
+      style.rel="stylesheet";
+      style.href='/all/search.css';
+      document.head.appendChild(style);
     }
   }
 };

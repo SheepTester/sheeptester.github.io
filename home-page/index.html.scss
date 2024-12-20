@@ -1046,7 +1046,6 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
         color: color-mix(in srgb, currentColor, transparent 50%)
       }
       .search-form:focus-within .search {
-        width: 100%;
         max-width: 800px;
       }
       .suggestions {
@@ -1433,6 +1432,6 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
       }
     }
 
-    script[src="/home-page/main.js"] {}
+    script[src="/home-page/main.js"][type="module"] {}
   }
 }
