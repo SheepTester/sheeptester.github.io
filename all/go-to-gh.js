@@ -1,3 +1,5 @@
+// Injected by sheep.js right click menus
+
 import { ghPagesRepos, jekyllRepos } from './gh-pages-repos.mjs'
 
 const BASE = 'https://github.com/SheepTester'
