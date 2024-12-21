@@ -1,3 +1,6 @@
+>.vscode
+settings.json
+<
 >.well-known
 discord
 <
@@ -48,6 +51,9 @@ index.html
 main.js
 makermakermaker.js
 README.md
+search-start.js
+search.css
+search.js
 sitemap-maker.js
 sitemap.html
 sitemap.txt
@@ -1185,6 +1191,7 @@ stream-to-file-ws.example.js
 stream-to-file-ws.ts
 stream-to-file.example.js
 stream-to-file.ts
+string_decoding_example.py
 structures.txt
 suspicious.exe grr this is not an executable github pages
 test-ok.svg
@@ -2260,6 +2267,7 @@ footer.js
 french.html
 frictioney-balls.html
 gif-caption.html
+gif-frames-viewer.html
 good-password.html
 grapher.html
 greedy.html
@@ -3816,7 +3824,6 @@ index.html
 main.js
 <
 index.html
-main.js
 style.css
 <
 >ucsd-sunset
@@ -3899,6 +3906,8 @@ classrooms-WI23-full.txt
 classrooms-WI23.txt
 classrooms-WI24-full.txt
 classrooms-WI24.txt
+classrooms-WI25-full.txt
+classrooms-WI25.txt
 classrooms-WI95-full.txt
 classrooms-WI95.txt
 <
@@ -4190,6 +4199,7 @@ certainly-google-docs.html
 chooper3d.html
 chunks.html
 circles.html
+clocks.html
 coconut-tree-twemoji.svg
 coconut-tree-win10.png
 decargoifor.html
@@ -4269,6 +4279,7 @@ polygon-stabber.html
 projection.html
 pronouns.html
 proof-of-concept.html
+pxl_time.html
 queens-default.png
 queens.html
 Rational.js
@@ -4326,6 +4337,8 @@ zelmanov-rref.html
 >scratch3-htmlifier
 index.html
 <
+.gitignore
+.prettierrc.yml
 a1.js
 a2.js
 attempt1.html
@@ -4334,6 +4347,8 @@ deno.json
 deno.lock
 index.html
 LICENSE
+package-lock.json
+package.json
 README.md
 savefiletest.html
 <
@@ -4481,6 +4496,7 @@ yesnt.min.js
 <
 .gitignore
 .nojekyll
+.prettierrc.yml
 404.html
 all.html
 android-chrome-192x192.png

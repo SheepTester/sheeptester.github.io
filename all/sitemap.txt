@@ -308,6 +308,7 @@ https://sheeptester.github.io/javascripts/footer.html
 https://sheeptester.github.io/javascripts/french.html
 https://sheeptester.github.io/javascripts/frictioney-balls.html
 https://sheeptester.github.io/javascripts/gif-caption.html
+https://sheeptester.github.io/javascripts/gif-frames-viewer.html
 https://sheeptester.github.io/javascripts/good-password.html
 https://sheeptester.github.io/javascripts/grapher.html
 https://sheeptester.github.io/javascripts/greedy.html
@@ -619,6 +620,7 @@ https://sheeptester.github.io/words-go-here/misc/certainly-google-docs.html
 https://sheeptester.github.io/words-go-here/misc/chooper3d.html
 https://sheeptester.github.io/words-go-here/misc/chunks.html
 https://sheeptester.github.io/words-go-here/misc/circles.html
+https://sheeptester.github.io/words-go-here/misc/clocks.html
 https://sheeptester.github.io/words-go-here/misc/decargoifor.html
 https://sheeptester.github.io/words-go-here/misc/dehtmlify.html
 https://sheeptester.github.io/words-go-here/misc/dialog.html
@@ -679,6 +681,7 @@ https://sheeptester.github.io/words-go-here/misc/polygon-stabber.html
 https://sheeptester.github.io/words-go-here/misc/projection.html
 https://sheeptester.github.io/words-go-here/misc/pronouns.html
 https://sheeptester.github.io/words-go-here/misc/proof-of-concept.html
+https://sheeptester.github.io/words-go-here/misc/pxl_time.html
 https://sheeptester.github.io/words-go-here/misc/queens.html
 https://sheeptester.github.io/words-go-here/misc/rimac-people-data.html
 https://sheeptester.github.io/words-go-here/misc/schedulemaker.html
