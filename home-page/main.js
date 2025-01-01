@@ -1,4 +1,4 @@
-import { loadSearch } from '/all/search.js'
+import { loadSearch } from '/all/search/search.js'
 
 const filterStyle = document.createElement('style')
 document.head.appendChild(filterStyle)

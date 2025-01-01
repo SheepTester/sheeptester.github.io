@@ -1,4 +1,4 @@
-import('/all/search.js').then(({ loadSearch }) => {
+import('/all/search/search.js').then(({ loadSearch }) => {
   const modal = Object.assign(document.createElement('dialog'), {
     className: 'search-modal'
   })

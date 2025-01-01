@@ -25,6 +25,7 @@
     'Segoe UI Symbol';
   font-size: 16px;
   line-height: normal;
+  word-break: break-word;
   color: rgba(255, 255, 255, 0.7);
   color-scheme: dark;
 }

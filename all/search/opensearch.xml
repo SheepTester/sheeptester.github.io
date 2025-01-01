@@ -1,0 +1,17 @@
+<OpenSearchDescription
+  xmlns="http://a9.com/-/spec/opensearch/1.1/"
+  xmlns:moz="http://www.mozilla.org/2006/browser/search/"
+>
+  <ShortName>SheepTester</ShortName>
+  <Description>Search SheepTester</Description>
+  <InputEncoding>UTF-8</InputEncoding>
+  <image width="16" height="16" type="image/x-icon"
+    >https://sheeptester.github.io/favicon.ico</image
+  >
+  <Url
+    type="text/html"
+    method="get"
+    template="https://sheeptester.github.io/all/search/?q={searchTerms}"
+  />
+  <moz:SearchForm>https://sheeptester.github.io/all/search/</moz:SearchForm>
+</OpenSearchDescription>

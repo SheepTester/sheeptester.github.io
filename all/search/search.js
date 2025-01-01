@@ -3,7 +3,12 @@ function normalize (string) {
 }
 
 let fuzzySortLoaded = false
-export async function loadSearch (search, form, suggestions) {
+export async function loadSearch (
+  search,
+  form,
+  suggestions,
+  { noResults = true } = {}
+) {
   const fuzzysortLoad =
     !fuzzySortLoaded &&
     new Promise((resolve, reject) => {
@@ -54,7 +59,7 @@ export async function loadSearch (search, form, suggestions) {
       threshold: 0.1,
       limit: 50
     })
-    if (results.length === 0) {
+    if (results.length === 0 && noResults) {
       suggestions.classList.add('no-results')
       return
     }

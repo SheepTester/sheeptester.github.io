@@ -74,6 +74,8 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
     link[rel="manifest"][href="/manifest.json"];
     link[rel="mask-icon"][href="/safari-pinned-tab.svg"][color="#4fa1a7"];
 
+    link[rel="search"][type="application/opensearchdescription+xml"][href="/all/search/opensearch.xml"][title="SheepTester"];
+
     link[rel="stylesheet"][type="text/css"][href="/sheep3.css"];
     link[rel="stylesheet"][type="text/css"][href="/home-page/style.css"];
 

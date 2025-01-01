@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Search SheepTester</title>
+    <meta name="description" content="Landing page for " />
+
+    <link rel="stylesheet" type="text/css" href="/sheep3.css" />
+    <link rel="stylesheet" type="text/css" href="./search.css" />
+    <script src="/sheep3.js" charset="utf-8"></script>
+
+    <style>
+      :root {
+        color-scheme: dark;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+          'Helvetica Neue', Arial, sans-serif, 'Apple Color Emoji',
+          'Segoe UI Emoji', 'Segoe UI Symbol';
+        font-size: 16px;
+        line-height: normal;
+        color: rgba(255, 255, 255, 0.7);
+        word-break: break-word;
+        background-color: #24364a;
+        margin: 20px;
+        overflow-y: scroll;
+      }
+
+      #search-form {
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        width: 100%;
+        max-width: 800px;
+      }
+
+      a {
+        text-decoration: none;
+        color: inherit;
+      }
+    </style>
+  </head>
+  <body>
+    <form id="search-form" autocomplete="off">
+      <input
+        class="search"
+        id="search"
+        type="search"
+        placeholder="Search everything"
+        aria-label="Search everything"
+        autofocus
+      />
+      <div class="no-results" id="suggestions"></div>
+    </form>
+
+    <script type="module">
+      import { loadSearch } from '/all/search/search.js'
+
+      const search = document.getElementById('search')
+      const form = document.getElementById('search-form')
+      const suggestions = document.getElementById('suggestions')
+
+      const params = new URL(window.location.href).searchParams
+      const query = params.get('q')
+      if (query) {
+        search.value = query
+      }
+
+      loadSearch(search, form, suggestions, { noResults: false })
+    </script>
+  </body>
+</html>

@@ -167,12 +167,12 @@ document.addEventListener("DOMContentLoaded", e => {
   });
   SHEEP.registerMenuItem('site search', () => {
     let s = document.createElement('script');
-    s.src = '/all/search-start.js';
+    s.src = '/all/search/start.js';
     document.body.appendChild(s);
     let style = document.createElement('link');
     style.type = 'text/css';
     style.rel = 'stylesheet';
-    style.href = '/all/search.css';
+    style.href = '/all/search/search.css';
     document.head.appendChild(style);
   });
 
