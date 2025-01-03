@@ -101,7 +101,6 @@
     s.appendChild(output);
     var textarea=document.createElement("textarea");
     textarea.className='EVALTEXTAREA';
-    textarea.focus();
     textarea.onkeypress=e=>{
       if (e.keyCode===13&&!e.shiftKey) {
         var t=document.createElement("evaloutputentry"),
@@ -151,7 +150,8 @@
     };
     s.appendChild(textarea);
     document.body.appendChild(s);
-    evaljs={
+    textarea.focus();
+    window.evaljs={
       window:s,
       clear() {
         while (output.hasChildNodes()) output.removeChild(output.lastChild);

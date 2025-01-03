@@ -384,6 +384,9 @@ var SHEEP={
   },
   menu:{
     'go to index page':_=>window.location='/?from=sheep',
+    'hide little sheep':_=>{
+      document.body.classList.add('no-sheep');
+    },
     'reset little sheep position':_=>{
       cookie.sheepmenuposition='10-10';
       var t=document.querySelector('sheepmenu');

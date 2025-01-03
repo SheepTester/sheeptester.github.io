@@ -150,6 +150,9 @@ document.addEventListener("DOMContentLoaded", e => {
   if (window.location.pathname !== '/') {
     SHEEP.registerMenuItem('go to index page', () => leave());
   }
+  SHEEP.registerMenuItem("hide l' ŝafeto", () => {
+    document.body.classList.add('no-sheep');
+  });
   SHEEP.registerMenuItem("reset l' ŝafeto position", () => {
     SHEEP.setPref('sheepBtnX', SHEEP.setPref('sheepBtnY', 10));
     homeButton.style.right = homeButton.style.bottom = '10px';
@@ -158,6 +161,12 @@ document.addEventListener("DOMContentLoaded", e => {
     let description=document.querySelector('meta[name=description]');
     if (description) SHEEP.notify(`<h1>${document.title}</h1><p>${SHEEP.escapeHTML(description.content)}</p>`);
     else SHEEP.notify(`<h1>${document.title}</h1><p><em>This page has no description.</em></p>`);
+  });
+  SHEEP.registerMenuItem('eval.js', () => {
+    let s = document.createElement('script');
+    s.type = 'text/javascript';
+    s.src = '/javascripts/eval.js';
+    document.body.appendChild(s);
   });
   SHEEP.registerMenuItem('view source code', () => {
     let s = document.createElement('script');
