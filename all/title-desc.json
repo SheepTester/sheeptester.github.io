@@ -1735,7 +1735,7 @@
 	},
 	{
 		"path": "/javascripts/cyrillic-finder.html",
-		"title": "Extraneous character finder",
+		"title": "Special character finder",
 		"description": "Finds characters that you can't type on a US keyboard (in case someone inserted a lookalike)",
 		"sheep": 2
 	},

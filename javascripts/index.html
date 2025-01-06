@@ -3,11 +3,14 @@
   <head>
     <!-- comment for testing Sadbooks -->
     <title>Javascripts</title>
-    <meta charset="UTF-8">
-    <link rel="stylesheet" href="simplecolour.css">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="https://fonts.googleapis.com/css?family=Inconsolata" rel="stylesheet">
-    <link rel="stylesheet" type="text/css" href="../sheep2.css">
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="simplecolour.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      href="https://fonts.googleapis.com/css?family=Inconsolata"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" type="text/css" href="../sheep2.css" />
     <script src="../sheep2.js" charset="utf-8"></script>
     <script src="pen.js"></script>
     <style>
@@ -20,8 +23,9 @@
         color: #666;
         font-family: 'Inconsolata', monospace;
       }
-      .bookmarklet::before, .red {
-        content: "*";
+      .bookmarklet::before,
+      .red {
+        content: '*';
         color: #c4172a;
       }
       a:link {
@@ -40,123 +44,544 @@
       }
       :focus {
         outline: none;
-        box-shadow: 0 0 0 2px rgba(0,134,221,0.3);
+        box-shadow: 0 0 0 2px rgba(0, 134, 221, 0.3);
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          color-scheme: dark;
+        }
+        code {
+          background-color: #333;
+          color: #ccc;
+        }
+        .bookmarklet::before,
+        .red {
+          color: #ef4444;
+        }
+        a:link {
+          color: #0ea9ef;
+        }
+        a:visited {
+          color: #c282ff;
+        }
+        a:active {
+          color: #ff7189;
+        }
       }
     </style>
   </head>
   <body>
-    <p><span class="red">*</span> = a bookmarklet; drag the links into your browser's bookmarks/favourites bar to use these on most webpages.</p>
-    <p>You should also check out <a href="https://sheeptester.github.io/words-go-here/misc/">Cramland</a>, which supposedly has less-perfect but admittedly cooler JavaScripts. I arbitrarily put things in the two places based on how I feel like they'll turn out.</p>
-    <p><a href="javascript:var s=document.createElement('script');s.type='text/javascript';s.src='https://sheeptester.github.io/javascripts/twirlie.js';document.body.appendChild(s);void(0);" class="bookmarklet">twirlie.js</a> - Click on elements to make them spin in circles or shake violently.</p>
+    <p>
+      <span class="red">*</span> = a bookmarklet; drag the links into your
+      browser's bookmarks/favourites bar to use these on most webpages.
+    </p>
+    <p>
+      You should also check out
+      <a href="https://sheeptester.github.io/words-go-here/misc/">Cramland</a>,
+      which supposedly has less-perfect but admittedly cooler JavaScripts. I
+      arbitrarily put things in the two places based on how I feel like they'll
+      turn out.
+    </p>
+    <p>
+      <a
+        href="javascript:var s=document.createElement('script');s.type='text/javascript';s.src='https://sheeptester.github.io/javascripts/twirlie.js';document.body.appendChild(s);void(0);"
+        class="bookmarklet"
+        >twirlie.js</a
+      >
+      - Click on elements to make them spin in circles or shake violently.
+    </p>
     <p><a href="clicker/">clicker/</a> - A generic clicker game.</p>
-    <p><a href="searchparser.html">searchparser.html</a> - Parses the stuff in the URL after ? into a JS object.</p>
-    <p><a href="mutate.html">mutate.html</a> - Simulates cells mutating and dying.</p>
-    <p><a href="events.html">events.html</a> - Demonstrates a lot of JavaScript events.</p>
-    <p><a href="points.html">points.html</a> - Edit a path by dragging its vertices.</p>
-    <p><a href="shepform/">shepform/</a> - An attempt to make better form elements. Color inputs included.</p>
-    <p><a href="shepform/colour.html">shepform/colour.html</a> - A glorious colour picker.</p>
-    <p><a href="clickanywhere.html">clickanywhere.html</a> - Something that detects when you click outside an element.</p>
-    <p><a href="responsivenavbar.html">responsivenavbar.html</a> - Responsive design test.</p>
-    <p><a href="javascript:var s=document.createElement('script');s.type='text/javascript';s.src='https://sheeptester.github.io/javascripts/eval.js';document.body.appendChild(s);void(0);" class="bookmarklet">eval.js</a> - Runs JavaScript; for people who have developer tools disabled by their school.</p>
-    <p><a href="shortcuts.html">shortcuts.html</a> - Keyboard shortcut guide.</p>
-    <p><a href="pen.js">pen.js</a> - Scratch pen blocks but in JavaScript! This page has it so you can try it out in the console.</p>
-    <p><a href="simplecolour.js">simplecolour.js</a> - A simpler colour picker; try it here: <input type="radio" class="simplecolourpicker" checked>; <code>&lt;input type="radio" class="simplecolourpicker" checked&gt;</code> will create the colour picker, the styles I've used are at <a href="simplecolour.css">simplecolour.css</a></p>
-    <p><a href="happenings.html">happenings.html</a> - A better-designed What's happening section for Scratch.</p>
-    <p><a href="javascript:(t=>{var s=document.createElement(t);s.type='text/java'+t;s.src='sadbooks/sadbooks.js';document.body.appendChild(s);})('script')" class="bookmarklet">sadbooks.js</a> - Inspect Element clone attempt for people who have developer tools disabled by their school. (WARNING: currently only works on this page)</p>
-    <p><a href="javascript:(t=>{var s=document.createElement(t);s.type='text/java'+t;s.src='https://sheeptester.github.io/javascripts/2048.js';document.body.appendChild(s);})('script')" class="bookmarklet">2048.js</a> - bookmarklet that opens <a href="https://gabrielecirulli.github.io/2048/">2048 by Gabriele Cirulli</a> in a small frame that only is visible when your cursor is on it, so it's easy to hide when necessary. Launch again to close.</p>
-    <p><a href="mccommands/">mccommands/</a> - A thing that might make typing commands in "Minecraft" a bit easier on touchscreens.</p>
-    <p><a href="imagetoscheme.html">imagetoscheme.html</a> - Converts image to ASCII art. Made for a Scheme class.</p>
-    <p><a href="fontmaker.html">fontmaker.html</a> - Takes a font file and outputs some costumes and a list. For Scratch costume-based text engines.</p>
-    <p><a href="written_book.html">written_book.html</a> - Minecraft written book text editor.</p>
+    <p>
+      <a href="searchparser.html">searchparser.html</a> - Parses the stuff in
+      the URL after ? into a JS object.
+    </p>
+    <p>
+      <a href="mutate.html">mutate.html</a> - Simulates cells mutating and
+      dying.
+    </p>
+    <p>
+      <a href="events.html">events.html</a> - Demonstrates a lot of JavaScript
+      events.
+    </p>
+    <p>
+      <a href="points.html">points.html</a> - Edit a path by dragging its
+      vertices.
+    </p>
+    <p>
+      <a href="shepform/">shepform/</a> - An attempt to make better form
+      elements. Color inputs included.
+    </p>
+    <p>
+      <a href="shepform/colour.html">shepform/colour.html</a> - A glorious
+      colour picker.
+    </p>
+    <p>
+      <a href="clickanywhere.html">clickanywhere.html</a> - Something that
+      detects when you click outside an element.
+    </p>
+    <p>
+      <a href="responsivenavbar.html">responsivenavbar.html</a> - Responsive
+      design test.
+    </p>
+    <p>
+      <a
+        href="javascript:var s=document.createElement('script');s.type='text/javascript';s.src='https://sheeptester.github.io/javascripts/eval.js';document.body.appendChild(s);void(0);"
+        class="bookmarklet"
+        >eval.js</a
+      >
+      - Runs JavaScript; for people who have developer tools disabled by their
+      school.
+    </p>
+    <p>
+      <a href="shortcuts.html">shortcuts.html</a> - Keyboard shortcut guide.
+    </p>
+    <p>
+      <a href="pen.js">pen.js</a> - Scratch pen blocks but in JavaScript! This
+      page has it so you can try it out in the console.
+    </p>
+    <p>
+      <a href="simplecolour.js">simplecolour.js</a> - A simpler colour picker;
+      try it here: <input type="radio" class="simplecolourpicker" checked />;
+      <code>&lt;input type="radio" class="simplecolourpicker" checked&gt;</code>
+      will create the colour picker, the styles I've used are at
+      <a href="simplecolour.css">simplecolour.css</a>
+    </p>
+    <p>
+      <a href="happenings.html">happenings.html</a> - A better-designed What's
+      happening section for Scratch.
+    </p>
+    <p>
+      <a
+        href="javascript:(t=>{var s=document.createElement(t);s.type='text/java'+t;s.src='sadbooks/sadbooks.js';document.body.appendChild(s);})('script')"
+        class="bookmarklet"
+        >sadbooks.js</a
+      >
+      - Inspect Element clone attempt for people who have developer tools
+      disabled by their school. (WARNING: currently only works on this page)
+    </p>
+    <p>
+      <a
+        href="javascript:(t=>{var s=document.createElement(t);s.type='text/java'+t;s.src='https://sheeptester.github.io/javascripts/2048.js';document.body.appendChild(s);})('script')"
+        class="bookmarklet"
+        >2048.js</a
+      >
+      - bookmarklet that opens
+      <a href="https://gabrielecirulli.github.io/2048/"
+        >2048 by Gabriele Cirulli</a
+      >
+      in a small frame that only is visible when your cursor is on it, so it's
+      easy to hide when necessary. Launch again to close.
+    </p>
+    <p>
+      <a href="mccommands/">mccommands/</a> - A thing that might make typing
+      commands in "Minecraft" a bit easier on touchscreens.
+    </p>
+    <p>
+      <a href="imagetoscheme.html">imagetoscheme.html</a> - Converts image to
+      ASCII art. Made for a Scheme class.
+    </p>
+    <p>
+      <a href="fontmaker.html">fontmaker.html</a> - Takes a font file and
+      outputs some costumes and a list. For Scratch costume-based text engines.
+    </p>
+    <p>
+      <a href="written_book.html">written_book.html</a> - Minecraft written book
+      text editor.
+    </p>
     <p><a href="terminal/">terminal/</a> - Unixesque terminal simulator</p>
-    <p><a href="terminal/mml.html">terminal/mml.html</a> - MML renderer attempt</p>
+    <p>
+      <a href="terminal/mml.html">terminal/mml.html</a> - MML renderer attempt
+    </p>
     <p><a href="three/">three/</a> - Directory of three.js attempts</p>
     <p><a href="footer.html">footer.html</a> - Material design footer.</p>
-    <p><a href="carecalc.html">carecalc.html</a> - It's almost finals week and you need to study! Fortunately, your grades are pretty good, so you don't have to try too hard on the finals. This calculator tells you the minimum score you need to get on your finals to prevent turning on your parents' scold speakers.</p>
-    <p><a href="particles/">particles/</a> - Directory of canvas-rendered particle attempts</p>
+    <p>
+      <a href="carecalc.html">carecalc.html</a> - It's almost finals week and
+      you need to study! Fortunately, your grades are pretty good, so you don't
+      have to try too hard on the finals. This calculator tells you the minimum
+      score you need to get on your finals to prevent turning on your parents'
+      scold speakers.
+    </p>
+    <p>
+      <a href="particles/">particles/</a> - Directory of canvas-rendered
+      particle attempts
+    </p>
     <p><a href="pixels/">pixels/</a> - Pixel art editor</p>
-    <p><a href="caretdemo.html">caretdemo.html</a> - I decided to adventure into the world of caret selection ranges, expecting an extremely complicated system as a byproduct of bad browser support, but as it turns out, at least for inputs and textareas, it isn't too hard!</p>
-    <p><a href="scratchapiexplorer.html">scratchapiexplorer.html</a> - Having used the <a href="https://developers.google.com/apis-explorer/#s/calendar/v3/">Google APIs explorer</a> for <a href="https://orbiit.github.io/gunn-web-app/">UGWA</a>, I tried to make one for Scratch's API.</p>
-    <p><a href="opacity-calc.html">opacity-calc.html</a> - Calculates the alpha value of a translucent colour on top of another colour.</p>
-    <p><a href="dumbascii/">dumbascii/</a> - Weird adventure game demo based on coloured monospace characters.</p>
-    <p><a href="cyrillic-finder.html">cyrillic-finder.html</a> - Find homographs and invisibles in a string.</p>
-    <p><a href="fill-perf.html">fill-perf.html</a> - Seeing if I can optimize my flood fill algorithm for my <a href="pixels/">Pixel manipulator</a>.</p>
-    <p><a href="towering-game.html">towering-game.html</a> - One of those games where you try to make a tower of blocks by timing the block placements correctly.</p>
-    <p><a href="audio-editor/">audio-editor/</a> - A Scratch 2.0 sound editor remake using code stolen from Scratch 3.0.</p>
-    <p><a href="jpg-quality.html">jpg-quality.html</a> - <del>Ab</del>using the <code>toDataURL</code> method to convert images to jpeg <del>and compress them</del>.</p>
-    <p><a href="frictioney-balls.html">frictioney-balls.html</a> - An attempt to make the ball physics in carykh's Evolution Simulator.</p>
-    <p><a href="delegalifier.html">delegalifier.html</a> - Contrary to what it suggests, it's actually just a dumb failed text transformer.</p>
-    <p><a href="discord-transformer.html">discord-transformer.html</a> - More text transformers for my personal use on Discord.</p>
-    <p><a href="cryptography.html">cryptography.html</a> - Translators for the most commonly used ciphers/codes in "cryptography" challenges on the Scratch forums.</p>
-    <p><a href="sudoku-ruiner.html">sudoku-ruiner.html</a> - A keyboard-only tool that shows possible numbers for each sudoku tile and highlights problems.</p>
-    <p><a href="peerjs.html">peerjs.html</a> - A quick experimental example using <a href="https://peerjs.com/">PeerJS</a>.</p>
-    <p><a href="anonchat.html">anonchat.html</a> - A simple anonymous-ish chat program using <a href="https://peerjs.com/">PeerJS</a>.</p>
-    <p><a href="panchroma.html">panchroma.html</a> - All the possible colours in a single canvas.</p>
-    <p><a href="voice-control.html">voice-control.html</a> - Say something and it repeats it back to you.</p>
-    <p><a href="easing.html">easing.html</a> - A HTML5 remake of an easing function visualizer.</p>
-    <p><a href="autocomplete.html">autocomplete.html</a> - Autocomplete Toki Pona words as you type.</p>
-    <p><a href="charcopy.html">charcopy.html</a> - Quickly copy strings such as special characters or copypastas with a single click.</p>
-    <p><a href="french.html">french.html</a> - Uses TTS to pronounce French text.</p>
-    <p><a href="combining.html">combining.html</a> - A list of combining characters from Wikipedia that you can use to copy individual characters from or add to other characters.</p>
-    <p><a href="zwsp-embedder.html">zwsp-embedder.html</a> - Encodes zero-width spaces and non-joiners in normal-looking text (inspired by <a href="https://medium.com/@umpox/be-careful-what-you-copy-invisibly-inserting-usernames-into-text-with-zero-width-characters-18b4e6f17b66">this article by Tom Ross</a>).</p>
-    <p><a href="countdown.html">countdown.html</a> - A non-live countdown that displays a calendar between two given dates.</p>
-    <p><a href="video/">video/</a> - Smothered Rocks is a very basic video editor; the name is a parody of Adobe Spark.</p>
-    <p><a href="video/shit/">video/shit/</a> - OpenShit is a more sophisticated but quite unintuitive video editor.</p>
-    <p><a href="webhook-sender.html">webhook-sender.html</a> - A WYSIWYG (What You See Is What You Get) editor that allows you to type in text where it would show and send it to a Discord webhook.</p>
-    <p><a href="flashcards.html">flashcards.html</a> - A simple flashcards web app relying on web-hosted JSON.</p>
-    <p><a href="intense-contrast.html">intense-contrast.html</a> - Emphasize the difference between similarly coloured pixels.</p>
-    <p><a href="semi-what.html">semi-what.html</a> - Encodes a string to binary using semicolons and Greek question marks.</p>
-    <p><a href="image-translucentifier.html">image-translucentifier.html</a> - Given the background colour of an image, it'll make the background transparent.</p>
-    <p><a href="blur.html">blur.html</a> - Blurs an image slowly by averaging the neighbours of each pixel.</p>
-    <p><a href="when-zoom.html">when-zoom.html</a> - An intricately designed web app for scheduling notifications, such as for virtual meetings with teachers if your school is closed due to some pandemic.</p>
-    <p><a href="raw-json-img.html">raw-json-img.html</a> - Converts an image into a low quality Minecraft (20w17a+) command.</p>
-    <p><a href="byte-sorter.html">byte-sorter.html</a> - A pretty useless tool that sorts the bytes in a file.</p>
-    <p><a href="battery-inspection.html">battery-inspection.html</a> - It shows you whatever information your browser will give about your device's battery through the Battery Status API. Only Chromium browsers will give enough information.</p>
-    <p><a href="connection-inspection.html">connection-inspection.html</a> - Lists information about your network connection using the Network Information API.</p>
-    <p><a href="events2.html">events2.html</a> - Like <a href="events.html">events.html</a> (see above) from three years ago, but with a more complete list of events. Also has a tendency to crash the browser.</p>
-    <p><a href="discord/">discord/</a> - A playground for <a href="https://discord.js.org/">discord.js</a> in the browser.</p>
-    <p><a href="encrypt.html">encrypt.html</a> - A simple encryption algorithm based on base64. :)</p>
-    <p><a href="snowflake.html">snowflake.html</a> - A simple analyser for snowflakes on various services. This can be used to get the creation date of a Discord user, for example.</p>
-    <p><a href="screen-recorder.html">screen-recorder.html</a> - A simple screen recorder.</p>
-    <p><a href="notifications.html">notifications.html</a> - A simple notifications playground.</p>
-    <p><a href="floats.html">floats.html</a> - Inspired by <a href="https://stackoverflow.com/users/298225/eric-postpischil">Eric Postpischil</a>, this is a float explorer that lets you manipulate its bits directly.</p>
-    <p><a href="unicode-canvas.html">unicode-canvas.html</a> and <a href="unicode.html">unicode.html</a> - An attempt at a Unicode character map thing inspired by <a href="https://en.wikipedia.org/wiki/Plane_(Unicode)#Basic_Multilingual_Plane">Wikipedia's plane maps</a>.</p>
-    <p><a href="análisis-poético.html">análisis-poético.html</a> - Analysing poems in AP Spanish Lit.</p>
-    <p><a href="fek-fshka-hangul.html">fek-fshka-hangul.html</a> - Converting from Latin to Hangul for Fek, an organically constructed language in our school.</p>
-    <p><a href="greedy.html">greedy.html</a> - Greedy meshing based on the blog post <a href="https://0fps.net/2012/06/30/meshing-in-a-minecraft-game/">Meshing in a Minecraft Game</a>.</p>
-    <p><a href="tts.html">tts.html</a> - Using the browser's Speech Synthesis API to read out Chinese for me.</p>
-    <p><a href="tosvg.html">tosvg.html</a> - Embed a PNG image inside an SVG to avoid it being squished by Scratch.</p>
-    <p><a href="one-pdf.html">one-pdf.html</a> - Combine images into a PDF for when teachers want multiple photos to be submitted together as one document.</p>
-    <p><a href="mp4-analyze.html">mp4-analyze.html</a> - Directly manipulate an mp4 file to, for example, change its duration.</p>
-    <p><a href="countdown-react.html">countdown-react.html</a> - <a href="countdown.html">countdown.html</a> again, but this time using React and <a href="https://bvaughn.github.io/react-virtualized/">react-virtualized</a> to allow for massive date ranges.</p>
-    <p><a href="abbrevator.html">abbrevator.html</a> - Failed attempt to make an automatic abbreviator.</p>
-    <p><a href="qr.html">qr.html</a> - QR code scanner that uses <a href="https://github.com/nimiq/qr-scanner">QR Scanner</a>.</p>
-    <p><a href="cheat-sheet.html">cheat-sheet.html</a> - A short little reference sheet for all the built-in JavaScript functions that you should know.</p>
-    <p><a href="grapher.html">grapher.html</a> - Graphs a given mathematical expression.</p>
-    <p><a href="randomised-music.html">randomised-music.html</a> - A random music generator based on a <a href="https://scratch.mit.edu/projects/102174886/">Scratch project</a> using <a href="https://tonejs.github.io/">Tone.js</a>.</p>
-    <p><a href="chopper.html">chopper.html</a> - Chop a large image into squares for a Discord emoji grid.</p>
-    <p><a href="font-colour-remover.html">font-colour-remover.html</a> - Remove most formatting from text while keeping italics and links so it can be pasted into Google Docs.</p>
-    <p><a href="still-2020.html">still-2020.html</a> - The date if March 2020 never ended.</p>
-    <p><a href="gif-caption.html">gif-caption.html</a> - Add a caption to a gif.</p>
-    <p><a href="cho.html">cho.html</a> - Calculate the empirical formula from burning an organic compound.</p>
-    <p><a href="height.html">height.html</a> - Convert between centimetres and feet/inches because unfortunately I only have an intuition for heights in feet and inches.</p>
-    <p><a href="subtract-frames.html">subtract-frames.html</a> - Subtract times in HH:MM:SS:frames from my video editor so I can slow down a clip to fill the space between two other clips.</p>
-    <p><a href="rps-ai.html">rps-ai.html</a> - Uses deep learning neural networks to predict a human player's next move in rock paper scissors.</p>
-    <p><a href="intl-nums.html">intl-nums.html</a> - Uses the <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/NumberFormat/NumberFormat">ECMAScript Internationalization API</a> to translate units and currencies all in your browser.</p>
-    <p><a href="image-shuffler.html">image-shuffler.html</a> - Chop up and shuffle rows in a screenshot.</p>
-    <p><a href="pip-image.html">pip-image.html</a> - Show an image in a pop-up that stays above other windows.</p>
-    <p><a href="rounded-decimal-to-fraction.html">rounded-decimal-to-fraction.html</a> - Determine some possible ratios whose approximation is the given decimal. This can be used to determine the original fraction that produced a decimal.</p>
-    <p><a href="bwt.html">bwt.html</a> - Creates a Burrows-Wheeler Transform matrix and suffix array from the given string.</p>
-    <p><a href="putty-serial.html">putty-serial.html</a> - Apparently your browser can access USB ports, so I didn't need to install PuTTY to view the console logs of a circuit board.</p>
-    <p><a href="obfuscate-url.html">obfuscate-url.html</a> - URL encode every character, even when you don't have to, to hide words in a URL.</p>
-    <p><a href="floating-sticky-note.html">floating-sticky-note.html</a> - Show an interactive notepad that stays above all other windows, so you can take notes while reading an article, watching a video, or I guess taking an exam.</p>
-    <p><a href="convolution-matrix.html">convolution-matrix.html</a> - Learning WebGL (again), so I made a convolution matrix explorer inspired by <a href="https://www.youtube.com/watch?v=KuXjwB4LzSA">3Blue1Brown's video on convolutions</a>.</p>
-    <p><a href="sstv-encoder.html">sstv-encoder.html</a> - Encode an image in Scottie S1 <a href="https://en.wikipedia.org/wiki/Slow-scan_television">SSTV</a>, all in the browser.</p>
-    <p><a href="gif-frames-viewer.html">gif-frames-viewer.html</a> - Pause a GIF and view its individual frames at your own speed.</p>
+    <p>
+      <a href="caretdemo.html">caretdemo.html</a> - I decided to adventure into
+      the world of caret selection ranges, expecting an extremely complicated
+      system as a byproduct of bad browser support, but as it turns out, at
+      least for inputs and textareas, it isn't too hard!
+    </p>
+    <p>
+      <a href="scratchapiexplorer.html">scratchapiexplorer.html</a> - Having
+      used the
+      <a href="https://developers.google.com/apis-explorer/#s/calendar/v3/"
+        >Google APIs explorer</a
+      >
+      for <a href="https://orbiit.github.io/gunn-web-app/">UGWA</a>, I tried to
+      make one for Scratch's API.
+    </p>
+    <p>
+      <a href="opacity-calc.html">opacity-calc.html</a> - Calculates the alpha
+      value of a translucent colour on top of another colour.
+    </p>
+    <p>
+      <a href="dumbascii/">dumbascii/</a> - Weird adventure game demo based on
+      coloured monospace characters.
+    </p>
+    <p>
+      <a href="cyrillic-finder.html">cyrillic-finder.html</a> - Find homographs
+      and invisibles in a string.
+    </p>
+    <p>
+      <a href="fill-perf.html">fill-perf.html</a> - Seeing if I can optimize my
+      flood fill algorithm for my <a href="pixels/">Pixel manipulator</a>.
+    </p>
+    <p>
+      <a href="towering-game.html">towering-game.html</a> - One of those games
+      where you try to make a tower of blocks by timing the block placements
+      correctly.
+    </p>
+    <p>
+      <a href="audio-editor/">audio-editor/</a> - A Scratch 2.0 sound editor
+      remake using code stolen from Scratch 3.0.
+    </p>
+    <p>
+      <a href="jpg-quality.html">jpg-quality.html</a> - <del>Ab</del>using the
+      <code>toDataURL</code> method to convert images to jpeg
+      <del>and compress them</del>.
+    </p>
+    <p>
+      <a href="frictioney-balls.html">frictioney-balls.html</a> - An attempt to
+      make the ball physics in carykh's Evolution Simulator.
+    </p>
+    <p>
+      <a href="delegalifier.html">delegalifier.html</a> - Contrary to what it
+      suggests, it's actually just a dumb failed text transformer.
+    </p>
+    <p>
+      <a href="discord-transformer.html">discord-transformer.html</a> - More
+      text transformers for my personal use on Discord.
+    </p>
+    <p>
+      <a href="cryptography.html">cryptography.html</a> - Translators for the
+      most commonly used ciphers/codes in "cryptography" challenges on the
+      Scratch forums.
+    </p>
+    <p>
+      <a href="sudoku-ruiner.html">sudoku-ruiner.html</a> - A keyboard-only tool
+      that shows possible numbers for each sudoku tile and highlights problems.
+    </p>
+    <p>
+      <a href="peerjs.html">peerjs.html</a> - A quick experimental example using
+      <a href="https://peerjs.com/">PeerJS</a>.
+    </p>
+    <p>
+      <a href="anonchat.html">anonchat.html</a> - A simple anonymous-ish chat
+      program using <a href="https://peerjs.com/">PeerJS</a>.
+    </p>
+    <p>
+      <a href="panchroma.html">panchroma.html</a> - All the possible colours in
+      a single canvas.
+    </p>
+    <p>
+      <a href="voice-control.html">voice-control.html</a> - Say something and it
+      repeats it back to you.
+    </p>
+    <p>
+      <a href="easing.html">easing.html</a> - A HTML5 remake of an easing
+      function visualizer.
+    </p>
+    <p>
+      <a href="autocomplete.html">autocomplete.html</a> - Autocomplete Toki Pona
+      words as you type.
+    </p>
+    <p>
+      <a href="charcopy.html">charcopy.html</a> - Quickly copy strings such as
+      special characters or copypastas with a single click.
+    </p>
+    <p>
+      <a href="french.html">french.html</a> - Uses TTS to pronounce French text.
+    </p>
+    <p>
+      <a href="combining.html">combining.html</a> - A list of combining
+      characters from Wikipedia that you can use to copy individual characters
+      from or add to other characters.
+    </p>
+    <p>
+      <a href="zwsp-embedder.html">zwsp-embedder.html</a> - Encodes zero-width
+      spaces and non-joiners in normal-looking text (inspired by
+      <a
+        href="https://medium.com/@umpox/be-careful-what-you-copy-invisibly-inserting-usernames-into-text-with-zero-width-characters-18b4e6f17b66"
+        >this article by Tom Ross</a
+      >).
+    </p>
+    <p>
+      <a href="countdown.html">countdown.html</a> - A non-live countdown that
+      displays a calendar between two given dates.
+    </p>
+    <p>
+      <a href="video/">video/</a> - Smothered Rocks is a very basic video
+      editor; the name is a parody of Adobe Spark.
+    </p>
+    <p>
+      <a href="video/shit/">video/shit/</a> - OpenShit is a more sophisticated
+      but quite unintuitive video editor.
+    </p>
+    <p>
+      <a href="webhook-sender.html">webhook-sender.html</a> - A WYSIWYG (What
+      You See Is What You Get) editor that allows you to type in text where it
+      would show and send it to a Discord webhook.
+    </p>
+    <p>
+      <a href="flashcards.html">flashcards.html</a> - A simple flashcards web
+      app relying on web-hosted JSON.
+    </p>
+    <p>
+      <a href="intense-contrast.html">intense-contrast.html</a> - Emphasize the
+      difference between similarly coloured pixels.
+    </p>
+    <p>
+      <a href="semi-what.html">semi-what.html</a> - Encodes a string to binary
+      using semicolons and Greek question marks.
+    </p>
+    <p>
+      <a href="image-translucentifier.html">image-translucentifier.html</a> -
+      Given the background colour of an image, it'll make the background
+      transparent.
+    </p>
+    <p>
+      <a href="blur.html">blur.html</a> - Blurs an image slowly by averaging the
+      neighbours of each pixel.
+    </p>
+    <p>
+      <a href="when-zoom.html">when-zoom.html</a> - An intricately designed web
+      app for scheduling notifications, such as for virtual meetings with
+      teachers if your school is closed due to some pandemic.
+    </p>
+    <p>
+      <a href="raw-json-img.html">raw-json-img.html</a> - Converts an image into
+      a low quality Minecraft (20w17a+) command.
+    </p>
+    <p>
+      <a href="byte-sorter.html">byte-sorter.html</a> - A pretty useless tool
+      that sorts the bytes in a file.
+    </p>
+    <p>
+      <a href="battery-inspection.html">battery-inspection.html</a> - It shows
+      you whatever information your browser will give about your device's
+      battery through the Battery Status API. Only Chromium browsers will give
+      enough information.
+    </p>
+    <p>
+      <a href="connection-inspection.html">connection-inspection.html</a> -
+      Lists information about your network connection using the Network
+      Information API.
+    </p>
+    <p>
+      <a href="events2.html">events2.html</a> - Like
+      <a href="events.html">events.html</a> (see above) from three years ago,
+      but with a more complete list of events. Also has a tendency to crash the
+      browser.
+    </p>
+    <p>
+      <a href="discord/">discord/</a> - A playground for
+      <a href="https://discord.js.org/">discord.js</a> in the browser.
+    </p>
+    <p>
+      <a href="encrypt.html">encrypt.html</a> - A simple encryption algorithm
+      based on base64. :)
+    </p>
+    <p>
+      <a href="snowflake.html">snowflake.html</a> - A simple analyser for
+      snowflakes on various services. This can be used to get the creation date
+      of a Discord user, for example.
+    </p>
+    <p>
+      <a href="screen-recorder.html">screen-recorder.html</a> - A simple screen
+      recorder.
+    </p>
+    <p>
+      <a href="notifications.html">notifications.html</a> - A simple
+      notifications playground.
+    </p>
+    <p>
+      <a href="floats.html">floats.html</a> - Inspired by
+      <a href="https://stackoverflow.com/users/298225/eric-postpischil"
+        >Eric Postpischil</a
+      >, this is a float explorer that lets you manipulate its bits directly.
+    </p>
+    <p>
+      <a href="unicode-canvas.html">unicode-canvas.html</a> and
+      <a href="unicode.html">unicode.html</a> - An attempt at a Unicode
+      character map thing inspired by
+      <a
+        href="https://en.wikipedia.org/wiki/Plane_(Unicode)#Basic_Multilingual_Plane"
+        >Wikipedia's plane maps</a
+      >.
+    </p>
+    <p>
+      <a href="análisis-poético.html">análisis-poético.html</a> - Analysing
+      poems in AP Spanish Lit.
+    </p>
+    <p>
+      <a href="fek-fshka-hangul.html">fek-fshka-hangul.html</a> - Converting
+      from Latin to Hangul for Fek, an organically constructed language in our
+      school.
+    </p>
+    <p>
+      <a href="greedy.html">greedy.html</a> - Greedy meshing based on the blog
+      post
+      <a href="https://0fps.net/2012/06/30/meshing-in-a-minecraft-game/"
+        >Meshing in a Minecraft Game</a
+      >.
+    </p>
+    <p>
+      <a href="tts.html">tts.html</a> - Using the browser's Speech Synthesis API
+      to read out Chinese for me.
+    </p>
+    <p>
+      <a href="tosvg.html">tosvg.html</a> - Embed a PNG image inside an SVG to
+      avoid it being squished by Scratch.
+    </p>
+    <p>
+      <a href="one-pdf.html">one-pdf.html</a> - Combine images into a PDF for
+      when teachers want multiple photos to be submitted together as one
+      document.
+    </p>
+    <p>
+      <a href="mp4-analyze.html">mp4-analyze.html</a> - Directly manipulate an
+      mp4 file to, for example, change its duration.
+    </p>
+    <p>
+      <a href="countdown-react.html">countdown-react.html</a> -
+      <a href="countdown.html">countdown.html</a> again, but this time using
+      React and
+      <a href="https://bvaughn.github.io/react-virtualized/"
+        >react-virtualized</a
+      >
+      to allow for massive date ranges.
+    </p>
+    <p>
+      <a href="abbrevator.html">abbrevator.html</a> - Failed attempt to make an
+      automatic abbreviator.
+    </p>
+    <p>
+      <a href="qr.html">qr.html</a> - QR code scanner that uses
+      <a href="https://github.com/nimiq/qr-scanner">QR Scanner</a>.
+    </p>
+    <p>
+      <a href="cheat-sheet.html">cheat-sheet.html</a> - A short little reference
+      sheet for all the built-in JavaScript functions that you should know.
+    </p>
+    <p>
+      <a href="grapher.html">grapher.html</a> - Graphs a given mathematical
+      expression.
+    </p>
+    <p>
+      <a href="randomised-music.html">randomised-music.html</a> - A random music
+      generator based on a
+      <a href="https://scratch.mit.edu/projects/102174886/">Scratch project</a>
+      using <a href="https://tonejs.github.io/">Tone.js</a>.
+    </p>
+    <p>
+      <a href="chopper.html">chopper.html</a> - Chop a large image into squares
+      for a Discord emoji grid.
+    </p>
+    <p>
+      <a href="font-colour-remover.html">font-colour-remover.html</a> - Remove
+      most formatting from text while keeping italics and links so it can be
+      pasted into Google Docs.
+    </p>
+    <p>
+      <a href="still-2020.html">still-2020.html</a> - The date if March 2020
+      never ended.
+    </p>
+    <p>
+      <a href="gif-caption.html">gif-caption.html</a> - Add a caption to a gif.
+    </p>
+    <p>
+      <a href="cho.html">cho.html</a> - Calculate the empirical formula from
+      burning an organic compound.
+    </p>
+    <p>
+      <a href="height.html">height.html</a> - Convert between centimetres and
+      feet/inches because unfortunately I only have an intuition for heights in
+      feet and inches.
+    </p>
+    <p>
+      <a href="subtract-frames.html">subtract-frames.html</a> - Subtract times
+      in HH:MM:SS:frames from my video editor so I can slow down a clip to fill
+      the space between two other clips.
+    </p>
+    <p>
+      <a href="rps-ai.html">rps-ai.html</a> - Uses deep learning neural networks
+      to predict a human player's next move in rock paper scissors.
+    </p>
+    <p>
+      <a href="intl-nums.html">intl-nums.html</a> - Uses the
+      <a
+        href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/NumberFormat/NumberFormat"
+        >ECMAScript Internationalization API</a
+      >
+      to translate units and currencies all in your browser.
+    </p>
+    <p>
+      <a href="image-shuffler.html">image-shuffler.html</a> - Chop up and
+      shuffle rows in a screenshot.
+    </p>
+    <p>
+      <a href="pip-image.html">pip-image.html</a> - Show an image in a pop-up
+      that stays above other windows.
+    </p>
+    <p>
+      <a href="rounded-decimal-to-fraction.html"
+        >rounded-decimal-to-fraction.html</a
+      >
+      - Determine some possible ratios whose approximation is the given decimal.
+      This can be used to determine the original fraction that produced a
+      decimal.
+    </p>
+    <p>
+      <a href="bwt.html">bwt.html</a> - Creates a Burrows-Wheeler Transform
+      matrix and suffix array from the given string.
+    </p>
+    <p>
+      <a href="putty-serial.html">putty-serial.html</a> - Apparently your
+      browser can access USB ports, so I didn't need to install PuTTY to view
+      the console logs of a circuit board.
+    </p>
+    <p>
+      <a href="obfuscate-url.html">obfuscate-url.html</a> - URL encode every
+      character, even when you don't have to, to hide words in a URL.
+    </p>
+    <p>
+      <a href="floating-sticky-note.html">floating-sticky-note.html</a> - Show
+      an interactive notepad that stays above all other windows, so you can take
+      notes while reading an article, watching a video, or I guess taking an
+      exam.
+    </p>
+    <p>
+      <a href="convolution-matrix.html">convolution-matrix.html</a> - Learning
+      WebGL (again), so I made a convolution matrix explorer inspired by
+      <a href="https://www.youtube.com/watch?v=KuXjwB4LzSA"
+        >3Blue1Brown's video on convolutions</a
+      >.
+    </p>
+    <p>
+      <a href="sstv-encoder.html">sstv-encoder.html</a> - Encode an image in
+      Scottie S1
+      <a href="https://en.wikipedia.org/wiki/Slow-scan_television">SSTV</a>, all
+      in the browser.
+    </p>
+    <p>
+      <a href="gif-frames-viewer.html">gif-frames-viewer.html</a> - Pause a GIF
+      and view its individual frames at your own speed.
+    </p>
 
     <script src="simplecolour.js"></script>
     <script>
-      var picker=document.querySelector('.simplecolourpicker');
+      var picker = document.querySelector('.simplecolourpicker')
     </script>
   </body>
 </html>
