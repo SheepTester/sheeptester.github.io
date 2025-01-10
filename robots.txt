@@ -1,2 +1,1 @@
-User-agent: *
-Disallow: /living-skills/
+Sitemap: https://sheeptester.github.io/all/sitemap.txt

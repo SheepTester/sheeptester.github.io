@@ -251,6 +251,16 @@
   tags:
     - game
 
+- path: /javascripts/gif-frames-viewer.html
+  image: img/gif-frame.webp
+  name: GIF frames viewer
+  description: >-
+    If a GIF is moving too fast, upload it here to inspect each individual
+    frame.
+  tags:
+    - new
+    - utility
+
 - path: /javascripts/one-pdf.html
   image: img/one-pdf.webp
   name: Combine images into single PDF
@@ -264,7 +274,16 @@
   tags:
     - utility
     - school
+
+- path: /words-go-here/misc/kamala.html
+  image: img/brat.webp
+  name: Brat album generator
+  description: >-
+    Put whatever text you want on the characteristic chartreuse green of Brat's
+    album cover, and maintain its iconic blur and stretch.
+  tags:
     - new
+    - utility
 
 - path: /javascripts/video/shit/
   image: img/openshit-smaller.png
@@ -283,13 +302,12 @@
   tags:
     - utility
 
-- path: /words-go-here/misc/left-ear.html
-  image: img/left-ear.webp
-  name: Pan left and right
+- path: /javascripts/sstv-encoder.html
+  image: img/sstv.webp
+  name: SSTV encoder
   description: >-
-    Lets you pan audio left and right so you can check if your stereo speakers
-    are working, or to see which speaker/earbud is the right one, or to figure
-    out how deaf your left ear is.
+    Encodes the given image for SSTV, using Scottie S1. This allows you to
+    transmit images over radio.
   tags:
     - utility
 
@@ -301,12 +319,24 @@
   tags:
     - utility
 
-- path: /javascripts/sstv-encoder.html
-  image: img/sstv.webp
-  name: SSTV encoder
+- path: /words-go-here/misc/filter.html
+  image: img/filters.webp
+  name: Audio filter explorer
   description: >-
-    Encodes the given image for SSTV, using Scottie S1. This allows you to
-    transmit images over radio.
+    Explore how different filters in signal processing, such as low-pass and
+    high-pass filters, affect audio. This uses the Web Audio API's
+    BiquadFilterNode, which has many filters built into the browser.
+  tags:
+    - new
+    - utility
+
+- path: /words-go-here/misc/left-ear.html
+  image: img/left-ear.webp
+  name: Pan left and right
+  description: >-
+    Lets you pan audio left and right so you can check if your stereo speakers
+    are working, or to see which speaker/earbud is the right one, or to figure
+    out how deaf your left ear is.
   tags:
     - utility
 
@@ -335,6 +365,26 @@
     I know that it works for mp4 files produced by OBS, but it doesn't work with
     all mp4 files, like the ones taken by my phone.
   tags:
+    - utility
+
+- path: /qr/
+  image: img/qr.webp
+  name: QR Code Generator & Scanner
+  description: >-
+    This is a QR code transceiver: it can "transmit" (generate) and "receive"
+    (scan) QR codes, all in one web app. I use this to send links, passwords,
+    and other text between devices, phones and laptops, as long as they have a
+    camera or webcam. I've used this to set up my company-issued laptop during
+    my internship.
+
+    I'm surprised no one has something like this yet. Many stock camera apps on
+    phones can scan QR codes, and many websites can generate QR codes, but none
+    of them (that I know of) can do both.
+
+    This app is just a user interface for two libraries, node-qrcode for
+    generating QR codes and qr-scanner for scanning them.
+  tags:
+    - new
     - utility
 
 - path: /words-go-here/misc/path.html
@@ -569,6 +619,16 @@
   tags:
     - utility
 
+- path: /words-go-here/misc/queens.html
+  image: img/queens.webp
+  name: LinkedIn Queens solver
+  description: >-
+    Deprive yourself of fun and easily beat 90% of CEOs by screenshotting
+    LinkedIn's daily puzzle and letting the website solve it for you.
+  tags:
+    - new
+    - utility
+
 - path: /hello-world/attitude.html
   image: img/attitude-smaller.png
   name: Attitude
@@ -789,8 +849,19 @@
     was mostly a GPU learning experience.
   tags:
     - visual
-    - incomplete
     - unintuitive
+
+- path: /doufu/
+  image: img/doufu.webp
+  name: Doufu
+  description: >-
+    Doufu is based on further work from Kaaba, which was just a tech demo, to
+    turn my WebGPU voxel renderer into a playable Minecraft clone, including
+    world generation and multiplayer support.
+  tags:
+    - new
+    - visual
+    - incomplete
 
 - path: /platformre/nova/paint.html
   image: img/mspaint-smaller.png
@@ -906,11 +977,10 @@
   tags:
     - school
     - visual
-    - new
 
 - path: https://cse110-sp23-group20.github.io/fortune-teller/source/home-page/
   image: img/cse110.webp
-  name: Envision Your Destinty
+  name: Envision Your Destiny
   description: >-
     This was our final project for CSE 110: Software Engineering at UCSD. It was
     spring 2023, and our professor, Thomas A. Powell, had recently discovered
@@ -941,7 +1011,6 @@
   tags:
     - school
     - visual
-    - new
 
 - path: https://members.acmucsd.com/
   image: img/acm.webp
@@ -967,7 +1036,33 @@
   tags:
     - school
     - unintuitive
+
+- path: https://cyber.acmucsd.com/
+  image: img/cyber.webp
+  name: ACM Cyber
+  description: >-
+    ACM Cyber wanted a website to put CTF writeups and other resources on. I
+    helped create almost all of the website, including the design. Not having to
+    follow a Figma design helped to speed up the development because I was free
+    to improvise.
+
+    The website is made with NextJS 15's app router. I had been using the pages
+    router before, so it was a nice opportunity to learn modern NextJS.
+  tags:
     - new
+    - school
+    - visual
+
+- path: /words-go-here/misc/google-directory-names.html
+  image: img/google-contacts-names.webp
+  name: Most common names at UCSD
+  description: >-
+    An initiative to crowdsource grade distributions for past classes at UCSD to
+    better inform students about what electives are most likely to give A's.
+  tags:
+    - new
+    - utility
+    - school
 
 - path: /words-go-here/misc/fluent-emoji.html
   image: img/fluent-emoji.png
@@ -1093,6 +1188,33 @@
     to connect our rhythm game's web interface to the circuit board like a
     controller.
   tags:
+    - utility
+    - unintuitive
+
+- path: /words-go-here/misc/pxl_time.html
+  image: img/pxl-time.webp
+  name: Get date of Google Pixel photo from name
+  description: >-
+    Get the date and time a photo or video was taken based on the file name
+    generated by Google Pixels. Perhaps unsurprisingly, this will only work for
+    photos and videos taken on a Google Pixel.
+
+    I made this for when uploading videos to YouTube from my phone. I would
+    paste the file name in the video description, then on my laptop I would use
+    this tool to know what date to select for the video's recording date.
+  tags:
+    - new
+    - utility
+    - unintuitive
+
+- path: /words-go-here/misc/world-map.html
+  image: img/world-map.webp
+  name: World map colorer
+  description: >-
+    Color-code countries on a world map for any data visualization needs. I
+    created this to visualize groups of countries for Wikipedia articles.
+  tags:
+    - new
     - utility
     - unintuitive
 

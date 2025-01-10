@@ -115,6 +115,7 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
         'sidebar projects'
         'sidebar tinder-note'
         'footer footer';
+      grid-template-rows: repeat(4, auto) 1fr auto;
     }
   }
   body[role="main"] {
@@ -329,6 +330,7 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
       css {
         .a11y-link:focus {
           position: fixed;
+          z-index: 5;
           top: 0;
           left: 0;
           margin: 20px;
@@ -804,7 +806,7 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
               }
             }
             span.block-link-subtitle {
-              content: "Leave comments, ask questions, or say what's on your mind. ";
+              content: "Leave comments, ask questions, or share what's on your mind. ";
             }
           }
         }
@@ -818,7 +820,7 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
               }
             }
             span.block-link-subtitle {
-              content: "Join my server to message me without sending a friend request. ";
+              content: "Join my server to message me without a friend request. ";
             }
           }
           span.block-link-icon-wrapper {
