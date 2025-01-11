@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Summer 2024 Internship Season</title>
+    <title>Summer 2025 Internship Season</title>
     <meta name="description" content="Still ongoing." />
 
     <link rel="stylesheet" type="text/css" href="/sheep3.css" />
@@ -84,28 +84,23 @@
           <span>LaTeX <span class="desktop-only">résumé</span></span>
         </a>
       </nav>
-      <h1 class="content">Summer 2024 Internship Season</h1>
-      <p class="content">Updated 2024-04-03.</p>
+      <h1 class="content">Summer 2025 Internship Season</h1>
+      <p class="content">Updated 2025-01-10.</p>
       <ul class="content summary">
         <li class="stat">
-          <span class="stat-num applied">92</span>
+          <span class="stat-num applied">66</span>
           <span class="stat-note">applied</span>
         </li>
         <li class="stat">
-          <span class="stat-num interviews">2</span>
-          <span class="stat-note">interviews</span>
+          <span class="stat-num interviews">1</span>
+          <span class="stat-note">interview</span>
         </li>
         <li class="stat">
-          <a
-            href="https://www.linkedin.com/posts/yen-sean_tesla-teslainterns2024-activity-7130695634340233216-IInF/"
-            class="stat-num offers"
-          >
-            1
-          </a>
+          <span class="stat-num offers">1</span>
           <span class="stat-note">offer</span>
         </li>
         <li class="stat">
-          <span class="stat-num rejected">62</span>
+          <span class="stat-num rejected">22</span>
           <span class="stat-note">rejected</span>
         </li>
       </ul>
@@ -122,10 +117,10 @@
       import { sankey } from '../graph/sankey.js'
       import { timeline } from '../graph/timeline.js'
 
-      const TOTAL_APPLIED = 93
-      const TOTAL_REJECTED = 61
-      const TOTAL_OA = 9
-      const REJECTED_IMMEDIATELY_AFTER_OA = 7 - 1
+      const TOTAL_APPLIED = 66
+      const TOTAL_REJECTED = 22
+      const TOTAL_OA = 5
+      const REJECTED_IMMEDIATELY_AFTER_OA = 4
 
       sankey(document.getElementById('sankey'), {
         nodes: [
@@ -142,7 +137,6 @@
             target: 'Rejected',
             value: TOTAL_REJECTED - REJECTED_IMMEDIATELY_AFTER_OA
           },
-          { source: 'Applied', target: 'Interview', value: 1 },
           { source: 'Applied', target: 'OA', value: TOTAL_OA },
           {
             source: 'Applied',
@@ -152,18 +146,17 @@
               (TOTAL_REJECTED - REJECTED_IMMEDIATELY_AFTER_OA + TOTAL_OA + 2)
           },
           { source: 'Interview', target: 'Offer', value: 1 },
-          { source: 'Interview', target: 'Rejected', value: 1 },
           { source: 'OA', target: 'Interview', value: 1 },
           {
             source: 'OA',
             target: 'Rejected',
             value: REJECTED_IMMEDIATELY_AFTER_OA
-          },
-          {
-            source: 'OA',
-            target: 'Waiting',
-            value: TOTAL_OA - (REJECTED_IMMEDIATELY_AFTER_OA + 1)
           }
+          // {
+          //   source: 'OA',
+          //   target: 'Waiting',
+          //   value: TOTAL_OA - (REJECTED_IMMEDIATELY_AFTER_OA + 1)
+          // }
         ]
       })
 
@@ -179,7 +172,7 @@
               .split(/\r?\n/)
               .slice(1)
               .flatMap(line => {
-                const [applied, rejected, oaAssign, oaDone] = line.split(',')
+                const [applied, rejected] = line.split(',')
                 if (!applied) {
                   return []
                 }
@@ -196,7 +189,7 @@
                   (a.rejected ?? Infinity) - (b.rejected ?? Infinity)
               )
           ),
-        note: 'I stopped applying after receiving an offer.',
+        note: '',
         noteDate: new Date(2023, 9, -7).getTime()
       })
     </script>
