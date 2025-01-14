@@ -170,6 +170,11 @@ profiles:
     ball: '#efeeea'
     border: '#ccc'
 
+  - name: Figma
+    link: https://www.figma.com/@sheeptester
+    ball: '#00B6FF'
+    type: figma
+
   - name: Devpost
     link: https://devpost.com/SheepTester
     bg: '#003E54'
@@ -179,6 +184,11 @@ profiles:
     link: https://imgur.com/user/sheeptester
     bg: '#21B66E'
     ball: '#25CC8B'
+    border: white
+
+  - name: 小紅書
+    link: https://www.xiaohongshu.com/user/profile/677150c60000000018015c67
+    bg: '#ff2842'
     border: white
 
   - name: Bilibili
@@ -201,6 +211,11 @@ profiles:
     link: https://maps.app.goo.gl/kfWB94sEpb12bC9z9
     bg: '#33A853'
     type: gmaps
+
+  - name: Nextdoor
+    link: https://nextdoor.com/profile/01c25GHPShGNt_8Bb/
+    bg: '#8ED500'
+    border: white
 
   - name: Hypixel
     link: https://hypixel.net/members/sheeptester.5640761/
@@ -280,6 +295,11 @@ profiles:
   - name: Tenor
     link: https://tenor.com/users/sheeptester
     bg: '#007add'
+    border: white
+
+  - name: Suno
+    link: https://suno.com/@sheeptester
+    type: suno
     border: white
 
   - name: Hugging Face

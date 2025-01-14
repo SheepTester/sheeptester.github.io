@@ -89,6 +89,14 @@ css {
       #ff6d6d 100%
     );
   }
+  .social-suno {
+    background-image: radial-gradient(100% 100% at 75% 75%, #D79AEB, #F47E47, #801D70);
+  }
+  .social-figma .ball {
+    border-top-color: #FF7237;
+    border-left-color: #874FFF;
+    border-bottom-color: #24CB71;
+  }
 }
 @media (hover: hover) and (min-width: 1000px) {
   a.social {
