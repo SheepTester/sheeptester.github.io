@@ -1,9 +1,17 @@
-import React, { memo, MouseEvent, useEffect, useMemo, useState } from 'react'
-import {} from 'react-dom'
+import React, {
+  createElement,
+  Fragment,
+  memo,
+  MouseEvent,
+  ReactNode,
+  useEffect,
+  useMemo,
+  useState
+} from 'react'
 import { createRoot } from 'react-dom/client'
 
 const SHEET_URL =
-  'https://docs.google.com/spreadsheets/d/e/2PACX-1vTJMHCAsgqtErQGbQyXs_UObhWllWCdEbKAQ5U2_zzE1XGL5FgTaLbXMjrbUOVTR4uzZAMyfMGFmShY/pub?single=true&output=csv'
+  'https://docs.gogle.com/spreadsheets/d/e/2PACX-1vTJMHCAsgqtErQGbQyXs_UObhWllWCdEbKAQ5U2_zzE1XGL5FgTaLbXMjrbUOVTR4uzZAMyfMGFmShY/pub?single=true&output=csv'
 
 /** Only supports a single column */
 function parseCsv (csv: string): string[] {
@@ -67,6 +75,27 @@ type SearchResult = {
   confession: { before: string; match: string; after: string }
 }
 
+type ConfessionTextProps = {
+  confession: string
+}
+function ConfessionText ({ confession }: ConfessionTextProps) {
+  const pieces: ReactNode[] = []
+  let lastIndex = 0
+  for (const match of confession.matchAll(/@(\d+)\b|https?:\/\/[\w-./]+…?/g)) {
+    pieces.push(confession.slice(lastIndex, match.index))
+    if (match[0].startsWith('@')) {
+      pieces.push(<a href={`./#c${match[1]}`}>{match[0]}</a>)
+    } else if (match[0].endsWith('…')) {
+      pieces.push(match[0])
+    } else {
+      pieces.push(<a href={match[0]}>{match[0]}</a>)
+    }
+    lastIndex = match.index + match[0].length
+  }
+  pieces.push(confession.slice(lastIndex))
+  return createElement(Fragment, null, ...pieces)
+}
+
 type ConfessionsProps = {
   confessions: (Confession | SearchResult)[]
 }
@@ -79,7 +108,9 @@ const Confessions = memo(({ confessions }: ConfessionsProps) => {
           <article className='confession' key={id} id={`c${id}`}>
             <p className='confession-text'>
               {typeof confession === 'string' ? (
-                confession || (
+                confession ? (
+                  <ConfessionText confession={confession} />
+                ) : (
                   <em className='not-available'>
                     Confession {id} not available.
                   </em>
@@ -145,18 +176,44 @@ function App ({ startPage = 0 }: AppProps) {
       })
       .then(r => r.text())
       .then(parseCsv)
-      .then(rows => rows.map((confession, id) => ({ id, confession })))
+      .then(rows => rows.map((confession, id) => ({ id: id + 1, confession })))
       .then(setConfessions)
+      .catch(error => {
+        console.error(error)
+        setConfessions([
+          {
+            id: 1,
+            confession: `Unfortunately, the archive failed to load. Either you have limited internet access, or the archive has been taken down.`
+          },
+          { id: 2, confession: error.stack ?? error.message }
+        ])
+      })
   }, [])
 
   useEffect(() => {
     searchWorker.postMessage(confessions)
+  }, [confessions])
 
-    const target = document.getElementById(
-      decodeURIComponent(window.location.hash.slice(1))
-    )
-    target?.scrollIntoView({ block: 'center' })
-    target?.classList.add('target')
+  useEffect(() => {
+    let target: HTMLElement | null = null
+    const handleHashChange = () => {
+      const confessionId = decodeURIComponent(window.location.hash.slice(1))
+      if (!confessionId.startsWith('c')) {
+        return
+      }
+      setPage(Math.floor((+confessionId.slice(1) - 1) / PAGE_SIZE))
+      window.requestAnimationFrame(() => {
+        target?.classList.remove('target')
+        target = document.getElementById(confessionId)
+        target?.scrollIntoView({ block: 'center' })
+        target?.classList.add('target')
+      })
+    }
+    handleHashChange()
+    window.addEventListener('hashchange', handleHashChange)
+    return () => {
+      window.removeEventListener('hashchange', handleHashChange)
+    }
   }, [confessions])
 
   function changePage (page: number) {
@@ -169,6 +226,12 @@ function App ({ startPage = 0 }: AppProps) {
       window.history.pushState({}, '', `?page=${page}`)
     }
   }
+
+  useEffect(() => {
+    document.title = `Gunn Confessions Archive (${page * PAGE_SIZE + 1}–${
+      (page + 1) * PAGE_SIZE
+    })`
+  }, [page])
 
   useEffect(() => {
     const handlePopState = () => {
@@ -201,14 +264,18 @@ function App ({ startPage = 0 }: AppProps) {
         { length: Math.ceil(results.length / RESULT_PAGE_SIZE) },
         (_, i) => {
           if (i + 1 === searchPage) {
-            return <strong>{i + 1}</strong>
+            return <strong key={i}>{i + 1}</strong>
           }
           if (
             i < 2 ||
             i >= Math.ceil(results.length / RESULT_PAGE_SIZE) - 2 ||
             Math.abs(i + 1 - searchPage) <= 1
           ) {
-            return <button onClick={() => setSearchPage(i + 1)}>{i + 1}</button>
+            return (
+              <button onClick={() => setSearchPage(i + 1)} key={i}>
+                {i + 1}
+              </button>
+            )
           } else if (Math.abs(i + 1 - searchPage) <= 2) {
             return '…'
           }
@@ -233,9 +300,9 @@ function App ({ startPage = 0 }: AppProps) {
         { length: Math.ceil(confessions.length / PAGE_SIZE) },
         (_, i) =>
           i === page ? (
-            <strong>{i}</strong>
+            <strong key={i}>{i}</strong>
           ) : (
-            <a href={`?page=${i}`} onClick={changePage(i)}>
+            <a href={`?page=${i}`} onClick={changePage(i)} key={i}>
               {i}
             </a>
           )
@@ -298,6 +365,19 @@ function App ({ startPage = 0 }: AppProps) {
           administrators (with additional context added in brackets) before
           being published to the page.
         </p>
+        <p>
+          This public archive was made in part because{' '}
+          <a href='https://www.paloaltoonline.com/palo-alto-schools/2025/02/02/gunn-high-grad-part-of-musks-effort-to-control-federal-spending/'>
+            Ethan Shaotran
+          </a>{' '}
+          (Gunn &lsquo;20) recently gained notoriety and is mentioned a few
+          times here.
+        </p>
+        {/* <p>
+          Content warnings: violence, suicide, mass shootings, bullying, ED,
+          mentions of transphobia, depression, self-harm, cannabis, drug
+          addiction.
+        </p> */}
       </div>
       {nav}
       <label className='search'>
@@ -318,6 +398,7 @@ function App ({ startPage = 0 }: AppProps) {
         />
       </label>
       <Confessions confessions={search ? viewResults : viewConfessions} />
+      {confessions.length === 0 ? <p>Loading...</p> : null}
       {nav}
     </>
   )
@@ -325,11 +406,5 @@ function App ({ startPage = 0 }: AppProps) {
 
 const params = new URL(window.location.href).searchParams
 createRoot(document.getElementById('root')!).render(
-  <App
-    startPage={
-      +(params.get('page') || 0) ||
-      Math.floor((+window.location.hash.slice(2) || 1 - 1) / PAGE_SIZE) ||
-      undefined
-    }
-  />
+  <App startPage={+(params.get('page') || 0) || undefined} />
 )

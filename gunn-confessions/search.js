@@ -4,7 +4,7 @@ self.addEventListener('message', e => {
   if (typeof e.data === 'string') {
     const search = e.data.toLowerCase()
     self.postMessage({
-      search,
+      search: e.data,
       results: confessions
         .map(({ id, confession }) => {
           if (!confession) {
