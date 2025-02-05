@@ -1,4 +1,4 @@
-import React, { MouseEvent, useEffect, useMemo, useState } from 'react'
+import React, { memo, MouseEvent, useEffect, useMemo, useState } from 'react'
 import {} from 'react-dom'
 import { createRoot } from 'react-dom/client'
 
@@ -54,22 +54,77 @@ const SearchIcon = () => (
     width='24'
     height='24'
     viewBox='0 0 24 24'
+    aria-label='Search'
   >
     <circle cx='11' cy='11' r='8' />
     <line x1='21' y1='21' x2='16.65' y2='16.65' />
   </svg>
 )
 
+type Confession = { id: number; confession: string }
+type SearchResult = {
+  id: number
+  confession: { before: string; match: string; after: string }
+}
+
+type ConfessionsProps = {
+  confessions: (Confession | SearchResult)[]
+}
+const Confessions = memo(({ confessions }: ConfessionsProps) => {
+  return (
+    <div className='confessions'>
+      {confessions.map(({ confession, id }) => {
+        const path = `./#c${id}`
+        return (
+          <article className='confession' key={id} id={`c${id}`}>
+            <p className='confession-text'>
+              {typeof confession === 'string' ? (
+                confession || (
+                  <em className='not-available'>
+                    Confession {id} not available.
+                  </em>
+                )
+              ) : (
+                <>
+                  {confession.before}
+                  <span className='match'>{confession.match}</span>
+                  {confession.after}
+                </>
+              )}
+            </p>
+            <a
+              className='copy-link'
+              href={path}
+              onClick={async e => {
+                e.preventDefault()
+                await navigator.clipboard.writeText(
+                  new URL(path, window.location.href).toString()
+                )
+              }}
+            >
+              <LinkIcon />
+            </a>
+          </article>
+        )
+      })}
+    </div>
+  )
+})
+
 const PAGE_SIZE = 1000
+const RESULT_PAGE_SIZE = 100
+
+const searchWorker = new Worker('./search.js')
 
 type AppProps = {
   startPage?: number
 }
 function App ({ startPage = 0 }: AppProps) {
-  const [confessions, setConfessions] = useState<
-    { id: number; confession: string }[]
-  >([])
+  const [confessions, setConfessions] = useState<Confession[]>([])
   const [page, setPage] = useState(startPage)
+  const [searchPage, setSearchPage] = useState(1)
+  const [search, setSearch] = useState('')
+  const [results, setResults] = useState<SearchResult[]>([])
 
   useEffect(() => {
     caches
@@ -95,6 +150,8 @@ function App ({ startPage = 0 }: AppProps) {
   }, [])
 
   useEffect(() => {
+    searchWorker.postMessage(confessions)
+
     const target = document.getElementById(
       decodeURIComponent(window.location.hash.slice(1))
     )
@@ -132,7 +189,39 @@ function App ({ startPage = 0 }: AppProps) {
     [confessions]
   )
 
-  const nav = (
+  const nav = search ? (
+    <nav className='nav'>
+      <button
+        onClick={() => setSearchPage(searchPage - 1)}
+        disabled={searchPage <= 1}
+      >
+        Prev
+      </button>
+      {Array.from(
+        { length: Math.ceil(results.length / RESULT_PAGE_SIZE) },
+        (_, i) => {
+          if (i + 1 === searchPage) {
+            return <strong>{i + 1}</strong>
+          }
+          if (
+            i < 2 ||
+            i >= Math.ceil(results.length / RESULT_PAGE_SIZE) - 2 ||
+            Math.abs(i + 1 - searchPage) <= 1
+          ) {
+            return <button onClick={() => setSearchPage(i + 1)}>{i + 1}</button>
+          } else if (Math.abs(i + 1 - searchPage) <= 2) {
+            return '…'
+          }
+        }
+      )}
+      <button
+        onClick={() => setSearchPage(searchPage + 1)}
+        disabled={searchPage >= Math.ceil(results.length / RESULT_PAGE_SIZE)}
+      >
+        Next
+      </button>
+    </nav>
+  ) : (
     <nav className='nav'>
       <a
         href={page > 0 ? `?page=${page - 1}` : undefined}
@@ -164,6 +253,32 @@ function App ({ startPage = 0 }: AppProps) {
     </nav>
   )
 
+  useEffect(() => {
+    const handleMessage = (e: MessageEvent) => {
+      const data: { search: string; results: SearchResult[] } = e.data
+      if (data.search === search) {
+        setResults(data.results)
+      }
+    }
+    searchWorker.addEventListener('message', handleMessage)
+    return () => {
+      searchWorker.removeEventListener('message', handleMessage)
+    }
+  }, [search])
+
+  const viewConfessions = useMemo(
+    () => confessions.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE),
+    [confessions, page]
+  )
+  const viewResults = useMemo(
+    () =>
+      results.slice(
+        (searchPage - 1) * RESULT_PAGE_SIZE,
+        searchPage * RESULT_PAGE_SIZE
+      ),
+    [results, searchPage]
+  )
+
   return (
     <>
       <div className='lead'>
@@ -185,36 +300,24 @@ function App ({ startPage = 0 }: AppProps) {
         </p>
       </div>
       {nav}
-      <div className='confessions'>
-        {confessions
-          .slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE)
-          .map(({ confession, id }) => {
-            const path = `./#c${id}`
-            return (
-              <article className='confession' key={id} id={`c${id}`}>
-                <p className='confession-text'>
-                  {confession || (
-                    <em className='not-available'>
-                      Confession {id} not available.
-                    </em>
-                  )}
-                </p>
-                <a
-                  className='copy-link'
-                  href={path}
-                  onClick={async e => {
-                    e.preventDefault()
-                    await navigator.clipboard.writeText(
-                      new URL(path, window.location.href).toString()
-                    )
-                  }}
-                >
-                  <LinkIcon />
-                </a>
-              </article>
-            )
-          })}
-      </div>
+      <label className='search'>
+        <SearchIcon />
+        <input
+          type='search'
+          name='search'
+          placeholder='Search confessions...'
+          value={search}
+          onChange={e => {
+            setSearch(e.currentTarget.value)
+            setSearchPage(1)
+            if (e.currentTarget.value) {
+              searchWorker.postMessage(e.currentTarget.value)
+            }
+          }}
+          className='search-box'
+        />
+      </label>
+      <Confessions confessions={search ? viewResults : viewConfessions} />
       {nav}
     </>
   )

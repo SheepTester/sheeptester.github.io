@@ -42,7 +42,7 @@
         gap: 10px;
         align-items: flex-start;
       }
-      .confession:nth-child(2n) {
+      .confession:nth-child(2n + 1) {
         background-color: color-mix(in srgb, currentColor 5%, transparent);
       }
       .confession:target,
@@ -51,7 +51,7 @@
       }
       @keyframes flash {
         from {
-          background-color: yellow;
+          background-color: #ffdf20;
         }
         to {
           background-color: transparent;
@@ -63,6 +63,11 @@
         white-space: pre-wrap;
         word-break: break-word;
         line-height: 1.35;
+      }
+      .match {
+        background-color: #193cb8;
+        color: white;
+        border-radius: 5px;
       }
       .not-available {
         opacity: 0.5;
@@ -100,6 +105,35 @@
       .nav a:not([href]) {
         cursor: default;
         opacity: 0.5;
+      }
+
+      .search {
+        position: sticky;
+        top: 0;
+        display: flex;
+        padding-left: 10px;
+        align-items: center;
+        background-color: Canvas;
+        border-bottom: 1px solid
+          color-mix(in srgb, currentColor 10%, transparent);
+      }
+      .search:focus-within {
+        border-bottom-color: currentColor;
+      }
+      .search svg {
+        width: 16px;
+        height: 16px;
+      }
+      .search-box {
+        border: none;
+        background: none;
+        color: inherit;
+        font: inherit;
+        padding: 10px;
+        flex: 1 0 0;
+      }
+      .search-box:focus {
+        outline: none;
       }
 
       svg {
