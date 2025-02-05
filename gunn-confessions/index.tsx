@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { MouseEvent, useEffect, useMemo, useState } from 'react'
 import {} from 'react-dom'
 import { createRoot } from 'react-dom/client'
 
@@ -35,19 +35,62 @@ function parseCsv (csv: string): string[] {
   return output
 }
 
+const LinkIcon = () => (
+  <svg
+    xmlns='http://www.w3.org/2000/svg'
+    width='24'
+    height='24'
+    viewBox='0 0 24 24'
+    aria-label='Link to confession'
+  >
+    <path d='M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71' />
+    <path d='M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71' />
+  </svg>
+)
+
+const SearchIcon = () => (
+  <svg
+    xmlns='http://www.w3.org/2000/svg'
+    width='24'
+    height='24'
+    viewBox='0 0 24 24'
+  >
+    <circle cx='11' cy='11' r='8' />
+    <line x1='21' y1='21' x2='16.65' y2='16.65' />
+  </svg>
+)
+
 const PAGE_SIZE = 1000
 
 type AppProps = {
   startPage?: number
 }
 function App ({ startPage = 0 }: AppProps) {
-  const [confessions, setConfessions] = useState<string[]>([])
+  const [confessions, setConfessions] = useState<
+    { id: number; confession: string }[]
+  >([])
   const [page, setPage] = useState(startPage)
 
   useEffect(() => {
-    fetch(SHEET_URL)
+    caches
+      .open('sunset-cache')
+      .then(cache =>
+        cache.match(SHEET_URL).then(async r => {
+          if (r) {
+            return r
+          }
+          const response = await fetch(SHEET_URL)
+          cache.put(SHEET_URL, response.clone())
+          return response
+        })
+      )
+      .catch(error => {
+        console.warn('Cache error', error)
+        return fetch(SHEET_URL)
+      })
       .then(r => r.text())
       .then(parseCsv)
+      .then(rows => rows.map((confession, id) => ({ id, confession })))
       .then(setConfessions)
   }, [])
 
@@ -59,24 +102,105 @@ function App ({ startPage = 0 }: AppProps) {
     target?.classList.add('target')
   }, [confessions])
 
+  function changePage (page: number) {
+    return (e: MouseEvent<HTMLAnchorElement>) => {
+      e.preventDefault()
+      if (!e.currentTarget.href) {
+        return
+      }
+      setPage(page)
+      window.history.pushState({}, '', `?page=${page}`)
+    }
+  }
+
+  useEffect(() => {
+    const handlePopState = () => {
+      const params = new URL(window.location.href).searchParams
+      setPage(+(params.get('page') || 0) || 0)
+    }
+    window.addEventListener('popstate', handlePopState)
+    return () => {
+      window.removeEventListener('popstate', handlePopState)
+    }
+  }, [])
+
+  const count = useMemo(
+    () =>
+      new Intl.NumberFormat('en-US').format(
+        confessions.filter(({ confession }) => confession).length
+      ),
+    [confessions]
+  )
+
+  const nav = (
+    <nav className='nav'>
+      <a
+        href={page > 0 ? `?page=${page - 1}` : undefined}
+        onClick={changePage(page - 1)}
+      >
+        Prev
+      </a>
+      {Array.from(
+        { length: Math.ceil(confessions.length / PAGE_SIZE) },
+        (_, i) =>
+          i === page ? (
+            <strong>{i}</strong>
+          ) : (
+            <a href={`?page=${i}`} onClick={changePage(i)}>
+              {i}
+            </a>
+          )
+      )}
+      <a
+        href={
+          page < Math.ceil(confessions.length / PAGE_SIZE) - 1
+            ? `?page=${page + 1}`
+            : undefined
+        }
+        onClick={changePage(page + 1)}
+      >
+        Next
+      </a>
+    </nav>
+  )
+
   return (
     <>
+      <div className='lead'>
+        <h1>Gunn Confessions Archive</h1>
+        <p>
+          This is an archive of {count} confessions from the now-deleted
+          Facebook page from 2019&ndash;2021.{' '}
+          <a href='https://www.facebook.com/gunnconfessions/'>
+            Gunn Confessions
+          </a>{' '}
+          was a Facebook page where anyone, typically Gunn High School students,
+          could submit a &ldquo;confession&rdquo; anonymously(
+          <a href='https://thecampanile.org/21052/news/student-who-made-alleged-shooting-threat-on-gunn-high-school-is-taken-into-custody/'>
+            ish
+          </a>
+          ) to a Google Form. The submissions were manually reviewed by the page
+          administrators (with additional context added in brackets) before
+          being published to the page.
+        </p>
+      </div>
+      {nav}
       <div className='confessions'>
         {confessions
           .slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE)
-          .map((confession, i) => {
-            const confessionId = page * PAGE_SIZE + i + 1
-            const path = `?page=${page}#c${confessionId}`
+          .map(({ confession, id }) => {
+            const path = `./#c${id}`
             return (
-              <div className='confession' key={i} id={`c${confessionId}`}>
-                <div className='confession-text'>
+              <article className='confession' key={id} id={`c${id}`}>
+                <p className='confession-text'>
                   {confession || (
                     <em className='not-available'>
-                      Confession {confessionId} not available.
+                      Confession {id} not available.
                     </em>
                   )}
-                </div>
+                </p>
                 <a
+                  className='copy-link'
                   href={path}
                   onClick={async e => {
                     e.preventDefault()
@@ -85,17 +209,24 @@ function App ({ startPage = 0 }: AppProps) {
                     )
                   }}
                 >
-                  link
+                  <LinkIcon />
                 </a>
-              </div>
+              </article>
             )
           })}
       </div>
+      {nav}
     </>
   )
 }
 
 const params = new URL(window.location.href).searchParams
 createRoot(document.getElementById('root')!).render(
-  <App startPage={+(params.get('page') || 0) || undefined} />
+  <App
+    startPage={
+      +(params.get('page') || 0) ||
+      Math.floor((+window.location.hash.slice(2) || 1 - 1) / PAGE_SIZE) ||
+      undefined
+    }
+  />
 )
