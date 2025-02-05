@@ -15,18 +15,19 @@ function parseCsv (csv: string): string[] {
       if (quoted) {
         quoted = false
         justSawQuote = true
+        continue
       } else {
         quoted = true
         if (justSawQuote) {
-          justSawQuote = false
           output[output.length - 1] += '"'
         }
       }
     } else if (c === '\n' && !quoted) {
       output.push('')
-    } else {
+    } else if (c !== '\r') {
       output[output.length - 1] += c
     }
+    justSawQuote = false
   }
   if (output.at(-1) === '') {
     output.splice(-1, 1)
@@ -34,8 +35,14 @@ function parseCsv (csv: string): string[] {
   return output
 }
 
-function App () {
-  const [confessions, setConfessions] = useState<string[]>()
+const PAGE_SIZE = 1000
+
+type AppProps = {
+  startPage?: number
+}
+function App ({ startPage = 0 }: AppProps) {
+  const [confessions, setConfessions] = useState<string[]>([])
+  const [page, setPage] = useState(startPage)
 
   useEffect(() => {
     fetch(SHEET_URL)
@@ -44,7 +51,51 @@ function App () {
       .then(setConfessions)
   }, [])
 
-  return null
+  useEffect(() => {
+    const target = document.getElementById(
+      decodeURIComponent(window.location.hash.slice(1))
+    )
+    target?.scrollIntoView({ block: 'center' })
+    target?.classList.add('target')
+  }, [confessions])
+
+  return (
+    <>
+      <div className='confessions'>
+        {confessions
+          .slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE)
+          .map((confession, i) => {
+            const confessionId = page * PAGE_SIZE + i + 1
+            const path = `?page=${page}#c${confessionId}`
+            return (
+              <div className='confession' key={i} id={`c${confessionId}`}>
+                <div className='confession-text'>
+                  {confession || (
+                    <em className='not-available'>
+                      Confession {confessionId} not available.
+                    </em>
+                  )}
+                </div>
+                <a
+                  href={path}
+                  onClick={async e => {
+                    e.preventDefault()
+                    await navigator.clipboard.writeText(
+                      new URL(path, window.location.href).toString()
+                    )
+                  }}
+                >
+                  link
+                </a>
+              </div>
+            )
+          })}
+      </div>
+    </>
+  )
 }
 
-createRoot(document.getElementById('root')!).render(<App />)
+const params = new URL(window.location.href).searchParams
+createRoot(document.getElementById('root')!).render(
+  <App startPage={+(params.get('page') || 0) || undefined} />
+)

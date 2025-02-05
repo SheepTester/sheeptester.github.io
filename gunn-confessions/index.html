@@ -14,7 +14,53 @@
     <script src="/sheep3.js" charset="utf-8"></script>
 
     <style>
-      /* TEMP */
+      @media (prefers-color-scheme: dark) {
+        :root {
+          color-scheme: dark;
+        }
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+          'Helvetica Neue', Arial, sans-serif, 'Apple Color Emoji',
+          'Segoe UI Emoji', 'Segoe UI Symbol';
+        margin: 0;
+      }
+
+      #root {
+        max-width: 1000px;
+        margin: 0 auto;
+      }
+
+      .confession {
+        display: flex;
+        padding: 10px;
+      }
+      .confession:nth-child(2n) {
+        background-color: color-mix(in srgb, currentColor 5%, transparent);
+      }
+      .confession:target,
+      .target {
+        animation: flash 1s;
+      }
+      @keyframes flash {
+        from {
+          background-color: yellow;
+        }
+        to {
+          background-color: transparent;
+        }
+      }
+      .confession-text {
+        flex: auto;
+        white-space: pre-wrap;
+        word-break: break-word;
+        line-height: 1.3;
+      }
+
+      .not-available {
+        opacity: 0.5;
+      }
     </style>
   </head>
   <body>
