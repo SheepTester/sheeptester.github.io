@@ -11,7 +11,7 @@ import React, {
 import { createRoot } from 'react-dom/client'
 
 const SHEET_URL =
-  'https://docs.gogle.com/spreadsheets/d/e/2PACX-1vTJMHCAsgqtErQGbQyXs_UObhWllWCdEbKAQ5U2_zzE1XGL5FgTaLbXMjrbUOVTR4uzZAMyfMGFmShY/pub?single=true&output=csv'
+  'https://docs.google.com/spreadsheets/d/e/2PACX-1vTJMHCAsgqtErQGbQyXs_UObhWllWCdEbKAQ5U2_zzE1XGL5FgTaLbXMjrbUOVTR4uzZAMyfMGFmShY/pub?single=true&output=csv'
 
 /** Only supports a single column */
 function parseCsv (csv: string): string[] {
