@@ -1,6 +1,7 @@
 https://sheeptester.github.io/all/cacher/
 https://sheeptester.github.io/all/links/
 https://sheeptester.github.io/all/localStorage/
+https://sheeptester.github.io/all/search/
 https://sheeptester.github.io/all/generator.html
 https://sheeptester.github.io/all/
 https://sheeptester.github.io/all/sitemap.html
@@ -82,6 +83,7 @@ https://sheeptester.github.io/gamepro5.github.io/contact/
 https://sheeptester.github.io/gamepro5.github.io/flat.html
 https://sheeptester.github.io/gamepro5.github.io/
 https://sheeptester.github.io/guestbook/
+https://sheeptester.github.io/gunn-confessions/
 https://sheeptester.github.io/gunn-map/map-making/map.html
 https://sheeptester.github.io/gunn-map/textures/noise-maker.html
 https://sheeptester.github.io/gunn-map/textures/tile-test.html
@@ -455,6 +457,7 @@ https://sheeptester.github.io/prop67/
 https://sheeptester.github.io/qr/
 https://sheeptester.github.io/real/internships-2023/
 https://sheeptester.github.io/real/internships-2024/
+https://sheeptester.github.io/real/internships-2025/
 https://sheeptester.github.io/real/
 https://sheeptester.github.io/reform/components.html
 https://sheeptester.github.io/reiglutopia/

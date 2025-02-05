@@ -2,6 +2,7 @@
 settings.json
 <
 >.well-known
+atproto-did
 discord
 <
 >all
@@ -35,6 +36,13 @@ material_ripple.js
 material_uncheckbox.svg
 style.css
 <
+>search
+index.html
+opensearch.xml
+search.css
+search.js
+start.js
+<
 another-getter.user.js
 basic-gh-auth.example.json
 cacher.js
@@ -51,9 +59,6 @@ index.html
 main.js
 makermakermaker.js
 README.md
-search-start.js
-search.css
-search.js
 sitemap-maker.js
 sitemap.html
 sitemap.txt
@@ -599,6 +604,12 @@ index.css
 index.html
 sitemap.txt
 <
+>gunn-confessions
+index.html
+index.js
+index.tsx
+search.js
+<
 >gunn-map
 >map-making
 ground.json
@@ -949,6 +960,11 @@ index.html
 manifest.webmanifest
 sw.js
 <
+>notes
+>cse-251a-notes
+main.typ
+<
+<
 >questionable-host
 >gdrive
 .gitignore
@@ -1216,6 +1232,7 @@ ugwa-usage.mjs
 uhh.md
 unihan-most-strokes.ts
 vim-demo.mcfunction
+WI24 schedule.png
 wot.rkt
 wow.html
 wow.txt
@@ -1681,6 +1698,11 @@ preview.html.scss
 README.md
 style.css
 <
+>redirects
+index.js
+jeff.mp4
+LE0xyc4dgp.mp4
+<
 >templates
 project.html.scss
 social.html.scss
@@ -1824,6 +1846,7 @@ bitmap-to-vector.webp
 blog..png
 blorrest.jpg
 blur.png
+brat.webp
 carecalc-smaller.png
 charcopy-smaller.png
 choice.webp
@@ -1843,10 +1866,12 @@ covid.webp
 crypto-smaller.png
 cse110.webp
 css.svg
+cyber.webp
 cyrillic-smaller.png
 darkforest.jpg
 die-smaller.png
 diff.webp
+doufu.webp
 down.svg
 drills-smaller.png
 elements.webp
@@ -1856,10 +1881,13 @@ eyangicques-smaller.png
 eyo-smaller.png
 fft.webp
 fgr-smaller.png
+filters.webp
 flappy-smaller.png
 fluent-emoji.png
 fword-smaller.png
 gif-caption.png
+gif-frame.webp
+google-contacts-names.webp
 gunn student simulator-smaller.png
 hamburger.svg
 hangman.png
@@ -1922,6 +1950,9 @@ plat.svg
 platformre.png
 platmakre-smaller.png
 prereqs.webp
+pxl-time.webp
+qr.webp
+queens.webp
 reds-smaller.png
 rhythm.webp
 rightclick-smaller.png
@@ -1961,6 +1992,7 @@ userscripts-smaller.png
 view-mode-icons.svg
 webhook.webp
 weird-flex-but-ok-smaller.png
+world-map.webp
 yesnt-smaller.png
 <
 >intuitive-gunn-website
@@ -3001,6 +3033,10 @@ index.html
 dates.csv
 index.html
 <
+>internships-2025
+dates.csv
+index.html
+<
 common.css
 index.html
 <
@@ -3898,6 +3934,8 @@ classrooms-SP23-full.txt
 classrooms-SP23.txt
 classrooms-SP24-full.txt
 classrooms-SP24.txt
+classrooms-SP25-full.txt
+classrooms-SP25.txt
 classrooms-SP95-full.txt
 classrooms-SP95.txt
 classrooms-SU24-full.txt
@@ -4280,7 +4318,7 @@ projection.html
 pronouns.html
 proof-of-concept.html
 pxl_time.html
-queens-default.png
+queens-default.webp
 queens.html
 Rational.js
 rimac-people-data.html
@@ -4509,10 +4547,8 @@ draw.html
 favicon-16x16.png
 favicon-32x32.png
 favicon.ico
-flex-material.txt
 index.html
 LICENSE
-main.js
 manifest.json
 mstile-144x144.png
 mstile-150x150.png
@@ -4523,7 +4559,6 @@ package-lock.json
 package.json
 pensive.js
 README.md
-redirects.js
 robots.txt
 safari-pinned-tab.svg
 Sheep_maker Inverted.svg
@@ -4537,6 +4572,5 @@ sheep3.css
 sheep3.js
 SHEPS.svg
 showads.js
-style.css
 sw.js
 tsconfig.json
