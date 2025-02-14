@@ -65,6 +65,21 @@
     - recommend
     - utility
 
+- path: /hello-world/largetext.html
+  image: img/largetext.webp
+  name: Large Text
+  description: >-
+    Write text in a large font to show to your friend next to you or across the
+    room.
+
+    I initially made this as a local file on my Chromebook for when I couldn't
+    comfortably speak due to a sore throat. I eventually uploaded it online
+    since my friend wanted it too. I now use it to talk to my friends during
+    lecture.
+  tags:
+    - recommend
+    - utility
+
 - path: /platformre/maker/
   image: img/platmakre-smaller.png
   name: Level editor
@@ -565,20 +580,6 @@
   name: Text to Speech
   description: >-
     Lets you use your browser's built-in text-to-speech engine.
-  tags:
-    - utility
-
-- path: /hello-world/largetext.html
-  image: img/largetext.webp
-  name: Large Text
-  description: >-
-    Write text in a large font to show to your friend next to you or across the
-    room.
-
-    I initially made this as a local file on my Chromebook for when I couldn't
-    comfortably speak due to a sore throat. I eventually uploaded it online
-    since my friend wanted it too. I now use it to talk to my friends during
-    lecture.
   tags:
     - utility
 
