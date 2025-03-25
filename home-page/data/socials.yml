@@ -13,19 +13,11 @@ profiles:
     bg: '#FF0000'
     ball: white
 
-  - name: Twitter
-    link: https://twitter.com/Sheep_tester/
-    ball: '#1DA1F2'
-
   - name: Scratch
     link: https://scratch.mit.edu/users/Sheep_maker/
     bg: '#25AFF4'
     ball: '#F8A839'
     border: white
-
-  - name: Reddit
-    link: https://www.reddit.com/user/Sheep_Tester
-    bg: '#FF4500'
 
   - name: TikTok
     link: https://www.tiktok.com/@sheeptester
@@ -33,6 +25,23 @@ profiles:
     border: white
     ball: black
     type: tiktok
+
+  - name: Spotify
+    link: https://open.spotify.com/user/31zcjmb6bcjvgtonur5e2miiziz4
+    bg: '#1ed760'
+    border: black
+
+  - name: Twitter
+    link: https://twitter.com/Sheep_tester/
+    ball: '#1DA1F2'
+
+  - name: Bluesky
+    link: https://bsky.app/profile/sheeptester.github.io
+    ball: '#0085ff'
+
+  - name: Reddit
+    link: https://www.reddit.com/user/Sheep_Tester
+    bg: '#FF4500'
 
   - name: Snapchat
     link: https://www.snapchat.com/add/sheeptester
@@ -44,6 +53,11 @@ profiles:
     link: https://bere.al/sheeptester
     bg: black
     ball: white
+
+  - name: Beli
+    link: https://beliapp.co/app/sheepea
+    bg: white
+    ball: '#134F5C'
 
   - name: Threads
     link: https://www.threads.net/@sheeptester
@@ -57,11 +71,6 @@ profiles:
   - name: Steam
     link: https://steamcommunity.com/id/sheeptester/
     type: steam
-
-  - name: Spotify
-    link: https://open.spotify.com/user/31zcjmb6bcjvgtonur5e2miiziz4
-    bg: '#1ed760'
-    border: black
 
   - name: Monkeytype
     link: https://monkeytype.com/profile/sheeptester
@@ -323,6 +332,16 @@ profiles:
   - name: Tumblr
     link: https://sheep-tester.tumblr.com/
     bg: '#36465D'
+
+  - name: Handshake
+    link: https://ucsd.joinhandshake.com/profiles/nhepng
+    bg: '#D3FB52'
+    ball: '#052326'
+
+  - name: Capcut
+    link: https://mobile.capcutshare.com/s/ZmFprApLx/
+    bg: white
+    border: black
 
   - name: Blogger
     link: https://boxofsean.blogspot.com/

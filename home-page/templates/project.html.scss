@@ -54,6 +54,7 @@ a.#{$classes}[href="#{map.get($project, 'path')}"][data-desc="#{map.get($project
       top: 0;
       left: 0;
       width: 100%;
+      height: 100%;
       z-index: 0;
       opacity: 0.7;
       filter: grayscale(1);
@@ -77,7 +78,7 @@ a.#{$classes}[href="#{map.get($project, 'path')}"][data-desc="#{map.get($project
       border-radius: 10px;
     }
   }
-  img.thumbnail[src="#{map.get($project, 'image')}"][alt="Thumbnail for #{map.get($project, 'name')}"][width="100"][loading="lazy"];
+  img.thumbnail[src="#{map.get($project, 'image')}"][alt="Thumbnail for #{map.get($project, 'name')}"][width="100"][height="100"][loading="lazy"];
 
   css {
     .title {

@@ -402,7 +402,7 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
           }
         }
         p.about-me {
-          content: "I’m Sean, entering my fourth year at ";
+          content: "I’m Sean, in my fourth year at ";
           a.link[href="https://sheeptester.github.io/longer-tweets/major/"] {
             content: "UC San Diego";
           }
@@ -421,6 +421,10 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
           }
           .colon {
             color: transparent;
+          }
+          .emoji {
+            // Opaque color so the color emoji doesn't appear faded
+            color: white;
           }
         }
         p.datum {
@@ -441,7 +445,10 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
           span.colon {
             content: ": ";
           }
-          content: "he/him/his ♂️";
+          content: "he/him/his ";
+          span.emoji {
+            content: "♂️";
+          }
         }
         p.datum {
           span.attribute {
@@ -513,12 +520,6 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
             content: "羊";
           }
           content: ", Aries ";
-          css {
-            .emoji {
-              // Opaque color so the color emoji doesn't appear faded
-              color: white;
-            }
-          }
           span.emoji {
             content: "♈";
           }
@@ -1425,6 +1426,7 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
         padding: 20px;
         padding-top: 0;
         padding-right: 60px;
+        grid-area: tinder-note;
       }
     }
     p.tinder-note {
