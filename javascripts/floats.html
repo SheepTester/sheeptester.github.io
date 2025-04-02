@@ -138,6 +138,7 @@
     <div class="choose-wrapper">
       <p class="choose-label">Choose a float precision:</p>
       <div class="choose-precision">
+        <a href="?precision=16">Half-precision</a>
         <a href="?precision=32">Single-precision</a>
         <a href="?precision=64">Double-precision</a>
       </div>
@@ -155,6 +156,17 @@
     </div>
     <script>
       const floatData = {
+        16: {
+          bytes: 2,
+          // https://en.wikipedia.org/wiki/Half-precision_floating-point_format#IEEE_754_half-precision_binary_floating-point_format:_binary16
+          format: [
+            [10, 'Fraction'],
+            [5, 'Exponent'],
+            [1, 'Sign']
+          ],
+          Array: Float16Array,
+          IntArray: Uint16Array
+        },
         32: {
           bytes: 4,
           // https://en.wikipedia.org/wiki/Single-precision_floating-point_format#IEEE_754_single-precision_binary_floating-point_format:_binary32
@@ -283,16 +295,16 @@
       const timesTen = ' × 10'
       const superscripted = {
         '-': '⁻',
-        '0': '⁰',
-        '1': '¹',
-        '2': '²',
-        '3': '³',
-        '4': '⁴',
-        '5': '⁵',
-        '6': '⁶',
-        '7': '⁷',
-        '8': '⁸',
-        '9': '⁹'
+        0: '⁰',
+        1: '¹',
+        2: '²',
+        3: '³',
+        4: '⁴',
+        5: '⁵',
+        6: '⁶',
+        7: '⁷',
+        8: '⁸',
+        9: '⁹'
       }
       function superscript (digits) {
         return [...digits].map(n => superscripted[n] || '').join('')
@@ -337,10 +349,10 @@
               e.ctrlKey || e.metaKey
                 ? 100
                 : e.shiftKey
-                ? 10
-                : e.altKey
-                ? 0.1
-                : 1
+                  ? 10
+                  : e.altKey
+                    ? 0.1
+                    : 1
             if (e.key === 'ArrowDown') {
               view.float -= step
             } else {
