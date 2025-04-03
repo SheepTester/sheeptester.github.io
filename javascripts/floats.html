@@ -164,7 +164,9 @@
             [5, 'Exponent'],
             [1, 'Sign']
           ],
-          Array: Float16Array,
+          get Array () {
+            return Float16Array
+          },
           IntArray: Uint16Array
         },
         32: {
