@@ -25,7 +25,6 @@ export const ghPagesRepos = [
   'gunn-student-sim',
   'happynumbers',
   'HEALTH-AMONG-US#gh-pages',
-  'hello-world',
   'htmlblocks',
   'htmlifier',
   'intuitive-gunn-website',
@@ -64,7 +63,14 @@ export const jekyllRepos = ['blog', 'cse15l-lab-reports#main', 'longer-tweets']
  * sitemap.txt. However, we still lose a 1-to-1 connection between output and
  * source file.
  */
-export const actionsRepos = ['ucsd-sunset', 'guestbook', 'doufu', 'qr']
+export const actionsRepos = [
+  'ucsd-sunset',
+  'guestbook',
+  'doufu',
+  'qr',
+  'cse272-project',
+  'hello-world'
+]
 
 export const ignore = [
   '/blockly/',
