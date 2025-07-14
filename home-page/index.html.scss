@@ -36,48 +36,48 @@ css {
 
 html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
   head {
-    meta[charset="UTF-8"];
+    meta[charset="UTF-8"] {}
     script[src="/home-page/redirects/index.js"] {}
 
-    meta[name="viewport"][content="width=device-width, initial-scale=1"];
+    meta[name="viewport"][content="width=device-width, initial-scale=1"] {}
 
     // Typical meta
     title {
       content: "SheepTester";
     }
-    meta[name="description"][content="A list of some projects I have made using fancy web technologies."];
-    meta[name="keywords"][content="sheeptester, sheep tester, sheep_tester"];
-    meta[name="theme-color"][content="#4fa1a7"];
+    meta[name="description"][content="A list of some projects I have made using fancy web technologies."] {}
+    meta[name="keywords"][content="sheeptester, sheep tester, sheep_tester"] {}
+    meta[name="theme-color"][content="#4fa1a7"] {}
 
     // Google search
-    meta[name="google-site-verification"][content="hVAKq2ipG9tPimbCmGiDbT-Qq1-UEv35XweisVQ5VEE"];
+    meta[name="google-site-verification"][content="hVAKq2ipG9tPimbCmGiDbT-Qq1-UEv35XweisVQ5VEE"] {}
 
     // Open graph
-    meta[name="title"][content="SheepTester"];
-    meta[property="og:title"][content="SheepTester"];
-    meta[property="og:type"][content="website"];
-    meta[property="og:url"][content="https://sheeptester.github.io/"];
-    meta[property="og:image"][content="https://sheeptester.github.io/home-page/preview/opengraph.png"];
-    meta[property="og:description"][content="A directory of some things I made."];
+    meta[name="title"][content="SheepTester"] {}
+    meta[property="og:title"][content="SheepTester"] {}
+    meta[property="og:type"][content="website"] {}
+    meta[property="og:url"][content="https://sheeptester.github.io/"] {}
+    meta[property="og:image"][content="https://sheeptester.github.io/home-page/preview/opengraph.png"] {}
+    meta[property="og:description"][content="A directory of some things I made."] {}
 
     // Twitter
-    meta[name="twitter:card"][content="summary_large_image"];
-    meta[name="twitter:title"][content="SheepTester"];
-    meta[name="twitter:description"][content="A directory of some things I made."];
-    meta[name="twitter:image"][content="https://sheeptester.github.io/home-page/preview/opengraph.png"];
-    link[rel="canonical"][href="https://sheeptester.github.io/"];
+    meta[name="twitter:card"][content="summary_large_image"] {}
+    meta[name="twitter:title"][content="SheepTester"] {}
+    meta[name="twitter:description"][content="A directory of some things I made."] {}
+    meta[name="twitter:image"][content="https://sheeptester.github.io/home-page/preview/opengraph.png"] {}
+    link[rel="canonical"][href="https://sheeptester.github.io/"] {}
 
     // Other icons from http://realfavicongenerator.net/
-    link[rel="apple-touch-icon"][sizes="180x180"][href="/apple-touch-icon.png"];
-    link[rel="icon"][type="image/png"][sizes="32x32"][href="/favicon-32x32.png"];
-    link[rel="icon"][type="image/png"][sizes="16x16"][href="/favicon-16x16.png"];
-    link[rel="manifest"][href="/manifest.json"];
-    link[rel="mask-icon"][href="/safari-pinned-tab.svg"][color="#4fa1a7"];
+    link[rel="apple-touch-icon"][sizes="180x180"][href="/apple-touch-icon.png"] {}
+    link[rel="icon"][type="image/png"][sizes="32x32"][href="/favicon-32x32.png"] {}
+    link[rel="icon"][type="image/png"][sizes="16x16"][href="/favicon-16x16.png"] {}
+    link[rel="manifest"][href="/manifest.json"] {}
+    link[rel="mask-icon"][href="/safari-pinned-tab.svg"][color="#4fa1a7"] {}
 
-    link[rel="search"][type="application/opensearchdescription+xml"][href="/all/search/opensearch.xml"][title="SheepTester"];
+    link[rel="search"][type="application/opensearchdescription+xml"][href="/all/search/opensearch.xml"][title="SheepTester"] {}
 
-    link[rel="stylesheet"][type="text/css"][href="/sheep3.css"];
-    link[rel="stylesheet"][type="text/css"][href="/home-page/style.css"];
+    link[rel="stylesheet"][type="text/css"][href="/sheep3.css"] {}
+    link[rel="stylesheet"][type="text/css"][href="/home-page/style.css"] {}
 
     script[src="/sheep3.js"] {}
   }
@@ -269,7 +269,7 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
             animation: none;
           }
         }
-        path.logo-path[d="#{$path}"];
+        path.logo-path[d="#{$path}"] {}
       }
 
       css {
@@ -384,7 +384,7 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
             object-position: 50% -20px;
           }
         }
-        img.me-photo[src="./img/sean-at-sutro-baths-by-cat.jpg"][alt="Me standing on a wall surrounded by water at Sutro Baths with the sun setting behind me."][width="700"];
+        img.me-photo[src="./img/sean-at-sutro-baths-by-cat.jpg"][alt="Me standing on a wall surrounded by water at Sutro Baths with the sun setting behind me."][width="700"] {}
         css {
           .gradient {
             margin: 0 -20px;
@@ -1095,7 +1095,7 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
     }
     form.projects-info.search-form#search-form[autocomplete="off"][action="/all/search/"] {
       .search-wrapper {
-        input.search#search[type="search"][name="q"][placeholder="Search everything"][aria-label="Search everything"];
+        input.search#search[type="search"][name="q"][placeholder="Search everything"][aria-label="Search everything"] {}
         .suggestions.no-results#suggestions {}
       }
     }
@@ -1174,7 +1174,7 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
             }
           }
 
-          input[type="checkbox"].visually-hidden.filter-checkbox#filter-by-#{$tag};
+          input[type="checkbox"].visually-hidden.filter-checkbox#filter-by-#{$tag} {}
 
           css {
             .filter-tag {
@@ -1489,9 +1489,9 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
         }
       }
       .footer-content {
-        p { img[src="/home-page/geocities/spinning construction sign.gif"][alt="spinning construction sign"][loading="lazy"]; }
-        p { img[src="/home-page/geocities/under construction.gif"][alt="under construction"][loading="lazy"]; }
-        p { img[src="/home-page/geocities/workers.gif"][alt="workers"][loading="lazy"]; }
+        p { img[src="/home-page/geocities/spinning construction sign.gif"][alt="spinning construction sign"][loading="lazy"] {} }
+        p { img[src="/home-page/geocities/under construction.gif"][alt="under construction"][loading="lazy"] {} }
+        p { img[src="/home-page/geocities/workers.gif"][alt="workers"][loading="lazy"] {} }
       }
     }
 

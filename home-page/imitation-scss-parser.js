@@ -121,13 +121,14 @@ function startSelector (context) {
     if (id) {
       attributes.push(['id', id])
     }
-    return `<${substitute(tagName, variables)}${attributes
+    const subbedTagName = substitute(tagName, variables)
+    return `<${subbedTagName}${attributes
       .map(([name, value]) => [name, value && substitute(value, variables)])
       .filter(([, value]) => value !== '')
       .map(([name, value]) =>
         value === undefined ? ' ' + name : ` ${name}="${escapeHtml(value)}"`
       )
-      .join('')}>`
+      .join('')}${selfClosingXml.includes(subbedTagName) ? '/' : ''}>`
   }
 }
 
@@ -135,6 +136,9 @@ const escapeMap = { '<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;' }
 function escapeHtml (str) {
   return str.replace(/[<>&"]/g, m => escapeMap[m])
 }
+
+const selfClosing = ['meta', 'link', 'input', 'img']
+const selfClosingXml = ['path']
 
 const substitutionPattern =
   /#\{(?:(\$[\w-]+)|map\s*\.\s*get\s*\(\s*(\$[\w-]+)\s*,\s*('(?:[^'\r\n\\]|\\.)*'|\$[\w-]+)\s*\))\}/g
@@ -194,10 +198,10 @@ function mapGet (vars, mapName, keyName, undefinedOk = false) {
     keyName[0] === '$'
       ? vars[keyName]
       : JSON.parse(
-          `"${keyName
-            .slice(1, -1)
-            .replace(/"|\\'/g, m => (m === '"' ? '\\"' : "'"))}"`
-        )
+        `"${keyName
+          .slice(1, -1)
+          .replace(/"|\\'/g, m => (m === '"' ? '\\"' : "'"))}"`
+      )
   if (!undefinedOk && vars[mapName][key] === undefined) {
     throw new ReferenceError(`${key} not not in map`)
   }
@@ -602,9 +606,14 @@ async function parseImitationScss (
         context = contextStack[contextStack.length - 1]
         if (noisy) console.log('RCURLY', context)
         if (context.type === 'selector') {
-          html += `</${
-            context.tagName ? substitute(context.tagName, variables) : 'div'
-          }>`
+          if (
+            !selfClosing.includes(context.tagName) &&
+            !selfClosingXml.includes(context.tagName)
+          ) {
+            html += `</${
+              context.tagName ? substitute(context.tagName, variables) : 'div'
+            }>`
+          }
           pop('selector (})')
           contextStack.push({ _from: 'rcurly selector' })
         } else if (context.type === 'each-loop') {
