@@ -6,15 +6,19 @@ css {
     background-color: white;
     border-radius: 15%;
     box-sizing: border-box;
-    transition: transform .2s;
+    transition: transform 0.2s;
     z-index: 1;
     overflow: hidden;
   }
   .social-instagram {
     // Approximated based on https://upload.wikimedia.org/wikipedia/commons/e/e7/Instagram_logo_2016.svg
-    background-image:
-      linear-gradient(168.6776deg, #3771c8, transparent 40%),
-      radial-gradient(100% 100% at 26.3651908% 107.693077%, #fd5 10%, #ff543e 50%, #c837ab 100%);
+    background-image: linear-gradient(168.6776deg, #3771c8, transparent 40%),
+      radial-gradient(
+        100% 100% at 26.3651908% 107.693077%,
+        #fd5 10%,
+        #ff543e 50%,
+        #c837ab 100%
+      );
   }
   .social-thick .ball {
     border-width: 10px;
@@ -23,12 +27,29 @@ css {
     background-image: linear-gradient(#6ca5dd, #1a6ab9);
   }
   .social-piskel {
-    background-image: linear-gradient(90deg, transparent 0 33.3%, rgba(0, 0, 0, 0.25) 33.3% 66.7%, rgba(0, 0, 0, 0.5) 66.7% 100%),
-      linear-gradient(#2A6FFF 0%, #2A6FFF 33.3%, #00EE00 33.3%, #00EE00 66.7%,
-      #FF0000 66.7%, #FF0000 100%);
+    background-image: linear-gradient(
+        90deg,
+        transparent 0 33.3%,
+        rgba(0, 0, 0, 0.25) 33.3% 66.7%,
+        rgba(0, 0, 0, 0.5) 66.7% 100%
+      ),
+      linear-gradient(
+        #2a6fff 0%,
+        #2a6fff 33.3%,
+        #00ee00 33.3%,
+        #00ee00 66.7%,
+        #ff0000 66.7%,
+        #ff0000 100%
+      );
   }
   .social-devpost {
-    background-image: linear-gradient(90deg, #3ACCE6 20%, transparent 20%, transparent 80%, #3ACCE6 80%);
+    background-image: linear-gradient(
+      90deg,
+      #3acce6 20%,
+      transparent 20%,
+      transparent 80%,
+      #3acce6 80%
+    );
   }
   .social-gmaps::before,
   .social-gmaps::after {
@@ -46,17 +67,18 @@ css {
     transform: rotate(45deg);
   }
   .social-gmaps::before {
-    background-image: linear-gradient(#1B73E8 50%, #EA4336 50%);
+    background-image: linear-gradient(#1b73e8 50%, #ea4336 50%);
     transform: rotate(45deg) translateX(-100%);
   }
   .social-gmaps::after {
-    background-image: linear-gradient(#4285F4 50%, #FABD05 50%);
+    background-image: linear-gradient(#4285f4 50%, #fabd05 50%);
   }
   .social-tiktok .ball {
-    box-shadow: 3px 0 0 #FE2B54, -3px 0 0 #22F5ED, inset 3px 0 0 #FE2B54, inset -3px 0 0 #22F5ED;
+    box-shadow: 3px 0 0 #fe2b54, -3px 0 0 #22f5ed, inset 3px 0 0 #fe2b54,
+      inset -3px 0 0 #22f5ed;
   }
   .social-leetcode .ball {
-    border-color: #FFA115;
+    border-color: #ffa115;
     border-left-color: black;
     border-right-color: white;
   }
@@ -69,13 +91,22 @@ css {
     width: 100%;
     padding: 0 2.5px;
     height: 5px;
-    background-color: #B3B3B3;
+    background-color: #b3b3b3;
     border-radius: 5px;
     margin: -2.5px;
     // box-shadow: 0 0 0 3px white;
   }
   .social-steam {
-    background-image: linear-gradient(to bottom, #111d2e 0%, #051839 21.2%, #0a1b48 40.7%, #132e62 58.1%, #144b7e 73.8%, #136497 87.3%, #1387b8 100%);
+    background-image: linear-gradient(
+      to bottom,
+      #111d2e 0%,
+      #051839 21.2%,
+      #0a1b48 40.7%,
+      #132e62 58.1%,
+      #144b7e 73.8%,
+      #136497 87.3%,
+      #1387b8 100%
+    );
   }
   .social-acm {
     background-image: conic-gradient(
@@ -90,12 +121,17 @@ css {
     );
   }
   .social-suno {
-    background-image: radial-gradient(100% 100% at 75% 75%, #D79AEB, #F47E47, #801D70);
+    background-image: radial-gradient(
+      100% 100% at 75% 75%,
+      #d79aeb,
+      #f47e47,
+      #801d70
+    );
   }
   .social-figma .ball {
-    border-top-color: #FF7237;
-    border-left-color: #874FFF;
-    border-bottom-color: #24CB71;
+    border-top-color: #ff7237;
+    border-left-color: #874fff;
+    border-bottom-color: #24cb71;
   }
 }
 @media (hover: hover) and (min-width: 1000px) {
@@ -108,26 +144,26 @@ css {
     transform: scale(1.1);
   }
 }
-$bg: "";
+$bg: '';
 @if map.get($social, 'bg') {
   $bg: "background-color:#{map.get($social, 'bg')}";
 }
-$ball-type: "social";
+$ball-type: 'social';
 @if $extra-class {
-  $ball-type: "#{$ball-type} #{$extra-class}";
+  $ball-type: '#{$ball-type} #{$extra-class}';
 }
 @if map.get($social, 'type') {
   $ball-type: "#{$ball-type} social-#{map.get($social, 'type')}";
 }
-$link: "";
+$link: '';
 @if not $type {
-  $type: "span";
+  $type: 'span';
 }
-@if $type == "a" {
+@if $type == 'a' {
   $link: map.get($social, 'link');
 }
 $name: map.get($social, 'name');
-#{$type}.#{$ball-type}[href="#{$link}"][style="#{$bg}"][title="#{$name}"] {
+#{$type}.#{$ball-type}[href='#{$link}'][style='#{$bg}'][title='#{$name}'] {
   css {
     .ball {
       position: absolute;
@@ -138,7 +174,7 @@ $name: map.get($social, 'name');
       background-color: white;
       border: 5px solid transparent;
       box-sizing: border-box;
-      transition: all .2s;
+      transition: all 0.2s;
     }
     .border-ball {
       border-color: white;
@@ -151,21 +187,22 @@ $name: map.get($social, 'name');
       transform: scale(1.2);
     }
   }
-  $class: "ball";
-  $border: "";
+  $class: 'ball';
+  $border: '';
   @if map.get($social, 'border') {
-    $class: "ball border-ball";
+    $class: 'ball border-ball';
     $border: "border-color:#{map.get($social, 'border')};";
   }
-  $ball: "";
+  $ball: '';
   @if map.get($social, 'ball') {
     $ball: "background-color:#{map.get($social, 'ball')}";
-    @if map.get($social, 'ball') == "border" {
-      $ball: "";
-      $class: "ball border-ball";
+    @if map.get($social, 'ball') == 'border' {
+      $ball: '';
+      $class: 'ball border-ball';
     }
   }
-  span.#{$class}[style="#{$border}#{$ball}"] {}
+  span.#{$class}[style='#{$border}#{$ball}'] {
+  }
 
   css {
     .social-name {
@@ -174,6 +211,6 @@ $name: map.get($social, 'name');
     }
   }
   span.social-name {
-    content: "#{$name}";
+    content: '#{$name}';
   }
 }

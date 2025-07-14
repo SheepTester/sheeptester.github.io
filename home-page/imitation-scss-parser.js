@@ -77,8 +77,7 @@ const mediaQueryTokenizers = makeCssRawTokenizers({
   }
 })
 const tokenizers = {
-  multilineString: /^"""([^"\\]|\\.)*(?:"{1,2}([^"\\]|\\.)+)*"""/,
-  string: /^"(?:[^"\r\n\\]|\\.)*"/,
+  string: /^"(?:[^"\\]|\\.)*"|^'(?:[^'\\]|\\.)*'/,
   comment: /^\/\/.*/,
   cssRawBegin: { pattern: /^css\s*\{/, push: cssBodyTokenizers },
   lparen: '(',
@@ -93,7 +92,8 @@ const tokenizers = {
   colon: ':',
   media: { pattern: '@media', push: mediaQueryTokenizers },
   import: '@import',
-  importFunc: /^import\s*\(\s*("(?:[^"\r\n\\]|\\.)*")\s*\)/,
+  importFunc:
+    /^import\s*\(\s*("(?:[^"\r\n\\]|\\.)*"|'(?:[^'\r\n\\]|\\.)*')\s*\)/,
   if: '@if',
   each: {
     pattern: '@each',
@@ -144,16 +144,15 @@ const substitutionPattern =
   /#\{(?:(\$[\w-]+)|map\s*\.\s*get\s*\(\s*(\$[\w-]+)\s*,\s*('(?:[^'\r\n\\]|\\.)*'|\$[\w-]+)\s*\))\}/g
 
 function trimMultilineString (str) {
-  const contents = str.slice(3, -3)
+  const contents = str.slice(1, -1).replace(/\\(.)/g, (_, char) => char)
   const firstIndentMatch = contents.match(/\n([ \t]*)/)
+  if (!firstIndentMatch) {
+    // No newline, so not a multiline string
+    return contents
+  }
   return contents
     .replace(
-      new RegExp(
-        String.raw`\s*\n[ \t]{0,${
-          firstIndentMatch ? firstIndentMatch[1].length : 0
-        }}`,
-        'g'
-      ),
+      new RegExp(String.raw`\s*\n[ \t]{0,${firstIndentMatch[1].length}}`, 'g'),
       ' '
     )
     .trim()
@@ -472,7 +471,6 @@ async function parseImitationScss (
         break
       }
 
-      case 'multilineString':
       case 'string': {
         if (context.type === 'css') {
           context.css += token
@@ -481,10 +479,7 @@ async function parseImitationScss (
           context.media += token
           break
         }
-        const rawStrValue =
-          tokenType === 'multilineString'
-            ? trimMultilineString(token)
-            : JSON.parse(token)
+        const rawStrValue = trimMultilineString(token)
         const strValue = substitute(rawStrValue, variables, str => str)
         const escaped = escapeHtml(strValue)
         if (context.type === 'attribute') {
@@ -771,7 +766,7 @@ async function parseImitationScss (
           if (context.step === 'expr') {
             const path = nodePath.join(
               nodePath.dirname(filePath),
-              JSON.parse(groups[1])
+              JSON.parse(`"${groups[1].slice(1, -1)}"`)
             )
             const yaml = YAML.parse(await getFile(path))
             if (yaml === null || typeof yaml !== 'object') {
@@ -785,7 +780,7 @@ async function parseImitationScss (
           if (context.step === 'value') {
             const path = nodePath.join(
               nodePath.dirname(filePath),
-              JSON.parse(groups[1])
+              JSON.parse(`"${groups[1].slice(1, -1)}"`)
             )
             const yaml = YAML.parse(await getFile(path))
             variables[context.var] = yaml
