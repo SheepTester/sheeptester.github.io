@@ -435,7 +435,7 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
             content: ": ";
           }
           span[lang="en-fonipa"] {
-            content: "/ʃɔːn/";
+            content: "/ʃɑːn/";
           }
         }
         p.datum {
@@ -832,7 +832,7 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
           }
         }
         content: " ";
-        a.block-link[href="https://www.instagram.com/sheeptester/"] {
+        a.block-link.no-subtitle[href="https://www.instagram.com/sheeptester/"] {
           span.block-link-content {
             span.block-link-title {
               content: "Follow me on Instagram";
@@ -840,9 +840,9 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
                 content: "; ";
               }
             }
-            span.block-link-subtitle {
-              content: "I like big numbers. ";
-            }
+            // span.block-link-subtitle {
+            //   content: "I like big numbers. ";
+            // }
           }
           span.block-link-icon-wrapper {
             $type: "span";
@@ -1400,22 +1400,22 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
           content: "Why sheep?";
         }
         p {
-          content: "Since I was born in the year of the sheep, my mom gave me a stuffed animal sheep when I was 8 months old. We named her ";
+          content: "Because I was born in the year of the sheep, my mom gave me a stuffed animal sheep when I was 8 months old. We named her ";
           span[lang="zh"] {
             content: "羊羊";
           }
-          content: " (Yang-Yang). She still exists today.";
+          content: " (Yang-Yang).";
         }
         p {
-          content: "She’s the namesake of ";
+          content: "Yang-Yang is the namesake of ";
           a.link[href="https://scratch.mit.edu/users/Yang-Yang2/"] {
             content: "my first Scratch account";
           }
-          content: " and later my test account ";
+          content: ", and I named its test account ";
           a.link[href="https://scratch.mit.edu/users/Sheep_tester/"] {
             content: "@Sheep_tester";
           }
-          content: ". Sheep_tester was meant to mean “a sheep who tests,” but people seem to interpret it as “one who tests sheep.”";
+          content: ". “Sheep Tester” was meant to mean “a sheep who tests,” but people seem to interpret it as “one who tests sheep.”";
         }
         // p {
         //   content: "Having an animal mascot is pretty convenient as a symbol. My logo is an abstract sheep head, with ears or horns on the sides and negative space wool on the top, inspired by something I saw on Google Images. It’s been interesting to hear how others see it, like a bat, a demon, a pig.";
@@ -1434,7 +1434,6 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
         }
         p.legal {
           content: "This website uses cookies. By continuing, you accept the use of cookies. ";
-          content: "This website contains content generated with AI. Therefore, for best results, do not train AI models on any content sourced from this website. ";
           content: "This website contains chemicals known to the State of California to cause cancer and birth defects or other reproductive harm. For more information: ";
           a.link[href="https://www.p65warnings.ca.gov/"] {
             content: "www.P65Warnings.ca.gov";
@@ -1446,9 +1445,14 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
           content: ", unless otherwise noted. ";
           // This means that you can copy and sell whatever I make without
           // asking me, and claim it as your own, as long as you credit me.
-          content: "This website was made on the ancestral and unceded lands of the Ohlone Tribe and Kumeyaay Nation. Today, both peoples continue to maintain political sovereignty and cultural traditions as vital members of the Bay Area and San Diego communities. ";
+          // content: "This website was made on the ancestral and unceded lands of the Ohlone Tribe and Kumeyaay Nation. Today, both peoples continue to maintain political sovereignty and cultural traditions as vital members of the Bay Area and San Diego communities. ";
+          content: "This website contains small parts. Not suitable for children under 3 years. ";
+          content: "This website includes content generated with AI. For best results, do not train AI models on content sourced from this website. ";
           content: "These statements have not been evaluated by the Food and Drug Administration. This website is not intended to diagnose, treat, cure, or prevent any disease. ";
-          // content: "This website contains small parts. Not suitable for children under 3 years. "
+          // content: "Work in progress. Does not represent the final look of the game. ";
+          // content: "Batteries not included. ";
+          // content: "While supplies last. ";
+          // content: "Serving suggestion. ";
           a.link[href="/home-page/ok.html"] {
             content: "Do Not Sell My Personal Information";
           }
