@@ -113,7 +113,7 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
         'sidebar search'
         'sidebar tags'
         'sidebar projects'
-        'sidebar tinder-note'
+        'sidebar-bottom projects'
         'footer footer';
       grid-template-rows: repeat(4, auto) 1fr auto;
     }
@@ -877,71 +877,6 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
           }
         }
       }
-
-      // .card {
-      //   css {
-      //     .card p {
-      //       line-height: 1.4;
-      //     }
-      //   }
-      //   h2#why-sheep {
-      //     content: "Why sheep?";
-      //   }
-      //   p {
-      //     content: "I was born in the year of the sheep, so when I was like 8 months old, my mom gave me a stuffed animal sheep. We named her ";
-      //     span[lang="zh"] {
-      //       content: "羊羊";
-      //     }
-      //     content: " (Yang-Yang), which is like a diminutive form of “sheep.” She still exists today as a testament to the durability of polyester fibers.";
-      //   }
-      //   p {
-      //     content: "I named ";
-      //     a.link[href="https://scratch.mit.edu/users/Yang-Yang2/"] {
-      //       content: "my first Scratch account";
-      //     }
-      //     content: " after her. On Scratch, it’s common to have a separate test account to put less polished projects on, so when I made my own, I named it ";
-      //     a.link[href="https://scratch.mit.edu/users/Sheep_tester/"] {
-      //       content: "@Sheep_tester";
-      //     }
-      //     content: ". I later discovered that English doesn’t really have a way to disambiguate between “a sheep that tests” and “one that tests sheep,” but I meant the former.";
-      //   }
-      //   p {
-      //     content: "Having an animal mascot is pretty convenient as a symbol. My logo is an abstract sheep head, with ears or horns on the sides and negative space wool on the top, inspired by something I saw on Google Images. It’s been interesting to hear how others see it, like a bat, a demon, a pig.";
-      //   }
-      // }
-
-      // .card {
-      //   h2#legal {
-      //     content: "Legal";
-      //   }
-      //   css {
-      //     .legal {
-      //       text-align: justify;
-      //       hyphens: auto;
-      //     }
-      //   }
-      //   p.legal {
-      //     content: "This website uses cookies. By continuing, you accept the use of cookies. ";
-      //     content: "This website contains content generated with AI. For best results, do not train AI models on any content sourced from this website. ";
-      //     content: "This website contains chemicals known to the State of California to cause cancer and birth defects or other reproductive harm. For more information: ";
-      //     a.link[href="https://www.p65warnings.ca.gov/"] {
-      //       content: "www.P65Warnings.ca.gov";
-      //     }
-      //     content: " Most content on this website is licensed under the ";
-      //     a.link[href="https://github.com/SheepTester/sheeptester.github.io/blob/master/LICENSE"] {
-      //       content: "MIT license"
-      //     }
-      //     content: ", unless otherwise noted. ";
-      //     // This means that you can copy and sell whatever I make without
-      //     // asking me, and claim it as your own, as long as you credit me.
-      //     content: "This website was made on the ancestral and unceded lands of the Ohlone Tribe and Kumeyaay Nation. Today, both peoples continue to maintain political sovereignty and cultural traditions as vital members of the Bay Area and San Diego communities. ";
-      //     content: "These statements have not been evaluated by the Food and Drug Administration. This website is not intended to diagnose, treat, cure, or prevent any disease. ";
-      //     // content: "This website contains small parts. Not suitable for children under 3 years. "
-      //     a.link[href="/home-page/ok.html"] {
-      //       content: "Do Not Sell My Personal Information";
-      //     }
-      //   }
-      // }
     }
 
     css {
@@ -1300,6 +1235,7 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
         padding: 20px 0;
         grid-auto-flow: dense;
         margin: 0;
+        grid-area: projects;
       }
     }
     @media (min-width: 680px) {
@@ -1309,10 +1245,35 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
         padding: 20px;
       }
     }
+    @media (min-width: 1000px) {
+      .projects {
+        align-self: start;
+      }
+    }
     p.projects#projects-wrapper {
       @each $project in import("./data/projects.yml") {
         @import "./templates/project.html.scss";
         content: " ";
+      }
+
+      css {
+        .tinder-note {
+          margin: 0;
+          padding: 20px;
+          padding-bottom: 0;
+          grid-column: 1 / -1;
+        }
+      }
+      @media (min-width: 680px) {
+        .tinder-note {
+          padding: 0;
+        }
+      }
+      span.tinder-note {
+        content: "That was merely a preview of what this website has in store. ";
+        a.link[href="./all/tinder.html"] {
+          content: "Explore and sort through everything else.";
+        }
       }
     }
 
@@ -1421,18 +1382,77 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
     }
 
     css {
-      .tinder-note {
-        margin: 0;
-        padding: 20px;
-        padding-top: 0;
-        padding-right: 60px;
-        grid-area: tinder-note;
+      .about-bottom {
+        grid-area: sidebar-bottom;
+      }
+      .about-bottom .card:first-child {
+        margin-top: 0;
       }
     }
-    p.tinder-note {
-      content: "That was merely a preview of what this website has in store. ";
-      a.link[href="./all/tinder.html"] {
-        content: "Explore and sort through everything else.";
+    .about.about-bottom {
+      .card {
+        css {
+          .card p {
+            line-height: 1.4;
+          }
+        }
+        h2#why-sheep {
+          content: "Why sheep?";
+        }
+        p {
+          content: "I was born in the year of the sheep, so when I was like 8 months old, my mom gave me a stuffed animal sheep. We named her ";
+          span[lang="zh"] {
+            content: "羊羊";
+          }
+          content: " (Yang-Yang), which is like a diminutive form of “sheep.” She still exists today as a testament to the durability of polyester fibers.";
+        }
+        p {
+          content: "I named ";
+          a.link[href="https://scratch.mit.edu/users/Yang-Yang2/"] {
+            content: "my first Scratch account";
+          }
+          content: " after her. On Scratch, it’s common to have a separate test account to put less polished projects on, so when I made my own, I named it ";
+          a.link[href="https://scratch.mit.edu/users/Sheep_tester/"] {
+            content: "@Sheep_tester";
+          }
+          content: ". I later discovered that English doesn’t really have a way to disambiguate between “a sheep that tests” and “one that tests sheep,” but I meant the former.";
+        }
+        p {
+          content: "Having an animal mascot is pretty convenient as a symbol. My logo is an abstract sheep head, with ears or horns on the sides and negative space wool on the top, inspired by something I saw on Google Images. It’s been interesting to hear how others see it, like a bat, a demon, a pig.";
+        }
+      }
+
+      .card {
+        h2#legal {
+          content: "Legal";
+        }
+        css {
+          .legal {
+            text-align: justify;
+            hyphens: auto;
+          }
+        }
+        p.legal {
+          content: "This website uses cookies. By continuing, you accept the use of cookies. ";
+          content: "This website contains content generated with AI. For best results, do not train AI models on any content sourced from this website. ";
+          content: "This website contains chemicals known to the State of California to cause cancer and birth defects or other reproductive harm. For more information: ";
+          a.link[href="https://www.p65warnings.ca.gov/"] {
+            content: "www.P65Warnings.ca.gov";
+          }
+          content: " Most content on this website is licensed under the ";
+          a.link[href="https://github.com/SheepTester/sheeptester.github.io/blob/master/LICENSE"] {
+            content: "MIT license"
+          }
+          content: ", unless otherwise noted. ";
+          // This means that you can copy and sell whatever I make without
+          // asking me, and claim it as your own, as long as you credit me.
+          content: "This website was made on the ancestral and unceded lands of the Ohlone Tribe and Kumeyaay Nation. Today, both peoples continue to maintain political sovereignty and cultural traditions as vital members of the Bay Area and San Diego communities. ";
+          content: "These statements have not been evaluated by the Food and Drug Administration. This website is not intended to diagnose, treat, cure, or prevent any disease. ";
+          // content: "This website contains small parts. Not suitable for children under 3 years. "
+          a.link[href="/home-page/ok.html"] {
+            content: "Do Not Sell My Personal Information";
+          }
+        }
       }
     }
 
