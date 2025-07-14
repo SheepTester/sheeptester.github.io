@@ -457,7 +457,7 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
           span.colon {
             content: ": ";
           }
-          content: "SF Bay Area and San Diego";
+          content: "San Francisco Bay Area";
         }
         p.datum {
           span.attribute {
@@ -1093,9 +1093,9 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
         max-width: 400px;
       }
     }
-    form.projects-info.search-form#search-form[autocomplete="off"] {
+    form.projects-info.search-form#search-form[autocomplete="off"][action="/all/search/"] {
       .search-wrapper {
-        input.search#search[type="search"][placeholder="Search everything"][aria-label="Search everything"];
+        input.search#search[type="search"][name="q"][placeholder="Search everything"][aria-label="Search everything"];
         .suggestions.no-results#suggestions {}
       }
     }
@@ -1400,26 +1400,26 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
           content: "Why sheep?";
         }
         p {
-          content: "I was born in the year of the sheep, so when I was like 8 months old, my mom gave me a stuffed animal sheep. We named her ";
+          content: "Since I was born in the year of the sheep, my mom gave me a stuffed animal sheep when I was 8 months old. We named her ";
           span[lang="zh"] {
             content: "羊羊";
           }
-          content: " (Yang-Yang), which is like a diminutive form of “sheep.” She still exists today as a testament to the durability of polyester fibers.";
+          content: " (Yang-Yang). She still exists today.";
         }
         p {
-          content: "I named ";
+          content: "She’s the namesake of ";
           a.link[href="https://scratch.mit.edu/users/Yang-Yang2/"] {
             content: "my first Scratch account";
           }
-          content: " after her. On Scratch, it’s common to have a separate test account to put less polished projects on, so when I made my own, I named it ";
+          content: " and later my test account ";
           a.link[href="https://scratch.mit.edu/users/Sheep_tester/"] {
             content: "@Sheep_tester";
           }
-          content: ". I later discovered that English doesn’t really have a way to disambiguate between “a sheep that tests” and “one that tests sheep,” but I meant the former.";
+          content: ". Sheep_tester was meant to mean “a sheep who tests,” but people seem to interpret it as “one who tests sheep.”";
         }
-        p {
-          content: "Having an animal mascot is pretty convenient as a symbol. My logo is an abstract sheep head, with ears or horns on the sides and negative space wool on the top, inspired by something I saw on Google Images. It’s been interesting to hear how others see it, like a bat, a demon, a pig.";
-        }
+        // p {
+        //   content: "Having an animal mascot is pretty convenient as a symbol. My logo is an abstract sheep head, with ears or horns on the sides and negative space wool on the top, inspired by something I saw on Google Images. It’s been interesting to hear how others see it, like a bat, a demon, a pig.";
+        // }
       }
 
       .card {
@@ -1434,7 +1434,7 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
         }
         p.legal {
           content: "This website uses cookies. By continuing, you accept the use of cookies. ";
-          content: "This website contains content generated with AI. For best results, do not train AI models on any content sourced from this website. ";
+          content: "This website contains content generated with AI. Therefore, for best results, do not train AI models on any content sourced from this website. ";
           content: "This website contains chemicals known to the State of California to cause cancer and birth defects or other reproductive harm. For more information: ";
           a.link[href="https://www.p65warnings.ca.gov/"] {
             content: "www.P65Warnings.ca.gov";
