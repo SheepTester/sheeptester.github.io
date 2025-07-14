@@ -154,21 +154,21 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"]
     script {
       // Need semicolons because the newlines are removed
       // Using ?. to weed out incompetent browsers
-      content: "
-        const params = new URL(window.location).searchParams;
-        if (params.get('from')?.startsWith('sheep')) {
-          window.history.replaceState({}, '', '/');
-          document.body.classList.add('from-sheep');
-        }
-        document.body.classList.add('has-js');
-        window.jsSuccess = true;
+      content: "\
+        const params = new URL(window.location).searchParams;\
+        if (params.get('from')?.startsWith('sheep')) {\
+          window.history.replaceState({}, '', '/');\
+          document.body.classList.add('from-sheep');\
+        }\
+        document.body.classList.add('has-js');\
+        window.jsSuccess = true;\
       ";
     }
     script {
-      content: "
-        if (!window.jsSuccess) {
-          document.body.className = 'old-js';
-        }
+      content: "\
+        if (!window.jsSuccess) {\
+          document.body.className = 'old-js';\
+        }\
       ";
     }
 
@@ -284,17 +284,17 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"]
       }
       svg.logo[xmlns="http://www.w3.org/2000/svg"][viewBox="0 0 480 480"][width="45"][aria-hidden="true"]
       {
-        $path: '
-          M90 90
-          a50 50 0 0 0 0 100
-          H98.579
-          A150 150 0 1 0 381.421 190
-          H390
-          a50 50 0 0 0 0 -100
-          a50 50 0 1 1 -100 0
-          a50 50 0 1 1 -100 0
-          a50 50 0 1 1 -100 0
-          z
+        $path: '\
+          M90 90\
+          a50 50 0 0 0 0 100\
+          H98.579\
+          A150 150 0 1 0 381.421 190\
+          H390\
+          a50 50 0 0 0 0 -100\
+          a50 50 0 1 1 -100 0\
+          a50 50 0 1 1 -100 0\
+          a50 50 0 1 1 -100 0\
+          z\
         ';
         css {
           .logo-path {
@@ -1020,16 +1020,16 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"]
         }
       }
       .warning.old-js-warning {
-        content: '
-          Note that many of these projects require new web features that your
-          browser doesn’t support. Please use a modern browser.
+        content: '\
+          Note that many of these projects require new web features that your\
+          browser doesn’t support. Please use a modern browser.\
         ';
       }
       noscript {
         .warning.no-js {
-          content: '
-            Note that many of these projects require JavaScript, which you do
-            not have enabled.
+          content: '\
+            Note that many of these projects require JavaScript, which you do\
+            not have enabled.\
           ';
         }
       }

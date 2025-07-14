@@ -54,7 +54,7 @@ const patternTokenizers = {
 }
 const makeCssRawTokenizers = tokenizers => ({
   comment: /^\/\/.*/,
-  string: /^(?:"(?:[^"\r\n\\]|\\.)*"|'(?:[^'\r\n\\]|\\.)*')/,
+  string: /^(?:"(?:[^"\r\n\\]|\\[^])*"|'(?:[^'\r\n\\]|\\[^])*')/,
   ...tokenizers,
   semicolon: /^\s*;\s*/,
   colon: /^\s*:\s*/,
@@ -77,7 +77,7 @@ const mediaQueryTokenizers = makeCssRawTokenizers({
   }
 })
 const tokenizers = {
-  string: /^"(?:[^"\\]|\\.)*"|^'(?:[^'\\]|\\.)*'/,
+  string: /^"(?:[^"\\]|\\[^])*"|^'(?:[^'\\]|\\[^])*'/,
   comment: /^\/\/.*/,
   cssRawBegin: { pattern: /^css\s*\{/, push: cssBodyTokenizers },
   lparen: '(',
@@ -144,7 +144,7 @@ const substitutionPattern =
   /#\{(?:(\$[\w-]+)|map\s*\.\s*get\s*\(\s*(\$[\w-]+)\s*,\s*('(?:[^'\r\n\\]|\\.)*'|\$[\w-]+)\s*\))\}/g
 
 function trimMultilineString (str) {
-  const contents = str.slice(1, -1).replace(/\\(.)/g, (_, char) => char)
+  const contents = str.slice(1, -1).replace(/\\([^])/g, (_, char) => char)
   const firstIndentMatch = contents.match(/\n([ \t]*)/)
   if (!firstIndentMatch) {
     // No newline, so not a multiline string
