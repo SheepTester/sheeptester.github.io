@@ -49,17 +49,19 @@ for (const { path, image } of projects) {
   const [, maybeRepoName, ...rest] = path.split('/')
   let repoName = 'sheeptester.github.io'
   let repoBranch = 'master'
-  tryRepos: {
-    // most of hello-world acts as a normal static site, except for its index
-    // page
-    if (maybeRepoName === 'hello-world' && path !== '/hello-world/') {
-      repoName = maybeRepoName
-      break tryRepos
-    }
+  // most of hello-world acts as a normal static site... except for its index
+  // page
+  if (maybeRepoName === 'hello-world' && path !== '/hello-world/') {
+    repoName = maybeRepoName
+  } else {
     if (actionsRepos.includes(maybeRepoName)) {
       console.warn(
         `! unable to handle actions repo (${maybeRepoName}): ${path}`
       )
+      continue
+    }
+    if (jekyllRepos.some(entry => entry.split('#')[0] === maybeRepoName)) {
+      console.warn(`! unable to handle jekyll repo (${maybeRepoName}): ${path}`)
       continue
     }
     for (const entry of ghPagesRepos) {
@@ -67,15 +69,7 @@ for (const { path, image } of projects) {
       if (maybeRepoName === repo) {
         repoName = repo
         repoBranch = branch
-        break tryRepos
-      }
-    }
-    for (const entry of jekyllRepos) {
-      const [repo, branch = 'master'] = entry.split('#')
-      if (maybeRepoName === repo) {
-        repoName = repo
-        repoBranch = branch
-        break tryRepos
+        break
       }
     }
   }

@@ -101,4 +101,4 @@ export const ignore = [
 ]
 
 /** Read-only repos (used by img-preview) */
-export const archived = ['thingkingland']
+export const archived = ['thingkingland', 'ovinetopia']
