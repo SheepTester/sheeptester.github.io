@@ -45,9 +45,9 @@ for (const { path, image } of projects) {
   let repoName = 'sheeptester.github.io'
   let repoBranch = 'master'
   tryRepos: {
-    // hello-world is based on GitHub Actions but generally still has a 1:1
-    // source-to-deployment path mapping
-    if (maybeRepoName === 'hello-world') {
+    // most of hello-world acts as a normal static site, except for its index
+    // page
+    if (maybeRepoName === 'hello-world' && path !== '/hello-world/') {
       repoName = maybeRepoName
       break tryRepos
     }
