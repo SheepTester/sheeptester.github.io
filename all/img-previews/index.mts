@@ -56,12 +56,14 @@ for (const { path, image } of projects) {
   } else {
     if (actionsRepos.includes(maybeRepoName)) {
       console.warn(
-        `! unable to handle actions repo (${maybeRepoName}): ${path}`
+        `! cant handle actions repo (${maybeRepoName}): ${path} ${image}`
       )
       continue
     }
     if (jekyllRepos.some(entry => entry.split('#')[0] === maybeRepoName)) {
-      console.warn(`! unable to handle jekyll repo (${maybeRepoName}): ${path}`)
+      console.warn(
+        `! cant handle jekyll repo (${maybeRepoName}): ${path} ${image}`
+      )
       continue
     }
     for (const entry of ghPagesRepos) {
@@ -74,7 +76,13 @@ for (const { path, image } of projects) {
     }
   }
   if (repoBranch === 'gh-pages') {
-    console.warn(`! ignoring auto-generated repo (${repoName}): ${path}`)
+    console.warn(
+      `! ignoring auto-generated repo (${repoName}): ${path} ${image}`
+    )
+    continue
+  }
+  if (archived.includes(repoName)) {
+    console.warn(`! skipping archived repo (${repoName}): ${path} ${image}`)
     continue
   }
   let repoPath =
@@ -100,10 +108,6 @@ const newBranch = `feat/add-img-previews-${Date.now()}`
 const repoPath = 'all/img-previews/repo/'
 for (const [repo, paths] of Object.entries(repos)) {
   const [name, branch] = repo.split('#')
-  if (archived.includes(name)) {
-    console.warn(`! skipping archived repo: ${name}`)
-    continue
-  }
 
   await fs.rm(repoPath, { recursive: true, force: true })
   await exec(
@@ -193,13 +197,13 @@ for (const [repo, paths] of Object.entries(repos)) {
       }
 
       console.error(
-        `!!! unable to find existing meta tag in ${name} ${filePath}`
+        `!!! unable to find existing meta tag (${name}): ${filePath} ${imageUrl}`
       )
       return false
     })
   )
   if (!results.includes(true)) {
-    console.warn(`! no files changed in ${name}`)
+    console.warn(`. no files changed in ${name}`)
     continue
   }
   await exec(
