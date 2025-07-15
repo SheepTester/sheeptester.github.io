@@ -98,6 +98,7 @@ for (const { path, image } of projects) {
   // console.log(path, repoName, repoBranch)
 }
 
+const newBranch = `feat/add-img-previews-${Date.now()}`
 const repoPath = 'all/img-previews/repo/'
 for (const [repo, paths] of Object.entries(repos)) {
   const [name, branch] = repo.split('#')
@@ -110,11 +111,79 @@ for (const [repo, paths] of Object.entries(repos)) {
   await exec(
     `git clone --branch ${branch} --depth 1 https://github.com/SheepTester/${name}.git ${repoPath}`
   )
-  await Promise.all(
+  await exec(`git checkout -b ${newBranch}`, { cwd: repoPath })
+  const results = await Promise.all(
     paths.map(async ({ filePath, imageUrl }) => {
       const fullPath = join(repoPath, filePath)
       const html = await fs.readFile(fullPath, 'utf-8')
-      console.log(fullPath, html.length)
+      if (html.includes('og:image')) {
+        // console.warn(`! file already has og:image: ${filePath}`)
+        return false
+      }
+
+      const match =
+        html.match(
+          /[ \t]*<meta\s+name=(?:"description"|'description'|description)\s*content=(?:"[^"]+"|'[^']+'|[^/>]+)\s*\/?>\r?\n/
+        ) ??
+        html.match(
+          /[ \t]*<meta\s+name=(?:"[^"]+"|'[^']+'|[^>]+\s)\s*content=(?:"[^"]+"|'[^']+'|[^/>]+)\s*\/?>\r?\n/
+        )
+      if (!match) {
+        console.error(
+          `!!! unable to find existing meta tag in ${name} ${filePath}`
+        )
+        return false
+      }
+
+      await fs.writeFile(
+        fullPath,
+        html.slice(0, match.index) +
+          match[0] +
+          match[0]
+            .replace('name=', 'property=')
+            .replace(
+              /property=(?:"([^"]+)"|'([^']+)'|([^>]+)\s)/,
+              (_, g1, g2, g3) =>
+                g1 !== undefined
+                  ? 'property="og:image"'
+                  : g2 !== undefined
+                    ? "property='og:image'"
+                    : g3 !== undefined
+                      ? 'property=og:image'
+                      : console.error(
+                        `!!! cannot set og:image in ${fullPath}`
+                      ) ?? '???'
+            )
+            .replace(
+              /content=(?:"([^"]+)"|'([^']+)'|([^/>]+))/,
+              (_, g1, g2, g3) =>
+                g1 !== undefined
+                  ? `content="${imageUrl}"`
+                  : g2 !== undefined
+                    ? `content='${imageUrl}'`
+                    : g3 !== undefined
+                      ? `content=${imageUrl}`
+                      : console.error(
+                        `!!! cannot set image url in ${fullPath}`
+                      ) ?? '???'
+            ) +
+          html.slice((match.index ?? 0) + match[0].length)
+      )
+      return true
     })
   )
+  if (!results.includes(true)) {
+    console.warn(`! no files changed in ${name}`)
+    continue
+  }
+  await exec(
+    `git commit -am "feat: Add Open Graph images\n\nAutomated with https://github.com/SheepTester/sheeptester.github.io/blob/master/all/img-previews/index.mts"`,
+    { cwd: repoPath }
+  )
+  await exec(`git push origin ${newBranch}`, { cwd: repoPath })
+  const { stdout: prUrl } = await exec(
+    `gh pr create --head ${newBranch} --title "Add Open Graph images" --body "Automated with https://github.com/SheepTester/sheeptester.github.io/blob/master/all/img-previews/index.mts"`,
+    { cwd: repoPath }
+  )
+  console.log(`> ${prUrl.trim()}`)
 }
