@@ -18,3 +18,6 @@ export const jekyllRepos: string[]
 export const actionsRepos: string[]
 
 export const ignore: string[]
+
+/** Read-only repos (used by img-preview) */
+export const archived: string[]

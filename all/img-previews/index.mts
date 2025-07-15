@@ -4,7 +4,12 @@ import { exec as execCb } from 'child_process'
 import * as fs from 'fs/promises'
 import { promisify } from 'util'
 import YAML from 'yaml'
-import { actionsRepos, ghPagesRepos, jekyllRepos } from '../gh-pages-repos.mjs'
+import {
+  actionsRepos,
+  archived,
+  ghPagesRepos,
+  jekyllRepos
+} from '../gh-pages-repos.mjs'
 import { join } from 'path'
 
 const exec = promisify(execCb)
@@ -95,15 +100,14 @@ for (const { path, image } of projects) {
     filePath: repoPath,
     imageUrl: new URL('/' + image, 'https://sheeptester.github.io').toString()
   })
-  // console.log(path, repoName, repoBranch)
 }
 
 const newBranch = `feat/add-img-previews-${Date.now()}`
 const repoPath = 'all/img-previews/repo/'
 for (const [repo, paths] of Object.entries(repos)) {
   const [name, branch] = repo.split('#')
-  // TEMP
-  if (name !== 'hello-world') {
+  if (archived.includes(name)) {
+    console.warn(`! skipping archived repo: ${name}`)
     continue
   }
 
@@ -121,55 +125,83 @@ for (const [repo, paths] of Object.entries(repos)) {
         return false
       }
 
-      const match =
+      let match =
         html.match(
           /[ \t]*<meta\s+name=(?:"description"|'description'|description)\s*content=(?:"[^"]+"|'[^']+'|[^/>]+)\s*\/?>\r?\n/
         ) ??
         html.match(
           /[ \t]*<meta\s+name=(?:"[^"]+"|'[^']+'|[^>]+\s)\s*content=(?:"[^"]+"|'[^']+'|[^/>]+)\s*\/?>\r?\n/
         )
-      if (!match) {
-        console.error(
-          `!!! unable to find existing meta tag in ${name} ${filePath}`
+      if (match) {
+        await fs.writeFile(
+          fullPath,
+          html.slice(0, match.index) +
+            match[0] +
+            match[0]
+              .replace('name=', 'property=')
+              .replace(
+                /property=(?:"([^"]+)"|'([^']+)'|([^>]+)\s)/,
+                (_, g1, g2, g3) =>
+                  g1 !== undefined
+                    ? 'property="og:image"'
+                    : g2 !== undefined
+                      ? "property='og:image'"
+                      : g3 !== undefined
+                        ? 'property=og:image'
+                        : console.error(
+                          `!!! cannot set og:image in ${fullPath}`
+                        ) ?? '???'
+              )
+              .replace(
+                /content=(?:"([^"]+)"|'([^']+)'|([^/>]+))/,
+                (_, g1, g2, g3) =>
+                  g1 !== undefined
+                    ? `content="${imageUrl}"`
+                    : g2 !== undefined
+                      ? `content='${imageUrl}'`
+                      : g3 !== undefined
+                        ? `content=${imageUrl}`
+                        : console.error(
+                          `!!! cannot set image url in ${fullPath}`
+                        ) ?? '???'
+              ) +
+            html.slice((match.index ?? 0) + match[0].length)
         )
-        return false
+        return true
       }
 
-      await fs.writeFile(
-        fullPath,
-        html.slice(0, match.index) +
-          match[0] +
-          match[0]
-            .replace('name=', 'property=')
-            .replace(
-              /property=(?:"([^"]+)"|'([^']+)'|([^>]+)\s)/,
-              (_, g1, g2, g3) =>
-                g1 !== undefined
-                  ? 'property="og:image"'
-                  : g2 !== undefined
-                    ? "property='og:image'"
-                    : g3 !== undefined
-                      ? 'property=og:image'
-                      : console.error(
-                        `!!! cannot set og:image in ${fullPath}`
-                      ) ?? '???'
-            )
-            .replace(
-              /content=(?:"([^"]+)"|'([^']+)'|([^/>]+))/,
-              (_, g1, g2, g3) =>
-                g1 !== undefined
-                  ? `content="${imageUrl}"`
-                  : g2 !== undefined
-                    ? `content='${imageUrl}'`
-                    : g3 !== undefined
-                      ? `content=${imageUrl}`
-                      : console.error(
-                        `!!! cannot set image url in ${fullPath}`
-                      ) ?? '???'
-            ) +
-          html.slice((match.index ?? 0) + match[0].length)
+      match = html.match(
+        /[ \t]*<meta\s+charset=(?:"[^"]+"|'[^']+'|[^/>]+)\s*\/?>\r?\n/
       )
-      return true
+      if (match) {
+        await fs.writeFile(
+          fullPath,
+          html.slice(0, match.index) +
+            match[0] +
+            match[0]
+              .replace('charset=', 'property=')
+              .replace(
+                /property=(?:"([^"]+)"|'([^']+)'|([^/>]+))/,
+                (_, g1, g2, g3) =>
+                  g1 !== undefined
+                    ? `property="og:image" content="${imageUrl}"`
+                    : g2 !== undefined
+                      ? `property='og:image' content='${imageUrl}'`
+                      : g3 !== undefined
+                        ? `property=og:image content=${imageUrl}`
+                        : console.error(
+                          `!!! cannot set og:image from charset in ${fullPath}`
+                        ) ?? '???'
+              ) +
+            html.slice((match.index ?? 0) + match[0].length)
+        )
+        return true
+      }
+
+      console.error(
+        `!!! unable to find existing meta tag in ${name} ${filePath}`
+      )
+      return false
     })
   )
   if (!results.includes(true)) {
@@ -185,5 +217,5 @@ for (const [repo, paths] of Object.entries(repos)) {
     `gh pr create --head ${newBranch} --title "Add Open Graph images" --body "Automated with https://github.com/SheepTester/sheeptester.github.io/blob/master/all/img-previews/index.mts"`,
     { cwd: repoPath }
   )
-  console.log(`> ${prUrl.trim()}`)
+  console.log(`>>> ${prUrl.trim()} <<<`)
 }
