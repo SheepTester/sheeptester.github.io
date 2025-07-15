@@ -1,3 +1,4 @@
 {
+  "scss.lint.emptyRules": "ignore",
   "prettier.prettierPath": "./node_modules/prettierx"
 }
