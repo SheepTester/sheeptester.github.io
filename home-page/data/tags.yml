@@ -1,5 +1,5 @@
 recommend:
-  name: Commendable
+  name: Recommended
   colour1: '#f0db20'
   colour2: '#efb302'
   dark: true
@@ -17,7 +17,7 @@ new:
   dark: true
 
 utility:
-  name: Utility
+  name: Tool
   colour1: '#24b1f8'
   colour2: '#2966d7'
 
@@ -27,7 +27,7 @@ visual:
   colour2: '#7c1cf1'
 
 directory:
-  name: Directory
+  name: Links to links
   colour1: '#97a6b4'
   colour2: '#7b8098'
   dark: true
@@ -39,11 +39,11 @@ school:
   dark: true
 
 incomplete:
-  name: Incomplete
+  name: Unfinished
   colour1: '#de4b88'
   colour2: '#d24343'
 
 unintuitive:
-  name: Unintuitive
+  name: Hard to use
   colour1: '#a8713e'
   colour2: '#78402d'

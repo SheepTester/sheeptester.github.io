@@ -30,7 +30,7 @@
     - directory
 
 - path: /platformre/
-  image: img/plat.svg
+  image: img/plat.webp
   name: Platformre
   description: >-
     A tile-based platformer with a random level generator.
