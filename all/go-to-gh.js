@@ -1,6 +1,6 @@
 // Injected by sheep.js right click menus
 
-import { ghPagesRepos, jekyllRepos } from './gh-pages-repos.mjs'
+import { ghPagesRepos, jekyllRepos, actionsRepos } from './gh-pages-repos.mjs'
 
 const BASE = 'https://github.com/SheepTester'
 
@@ -12,6 +12,12 @@ function getGithubUrl (path) {
     if (githubUrl) {
       return githubUrl.href.replace('commits', 'blob')
     }
+  }
+  if (repoName === 'hello-world') {
+    // hello-world is technically an Actions repo but there's a direct
+    // correspondence from a deployed URL to its source file (though not the
+    // other way around, and except for sitemap.txt)
+    return `${BASE}/hello-world/blob/master/${rest.join('/')}${end}`
   }
   for (const entry of ghPagesRepos) {
     const [repo, branch = 'master'] = entry.split('#')
@@ -27,6 +33,9 @@ function getGithubUrl (path) {
         '.md'
       )
     }
+  }
+  if (actionsRepos.includes(repoName)) {
+    return `${BASE}/${repoName}/`
   }
   return `${BASE}/sheeptester.github.io/blob/master${path}${end}`
 }
