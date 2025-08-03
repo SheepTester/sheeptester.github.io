@@ -103,24 +103,41 @@
     <div class="container">
       <div class="side metric">
         <label class="row">
-          <input type="text" inputmode="numeric" id="cm" autofocus /> cm
+          <input
+            type="text"
+            inputmode="numeric"
+            id="cm"
+            placeholder="0"
+            autofocus
+          />
+          cm
         </label>
       </div>
       <span class="equals">=</span>
       <div class="side freedom">
         <div class="row">
           <label>
-            <input type="text" inputmode="numeric" id="inft" />&prime;
+            <input
+              type="text"
+              inputmode="numeric"
+              id="inft"
+              placeholder="0"
+            />&prime;
           </label>
           <label>
-            <input type="text" inputmode="numeric" id="inin" />&Prime;
+            <input
+              type="text"
+              inputmode="numeric"
+              id="inin"
+              placeholder="0"
+            />&Prime;
           </label>
         </div>
         <label class="row">
-          <input type="text" inputmode="numeric" id="ft" /> ft
+          <input type="text" inputmode="numeric" id="ft" placeholder="0" /> ft
         </label>
         <label class="row">
-          <input type="text" inputmode="numeric" id="in" /> in
+          <input type="text" inputmode="numeric" id="in" placeholder="0" /> in
         </label>
       </div>
     </div>
@@ -143,13 +160,17 @@
       const UNITS_PER_IN = 254 // https://en.wikipedia.org/wiki/Inch
       const UNITS_PER_FT = UNITS_PER_IN * 12 // US public school system
       let value = 0
+      const notZero = v => (v === 0 ? '' : String(v))
       function update (changed) {
-        if (changed !== inputs.cm) inputs.cm.value = value / UNITS_PER_CM
+        if (changed !== inputs.cm)
+          inputs.cm.value = notZero(value / UNITS_PER_CM)
         const inches = value / UNITS_PER_IN
-        if (changed !== inputs.inft) inputs.inft.value = Math.floor(inches / 12)
-        if (changed !== inputs.inin) inputs.inin.value = inches % 12
-        if (changed !== inputs.ft) inputs.ft.value = value / UNITS_PER_FT
-        if (changed !== inputs.in) inputs.in.value = inches
+        if (changed !== inputs.inft)
+          inputs.inft.value = notZero(Math.floor(inches / 12))
+        if (changed !== inputs.inin) inputs.inin.value = notZero(inches % 12)
+        if (changed !== inputs.ft)
+          inputs.ft.value = notZero(value / UNITS_PER_FT)
+        if (changed !== inputs.in) inputs.in.value = notZero(inches)
       }
       inputs.cm.addEventListener('input', () => {
         value = +inputs.cm.value * UNITS_PER_CM
@@ -182,10 +203,10 @@
               (e.ctrlKey || e.metaKey
                 ? 100
                 : e.shiftKey
-                ? 10
-                : e.altKey
-                ? 0.1
-                : 1)
+                  ? 10
+                  : e.altKey
+                    ? 0.1
+                    : 1)
           e.preventDefault()
           e.target.dispatchEvent(new Event('input'))
         }
