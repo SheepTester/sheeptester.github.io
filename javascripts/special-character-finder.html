@@ -15,7 +15,7 @@
 
     <style>
       :root {
-        --border: 1px solid color-mix(in srgb, currentColor 20%, transparent);
+        --border: 1px solid color-mix(in srgb, CanvasText 20%, Canvas);
       }
       @media (prefers-color-scheme: dark) {
         :root {
@@ -37,8 +37,7 @@
 
       .side {
         flex: 1 0 0;
-        display: flex;
-        flex-direction: column;
+        background-color: Canvas;
       }
 
       p {
@@ -53,6 +52,12 @@
         text-decoration: underline;
       }
 
+      .input-side {
+        display: flex;
+        flex-direction: column;
+        position: sticky;
+        top: 0;
+      }
       .input-scroll-wrapper {
         border-top: var(--border);
         border-right: var(--border);
@@ -100,20 +105,55 @@
         background: #f0b10066;
         outline: 1px solid #f0b100;
       }
+      .hover {
+        background: #fb2c3666;
+        outline: 1px solid #fb2c36;
+      }
+
+      .table {
+        align-self: flex-start;
+        border-collapse: collapse;
+      }
+      .table th {
+        border-bottom: var(--border);
+        text-align: left;
+      }
+      .table tbody tr:hover {
+        background: #fb2c3666;
+      }
+      .table tr :first-child {
+        width: 3ch;
+        text-align: right;
+      }
+      .table tr :nth-child(2) {
+        width: 2ch;
+        text-align: center;
+      }
+      .table a {
+        font-family: monospace;
+      }
 
       @media (max-width: 600px) {
         body {
           flex-direction: column;
         }
+        .input-side {
+          height: 50%;
+          flex: none;
+        }
         .input-scroll-wrapper {
           border-right: 0;
           border-bottom: var(--border);
+        }
+        .table {
+          align-self: stretch;
+          flex: unset;
         }
       }
     </style>
   </head>
   <body>
-    <div class="side">
+    <div class="side input-side">
       <p>
         Type or paste text here to list all the special Unicode
         characters&mdash;any character that can't be typed on a U.S.
@@ -122,72 +162,164 @@
       </p>
       <div class="input-scroll-wrapper">
         <div class="input-wrapper">
-          <textarea class="input" id="input">ordi​nаry</textarea>
+          <textarea class="input" id="input">
+Is this&nbsp;ordi&ZeroWidthSpace;nаry; 🤠</textarea
+          >
           <div aria-hidden="true" class="input-preview" id="preview"></div>
         </div>
       </div>
     </div>
-    <div class="side table"></div>
-    <script>
+    <table class="side table">
+      <thead>
+        <tr>
+          <th>Pos.</th>
+          <th>Char.</th>
+          <th>Name</th>
+        </tr>
+      </thead>
+      <tbody id="table"></tbody>
+    </table>
+    <script type="module">
+      import { unicodeName } from 'https://esm.sh/unicode-name@1'
+
       const input = document.getElementById('input')
       const preview = document.getElementById('preview')
+      const table = document.getElementById('table')
 
       preview.append('\u200b')
 
-      const prevValue = []
-      // overengineered diff function
-      function update () {
-        /** break string into Unicode scalars (not UTF-16 code units) */
-        const chars = [...input.value]
-        /** first `changeStart` chars are the same */
-        let changeStart = 0
-        while (
-          changeStart < chars.length &&
-          changeStart < prevValue.length &&
-          chars[changeStart] === prevValue[changeStart].char
-        ) {
-          changeStart++
+      class Differ {
+        #target
+        #defaultInsert
+        #prevValue = []
+        #onNew
+        #onUpdateIndex
+
+        constructor (target, defaultInsert, onNew, onUpdateIndex) {
+          this.#target = target
+          this.#defaultInsert = defaultInsert
+          this.#onNew = onNew
+          this.#onUpdateIndex = onUpdateIndex
         }
-        /** index after last changed char in `chars` */
-        let changeEndNew = chars.length
-        /** index after last changed char in `prevValue` */
-        let changeEndPrev = prevValue.length
-        while (
-          changeEndNew - 1 >= changeStart &&
-          changeEndPrev - 1 >= changeStart &&
-          chars[changeEndNew - 1] === prevValue[changeEndPrev - 1].char
-        ) {
-          changeEndNew--
-          changeEndPrev--
+
+        // overengineered diff function
+        update (chars) {
+          /** first `changeStart` chars are the same */
+          let changeStart = 0
+          while (
+            changeStart < chars.length &&
+            changeStart < this.#prevValue.length &&
+            chars[changeStart].char === this.#prevValue[changeStart].char
+          ) {
+            changeStart++
+          }
+          /** index after last changed char in `chars` */
+          let changeEndNew = chars.length
+          /** index after last changed char in `prevValue` */
+          let changeEndPrev = this.#prevValue.length
+          while (
+            changeEndNew - 1 >= changeStart &&
+            changeEndPrev - 1 >= changeStart &&
+            chars[changeEndNew - 1].char ===
+              this.#prevValue[changeEndPrev - 1].char
+          ) {
+            changeEndNew--
+            changeEndPrev--
+          }
+          for (let i = changeStart; i < changeEndPrev; i++) {
+            this.#prevValue[i].elem.remove()
+          }
+          this.#prevValue.splice(changeStart, changeEndPrev - changeStart)
+          // insert new chars
+          if (changeEndNew - changeStart > 0) {
+            const fragment = document.createDocumentFragment()
+            for (let i = changeStart; i < changeEndNew; i++) {
+              const result = this.#onNew(chars[i])
+              fragment.append(result.elem)
+              this.#prevValue.splice(i, 0, { ...chars[i], ...result })
+            }
+            if (changeStart === 0 && changeEndNew === this.#prevValue.length) {
+              this.#target[this.#defaultInsert](fragment)
+            } else if (changeStart === 0) {
+              this.#target.prepend(fragment)
+            } else {
+              this.#prevValue[changeStart - 1].elem.after(fragment)
+            }
+          }
+          if (this.#onUpdateIndex) {
+            for (let i = 0; i < this.#prevValue.length; i++) {
+              Object.assign(this.#prevValue[i], chars[i])
+              this.#onUpdateIndex(this.#prevValue[i])
+            }
+          }
         }
-        for (let i = changeStart; i < changeEndPrev; i++) {
-          prevValue[i].span.remove()
-        }
-        prevValue.splice(changeStart, changeEndPrev - changeStart)
-        // insert new chars
-        if (changeEndNew - changeStart > 0) {
-          const fragment = document.createDocumentFragment()
-          for (let i = changeStart; i < changeEndNew; i++) {
-            const char = chars[i]
+
+        static fromString (string) {
+          return Array.from(string, (char, i) => {
             const codePoint = char.codePointAt()
             const special = !(
               (codePoint >= 32 && codePoint < 127) ||
               char === '\n'
             )
-            const span = document.createElement('span')
-            span.textContent = char
-            if (special) {
-              span.className = 'special'
-            }
-            fragment.append(span)
-            prevValue.splice(i, 0, { char, span })
-          }
-          if (changeStart === 0) {
-            preview.prepend(fragment)
-          } else {
-            prevValue[changeStart - 1].span.after(fragment)
-          }
+            return { i, char, codePoint, special }
+          })
         }
+      }
+
+      const textareaDiffer = new Differ(
+        preview,
+        'prepend',
+        ({ char, special }) => {
+          const span = document.createElement('span')
+          span.textContent = char
+          if (special) {
+            span.className = 'special'
+          }
+          return { elem: span }
+        }
+      )
+      const tableDiffer = new Differ(
+        table,
+        'prepend',
+        entry => {
+          const { char, codePoint, i } = entry
+          const row = document.createElement('tr')
+          let lastHover
+          row.addEventListener('pointerenter', () => {
+            lastHover?.classList.remove('hover')
+            lastHover = preview.children[entry.i]
+            lastHover?.classList.add('hover')
+          })
+          row.addEventListener('pointerleave', () => {
+            lastHover?.classList.remove('hover')
+          })
+          const pos = document.createElement('td')
+          pos.textContent = i
+          row.append(pos)
+          row.append(
+            Object.assign(document.createElement('td'), { textContent: char })
+          )
+          const name = document.createElement('td')
+          const hex = codePoint.toString(16).padStart(4, 0).toUpperCase()
+          name.append(
+            Object.assign(document.createElement('a'), {
+              href: `https://util.unicode.org/UnicodeJsps/character.jsp?a=${hex}`,
+              textContent: `U+${hex}`
+            }),
+            ` ${unicodeName(char)}`
+          )
+          row.append(name)
+          return { elem: row, pos }
+        },
+        ({ pos, i }) => {
+          pos.textContent = i
+        }
+      )
+
+      function update () {
+        const chars = Differ.fromString(input.value)
+        textareaDiffer.update(chars)
+        tableDiffer.update(chars.filter(char => char.special))
       }
       input.addEventListener('input', update)
       update()
