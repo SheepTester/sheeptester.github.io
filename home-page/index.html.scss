@@ -458,12 +458,7 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"]
           }
         }
         p.about-me {
-          content: 'I’m Sean, in my fourth year at ';
-          a.link[href="https://sheeptester.github.io/longer-tweets/major/"]
-          {
-            content: 'UC San Diego';
-          }
-          content: ', formerly a student at Gunn High School.';
+          content: 'I’m Sean. For most of my life, I was in school—most recently UC San Diego and Gunn High School—and now I expect to spend double that time employed.';
         }
         css {
           .card .datum {
@@ -583,7 +578,7 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"]
         }
 
         p {
-          content: "I made this website for current and former kids. If you're an employer, check out my ";
+          content: "I made this website for anyone who is or was once a kid. If you're an employer, check out my ";
           a.link[href='/résumé/'] {
             content: 'résumé';
           }

@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Special Character Finder (v2)</title>
+    <meta
+      name="description"
+      content="Finds any special Unicode characters hidden in your text."
+    />
+
+    <link rel="stylesheet" type="text/css" href="/sheep3.css" />
+    <script src="/sheep3.js" charset="utf-8"></script>
+
+    <style>
+      :root {
+        --border: 1px solid color-mix(in srgb, currentColor 20%, transparent);
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          color-scheme: dark;
+        }
+      }
+
+      html,
+      body {
+        height: 100%;
+      }
+      body {
+        margin: 0;
+        display: flex;
+        font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto,
+          Helvetica Neue, Arial, sans-serif, 'Apple Color Emoji',
+          'Segoe UI Emoji', Segoe UI Symbol;
+      }
+
+      .side {
+        flex: 1 0 0;
+        display: flex;
+        flex-direction: column;
+      }
+
+      p {
+        margin: 0;
+        padding: 20px;
+        border-right: var(--border);
+      }
+      a {
+        text-decoration: none;
+      }
+      a:hover {
+        text-decoration: underline;
+      }
+
+      .input-scroll-wrapper {
+        border-top: var(--border);
+        border-right: var(--border);
+        overflow: auto;
+        flex: auto;
+        height: 0;
+      }
+      .input-scroll-wrapper:hover {
+        border-color: color-mix(in srgb, currentColor 50%, transparent);
+      }
+      .input-scroll-wrapper:focus-within {
+        border-color: currentColor;
+      }
+      .input-wrapper {
+        position: relative;
+        min-height: 100%;
+      }
+      .input,
+      .input-preview {
+        padding: 20px;
+        box-sizing: border-box;
+      }
+      .input {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        border: 0;
+        background: none;
+        font: inherit;
+        color: inherit;
+        resize: none;
+        padding-bottom: 0;
+      }
+      .input:focus {
+        outline: none;
+      }
+      .input-preview {
+        word-break: break-word;
+        white-space: pre-wrap;
+        color: transparent;
+      }
+      .special {
+        background: #f0b10066;
+        outline: 1px solid #f0b100;
+      }
+
+      @media (max-width: 600px) {
+        body {
+          flex-direction: column;
+        }
+        .input-scroll-wrapper {
+          border-right: 0;
+          border-bottom: var(--border);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="side">
+      <p>
+        Type or paste text here to list all the special Unicode
+        characters&mdash;any character that can't be typed on a U.S.
+        keyboard&mdash;hidden in the text.
+        <a href="./cyrillic-finder.html">Previous version</a>
+      </p>
+      <div class="input-scroll-wrapper">
+        <div class="input-wrapper">
+          <textarea class="input" id="input">ordi​nаry</textarea>
+          <div aria-hidden="true" class="input-preview" id="preview"></div>
+        </div>
+      </div>
+    </div>
+    <div class="side table"></div>
+    <script>
+      const input = document.getElementById('input')
+      const preview = document.getElementById('preview')
+
+      preview.append('\u200b')
+
+      const prevValue = []
+      // overengineered diff function
+      function update () {
+        /** break string into Unicode scalars (not UTF-16 code units) */
+        const chars = [...input.value]
+        /** first `changeStart` chars are the same */
+        let changeStart = 0
+        while (
+          changeStart < chars.length &&
+          changeStart < prevValue.length &&
+          chars[changeStart] === prevValue[changeStart].char
+        ) {
+          changeStart++
+        }
+        /** index after last changed char in `chars` */
+        let changeEndNew = chars.length
+        /** index after last changed char in `prevValue` */
+        let changeEndPrev = prevValue.length
+        while (
+          changeEndNew - 1 >= changeStart &&
+          changeEndPrev - 1 >= changeStart &&
+          chars[changeEndNew - 1] === prevValue[changeEndPrev - 1].char
+        ) {
+          changeEndNew--
+          changeEndPrev--
+        }
+        for (let i = changeStart; i < changeEndPrev; i++) {
+          prevValue[i].span.remove()
+        }
+        prevValue.splice(changeStart, changeEndPrev - changeStart)
+        // insert new chars
+        if (changeEndNew - changeStart > 0) {
+          const fragment = document.createDocumentFragment()
+          for (let i = changeStart; i < changeEndNew; i++) {
+            const char = chars[i]
+            const codePoint = char.codePointAt()
+            const special = !(
+              (codePoint >= 32 && codePoint < 127) ||
+              char === '\n'
+            )
+            const span = document.createElement('span')
+            span.textContent = char
+            if (special) {
+              span.className = 'special'
+            }
+            fragment.append(span)
+            prevValue.splice(i, 0, { char, span })
+          }
+          if (changeStart === 0) {
+            preview.prepend(fragment)
+          } else {
+            prevValue[changeStart - 1].span.after(fragment)
+          }
+        }
+      }
+      input.addEventListener('input', update)
+      update()
+
+      input.select()
+    </script>
+  </body>
+</html>
