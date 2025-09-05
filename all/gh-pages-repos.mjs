@@ -99,3 +99,6 @@ export const ignore = [
   '/scratch-vm/docs/',
   '/scratch-vm/media/'
 ]
+
+/** Read-only repos (used by img-preview) */
+export const archived = ['thingkingland', 'ovinetopia']

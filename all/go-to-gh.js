@@ -1,6 +1,6 @@
 // Injected by sheep.js right click menus
 
-import { ghPagesRepos, jekyllRepos } from './gh-pages-repos.mjs'
+import { ghPagesRepos, jekyllRepos, actionsRepos } from './gh-pages-repos.mjs'
 
 const BASE = 'https://github.com/SheepTester'
 
@@ -27,6 +27,9 @@ function getGithubUrl (path) {
         '.md'
       )
     }
+  }
+  if (actionsRepos.includes(repoName)) {
+    return `${BASE}/${repoName}/`
   }
   return `${BASE}/sheeptester.github.io/blob/master${path}${end}`
 }

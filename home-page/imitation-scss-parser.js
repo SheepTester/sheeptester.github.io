@@ -54,7 +54,7 @@ const patternTokenizers = {
 }
 const makeCssRawTokenizers = tokenizers => ({
   comment: /^\/\/.*/,
-  string: /^(?:"(?:[^"\r\n\\]|\\.)*"|'(?:[^'\r\n\\]|\\.)*')/,
+  string: /^(?:"(?:[^"\r\n\\]|\\[^])*"|'(?:[^'\r\n\\]|\\[^])*')/,
   ...tokenizers,
   semicolon: /^\s*;\s*/,
   colon: /^\s*:\s*/,
@@ -77,8 +77,7 @@ const mediaQueryTokenizers = makeCssRawTokenizers({
   }
 })
 const tokenizers = {
-  multilineString: /^"""([^"\\]|\\.)*(?:"{1,2}([^"\\]|\\.)+)*"""/,
-  string: /^"(?:[^"\r\n\\]|\\.)*"/,
+  string: /^"(?:[^"\\]|\\[^])*"|^'(?:[^'\\]|\\[^])*'/,
   comment: /^\/\/.*/,
   cssRawBegin: { pattern: /^css\s*\{/, push: cssBodyTokenizers },
   lparen: '(',
@@ -93,7 +92,8 @@ const tokenizers = {
   colon: ':',
   media: { pattern: '@media', push: mediaQueryTokenizers },
   import: '@import',
-  importFunc: /^import\s*\(\s*("(?:[^"\r\n\\]|\\.)*")\s*\)/,
+  importFunc:
+    /^import\s*\(\s*("(?:[^"\r\n\\]|\\.)*"|'(?:[^'\r\n\\]|\\.)*')\s*\)/,
   if: '@if',
   each: {
     pattern: '@each',
@@ -121,13 +121,14 @@ function startSelector (context) {
     if (id) {
       attributes.push(['id', id])
     }
-    return `<${substitute(tagName, variables)}${attributes
+    const subbedTagName = substitute(tagName, variables)
+    return `<${subbedTagName}${attributes
       .map(([name, value]) => [name, value && substitute(value, variables)])
       .filter(([, value]) => value !== '')
       .map(([name, value]) =>
         value === undefined ? ' ' + name : ` ${name}="${escapeHtml(value)}"`
       )
-      .join('')}>`
+      .join('')}${selfClosingXml.includes(subbedTagName) ? '/' : ''}>`
   }
 }
 
@@ -136,20 +137,22 @@ function escapeHtml (str) {
   return str.replace(/[<>&"]/g, m => escapeMap[m])
 }
 
+const selfClosing = ['meta', 'link', 'input', 'img']
+const selfClosingXml = ['path']
+
 const substitutionPattern =
   /#\{(?:(\$[\w-]+)|map\s*\.\s*get\s*\(\s*(\$[\w-]+)\s*,\s*('(?:[^'\r\n\\]|\\.)*'|\$[\w-]+)\s*\))\}/g
 
 function trimMultilineString (str) {
-  const contents = str.slice(3, -3)
+  const contents = str.slice(1, -1).replace(/\\([^])/g, (_, char) => char)
   const firstIndentMatch = contents.match(/\n([ \t]*)/)
+  if (!firstIndentMatch) {
+    // No newline, so not a multiline string
+    return contents
+  }
   return contents
     .replace(
-      new RegExp(
-        String.raw`\s*\n[ \t]{0,${
-          firstIndentMatch ? firstIndentMatch[1].length : 0
-        }}`,
-        'g'
-      ),
+      new RegExp(String.raw`\s*\n[ \t]{0,${firstIndentMatch[1].length}}`, 'g'),
       ' '
     )
     .trim()
@@ -194,10 +197,10 @@ function mapGet (vars, mapName, keyName, undefinedOk = false) {
     keyName[0] === '$'
       ? vars[keyName]
       : JSON.parse(
-          `"${keyName
-            .slice(1, -1)
-            .replace(/"|\\'/g, m => (m === '"' ? '\\"' : "'"))}"`
-        )
+        `"${keyName
+          .slice(1, -1)
+          .replace(/"|\\'/g, m => (m === '"' ? '\\"' : "'"))}"`
+      )
   if (!undefinedOk && vars[mapName][key] === undefined) {
     throw new ReferenceError(`${key} not not in map`)
   }
@@ -468,7 +471,6 @@ async function parseImitationScss (
         break
       }
 
-      case 'multilineString':
       case 'string': {
         if (context.type === 'css') {
           context.css += token
@@ -477,10 +479,7 @@ async function parseImitationScss (
           context.media += token
           break
         }
-        const rawStrValue =
-          tokenType === 'multilineString'
-            ? trimMultilineString(token)
-            : JSON.parse(token)
+        const rawStrValue = trimMultilineString(token)
         const strValue = substitute(rawStrValue, variables, str => str)
         const escaped = escapeHtml(strValue)
         if (context.type === 'attribute') {
@@ -602,9 +601,14 @@ async function parseImitationScss (
         context = contextStack[contextStack.length - 1]
         if (noisy) console.log('RCURLY', context)
         if (context.type === 'selector') {
-          html += `</${
-            context.tagName ? substitute(context.tagName, variables) : 'div'
-          }>`
+          if (
+            !selfClosing.includes(context.tagName) &&
+            !selfClosingXml.includes(context.tagName)
+          ) {
+            html += `</${
+              context.tagName ? substitute(context.tagName, variables) : 'div'
+            }>`
+          }
           pop('selector (})')
           contextStack.push({ _from: 'rcurly selector' })
         } else if (context.type === 'each-loop') {
@@ -762,7 +766,7 @@ async function parseImitationScss (
           if (context.step === 'expr') {
             const path = nodePath.join(
               nodePath.dirname(filePath),
-              JSON.parse(groups[1])
+              JSON.parse(`"${groups[1].slice(1, -1)}"`)
             )
             const yaml = YAML.parse(await getFile(path))
             if (yaml === null || typeof yaml !== 'object') {
@@ -776,7 +780,7 @@ async function parseImitationScss (
           if (context.step === 'value') {
             const path = nodePath.join(
               nodePath.dirname(filePath),
-              JSON.parse(groups[1])
+              JSON.parse(`"${groups[1].slice(1, -1)}"`)
             )
             const yaml = YAML.parse(await getFile(path))
             variables[context.var] = yaml

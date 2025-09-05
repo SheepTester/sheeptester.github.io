@@ -9,6 +9,17 @@ export async function loadSearch (
   suggestions,
   { noResults = true } = {}
 ) {
+  const rows = []
+  let results = []
+  let selected = -1
+
+  form.addEventListener('submit', e => {
+    if (results.length > 0) {
+      window.location.href = results[selected].obj.path
+    }
+    e.preventDefault()
+  })
+
   const fuzzysortLoad =
     !fuzzySortLoaded &&
     new Promise((resolve, reject) => {
@@ -38,10 +49,6 @@ export async function loadSearch (
       })
     )
   await fuzzysortLoad
-
-  const rows = []
-  let results = []
-  let selected = -1
 
   function highlight (result, defaultValue) {
     return result.score > 0
@@ -110,6 +117,7 @@ export async function loadSearch (
   function markSelected (index) {
     if (selected !== -1) {
       rows[selected].wrapper.classList.remove('selected')
+      form.action = '/all/search/'
     }
     if (results.length === 0) {
       return

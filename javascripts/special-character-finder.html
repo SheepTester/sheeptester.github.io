@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Special Character Finder (v2)</title>
+    <meta
+      name="description"
+      content="Finds any special Unicode characters hidden in your text."
+    />
+
+    <link rel="stylesheet" type="text/css" href="/sheep3.css" />
+    <script src="/sheep3.js" charset="utf-8"></script>
+
+    <style>
+      :root {
+        --border: 1px solid color-mix(in srgb, CanvasText 20%, Canvas);
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          color-scheme: dark;
+        }
+      }
+
+      html,
+      body {
+        height: 100%;
+      }
+      body {
+        margin: 0;
+        display: flex;
+        font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto,
+          Helvetica Neue, Arial, sans-serif, 'Apple Color Emoji',
+          'Segoe UI Emoji', Segoe UI Symbol;
+      }
+
+      .side {
+        flex: 1 0 0;
+        background-color: Canvas;
+      }
+
+      p {
+        margin: 0;
+        padding: 20px;
+        border-right: var(--border);
+      }
+      a {
+        text-decoration: none;
+      }
+      a:hover {
+        text-decoration: underline;
+      }
+
+      .input-side {
+        display: flex;
+        flex-direction: column;
+        position: sticky;
+        top: 0;
+      }
+      .input-scroll-wrapper {
+        border-top: var(--border);
+        border-right: var(--border);
+        overflow: auto;
+        flex: auto;
+        height: 0;
+      }
+      .input-scroll-wrapper:hover {
+        border-color: color-mix(in srgb, currentColor 50%, transparent);
+      }
+      .input-scroll-wrapper:focus-within {
+        border-color: currentColor;
+      }
+      .input-wrapper {
+        position: relative;
+        min-height: 100%;
+      }
+      .input,
+      .input-preview {
+        padding: 20px;
+        box-sizing: border-box;
+      }
+      .input {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        border: 0;
+        background: none;
+        font: inherit;
+        color: inherit;
+        resize: none;
+        padding-bottom: 0;
+      }
+      .input:focus {
+        outline: none;
+      }
+      .input-preview {
+        word-break: break-word;
+        white-space: pre-wrap;
+        color: transparent;
+      }
+      .special {
+        background: #f0b10066;
+        outline: 1px solid #f0b100;
+      }
+      .hover {
+        background: #fb2c3666;
+        outline: 1px solid #fb2c36;
+      }
+
+      .table {
+        align-self: flex-start;
+        border-collapse: collapse;
+      }
+      .table th {
+        border-bottom: var(--border);
+        text-align: left;
+      }
+      .table tbody tr:hover {
+        background: #fb2c3666;
+      }
+      .table tr :first-child {
+        width: 3ch;
+        text-align: right;
+      }
+      .table tr :nth-child(2) {
+        width: 2ch;
+        text-align: center;
+      }
+      .table a {
+        font-family: monospace;
+      }
+
+      @media (max-width: 600px) {
+        body {
+          flex-direction: column;
+        }
+        .input-side {
+          height: 50%;
+          flex: none;
+        }
+        .input-scroll-wrapper {
+          border-right: 0;
+          border-bottom: var(--border);
+        }
+        .table {
+          align-self: stretch;
+          flex: unset;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="side input-side">
+      <p>
+        Type or paste text here to list all the special Unicode
+        characters&mdash;any character that can't be typed on a U.S.
+        keyboard&mdash;hidden in the text.
+        <a href="./cyrillic-finder.html">Previous version</a>
+      </p>
+      <div class="input-scroll-wrapper">
+        <div class="input-wrapper">
+          <textarea class="input" id="input">
+Is this&nbsp;ordi&ZeroWidthSpace;nаry; 🤠</textarea
+          >
+          <div aria-hidden="true" class="input-preview" id="preview"></div>
+        </div>
+      </div>
+    </div>
+    <table class="side table">
+      <thead>
+        <tr>
+          <th>Pos.</th>
+          <th>Char.</th>
+          <th>Name</th>
+        </tr>
+      </thead>
+      <tbody id="table"></tbody>
+    </table>
+    <script type="module">
+      import { unicodeName } from 'https://esm.sh/unicode-name@1'
+
+      const input = document.getElementById('input')
+      const preview = document.getElementById('preview')
+      const table = document.getElementById('table')
+
+      preview.append('\u200b')
+
+      class Differ {
+        #target
+        #defaultInsert
+        #prevValue = []
+        #onNew
+        #onUpdateIndex
+
+        constructor (target, defaultInsert, onNew, onUpdateIndex) {
+          this.#target = target
+          this.#defaultInsert = defaultInsert
+          this.#onNew = onNew
+          this.#onUpdateIndex = onUpdateIndex
+        }
+
+        // overengineered diff function
+        update (chars) {
+          /** first `changeStart` chars are the same */
+          let changeStart = 0
+          while (
+            changeStart < chars.length &&
+            changeStart < this.#prevValue.length &&
+            chars[changeStart].char === this.#prevValue[changeStart].char
+          ) {
+            changeStart++
+          }
+          /** index after last changed char in `chars` */
+          let changeEndNew = chars.length
+          /** index after last changed char in `prevValue` */
+          let changeEndPrev = this.#prevValue.length
+          while (
+            changeEndNew - 1 >= changeStart &&
+            changeEndPrev - 1 >= changeStart &&
+            chars[changeEndNew - 1].char ===
+              this.#prevValue[changeEndPrev - 1].char
+          ) {
+            changeEndNew--
+            changeEndPrev--
+          }
+          for (let i = changeStart; i < changeEndPrev; i++) {
+            this.#prevValue[i].elem.remove()
+          }
+          this.#prevValue.splice(changeStart, changeEndPrev - changeStart)
+          // insert new chars
+          if (changeEndNew - changeStart > 0) {
+            const fragment = document.createDocumentFragment()
+            for (let i = changeStart; i < changeEndNew; i++) {
+              const result = this.#onNew(chars[i])
+              fragment.append(result.elem)
+              this.#prevValue.splice(i, 0, { ...chars[i], ...result })
+            }
+            if (changeStart === 0 && changeEndNew === this.#prevValue.length) {
+              this.#target[this.#defaultInsert](fragment)
+            } else if (changeStart === 0) {
+              this.#target.prepend(fragment)
+            } else {
+              this.#prevValue[changeStart - 1].elem.after(fragment)
+            }
+          }
+          if (this.#onUpdateIndex) {
+            for (let i = 0; i < this.#prevValue.length; i++) {
+              Object.assign(this.#prevValue[i], chars[i])
+              this.#onUpdateIndex(this.#prevValue[i])
+            }
+          }
+        }
+
+        static fromString (string) {
+          return Array.from(string, (char, i) => {
+            const codePoint = char.codePointAt()
+            const special = !(
+              (codePoint >= 32 && codePoint < 127) ||
+              char === '\n'
+            )
+            return { i, char, codePoint, special }
+          })
+        }
+      }
+
+      const textareaDiffer = new Differ(
+        preview,
+        'prepend',
+        ({ char, special }) => {
+          const span = document.createElement('span')
+          span.textContent = char
+          if (special) {
+            span.className = 'special'
+          }
+          return { elem: span }
+        }
+      )
+      const tableDiffer = new Differ(
+        table,
+        'prepend',
+        entry => {
+          const { char, codePoint, i } = entry
+          const row = document.createElement('tr')
+          let lastHover
+          row.addEventListener('pointerenter', () => {
+            lastHover?.classList.remove('hover')
+            lastHover = preview.children[entry.i]
+            lastHover?.classList.add('hover')
+          })
+          row.addEventListener('pointerleave', () => {
+            lastHover?.classList.remove('hover')
+          })
+          const pos = document.createElement('td')
+          pos.textContent = i
+          row.append(pos)
+          row.append(
+            Object.assign(document.createElement('td'), { textContent: char })
+          )
+          const name = document.createElement('td')
+          const hex = codePoint.toString(16).padStart(4, 0).toUpperCase()
+          name.append(
+            Object.assign(document.createElement('a'), {
+              href: `https://util.unicode.org/UnicodeJsps/character.jsp?a=${hex}`,
+              textContent: `U+${hex}`
+            }),
+            ` ${unicodeName(char)}`
+          )
+          row.append(name)
+          return { elem: row, pos }
+        },
+        ({ pos, i }) => {
+          pos.textContent = i
+        }
+      )
+
+      function update () {
+        const chars = Differ.fromString(input.value)
+        textareaDiffer.update(chars)
+        tableDiffer.update(chars.filter(char => char.special))
+      }
+      input.addEventListener('input', update)
+      update()
+
+      input.select()
+    </script>
+  </body>
+</html>

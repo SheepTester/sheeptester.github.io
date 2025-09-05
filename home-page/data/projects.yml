@@ -30,7 +30,7 @@
     - directory
 
 - path: /platformre/
-  image: img/plat.svg
+  image: img/plat.webp
   name: Platformre
   description: >-
     A tile-based platformer with a random level generator.
@@ -107,7 +107,7 @@
     - game
     - school
 
-- path: /javascripts/clicker
+- path: /javascripts/clicker/
   image: img/click-smaller.png
   name: Clicker Game
   description: >-
@@ -777,7 +777,7 @@
   tags:
     - utility
 
-- path: ?penland
+- path: /platformre/penland/inv.html
   image: img/penland-smaller.png
   name: Penland
   description: >-

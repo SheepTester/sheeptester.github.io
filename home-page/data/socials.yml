@@ -31,6 +31,10 @@ profiles:
     bg: '#1ed760'
     border: black
 
+  - name: LinkedIn
+    link: https://www.linkedin.com/in/yen-sean/
+    bg: '#0B66C2'
+
   - name: Twitter
     link: https://twitter.com/Sheep_tester/
     ball: '#1DA1F2'
@@ -211,10 +215,6 @@ profiles:
   - name: Expo
     link: https://expo.dev/@sheeptester
     ball: '#1B1F23'
-
-  - name: LinkedIn
-    link: https://www.linkedin.com/in/yen-sean/
-    bg: '#0B66C2'
 
   - name: Google Maps
     link: https://maps.app.goo.gl/kfWB94sEpb12bC9z9

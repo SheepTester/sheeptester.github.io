@@ -19,6 +19,7 @@ css {
 
   button {
     -webkit-appearance: none;
+    appearance: none;
     border: none;
     padding: 0;
     background: none;
@@ -34,52 +35,84 @@ css {
   }
 }
 
-html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
+html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"]
+{
   head {
-    meta[charset="UTF-8"];
-    script[src="/home-page/redirects/index.js"] {}
+    meta[charset='UTF-8'] {
+    }
+    script[src='/home-page/redirects/index.js'] {
+    }
 
-    meta[name="viewport"][content="width=device-width, initial-scale=1"];
+    meta[name='viewport'][content='width=device-width, initial-scale=1'] {
+    }
 
     // Typical meta
     title {
-      content: "SheepTester";
+      content: 'SheepTester';
     }
-    meta[name="description"][content="A list of some projects I have made using fancy web technologies."];
-    meta[name="keywords"][content="sheeptester, sheep tester, sheep_tester"];
-    meta[name="theme-color"][content="#4fa1a7"];
+    meta[name='description'][content='A list of some projects I have made using fancy web technologies.'] {
+    }
+    meta[name='keywords'][content='sheeptester, sheep tester, sheep_tester'] {
+    }
+    meta[name='theme-color'][content='#4fa1a7'] {
+    }
 
     // Google search
-    meta[name="google-site-verification"][content="hVAKq2ipG9tPimbCmGiDbT-Qq1-UEv35XweisVQ5VEE"];
+    meta[name='google-site-verification'][content='hVAKq2ipG9tPimbCmGiDbT-Qq1-UEv35XweisVQ5VEE'] {
+    }
 
     // Open graph
-    meta[name="title"][content="SheepTester"];
-    meta[property="og:title"][content="SheepTester"];
-    meta[property="og:type"][content="website"];
-    meta[property="og:url"][content="https://sheeptester.github.io/"];
-    meta[property="og:image"][content="https://sheeptester.github.io/home-page/preview/opengraph.png"];
-    meta[property="og:description"][content="A directory of some things I made."];
+    meta[name='title'][content='SheepTester'] {
+    }
+    meta[property='og:title'][content='SheepTester'] {
+    }
+    meta[property='og:type'][content='website'] {
+    }
+    meta[property="og:url"][content="https://sheeptester.github.io/"]
+    {
+    }
+    meta[property="og:image"][content="https://sheeptester.github.io/home-page/preview/opengraph.png"]
+    {
+    }
+    meta[property='og:description'][content='A directory of some things I made.'] {
+    }
 
     // Twitter
-    meta[name="twitter:card"][content="summary_large_image"];
-    meta[name="twitter:title"][content="SheepTester"];
-    meta[name="twitter:description"][content="A directory of some things I made."];
-    meta[name="twitter:image"][content="https://sheeptester.github.io/home-page/preview/opengraph.png"];
-    link[rel="canonical"][href="https://sheeptester.github.io/"];
+    meta[name='twitter:card'][content='summary_large_image'] {
+    }
+    meta[name='twitter:title'][content='SheepTester'] {
+    }
+    meta[name='twitter:description'][content='A directory of some things I made.'] {
+    }
+    meta[name="twitter:image"][content="https://sheeptester.github.io/home-page/preview/opengraph.png"]
+    {
+    }
+    link[rel="canonical"][href="https://sheeptester.github.io/"]
+    {
+    }
 
     // Other icons from http://realfavicongenerator.net/
-    link[rel="apple-touch-icon"][sizes="180x180"][href="/apple-touch-icon.png"];
-    link[rel="icon"][type="image/png"][sizes="32x32"][href="/favicon-32x32.png"];
-    link[rel="icon"][type="image/png"][sizes="16x16"][href="/favicon-16x16.png"];
-    link[rel="manifest"][href="/manifest.json"];
-    link[rel="mask-icon"][href="/safari-pinned-tab.svg"][color="#4fa1a7"];
+    link[rel='apple-touch-icon'][sizes='180x180'][href='/apple-touch-icon.png'] {
+    }
+    link[rel='icon'][type='image/png'][sizes='32x32'][href='/favicon-32x32.png'] {
+    }
+    link[rel='icon'][type='image/png'][sizes='16x16'][href='/favicon-16x16.png'] {
+    }
+    link[rel='manifest'][href='/manifest.json'] {
+    }
+    link[rel='mask-icon'][href='/safari-pinned-tab.svg'][color='#4fa1a7'] {
+    }
 
-    link[rel="search"][type="application/opensearchdescription+xml"][href="/all/search/opensearch.xml"][title="SheepTester"];
+    link[rel='search'][type='application/opensearchdescription+xml'][href='/all/search/opensearch.xml'][title='SheepTester'] {
+    }
 
-    link[rel="stylesheet"][type="text/css"][href="/sheep3.css"];
-    link[rel="stylesheet"][type="text/css"][href="/home-page/style.css"];
+    link[rel='stylesheet'][type='text/css'][href='/sheep3.css'] {
+    }
+    link[rel='stylesheet'][type='text/css'][href='/home-page/style.css'] {
+    }
 
-    script[src="/sheep3.js"] {}
+    script[src='/sheep3.js'] {
+    }
   }
 
   css {
@@ -113,31 +146,31 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
         'sidebar search'
         'sidebar tags'
         'sidebar projects'
-        'sidebar tinder-note'
+        'sidebar-bottom projects'
         'footer footer';
       grid-template-rows: repeat(4, auto) 1fr auto;
     }
   }
-  body[role="main"] {
+  body[role='main'] {
     script {
       // Need semicolons because the newlines are removed
       // Using ?. to weed out incompetent browsers
-      content: """
-        const params = new URL(window.location).searchParams;
-        if (params.get('from')?.startsWith('sheep')) {
-          window.history.replaceState({}, '', '/');
-          document.body.classList.add('from-sheep');
-        }
-        document.body.classList.add('has-js');
-        window.jsSuccess = true;
-      """;
+      content: "\
+        const params = new URL(window.location).searchParams;\
+        if (params.get('from')?.startsWith('sheep')) {\
+          window.history.replaceState({}, '', '/');\
+          document.body.classList.add('from-sheep');\
+        }\
+        document.body.classList.add('has-js');\
+        window.jsSuccess = true;\
+      ";
     }
     script {
-      content: """
-        if (!window.jsSuccess) {
-          document.body.className = 'old-js';
-        }
-      """;
+      content: "\
+        if (!window.jsSuccess) {\
+          document.body.className = 'old-js';\
+        }\
+      ";
     }
 
     css {
@@ -149,8 +182,20 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
         right: 0;
         height: 145px;
         background-image: linear-gradient(90deg, #20de88, #28bbe8);
-        -webkit-mask-image: linear-gradient(to top, transparent, rgba(0, 0, 0, 0.08) 10px, rgba(0, 0, 0, 0.25) 20px, black 20px);
-        mask-image: linear-gradient(to top, transparent, rgba(0, 0, 0, 0.08) 10px, rgba(0, 0, 0, 0.25) 20px, black 20px);
+        -webkit-mask-image: linear-gradient(
+          to top,
+          transparent,
+          rgba(0, 0, 0, 0.08) 10px,
+          rgba(0, 0, 0, 0.25) 20px,
+          black 20px
+        );
+        mask-image: linear-gradient(
+          to top,
+          transparent,
+          rgba(0, 0, 0, 0.08) 10px,
+          rgba(0, 0, 0, 0.25) 20px,
+          black 20px
+        );
       }
     }
     @media (min-width: 1000px) {
@@ -158,7 +203,8 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
         height: 60px;
       }
     }
-    .strip {}
+    .strip {
+    }
 
     css {
       .intro {
@@ -167,7 +213,8 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
         right: 50%;
         z-index: 5;
         transform-origin: bottom right;
-        animation: to-corner-then-disappear 2s cubic-bezier(0.7, 0, 0.35, 1) 1.2s forwards;
+        animation: to-corner-then-disappear 2s cubic-bezier(0.7, 0, 0.35, 1)
+          1.2s forwards;
       }
       @keyframes to-corner-then-disappear {
         // Go to corner
@@ -223,7 +270,8 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
           }
         }
       }
-      .intro-back {}
+      .intro-back {
+      }
 
       css {
         .logo {
@@ -235,19 +283,20 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
           pointer-events: none;
         }
       }
-      svg.logo[xmlns="http://www.w3.org/2000/svg"][viewBox="0 0 480 480"][width="45"][aria-hidden="true"] {
-        $path: """
-          M90 90
-          a50 50 0 0 0 0 100
-          H98.579
-          A150 150 0 1 0 381.421 190
-          H390
-          a50 50 0 0 0 0 -100
-          a50 50 0 1 1 -100 0
-          a50 50 0 1 1 -100 0
-          a50 50 0 1 1 -100 0
-          z
-        """;
+      svg.logo[xmlns="http://www.w3.org/2000/svg"][viewBox="0 0 480 480"][width="45"][aria-hidden="true"]
+      {
+        $path: '\
+          M90 90\
+          a50 50 0 0 0 0 100\
+          H98.579\
+          A150 150 0 1 0 381.421 190\
+          H390\
+          a50 50 0 0 0 0 -100\
+          a50 50 0 1 1 -100 0\
+          a50 50 0 1 1 -100 0\
+          a50 50 0 1 1 -100 0\
+          z\
+        ';
         css {
           .logo-path {
             fill: none;
@@ -269,7 +318,8 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
             animation: none;
           }
         }
-        path.logo-path[d="#{$path}"];
+        path.logo-path[d='#{$path}'] {
+        }
       }
 
       css {
@@ -346,8 +396,8 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
           clip-path: none;
         }
       }
-      a.visually-hidden.a11y-link[href="#projects"] {
-        content: "Skip to my projects";
+      a.visually-hidden.a11y-link[href='#projects'] {
+        content: 'Skip to my projects';
       }
 
       .card {
@@ -372,7 +422,7 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
           }
         }
         h1#hello {
-          content: "Hello,";
+          content: 'Hello,';
         }
         css {
           .me-photo {
@@ -384,29 +434,31 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
             object-position: 50% -20px;
           }
         }
-        img.me-photo[src="./img/sean-at-sutro-baths-by-cat.jpg"][alt="Me standing on a wall surrounded by water at Sutro Baths with the sun setting behind me."][width="700"];
+        img.me-photo[src='./img/sean-at-sutro-baths-by-cat.jpg'][alt='Me standing on a wall surrounded by water at Sutro Baths with the sun setting behind me.'][width='700'] {
+        }
         css {
           .gradient {
             margin: 0 -20px;
             height: 115px;
             margin-top: -100px;
             margin-bottom: -60px;
-            background-image: linear-gradient(transparent, #24364a 80%, #24364a);
+            background-image: linear-gradient(
+              transparent,
+              #24364a 80%,
+              #24364a
+            );
             position: relative;
           }
         }
-        .gradient {}
+        .gradient {
+        }
         css {
           .about-me {
             position: relative;
           }
         }
         p.about-me {
-          content: "I’m Sean, in my fourth year at ";
-          a.link[href="https://sheeptester.github.io/longer-tweets/major/"] {
-            content: "UC San Diego";
-          }
-          content: ", formerly a student at Gunn High School.";
+          content: 'I’m Sean. For most of my life, I was in school—most recently UC San Diego and Gunn High School—and now I expect to spend double that time employed.';
         }
         css {
           .card .datum {
@@ -429,51 +481,51 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
         }
         p.datum {
           span.attribute {
-            content: "Pronounce";
+            content: 'Pronounce';
           }
           span.colon {
-            content: ": ";
+            content: ': ';
           }
-          span[lang="en-fonipa"] {
-            content: "/ʃɔːn/";
+          span[lang='en-fonipa'] {
+            content: '/ʃɑːn/';
           }
         }
         p.datum {
           span.attribute {
-            content: "Pronouns";
+            content: 'Pronouns';
           }
           span.colon {
-            content: ": ";
+            content: ': ';
           }
-          content: "he/him/his ";
+          content: 'he/him/his ';
           span.emoji {
-            content: "♂️";
+            content: '♂️';
           }
         }
         p.datum {
           span.attribute {
-            content: "Location";
+            content: 'Location';
           }
           span.colon {
-            content: ": ";
+            content: ': ';
           }
-          content: "SF Bay Area and San Diego";
+          content: 'San Francisco Bay Area';
         }
         p.datum {
           span.attribute {
-            content: "Time Zone";
+            content: 'Time Zone';
           }
           span.colon {
-            content: ": ";
+            content: ': ';
           }
-          content: "Pacific Time";
+          content: 'Pacific Time';
         }
         p.datum {
           span.attribute {
-            content: "Age";
+            content: 'Age';
           }
           span.colon {
-            content: ": ";
+            content: ': ';
           }
           css {
             .age-clickable {
@@ -503,34 +555,34 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
               opacity: 0.4;
             }
           }
-          span#age[role="text"] {
-            content: "at least 13";
+          span#age[role='text'] {
+            content: 'at least 13';
           }
-          content: " years";
+          content: ' years';
         }
         p.datum {
           span.attribute {
-            content: "Zodiac";
+            content: 'Zodiac';
           }
           span.colon {
-            content: ": ";
+            content: ': ';
           }
-          content: "sheep ";
-          span[lang="zh"] {
-            content: "羊";
+          content: 'sheep ';
+          span[lang='zh'] {
+            content: '羊';
           }
-          content: ", Aries ";
+          content: ', Aries ';
           span.emoji {
-            content: "♈";
+            content: '♈';
           }
         }
 
         p {
-          content: "I made this website for current and former kids. If you're an employer, check out my ";
-          a.link[href="/résumé/"] {
-            content: "résumé";
+          content: "I made this website for anyone who is or was once a kid. If you're an employer, check out my ";
+          a.link[href='/résumé/'] {
+            content: 'résumé';
           }
-          content: ".";
+          content: '.';
         }
 
         // css {
@@ -672,10 +724,10 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
 
       .card {
         h2#stalk {
-          content: "How to stalk me";
+          content: 'How to stalk me';
         }
 
-        $socials: import("./data/socials.yml");
+        $socials: import('./data/socials.yml');
 
         css {
           .socials {
@@ -700,10 +752,10 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
           }
         }
         p.socials {
-          $type: "a";
+          $type: 'a';
           @each $social in map.get($socials, 'profiles') {
-            @import "./templates/social.html.scss";
-            content: " ";
+            @import './templates/social.html.scss';
+            content: ' ';
           }
         }
 
@@ -716,8 +768,8 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
           }
         }
         .usernames {
-          $type: "span";
-          $extra-class: "username-icon";
+          $type: 'span';
+          $extra-class: 'username-icon';
           @each $social in map.get($socials, 'usernames') {
             css {
               .username {
@@ -738,10 +790,10 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
             }
             @if map.get($social, 'link') {
               a.username[href="#{map.get($social, 'link')}"] {
-                @import "./templates/social.html.scss";
+                @import './templates/social.html.scss';
                 span {
                   span.colon {
-                    content: ": ";
+                    content: ': ';
                   }
                   content: "#{map.get($social, 'username')}";
                 }
@@ -749,10 +801,10 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
             }
             @if not map.get($social, 'link') {
               span.username {
-                @import "./templates/social.html.scss";
+                @import './templates/social.html.scss';
                 span {
                   span.colon {
-                    content: ": ";
+                    content: ': ';
                   }
                   content: "#{map.get($social, 'username')}";
                 }
@@ -798,12 +850,12 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
             height: 32px;
           }
         }
-        a.block-link[href="./guestbook/"] {
+        a.block-link[href='./guestbook/'] {
           span.block-link-content {
             span.block-link-title {
-              content: "Sign the Guestbook";
+              content: 'Sign the Guestbook';
               span.colon {
-                content: ": ";
+                content: ': ';
               }
             }
             span.block-link-subtitle {
@@ -811,51 +863,53 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
             }
           }
         }
-        content: " ";
-        a.block-link[href="https://discord.gg/srtYgbVw4H"] {
+        content: ' ';
+        a.block-link[href="https://discord.gg/srtYgbVw4H"]
+        {
           span.block-link-content {
             span.block-link-title {
-              content: "Contact me through Discord";
+              content: 'Contact me through Discord';
               span.colon {
-                content: "; ";
+                content: '; ';
               }
             }
             span.block-link-subtitle {
-              content: "Join my server to message me without a friend request. ";
+              content: 'Join my server to message me without a friend request. ';
             }
           }
           span.block-link-icon-wrapper {
-            $type: "span";
-            $extra-class: "block-link-icon";
+            $type: 'span';
+            $extra-class: 'block-link-icon';
             $social: map.get($socials, 'discord');
-            @import "./templates/social.html.scss";
+            @import './templates/social.html.scss';
           }
         }
-        content: " ";
-        a.block-link[href="https://www.instagram.com/sheeptester/"] {
+        content: ' ';
+        a.block-link.no-subtitle[href="https://www.instagram.com/sheeptester/"]
+        {
           span.block-link-content {
             span.block-link-title {
-              content: "Follow me on Instagram";
+              content: 'Follow me on Instagram';
               span.colon {
-                content: "; ";
+                content: '; ';
               }
             }
-            span.block-link-subtitle {
-              content: "I like big numbers. ";
-            }
+            // span.block-link-subtitle {
+            //   content: "I like big numbers. ";
+            // }
           }
           span.block-link-icon-wrapper {
-            $type: "span";
-            $extra-class: "block-link-icon";
+            $type: 'span';
+            $extra-class: 'block-link-icon';
             $social: map.get($socials, 'instagram');
-            @import "./templates/social.html.scss";
+            @import './templates/social.html.scss';
           }
         }
-        content: " ";
-        a.block-link.no-subtitle[href="/résumé/"] {
+        content: ' ';
+        a.block-link.no-subtitle[href='/résumé/'] {
           span.block-link-content {
             span.block-link-title {
-              content: "View my résumé";
+              content: 'View my résumé';
             }
             // span.block-link-subtitle {
             //   content: "For employers.";
@@ -867,81 +921,17 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
                 background-image: url('/home-page/icons/feather-arrow-right.svg');
                 background-position: center;
                 background-repeat: no-repeat;
-                transition: transform .2s;
+                transition: transform 0.2s;
               }
               .block-link:hover .resume-icon {
                 transform: translateX(5px);
               }
             }
-            span.block-link-icon.resume-icon {}
+            span.block-link-icon.resume-icon {
+            }
           }
         }
       }
-
-      // .card {
-      //   css {
-      //     .card p {
-      //       line-height: 1.4;
-      //     }
-      //   }
-      //   h2#why-sheep {
-      //     content: "Why sheep?";
-      //   }
-      //   p {
-      //     content: "I was born in the year of the sheep, so when I was like 8 months old, my mom gave me a stuffed animal sheep. We named her ";
-      //     span[lang="zh"] {
-      //       content: "羊羊";
-      //     }
-      //     content: " (Yang-Yang), which is like a diminutive form of “sheep.” She still exists today as a testament to the durability of polyester fibers.";
-      //   }
-      //   p {
-      //     content: "I named ";
-      //     a.link[href="https://scratch.mit.edu/users/Yang-Yang2/"] {
-      //       content: "my first Scratch account";
-      //     }
-      //     content: " after her. On Scratch, it’s common to have a separate test account to put less polished projects on, so when I made my own, I named it ";
-      //     a.link[href="https://scratch.mit.edu/users/Sheep_tester/"] {
-      //       content: "@Sheep_tester";
-      //     }
-      //     content: ". I later discovered that English doesn’t really have a way to disambiguate between “a sheep that tests” and “one that tests sheep,” but I meant the former.";
-      //   }
-      //   p {
-      //     content: "Having an animal mascot is pretty convenient as a symbol. My logo is an abstract sheep head, with ears or horns on the sides and negative space wool on the top, inspired by something I saw on Google Images. It’s been interesting to hear how others see it, like a bat, a demon, a pig.";
-      //   }
-      // }
-
-      // .card {
-      //   h2#legal {
-      //     content: "Legal";
-      //   }
-      //   css {
-      //     .legal {
-      //       text-align: justify;
-      //       hyphens: auto;
-      //     }
-      //   }
-      //   p.legal {
-      //     content: "This website uses cookies. By continuing, you accept the use of cookies. ";
-      //     content: "This website contains content generated with AI. For best results, do not train AI models on any content sourced from this website. ";
-      //     content: "This website contains chemicals known to the State of California to cause cancer and birth defects or other reproductive harm. For more information: ";
-      //     a.link[href="https://www.p65warnings.ca.gov/"] {
-      //       content: "www.P65Warnings.ca.gov";
-      //     }
-      //     content: " Most content on this website is licensed under the ";
-      //     a.link[href="https://github.com/SheepTester/sheeptester.github.io/blob/master/LICENSE"] {
-      //       content: "MIT license"
-      //     }
-      //     content: ", unless otherwise noted. ";
-      //     // This means that you can copy and sell whatever I make without
-      //     // asking me, and claim it as your own, as long as you credit me.
-      //     content: "This website was made on the ancestral and unceded lands of the Ohlone Tribe and Kumeyaay Nation. Today, both peoples continue to maintain political sovereignty and cultural traditions as vital members of the Bay Area and San Diego communities. ";
-      //     content: "These statements have not been evaluated by the Food and Drug Administration. This website is not intended to diagnose, treat, cure, or prevent any disease. ";
-      //     // content: "This website contains small parts. Not suitable for children under 3 years. "
-      //     a.link[href="/home-page/ok.html"] {
-      //       content: "Do Not Sell My Personal Information";
-      //     }
-      //   }
-      // }
     }
 
     css {
@@ -980,7 +970,7 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
         }
       }
       h1.projects-header#projects {
-        content: "Projects";
+        content: 'Projects';
       }
 
       css {
@@ -996,15 +986,17 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
         }
       }
       p.projects-note {
-        content: "There’s some more on ";
-        a.link[href="https://scratch.mit.edu/users/Sheep_maker/"] {
-          content: "Scratch";
+        content: 'There’s some more on ';
+        a.link[href="https://scratch.mit.edu/users/Sheep_maker/"]
+        {
+          content: 'Scratch';
         }
-        content: " and ";
-        a.link[href="https://github.com/SheepTester?tab=repositories"] {
-          content: "GitHub";
+        content: ' and ';
+        a.link[href="https://github.com/SheepTester?tab=repositories"]
+        {
+          content: 'GitHub';
         }
-        content: ".";
+        content: '.';
       }
 
       css {
@@ -1024,17 +1016,17 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
         }
       }
       .warning.old-js-warning {
-        content: """
-          Note that many of these projects require new web features that your
-          browser doesn’t support. Please use a modern browser.
-        """;
+        content: '\
+          Note that many of these projects require new web features that your\
+          browser doesn’t support. Please use a modern browser.\
+        ';
       }
       noscript {
         .warning.no-js {
-          content: """
-            Note that many of these projects require JavaScript, which you do
-            not have enabled.
-          """;
+          content: '\
+            Note that many of these projects require JavaScript, which you do\
+            not have enabled.\
+          ';
         }
       }
     }
@@ -1081,7 +1073,7 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
         flex: none;
       }
       .search::placeholder {
-        color: color-mix(in srgb, currentColor, transparent 50%)
+        color: color-mix(in srgb, currentColor, transparent 50%);
       }
       .search-form:focus-within .search {
         max-width: 800px;
@@ -1103,8 +1095,8 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
       }
       .search-form:focus-within .suggestions {
         display: block;
-        transition: opacity .5s, transform .5s, visibility .5s;
-        animation: suggestions-appear .5s;
+        transition: opacity 0.5s, transform 0.5s, visibility 0.5s;
+        animation: suggestions-appear 0.5s;
       }
       .search-form:focus-within .no-results {
         animation-duration: 0s;
@@ -1158,10 +1150,12 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
         max-width: 400px;
       }
     }
-    form.projects-info.search-form#search-form[autocomplete="off"] {
+    form.projects-info.search-form#search-form[autocomplete='off'][action='/all/search/'] {
       .search-wrapper {
-        input.search#search[type="search"][placeholder="Search everything"][aria-label="Search everything"];
-        .suggestions.no-results#suggestions {}
+        input.search#search[type='search'][name='q'][placeholder='Search everything'][aria-label='Search everything'] {
+        }
+        .suggestions.no-results#suggestions {
+        }
       }
     }
 
@@ -1192,7 +1186,7 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
         }
       }
       h2.filter-by#filter-by {
-        content: "Filter by";
+        content: 'Filter by';
       }
       css {
         .filters {
@@ -1203,14 +1197,14 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
         }
       }
       p.filters {
-        $tags: import("./data/tags.yml");
+        $tags: import('./data/tags.yml');
         @each $tag, $tag-data in $tags {
           css {
             .base-tag {
               background-position: center, 30px 30px, 0 0;
               background-repeat: no-repeat;
               background-size: 75%, 75%, auto;
-              transition: opacity .5s, background-position .2s;
+              transition: opacity 0.5s, background-position 0.2s;
             }
           }
           css {
@@ -1221,25 +1215,32 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
           @if not map.get($tag-data, 'dark') {
             css {
               .tag-#{$tag} {
-                background-image: url("/home-page/icons/tag-#{$tag}.svg"),
-                  url("/home-page/icons/feather-check.svg"),
-                  linear-gradient(150deg, #{map.get($tag-data, 'colour1')},
-                  #{map.get($tag-data, 'colour2')});
+                background-image: url('/home-page/icons/tag-#{$tag}.svg'),
+                  url('/home-page/icons/feather-check.svg'),
+                  linear-gradient(
+                    150deg,
+                    #{map.get($tag-data, 'colour1')},
+                    #{map.get($tag-data, 'colour2')}
+                  );
               }
             }
           }
           @if map.get($tag-data, 'dark') {
             css {
               .tag-#{$tag} {
-                background-image: url("/home-page/icons/tag-#{$tag}.svg"),
-                  url("/home-page/icons/feather-check-black.svg"),
-                  linear-gradient(150deg, #{map.get($tag-data, 'colour1')},
-                  #{map.get($tag-data, 'colour2')});
+                background-image: url('/home-page/icons/tag-#{$tag}.svg'),
+                  url('/home-page/icons/feather-check-black.svg'),
+                  linear-gradient(
+                    150deg,
+                    #{map.get($tag-data, 'colour1')},
+                    #{map.get($tag-data, 'colour2')}
+                  );
               }
             }
           }
 
-          input[type="checkbox"].visually-hidden.filter-checkbox#filter-by-#{$tag};
+          input[type='checkbox'].visually-hidden.filter-checkbox#filter-by-#{$tag} {
+          }
 
           css {
             .filter-tag {
@@ -1250,7 +1251,7 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
               height: 30px;
               padding: 3px;
               box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
-              transition: background-color .2s, color .2s;
+              transition: background-color 0.2s, color 0.2s;
             }
             .filter-tag:hover {
               background-color: #1f2e3f;
@@ -1263,7 +1264,7 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
               color: #111213;
             }
           }
-          label.filter-tag[for="filter-by-#{$tag}"] {
+          label.filter-tag[for='filter-by-#{$tag}'] {
             css {
               .filter-tag-icon {
                 width: 30px;
@@ -1275,7 +1276,8 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
                 background-position: -30px -30px, center, 0 0;
               }
             }
-            span.filter-tag-icon.base-tag.tag-#{$tag} {}
+            span.filter-tag-icon.base-tag.tag-#{$tag} {
+            }
 
             css {
               .filter-tag-name {
@@ -1288,7 +1290,7 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
               content: "#{map.get($tag-data, 'name')}";
             }
           }
-          content: " ";
+          content: ' ';
         }
       }
     }
@@ -1300,6 +1302,7 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
         padding: 20px 0;
         grid-auto-flow: dense;
         margin: 0;
+        grid-area: projects;
       }
     }
     @media (min-width: 680px) {
@@ -1309,10 +1312,35 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
         padding: 20px;
       }
     }
+    @media (min-width: 1000px) {
+      .projects {
+        align-self: start;
+      }
+    }
     p.projects#projects-wrapper {
-      @each $project in import("./data/projects.yml") {
-        @import "./templates/project.html.scss";
-        content: " ";
+      @each $project in import('./data/projects.yml') {
+        @import './templates/project.html.scss';
+        content: ' ';
+      }
+
+      css {
+        .tinder-note {
+          margin: 0;
+          padding: 20px;
+          padding-bottom: 0;
+          grid-column: 1 / -1;
+        }
+      }
+      @media (min-width: 680px) {
+        .tinder-note {
+          padding: 0;
+        }
+      }
+      span.tinder-note {
+        content: 'That was merely a preview of what this website has in store. ';
+        a.link[href='./all/tinder.html'] {
+          content: 'Explore and sort through everything else.';
+        }
       }
     }
 
@@ -1334,7 +1362,7 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
         border: 1px solid rgba(151, 189, 179, 0.2);
       }
     }
-    .description#description-wrapper[style="display:none"][role="contentinfo"] {
+    .description#description-wrapper[style='display:none'][role='contentinfo'] {
       css {
         .description-body {
           width: 100%;
@@ -1354,7 +1382,8 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
             line-height: 1.1;
           }
         }
-        h2.desc-title#desc-title {}
+        h2.desc-title#desc-title {
+        }
 
         .description-tags#desc-tags {
           css {
@@ -1404,7 +1433,7 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
           margin-top: 0;
           border-radius: 50px;
           font-weight: bold;
-          transition: background-color .2s;
+          transition: background-color 0.2s;
         }
         .desc-visit:hover {
           background-color: rgba(255, 255, 255, 0.05);
@@ -1415,24 +1444,91 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
           display: none;
         }
       }
-      a[href="#"].desc-visit#desc-link {
-        content: "Visit";
+      a[href='#'].desc-visit#desc-link {
+        content: 'Visit';
       }
     }
 
     css {
-      .tinder-note {
-        margin: 0;
-        padding: 20px;
-        padding-top: 0;
-        padding-right: 60px;
-        grid-area: tinder-note;
+      .about-bottom {
+        grid-area: sidebar-bottom;
+      }
+      .about-bottom .card:first-child {
+        margin-top: 0;
       }
     }
-    p.tinder-note {
-      content: "That was merely a preview of what this website has in store. ";
-      a.link[href="./all/tinder.html"] {
-        content: "Explore and sort through everything else.";
+    .about.about-bottom {
+      .card {
+        css {
+          .card p {
+            line-height: 1.4;
+          }
+        }
+        h2#why-sheep {
+          content: 'Why sheep?';
+        }
+        p {
+          content: 'Because I was born in the year of the sheep, my mom gave me a stuffed animal sheep when I was 8 months old. We named her ';
+          span[lang='zh'] {
+            content: '羊羊';
+          }
+          content: ' (Yang-Yang).';
+        }
+        p {
+          content: 'Yang-Yang is the namesake of ';
+          a.link[href="https://scratch.mit.edu/users/Yang-Yang2/"]
+          {
+            content: 'my first Scratch account';
+          }
+          content: ', and I named its test account ';
+          a.link[href="https://scratch.mit.edu/users/Sheep_tester/"]
+          {
+            content: '@Sheep_tester';
+          }
+          content: '. “Sheep Tester” was meant to mean “a sheep who tests,” but people seem to interpret it as “one who tests sheep.”';
+        }
+        // p {
+        //   content: "Having an animal mascot is pretty convenient as a symbol. My logo is an abstract sheep head, with ears or horns on the sides and negative space wool on the top, inspired by something I saw on Google Images. It’s been interesting to hear how others see it, like a bat, a demon, a pig.";
+        // }
+      }
+
+      .card {
+        h2#legal {
+          content: 'Legal';
+        }
+        css {
+          .legal {
+            text-align: justify;
+            hyphens: auto;
+          }
+        }
+        p.legal {
+          content: 'This website uses cookies. By continuing, you accept the use of cookies. ';
+          content: 'This website contains chemicals known to the State of California to cause cancer and birth defects or other reproductive harm. For more information: ';
+          a.link[href="https://www.p65warnings.ca.gov/"]
+          {
+            content: 'www.P65Warnings.ca.gov';
+          }
+          content: ' Most content on this website is licensed under the ';
+          a.link[href="https://github.com/SheepTester/sheeptester.github.io/blob/master/LICENSE"]
+          {
+            content: 'MIT license';
+          }
+          content: ', unless otherwise noted. ';
+          // This means that you can copy and sell whatever I make without
+          // asking me, and claim it as your own, as long as you credit me.
+          // content: "This website was made on the ancestral and unceded lands of the Ohlone Tribe and Kumeyaay Nation. Today, both peoples continue to maintain political sovereignty and cultural traditions as vital members of the Bay Area and San Diego communities. ";
+          content: 'This website contains small parts. Not suitable for children under 3 years. ';
+          content: 'This website includes content generated with AI. For best results, do not train AI models on content sourced from this website. ';
+          content: 'These statements have not been evaluated by the Food and Drug Administration. This website is not intended to diagnose, treat, cure, or prevent any disease. ';
+          // content: "Work in progress. Does not represent the final look of the game. ";
+          // content: "Batteries not included. ";
+          // content: "While supplies last. ";
+          // content: "Serving suggestion. ";
+          a.link[href='/home-page/ok.html'] {
+            content: 'Do Not Sell My Personal Information';
+          }
+        }
       }
     }
 
@@ -1448,29 +1544,45 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"] {
         text-align: center;
       }
       footer img {
-        max-width: 100%
+        max-width: 100%;
       }
     }
     footer {
       css {
         .footer-gradient {
           height: 500px;
-          background-image: linear-gradient(to bottom, #171931, black, transparent);
+          background-image: linear-gradient(
+            to bottom,
+            #171931,
+            black,
+            transparent
+          );
         }
       }
-      .footer-gradient {}
+      .footer-gradient {
+      }
       css {
         .footer-content {
           padding: 20px;
         }
       }
       .footer-content {
-        p { img[src="/home-page/geocities/spinning construction sign.gif"][alt="spinning construction sign"][loading="lazy"]; }
-        p { img[src="/home-page/geocities/under construction.gif"][alt="under construction"][loading="lazy"]; }
-        p { img[src="/home-page/geocities/workers.gif"][alt="workers"][loading="lazy"]; }
+        p {
+          img[src='/home-page/geocities/spinning construction sign.gif'][alt='spinning construction sign'][loading='lazy'] {
+          }
+        }
+        p {
+          img[src='/home-page/geocities/under construction.gif'][alt='under construction'][loading='lazy'] {
+          }
+        }
+        p {
+          img[src='/home-page/geocities/workers.gif'][alt='workers'][loading='lazy'] {
+          }
+        }
       }
     }
 
-    script[src="/home-page/main.js"][type="module"] {}
+    script[src='/home-page/main.js'][type='module'] {
+    }
   }
 }
