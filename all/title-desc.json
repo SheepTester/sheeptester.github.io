@@ -4540,5 +4540,95 @@
 		"title": "Intl.DurationFormat",
 		"description": "kamala harris is brat",
 		"sheep": 3
+	},
+	{
+		"path": "/hello-world/deobf/rs/",
+		"title": "libr",
+		"description": "pound? book? free?",
+		"sheep": null
+	},
+	{
+		"path": "/hello-world/deobf/",
+		"title": "Deobfuscate obfuscated JS files in an app.asar | hello-world",
+		"description": "Innocent first test.",
+		"sheep": null
+	},
+	{
+		"path": "/hello-world/docs/",
+		"title": "ahoy matees",
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/hello-world/test/100vh-cover.html",
+		"title": "100vh vs 100svh vs 100lvh vs 100dvh (with viewport-fit=cover)",
+		"description": "open this on mobile",
+		"sheep": null
+	},
+	{
+		"path": "/hello-world/test/100vh.html",
+		"title": "100vh vs 100svh vs 100lvh vs 100dvh",
+		"description": "open this on mobile",
+		"sheep": null
+	},
+	{
+		"path": "/hello-world/test/callback.html",
+		"title": "trevor",
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/hello-world/test/malicious.html",
+		"title": null,
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/javascripts/special-character-finder.html",
+		"title": "Special Character Finder (v2)",
+		"description": "Finds any special Unicode characters hidden in your text.",
+		"sheep": 3
+	},
+	{
+		"path": "/longer-tweets/colored-functions/",
+		"title": "thinking about colored functions",
+		"description": "Brainstorming solutions to colored functions.",
+		"sheep": 3
+	},
+	{
+		"path": "/longer-tweets/martian-math/",
+		"title": "An Example From Martian Math",
+		"description": "Taken From A Text In Spyloctogy",
+		"sheep": 3
+	},
+	{
+		"path": "/longer-tweets/react/",
+		"title": "React is fine",
+		"description": "Todo",
+		"sheep": 3
+	},
+	{
+		"path": "/qr/peer/",
+		"title": "Peer-to-peer file share",
+		"description": "Share files directly between devices, locally or over the internet",
+		"sheep": 3
+	},
+	{
+		"path": "/ucsd-classrooms/",
+		"title": "UCSD Classroom Schedules",
+		"description": "See what lectures are happening around you, or when a classroom isn't being used.",
+		"sheep": 3
+	},
+	{
+		"path": "/words-go-here/misc/2swap-state-space/",
+		"title": "state space thing",
+		"description": "inspired by 2swap video",
+		"sheep": 3
+	},
+	{
+		"path": "/words-go-here/misc/trump-tweet.html",
+		"title": "Fake a Truth Social post",
+		"description": "People like to post screenshots of posts without linking to a source, leading to complacency that makes it really easy to fabricate a Trump tweet.",
+		"sheep": 3
 	}
 ]

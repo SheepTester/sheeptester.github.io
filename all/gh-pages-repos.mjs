@@ -69,7 +69,8 @@ export const actionsRepos = [
   'doufu',
   'qr',
   'cse272-project',
-  'hello-world'
+  'hello-world',
+  'ucsd-classrooms'
 ]
 
 export const ignore = [

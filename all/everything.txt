@@ -18,6 +18,10 @@ material-launch.svg
 >cacher
 index.html
 <
+>img-previews
+.gitignore
+index.mts
+<
 >links
 index.html
 main.js
@@ -53,6 +57,7 @@ gen.js
 generator.html
 get-all.mjs
 getter.user.js
+gh-pages-repos.d.mts
 gh-pages-repos.mjs
 go-to-gh.js
 index.html
@@ -352,7 +357,7 @@ index.js.map
 worker.js
 worker.js.map
 <
-atlas-FNVLU72E.png
+atlas-AQJDP2CL.png
 index.css
 index.css.map
 index.html
@@ -831,6 +836,16 @@ list-audio.mjs
 README.md
 thumbnail-maker.js
 <
+>deobf
+>rs
+index.html
+index.js
+pdf.js
+<
+deobfuscate.js
+index.html
+README.md
+<
 >detect-inspect-element
 >node
 index.html
@@ -842,6 +857,9 @@ main.js
 main.js.map
 sw.js
 test.js
+<
+>docs
+index.html
 <
 >dotfiles-vscode
 >snippets
@@ -919,6 +937,7 @@ image.png
 help-text.txt
 index.html
 instructions.html
+README.md
 styles.css
 upload-download.bundle.js
 upload.html
@@ -984,8 +1003,12 @@ toolbar.png
 <
 manifest.json
 <
+100vh-cover.html
+100vh.html
 adminbot.html
+albums.json
 bad.js
+callback.html
 canvas-get-people.js
 Charlie_Liu.html
 chem43a.js
@@ -1033,6 +1056,7 @@ keys.txt
 last-modified.txt
 link test.html
 link test.md
+malicious.html
 mastodone.html
 mdmdmdd.html
 mongodb.js
@@ -1096,6 +1120,7 @@ README.md
 >userscripts
 advent-easter-eggs.user.css
 autoid.user.js
+chatgpt-easier-to-mass-delete.user.css
 clown.gif
 dark-schoology.user.css
 dark-theme-inputs.user.css
@@ -1114,6 +1139,7 @@ katex-latex.user.css
 midpenmedia-minimal.user.css
 mobile-spotify.user.js
 no-fun.user.js
+old-reddit-mobile-touch.user.css
 pausd-guest-auto-auth.user.js
 quora-hide-signin.user.css
 README.md
@@ -1129,6 +1155,8 @@ sgy-hide-answers.user.css
 show-discord-spoilers.user.css
 skracxteamgxenanto.user.js
 small-screen-discord.user.css
+spotify-miniplayer.user.css
+spotify-miniplayer.user.js
 story-stealer.user.js
 thinner-scratch.user.js
 tiktok-controls.user.css
@@ -1165,6 +1193,7 @@ cards.html
 charcode.html
 chrome get all history matching query (eg "webtoons").js
 chrome-list-sites-with-most-data.js
+clipper-sucks.js
 CODE_OF_CONDUCT.md
 code-golf-boomer01-clicker-game.html
 CONTRIBUTING.md
@@ -1751,6 +1780,7 @@ pi.webp
 pistole-smaller.png
 plaincolor.webp
 plat.svg
+plat.webp
 platformre.png
 platmakre-smaller.png
 prereqs.webp
@@ -2167,6 +2197,7 @@ sigfigs.js
 simplecolour.css
 simplecolour.js
 snowflake.html
+special-character-finder.html
 sstv-encoder.html
 sstv-test-image.png
 still-2020.html
@@ -2217,6 +2248,9 @@ index.html
 comment.yml
 <
 <
+>.vscode
+settings.json
+<
 >always-var
 index.html
 <
@@ -2224,6 +2258,9 @@ index.html
 index.html
 <
 >closing-html
+index.html
+<
+>colored-functions
 index.html
 <
 >creating-this-blog
@@ -2408,6 +2445,9 @@ index.html
 >major
 index.html
 <
+>martian-math
+index.html
+<
 >matrix-lab
 index.html
 <
@@ -2421,6 +2461,9 @@ index.html
 index.html
 <
 >racism-response
+index.html
+<
+>react
 index.html
 <
 >scratch-www-troubles
@@ -2451,6 +2494,7 @@ index.html
 index.html
 <
 .prettierignore
+.prettierrc.yml
 404.html
 index.html
 package-lock.json
@@ -2816,6 +2860,11 @@ info.svg
 plasticBag.svg
 <
 >qr
+>peer
+index.html
+<
+index-peer.css
+index-peer.js
 index.css
 index.html
 index.js
@@ -3666,6 +3715,19 @@ main.js
 index.html
 style.css
 <
+>ucsd-classrooms
+index.css
+index.html
+index.js
+map-Y27R7POC.webp
+material-arrow-drop-down-black-6REO6Q3L.svg
+material-arrow-drop-down-white-6SBEOKL6.svg
+material-check-white-EO6UTSEL.svg
+material-done-white-EO6UTSEL.svg
+material-edit-white-PLQSK4RU.svg
+open-graph.png
+sitemap.txt
+<
 >ucsd-sunset
 >images
 add-to-bookmarks-bar.png
@@ -3859,6 +3921,17 @@ download.js
 index.html
 <
 >misc
+>2swap-state-space
+Board.ts
+Deque.ts
+global.d.ts
+index.html
+index.js
+index.ts
+README.md
+render.wgsl
+sim.wgsl
+<
 >artificial-thonkulos
 >evo-sim
 index.html
@@ -3982,6 +4055,7 @@ zener-iv.svg
 zener-iv.tex
 <
 >kaaba
+.gitignore
 blocks.ts
 Chunk.ts
 index.html
@@ -3994,6 +4068,7 @@ serve.ts
 shader-test.wgsl
 shader.wgsl
 textures.png
+Vector2.d.ts
 webgpu.ts
 <
 >min-sw-test
@@ -4169,6 +4244,9 @@ tiles2.html
 tiles3.html
 triangulated-coordinates.html
 trig.html
+trump-pfp.jpeg
+trump-tweet.html
+tsconfig.json
 uc-key.png
 ucsd-college-colours.html
 ucsd-map.html
@@ -4198,8 +4276,6 @@ a1.js
 a2.js
 attempt1.html
 attempt2.html
-deno.json
-deno.lock
 index.html
 LICENSE
 package-lock.json
