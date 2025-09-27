@@ -936,7 +936,7 @@
     - utility
     - school
 
-- path: /uxdy/classrooms/
+- path: /ucsd-classrooms/
   image: img/classrooms.png
   name: UCSD classroom schedule
   description: >-
