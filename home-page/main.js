@@ -107,6 +107,10 @@ projectsWrapper.addEventListener('click', e => {
   }
 })
 
+for (const projectLink of document.getElementsByClassName('project')) {
+  // TODO: there should be a better way to get the project name
+  projectLink.ariaLabel = `${projectLink.textContent.trim()}: ${projectLink.dataset.desc}`
+}
 for (const showInfoBtn of document.getElementsByClassName('show-info-btn')) {
   showInfoBtn.ariaExpanded = 'false'
 }
