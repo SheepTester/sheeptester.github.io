@@ -957,6 +957,33 @@
     - utility
     - school
 
+- path: https://free-food-ucsd.vercel.app/
+  image: img/free-food-ucsd.webp
+  name: Free Food Events at UCSD
+  description: >-
+    A lot of events at UC San Diego received funding from student activity fees,
+    and they would often use them to offer food to attract attendees. I liked
+    events with free food because they helped save on dining dollars (our dining
+    halls weren't All-You-Can-Eat), obviated the need to decide what to eat, and
+    was a great opportunity to meet new people.
+
+    For most of college, keeping track of events with free food was a very
+    manual process. I had find and follow Instagram accounts for UCSD orgs that
+    would often have free food, scroll through their stories each day, and add
+    any events with free food to my calendar.
+
+    Since I got into LA Hacks 2025, I decided to spend the time making an
+    Instagram scraper. It uses Playwright to open up a browser instance and
+    pretend to scroll through posts and stories like a human user. It intercepts
+    the images sent by Instagram to the web page, and sends them to Gemini,
+    which acts as a glorified OCR program to extract event details (time,
+    location) and whether it has free food. After the hackathon, I continued
+    polishing up the scraper, so it mostly runs on its own without requiring
+    significant intervention.
+  tags:
+    - utility
+    - school
+
 - path: https://cse110-sp23-group20.github.io/8ball/
   image: img/8ball.webp
   name: Magic 8 Ball
