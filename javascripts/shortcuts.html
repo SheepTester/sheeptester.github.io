@@ -46,7 +46,7 @@
     </style>
   </head>
   <body>
-    <p>Press a keyboard shortcut. How about <code>ctrl+shift+Q</code> or <code>command+Q</code>?</p>
+    <p>Press a keyboard shortcut. How about <code>ctrl+shift+Q</code> or <code>⌘ Q</code>?</p>
 
     <script src="../sheep.js"></script>
     <script>
@@ -90,7 +90,7 @@ function ShortcutGuide(shortcuts) {
   },
   render=_=>{
     while (guide.hasChildNodes()) guide.removeChild(guide.lastChild);
-    if (keydowns.length&&(keydowns[0]==='ctrl'||keydowns[0]==='meta'||keydowns[0]==='alt')) {
+    if (keydowns.length&&(keydowns[0]==='ctrl'||keydowns[0]==='⌘'||keydowns[0]==='alt')) {
       var s=document.createElement("already-typed");
       s.innerHTML=keydowns.join(' + ');
       guide.appendChild(s);
@@ -139,7 +139,7 @@ function ShortcutGuide(shortcuts) {
           if (!e.ctrlKey) keydowns.splice(i,1);
           else i++;
           break;
-        case 'meta':
+        case '⌘':
           if (!e.metaKey) keydowns.splice(i,1);
           else i++;
           break;
