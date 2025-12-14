@@ -4630,5 +4630,65 @@
 		"title": "Fake a Truth Social post",
 		"description": "People like to post screenshots of posts without linking to a source, leading to complacency that makes it really easy to fabricate a Trump tweet.",
 		"sheep": 3
+	},
+	{
+		"path": "/hello-world/test/asus/soc-med-controller/",
+		"title": "hello-world | Innocent first test.",
+		"description": "Innocent first test.",
+		"sheep": null
+	},
+	{
+		"path": "/hello-world/test/asus/dash.html",
+		"title": "Manage Subscription",
+		"description": "",
+		"sheep": null
+	},
+	{
+		"path": "/hello-world/test/asus/webreg.html",
+		"title": "Link Family",
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/hello-world/test/vscdb.html",
+		"title": "export vscode state as json",
+		"description": "vscode stores its state in sqlite database but it's jsut a keyvalue store",
+		"sheep": 3
+	},
+	{
+		"path": "/hello-world/Wi-Fi%20exporter/",
+		"title": "Wi-Fi Exporter",
+		"description": "Export your Wi-Fi passwords as CSV",
+		"sheep": null
+	},
+	{
+		"path": "/hello-world/image-clipboard.html",
+		"title": "Image Clipboard Manager",
+		"description": null,
+		"sheep": null
+	},
+	{
+		"path": "/hello-world/Spittin%20bars.html",
+		"title": "make an image 16:9 by adding bars",
+		"description": "makes an image 16:9 or 9:16 by adding black bars as needed ",
+		"sheep": 3
+	},
+	{
+		"path": "/longer-tweets/microplastics/",
+		"title": "microplastics are not harmful",
+		"description": "",
+		"sheep": 3
+	},
+	{
+		"path": "/longer-tweets/slop/",
+		"title": "Art need not worry",
+		"description": "Wondering how AI-generated media could affect creative expression.",
+		"sheep": 3
+	},
+	{
+		"path": "/longer-tweets/squash/",
+		"title": "merge commits better than squash commits",
+		"description": "",
+		"sheep": 3
 	}
 ]

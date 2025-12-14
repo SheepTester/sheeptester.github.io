@@ -123,6 +123,9 @@ https://sheeptester.github.io/hello-world/redpitaya_FPGA/
 https://sheeptester.github.io/hello-world/slicedlime-vanilla-worldgen/
 https://sheeptester.github.io/hello-world/test/%20%0A%20%0A/%0Anewline.html
 https://sheeptester.github.io/hello-world/test/a/s/s/e/t/s/
+https://sheeptester.github.io/hello-world/test/asus/soc-med-controller/
+https://sheeptester.github.io/hello-world/test/asus/dash.html
+https://sheeptester.github.io/hello-world/test/asus/webreg.html
 https://sheeptester.github.io/hello-world/test/100vh-cover.html
 https://sheeptester.github.io/hello-world/test/100vh.html
 https://sheeptester.github.io/hello-world/test/adminbot.html
@@ -157,11 +160,13 @@ https://sheeptester.github.io/hello-world/test/sans-nouveaux-test.html
 https://sheeptester.github.io/hello-world/test/testthing.html
 https://sheeptester.github.io/hello-world/test/trans-dic.html
 https://sheeptester.github.io/hello-world/test/uhh.html
+https://sheeptester.github.io/hello-world/test/vscdb.html
 https://sheeptester.github.io/hello-world/test/wow.html
 https://sheeptester.github.io/hello-world/turbo-fiesta/nfc-reader/
 https://sheeptester.github.io/hello-world/ucsd-commencement-voices/
 https://sheeptester.github.io/hello-world/ucsd-schedule-gen/
 https://sheeptester.github.io/hello-world/userscripts/
+https://sheeptester.github.io/hello-world/Wi-Fi%20exporter/
 https://sheeptester.github.io/hello-world/404.html
 https://sheeptester.github.io/hello-world/access-console-api.html
 https://sheeptester.github.io/hello-world/alerter.html
@@ -196,6 +201,7 @@ https://sheeptester.github.io/hello-world/graph.html
 https://sheeptester.github.io/hello-world/gunn-confessions.html
 https://sheeptester.github.io/hello-world/ic-get-schedule.html
 https://sheeptester.github.io/hello-world/idle.html
+https://sheeptester.github.io/hello-world/image-clipboard.html
 https://sheeptester.github.io/hello-world/
 https://sheeptester.github.io/hello-world/
 https://sheeptester.github.io/hello-world/julienbtn.html
@@ -223,6 +229,7 @@ https://sheeptester.github.io/hello-world/sgy-pendo.html
 https://sheeptester.github.io/hello-world/shy.html
 https://sheeptester.github.io/hello-world/sigfig.html
 https://sheeptester.github.io/hello-world/spamsound.html
+https://sheeptester.github.io/hello-world/Spittin%20bars.html
 https://sheeptester.github.io/hello-world/sstv-image.html
 https://sheeptester.github.io/hello-world/svgception.html
 https://sheeptester.github.io/hello-world/system-colours.html
@@ -415,6 +422,7 @@ https://sheeptester.github.io/longer-tweets/lol-vocabulary/
 https://sheeptester.github.io/longer-tweets/major/
 https://sheeptester.github.io/longer-tweets/martian-math/
 https://sheeptester.github.io/longer-tweets/matrix-lab/
+https://sheeptester.github.io/longer-tweets/microplastics/
 https://sheeptester.github.io/longer-tweets/phonology/
 https://sheeptester.github.io/longer-tweets/pickles/
 https://sheeptester.github.io/longer-tweets/pronouns/
@@ -423,6 +431,8 @@ https://sheeptester.github.io/longer-tweets/react/
 https://sheeptester.github.io/longer-tweets/scratch-www-troubles/
 https://sheeptester.github.io/longer-tweets/sdctf24/
 https://sheeptester.github.io/longer-tweets/securly-bypass/
+https://sheeptester.github.io/longer-tweets/slop/
+https://sheeptester.github.io/longer-tweets/squash/
 https://sheeptester.github.io/longer-tweets/test/
 https://sheeptester.github.io/longer-tweets/ucsd-colleges/
 https://sheeptester.github.io/longer-tweets/ugwa-alt-schedules/

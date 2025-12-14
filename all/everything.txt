@@ -993,6 +993,27 @@ README.md
 <
 <
 <
+>asus
+>soc-med-controller
+index.html
+README.md
+<
+>test-npm-github
+package-lock.json
+package.json
+<
+>test-pip-ca
+requirements.txt
+<
+challenge-input.txt
+dash.html
+htmlifier-test.mjs
+lactf-jsfudge.js
+package-lock.json
+package.json
+search-by-all.json
+webreg.html
+<
 >discord-backup
 bot.js
 package.json
@@ -1090,9 +1111,11 @@ ucsd-summarise-courses.js
 ugwa-usage.mjs
 uhh.html
 uhh.md
+vscdb.html
 WI24 schedule.png
 wow.html
 wow.txt
+yipyip.js
 <
 >turbo-fiesta
 >nfc-reader
@@ -1172,6 +1195,12 @@ yt-concentrator.user.css
 yt-shorts.user.js
 yt-skip-ad.user.js
 <
+>Wi-Fi exporter
+index.html
+Not Wi-Fi.mp3
+QR scanner.js
+Success.mp3
+<
 404.html
 access-console-api.html
 achieve-macmillanlearning-is-terrible.user.js
@@ -1236,6 +1265,7 @@ ic-get-schedule.js
 ic-scrape-sections.js
 idle.html
 ig-stories.bookmarklet.js
+image-clipboard.html
 index.html
 index.md
 investigations.js
@@ -1283,6 +1313,7 @@ shy.html
 sigfig.html
 sitemap.txt
 spamsound.html
+Spittin bars.html
 sstv-image.html
 svgception.html
 system-colours.html
@@ -1717,6 +1748,7 @@ fgr-smaller.png
 filters.webp
 flappy-smaller.png
 fluent-emoji.png
+free-food-ucsd.webp
 fword-smaller.png
 gif-caption.png
 gif-frame.webp
@@ -2451,6 +2483,9 @@ index.html
 >matrix-lab
 index.html
 <
+>microplastics
+index.html
+<
 >phonology
 index.html
 <
@@ -2473,6 +2508,12 @@ index.html
 index.html
 <
 >securly-bypass
+index.html
+<
+>slop
+index.html
+<
+>squash
 index.html
 <
 >test
@@ -3822,6 +3863,8 @@ classrooms-WI24-full.txt
 classrooms-WI24.txt
 classrooms-WI25-full.txt
 classrooms-WI25.txt
+classrooms-WI26-full.txt
+classrooms-WI26.txt
 classrooms-WI95-full.txt
 classrooms-WI95.txt
 <
