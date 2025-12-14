@@ -412,6 +412,7 @@ select {
 [type='range'] {
   cursor: ew-resize;
   height: 40px;
+  touch-action: none;
 
   &:focus {
     outline: none;
