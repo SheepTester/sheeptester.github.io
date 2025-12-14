@@ -65,7 +65,9 @@ function setDescription (project) {
     descElems.tags.append(createTag(tag))
   }
   empty(descElems.text)
-  for (const paragraph of project.dataset.desc.split(/\r?\n/)) {
+  for (const paragraph of project
+    .querySelector('.thumbnail')
+    .alt.split(/\r?\n/)) {
     const p = document.createElement('p')
     p.textContent = paragraph
     descElems.text.append(p)
@@ -107,10 +109,6 @@ projectsWrapper.addEventListener('click', e => {
   }
 })
 
-for (const projectLink of document.getElementsByClassName('project')) {
-  // TODO: there should be a better way to get the project name
-  projectLink.ariaLabel = `${projectLink.textContent.trim()}: ${projectLink.dataset.desc}`
-}
 for (const showInfoBtn of document.getElementsByClassName('show-info-btn')) {
   showInfoBtn.ariaExpanded = 'false'
 }
