@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Decolonial piano</title>
+    <meta
+      name="description"
+      content="Who says there has to be 12 semitones in an octave?"
+    />
+
+    <link rel="stylesheet" type="text/css" href="/sheep3.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <script src="/sheep3.js" charset="utf-8"></script>
+
+    <style>
+      @media (prefers-color-scheme: dark) {
+        :root {
+          color-scheme: dark;
+        }
+      }
+      html,
+      body,
+      #root {
+        height: 100%;
+      }
+      body {
+        margin: 0;
+        font-family: 'Montserrat', sans-serif;
+      }
+
+      #root {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 20px;
+      }
+
+      button {
+        border: none;
+        background: none;
+        color: inherit;
+        font: inherit;
+      }
+      button:not(:disabled) {
+        cursor: pointer;
+      }
+
+      .key-counts {
+        display: flex;
+        gap: 10px;
+      }
+      .key-count {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        position: relative;
+        width: 30px;
+        height: 30px;
+        font-weight: bold;
+        border: 1px solid color-mix(in srgb, CanvasText 10%, transparent);
+        border-radius: 5px;
+        transition: background-color 0.2s;
+        &:not(.selected):hover {
+          background-color: color-mix(in srgb, CanvasText 5%, transparent);
+        }
+        &:has(> :focus-visible) {
+          box-shadow: 0 0 0 1px Canvas, 0 0 0 3px LinkText;
+        }
+
+        & input {
+          opacity: 0;
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          margin: 0;
+          padding: 0;
+          cursor: pointer;
+        }
+      }
+      .selected {
+        background-color: CanvasText;
+        color: Canvas;
+      }
+      .sound-btn {
+        font-size: 0;
+
+        & svg {
+          fill: none;
+          stroke: currentColor;
+          stroke-width: 2;
+          stroke-linecap: round;
+          stroke-linejoin: round;
+        }
+      }
+
+      .piano-wrapper {
+        width: 100%;
+        overflow: hidden;
+        display: flex;
+        justify-content: center;
+      }
+      .piano {
+        display: flex;
+        height: 400px;
+        border: 1px solid color-mix(in srgb, CanvasText 10%, transparent);
+        border-right: none;
+      }
+      .key {
+        width: 80px;
+        border-right: 1px solid color-mix(in srgb, CanvasText 10%, transparent);
+        display: flex;
+        gap: 10px;
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: flex-end;
+        padding: 10px;
+        box-sizing: border-box;
+        cursor: pointer;
+
+        & kbd {
+          font: inherit;
+          padding: 2px 5px;
+          border: 1px solid color-mix(in srgb, currentColor 10%, transparent);
+          border-bottom-width: 3px;
+          border-radius: 2px;
+          font-size: 0.8em;
+          color: color-mix(in srgb, currentColor 80%, transparent);
+        }
+      }
+      .hidden {
+        visibility: hidden;
+      }
+      .current-octave {
+        background-color: color-mix(in srgb, CanvasText 2%, transparent);
+      }
+      .key-name {
+        color: color-mix(in srgb, currentColor 50%, transparent);
+        font-size: 0.8em;
+      }
+      .pressed {
+        background-color: CanvasText;
+        color: Canvas;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module">
+      import { h, render, Fragment } from 'https://esm.sh/preact@10.28.0'
+      import {
+        useState,
+        useEffect,
+        useRef
+      } from 'https://esm.sh/preact@10.28.0/hooks'
+
+      const KEYS = [...'`1234567890-=', 'Backspace']
+      const NOTE_NAMES = [
+        'A',
+        'A#',
+        'B',
+        'C',
+        'C#',
+        'D',
+        'D#',
+        'E',
+        'F',
+        'F#',
+        'G',
+        'G#'
+      ]
+
+      const audioContext = new AudioContext()
+      console.log(audioContext)
+
+      function App () {
+        const [semitones, setSemitones] = useState(12)
+        const [pressed, setPressed] = useState(new Set())
+        const [muted, setMuted] = useState(true)
+
+        const extraOctaves = 1
+        const keyOffset = Math.floor((KEYS.length - semitones) / 2)
+
+        useEffect(() => {
+          const handleKeyDown = e => {
+            setPressed(pressed => pressed.union(new Set([e.key])))
+          }
+          const handleKeyUp = e => {
+            setPressed(pressed => pressed.difference(new Set([e.key])))
+          }
+          window.addEventListener('keydown', handleKeyDown)
+          window.addEventListener('keyup', handleKeyUp)
+          return () => {
+            window.removeEventListener('keydown', handleKeyDown)
+            window.removeEventListener('keyup', handleKeyUp)
+          }
+        }, [])
+
+        useEffect(() => {
+          setMuted(audioContext.state !== 'running')
+        }, [muted])
+
+        const audioNodes = useRef()
+
+        useEffect(() => {
+          const nodes = Array.from(
+            { length: (2 * extraOctaves + 1) * semitones },
+            (_, i) => {
+              const index = i - extraOctaves * semitones
+
+              const oscillatorNode = audioContext.createOscillator()
+              oscillatorNode.frequency.value = 440 * 2 ** (index / semitones)
+              console.log(index / semitones)
+              oscillatorNode.start()
+
+              const gainNode = audioContext.createGain()
+              gainNode.gain.value = 0
+
+              oscillatorNode.connect(gainNode)
+              gainNode.connect(audioContext.destination)
+
+              return { oscillatorNode, gainNode }
+            }
+          )
+          audioNodes.current = nodes.map(({ gainNode }) => gainNode)
+          return () => {
+            for (const { oscillatorNode, gainNode } of nodes) {
+              oscillatorNode.stop()
+              gainNode.disconnect()
+            }
+          }
+        }, [semitones, extraOctaves])
+
+        useEffect(() => {
+          for (const [i, gainNode] of audioNodes.current.entries()) {
+            const index = i - extraOctaves * semitones
+            const keyIndex = index + keyOffset
+            const isPressed =
+              (keyIndex >= 0 &&
+                keyIndex < KEYS.length &&
+                pressed.has(KEYS[keyIndex])) ||
+              pressed.has(i)
+            gainNode.gain.value = isPressed ? 1 : 0
+          }
+        }, [pressed])
+
+        return h(
+          Fragment,
+          null,
+          h(
+            'div',
+            { class: 'key-counts' },
+            Array.from({ length: 16 }, (_, i) =>
+              h(
+                'label',
+                {
+                  key: i,
+                  class: `key-count ${semitones === i + 1 ? 'selected' : ''}`
+                },
+                h('input', {
+                  type: 'radio',
+                  name: 'semitones',
+                  value: i + 1,
+                  checked: semitones === i + 1,
+                  onClick: () => setSemitones(i + 1)
+                }),
+                i + 1
+              )
+            ),
+            h(
+              'button',
+              {
+                type: 'button',
+                class: 'sound-btn',
+                onClick: async () => {
+                  try {
+                    if (audioContext.state === 'running') {
+                      await audioContext.suspend()
+                    } else {
+                      await audioContext.resume()
+                    }
+                  } finally {
+                    setMuted(audioContext.state !== 'running')
+                  }
+                }
+              },
+              // https://github.com/feathericons/feather/blob/main/icons/volume-2.svg
+              h(
+                'svg',
+                {
+                  'aria-hidden': true,
+                  xmlns: 'http://www.w3.org/2000/svg',
+                  width: '24',
+                  height: '24',
+                  viewBox: '0 0 24 24'
+                },
+                h('path', {
+                  d: `M 11 5 L 6 9 L 2 9 L 2 15 L 6 15 L 11 19 L 11 5 z ${
+                    muted
+                      ? 'M 23 9 17 15 M 17 9 23 15'
+                      : 'M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07'
+                  }`
+                })
+              ),
+              muted ? 'Enable sound' : 'Mute'
+            )
+          ),
+          h(
+            'div',
+            { class: 'piano-wrapper' },
+            h(
+              'div',
+              { class: 'piano' },
+              Array.from({ length: 2 * extraOctaves + 1 }, (_, i) =>
+                h(
+                  Fragment,
+                  { key: i - extraOctaves },
+                  Array.from({ length: semitones }, (_, j) => {
+                    const index = (i - extraOctaves) * semitones + j
+                    const semitone = index / semitones
+
+                    const keyIndex = index + keyOffset
+                    const key =
+                      keyIndex >= 0 && keyIndex < KEYS.length
+                        ? KEYS[keyIndex]
+                        : null
+
+                    return h(
+                      'div',
+                      {
+                        class: `key ${
+                          index >= 0 && index <= semitones
+                            ? 'current-octave'
+                            : ''
+                        } ${pressed.has(key) ? 'pressed' : ''}`
+                      },
+                      semitones === 12 || j === 0
+                        ? h(
+                          'div',
+                          { class: 'key-name' },
+                          NOTE_NAMES[j] + (i - extraOctaves + 4)
+                        )
+                        : null,
+                      key
+                        ? h(
+                          'kbd',
+                          { class: 'key-key' },
+                          key === 'Backspace' ? '←' : key
+                        )
+                        : h('kbd', { class: 'key-key hidden' }, '.')
+                    )
+                  })
+                )
+              )
+            )
+          )
+        )
+      }
+
+      render(h(App), document.getElementById('root'))
+    </script>
+  </body>
+</html>
