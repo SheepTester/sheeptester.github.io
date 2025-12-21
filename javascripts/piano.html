@@ -359,25 +359,33 @@
             (_, i) => {
               const index = i - extraOctaves * semitones
 
-              return {
-                oscillatorNode: null,
-                frequency: baseFreq * 2 ** (index / semitones),
-                type: waveform
-              }
+              const oscillatorNode = audioContext.createOscillator()
+              oscillatorNode.frequency.value =
+                baseFreq * 2 ** (index / semitones)
+              oscillatorNode.type = waveform
+              oscillatorNode.start()
+
+              const gainNode = audioContext.createGain()
+              gainNode.gain.value = 0
+
+              oscillatorNode.connect(gainNode)
+              gainNode.connect(audioContext.destination)
+
+              return { oscillatorNode, gainNode }
             }
           )
-          audioNodes.current = nodes
+          audioNodes.current = nodes.map(({ gainNode }) => gainNode)
           return () => {
-            for (const { oscillatorNode } of nodes) {
+            for (const { oscillatorNode, gainNode } of nodes) {
               oscillatorNode.stop()
-              oscillatorNode.disconnect()
+              gainNode.disconnect()
             }
           }
         }, [baseFreq, semitones, extraOctaves, waveform])
 
         useEffect(() => {
           setMuted(audioContext.state !== 'running')
-          for (const [i, node] of audioNodes.current.entries()) {
+          for (const [i, gainNode] of audioNodes.current.entries()) {
             const index = i - extraOctaves * semitones
             const keyIndex = index + keyOffset
             const isPressed =
@@ -385,21 +393,7 @@
                 keyIndex < KEYS.length &&
                 pressed.has(KEYS[keyIndex])) ||
               pressed.has(index)
-            if (isPressed) {
-              if (!node.oscillatorNode) {
-                node.oscillatorNode = audioContext.createOscillator()
-                node.oscillatorNode.frequency.value = +node.frequency.toFixed(2)
-                node.oscillatorNode.type = node.type
-                node.oscillatorNode.connect(audioContext.destination)
-                node.oscillatorNode.start()
-              }
-            } else {
-              if (node.oscillatorNode) {
-                node.oscillatorNode.stop()
-                node.oscillatorNode.disconnect()
-                node.oscillatorNode = null
-              }
-            }
+            gainNode.gain.value = isPressed ? 1 : 0
           }
         }, [pressed])
 
