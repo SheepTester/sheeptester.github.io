@@ -574,22 +574,26 @@
                             NOTE_NAMES[(j + baseNote) % DEFAULT_SEMITONES] +
                               (i - extraOctaves + baseOctave)
                           )
-                          : h(
-                            'div',
-                            {
-                              class: `key-name ${
-                                approxNote.error > 0.01 ? 'has-approx' : ''
-                              }`
-                            },
-                            approxNote.error > 0.01
-                              ? h(
-                                'div',
-                                { class: 'approx' },
-                                `${((1 - approxNote.error) * 100).toFixed(0)}%`
-                              )
-                              : null,
-                            approxNote.displayName
-                          ),
+                          : approxNote.error < 0.49
+                            ? h(
+                              'div',
+                              {
+                                class: `key-name ${
+                                  approxNote.error > 0.01 ? 'has-approx' : ''
+                                }`
+                              },
+                              approxNote.error > 0.01
+                                ? h(
+                                  'div',
+                                  { class: 'approx' },
+                                  `${((1 - approxNote.error) * 100).toFixed(
+                                    0
+                                  )}%`
+                                )
+                                : null,
+                              approxNote.displayName
+                            )
+                            : null,
                         key
                           ? h(
                             'kbd',
