@@ -53,7 +53,16 @@
         cursor: pointer;
       }
 
-      .key-counts {
+      svg {
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 2px;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+
+      .key-counts,
+      .waveforms {
         display: flex;
         gap: 10px;
         padding: 10px;
@@ -61,15 +70,11 @@
         justify-content: center;
         margin: 0 auto;
       }
-      .key-count {
-        display: flex;
-        align-items: center;
-        justify-content: center;
+      .key-count,
+      .waveform {
+        height: 30px;
         cursor: pointer;
         position: relative;
-        width: 30px;
-        height: 30px;
-        font-weight: bold;
         border: 1px solid color-mix(in srgb, CanvasText 10%, transparent);
         border-radius: 5px;
         transition: background-color 0.2s;
@@ -92,20 +97,30 @@
           cursor: pointer;
         }
       }
+      .key-count {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 30px;
+        font-weight: bold;
+      }
+      .waveform {
+        font-size: 0;
+        padding: 5px;
+        box-sizing: border-box;
+        & svg {
+          height: 100%;
+        }
+      }
       .selected {
         background-color: CanvasText;
         color: Canvas;
       }
       .sound-btn {
         font-size: 0;
-
-        & svg {
-          fill: none;
-          stroke: currentColor;
-          stroke-width: 2;
-          stroke-linecap: round;
-          stroke-linejoin: round;
-        }
+        width: 30px;
+        height: 30px;
+        padding: 0;
       }
       .alert {
         color: Canvas;
@@ -193,6 +208,7 @@
 
         & input {
           flex: auto;
+          touch-action: none;
         }
       }
       .base-note {
@@ -229,6 +245,25 @@
       ]
       const DEFAULT_SEMITONES = NOTE_NAMES.length
 
+      const WH = 10
+      const WAVEFORMS = {
+        // Gemini
+        sine: `M 0 ${
+          WH / 2
+        } q 5 ${-WH} 10 0 t 10 0 t 10 0 t 10 0 t 10 0 t 10 0`,
+        // ChatGPT
+        // sine: `M 0 ${
+        //   WH / 2
+        // } c 10 0 10 ${-WH} 20 ${-WH} c 10 0 10 ${WH} 20 ${WH} c 10 0 10 ${-WH} 20 ${-WH} c 10 0 10 ${WH} 20 ${WH}`,
+        triangle: `M 0 ${WH / 2} l 5 ${
+          WH / 2
+        } l 10 ${-WH} l 10 ${WH} l 10 ${-WH} l 10 ${WH} l 10 ${-WH} l 5 ${
+          WH / 2
+        }`,
+        sawtooth: `M 0 ${WH} l 20 ${-WH} v ${WH} l 20 ${-WH} v ${WH} l 20 ${-WH} v ${WH}`,
+        square: `M 0 ${WH} v ${-WH} h 10 v ${WH} h 10 v ${-WH} h 10 v ${WH} h 10 v ${-WH} h 10 v ${WH} h 10 v ${-WH}`
+      }
+
       const audioContext = new AudioContext()
 
       function App () {
@@ -237,17 +272,21 @@
         const [mousePressed, setMousePressed] = useState(false)
         const [muted, setMuted] = useState(true)
         const [base, setBase] = useState(4 * DEFAULT_SEMITONES) // A4
+        const [waveform, setWaveform] = useState('sine')
 
         const baseNote = base % DEFAULT_SEMITONES
         const baseOctave = Math.floor(base / DEFAULT_SEMITONES)
         const baseFreq = 440 * 2 ** (base / DEFAULT_SEMITONES - 4)
-        const extraOctaves = 1
+        const extraOctaves = semitones > 5 ? 1 : semitones > 3 ? 2 : 3
         const keyOffset = Math.floor((KEYS.length - semitones) / 2)
 
         useEffect(() => {
           const handleKeyDown = e => {
             if (KEYS.includes(e.key)) {
               setPressed(pressed => pressed.union(new Set([e.key])))
+            }
+            if (audioContext.state !== 'running') {
+              audioContext.resume()
             }
           }
           const handleKeyUp = e => {
@@ -256,6 +295,9 @@
           const handlePointerDown = e => {
             if (e.pointerType !== 'touch') {
               setMousePressed(true)
+            }
+            if (audioContext.state !== 'running') {
+              audioContext.resume()
             }
           }
           const handlePointerEnd = e => {
@@ -300,6 +342,7 @@
               const oscillatorNode = audioContext.createOscillator()
               oscillatorNode.frequency.value =
                 baseFreq * 2 ** (index / semitones)
+              oscillatorNode.type = waveform
               oscillatorNode.start()
 
               const gainNode = audioContext.createGain()
@@ -318,9 +361,10 @@
               gainNode.disconnect()
             }
           }
-        }, [baseFreq, semitones, extraOctaves])
+        }, [baseFreq, semitones, extraOctaves, waveform])
 
         useEffect(() => {
+          setMuted(audioContext.state !== 'running')
           for (const [i, gainNode] of audioNodes.current.entries()) {
             const index = i - extraOctaves * semitones
             const keyIndex = index + keyOffset
@@ -338,24 +382,7 @@
           null,
           h(
             'div',
-            { class: 'key-counts' },
-            Array.from({ length: 16 }, (_, i) =>
-              h(
-                'label',
-                {
-                  key: i,
-                  class: `key-count ${semitones === i + 1 ? 'selected' : ''}`
-                },
-                h('input', {
-                  type: 'radio',
-                  name: 'semitones',
-                  value: i + 1,
-                  checked: semitones === i + 1,
-                  onClick: () => setSemitones(i + 1)
-                }),
-                i + 1
-              )
-            ),
+            { class: 'waveforms' },
             h(
               'button',
               {
@@ -392,6 +419,55 @@
                 })
               ),
               muted ? 'Enable sound' : 'Mute'
+            ),
+            Object.entries(WAVEFORMS).map(([waveformName, path]) =>
+              h(
+                'label',
+                {
+                  key: waveformName,
+                  class: `waveform ${
+                    waveform === waveformName ? 'selected' : ''
+                  }`
+                },
+                h('input', {
+                  type: 'radio',
+                  name: 'waveform',
+                  value: waveformName,
+                  checked: waveform === waveformName,
+                  onClick: () => setWaveform(waveformName)
+                }),
+                waveformName,
+                h(
+                  'svg',
+                  {
+                    'aria-hidden': true,
+                    xmlns: 'http://www.w3.org/2000/svg',
+                    viewBox: `-2 -2 64 ${WH + 4}`
+                  },
+                  h('path', { d: path })
+                )
+              )
+            )
+          ),
+          h(
+            'div',
+            { class: 'key-counts' },
+            Array.from({ length: 16 }, (_, i) =>
+              h(
+                'label',
+                {
+                  key: i,
+                  class: `key-count ${semitones === i + 1 ? 'selected' : ''}`
+                },
+                h('input', {
+                  type: 'radio',
+                  name: 'semitones',
+                  value: i + 1,
+                  checked: semitones === i + 1,
+                  onClick: () => setSemitones(i + 1)
+                }),
+                i + 1
+              )
             )
           ),
           h(
