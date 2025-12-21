@@ -385,15 +385,25 @@
 
         useEffect(() => {
           setMuted(audioContext.state !== 'running')
-          for (const [i, gainNode] of audioNodes.current.entries()) {
-            const index = i - extraOctaves * semitones
-            const keyIndex = index + keyOffset
-            const isPressed =
-              (keyIndex >= 0 &&
+          const pressedIndices = new Set(
+            Array.from(audioNodes.current.entries(), ([i, gainNode]) => {
+              const index = i - extraOctaves * semitones
+              const keyIndex = index + keyOffset
+              return (keyIndex >= 0 &&
                 keyIndex < KEYS.length &&
                 pressed.has(KEYS[keyIndex])) ||
-              pressed.has(index)
-            gainNode.gain.value = isPressed ? 1 : 0
+                pressed.has(index)
+                ? gainNode
+                : null
+            })
+          )
+          // On Chrome (Windows, Mac, Android), two sine waves overlapping
+          // sounds weird. I think it's because the audio is peaking, and
+          // dividing by the number of notes playing fixes it.
+          for (const gainNode of audioNodes.current) {
+            gainNode.gain.value = pressedIndices.has(gainNode)
+              ? 1 / pressedIndices.size
+              : 0
           }
         }, [pressed])
 
