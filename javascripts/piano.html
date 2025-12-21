@@ -195,6 +195,12 @@
         font-size: 0.8em;
         margin: 0 10px;
       }
+      .has-approx {
+        color: color-mix(in srgb, currentColor 20%, transparent);
+      }
+      .approx {
+        font-size: 0.8em;
+      }
       .pressed {
         background-color: CanvasText;
         color: Canvas;
@@ -265,6 +271,20 @@
       }
 
       const audioContext = new AudioContext()
+
+      function noteFromFreq (freq) {
+        const semitones = Math.log2(freq / 440) * DEFAULT_SEMITONES
+        const closest = Math.round(semitones)
+        const octave = Math.floor(closest / DEFAULT_SEMITONES)
+        const note =
+          ((closest % DEFAULT_SEMITONES) + DEFAULT_SEMITONES) %
+          DEFAULT_SEMITONES
+        return {
+          displayName: NOTE_NAMES[note] + octave,
+          // Up to 0.5
+          error: Math.abs(closest - semitones)
+        }
+      }
 
       function App () {
         const [semitones, setSemitones] = useState(DEFAULT_SEMITONES)
@@ -499,6 +519,9 @@
                           ? KEYS[keyIndex]
                           : null
 
+                      const freq = baseFreq * 2 ** (index / semitones)
+                      const approxNote = noteFromFreq(freq)
+
                       const pointerEnd = e => {
                         if (e.currentTarget.hasPointerCapture(e.pointerId)) {
                           setPressed(pressed =>
@@ -551,7 +574,22 @@
                             NOTE_NAMES[(j + baseNote) % DEFAULT_SEMITONES] +
                               (i - extraOctaves + baseOctave)
                           )
-                          : null,
+                          : h(
+                            'div',
+                            {
+                              class: `key-name ${
+                                approxNote.error > 0.01 ? 'has-approx' : ''
+                              }`
+                            },
+                            approxNote.error > 0.01
+                              ? h(
+                                'div',
+                                { class: 'approx' },
+                                `${((1 - approxNote.error) * 100).toFixed(0)}%`
+                              )
+                              : null,
+                            approxNote.displayName
+                          ),
                         key
                           ? h(
                             'kbd',
