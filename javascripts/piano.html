@@ -40,7 +40,6 @@
         display: flex;
         flex-direction: column;
         justify-content: center;
-        align-items: center;
         gap: 20px;
       }
 
@@ -60,6 +59,7 @@
         padding: 10px;
         flex-wrap: wrap;
         justify-content: center;
+        margin: 0 auto;
       }
       .key-count {
         display: flex;
@@ -184,6 +184,22 @@
         background-color: CanvasText;
         color: Canvas;
       }
+
+      .base-note-wrapper {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        padding: 0 20px;
+
+        & input {
+          flex: auto;
+        }
+      }
+      .base-note {
+        width: 150px;
+        display: flex;
+        justify-content: space-between;
+      }
     </style>
   </head>
   <body>
@@ -211,15 +227,20 @@
         'G',
         'G#'
       ]
+      const DEFAULT_SEMITONES = NOTE_NAMES.length
 
       const audioContext = new AudioContext()
 
       function App () {
-        const [semitones, setSemitones] = useState(12)
+        const [semitones, setSemitones] = useState(DEFAULT_SEMITONES)
         const [pressed, setPressed] = useState(new Set())
         const [mousePressed, setMousePressed] = useState(false)
         const [muted, setMuted] = useState(true)
+        const [base, setBase] = useState(4 * DEFAULT_SEMITONES) // A4
 
+        const baseNote = base % DEFAULT_SEMITONES
+        const baseOctave = Math.floor(base / DEFAULT_SEMITONES)
+        const baseFreq = 440 * 2 ** (base / DEFAULT_SEMITONES - 4)
         const extraOctaves = 1
         const keyOffset = Math.floor((KEYS.length - semitones) / 2)
 
@@ -277,7 +298,8 @@
               const index = i - extraOctaves * semitones
 
               const oscillatorNode = audioContext.createOscillator()
-              oscillatorNode.frequency.value = 440 * 2 ** (index / semitones)
+              oscillatorNode.frequency.value =
+                baseFreq * 2 ** (index / semitones)
               oscillatorNode.start()
 
               const gainNode = audioContext.createGain()
@@ -296,7 +318,7 @@
               gainNode.disconnect()
             }
           }
-        }, [semitones, extraOctaves])
+        }, [baseFreq, semitones, extraOctaves])
 
         useEffect(() => {
           for (const [i, gainNode] of audioNodes.current.entries()) {
@@ -446,11 +468,12 @@
                             }
                           }
                         },
-                        semitones === 12 || j === 0
+                        semitones === DEFAULT_SEMITONES || j === 0
                           ? h(
                             'div',
                             { class: 'key-name' },
-                            NOTE_NAMES[j] + (i - extraOctaves + 4)
+                            NOTE_NAMES[(j + baseNote) % DEFAULT_SEMITONES] +
+                              (i - extraOctaves + baseOctave)
                           )
                           : null,
                         key
@@ -465,6 +488,28 @@
                   )
                 )
               )
+            )
+          ),
+          h(
+            'label',
+            { class: 'base-note-wrapper' },
+            h('input', {
+              type: 'range',
+              min: 3 * DEFAULT_SEMITONES,
+              max: 6 * DEFAULT_SEMITONES,
+              value: base,
+              onInput: e => setBase(e.currentTarget.valueAsNumber)
+            }),
+            h(
+              'span',
+              { class: 'base-note' },
+              h(
+                'span',
+                null,
+                NOTE_NAMES[base % DEFAULT_SEMITONES],
+                Math.floor(base / DEFAULT_SEMITONES)
+              ),
+              h('span', null, ` (${+baseFreq.toFixed(3)} Hz)`)
             )
           )
         )
