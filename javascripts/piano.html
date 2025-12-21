@@ -57,6 +57,9 @@
       .key-counts {
         display: flex;
         gap: 10px;
+        padding: 10px;
+        flex-wrap: wrap;
+        justify-content: center;
       }
       .key-count {
         display: flex;
@@ -104,6 +107,12 @@
           stroke-linejoin: round;
         }
       }
+      .alert {
+        color: Canvas;
+        background-color: CanvasText;
+        border-radius: 50%;
+        box-shadow: 0 0 0 3px Canvas, 0 0 0 5px CanvasText;
+      }
 
       .piano-wrapper {
         width: 100%;
@@ -116,27 +125,48 @@
         height: 400px;
         border: 1px solid color-mix(in srgb, CanvasText 10%, transparent);
         border-right: none;
+        user-select: none;
+        --semitones: 12;
       }
       .key {
         width: 80px;
+        max-width: calc(100vw / calc(var(--semitones) + 2));
         border-right: 1px solid color-mix(in srgb, CanvasText 10%, transparent);
         display: flex;
-        gap: 10px;
         flex-direction: column;
         align-items: flex-start;
         justify-content: flex-end;
-        padding: 10px;
         box-sizing: border-box;
         cursor: pointer;
+        touch-action: none;
+        container-type: inline-size;
 
         & kbd {
           font: inherit;
-          padding: 2px 5px;
-          border: 1px solid color-mix(in srgb, currentColor 10%, transparent);
-          border-bottom-width: 3px;
-          border-radius: 2px;
+          padding: 0 5px;
+          border: 2px solid color-mix(in srgb, currentColor 10%, transparent);
+          border-bottom-width: 4px;
+          border-radius: 5px;
           font-size: 0.8em;
           color: color-mix(in srgb, currentColor 80%, transparent);
+          margin: 10px;
+        }
+      }
+      @container (max-width: 45px) {
+        .key kbd {
+          margin: 10px auto;
+        }
+        .key .key-name {
+          margin: 0 auto;
+          font-size: 0.5em;
+        }
+      }
+      @container (max-width: 30px) {
+        .key kbd {
+          display: none;
+        }
+        .key .key-name {
+          margin: 10px auto;
         }
       }
       .hidden {
@@ -148,6 +178,7 @@
       .key-name {
         color: color-mix(in srgb, currentColor 50%, transparent);
         font-size: 0.8em;
+        margin: 0 10px;
       }
       .pressed {
         background-color: CanvasText;
@@ -182,11 +213,11 @@
       ]
 
       const audioContext = new AudioContext()
-      console.log(audioContext)
 
       function App () {
         const [semitones, setSemitones] = useState(12)
         const [pressed, setPressed] = useState(new Set())
+        const [mousePressed, setMousePressed] = useState(false)
         const [muted, setMuted] = useState(true)
 
         const extraOctaves = 1
@@ -194,16 +225,42 @@
 
         useEffect(() => {
           const handleKeyDown = e => {
-            setPressed(pressed => pressed.union(new Set([e.key])))
+            if (KEYS.includes(e.key)) {
+              setPressed(pressed => pressed.union(new Set([e.key])))
+            }
           }
           const handleKeyUp = e => {
             setPressed(pressed => pressed.difference(new Set([e.key])))
           }
+          const handlePointerDown = e => {
+            if (e.pointerType !== 'touch') {
+              setMousePressed(true)
+            }
+          }
+          const handlePointerEnd = e => {
+            if (e.pointerType !== 'touch') {
+              setMousePressed(false)
+              setPressed(
+                pressed =>
+                  new Set(
+                    Array.from(pressed).filter(key => typeof key === 'string')
+                  )
+              )
+            }
+          }
+
           window.addEventListener('keydown', handleKeyDown)
           window.addEventListener('keyup', handleKeyUp)
+          window.addEventListener('pointerdown', handlePointerDown)
+          window.addEventListener('pointerup', handlePointerEnd)
+          window.addEventListener('pointercancel', handlePointerEnd)
+
           return () => {
             window.removeEventListener('keydown', handleKeyDown)
             window.removeEventListener('keyup', handleKeyUp)
+            window.removeEventListener('pointerdown', handlePointerDown)
+            window.removeEventListener('pointerup', handlePointerEnd)
+            window.removeEventListener('pointercancel', handlePointerEnd)
           }
         }, [])
 
@@ -215,13 +272,12 @@
 
         useEffect(() => {
           const nodes = Array.from(
-            { length: (2 * extraOctaves + 1) * semitones },
+            { length: (2 * extraOctaves + 1) * semitones + 1 },
             (_, i) => {
               const index = i - extraOctaves * semitones
 
               const oscillatorNode = audioContext.createOscillator()
               oscillatorNode.frequency.value = 440 * 2 ** (index / semitones)
-              console.log(index / semitones)
               oscillatorNode.start()
 
               const gainNode = audioContext.createGain()
@@ -250,7 +306,7 @@
               (keyIndex >= 0 &&
                 keyIndex < KEYS.length &&
                 pressed.has(KEYS[keyIndex])) ||
-              pressed.has(i)
+              pressed.has(index)
             gainNode.gain.value = isPressed ? 1 : 0
           }
         }, [pressed])
@@ -282,7 +338,7 @@
               'button',
               {
                 type: 'button',
-                class: 'sound-btn',
+                class: `sound-btn ${muted && pressed.size > 0 ? 'alert' : ''}`,
                 onClick: async () => {
                   try {
                     if (audioContext.state === 'running') {
@@ -321,46 +377,92 @@
             { class: 'piano-wrapper' },
             h(
               'div',
-              { class: 'piano' },
-              Array.from({ length: 2 * extraOctaves + 1 }, (_, i) =>
+              {
+                class: 'piano',
+                // Prevent touch long press right click on Windows
+                onContextMenu: e => e.preventDefault(),
+                style: {
+                  '--semitones': semitones
+                }
+              },
+              Array.from({ length: 2 * extraOctaves + 2 }, (_, i) =>
                 h(
                   Fragment,
                   { key: i - extraOctaves },
-                  Array.from({ length: semitones }, (_, j) => {
-                    const index = (i - extraOctaves) * semitones + j
-                    const semitone = index / semitones
+                  Array.from(
+                    { length: i === 2 * extraOctaves + 1 ? 1 : semitones },
+                    (_, j) => {
+                      const index = (i - extraOctaves) * semitones + j
+                      const semitone = index / semitones
 
-                    const keyIndex = index + keyOffset
-                    const key =
-                      keyIndex >= 0 && keyIndex < KEYS.length
-                        ? KEYS[keyIndex]
-                        : null
+                      const keyIndex = index + keyOffset
+                      const key =
+                        keyIndex >= 0 && keyIndex < KEYS.length
+                          ? KEYS[keyIndex]
+                          : null
 
-                    return h(
-                      'div',
-                      {
-                        class: `key ${
-                          index >= 0 && index <= semitones
-                            ? 'current-octave'
-                            : ''
-                        } ${pressed.has(key) ? 'pressed' : ''}`
-                      },
-                      semitones === 12 || j === 0
-                        ? h(
-                          'div',
-                          { class: 'key-name' },
-                          NOTE_NAMES[j] + (i - extraOctaves + 4)
-                        )
-                        : null,
-                      key
-                        ? h(
-                          'kbd',
-                          { class: 'key-key' },
-                          key === 'Backspace' ? '←' : key
-                        )
-                        : h('kbd', { class: 'key-key hidden' }, '.')
-                    )
-                  })
+                      const pointerEnd = e => {
+                        if (e.currentTarget.hasPointerCapture(e.pointerId)) {
+                          setPressed(pressed =>
+                            pressed.difference(new Set([index]))
+                          )
+                        }
+                      }
+
+                      return h(
+                        'div',
+                        {
+                          class: `key ${
+                            index >= 0 && index <= semitones
+                              ? 'current-octave'
+                              : ''
+                          } ${
+                            pressed.has(key) || pressed.has(index)
+                              ? 'pressed'
+                              : ''
+                          }`,
+                          onPointerDown: e => {
+                            setPressed(pressed =>
+                              pressed.union(new Set([index]))
+                            )
+                            if (e.pointerType === 'touch') {
+                              e.currentTarget.setPointerCapture(e.pointerId)
+                            }
+                          },
+                          onPointerUp: pointerEnd,
+                          onPointerCancel: pointerEnd,
+                          onPointerEnter: e => {
+                            if (e.pointerType !== 'touch' && mousePressed) {
+                              setPressed(pressed =>
+                                pressed.union(new Set([index]))
+                              )
+                            }
+                          },
+                          onPointerLeave: e => {
+                            if (e.pointerType !== 'touch') {
+                              setPressed(pressed =>
+                                pressed.difference(new Set([index]))
+                              )
+                            }
+                          }
+                        },
+                        semitones === 12 || j === 0
+                          ? h(
+                            'div',
+                            { class: 'key-name' },
+                            NOTE_NAMES[j] + (i - extraOctaves + 4)
+                          )
+                          : null,
+                        key
+                          ? h(
+                            'kbd',
+                            { class: 'key-key' },
+                            key === 'Backspace' ? '←' : key
+                          )
+                          : h('kbd', { class: 'key-key hidden' }, '.')
+                      )
+                    }
+                  )
                 )
               )
             )
