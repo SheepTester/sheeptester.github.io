@@ -63,7 +63,6 @@ function handleFileInput ({
         break
       }
       case 'clipboard': {
-        console.log(data, preferredTypes)
         const { item, type } = selectItem(data.items, preferredTypes)
         const blob = await item.getType(type)
         file = new File([blob], type.replaceAll('/', '_'), {
@@ -337,6 +336,7 @@ function migrateInputControls (
     pasteButton.type = 'button'
     pasteButton.classList.add('icon', 'icon-paste', 'reform:paste')
     pasteButton.ariaLabel = 'Paste from clipboard'
+    pasteButton.title = 'Paste from clipboard'
     inputControls.append(pasteButton)
     return pasteButton
   }
