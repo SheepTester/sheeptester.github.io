@@ -197,9 +197,14 @@ export function on<T> (
     )
   }
 
+  let lastCallId = 0
   const compute = async () => {
     if (ready.size === deps.length) {
+      const callId = ++lastCallId
       const value = await callback(object, args)
+      if (callId !== lastCallId) {
+        return
+      }
       if (value !== undefined) {
         sources[name].handleValue(value)
       }
