@@ -51,7 +51,7 @@
     class="hidden-accessible reform:image-input"
   />
   <span class="icon icon-upload"></span>
-  <span class="file-label">Choose, drop, or paste an image</span>
+  <span class="file-label">Choose, drop, or paste ...</span>
   <span class="file-name">No file selected</span>
 </label>
 <div class="image-content input-content"><canvas></canvas></div>
@@ -63,7 +63,7 @@
 <label class="input-controls file">
   <input type="file" name="..." class="hidden-accessible reform:text-input" />
   <span class="icon icon-upload"></span>
-  <span class="file-label"> Choose or drop a text file or type below </span>
+  <span class="file-label">Choose or drop ... or type below</span>
   <span class="file-name">No file selected</span>
 </label>
 <textarea name="..." aria-label="..." class="input-content">...</textarea>
@@ -154,7 +154,7 @@
       class="hidden-accessible reform:file-input reform:paste-target"
     />
     <span class="icon icon-upload"></span>
-    <span class="file-label">Choose, drop, or paste a file</span>
+    <span class="file-label">Choose, drop, or paste ...</span>
     <span class="file-name">No file selected</span>
   </label>
   <div class="output-controls">
@@ -189,7 +189,7 @@
       class="hidden-accessible reform:file-input"
     />
     <span class="icon icon-upload"></span>
-    <span class="file-label">Choose or drop a font file (WOFF, OTF, TTF)</span>
+    <span class="file-label">Choose or drop ...</span>
     <span class="file-name">No file selected</span>
   </label>
 </div>
@@ -399,3 +399,5 @@ The `callback` will not run until all dependencies are ready, i.e. all their val
 
 Custom sources do not need to produce values, but producing a `File` object is recommended to populate output controls.
 If the referenced element has an ancestor `.reform:io` (or itself has the class `.reform:io`), it will try finding a `.output-controls` to add as a dependency to the custom source.
+
+The share button is automatically hidden in browsers that don't support the Web Share API.

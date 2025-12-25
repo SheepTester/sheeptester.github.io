@@ -3,8 +3,8 @@ import { displayBytes } from './utils'
 export type OutputOptions = {
   fileName?: Element | null
   downloadLink?: HTMLAnchorElement | null
-  copyButton?: Element | null
-  shareButton?: Element | null
+  copyButton?: HTMLElement | null
+  shareButton?: HTMLElement | null
 }
 export class Output {
   #file: File | null = null
@@ -38,6 +38,10 @@ export class Output {
         }
       }
     })
+
+    if (!('share' in navigator)) {
+      shareButton?.remove()
+    }
   }
 
   handleFile (file: File): void {
