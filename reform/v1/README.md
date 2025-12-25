@@ -81,18 +81,8 @@
     <span class="file-label">Download</span>
     <span class="file-name">No file available</span>
   </a>
-  <button
-    type="button"
-    class="icon icon-copy"
-    data-output="output"
-    aria-label="Copy"
-  ></button>
-  <button
-    type="button"
-    class="icon icon-share"
-    data-output="output"
-    aria-label="Share"
-  ></button>
+  <button type="button" class="icon icon-copy" aria-label="Copy"></button>
+  <button type="button" class="icon icon-share" aria-label="Share"></button>
 </div>
 ```
 
@@ -112,18 +102,8 @@
     <span class="file-label">Download</span>
     <span class="file-name">No file available</span>
   </a>
-  <button
-    type="button"
-    class="icon icon-copy"
-    data-output="output"
-    aria-label="Copy"
-  ></button>
-  <button
-    type="button"
-    class="icon icon-share"
-    data-output="output"
-    aria-label="Share"
-  ></button>
+  <button type="button" class="icon icon-copy" aria-label="Copy"></button>
+  <button type="button" class="icon icon-share" aria-label="Share"></button>
 </div>
 ```
 
@@ -163,18 +143,8 @@
       <span class="file-label">Download</span>
       <span class="file-name">No file available</span>
     </a>
-    <button
-      type="button"
-      class="icon icon-copy"
-      data-output="output"
-      aria-label="Copy"
-    ></button>
-    <button
-      type="button"
-      class="icon icon-share"
-      data-output="output"
-      aria-label="Share"
-    ></button>
+    <button type="button" class="icon icon-copy" aria-label="Copy"></button>
+    <button type="button" class="icon icon-share" aria-label="Share"></button>
   </div>
 </div>
 ```
@@ -201,17 +171,12 @@ This is used by [font-colour-remover](https://sheeptester.github.io/javascripts/
 
 ```html
 <div class="output-controls">
-  <button type="button" data-output="output" class="reform:copy">
+  <button type="button" class="reform:copy">
     <span class="icon icon-copy"></span>
     <span>...</span>
   </button>
   <a class="download icon-btn icon icon-download" aria-label="Download"></a>
-  <button
-    type="button"
-    class="icon icon-share"
-    data-output="output"
-    aria-label="Share"
-  ></button>
+  <button type="button" class="icon icon-share" aria-label="Share"></button>
 </div>
 ```
 

@@ -5,7 +5,7 @@ const encoder = new TextEncoder()
 
 function selectItem<T extends { type: string }> (
   items: T[],
-  preferredTypes: string[] = []
+  preferredTypes: string[]
 ): T {
   return (
     items.find(({ type }) =>
@@ -22,36 +22,56 @@ function getDataTransfer (
 }
 
 type FileInputOptions = {
-  fileName?: Element | null
-  input?: HTMLInputElement | null
-  dropTarget?: HTMLElement | null
-  pasteTarget?: boolean
+  fileName: Element | null
+  input: HTMLInputElement
+  dropTarget: HTMLElement | null
+  pasteTarget: boolean
+  pasteButton: HTMLButtonElement | null
+  defaultPreferredTypes: string[]
   /** Returns whether the file was accepted. */
   onFile: (file: File | string) => Promise<boolean | void>
 }
 function handleFileInput ({
-  fileName = null,
+  fileName,
   input,
   dropTarget,
   pasteTarget,
+  pasteButton,
+  defaultPreferredTypes,
   onFile
 }: FileInputOptions): void {
-  const preferredTypes = input?.accept.replaceAll('*', '').split(',') ?? []
-  async function handleFile (
-    items: ArrayLike<File> | DataTransfer | null
-  ): Promise<void> {
-    if (
-      items === null ||
-      (items instanceof DataTransfer ? items.items : items).length === 0
-    ) {
-      return
-    }
-    const file =
-      items instanceof DataTransfer
-        ? await getDataTransfer(
-          selectItem(Array.from(items.items), preferredTypes)
+  const preferredTypes = input.accept
+    ? input.accept.replaceAll('*', '').split(',')
+    : defaultPreferredTypes
+
+  // Lists must be nonempty
+  type FileToHandle =
+    | { type: 'files'; files: ArrayLike<File> }
+    | { type: 'data-transfer'; transfer: DataTransfer }
+    | { type: 'clipboard'; items: { item: ClipboardItem; type: string }[] }
+  async function handleFile (data: FileToHandle): Promise<void> {
+    let file
+    switch (data.type) {
+      case 'files': {
+        file = selectItem(Array.from(data.files), preferredTypes)
+        break
+      }
+      case 'data-transfer': {
+        file = await getDataTransfer(
+          selectItem(Array.from(data.transfer.items), preferredTypes)
         )
-        : selectItem(Array.from(items), preferredTypes)
+        break
+      }
+      case 'clipboard': {
+        console.log(data, preferredTypes)
+        const { item, type } = selectItem(data.items, preferredTypes)
+        const blob = await item.getType(type)
+        file = new File([blob], type.replaceAll('/', '_'), {
+          type: blob.type
+        })
+        break
+      }
+    }
     if (file === null) {
       return
     }
@@ -74,12 +94,14 @@ function handleFileInput ({
     }
   }
 
-  input?.addEventListener('change', () => {
-    handleFile(input.files)
+  input.addEventListener('change', () => {
+    if (input.files && input.files.length > 0) {
+      handleFile({ type: 'files', files: input.files })
+    }
     // Reset files array (so can resubmit the same file multiple times)
     input.value = ''
   })
-  if (input?.dataset.default) {
+  if (input.dataset.default) {
     const url = input.dataset.default
     const name = url.slice(url.lastIndexOf('/') + 1)
     fetch(url)
@@ -91,11 +113,15 @@ function handleFileInput ({
         }
         throw error
       })
-      .then(blob => handleFile([new File([blob], name, blob)]))
+      .then(blob =>
+        handleFile({ type: 'files', files: [new File([blob], name, blob)] })
+      )
   }
 
-  dropTarget?.addEventListener('drop', async e => {
-    handleFile(e.dataTransfer)
+  dropTarget?.addEventListener('drop', e => {
+    if (e.dataTransfer && e.dataTransfer.items.length > 0) {
+      handleFile({ type: 'data-transfer', transfer: e.dataTransfer })
+    }
     dropTarget.classList.remove('drag-over')
     e.preventDefault()
   })
@@ -117,27 +143,48 @@ function handleFileInput ({
       ) {
         return
       }
-      handleFile(e.clipboardData)
+      if (e.clipboardData && e.clipboardData.items.length > 0) {
+        handleFile({ type: 'data-transfer', transfer: e.clipboardData })
+      }
     })
   }
+
+  pasteButton?.addEventListener('click', () => {
+    navigator.clipboard
+      .read()
+      .then(items => {
+        const itemsByType = items.flatMap(item =>
+          item.types.map(type => ({ item, type }))
+        )
+        if (itemsByType.length > 0) {
+          handleFile({ type: 'clipboard', items: itemsByType })
+        }
+      })
+      .catch(error => {
+        if (error instanceof DOMException && error.name === 'NotAllowedError') {
+          // Firefox throws this when the user cancels clicking on "Paste"
+          console.warn('Failed to read clipboard', error)
+        } else {
+          throw error
+        }
+      })
+  })
 }
 
 export function handleSingleFileInput (
   source: Source<File>,
-  input?: Element | null
+  input: HTMLInputElement
 ): void {
-  if (input && !(input instanceof HTMLInputElement)) {
-    console.warn(input, 'is not an <input> element')
-    input = null
-  } else if (input) {
-    input.dataset.ignore = 'true'
-  }
-  const dropTarget = input?.closest('.reform\\:io')
+  input.dataset.ignore = 'true'
+  const dropTarget = input.closest('.reform\\:io')
+  const pasteButton = migrateInputControls(dropTarget)
   handleFileInput({
-    fileName: input?.parentElement?.querySelector('.file-name'),
+    fileName: input.parentElement?.querySelector('.file-name') ?? null,
     input,
-    dropTarget: dropTarget instanceof HTMLElement ? dropTarget : undefined,
-    pasteTarget: input?.classList.contains('reform:paste-target'),
+    dropTarget: dropTarget instanceof HTMLElement ? dropTarget : null,
+    pasteTarget: input.classList.contains('reform:paste-target'),
+    pasteButton,
+    defaultPreferredTypes: [],
     onFile: async file => {
       source.handleValue(
         file instanceof File
@@ -150,15 +197,11 @@ export function handleSingleFileInput (
 
 export function handleImageInput (
   source: Source<CanvasRenderingContext2D>,
-  input?: Element | null
+  input: HTMLInputElement
 ): void {
-  if (input && !(input instanceof HTMLInputElement)) {
-    console.warn(input, 'is not an <input> element')
-    input = null
-  } else if (input) {
-    input.dataset.ignore = 'true'
-  }
-  const dropTarget = input?.closest('.reform\\:io')
+  input.dataset.ignore = 'true'
+  const dropTarget = input.closest('.reform\\:io')
+  const pasteButton = migrateInputControls(dropTarget)
   let maybeCanvas = dropTarget?.querySelector('.input-content canvas')
   if (maybeCanvas && !(maybeCanvas instanceof HTMLCanvasElement)) {
     console.warn(maybeCanvas, 'is not a <canvas> element')
@@ -174,10 +217,12 @@ export function handleImageInput (
     )
   }
   handleFileInput({
-    fileName: input?.parentElement?.querySelector('.file-name'),
+    fileName: input.parentElement?.querySelector('.file-name') ?? null,
     input,
-    dropTarget: dropTarget instanceof HTMLElement ? dropTarget : undefined,
-    pasteTarget: input?.classList.contains('reform:paste-target'),
+    dropTarget: dropTarget instanceof HTMLElement ? dropTarget : null,
+    pasteTarget: input.classList.contains('reform:paste-target') ?? false,
+    pasteButton,
+    defaultPreferredTypes: ['image/*'],
     onFile: async file => {
       if (typeof file === 'string') {
         return false
@@ -206,15 +251,10 @@ export function handleImageInput (
 
 export function handleVideoInput (
   source: Source<HTMLVideoElement>,
-  input?: Element | null
+  input: HTMLInputElement
 ): void {
-  if (input && !(input instanceof HTMLInputElement)) {
-    console.warn(input, 'is not an <input> element')
-    input = null
-  } else if (input) {
-    input.dataset.ignore = 'true'
-  }
-  const dropTarget = input?.closest('.reform\\:io')
+  const dropTarget = input.closest('.reform\\:io')
+  const pasteButton = migrateInputControls(dropTarget)
   let maybeVideo = dropTarget?.querySelector('.input-content video')
   if (maybeVideo && !(maybeVideo instanceof HTMLVideoElement)) {
     console.warn(maybeVideo, 'is not a <video> element')
@@ -223,10 +263,12 @@ export function handleVideoInput (
   const video = maybeVideo ?? document.createElement('video')
   let url: string | undefined
   handleFileInput({
-    fileName: input?.parentElement?.querySelector('.file-name'),
+    fileName: input.parentElement?.querySelector('.file-name') ?? null,
     input,
-    dropTarget: dropTarget instanceof HTMLElement ? dropTarget : undefined,
-    pasteTarget: input?.classList.contains('reform:paste-target'),
+    dropTarget: dropTarget instanceof HTMLElement ? dropTarget : null,
+    pasteTarget: input.classList.contains('reform:paste-target'),
+    pasteButton,
+    defaultPreferredTypes: ['video/*'],
     onFile: async file => {
       if (typeof file === 'string') {
         return false
@@ -253,22 +295,20 @@ export function handleVideoInput (
 
 export function handleTextInput (
   source: Source<string>,
-  input?: Element | null
+  input: HTMLInputElement
 ): void {
-  const wrapper = input?.closest('.reform\\:io')
-  if (input && !(input instanceof HTMLInputElement)) {
-    console.warn(input, 'is not an <input> element')
-    input = null
-  } else if (input) {
-    input.dataset.ignore = 'true'
-  }
+  const wrapper = input.closest('.reform\\:io')
+  const pasteButton = migrateInputControls(wrapper)
+  input.dataset.ignore = 'true'
   const dropTarget = wrapper?.querySelector('.input-controls')
   const textarea = wrapper?.querySelector('.input-content')
   handleFileInput({
-    fileName: input?.parentElement?.querySelector('.file-name'),
+    fileName: input.parentElement?.querySelector('.file-name') ?? null,
     input,
-    dropTarget: dropTarget instanceof HTMLElement ? dropTarget : undefined,
-    pasteTarget: input?.classList.contains('reform:paste-target'),
+    dropTarget: dropTarget instanceof HTMLElement ? dropTarget : null,
+    pasteTarget: input.classList.contains('reform:paste-target'),
+    pasteButton,
+    defaultPreferredTypes: ['text/plain'],
     onFile: async file => {
       const text = file instanceof File ? await file.text() : file
       if (textarea instanceof HTMLTextAreaElement) {
@@ -277,4 +317,29 @@ export function handleTextInput (
       source.handleValue(text)
     }
   })
+}
+
+function migrateInputControls (
+  wrapper: Element | null | undefined
+): HTMLButtonElement | null {
+  let inputControls = wrapper?.querySelector('.input-controls')
+  if (inputControls instanceof HTMLLabelElement) {
+    const newInputControls = document.createElement('div')
+    newInputControls.classList.add('input-controls')
+    inputControls.classList.remove('input-controls')
+    inputControls.replaceWith(newInputControls)
+    newInputControls.append(inputControls)
+    inputControls = newInputControls
+  }
+
+  if (inputControls && !wrapper?.querySelector('.reform\\:paste')) {
+    const pasteButton = document.createElement('button')
+    pasteButton.type = 'button'
+    pasteButton.classList.add('icon', 'icon-paste', 'reform:paste')
+    pasteButton.ariaLabel = 'Paste from clipboard'
+    inputControls.append(pasteButton)
+    return pasteButton
+  }
+
+  return null
 }
