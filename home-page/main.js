@@ -59,7 +59,7 @@ function createTag (tagElem) {
 }
 function setDescription (project) {
   descElems.title.textContent = project.querySelector('.title').textContent
-  descElems.link.href = project.href
+  descElems.link.href = project.querySelector('.project-link').href
   empty(descElems.tags)
   for (const tag of project.getElementsByClassName('tag')) {
     descElems.tags.append(createTag(tag))

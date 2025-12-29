@@ -1366,6 +1366,8 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"]
         background-color: #24364a;
         grid-column: 1 / -1;
         line-height: 1.5;
+        position: relative;
+        z-index: 0;
       }
     }
     @media (min-width: 680px) {
@@ -1446,18 +1448,34 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"]
 
       css {
         .desc-visit {
-          text-transform: uppercase;
-          background-color: #1ce0e0;
-          color: black;
-          padding: 10px 20px;
+          border: 1px solid transparent;
+          background-image: linear-gradient(#24364a, #24364a),
+            linear-gradient(135deg, #20de88, #28bbe8);
+          background-origin: border-box;
+          background-clip: padding-box, border-box;
+          position: relative;
+          height: 40px;
+          display: flex;
+          align-items: center;
+          padding: 0 20px;
           margin: 20px;
           margin-top: 0;
           border-radius: 50px;
-          font-weight: bold;
-          transition: background-color 0.2s;
         }
-        .desc-visit:hover {
-          background-color: rgba(255, 255, 255, 0.05);
+        .desc-visit::before {
+          content: '';
+          display: block;
+          position: absolute;
+          z-index: -1;
+          inset: -1px;
+          border-radius: 10px;
+          background-image: linear-gradient(135deg, #20de88, #28bbe8);
+          filter: blur(10px);
+          opacity: 0.3;
+          transition: opacity 0.2s;
+        }
+        .desc-visit:hover::before {
+          opacity: 0.5;
         }
       }
       @media (min-width: 680px) {
