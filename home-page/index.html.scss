@@ -141,6 +141,16 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"]
     body {
       display: grid;
       grid-template-columns: auto 1fr;
+      // No tags when no JS
+      grid-template-areas:
+        'sidebar projects-heading'
+        'sidebar search'
+        'sidebar projects'
+        'sidebar-bottom projects'
+        'footer footer';
+      grid-template-rows: repeat(4, auto) 1fr auto;
+    }
+    .has-js {
       grid-template-areas:
         'sidebar projects-heading'
         'sidebar search'
@@ -148,7 +158,6 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"]
         'sidebar projects'
         'sidebar-bottom projects'
         'footer footer';
-      grid-template-rows: repeat(4, auto) 1fr auto;
     }
   }
   body[role='main'] {
@@ -737,6 +746,8 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"]
             overflow: hidden;
             border-radius: 15px;
             margin: 0;
+            padding: 0;
+            list-style: none;
           }
         }
         @media (min-width: 680px) {
@@ -751,11 +762,12 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"]
             overflow: unset;
           }
         }
-        p.socials {
+        ul.socials {
           $type: 'a';
           @each $social in map.get($socials, 'profiles') {
-            @import './templates/social.html.scss';
-            content: ' ';
+            li {
+              @import './templates/social.html.scss';
+            }
           }
         }
 
@@ -764,49 +776,53 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"]
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
             margin: 20px 0;
+            padding: 0;
+            list-style: none;
             gap: 10px;
           }
         }
-        .usernames {
+        ul.usernames {
           $type: 'span';
           $extra-class: 'username-icon';
           @each $social in map.get($socials, 'usernames') {
-            css {
-              .username {
-                display: flex;
-                text-decoration: none;
-                color: inherit;
-                align-items: center;
-              }
-              a.username:hover {
-                color: white;
-              }
-              // TODO: Gmail icon has a hover effect; remove?
-              .username-icon {
-                width: 32px;
-                height: 32px;
-                padding: 0;
-              }
-            }
-            @if map.get($social, 'link') {
-              a.username[href="#{map.get($social, 'link')}"] {
-                @import './templates/social.html.scss';
-                span {
-                  span.colon {
-                    content: ': ';
-                  }
-                  content: "#{map.get($social, 'username')}";
+            li {
+              css {
+                .username {
+                  display: flex;
+                  text-decoration: none;
+                  color: inherit;
+                  align-items: center;
+                }
+                a.username:hover {
+                  color: white;
+                }
+                // TODO: Gmail icon has a hover effect; remove?
+                .username-icon {
+                  width: 32px;
+                  height: 32px;
+                  padding: 0;
                 }
               }
-            }
-            @if not map.get($social, 'link') {
-              span.username {
-                @import './templates/social.html.scss';
-                span {
-                  span.colon {
-                    content: ': ';
+              @if map.get($social, 'link') {
+                a.username[href="#{map.get($social, 'link')}"] {
+                  @import './templates/social.html.scss';
+                  span {
+                    span.colon {
+                      content: ': ';
+                    }
+                    content: "#{map.get($social, 'username')}";
                   }
-                  content: "#{map.get($social, 'username')}";
+                }
+              }
+              @if not map.get($social, 'link') {
+                span.username {
+                  @import './templates/social.html.scss';
+                  span {
+                    span.colon {
+                      content: ': ';
+                    }
+                    content: "#{map.get($social, 'username')}";
+                  }
                 }
               }
             }
@@ -1162,34 +1178,29 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"]
     css {
       .tags-wrapper {
         grid-area: tags;
+        display: none;
+        border: none;
+      }
+      .has-js .tags-wrapper {
+        display: block;
       }
     }
-    .projects-info.tags-wrapper {
-      css {
-        .filter-by,
-        .filters {
-          display: none;
-        }
-        .has-js .filter-by,
-        .has-js .filters {
-          display: flex;
-        }
-      }
+    fieldset.projects-info.tags-wrapper {
       css {
         .filter-by {
-          margin: 0;
-          font-weight: normal;
+          padding: 0;
           font-size: 0.9em;
           text-transform: uppercase;
-          margin-top: 20px;
+          padding-top: 20px;
           color: rgba(255, 255, 255, 0.5);
         }
       }
-      h2.filter-by#filter-by {
+      legend.filter-by#filter-by {
         content: 'Filter by';
       }
       css {
         .filters {
+          display: flex;
           flex-wrap: wrap;
           gap: 10px;
           margin: 0;
@@ -1302,6 +1313,7 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"]
         padding: 20px 0;
         grid-auto-flow: dense;
         margin: 0;
+        list-style: none;
         grid-area: projects;
       }
     }
@@ -1317,10 +1329,9 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"]
         align-self: start;
       }
     }
-    p.projects#projects-wrapper {
+    ul.projects#projects-wrapper {
       @each $project in import('./data/projects.yml') {
         @import './templates/project.html.scss';
-        content: ' ';
       }
 
       css {
@@ -1336,7 +1347,7 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"]
           padding: 0;
         }
       }
-      span.tinder-note {
+      li.tinder-note {
         content: 'That was merely a preview of what this website has in store. ';
         a.link[href='./all/tinder.html'] {
           content: 'Explore and sort through everything else.';
@@ -1385,7 +1396,14 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"]
         h2.desc-title#desc-title {
         }
 
-        .description-tags#desc-tags {
+        css {
+          .description-tags {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+          }
+        }
+        ul.description-tags#desc-tags {
           css {
             .desc-tag {
               display: inline-flex;

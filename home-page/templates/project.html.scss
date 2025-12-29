@@ -47,83 +47,94 @@ $classes: 'project';
 @each $tag in map.get($project, 'tags') {
   $classes: '#{$classes} project-#{$tag}';
 }
-a.#{$classes}[href="#{map.get($project, 'path')}"] {
+li.#{$classes} {
   css {
-    .title {
-      display: block;
+    .project-link {
       position: absolute;
       bottom: 0;
       left: 0;
-      right: 0;
-      z-index: 1;
-      background-image: linear-gradient(
-        0deg,
-        rgba(0, 0, 0, 0.8) 0%,
-        rgba(0, 0, 0, 0.45) 50%,
-        rgba(0, 0, 0, 0.2) 70%,
-        rgba(0, 0, 0, 0.05) 90%,
-        transparent 100%
-      );
-      padding: 10px 15px;
-      padding-top: 30px;
-      font-size: 1px;
-      border-bottom-left-radius: 10px;
-      border-bottom-right-radius: 10px;
-      color: white;
-      opacity: 0;
-      transition: opacity 0.2s;
-    }
-  }
-  @media (min-width: 680px) {
-    .title {
-      font-size: 1.5rem;
-      opacity: 0.5;
-    }
-    .project.showing-desc .title {
-      opacity: 0;
-      pointer-events: none;
-    }
-  }
-  @media (min-width: 680px) and (hover: hover) {
-    .project:not(.showing-desc):hover .title {
-      opacity: 1;
-    }
-  }
-  span.title {
-    content: "#{map.get($project, 'name')}";
-  }
-
-  css {
-    .thumbnail {
-      position: absolute;
-      top: 0;
-      left: 0;
       width: 100%;
       height: 100%;
-      z-index: 0;
-      opacity: 0.7;
-      filter: grayscale(1);
-      transition: opacity 0.5s, filter 0.5s;
-    }
-    .showing-desc .thumbnail {
-      opacity: 1;
-      filter: grayscale(0);
-      transition: opacity 0.2s, filter 0.2s;
     }
   }
-  @media (hover: hover) {
-    .project:hover .thumbnail {
-      opacity: 1;
-      filter: grayscale(0);
-      transition: opacity 0.2s, filter 0.2s;
+  a.project-link[href="#{map.get($project, 'path')}"] {
+    css {
+      .title {
+        display: block;
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        z-index: 1;
+        background-image: linear-gradient(
+          0deg,
+          rgba(0, 0, 0, 0.8) 0%,
+          rgba(0, 0, 0, 0.45) 50%,
+          rgba(0, 0, 0, 0.2) 70%,
+          rgba(0, 0, 0, 0.05) 90%,
+          transparent 100%
+        );
+        padding: 10px 15px;
+        padding-top: 30px;
+        font-size: 1px;
+        border-bottom-left-radius: 10px;
+        border-bottom-right-radius: 10px;
+        color: white;
+        opacity: 0;
+        transition: opacity 0.2s;
+      }
     }
-  }
-  @media (min-width: 680px) {
-    .thumbnail {
-      border-radius: 10px;
+    @media (min-width: 680px) {
+      .title {
+        font-size: 1.5rem;
+        opacity: 0.5;
+      }
+      .project.showing-desc .title {
+        opacity: 0;
+        pointer-events: none;
+      }
     }
-  }
-  img.thumbnail[src="#{map.get($project, 'image')}"][alt="#{map.get($project, 'description')}"][width='100'][height='100'][loading='lazy'] {
+    @media (min-width: 680px) and (hover: hover) {
+      .project:not(.showing-desc):hover .title {
+        opacity: 1;
+      }
+    }
+    span.title {
+      content: "#{map.get($project, 'name')}";
+    }
+
+    css {
+      .thumbnail {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 0;
+        opacity: 0.7;
+        filter: grayscale(1);
+        transition: opacity 0.5s, filter 0.5s;
+      }
+      .showing-desc .thumbnail {
+        opacity: 1;
+        filter: grayscale(0);
+        transition: opacity 0.2s, filter 0.2s;
+      }
+    }
+    @media (hover: hover) {
+      .project:hover .thumbnail {
+        opacity: 1;
+        filter: grayscale(0);
+        transition: opacity 0.2s, filter 0.2s;
+      }
+    }
+    @media (min-width: 680px) {
+      .thumbnail {
+        border-radius: 10px;
+      }
+    }
+    img.thumbnail[src="#{map.get($project, 'image')}"][alt="#{map.get($project, 'description')}"][width='100'][height='100'][loading='lazy'] {
+    }
   }
 
   css {
@@ -134,9 +145,11 @@ a.#{$classes}[href="#{map.get($project, 'path')}"] {
       left: 0;
       z-index: 1;
       margin: 8px;
+      padding: 0;
+      list-style: none;
     }
   }
-  span.tags {
+  ul.tags {
     @each $tag, $index in map.get($project, 'tags') {
       $tag-info: map.get($tags, $tag);
       content: ' ';
@@ -150,6 +163,7 @@ a.#{$classes}[href="#{map.get($project, 'path')}"] {
           opacity: 0;
           transition-delay: 0s;
           box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+          font-size: 0;
         }
         .project.showing-desc .tag {
           opacity: 0;
@@ -168,7 +182,8 @@ a.#{$classes}[href="#{map.get($project, 'path')}"] {
           transition-delay: calc(0.1s * #{$index});
         }
       }
-      span.tag.base-tag.tag-#{$tag}[title="#{map.get($tag-info, 'name')}"] {
+      li.tag.base-tag.tag-#{$tag}[title="#{map.get($tag-info, 'name')}"] {
+        content: "#{map.get($tag-info, 'name')}";
       }
     }
   }
@@ -181,6 +196,7 @@ a.#{$classes}[href="#{map.get($project, 'path')}"] {
       right: 0;
       z-index: 1;
       padding: 6px;
+      font-size: 0;
     }
     .show-info-icon {
       display: block;
@@ -217,6 +233,7 @@ a.#{$classes}[href="#{map.get($project, 'path')}"] {
     }
   }
   button.show-info-btn[type='button'][title='Show project info'][aria-controls='description-wrapper'] {
+    content: 'Show project info';
     span.show-info-icon {
     }
   }

@@ -45,7 +45,7 @@ const descElems = {
   text: document.getElementById('description')
 }
 function createTag (tagElem) {
-  const tag = document.createElement('div')
+  const tag = document.createElement('li')
   tag.className = 'desc-tag'
   const icon = document.createElement('div')
   icon.className = `desc-tag-icon base-tag ${[...tagElem.classList].find(cls =>
