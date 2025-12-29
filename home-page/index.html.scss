@@ -1088,6 +1088,9 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"]
         border: 1px solid rgba(151, 189, 179, 0.2);
         flex: none;
       }
+      .search:focus {
+        outline: none;
+      }
       .search::placeholder {
         color: color-mix(in srgb, currentColor, transparent 50%);
       }
@@ -1470,12 +1473,52 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"]
     css {
       .about-bottom {
         grid-area: sidebar-bottom;
-      }
-      .about-bottom .card:first-child {
-        margin-top: 0;
+        margin-top: -20px;
       }
     }
     .about.about-bottom {
+      css {
+        #adblock {
+          display: none;
+          border: 1px solid #fe6c87;
+          background-color: #fe6c8711;
+        }
+        #adblock h2 {
+          font-size: 20px;
+        }
+      }
+      .card#adblock {
+        h2#rawdogging {
+          content: 'Why are you rawdogging the internet?';
+        }
+        p {
+          content: 'It seems you do not have an ad blocker installed. I recommend ';
+          a.link[href='https://ublockorigin.com/']
+          {
+            content: 'uBlock Origin';
+          }
+          content: '.';
+        }
+        p {
+          content: 'If you use Chrome, please switch to ';
+          a.link[href='https://www.firefox.com/']
+          {
+            content: 'Firefox';
+          }
+          content: ' to give ';
+          a.link[href='https://privacysandbox.google.com/']
+          {
+            content: 'Google less leverage over the internet';
+          }
+          content: ', or use ';
+          a.link[href='https://chromewebstore.google.com/detail/ublock-origin-lite/ddkjiahejlhfcafbddmgiahcphecmpfh']
+          {
+            content: 'uBlock Origin Lite';
+          }
+          content: '.';
+        }
+      }
+
       .card {
         css {
           .card p {

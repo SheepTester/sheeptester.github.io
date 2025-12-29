@@ -225,3 +225,24 @@ window.addEventListener('keydown', e => {
     e.preventDefault()
   }
 })
+
+// Corresponds to `-ad-manager/$~stylesheet` from EasyList
+fetch(window.location.href + '/#-ad-manager/')
+  .then(() => {
+    // Desktop two-column view; user is likely to see the message (and it's
+    // harder to install adblock on mobile)
+    if (window.innerWidth >= 1000) {
+      // Detect user input (I don't want this to show up in scrapers' screenshots lol)
+      window.addEventListener(
+        'pointermove',
+        () => (document.getElementById('adblock').style.display = 'block'),
+        { once: true }
+      )
+      window.addEventListener(
+        'keydown',
+        () => (document.getElementById('adblock').style.display = 'block'),
+        { once: true }
+      )
+    }
+  })
+  .catch(() => console.log('adblocker detected. GOOD'))
