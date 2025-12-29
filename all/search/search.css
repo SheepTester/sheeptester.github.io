@@ -1,6 +1,4 @@
 .search-modal {
-  display: block;
-  visibility: hidden;
   border: none;
   padding: 0;
   position: fixed;
@@ -12,12 +10,10 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.8);
   opacity: 0;
-  pointer-events: none;
   /* Remove text selection on close. Should be fine without though */
-  user-select: none;
-  transition: all 0.5s;
+  transition: opacity 0.5s, display 0.5s allow-discrete;
   max-width: unset;
   max-height: unset;
 
@@ -32,10 +28,7 @@
   overflow: hidden;
 }
 .search-modal[open] {
-  visibility: visible;
   opacity: 1;
-  pointer-events: unset;
-  user-select: text;
 }
 .search-modal::backdrop {
   background: none;

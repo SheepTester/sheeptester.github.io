@@ -1056,13 +1056,6 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"]
         z-index: 2;
         grid-area: search;
       }
-      .search-button {
-        text-align: left;
-        transition: box-shadow 0.2s;
-      }
-      .search-button:hover {
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.8);
-      }
     }
     @media (min-width: 1000px) {
       .search-button-wrapper {
@@ -1071,11 +1064,37 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"]
       }
     }
     .projects-info.search-button-wrapper {
+      css {
+        .search-button {
+          display: flex;
+          align-items: center;
+          text-align: left;
+          transition: box-shadow 0.2s;
+        }
+        .search-button:hover {
+          box-shadow: 0 5px 15px rgba(0, 0, 0, 0.8);
+        }
+      }
       button.search.search-button#search-button {
         content: 'Search everything';
+
+        css {
+          .search-shortcut {
+            margin-left: auto;
+            font-family: inherit;
+            border: 1px solid rgba(151, 189, 179, 0.2);
+            border-radius: 5px;
+            width: 20px;
+            display: block;
+            text-align: center;
+          }
+        }
+        kbd.search-shortcut {
+          content: '/';
+        }
       }
     }
-    dialog.search-modal#search-modal {
+    dialog.search-modal#search-modal[inert] {
       form.search-wrapper#search-form[autocomplete='off'][action='/all/search/'] {
         input.search#search[type='search'][name='q'][placeholder='Search everything'][aria-label='Search everything'] {
         }

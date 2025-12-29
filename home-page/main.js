@@ -214,14 +214,17 @@ function startSearch () {
     loadSearch(search, searchForm, suggestions)
     startedSearch = true
   }
+  searchModal.inert = false
   searchModal.showModal()
-  // search.focus()
 }
 searchButton.addEventListener('click', startSearch)
 searchModal.addEventListener('click', e => {
   if (e.target === searchModal || e.target === searchForm) {
     searchModal.close()
   }
+})
+searchModal.addEventListener('close', () => {
+  searchModal.inert = true
 })
 window.addEventListener('keydown', e => {
   if (e.target.tagName === 'INPUT') {

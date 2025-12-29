@@ -10,6 +10,7 @@ import('/all/search/search.js').then(({ loadSearch }) => {
   const search = Object.assign(document.createElement('input'), {
     className: 'search',
     type: 'search',
+    name: 'q',
     placeholder: 'Search everything',
     ariaLabel: 'Search everything'
   })
