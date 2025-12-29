@@ -253,8 +253,8 @@ profiles:
 
   - name: Linktree
     link: https://linktr.ee/sheeptester
-    bg: '#38E09B'
-    ball: white
+    bg: '#43e660'
+    border: black
 
   - name: LeetCode
     link: https://leetcode.com/sheeptester/
