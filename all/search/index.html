@@ -5,7 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <title>Search SheepTester</title>
-    <meta name="description" content="Landing page for " />
+    <meta
+      name="description"
+      content="Landing page for SheepTester as a custom search engine."
+    />
 
     <link rel="stylesheet" type="text/css" href="/sheep3.css" />
     <link rel="stylesheet" type="text/css" href="./search.css" />
@@ -24,7 +27,7 @@
         line-height: normal;
         color: rgba(255, 255, 255, 0.7);
         word-break: break-word;
-        background-color: #24364a;
+        background-color: #171931;
         margin: 20px;
         overflow-y: scroll;
       }
@@ -42,6 +45,22 @@
         text-decoration: none;
         color: inherit;
       }
+
+      .no-results {
+        display: none;
+      }
+      .suggestions {
+        transition: none;
+      }
+
+      .warning {
+        padding: 20px;
+        border-radius: 10px;
+        background-color: #dd2263;
+        color: white;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.5);
+        margin: 20px 0;
+      }
     </style>
   </head>
   <body>
@@ -55,7 +74,12 @@
         aria-label="Search everything"
         autofocus
       />
-      <div class="no-results" id="suggestions"></div>
+      <div class="suggestions no-results" id="suggestions"></div>
+      <noscript>
+        <div class="warning">
+          The search page requires JavaScript, which you do not have enabled.
+        </div>
+      </noscript>
     </form>
 
     <script type="module">
@@ -71,7 +95,7 @@
         search.value = query
       }
 
-      loadSearch(search, form, suggestions, { noResults: false })
+      loadSearch(search, form, suggestions, { noResults: true })
     </script>
   </body>
 </html>
