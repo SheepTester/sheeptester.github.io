@@ -19,14 +19,16 @@ import('/all/search/search.js').then(({ loadSearch }) => {
   form.append(search, suggestions)
   modal.append(form)
   modal.addEventListener('click', e => {
-    if (e.target === e.currentTarget) {
-      e.currentTarget.close()
+    if (e.target === modal || e.target === form) {
+      modal.close()
     }
   })
 
   loadSearch(search, form, suggestions)
 
   document.body.append(modal)
+  // Allow the browser to register the modal's starting style
+  modal.getBoundingClientRect()
   modal.showModal()
   search.focus()
 })

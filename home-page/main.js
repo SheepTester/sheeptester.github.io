@@ -203,13 +203,26 @@ function startAgeAnim () {
   display()
 }
 
+const searchButton = document.getElementById('search-button')
+const searchModal = document.getElementById('search-modal')
+const searchForm = document.getElementById('search-form')
 const search = document.getElementById('search')
-search.addEventListener('focus', startSearch, { once: true })
+let startedSearch = false
 function startSearch () {
-  const form = document.getElementById('search-form')
-  const suggestions = document.getElementById('suggestions')
-  loadSearch(search, form, suggestions)
+  if (!startedSearch) {
+    const suggestions = document.getElementById('suggestions')
+    loadSearch(search, searchForm, suggestions)
+    startedSearch = true
+  }
+  searchModal.showModal()
+  // search.focus()
 }
+searchButton.addEventListener('click', startSearch)
+searchModal.addEventListener('click', e => {
+  if (e.target === searchModal || e.target === searchForm) {
+    searchModal.close()
+  }
+})
 window.addEventListener('keydown', e => {
   if (e.target.tagName === 'INPUT') {
     return
@@ -221,7 +234,7 @@ window.addEventListener('keydown', e => {
       (e.key === 'k' && modifiers === 0b010)) &&
     e.target.tagName !== 'INPUT'
   ) {
-    search.focus()
+    startSearch()
     e.preventDefault()
   }
 })
