@@ -146,7 +146,6 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"]
       // No tags when no JS
       grid-template-areas:
         'sidebar projects-heading'
-        'sidebar search'
         'sidebar projects'
         'sidebar-bottom projects'
         'footer footer';
@@ -1024,7 +1023,7 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"]
           background-color: #dd2263;
           color: white;
           box-shadow: 0 3px 10px rgba(0, 0, 0, 0.5);
-          margin: 20px 0;
+          margin: 0;
         }
         .old-js-warning {
           display: none;
@@ -1033,14 +1032,14 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"]
           display: block;
         }
       }
-      .warning.old-js-warning {
+      p.warning.old-js-warning {
         content: '\
           Note that many of these projects require new web features that your\
           browser doesn’t support. Please use a modern browser.\
         ';
       }
       noscript {
-        .warning.no-js {
+        p.warning.no-js {
           content: '\
             Note that many of these projects require JavaScript, which you do\
             not have enabled.\
@@ -1051,10 +1050,14 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"]
 
     css {
       .search-button-wrapper {
+        display: none;
         position: sticky;
         bottom: 15px;
         z-index: 2;
         grid-area: search;
+      }
+      .has-js .search-button-wrapper {
+        display: block;
       }
     }
     @media (min-width: 1000px) {

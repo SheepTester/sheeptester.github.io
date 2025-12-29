@@ -56,8 +56,8 @@
   width: 100%;
   border-radius: 40px;
   border: 0;
-  padding: 0 20px;
   padding-left: 36px;
+  padding-right: 15px;
   background-image: url('/home-page/icons/feather-search.svg');
   background-position: 8px;
   background-repeat: no-repeat;
