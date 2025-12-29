@@ -93,6 +93,9 @@
   border: 1px solid rgba(151, 189, 179, 0.2);
   flex: none;
 }
+.search:focus {
+  outline: none;
+}
 .search::placeholder {
   color: color-mix(in srgb, currentColor, transparent 50%);
 }
@@ -112,7 +115,6 @@
   transition: opacity 0.5s, transform 0.5s, visibility 0.5s;
 }
 .no-results {
-  animation-duration: 0s;
   opacity: 0;
   pointer-events: none;
   visibility: hidden;
