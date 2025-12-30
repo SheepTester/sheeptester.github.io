@@ -31,7 +31,7 @@ function getGithubUrl (path) {
   for (const [entry, prefix] of Object.entries(actionsRepos)) {
     const [repo, branch = 'master'] = entry.split('#')
     if (repoName === repo) {
-      if (!prefix) {
+      if (prefix === null) {
         return `${BASE}/${repo}`
       }
       return `${BASE}/${repo}/blob/${branch}/${prefix + rest.join('/')}${end}`
