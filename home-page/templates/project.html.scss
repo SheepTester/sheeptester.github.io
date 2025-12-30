@@ -9,7 +9,7 @@ css {
   }
   .showing-desc::after {
     content: '';
-    background-color: #24364a;
+    background-color: #171931;
     width: 24px;
     height: 24px;
     margin: -12px;
@@ -43,6 +43,7 @@ css {
     border: 1px solid transparent;
     border-top-color: rgba(151, 189, 179, 0.2);
     border-left-color: rgba(151, 189, 179, 0.2);
+    background-color: #24364a;
   }
 }
 $classes: 'project';
