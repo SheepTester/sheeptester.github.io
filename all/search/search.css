@@ -7,12 +7,13 @@
   left: 0;
   width: 100%;
   height: 100%;
-  display: flex;
   flex-direction: column;
   align-items: center;
   background-color: rgba(0, 0, 0, 0.8);
   opacity: 0;
-  /* Remove text selection on close. Should be fine without though */
+  /* Transitioning display doesn't work on Firefox :/
+  https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/transition-behavior#browser_compatibility
+  */
   transition: opacity 0.5s, display 0.5s allow-discrete;
   max-width: unset;
   max-height: unset;
@@ -28,7 +29,14 @@
   overflow: hidden;
 }
 .search-modal[open] {
+  display: flex;
   opacity: 1;
+}
+@starting-style {
+  /* Needs to override .search-modal[open] */
+  .search-modal[open] {
+    opacity: 0;
+  }
 }
 .search-modal::backdrop {
   background: none;
@@ -50,6 +58,11 @@
 }
 .search-modal[open] .search-wrapper {
   transform: none;
+}
+@starting-style {
+  .search-modal[open] .search-wrapper {
+    transform: translateY(20px);
+  }
 }
 .search {
   height: 40px;

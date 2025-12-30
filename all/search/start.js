@@ -24,6 +24,9 @@ import('/all/search/search.js').then(({ loadSearch }) => {
       modal.close()
     }
   })
+  modal.addEventListener('close', () => {
+    modal.inert = true
+  })
 
   loadSearch(search, form, suggestions)
 
