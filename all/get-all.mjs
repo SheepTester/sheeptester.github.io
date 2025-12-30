@@ -133,7 +133,8 @@ async function main () {
     .slice(0, -1)
     .map(f => `/${f}`)
 
-  for (const repo of actionsRepos) {
+  for (const repoBranch of Object.keys(actionsRepos)) {
+    const [repo] = repoBranch.split('#')
     console.log(`Getting ${repo} (sitemap.txt)`)
     paths.push(
       ...(await fetch(`https://${domain}/${repo}/sitemap.txt`)

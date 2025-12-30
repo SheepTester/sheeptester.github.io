@@ -54,7 +54,11 @@ for (const { path, image } of projects) {
   if (maybeRepoName === 'hello-world' && path !== '/hello-world/') {
     repoName = maybeRepoName
   } else {
-    if (actionsRepos.includes(maybeRepoName)) {
+    if (
+      Object.keys(actionsRepos).some(
+        entry => entry.split('#')[0] === maybeRepoName
+      )
+    ) {
       console.warn(
         `! cant handle actions repo (${maybeRepoName}): ${path} ${image}`
       )

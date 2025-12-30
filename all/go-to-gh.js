@@ -28,8 +28,14 @@ function getGithubUrl (path) {
       )
     }
   }
-  if (actionsRepos.includes(repoName)) {
-    return `${BASE}/${repoName}/`
+  for (const [entry, prefix] of Object.entries(actionsRepos)) {
+    const [repo, branch = 'master'] = entry.split('#')
+    if (repoName === repo) {
+      if (!prefix) {
+        return `${BASE}/${repo}`
+      }
+      return `${BASE}/${repo}/blob/${branch}/${prefix + rest.join('/')}${end}`
+    }
   }
   return `${BASE}/sheeptester.github.io/blob/master${path}${end}`
 }
