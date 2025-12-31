@@ -307,22 +307,23 @@ declare module '/reform/v1/index.js' {
   export abstract class OutputProvider {
     fileName?: string
     /**
-     * Canvas contexts are turned into PNG images. Reform may set/override this
-     * property for caching purposes.
+     * Canvas contexts are turned into PNG images.
      */
-    value?: Blob | CanvasRenderingContext2D | string
+    value?: Blob | CanvasRenderingContext2D
     /** Ignored if `value` is set. */
-    provideDownload? (): Promise<Blob>
+    provideDownload? (): PromiseLike<Blob> | Blob
     /**
      * If the blob type is not supported by the Clipboard API, then specify this
-     * method for the copy button, which will be preferred over `provideDownload`
-     * if available.
+     * method for the copy button, which when set will be preferred over `value`
+     * or `provideDownload`.
+     *
+     * Guaranteed to be called at most once.
      */
-    provideClipboard? (): Promise<Blob>
+    provideClipboard? (): PromiseLike<Blob> | Blob
 
     static from (
       fileName: string,
-      value: Blob | CanvasRenderingContext2D | string
+      value: CanvasRenderingContext2D | BlobPart
     ): OutputProvider
   }
 }

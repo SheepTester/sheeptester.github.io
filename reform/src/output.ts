@@ -12,6 +12,8 @@ export class Output {
   #clipboardBlob: Promise<Blob | null> | null = null
   #url: string | null = null
   #elements: OutputElements
+  #downloadButton: DownloadButton | null = null
+  #downloadButtonMounted = false
   #copyButtonTimeoutId: ReturnType<typeof setTimeout> | null = null
   #shareButtonTimeoutId: ReturnType<typeof setTimeout> | null = null
 
@@ -32,11 +34,12 @@ export class Output {
         copyButton.disabled = true
         this.#clipboardBlob ??= this.#getBlob(true)
         const blob = await this.#clipboardBlob
-        if (blob) {
-          await navigator.clipboard.write([
-            new ClipboardItem({ [blob.type]: blob })
-          ])
+        if (!blob) {
+          return
         }
+        await navigator.clipboard.write([
+          new ClipboardItem({ [blob.type]: blob })
+        ])
         if (this.#copyButtonTimeoutId) {
           clearTimeout(this.#copyButtonTimeoutId)
         }
@@ -54,15 +57,16 @@ export class Output {
         shareButton.disabled = true
         this.#blob ??= this.#getBlob()
         const blob = await this.#blob
-        if (blob) {
-          await navigator.share({
-            files: [
-              new File([blob], this.#output?.fileName ?? '', {
-                type: blob.type
-              })
-            ]
-          })
+        if (!blob) {
+          return
         }
+        await navigator.share({
+          files: [
+            new File([blob], this.#output?.fileName ?? '', {
+              type: blob.type
+            })
+          ]
+        })
         if (this.#shareButtonTimeoutId) {
           clearTimeout(this.#shareButtonTimeoutId)
         }
@@ -127,7 +131,10 @@ export class Output {
   }
 
   #setFileNameFromBlob (blob: Blob | null) {
-    if (this.#output && this.#elements.fileName) {
+    const fileNameElem = this.#downloadButtonMounted
+      ? this.#downloadButton?.fileName
+      : this.#elements.fileName
+    if (this.#output && fileNameElem) {
       let downloadText = this.#output.fileName ?? ''
       if (blob) {
         if (downloadText) {
@@ -135,7 +142,7 @@ export class Output {
         }
         downloadText += displayBytes(blob.size)
       }
-      this.#elements.fileName.textContent = downloadText
+      fileNameElem.textContent = downloadText
     }
   }
 
@@ -147,27 +154,57 @@ export class Output {
     if (this.#url) {
       URL.revokeObjectURL(this.#url)
     }
+    this.#url = null
 
-    if (this.#elements.copyButton) {
-      this.#elements.copyButton.disabled = false
+    const { copyButton, shareButton, downloadLink } = this.#elements
+    if (copyButton) {
+      copyButton.disabled = false
     }
-    if (this.#elements.shareButton) {
-      this.#elements.shareButton.disabled = false
+    if (shareButton) {
+      shareButton.disabled = false
+    }
+    if (downloadLink) {
+      downloadLink.download = this.#output.fileName ?? ''
+      if (this.#output.value instanceof Blob) {
+        this.#url = URL.createObjectURL(this.#output.value)
+        downloadLink.href = this.#url
+        if (this.#downloadButtonMounted) {
+          this.#downloadButton?.button.replaceWith(downloadLink)
+          this.#downloadButtonMounted = false
+        }
+      } else {
+        this.#downloadButton ??= createDownloadButtonFromLink(
+          downloadLink,
+          async downloadButton => {
+            try {
+              downloadButton.disabled = true
+              if (!this.#url) {
+                this.#blob ??= this.#getBlob()
+                const blob = await this.#blob
+                if (!blob) {
+                  return
+                }
+                this.#url = URL.createObjectURL(blob)
+                downloadLink.href = this.#url
+              }
+              document.body.append(downloadLink)
+              downloadLink.click()
+              downloadLink.remove()
+            } finally {
+              downloadButton.disabled = false
+            }
+          }
+        )
+        if (!this.#downloadButtonMounted) {
+          downloadLink.replaceWith(this.#downloadButton.button)
+          this.#downloadButtonMounted = true
+        }
+      }
     }
 
     this.#setFileNameFromBlob(
       this.#output.value instanceof Blob ? this.#output.value : null
     )
-
-    if (this.#elements.downloadLink) {
-      if (this.#output.value instanceof Blob) {
-        this.#url = URL.createObjectURL(this.#output.value)
-        this.#elements.downloadLink.href = this.#url
-        this.#elements.downloadLink.download = this.#output.fileName ?? ''
-      } else {
-        // TODO: Create button
-      }
-    }
   }
 
   static fromOutputControls (wrapper?: Element | null): Output {
@@ -199,11 +236,27 @@ export class Output {
   }
 }
 
+type DownloadButton = {
+  button: HTMLButtonElement
+  fileName: Element | null
+}
+function createDownloadButtonFromLink (
+  downloadLink: HTMLAnchorElement,
+  onClick: (button: HTMLButtonElement) => void
+): DownloadButton {
+  const button = document.createElement('button')
+  button.className = downloadLink.className
+  for (const child of downloadLink.childNodes) {
+    button.append(child.cloneNode(true))
+  }
+  button.addEventListener('click', () => onClick(button))
+  return { button, fileName: button.querySelector('.file-name') }
+}
+
 export abstract class OutputProvider {
   fileName?: string
   /**
-   * Canvas contexts are turned into PNG images. Reform may set/override this
-   * property for caching purposes.
+   * Canvas contexts are turned into PNG images.
    */
   value?: Blob | CanvasRenderingContext2D
   /** Ignored if `value` is set. */
@@ -219,9 +272,14 @@ export abstract class OutputProvider {
 
   static from (
     fileName: string,
-    value: Blob | CanvasRenderingContext2D
+    value: CanvasRenderingContext2D | BlobPart
   ): OutputProvider {
-    return new FileOutputProvider(fileName, value)
+    return new FileOutputProvider(
+      fileName,
+      value instanceof Blob || value instanceof CanvasRenderingContext2D
+        ? value
+        : new Blob([value], { type: 'text/plain' })
+    )
   }
 }
 
