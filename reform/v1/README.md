@@ -345,12 +345,12 @@ Here are the special input sources:
   - It will create a canvas if none already exists in the `.reform:io` wrapper. `willReadFrequently` is set to `data-will-read-frequently` (used by [Intense contrast](https://sheeptester.github.io/javascripts/intense-contrast.html))
   - Selected images are drawn onto the canvas. This is also used for previewing.
   - Produces `CanvasRenderingContext2D`s instead of image files.
-  - The canvas element's `data-name` attribute is set to the file name.
+  - The canvas element's `data-name` attribute is set to the file name without the extension.
 - `input.reform:video-input`: Enables video input handling.
   - It will create a `<video>` if none already exists in the `.reform:io` wrapper.
   - Selected videos are loaded in the video element. This is also used for previewing.
   - Produces `HTMLVideoElement` once the video loads (fully?).
-  - The video element's `data-name` attribute is set to the file name.
+  - The video element's `data-name` attribute is set to the file name without the extension.
 - `input.reform:text-input`: Enables text input handling.
   - Produces a string.
 - `input.reform:file-input`: Enables single file input handling.

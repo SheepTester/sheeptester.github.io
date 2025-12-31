@@ -32,6 +32,7 @@
             name="image"
             accept="image/*"
             class="hidden-accessible reform:image-input reform:paste-target"
+            data-default="./jpg-quality-default.jpg"
           />
           <span class="icon icon-upload"></span>
           <span class="file-label">Choose, drop, or paste an image</span>
@@ -148,9 +149,13 @@
     <script type="module">
       import { on, OutputProvider } from '/reform/v1/index.js'
 
+      let nextCallId = 0
+
       on(
         'output',
         async (image, { image: { canvas }, quality, format, shrink }) => {
+          const callId = ++nextCallId
+          const fileName = canvas.dataset.name
           const original = canvas
           let context
           if (shrink > 1) {
@@ -164,24 +169,26 @@
           let url = canvas.toDataURL(format, quality)
           image.src = url
           let imageLoad = new Promise((resolve, reject) => {
-            image.addEventListener('load', resolve, { once: true })
-            image.addEventListener('error', reject, { once: true })
+            image.onload = resolve
+            image.onerror = reject
           })
           if (shrink > 1) {
             await imageLoad
+            if (callId !== nextCallId) {
+              return
+            }
             canvas.width = original.width
             canvas.height = original.height
             context.drawImage(image, 0, 0, canvas.width, canvas.height)
             url = canvas.toDataURL(format, quality)
             image.src = url
             imageLoad = new Promise((resolve, reject) => {
-              image.addEventListener('load', resolve, { once: true })
-              image.addEventListener('error', reject, { once: true })
+              image.onload = resolve
+              image.onerror = reject
             })
           }
           return new (class extends OutputProvider {
-            fileName =
-              canvas.dataset.name + (format === 'image/jpeg' ? '.jpg' : '.webp')
+            fileName = fileName + (format === 'image/jpeg' ? '.jpg' : '.webp')
 
             provideDownload = () => fetch(url).then(r => r.blob())
 
