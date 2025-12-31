@@ -907,4 +907,5 @@ label.file:has(:focus-visible) {
   white-space: pre-wrap;
   font-size: 0.8em;
   margin: 0;
+  tab-size: 4ch;
 }

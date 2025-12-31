@@ -40,7 +40,7 @@ window.onerror = (message, source, line, col, error) => {
       : `Uncaught ${
         error?.name ?? String(error)
       }: ${message} at ${source}:${line}${col !== undefined ? ':' + col : ''}${
-        error?.stack ? '\n' + error.stack.replaceAll('\n', '\n\t') : ''
+        error?.stack ? '\n\t' + error.stack.replaceAll('\n', '\n\t') : ''
       }`
   )
 }
@@ -51,7 +51,7 @@ window.addEventListener('unhandledrejection', ({ reason: error }) => {
       ? `Uncaught (in promise) ${error.stack}`
       : error instanceof Error
         ? `Uncaught (in promise) ${error.constructor.name}: ${error.message}${
-          error?.stack ? '\n' + error.stack.replaceAll('\n', '\n\t') : ''
+          error?.stack ? '\n\t' + error.stack.replaceAll('\n', '\n\t') : ''
         }`
         : String(error)
   )
