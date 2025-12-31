@@ -34,20 +34,25 @@ function handleError (error: string) {
 
 window.onerror = (message, source, line, col, error) => {
   handleError(
-    error?.stack
+    // Firefox does not include name/message in error, but Chrome does
+    error?.stack && error.stack.includes(error.name)
       ? `Uncaught ${error.stack}`
       : `Uncaught ${
-          error?.name ?? String(error)
-        }: ${message} at ${source}:${line}${col !== undefined ? ':' + col : ''}`
+        error?.name ?? String(error)
+      }: ${message} at ${source}:${line}${col !== undefined ? ':' + col : ''}${
+        error?.stack ? '\n' + error.stack.replaceAll('\n', '\n\t') : ''
+      }`
   )
 }
 
-window.addEventListener('unhandledrejection', e => {
+window.addEventListener('unhandledrejection', ({ reason: error }) => {
   handleError(
-    e.reason?.stack
-      ? `Uncaught (in promise) ${e.reason.stack}`
-      : e.reason instanceof Error
-      ? `Uncaught (in promise) ${e.reason.constructor.name}: ${e.reason.message}`
-      : String(e.reason)
+    error?.stack && error.stack.includes(error.name)
+      ? `Uncaught (in promise) ${error.stack}`
+      : error instanceof Error
+        ? `Uncaught (in promise) ${error.constructor.name}: ${error.message}${
+          error?.stack ? '\n' + error.stack.replaceAll('\n', '\n\t') : ''
+        }`
+        : String(error)
   )
 })
