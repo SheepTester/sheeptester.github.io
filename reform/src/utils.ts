@@ -1,3 +1,6 @@
+/** Milliseconds to show the done icon for after copying */
+export const DONE_TIMEOUT = 1000
+
 /**
  * Based on
  * https://github.com/SheepTester/hello-world/blob/master/questionable-host/gdrive/upload-videos.ts#L17

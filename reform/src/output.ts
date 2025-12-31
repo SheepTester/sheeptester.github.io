@@ -1,59 +1,102 @@
-import { displayBytes } from './utils'
+import { displayBytes, DONE_TIMEOUT } from './utils'
 
-export type OutputOptions = {
-  fileName?: Element | null
-  downloadLink?: HTMLAnchorElement | null
-  copyButton?: HTMLButtonElement | null
-  shareButton?: HTMLButtonElement | null
+type OutputElements = {
+  fileName: Element | null
+  downloadLink: HTMLAnchorElement | null
+  copyButton: HTMLButtonElement | null
+  shareButton: HTMLButtonElement | null
 }
 export class Output {
   #output: OutputProvider | null = null
   #blob: Promise<Blob | null> | null = null
+  #clipboardBlob: Promise<Blob | null> | null = null
   #url: string | null = null
-  #elements: OutputOptions
+  #elements: OutputElements
+  #copyButtonTimeoutId: ReturnType<typeof setTimeout> | null = null
+  #shareButtonTimeoutId: ReturnType<typeof setTimeout> | null = null
 
-  constructor (elements: OutputOptions) {
+  constructor (elements: OutputElements) {
     this.#elements = elements
 
-    if (this.#elements.copyButton) {
-      this.#elements.copyButton.disabled = true
+    const { copyButton, shareButton } = elements
+
+    if (copyButton) {
+      copyButton.disabled = true
     }
-    if (this.#elements.shareButton) {
-      this.#elements.shareButton.disabled = true
+    if (shareButton) {
+      shareButton.disabled = true
     }
 
-    this.#elements.copyButton?.addEventListener('click', async () => {
-      this.#blob ??= this.#getBlob()
-      const blob = await this.#blob
-      if (blob) {
-        await navigator.clipboard.write([
-          new ClipboardItem({ [blob.type]: blob })
-        ])
+    copyButton?.addEventListener('click', async () => {
+      try {
+        copyButton.disabled = true
+        this.#clipboardBlob ??= this.#getBlob(true)
+        const blob = await this.#clipboardBlob
+        if (blob) {
+          await navigator.clipboard.write([
+            new ClipboardItem({ [blob.type]: blob })
+          ])
+        }
+        if (this.#copyButtonTimeoutId) {
+          clearTimeout(this.#copyButtonTimeoutId)
+        }
+        copyButton.classList.add('icon-done')
+        this.#copyButtonTimeoutId = setTimeout(() => {
+          copyButton.classList.remove('icon-done')
+        }, DONE_TIMEOUT)
+      } finally {
+        copyButton.disabled = false
       }
     })
 
-    this.#elements.shareButton?.addEventListener('click', async () => {
-      // TODO: call clipboard, and only at most once
-      this.#blob ??= this.#getBlob()
-      const blob = await this.#blob
-      if (blob) {
-        await navigator.share({
-          files: [
-            new File([blob], this.#output?.fileName ?? '', { type: blob.type })
-          ]
-        })
+    shareButton?.addEventListener('click', async () => {
+      try {
+        shareButton.disabled = true
+        this.#blob ??= this.#getBlob()
+        const blob = await this.#blob
+        if (blob) {
+          await navigator.share({
+            files: [
+              new File([blob], this.#output?.fileName ?? '', {
+                type: blob.type
+              })
+            ]
+          })
+        }
+        if (this.#shareButtonTimeoutId) {
+          clearTimeout(this.#shareButtonTimeoutId)
+        }
+        shareButton.classList.add('icon-done')
+        this.#shareButtonTimeoutId = setTimeout(() => {
+          shareButton.classList.remove('icon-done')
+        }, DONE_TIMEOUT)
+      } finally {
+        shareButton.disabled = false
       }
     })
 
     if (!('share' in navigator)) {
-      this.#elements.shareButton?.remove()
+      shareButton?.remove()
     }
   }
 
   /**
-   * Do not call more than once per `OutputControl`
+   * Do not call more than once per `OutputProvider`. Please use this pattern:
+   *
+   * ```ts
+   * this.#blob ??= this.#getBlob()
+   * const blob = await this.#blob
+   * ```
    */
-  async #getBlob (): Promise<Blob | null> {
+  async #getBlob (clipboard = false): Promise<Blob | null> {
+    if (clipboard) {
+      if (this.#output?.provideClipboard) {
+        return this.#output.provideClipboard()
+      }
+      // Avoid re-running provideDownload
+      this.#blob ??= this.#getBlob()
+      return this.#blob
+    }
     if (!this.#output) {
       return null
     }
@@ -69,8 +112,7 @@ export class Output {
             return
           }
           if (this.#output) {
-            this.#output.value = blob
-            this.#setFileName()
+            this.#setFileNameFromBlob(blob)
           }
           resolve(blob)
         })
@@ -80,19 +122,18 @@ export class Output {
       return null
     }
     const blob = await this.#output.provideDownload()
-    this.#output.value = blob
-    this.#setFileName()
+    this.#setFileNameFromBlob(blob)
     return blob
   }
 
-  #setFileName () {
+  #setFileNameFromBlob (blob: Blob | null) {
     if (this.#output && this.#elements.fileName) {
       let downloadText = this.#output.fileName ?? ''
-      if (this.#output.value instanceof Blob) {
+      if (blob) {
         if (downloadText) {
           downloadText += ' · '
         }
-        downloadText += displayBytes(this.#output.value.size)
+        downloadText += displayBytes(blob.size)
       }
       this.#elements.fileName.textContent = downloadText
     }
@@ -102,6 +143,7 @@ export class Output {
     this.#output =
       output instanceof File ? OutputProvider.from(output.name, output) : output
     this.#blob = null
+    this.#clipboardBlob = null
     if (this.#url) {
       URL.revokeObjectURL(this.#url)
     }
@@ -113,7 +155,9 @@ export class Output {
       this.#elements.shareButton.disabled = false
     }
 
-    this.#setFileName()
+    this.#setFileNameFromBlob(
+      this.#output.value instanceof Blob ? this.#output.value : null
+    )
 
     if (this.#elements.downloadLink) {
       if (this.#output.value instanceof Blob) {
@@ -127,26 +171,27 @@ export class Output {
   }
 
   static fromOutputControls (wrapper?: Element | null): Output {
-    let downloadLink = wrapper?.querySelector('.download')
+    let downloadLink = wrapper?.querySelector('.download') ?? null
     if (downloadLink && !(downloadLink instanceof HTMLAnchorElement)) {
       console.warn(downloadLink, 'download link is not an <a> element')
       downloadLink = null
     }
 
-    let copyButton = wrapper?.querySelector('button.icon-copy, .reform\\:copy')
+    let copyButton =
+      wrapper?.querySelector('button.icon-copy, .reform\\:copy') ?? null
     if (copyButton && !(copyButton instanceof HTMLButtonElement)) {
       console.warn(copyButton, 'copy button is not a <button> element')
       copyButton = null
     }
 
-    let shareButton = wrapper?.querySelector('button.icon-share')
+    let shareButton = wrapper?.querySelector('button.icon-share') ?? null
     if (shareButton && !(shareButton instanceof HTMLButtonElement)) {
       console.warn(shareButton, 'copy button is not a <button> element')
       shareButton = null
     }
 
     return new Output({
-      fileName: wrapper?.querySelector('.file-name'),
+      fileName: wrapper?.querySelector('.file-name') ?? null,
       downloadLink,
       copyButton,
       shareButton
@@ -165,8 +210,8 @@ export abstract class OutputProvider {
   provideDownload? (): PromiseLike<Blob> | Blob
   /**
    * If the blob type is not supported by the Clipboard API, then specify this
-   * method for the copy button, which will be preferred over `provideDownload`
-   * if available.
+   * method for the copy button, which when set will be preferred over `value`
+   * or `provideDownload`.
    *
    * Guaranteed to be called at most once.
    */

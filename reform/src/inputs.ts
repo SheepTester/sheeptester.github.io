@@ -1,5 +1,5 @@
 import { Source } from './source'
-import { displayBytes, fileName } from './utils'
+import { displayBytes, DONE_TIMEOUT, fileName } from './utils'
 
 const encoder = new TextEncoder()
 
@@ -148,25 +148,35 @@ function handleFileInput ({
     })
   }
 
-  pasteButton?.addEventListener('click', () => {
-    navigator.clipboard
-      .read()
-      .then(items => {
-        const itemsByType = items.flatMap(item =>
-          item.types.map(type => ({ item, type }))
-        )
-        if (itemsByType.length > 0) {
-          handleFile({ type: 'clipboard', items: itemsByType })
-        }
-      })
-      .catch(error => {
-        if (error instanceof DOMException && error.name === 'NotAllowedError') {
-          // Firefox throws this when the user cancels clicking on "Paste"
-          console.warn('Failed to read clipboard', error)
-        } else {
-          throw error
-        }
-      })
+  let pasteButtonTimeoutId: ReturnType<typeof setTimeout> | null = null
+  pasteButton?.addEventListener('click', async () => {
+    try {
+      pasteButton.disabled = true
+      const items = await navigator.clipboard.read()
+      const itemsByType = items.flatMap(item =>
+        item.types.map(type => ({ item, type }))
+      )
+      if (itemsByType.length > 0) {
+        handleFile({ type: 'clipboard', items: itemsByType })
+      }
+
+      if (pasteButtonTimeoutId) {
+        clearTimeout(pasteButtonTimeoutId)
+      }
+      pasteButton.classList.add('icon-done')
+      pasteButtonTimeoutId = setTimeout(() => {
+        pasteButton.classList.remove('icon-done')
+      }, DONE_TIMEOUT)
+    } catch (error) {
+      if (error instanceof DOMException && error.name === 'NotAllowedError') {
+        // Firefox throws this when the user cancels clicking on "Paste"
+        console.warn('Failed to read clipboard', error)
+      } else {
+        throw error
+      }
+    } finally {
+      pasteButton.disabled = false
+    }
   })
 }
 

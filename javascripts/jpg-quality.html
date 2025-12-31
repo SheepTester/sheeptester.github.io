@@ -151,20 +151,20 @@
 
       let nextCallId = 0
 
+      const tempCanvas = document.createElement('canvas')
+      const context = tempCanvas.getContext('2d')
+
       on(
         'output',
         async (image, { image: { canvas }, quality, format, shrink }) => {
           const callId = ++nextCallId
           const fileName = canvas.dataset.name
           const original = canvas
-          let context
           if (shrink > 1) {
-            const newCanvas = document.createElement('canvas')
-            newCanvas.width = canvas.width / shrink
-            newCanvas.height = canvas.height / shrink
-            context = newCanvas.getContext('2d')
-            context.drawImage(canvas, 0, 0, newCanvas.width, newCanvas.height)
-            canvas = newCanvas
+            tempCanvas.width = canvas.width / shrink
+            tempCanvas.height = canvas.height / shrink
+            context.drawImage(canvas, 0, 0, tempCanvas.width, tempCanvas.height)
+            canvas = tempCanvas
           }
           let url = canvas.toDataURL(format, quality)
           image.src = url
@@ -194,6 +194,8 @@
 
             async provideClipboard () {
               await imageLoad
+              tempCanvas.width = canvas.width
+              tempCanvas.height = canvas.height
               context.drawImage(image, 0, 0, canvas.width, canvas.height)
               return new Promise(resolve => context.canvas.toBlob(resolve))
             }
