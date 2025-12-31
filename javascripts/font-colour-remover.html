@@ -83,7 +83,7 @@
     </form>
 
     <script type="module">
-      import { on, OutputProvider } from '/reform/v1/index.js'
+      import { on, Out } from '/reform/v1/index.js'
 
       if (!('ClipboardItem' in window)) {
         alert(
@@ -139,7 +139,7 @@
         }
         const html = doc.documentElement.outerHTML
         preview.innerHTML = html
-        return OutputProvider.from('clean.html', html, 'text/html')
+        return Out.from('clean.html', html, 'text/html')
       })
     </script>
   </body>

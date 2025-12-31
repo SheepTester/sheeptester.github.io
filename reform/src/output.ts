@@ -6,7 +6,7 @@ type OutputElements = {
   copyButton: HTMLButtonElement | null
   shareButton: HTMLButtonElement | null
 }
-export class Output {
+export class OutputControls {
   #output: OutputProvider | null = null
   #blob: Promise<Blob | null> | null = null
   #clipboardBlob: Promise<Blob | null> | null = null
@@ -207,7 +207,7 @@ export class Output {
     )
   }
 
-  static fromOutputControls (wrapper?: Element | null): Output {
+  static fromWrapper (wrapper?: Element | null): OutputControls {
     let downloadLink = wrapper?.querySelector('.download') ?? null
     if (downloadLink && !(downloadLink instanceof HTMLAnchorElement)) {
       console.warn(downloadLink, 'download link is not an <a> element')
@@ -227,7 +227,7 @@ export class Output {
       shareButton = null
     }
 
-    return new Output({
+    return new OutputControls({
       fileName: wrapper?.querySelector('.file-name') ?? null,
       downloadLink,
       copyButton,

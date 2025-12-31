@@ -46,10 +46,10 @@
       </div>
     </form>
     <script type="module">
-      import { on, OutputProvider } from '/reform/v1/index.js'
+      import { on, Out } from '/reform/v1/index.js'
 
       on('main', async (_, { file }) => {
-        return OutputProvider.from(
+        return Out.from(
           file.name,
           new Uint8Array(await file.arrayBuffer()).sort(),
           file.type

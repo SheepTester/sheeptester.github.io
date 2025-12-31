@@ -6,10 +6,10 @@ import {
   handleTextInput,
   handleVideoInput
 } from './src/inputs'
-import { Output, OutputProvider } from './src/output'
+import { OutputControls, OutputProvider } from './src/output'
 import { Source } from './src/source'
 
-export { OutputProvider } from './src/output'
+export { OutputProvider as Out } from './src/output'
 
 const sources: Record<string, Source<any>> = {}
 
@@ -193,7 +193,7 @@ export function on<T> (
     ?.closest('.reform\\:io')
     ?.querySelector('.output-controls')
   if (outputControls) {
-    const output = Output.fromOutputControls(outputControls)
+    const output = OutputControls.fromWrapper(outputControls)
     sources[name].dependents.push(file => {
       if (file instanceof File || file instanceof OutputProvider) {
         output.handleOutput(file)

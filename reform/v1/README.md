@@ -24,7 +24,7 @@
     </form>
 
     <script type="module">
-      import { on, OutputProvider } from '/reform/v1/index.js'
+      import { on, Out } from '/reform/v1/index.js'
     </script>
   </body>
 </html>
@@ -304,7 +304,7 @@ declare module '/reform/v1/index.js' {
     ) => Promise<T>
   ): void
 
-  export abstract class OutputProvider {
+  export abstract class Out {
     fileName?: string
     /**
      * Canvas contexts are turned into PNG images.
@@ -328,7 +328,7 @@ declare module '/reform/v1/index.js' {
       fileName: string,
       value: CanvasRenderingContext2D | BlobPart,
       type?: string
-    ): OutputProvider
+    ): Out
   }
 }
 ```
@@ -408,7 +408,7 @@ The callback can return a promise, which is awaited. There is some protection ag
 
 #### Output controls
 
-Custom sources do not need to produce values, but producing an `OutputProvider` instance is recommended to populate output controls.
+Custom sources do not need to produce values, but producing an `Out` instance is recommended to populate output controls.
 If the referenced element has an ancestor `.reform:io` (or itself has the class `.reform:io`), it will try finding a `.output-controls` to add as a dependency to the custom source.
 If the custom source produces an unsupported type, it is safely ignored by output controls.
 

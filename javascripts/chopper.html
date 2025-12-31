@@ -137,7 +137,7 @@
 
     <script src="./jszip.min.js" charset="utf-8"></script>
     <script type="module">
-      import { on, OutputProvider } from '/reform/v1/index.js'
+      import { on, Out } from '/reform/v1/index.js'
 
       // Size in pixels of large displayed emoji (eg in emoji-only messages) in the
       // Discord client
@@ -227,15 +227,17 @@
           }
         }
 
-        const zip = new JSZip()
-        for (const { name, blob } of blobs) {
-          zip.file(name, blob)
-        }
-        const blob = await zip.generateAsync({ type: 'blob' })
-        if (process !== processId) {
-          return
-        }
-        return OutputProvider.from('emoji.zip', blob)
+        return new (class extends Out {
+          fileName = 'emoji.zip'
+
+          provideDownload () {
+            const zip = new JSZip()
+            for (const { name, blob } of blobs) {
+              zip.file(name, blob)
+            }
+            return zip.generateAsync({ type: 'blob' })
+          }
+        })()
       })
     </script>
   </body>

@@ -342,8 +342,8 @@ select {
 .icon-share {
   --icon: var(--icon-share);
 }
-/* Must be listed after icon-copy and icon-share because `Output` will set both
-*/
+/* Must be listed after icon-copy and icon-share because `OutputControls` will
+set both */
 .icon-done {
   --icon: var(--icon-done);
 }

@@ -67,7 +67,7 @@
     </form>
 
     <script type="module">
-      import { on, OutputProvider } from '/reform/v1/index.js'
+      import { on, Out } from '/reform/v1/index.js'
 
       const bracketPairs = {}
       for (const [open, close] of ['()', '[]', '{}']) {
@@ -271,7 +271,7 @@
 
         c.restore()
 
-        return OutputProvider.from('graph.png', c)
+        return Out.from('graph.png', c)
       })
 
       on('expression', (input, { callback }) => {

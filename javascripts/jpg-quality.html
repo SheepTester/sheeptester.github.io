@@ -147,7 +147,7 @@
     </form>
 
     <script type="module">
-      import { on, OutputProvider } from '/reform/v1/index.js'
+      import { on, Out } from '/reform/v1/index.js'
 
       let nextCallId = 0
 
@@ -187,7 +187,7 @@
               image.onerror = reject
             })
           }
-          return new (class extends OutputProvider {
+          return new (class extends Out {
             fileName = fileName + (format === 'image/jpeg' ? '.jpg' : '.webp')
 
             provideDownload = () => fetch(url).then(r => r.blob())

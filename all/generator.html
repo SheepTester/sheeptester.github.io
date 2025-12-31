@@ -68,7 +68,7 @@
     </form>
 
     <script type="module">
-      import { on, OutputProvider } from '/reform/v1/index.js'
+      import { on, Out } from '/reform/v1/index.js'
 
       on('output', (output, { name }) => {
         if (!name) {
@@ -123,7 +123,7 @@
           }
           const html = `<div class="dir">${loop('/', json)}</div>`
           output.value = html
-          return OutputProvider.from('all.html', html, 'text/html')
+          return Out.from('all.html', html, 'text/html')
         } catch (error) {
           output.value = error.stack
         }

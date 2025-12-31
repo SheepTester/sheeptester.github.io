@@ -56,7 +56,7 @@
     </form>
 
     <script type="module">
-      import { on, OutputProvider } from '/reform/v1/index.js'
+      import { on, Out } from '/reform/v1/index.js'
 
       on('output', (newVideo, { video: videoElem, callback }) => {
         const recorder = new MediaRecorder(videoElem.captureStream(), {
@@ -70,7 +70,7 @@
             const url = URL.createObjectURL(e.data)
             newVideo.src = url
             newVideo.play()
-            callback(OutputProvider.from('wigglesplat.webm', e.data))
+            callback(Out.from('wigglesplat.webm', e.data))
           }
         })
         videoElem.currentTime = 6

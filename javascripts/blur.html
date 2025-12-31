@@ -57,7 +57,7 @@
     </form>
 
     <script type="module">
-      import { on, OutputProvider } from '/reform/v1/index.js'
+      import { on, Out } from '/reform/v1/index.js'
 
       class Vector4 {
         constructor (r, g, b, a) {
@@ -148,7 +148,7 @@
         }
         c.putImageData(imageData, 0, 0)
 
-        return OutputProvider.from('out.png', c)
+        return Out.from('out.png', c)
       })
     </script>
   </body>

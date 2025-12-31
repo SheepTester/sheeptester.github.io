@@ -15,10 +15,6 @@ Developer experience issues:
 - Get blob URL from files
 - Automatically turn output canvas into image file
 
-Known issues:
-
-- Cannot copy JPG from JPG quality
-
 Potential user experience issues:
 
 - Copy and share buttons should get text labels

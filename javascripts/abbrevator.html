@@ -66,7 +66,7 @@ Scallion pancakes are served both as a street food item and as a restaurant dish
       </div>
     </form>
     <script type="module">
-      import { on, OutputProvider } from '/reform/v1/index.js'
+      import { on, Out } from '/reform/v1/index.js'
 
       const REMOVE = Symbol('remove')
 
@@ -106,7 +106,7 @@ Scallion pancakes are served both as a street food item and as a restaurant dish
 
       on('output', (output, { text }) => {
         output.value = abbreviate(text)
-        return OutputProvider.from('abbreviated.txt', output.value)
+        return Out.from('abbreviated.txt', output.value)
       })
     </script>
   </body>
