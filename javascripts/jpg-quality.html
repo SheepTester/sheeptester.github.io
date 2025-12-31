@@ -146,7 +146,7 @@
     </form>
 
     <script type="module">
-      import { on } from '/reform/v1/index.js'
+      import { on, OutputProvider } from '/reform/v1/index.js'
 
       on(
         'output',
@@ -163,23 +163,34 @@
           }
           let url = canvas.toDataURL(format, quality)
           image.src = url
+          let imageLoad = new Promise((resolve, reject) => {
+            image.addEventListener('load', resolve, { once: true })
+            image.addEventListener('error', reject, { once: true })
+          })
           if (shrink > 1) {
-            await new Promise((resolve, reject) => {
-              image.addEventListener('load', resolve)
-              image.addEventListener('error', reject)
-            })
+            await imageLoad
             canvas.width = original.width
             canvas.height = original.height
             context.drawImage(image, 0, 0, canvas.width, canvas.height)
             url = canvas.toDataURL(format, quality)
             image.src = url
+            imageLoad = new Promise((resolve, reject) => {
+              image.addEventListener('load', resolve, { once: true })
+              image.addEventListener('error', reject, { once: true })
+            })
           }
-          const blob = await fetch(url).then(r => r.blob())
-          return new File(
-            [blob],
-            canvas.dataset.name + (format === 'image/jpeg' ? '.jpg' : '.webp'),
-            blob
-          )
+          return new (class extends OutputProvider {
+            fileName =
+              canvas.dataset.name + (format === 'image/jpeg' ? '.jpg' : '.webp')
+
+            provideDownload = () => fetch(url).then(r => r.blob())
+
+            async provideClipboard () {
+              await imageLoad
+              context.drawImage(image, 0, 0, canvas.width, canvas.height)
+              return new Promise(resolve => context.canvas.toBlob(resolve))
+            }
+          })()
         }
       )
     </script>

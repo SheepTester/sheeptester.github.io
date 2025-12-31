@@ -24,7 +24,7 @@
     </form>
 
     <script type="module">
-      import { on } from '/reform/v1/index.js'
+      import { on, OutputProvider } from '/reform/v1/index.js'
     </script>
   </body>
 </html>
@@ -287,6 +287,47 @@ This is used by [font-colour-remover](https://sheeptester.github.io/javascripts/
 
 Reform is built on the concept of sources. All form elements are automatically sources, and the `on` function can be used to register custom sources. Even outputs are sources, and they may produce values for output controls to consume.
 
+```ts
+declare module '/reform/v1/index.js' {
+  export type SourceSpec =
+    | {
+        name: string
+        deps?: string[]
+      }
+    | string
+
+  export function on<T> (
+    spec: SourceSpec,
+    callback: (
+      object: HTMLElement | CanvasRenderingContext2D | null,
+      args: Record<string, unknown>
+    ) => Promise<T>
+  ): void
+
+  export abstract class OutputProvider {
+    fileName?: string
+    /**
+     * Canvas contexts are turned into PNG images. Reform may set/override this
+     * property for caching purposes.
+     */
+    value?: Blob | CanvasRenderingContext2D | string
+    /** Ignored if `value` is set. */
+    provideDownload? (): Promise<Blob>
+    /**
+     * If the blob type is not supported by the Clipboard API, then specify this
+     * method for the copy button, which will be preferred over `provideDownload`
+     * if available.
+     */
+    provideClipboard? (): Promise<Blob>
+
+    static from (
+      fileName: string,
+      value: Blob | CanvasRenderingContext2D | string
+    ): OutputProvider
+  }
+}
+```
+
 ### Form element sources
 
 Reform automatically subscribes to all form elements in the page, unless `[data-ignore]` is set (used by the special input sources below).
@@ -304,10 +345,12 @@ Here are the special input sources:
   - It will create a canvas if none already exists in the `.reform:io` wrapper. `willReadFrequently` is set to `data-will-read-frequently` (used by [Intense contrast](https://sheeptester.github.io/javascripts/intense-contrast.html))
   - Selected images are drawn onto the canvas. This is also used for previewing.
   - Produces `CanvasRenderingContext2D`s instead of image files.
+  - The canvas element's `data-name` attribute is set to the file name.
 - `input.reform:video-input`: Enables video input handling.
   - It will create a `<video>` if none already exists in the `.reform:io` wrapper.
   - Selected videos are loaded in the video element. This is also used for previewing.
   - Produces `HTMLVideoElement` once the video loads (fully?).
+  - The video element's `data-name` attribute is set to the file name.
 - `input.reform:text-input`: Enables text input handling.
   - Produces a string.
 - `input.reform:file-input`: Enables single file input handling.
@@ -322,7 +365,7 @@ Some more info and options:
 
 ### Custom sources
 
-There is only one exported function, `on`, which is used to register a custom source.
+`on` is used to register a custom source.
 
 ```ts
 export type SourceSpec =
@@ -356,9 +399,12 @@ The `callback` will not run until all dependencies are ready, i.e. all their val
 
 `args` also contains a function `args.callback` which can be used to make the produce multiple values even after its dependencies have not changed. Since `on` already gets an element by ID for you, it's sometimes used just to attach event listeners to the element and produce values from there.
 
+The callback can return a promise, which is awaited. There is some protection against race conditions: the custom provider's output will not be used if the inputs have changed while a callback hasn't yet resolved. However, if you do any other side effects like drawing to a canvas during the callback, you should add your own race condition checks.
+
 #### Output controls
 
-Custom sources do not need to produce values, but producing a `File` object is recommended to populate output controls.
+Custom sources do not need to produce values, but producing an `OutputProvider` instance is recommended to populate output controls.
 If the referenced element has an ancestor `.reform:io` (or itself has the class `.reform:io`), it will try finding a `.output-controls` to add as a dependency to the custom source.
+If the custom source produces an unsupported type, it is safely ignored by output controls.
 
 The share button is automatically hidden in browsers that don't support the Web Share API.

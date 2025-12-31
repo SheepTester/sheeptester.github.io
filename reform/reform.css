@@ -305,6 +305,7 @@ select {
   background-size: 24px;
   background-position: center;
   background-repeat: no-repeat;
+  background-image: var(--icon);
   span& {
     display: inline-block;
     width: 24px;
@@ -314,22 +315,30 @@ select {
   &.icon-btn {
     width: 48px;
     height: 48px;
+
+    &:disabled {
+      background-image: linear-gradient(
+          rgb(var(--bg-rgb), 0.8),
+          rgb(var(--bg-rgb), 0.8)
+        ),
+        var(--icon);
+    }
   }
 }
 .icon-upload {
-  background-image: var(--icon-upload);
+  --icon: var(--icon-upload);
 }
 .icon-download {
-  background-image: var(--icon-download);
+  --icon: var(--icon-download);
 }
 .icon-copy {
-  background-image: var(--icon-copy);
+  --icon: var(--icon-copy);
 }
 .icon-paste {
-  background-image: var(--icon-paste);
+  --icon: var(--icon-paste);
 }
 .icon-share {
-  background-image: var(--icon-share);
+  --icon: var(--icon-share);
 }
 
 /* Settings */
@@ -606,10 +615,25 @@ textarea.output-content {
     margin: 0 10px;
   }
 }
+a.file:not([href]) {
+  color: color-mix(in srgb, currentColor 50%, transparent);
+
+  & .file-name {
+    color: color-mix(in srgb, var(--secondary) 50%, transparent);
+  }
+
+  & .icon {
+    background-image: linear-gradient(
+        rgb(var(--bg-rgb), 0.8),
+        rgb(var(--bg-rgb), 0.8)
+      ),
+      var(--icon);
+  }
+}
 label.file,
 .file[href],
-.input-controls button,
-.output-controls button,
+.input-controls button:enabled,
+.output-controls button:enabled,
 .output-controls .icon-btn[href] {
   transition: background-color 0.2s, border-color 0.2s, box-shadow 0.2s;
   &:hover {
@@ -621,6 +645,7 @@ label.file:has(:focus-visible) {
   box-shadow: 0 0 0 3px var(--focus-transparent);
 }
 .file[href],
+.input-controls button,
 .output-controls button,
 .output-controls .icon-btn[href] {
   &:focus {
@@ -756,7 +781,7 @@ label.file:has(:focus-visible) {
     text-shadow: none;
   }
 
-  &:not(:disabled)::before {
+  &:enabled::before {
     content: var(--primary-btn-blur-enabled);
     display: block;
     position: absolute;
@@ -769,14 +794,14 @@ label.file:has(:focus-visible) {
     transition: opacity 0.2s;
   }
 
-  &:not(:disabled):hover {
+  &:enabled:hover {
     box-shadow: 0 3px 10px var(--shadow-hard);
 
     &::before {
       opacity: 0.5;
     }
   }
-  &:not(:disabled):active {
+  &:enabled:active {
     box-shadow: 0 0 0 var(--shadow-hard);
     &::before {
       opacity: 0.1;
@@ -789,16 +814,16 @@ label.file:has(:focus-visible) {
   &:disabled {
     background-color: transparent;
   }
-  &:not(:disabled):hover {
+  &:enabled:hover {
     background-color: var(--outline-btn-bg-hover);
   }
-  &:not(:disabled):active {
+  &:enabled:active {
     background-color: var(--outline-btn-bg-active);
   }
 }
 .text-btn {
   padding: 0 5px;
-  &:not(:disabled):hover {
+  &:enabled:hover {
     text-decoration: underline;
     text-decoration-color: var(--line);
   }
