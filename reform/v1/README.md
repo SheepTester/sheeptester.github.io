@@ -9,8 +9,8 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>...</title>
-    <meta name="description" content="..." />
+    <title>TODO</title>
+    <meta name="description" content="TODO" />
     <meta name="theme-color" content="#4fa1a7" />
 
     <link rel="stylesheet" type="text/css" href="/sheep3.css" />
@@ -19,16 +19,12 @@
   </head>
   <body>
     <form class="main" role="main" action="javascript:">
-      <h1>...</h1>
-      <p>...</p>
-
-      <!-- ... -->
+      <h1>TODO</h1>
+      <p>TODO</p>
     </form>
 
     <script type="module">
       import { on } from '/reform/v1/index.js'
-
-      // ...
     </script>
   </body>
 </html>
@@ -46,12 +42,12 @@
 <label class="input-controls file">
   <input
     type="file"
-    name="..."
+    name="TODO"
     accept="image/*"
     class="hidden-accessible reform:image-input"
   />
   <span class="icon icon-upload"></span>
-  <span class="file-label">Choose, drop, or paste ...</span>
+  <span class="file-label">Choose, drop, or paste TODO</span>
   <span class="file-name">No file selected</span>
 </label>
 <div class="image-content input-content"><canvas></canvas></div>
@@ -61,19 +57,19 @@
 
 ```html
 <label class="input-controls file">
-  <input type="file" name="..." class="hidden-accessible reform:text-input" />
+  <input type="file" name="TODO" class="hidden-accessible reform:text-input" />
   <span class="icon icon-upload"></span>
-  <span class="file-label">Choose or drop ... or type below</span>
+  <span class="file-label">Choose or drop TODO or type below</span>
   <span class="file-name">No file selected</span>
 </label>
-<textarea name="..." aria-label="..." class="input-content">...</textarea>
+<textarea name="TODO" aria-label="TODO" class="input-content">TODO</textarea>
 ```
 
 ### Image output
 
 ```html
 <div class="image-content output-content">
-  <canvas id="..." data-deps="..."></canvas>
+  <canvas id="TODO" data-deps="TODO"></canvas>
 </div>
 <div class="output-controls">
   <a class="file download">
@@ -91,9 +87,9 @@
 ```html
 <textarea
   class="output-content"
-  id="..."
-  data-deps="..."
-  aria-label="..."
+  id="TODO"
+  data-deps="TODO"
+  aria-label="TODO"
   readonly
 ></textarea>
 <div class="output-controls">
@@ -110,13 +106,13 @@
 ### Two-column layout
 
 ```html
-<div class="two-col-io reform:io">...</div>
+<div class="two-col-io reform:io">TODO</div>
 ```
 
 ### One-column layout
 
 ```html
-<div class="col-io reform:io">...</div>
+<div class="col-io reform:io">TODO</div>
 ```
 
 ### File I/O, no preview
@@ -126,15 +122,15 @@
 - The output ID goes in the wrapper.
 
 ```html
-<div class="two-col-io reform:io no-contents" id="..." data-deps="...">
+<div class="two-col-io reform:io no-contents" id="TODO" data-deps="TODO">
   <label class="input-controls file">
     <input
       type="file"
-      name="..."
+      name="TODO"
       class="hidden-accessible reform:file-input reform:paste-target"
     />
     <span class="icon icon-upload"></span>
-    <span class="file-label">Choose, drop, or paste ...</span>
+    <span class="file-label">Choose, drop, or paste TODO</span>
     <span class="file-name">No file selected</span>
   </label>
   <div class="output-controls">
@@ -154,12 +150,12 @@
   <label class="input-controls file">
     <input
       type="file"
-      name="..."
-      accept="..."
+      name="TODO"
+      accept="TODO"
       class="hidden-accessible reform:file-input"
     />
     <span class="icon icon-upload"></span>
-    <span class="file-label">Choose or drop ...</span>
+    <span class="file-label">Choose or drop TODO</span>
     <span class="file-name">No file selected</span>
   </label>
 </div>
@@ -173,7 +169,7 @@ This is used by [font-colour-remover](https://sheeptester.github.io/javascripts/
 <div class="output-controls">
   <button type="button" class="reform:copy">
     <span class="icon icon-copy"></span>
-    <span>...</span>
+    <span>TODO</span>
   </button>
   <a class="download icon-btn icon icon-download" aria-label="Download"></a>
   <button type="button" class="icon icon-share" aria-label="Share"></button>
@@ -189,9 +185,9 @@ This is used by [font-colour-remover](https://sheeptester.github.io/javascripts/
 
 ```html
 <label class="field-label">
-  <span class="label-primary">...</span>
-  <span class="label-secondary"> ... </span>
-  ...
+  <span class="label-primary">TODO</span>
+  <span class="label-secondary"> TODO </span>
+  TODO
 </label>
 ```
 
@@ -200,18 +196,18 @@ This is used by [font-colour-remover](https://sheeptester.github.io/javascripts/
 ```html
 <div class="field-label range-wrapper">
   <label class="range-label">
-    <span class="label-primary">...</span>
-    <input type="range" name="..." min="..." max="..." value="..." />
+    <span class="label-primary">TODO</span>
+    <input type="range" name="TODO" min="TODO" max="TODO" value="TODO" />
   </label>
   <input
     type="text"
     inputmode="numeric"
     pattern="[0-9]*"
-    name="..."
-    min="..."
-    max="..."
-    value="..."
-    aria-label="... value"
+    name="TODO"
+    min="TODO"
+    max="TODO"
+    value="TODO"
+    aria-label="TODO value"
   />
 </div>
 ```
@@ -222,31 +218,31 @@ This is used by [font-colour-remover](https://sheeptester.github.io/javascripts/
 
 ```html
 <fieldset class="radio-set">
-  <legend class="label-primary">...</legend>
-  <p class="label-secondary">...</p>
+  <legend class="label-primary">TODO</legend>
+  <p class="label-secondary">TODO</p>
   <label class="radio-label">
-    <input type="radio" name="..." value="..." class="hidden-accessible" />
+    <input type="radio" name="TODO" value="TODO" class="hidden-accessible" />
     <span class="radio-button"></span>
-    <span class="label-primary">...</span>
-    <span class="label-secondary">...</span>
+    <span class="label-primary">TODO</span>
+    <span class="label-secondary">TODO</span>
   </label>
   <label class="radio-label">
     <input
       type="radio"
-      name="..."
+      name="TODO"
       value="no-desc"
       class="hidden-accessible"
       checked
     />
     <span class="radio-button"></span>
-    <span class="label-primary">...</span>
-    <span class="label-secondary">...</span>
+    <span class="label-primary">TODO</span>
+    <span class="label-secondary">TODO</span>
   </label>
   <label class="radio-label">
-    <input type="radio" name="..." value="..." class="hidden-accessible" />
+    <input type="radio" name="TODO" value="TODO" class="hidden-accessible" />
     <span class="radio-button"></span>
-    <span class="label-primary">...</span>
-    <span class="label-secondary">...</span>
+    <span class="label-primary">TODO</span>
+    <span class="label-secondary">TODO</span>
   </label>
 </fieldset>
 ```
@@ -255,10 +251,10 @@ This is used by [font-colour-remover](https://sheeptester.github.io/javascripts/
 
 ```html
 <label class="radio-label">
-  <input type="checkbox" name="..." class="hidden-accessible" checked />
+  <input type="checkbox" name="TODO" class="hidden-accessible" checked />
   <span class="radio-button"></span>
-  <span class="label-primary">...</span>
-  <span class="label-secondary"> ... </span>
+  <span class="label-primary">TODO</span>
+  <span class="label-secondary"> TODO </span>
 </label>
 ```
 
@@ -266,9 +262,9 @@ This is used by [font-colour-remover](https://sheeptester.github.io/javascripts/
 
 ```html
 <div class="button-row">
-  <button type="submit" class="button primary-btn">...</button>
-  <button type="button" class="button outline-btn">...</button>
-  <button type="button" class="button text-btn">...</button>
+  <button type="submit" class="button primary-btn">TODO</button>
+  <button type="button" class="button outline-btn">TODO</button>
+  <button type="button" class="button text-btn">TODO</button>
 </div>
 ```
 
@@ -276,8 +272,8 @@ This is used by [font-colour-remover](https://sheeptester.github.io/javascripts/
 
 ```html
 <div class="cols">
-  <label class="field-label">...</label>
-  <label class="field-label">...</label>
+  <label class="field-label">TODO</label>
+  <label class="field-label">TODO</label>
 </div>
 ```
 
