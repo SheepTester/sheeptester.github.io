@@ -4,7 +4,10 @@
     <title>Image to Scheme</title>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta property="og:image" content="https://sheeptester.github.io/img/scheme-smaller.png" />
+    <meta
+      property="og:image"
+      content="https://sheeptester.github.io/img/scheme-smaller.png"
+    />
     <meta name="theme-color" content="#4fa1a7" />
 
     <link rel="stylesheet" type="text/css" href="/sheep3.css" />
@@ -85,7 +88,7 @@
     </form>
 
     <script type="module">
-      import { on } from '/reform/v1/index.js'
+      import { on, OutputProvider } from '/reform/v1/index.js'
 
       function getPixelXY (imgData, x, y) {
         // https://stackoverflow.com/questions/667045/getpixel-from-html-canvas
@@ -140,9 +143,7 @@
           )
           .join('\n')
         div.innerHTML = output
-        return new File([output], `${c.canvas.dataset.name}.txt`, {
-          type: 'text/plain'
-        })
+        return OutputProvider.from(`${c.canvas.dataset.name}.txt`, output)
       })
     </script>
   </body>

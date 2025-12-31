@@ -79,7 +79,7 @@
       </p>
     </form>
     <script type="module">
-      import { on } from '/reform/v1/index.js'
+      import { on, OutputProvider } from '/reform/v1/index.js'
 
       on('output', async (c, { file, rawRows, showLines }) => {
         const image = file.canvas
@@ -128,8 +128,7 @@
           c.stroke()
         }
 
-        const blob = await new Promise(resolve => c.canvas.toBlob(resolve))
-        return new File([blob], 'out.png', blob)
+        return OutputProvider.from('out.png', c)
       })
     </script>
   </body>

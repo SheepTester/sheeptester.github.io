@@ -309,7 +309,7 @@ hello</textarea
     </form>
 
     <script type="module">
-      import { on } from '/reform/v1/index.js'
+      import { on, OutputProvider } from '/reform/v1/index.js'
 
       on('output', async (context, { image, radio1 }) => {
         console.log(image, radio1)
@@ -319,10 +319,7 @@ hello</textarea
         context.fillStyle = 'magenta'
         context.font = '50px serif'
         context.fillText(radio1, 50, 50)
-        const blob = await new Promise(resolve =>
-          context.canvas.toBlob(resolve)
-        )
-        return new File([blob], 'out.png', blob)
+        return OutputProvider.from('out.png', context)
       })
 
       on('computed', async (element, { chunkSize }) => {
@@ -331,7 +328,7 @@ hello</textarea
 
       on('outputText', async (element, { text, radio2 }) => {
         element.value = text.toUpperCase() + '\nradio2 = ' + radio2
-        return new File([element.value], 'out.txt', { type: 'text/plain' })
+        return OutputProvider.from('out.txt', element.value)
       })
 
       on('error', button => {

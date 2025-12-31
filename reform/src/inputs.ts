@@ -262,6 +262,7 @@ export function handleVideoInput (
   source: Source<HTMLVideoElement>,
   input: HTMLInputElement
 ): void {
+  input.dataset.ignore = 'true'
   const dropTarget = input.closest('.reform\\:io')
   const pasteButton = migrateInputControls(dropTarget)
   let maybeVideo = dropTarget?.querySelector('.input-content video')

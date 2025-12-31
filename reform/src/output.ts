@@ -270,15 +270,19 @@ export abstract class OutputProvider {
    */
   provideClipboard? (): PromiseLike<Blob> | Blob
 
+  /**
+   * @param type Defaults to `text/plain`
+   */
   static from (
     fileName: string,
-    value: CanvasRenderingContext2D | BlobPart
+    value: CanvasRenderingContext2D | BlobPart,
+    type = 'text/plain'
   ): OutputProvider {
     return new FileOutputProvider(
       fileName,
       value instanceof Blob || value instanceof CanvasRenderingContext2D
         ? value
-        : new Blob([value], { type: 'text/plain' })
+        : new Blob([value], { type })
     )
   }
 }

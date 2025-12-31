@@ -137,7 +137,7 @@
 
     <script src="./jszip.min.js" charset="utf-8"></script>
     <script type="module">
-      import { on } from '/reform/v1/index.js'
+      import { on, OutputProvider } from '/reform/v1/index.js'
 
       // Size in pixels of large displayed emoji (eg in emoji-only messages) in the
       // Discord client
@@ -235,7 +235,7 @@
         if (process !== processId) {
           return
         }
-        return new File([blob], 'emoji.zip', blob)
+        return OutputProvider.from('emoji.zip', blob)
       })
     </script>
   </body>

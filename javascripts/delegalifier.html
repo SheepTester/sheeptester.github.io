@@ -74,7 +74,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
       </div>
     </form>
     <script type="module">
-      import { on } from '/reform/v1/index.js'
+      import { on, OutputProvider } from '/reform/v1/index.js'
 
       function transform (legalese) {
         return legalese
@@ -102,9 +102,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
       on('output', (output, { text }) => {
         output.value = transform(text)
-        return new File([output.value], 'delegalified.txt', {
-          type: 'text/plain'
-        })
+        return OutputProvider.from('delegalified.txt', output.value)
       })
 
       // input.addEventListener('scroll', e => {

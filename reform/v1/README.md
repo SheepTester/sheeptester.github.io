@@ -321,9 +321,13 @@ declare module '/reform/v1/index.js' {
      */
     provideClipboard? (): PromiseLike<Blob> | Blob
 
+    /**
+     * @param type Defaults to `text/plain`
+     */
     static from (
       fileName: string,
-      value: CanvasRenderingContext2D | BlobPart
+      value: CanvasRenderingContext2D | BlobPart,
+      type?: string
     ): OutputProvider
   }
 }

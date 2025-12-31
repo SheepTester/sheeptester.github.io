@@ -56,21 +56,21 @@
     </form>
 
     <script type="module">
-      import { on } from '/reform/v1/index.js'
+      import { on, OutputProvider } from '/reform/v1/index.js'
 
       on('output', (newVideo, { video: videoElem, callback }) => {
         const recorder = new MediaRecorder(videoElem.captureStream(), {
           mimeType: 'video/webm'
         })
         recorder.addEventListener('dataavailable', e => {
-          console.log(e.data)
+          console.log(recorder.state, e.data)
           if (recorder.state === 'recording') {
             videoElem.pause()
             recorder.stop()
             const url = URL.createObjectURL(e.data)
             newVideo.src = url
             newVideo.play()
-            callback(new File([e.data], 'wigglesplat.webm', e.data))
+            callback(OutputProvider.from('wigglesplat.webm', e.data))
           }
         })
         videoElem.currentTime = 6

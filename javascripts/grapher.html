@@ -67,7 +67,7 @@
     </form>
 
     <script type="module">
-      import { on } from '/reform/v1/index.js'
+      import { on, OutputProvider } from '/reform/v1/index.js'
 
       const bracketPairs = {}
       for (const [open, close] of ['()', '[]', '{}']) {
@@ -95,8 +95,8 @@
             Math[word.toUpperCase()]
               ? `Math.${word.toUpperCase()}`
               : Math[word]
-              ? `Math.${word}`
-              : word
+                ? `Math.${word}`
+                : word
           )
           .replace(/\^/g, '**')
         const brackets = []
@@ -271,8 +271,7 @@
 
         c.restore()
 
-        const blob = await new Promise(resolve => c.canvas.toBlob(resolve))
-        return new File([blob], 'graph.png', blob)
+        return OutputProvider.from('graph.png', c)
       })
 
       on('expression', (input, { callback }) => {

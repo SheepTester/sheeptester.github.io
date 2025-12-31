@@ -255,15 +255,13 @@
     </form>
 
     <script type="module">
-      import { on } from '/reform/v1/index.js'
+      import { on, OutputProvider } from '/reform/v1/index.js'
 
       const block = '\u2588'
 
       on('tellraw', (textarea, { json, target }) => {
         textarea.value = `tellraw ${target} ${json}`
-        return new File([textarea.value], 'tellraw.mcfunction', {
-          type: 'text/plain'
-        })
+        return OutputProvider.from('tellraw.mcfunction', textarea.value)
       })
 
       on('book', (textarea, { json, target, title, author }) => {
@@ -272,9 +270,7 @@
         )}], title: ${JSON.stringify(title)}, author: ${JSON.stringify(
           author
         )} }`
-        return new File([textarea.value], 'give-book.mcfunction', {
-          type: 'text/plain'
-        })
+        return OutputProvider.from('give-book.mcfunction', textarea.val)
       })
 
       on('custom-size', (div, { size }) => {

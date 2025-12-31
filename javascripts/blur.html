@@ -57,7 +57,7 @@
     </form>
 
     <script type="module">
-      import { on } from '/reform/v1/index.js'
+      import { on, OutputProvider } from '/reform/v1/index.js'
 
       class Vector4 {
         constructor (r, g, b, a) {
@@ -120,7 +120,7 @@
         }
       }
 
-      on('output', async (c, { image }) => {
+      on('output', (c, { image }) => {
         c.canvas.width = image.canvas.width
         c.canvas.height = image.canvas.height
         const radius = 10
@@ -148,8 +148,7 @@
         }
         c.putImageData(imageData, 0, 0)
 
-        const blob = await new Promise(resolve => c.canvas.toBlob(resolve))
-        return new File([blob], 'out.png', blob)
+        return OutputProvider.from('out.png', c)
       })
     </script>
   </body>
