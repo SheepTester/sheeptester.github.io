@@ -31,7 +31,7 @@
         text-anchor: middle;
         dominant-baseline: middle;
         fill: currentColor;
-        font-size: 10px;
+        font-size: 8px;
       }
       #pie a:hover text {
         fill: var(--link);
@@ -106,18 +106,25 @@
       const TAU = 2 * Math.PI
       const ANGLE_OFFSET = TAU / 3
 
-      const bySheep = Array.from(
-        Map.groupBy(
-          await fetch('../title-desc.json').then(r => r.json()),
-          ({ sheep }) => sheep
-        ),
-        ([sheep, sites]) => ({ sheep, count: sites.length })
-      ).sort((a, b) => (a.sheep ?? 0) - (b.sheep ?? 0))
-      const total = bySheep.reduce((cum, curr) => cum + curr.count, 0)
+      const bySheep = Map.groupBy(
+        await fetch('../title-desc.json').then(r => r.json()),
+        ({ sheep }) => sheep
+      )
+      console.log(
+        Array.from(bySheep, ([sheep, sites]) => ({
+          sheep,
+          sites: sites.map(site => site.path)
+        })).sort((a, b) => (a.sheep ?? 0) - (b.sheep ?? 0))
+      )
+      const sheepCounts = Array.from(bySheep, ([sheep, sites]) => ({
+        sheep,
+        count: sites.length
+      })).sort((a, b) => (a.sheep ?? 0) - (b.sheep ?? 0))
+      const total = sheepCounts.reduce((cum, curr) => cum + curr.count, 0)
 
       on('pie', svg => {
         let cum = 0
-        for (const [i, { sheep, count }] of bySheep.entries()) {
+        for (const [i, { sheep, count }] of sheepCounts.entries()) {
           let link
           if (sheep) {
             link = document.createElementNS(SVG_NS, 'a')
