@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>sheep.js demo page</title>
+    <meta
+      name="description"
+      content="sheep.js is the original version of the sheep watermark on most of my web pages."
+    />
+    <meta name="theme-color" content="#4fa1a7" />
+
+    <link rel="stylesheet" type="text/css" href="/reform/v1/index.css" />
+
+    <style>
+      sheepmenu,
+      sheepmenu * {
+        box-sizing: content-box;
+      }
+    </style>
+  </head>
+  <body>
+    <form class="main" role="main" action="javascript:">
+      <h1>sheep.js demo page</h1>
+      <p>
+        <a class="link" href="/sheep.js">sheep.js</a> is the first version of a
+        little sheep watermark to the bottom right corner of the page that links
+        to the home page. The name comes from the JavaScript file that simply
+        needs to be referenced in the HTML like a library for it to work. It was
+        used for almost all web pages created from the beginning of this website
+        (2016-09-13) to 2017-11-30, when
+        <a class="link" href="./sheep2.html">sheep2.js</a> was created.
+      </p>
+      <p>
+        In addition to creating a universal watermark, sheep.js provides a
+        variety of features and utility functions that were intended to be
+        usable by my web pages&mdash;in a way, it's the predecessor to
+        <a class="link" href="/reform/components.html">Reform</a>.
+      </p>
+      <h2>Little sheep features</h2>
+      <ul>
+        <li>
+          <p>Clicking on the little sheep brings you to the home page.</p>
+        </li>
+        <li>
+          <p>
+            The little sheep can be dragged (with touch support), and its new
+            location is persistent until manually reset.
+          </p>
+        </li>
+        <li>
+          <p>
+            Right clicking twice on the little sheep opens the default browser
+            context menu, inspired by YouTube's video player.
+          </p>
+        </li>
+        <li>
+          <p>
+            Pressing the
+            <a href="link" href="https://en.wikipedia.org/wiki/Konami_Code"
+              >Konami Code</a
+            >
+            adds glowing red eyes to the little sheep for the rest of the
+            session.
+          </p>
+        </li>
+      </ul>
+      <h3>Context menu features</h3>
+      <p>
+        Right-clicking or long-pressing on the little sheep opens a context menu
+        with various options:
+      </p>
+      <ul>
+        <li>
+          <p>
+            <strong>go to index page</strong> &mdash; Sends the user to the home
+            page; same as just clicking on the little sheep.
+          </p>
+        </li>
+        <li>
+          <p>
+            <strong>hide little sheep</strong> &mdash; Hides the little sheep
+            for the rest of the session.
+          </p>
+        </li>
+        <li>
+          <p>
+            <strong>reset little sheep position</strong> &mdash; Resets the
+            persistent custom little sheep location back to the bottom right
+            corner.
+          </p>
+        </li>
+        <li>
+          <p>
+            <strong>see page description</strong> &mdash; Displays the page
+            description, which is the same as what displays on Discord in the
+            website embed when you paste a link to the page.
+          </p>
+        </li>
+        <li>
+          <p>
+            <strong>eval.js</strong> &mdash; Launches the
+            <a class="link" href="/javascripts/">eval.js bookmarklet</a>, which
+            opens a basic JavaScript REPL for mobile and school Chromebook users
+            to run JavaScript on the page.
+          </p>
+        </li>
+        <li>
+          <p>
+            <strong>view source code</strong> &mdash; This was added fairly
+            recently in 2023. It sends the user to the corresponding HTML file
+            page on GitHub.
+          </p>
+        </li>
+        <li>
+          <p>
+            <strong>site search</strong> &mdash; Opens the same
+            <a class="link" href="/all/search/">sitewide search</a> dialog as on
+            the home page.
+          </p>
+        </li>
+      </ul>
+      <h2><code>SHEEP</code> API documentation</h2>
+      <ul>
+        <li>
+          <p>
+            <code>window.cookie</code> &mdash; An alias for the
+            <a
+              class="link"
+              href="https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage"
+              ><code>localStorage</code> API</a
+            >, but wrapped in a <code>try</code>-<code>catch</code> so in some
+            browsers' private modes, accessing <code>window.cookie</code> won't
+            throw if <code>localStorage</code> is disabled.
+          </p>
+        </li>
+        <li>
+          <p>
+            <code>SHEEP.notify(message: string, link?: string): void</code>
+            &mdash; Creates a notification that appears in the bottom right
+            corner. <code>message</code> is a string containing the HTML of the
+            notification message, and <code>link</code> is an optional string
+            that makes the notification link to the given URL. The notification
+            dismisses itself in 3 seconds if <code>link</code> is specified;
+            otherwise, it's persistent until the user dismisses it.
+          </p>
+        </li>
+        <li>
+          <p>
+            <code>SHEEP.dismissed: Record&lt;string, 0 | 1&gt;</code> &mdash; An
+            object mapping notification IDs to either 0 or 1 (probably to
+            minimize the <code>localStorage</code> size). Dismissed notification
+            IDs are persistent and stored under the
+            <code>localStorage</code> key <code>dismissed</code>.
+          </p>
+        </li>
+        <li>
+          <p>
+            <code>SHEEP.dismiss(notificationId: string): void</code> &mdash;
+            Marks <code>notificationId</code> as dismissed.
+          </p>
+        </li>
+        <li>
+          <p>
+            <code>SHEEP.undismiss(notificationId: string): void</code> &mdash;
+            Marks <code>notificationId</code> as not dismissed.
+          </p>
+        </li>
+        <li>
+          <p>
+            <code>SHEEP.textwidth(elem: Element, text?: string): number</code
+            ><br /><code
+              >SHEEP.textwidth(text: string, font?: string): number</code
+            >
+            &mdash; A utility function that measures the rendered width of the
+            given string (or the given element's input value) using the
+            specified font (or the font of the given element, or the font of the
+            webpage if unspecified) by adding a temporary element to the page,
+            measuring its rendered width, then removing it.
+          </p>
+        </li>
+        <li>
+          <p>
+            <code
+              >SHEEP.search(encoded: string): Record&lt;string, string | number
+              | boolean&gt;</code
+            ><br /><code
+              >SHEEP.search(params: Record&lt;string, string | boolean&gt;):
+              string</code
+            >
+            &mdash; A utility function that encodes/decodes a URL query string
+            (including the <code>?</code> at the beginning). When decoding, if
+            the parameter value is parsed as a number if possible, the strings
+            <code>true</code> and <code>✔</code> become <code>true</code>, and
+            the strings <code>false</code> and <code>✖</code> become
+            <code>false</code>.
+          </p>
+        </li>
+        <li>
+          <p>
+            <code
+              >SHEEP.ajax(url: string, callback: (response: string) =&gt; void,
+              onError: (status: number) =&gt; void): void</code
+            >
+            &mdash; A utility function inspired by
+            <a class="link" href="https://api.jquery.com/jQuery.ajax/"
+              >jQuery's <code>$.ajax</code></a
+            >.
+          </p>
+        </li>
+        <li>
+          <p>
+            <code
+              >SHEEP.draggable(elem: Element, xwise: boolean, ywise: boolean,
+              options: { x?: number, y?: number, minx?: number, miny?: number,
+              maxx?: number, maxy?: number, onchange?: (n: number, m?: number)
+              =&gt; void, parentdrag?: boolean, min?: number, max?: number,
+              fitparent?: boolean }): void</code
+            >
+            enables dragging on the given element.
+          </p>
+          <ul>
+            <li>
+              <p>
+                <code>xwise</code> and <code>ywise</code> determine whether
+                horizontal and vertical dragging are enabled.
+              </p>
+            </li>
+            <li>
+              <p>
+                <code>options.min</code> sets both <code>options.minx</code> and
+                <code>options.miny</code> (likewise for
+                <code>options.max</code>; I think this is for one-directional
+                draggable stuff). The min and max set the pixel value bounds of
+                the draggable element.
+              </p>
+            </li>
+            <li>
+              <p>
+                <code>options.fitparent</code> enables constraining the element
+                to the bounds of its parent.
+              </p>
+            </li>
+            <li>
+              <p>
+                <code>options.parentdrag</code> allows dragging to start
+                anywhere in the parent element.
+              </p>
+            </li>
+            <li>
+              <p>
+                <code>options.onchange</code> is fired with the x and/or y
+                values while dragging, depending on whether horizontal and/or
+                vertical dragging are enabled.
+              </p>
+            </li>
+          </ul>
+          <p>
+            <a class="link" href="https://sheeptester.github.io/gamepro5/"
+              >This page</a
+            >
+            has a demo with the options
+            <code>{ fitparent: true, parentdrag: true }</code>.
+          </p>
+        </li>
+        <li>
+          <p>
+            <code>SHEEP.pixelratio(): number</code> &mdash; Computes the device
+            pixel ratio.
+          </p>
+        </li>
+        <li>
+          <p>
+            <code>SHEEP.menu: Record&lt;string, () => void&gt;</code> &mdash; A
+            registry of menu items for the little sheep context menu. The web
+            page can add more entries to this registry to populate the menu
+            items.
+            <a class="link" href="https://sheeptester.github.io/gamepro5/"
+              >This page</a
+            >
+            has added "Test menu item" to the context menu.
+          </p>
+        </li>
+      </ul>
+      <h3>Create a notification</h3>
+      <div class="col-io reform:io">
+        <label class="input-controls file">
+          <input
+            type="file"
+            name="content"
+            class="hidden-accessible reform:text-input"
+          />
+          <span class="icon icon-upload"></span>
+          <span class="file-label"
+            >Choose or drop an HTML file, or type below</span
+          >
+          <span class="file-name">No file selected</span>
+        </label>
+        <textarea
+          name="content"
+          aria-label="Notification content"
+          class="input-content"
+          style="min-height: 150px"
+        >
+Hello!</textarea
+        >
+      </div>
+
+      <label class="field-label">
+        <span class="label-primary">Link (optional)</span>
+        <input
+          type="url"
+          name="url"
+          placeholder="https://example.com/"
+          style="width: 100%"
+        />
+      </label>
+
+      <div class="button-row">
+        <button
+          type="submit"
+          class="button primary-btn"
+          name="notify"
+          data-deps="content url"
+        >
+          Create
+        </button>
+      </div>
+    </form>
+
+    <script src="/sheep.js"></script>
+    <script type="module">
+      import { on } from '/reform/v1/index.js'
+
+      on('notify', (button, { content, url }) => {
+        button.onclick = () => {
+          SHEEP.notify(content, url)
+        }
+      })
+    </script>
+  </body>
+</html>

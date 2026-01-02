@@ -192,6 +192,20 @@ h1 {
   margin-bottom: 20px;
   color: var(--heading);
 }
+h2 {
+  font-weight: normal;
+  color: var(--heading);
+  font-size: 28px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+h3 {
+  font-weight: normal;
+  color: var(--heading);
+  font-size: 20px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
 p,
 pre {
   margin: 0;
@@ -216,6 +230,8 @@ li::marker {
   padding: 0 20px;
 
   & > h1,
+  & > h2,
+  & > h3,
   & > p,
   & > ol,
   & > ul,
