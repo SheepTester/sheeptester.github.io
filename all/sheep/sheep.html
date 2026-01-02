@@ -25,10 +25,10 @@
       <h1>sheep.js demo page</h1>
       <p>
         <a class="link" href="/sheep.js">sheep.js</a> is the first version of
-        the little sheep watermark in the bottom right corner of the page. It
-        was used for almost all web pages created from the beginning of this
-        website (2016-09-13) to 2017-11-30, when
-        <a class="link" href="./sheep2.html">sheep2.js</a> was created.
+        the little sheep watermark in the bottom right corner of the page. Try
+        right-clicking or long pressing it! It was used for almost all web pages
+        created from the beginning of this website (2016-09-13) to 2017-11-30,
+        when <a class="link" href="./sheep2.html">sheep2.js</a> was created.
       </p>
       <p>
         In addition to creating a universal watermark, sheep.js provides a
@@ -158,6 +158,33 @@
         </li>
       </ul>
 
+      <h2>Style documentation</h2>
+      <p>sheep.css contains a CSS reset:</p>
+      <ul>
+        <li>
+          <p>Changes the text selection highlight color to a nice aqua.</p>
+        </li>
+        <li>
+          <p>Makes form elements inherit the page font.</p>
+        </li>
+        <li>
+          <p>
+            Hides focus outlines by default. Considering accessibility was not a
+            major concern when I started programming for the web, it's likely
+            that most sheep.js pages are not accessible.
+          </p>
+        </li>
+      </ul>
+      <p>
+        The little sheep is a custom <code>&lt;sheepmenu&gt;</code> element, so
+        it can be hidden by adding:
+      </p>
+      <pre>
+sheepmenu {
+  display: none;
+}</pre
+      >
+
       <h2><code>SHEEP</code> API documentation</h2>
       <p>
         Only sheep.js needs to be added to the web page; the script loads
@@ -171,6 +198,7 @@
         to use relative paths (e.g. <code>../../sheep.js</code>) instead of an
         absolute path like <code>/sheep.js</code>.
       </p>
+      <pre>&lt;script src="../../sheep.js"&gt;&lt;/script&gt;</pre>
       <ul>
         <li>
           <p>

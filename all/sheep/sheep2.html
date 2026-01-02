@@ -28,11 +28,11 @@
       <h1>sheep2.js demo page</h1>
       <p>
         <a class="link" href="/sheep2.js">sheep2.js</a> is the second version of
-        the little sheep watermark in the bottom right corner of the page. It's
-        the successor of <a class="link" href="./sheep.html">sheep.js</a>, and
-        was used for almost all web pages created between 2017-11-30 and
-        2018-12-14, when <a class="link" href="./sheep3.html">sheep3.js</a> was
-        created.
+        the little sheep watermark in the bottom right corner of the page. Try
+        right-clicking or long pressing it! It's the successor of
+        <a class="link" href="./sheep.html">sheep.js</a>, and was used for
+        almost all web pages created between 2017-11-30 and 2018-12-14, when
+        <a class="link" href="./sheep3.html">sheep3.js</a> was created.
       </p>
       <p>
         In sheep2.js, the little sheep has a new name:
@@ -40,6 +40,7 @@
           >la eta ŝafo</span
         >," Esperanto for "the little sheep."
       </p>
+
       <h2>L' ŝafeto features</h2>
       <p>
         Generally, sheep2.js has roughly the same features as sheep.js, as most
@@ -78,6 +79,7 @@
           </p>
         </li>
       </ul>
+
       <h3>Context menu features</h3>
       <p>
         Right-clicking or long-pressing on l' ŝafeto opens a context menu with
@@ -138,6 +140,32 @@
           </p>
         </li>
       </ul>
+
+      <h2>Style documentation</h2>
+      <p>sheep2.css contains a CSS reset:</p>
+      <ul>
+        <li>
+          <p>Changes the text selection highlight color to a nice aqua.</p>
+        </li>
+        <li>
+          <p>Makes form elements inherit the page font.</p>
+        </li>
+        <li>
+          <p>Buttons get the pointer cursor on hover.</p>
+        </li>
+        <li>
+          <p>
+            Defines the <code>fadein</code> and <code>fadeout</code> animations,
+            which do as their names imply.
+          </p>
+        </li>
+      </ul>
+      <p>
+        L' ŝafeto is a custom <code>&lt;sheep-btn&gt;</code> element, and it can
+        be hidden by adding the <code>no-sheep</code> class to
+        <code>&lt;body&gt;</code>.
+      </p>
+
       <h2><code>SHEEP</code> API documentation</h2>
       <p>
         One of the reasons I wrote sheep2.js was to relax the requirement that
@@ -145,6 +173,10 @@
         stylesheet dynamically, which I felt was bad practice (since it slightly
         increases load times).
       </p>
+      <pre>
+&lt;link rel="stylesheet" type="text/css" href="../sheep2.css"&gt;
+&lt;script src="../sheep2.js" charset="utf-8"&gt;&lt;/script&gt;</pre
+      >
       <ul>
         <li>
           <p>
