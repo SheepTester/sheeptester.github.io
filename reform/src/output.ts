@@ -95,6 +95,12 @@ export class OutputControls {
         this.#shareButtonTimeoutId = setTimeout(() => {
           shareButton.classList.remove('icon-done')
         }, DONE_TIMEOUT)
+      } catch (error) {
+        if (error instanceof DOMException && error.name === 'AbortError') {
+          console.warn('Share cancelled', error)
+        } else {
+          throw error
+        }
       } finally {
         shareButton.disabled = false
       }
