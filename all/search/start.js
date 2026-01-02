@@ -26,6 +26,9 @@ import('/all/search/search.js').then(({ loadSearch }) => {
   })
   modal.addEventListener('close', () => {
     modal.inert = true
+    if (navigator.virtualKeyboard) {
+      navigator.virtualKeyboard.overlaysContent = false
+    }
   })
 
   loadSearch(search, form, suggestions)
@@ -35,4 +38,7 @@ import('/all/search/search.js').then(({ loadSearch }) => {
   modal.getBoundingClientRect()
   modal.showModal()
   search.focus()
+  if (navigator.virtualKeyboard) {
+    navigator.virtualKeyboard.overlaysContent = true
+  }
 })

@@ -216,6 +216,9 @@ function startSearch () {
   }
   searchModal.inert = false
   searchModal.showModal()
+  if (navigator.virtualKeyboard) {
+    navigator.virtualKeyboard.overlaysContent = true
+  }
 }
 searchButton.addEventListener('click', startSearch)
 searchModal.addEventListener('click', e => {
@@ -225,6 +228,9 @@ searchModal.addEventListener('click', e => {
 })
 searchModal.addEventListener('close', () => {
   searchModal.inert = true
+  if (navigator.virtualKeyboard) {
+    navigator.virtualKeyboard.overlaysContent = false
+  }
 })
 window.addEventListener('keydown', e => {
   if (e.target.tagName === 'INPUT') {
