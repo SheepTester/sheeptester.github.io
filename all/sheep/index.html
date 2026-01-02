@@ -26,6 +26,16 @@
         border-radius: 15px;
         border: 1px solid var(--line);
       }
+
+      #pie text {
+        text-anchor: middle;
+        dominant-baseline: middle;
+        fill: currentColor;
+        font-size: 10px;
+      }
+      #pie a:hover text {
+        fill: var(--link);
+      }
     </style>
   </head>
   <body>
@@ -77,16 +87,96 @@
           </figcaption>
         </figure>
       </div>
+
+      <p>Here is a distribution of little sheep versions across my website.</p>
+      <p>
+        <svg
+          viewBox="-100 -100 200 200"
+          xmlns="http://www.w3.org/2000/svg"
+          id="pie"
+        ></svg>
+      </p>
     </main>
 
     <script type="module">
       import { on } from '/reform/v1/index.js'
 
-      const bySheep = Map.groupBy(
-        await fetch('../title-desc.json').then(r => r.json()),
-        ({ sheep }) => sheep
-      )
-      console.log(bySheep)
+      const SVG_NS = 'http://www.w3.org/2000/svg'
+      const RADIUS = 100
+      const TAU = 2 * Math.PI
+      const ANGLE_OFFSET = TAU / 3
+
+      const bySheep = Array.from(
+        Map.groupBy(
+          await fetch('../title-desc.json').then(r => r.json()),
+          ({ sheep }) => sheep
+        ),
+        ([sheep, sites]) => ({ sheep, count: sites.length })
+      ).sort((a, b) => (a.sheep ?? 0) - (b.sheep ?? 0))
+      const total = bySheep.reduce((cum, curr) => cum + curr.count, 0)
+
+      on('pie', svg => {
+        let cum = 0
+        for (const [i, { sheep, count }] of bySheep.entries()) {
+          let link
+          if (sheep) {
+            link = document.createElementNS(SVG_NS, 'a')
+            link.setAttributeNS(
+              null,
+              'href',
+              `./sheep${sheep === 1 ? '' : sheep}.html`
+            )
+          }
+
+          const fragment = document.createDocumentFragment()
+
+          const path = document.createElementNS(SVG_NS, 'path')
+          path.setAttributeNS(
+            null,
+            'd',
+            `M 0 0 L ${Math.cos(TAU * (cum / total) + ANGLE_OFFSET) * RADIUS} ${
+              Math.sin(TAU * (cum / total) + ANGLE_OFFSET) * RADIUS
+            } A ${RADIUS} ${RADIUS} 0 0 1 ${
+              Math.cos(TAU * ((cum + count) / total) + ANGLE_OFFSET) * RADIUS
+            } ${
+              Math.sin(TAU * ((cum + count) / total) + ANGLE_OFFSET) * RADIUS
+            }`
+          )
+          path.setAttributeNS(
+            null,
+            'fill',
+            `color-mix(in srgb, var(--link) ${i * 10 + 5}%, transparent)`
+          )
+          fragment.append(path)
+
+          const label = document.createElementNS(SVG_NS, 'text')
+          label.textContent = `${
+            sheep ? `sheep${sheep === 1 ? '' : sheep}.js` : 'No watermark'
+          } (${count})`
+          label.setAttributeNS(
+            null,
+            'x',
+            Math.cos(TAU * ((cum + count / 2) / total) + ANGLE_OFFSET) *
+              (RADIUS / 2)
+          )
+          label.setAttributeNS(
+            null,
+            'y',
+            Math.sin(TAU * ((cum + count / 2) / total) + ANGLE_OFFSET) *
+              (RADIUS / 2)
+          )
+          fragment.append(label)
+
+          if (link) {
+            link.append(fragment)
+            svg.append(link)
+          } else {
+            svg.append(fragment)
+          }
+
+          cum += count
+        }
+      })
     </script>
   </body>
 </html>
