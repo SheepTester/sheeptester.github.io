@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>sheep2.js demo page</title>
+    <meta
+      name="description"
+      content="sheep2.js is the second version of the sheep watermark on most of my web pages from 2017-11-30 to 2018-12-14."
+    />
+    <meta name="theme-color" content="#4fa1a7" />
+
+    <link rel="stylesheet" type="text/css" href="/reform/v1/index.css" />
+    <link rel="stylesheet" type="text/css" href="/sheep2.css" />
+
+    <script src="/sheep2.js" charset="utf-8"></script>
+
+    <style>
+      sheep-notif-wrapper,
+      sheep-notif-wrapper * {
+        box-sizing: content-box;
+      }
+    </style>
+  </head>
+  <body>
+    <form class="main" role="main" action="javascript:">
+      <h1>sheep2.js demo page</h1>
+      <p>
+        <a class="link" href="/sheep2.js">sheep2.js</a> is the second version of
+        the little sheep watermark in the bottom right corner of the page. It's
+        the successor of <a class="link" href="./sheep.html">sheep.js</a>, and
+        was used for almost all web pages created between 2017-11-30 and
+        2018-12-14, when <a class="link" href="./sheep3.html">sheep3.js</a> was
+        created.
+      </p>
+      <p>
+        In sheep2.js, the little sheep has a new name:
+        <em lang="eo">l' ŝafeto</em>. It is a terse form of "<span lang="eo"
+          >la eta ŝafo</span
+        >," Esperanto for "the little sheep."
+      </p>
+      <h2>L' ŝafeto features</h2>
+      <p>
+        Generally, sheep2.js has roughly the same features as sheep.js, as most
+        of the improvements were on the code quality side.
+      </p>
+      <ul>
+        <li>
+          <p>Clicking on l' ŝafeto brings you to the home page.</p>
+        </li>
+        <li>
+          <p>
+            L' ŝafeto is focusable but otherwise remains inaccessible (pressing
+            enter/space does not click it).
+          </p>
+        </li>
+        <li>
+          <p>
+            L' ŝafeto can be dragged (with touch support), and its new location
+            is persistent until manually reset.
+          </p>
+        </li>
+        <li>
+          <p>
+            Support for a notification system, carried over from sheep.js.
+            Multiple notifications stack bottom up. Unlike sheep.js, sheep2.js
+            does not create any notifications on page load.
+          </p>
+        </li>
+        <li>
+          <p>
+            Right clicking twice on l' ŝafeto opens the default browser context
+            menu. However, for some reason sheep2.js's implementation is jankier
+            than sheep.js, and sometimes quickly closing the context menu and
+            right clicking again brings up the native browser menu, which is not
+            intended.
+          </p>
+        </li>
+      </ul>
+      <h3>Context menu features</h3>
+      <p>
+        Right-clicking or long-pressing on l' ŝafeto opens a context menu with
+        various options. While now it looks uglier than sheep.js's context menu,
+        I believe I designed it based on Chrome's context menu at the time, with
+        sharp corners and a border. I was a big fan of Chrome's context menu for
+        some reason.
+      </p>
+      <ul>
+        <li>
+          <p>
+            <strong>go to index page</strong> &mdash; Sends the user to the home
+            page; same as just clicking on l' ŝafeto.
+          </p>
+        </li>
+        <li>
+          <p>
+            <strong>hide l' ŝafeto</strong> &mdash; Hides l' ŝafeto for the rest
+            of the session.
+          </p>
+        </li>
+        <li>
+          <p>
+            <strong>reset l' ŝafeto position</strong> &mdash; Resets the
+            persistent custom l' ŝafeto location back to the bottom right
+            corner.
+          </p>
+        </li>
+        <li>
+          <p>
+            <strong>see page description</strong> &mdash; Displays the page
+            description in a notification. The description is the same as what
+            displays on Discord in the website embed when you paste a link to
+            the page.
+          </p>
+        </li>
+        <li>
+          <p>
+            <strong>eval.js</strong> &mdash; Launches the
+            <a class="link" href="/javascripts/">eval.js bookmarklet</a>, which
+            opens a basic JavaScript REPL for mobile and school Chromebook users
+            to run JavaScript on the page.
+          </p>
+        </li>
+        <li>
+          <p>
+            <strong>view source code</strong> &mdash; This was added fairly
+            recently in 2023. It sends the user to the corresponding HTML file
+            page on GitHub.
+          </p>
+        </li>
+        <li>
+          <p>
+            <strong>site search</strong> &mdash; This was added fairly recently
+            in 2024. Opens the same
+            <a class="link" href="/all/search/">sitewide search</a> dialog as on
+            the home page.
+          </p>
+        </li>
+      </ul>
+      <h2><code>SHEEP</code> API documentation</h2>
+      <p>
+        One of the reasons I wrote sheep2.js was to relax the requirement that
+        the script be loaded in the document body, and to avoid injecting the
+        stylesheet dynamically, which I felt was bad practice (since it slightly
+        increases load times).
+      </p>
+      <ul>
+        <li>
+          <p>
+            <code>window.cookie</code> &mdash; An alias for the
+            <a
+              class="link"
+              href="https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage"
+              ><code>localStorage</code> API</a
+            >, but wrapped in a <code>try</code>-<code>catch</code> so in some
+            browsers' private modes, accessing <code>window.cookie</code> won't
+            throw if <code>localStorage</code> is disabled.
+          </p>
+        </li>
+        <li>
+          <p><code>SHEEP.version: 2</code></p>
+        </li>
+        <li>
+          <p>
+            <code>SHEEP.getPref(name: string, defaultValue?: any): any</code>
+            &mdash; Preferences are stored as a JSON object under the
+            <code>localStorage</code> key <code>preferences</code>.
+          </p>
+        </li>
+        <li>
+          <p>
+            <code>SHEEP.setPref&lt;T&gt;(name: string, value: T): T</code>
+            &mdash; Immediately saves the preference to
+            <code>localStorage</code>.
+          </p>
+        </li>
+        <li>
+          <p>
+            <code
+              >SHEEP.ajax(url: string, callback: (response: string) =&gt; void,
+              error?: (response: string, statusCode: number) =&gt; void):
+              void</code
+            >
+            &mdash; A utility function inspired by
+            <a class="link" href="https://api.jquery.com/jQuery.ajax/"
+              >jQuery's <code>$.ajax</code></a
+            >. Non-200 status codes are considered errors.
+          </p>
+        </li>
+        <li>
+          <p>
+            <code>SHEEP.getAjaxCode(): string</code> &mdash; Returns the source
+            code of <code>SHEEP.ajax</code>. I believe I added this so I could
+            quickly copy and paste the boilerplate for
+            <a
+              class="link"
+              href="https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest"
+              ><code>XMLHttpRequest</code></a
+            >.
+          </p>
+        </li>
+        <li>
+          <p>
+            <code
+              >SHEEP.menuItems: string[]<br />SHEEP.menuActions: (() =&gt;
+              void)[]</code
+            >
+            &mdash; A pair of lists that acts as the menu item registry for
+            sheep2.js. <code>SHEEP.menuItems</code> contains menu item labels,
+            and <code>SHEEP.menuActions</code> contains menu item handlers.
+          </p>
+        </li>
+        <li>
+          <p>
+            <code
+              >SHEEP.registerMenuItem(label: string, action: () =&gt; void,
+              insertIndex?: number): void</code
+            >
+            &mdash; Inserts a menu item at the given index. Due to a bug in how
+            I implemented it, it is not possible to insert an item at the
+            beginning of the menu.
+          </p>
+        </li>
+        <li>
+          <p>
+            <code>SHEEP.escapeHTML(str: string): string</code>
+            &mdash; Escapes <code>&amp;</code>, <code>&lt;</code>, and
+            <code>&gt;</code>, but not <code>"</code>, so this should not be
+            used for adding text to attributes.
+          </p>
+        </li>
+        <li>
+          <p>
+            <code
+              >SHEEP.textWidth(text: string, fontStyle: string | Element,
+              getHeightToo?: boolean): { width: number, height?: number }</code
+            >
+            &mdash; Measures the rendered width of text with the given font,
+            either as a CSS <code>font</code> or extracted from the element's
+            styles.
+          </p>
+        </li>
+        <li>
+          <p>
+            <code
+              >SHEEP.notify(content: string, onclick?: () =&gt; void,
+              dismissTime?: number): void</code
+            >
+            &mdash; Creates a notification. <code>content</code> contains HTML.
+            <code>onclick</code> is fired when the user explicitly clicks on the
+            notification to close it. <code>dismissTime</code> is a nonzero
+            number of milliseconds after which the notification will
+            auto-dismiss. If both <code>onclick</code> and
+            <code>dismissTime</code> are omitted, "Click to close" is added to
+            the notification.
+          </p>
+        </li>
+      </ul>
+
+      <h3>Create a notification</h3>
+      <div class="col-io reform:io">
+        <label class="input-controls file">
+          <input
+            type="file"
+            name="content"
+            class="hidden-accessible reform:text-input"
+          />
+          <span class="icon icon-upload"></span>
+          <span class="file-label"
+            >Choose or drop an HTML file, or type below</span
+          >
+          <span class="file-name">No file selected</span>
+        </label>
+        <textarea
+          name="content"
+          aria-label="Notification content"
+          class="input-content"
+          style="min-height: 150px"
+        >
+Hello!</textarea
+        >
+      </div>
+
+      <label class="field-label">
+        <span class="label-primary">Auto-dismiss time</span>
+        <span class="label-secondary">
+          In milliseconds. Set to -1 to disable.
+        </span>
+        <input type="number" name="delay" min="-1" value="-1" />
+      </label>
+
+      <label class="radio-label">
+        <input
+          type="checkbox"
+          name="onclick"
+          class="hidden-accessible"
+          data-deps="delay"
+        />
+        <span class="radio-button"></span>
+        <span class="label-primary">
+          Simulate <code>onclick</code> callback?
+        </span>
+        <span class="label-secondary">
+          Omitting <code>onclick</code> adds "Click to close" to the
+          notification.
+        </span>
+      </label>
+
+      <div class="button-row">
+        <button
+          type="submit"
+          class="button primary-btn"
+          name="notify"
+          data-deps="content delay onclick"
+        >
+          Create
+        </button>
+      </div>
+    </form>
+
+    <script type="module">
+      import { on } from '/reform/v1/index.js'
+
+      on('onclick', (checkbox, { delay }) => {
+        checkbox.disabled = delay >= 0
+        // TODO: add reform styling
+      })
+
+      on('notify', (button, { content, onclick, delay }) => {
+        button.onclick = () => {
+          SHEEP.notify(
+            content,
+            onclick ? () => console.log('notification clicked') : undefined,
+            delay
+          )
+        }
+      })
+    </script>
+  </body>
+</html>

@@ -7,7 +7,7 @@
     <title>sheep.js demo page</title>
     <meta
       name="description"
-      content="sheep.js is the original version of the sheep watermark on most of my web pages."
+      content="sheep.js is the original version of the sheep watermark on most of my web pages before 2017-11-30."
     />
     <meta name="theme-color" content="#4fa1a7" />
 
@@ -24,12 +24,10 @@
     <form class="main" role="main" action="javascript:">
       <h1>sheep.js demo page</h1>
       <p>
-        <a class="link" href="/sheep.js">sheep.js</a> is the first version of a
-        little sheep watermark to the bottom right corner of the page that links
-        to the home page. The name comes from the JavaScript file that simply
-        needs to be referenced in the HTML like a library for it to work. It was
-        used for almost all web pages created from the beginning of this website
-        (2016-09-13) to 2017-11-30, when
+        <a class="link" href="/sheep.js">sheep.js</a> is the first version of
+        the little sheep watermark in the bottom right corner of the page. It
+        was used for almost all web pages created from the beginning of this
+        website (2016-09-13) to 2017-11-30, when
         <a class="link" href="./sheep2.html">sheep2.js</a> was created.
       </p>
       <p>
@@ -38,6 +36,7 @@
         usable by my web pages&mdash;in a way, it's the predecessor to
         <a class="link" href="/reform/components.html">Reform</a>.
       </p>
+
       <h2>Little sheep features</h2>
       <ul>
         <li>
@@ -57,6 +56,30 @@
         </li>
         <li>
           <p>
+            Support for a notification system. This was intended to be used for
+            site-wide notifications that I want to display to all my website's
+            visitors, though it ended up being annoying, and I didn't really use
+            the feature on my web pages.
+          </p>
+          <ul>
+            <li>
+              <p>
+                First-time users are presented with a cookie notice about the
+                site using <code>localStorage</code>.
+              </p>
+            </li>
+            <li>
+              <p>
+                In subsequent visits, there is a 20% chance users get an ad for
+                <a class="link" href="https://orbiit.github.io/gunn-web-app/"
+                  >UGWA</a
+                >.
+              </p>
+            </li>
+          </ul>
+        </li>
+        <li>
+          <p>
             Pressing the
             <a href="link" href="https://en.wikipedia.org/wiki/Konami_Code"
               >Konami Code</a
@@ -66,6 +89,17 @@
           </p>
         </li>
       </ul>
+      <p>
+        At some point, I was against ad blockers for no good reason, so there
+        was also code to detect ad block, and redirect ad block users to a
+        <a class="link" href="/?tryTurningOffYourAdblock"
+          >Google image search for "trypophobia."</a
+        >
+        A Scratcher threatened to report me because of it, so I instead made it
+        subtly blur the web page until 2019, when ad block detection code was
+        removed "temporarily."
+      </p>
+
       <h3>Context menu features</h3>
       <p>
         Right-clicking or long-pressing on the little sheep opens a context menu
@@ -94,8 +128,9 @@
         <li>
           <p>
             <strong>see page description</strong> &mdash; Displays the page
-            description, which is the same as what displays on Discord in the
-            website embed when you paste a link to the page.
+            description in a notification. The description is the same as what
+            displays on Discord in the website embed when you paste a link to
+            the page.
           </p>
         </li>
         <li>
@@ -115,13 +150,27 @@
         </li>
         <li>
           <p>
-            <strong>site search</strong> &mdash; Opens the same
+            <strong>site search</strong> &mdash; This was added fairly recently
+            in 2024. Opens the same
             <a class="link" href="/all/search/">sitewide search</a> dialog as on
             the home page.
           </p>
         </li>
       </ul>
+
       <h2><code>SHEEP</code> API documentation</h2>
+      <p>
+        Only sheep.js needs to be added to the web page; the script loads
+        sheep.css. The script tag should be inside the
+        <code>&lt;body&gt;</code> tag so that <code>document.body</code> is
+        available when it runs.
+      </p>
+      <p>
+        Because I used to develop my website locally by opening HTML files
+        directly in the browser (under the <code>file://</code> protocol), I had
+        to use relative paths (e.g. <code>../../sheep.js</code>) instead of an
+        absolute path like <code>/sheep.js</code>.
+      </p>
       <ul>
         <li>
           <p>
@@ -206,7 +255,7 @@
             &mdash; A utility function inspired by
             <a class="link" href="https://api.jquery.com/jQuery.ajax/"
               >jQuery's <code>$.ajax</code></a
-            >.
+            >. Non-200 status codes are considered errors.
           </p>
         </li>
         <li>
@@ -283,6 +332,7 @@
           </p>
         </li>
       </ul>
+
       <h3>Create a notification</h3>
       <div class="col-io reform:io">
         <label class="input-controls file">
