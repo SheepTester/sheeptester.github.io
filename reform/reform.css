@@ -431,6 +431,14 @@ set both */
     display: block;
   }
 }
+:disabled + .radio-button {
+  opacity: 0.5;
+  cursor: default;
+}
+:disabled:checked + .radio-button {
+  background-image: none;
+  background-color: var(--text);
+}
 :focus-visible + .radio-button {
   border-color: var(--focus);
   box-shadow: 0 0 0 5px var(--focus-transparent);

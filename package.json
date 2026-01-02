@@ -5,9 +5,9 @@
     "home:build": "node home-page/imitation-scss-parser.js home-page/index.html.scss index.html home-page/style.css",
     "home:dev": "http-server . -c-1 -s & nodemon --watch home-page --ext scss,yml,js home-page/imitation-scss-parser.js home-page/index.html.scss index.html home-page/style.css",
     "reform:build": "esbuild --bundle --format=esm reform/index.ts --outdir=reform/v1/ --supported:nesting=false --minify --sourcemap",
-    "reform:dev": "esbuild --bundle --format=esm reform/index.ts --outdir=reform/v1/ --servedir=. --sourcemap",
+    "reform:dev": "esbuild --bundle --format=esm reform/index.ts --outdir=reform/v1/ --serve=8080 --servedir=. --sourcemap",
     "gunn-confessions:build": "esbuild --bundle gunn-confessions/index.tsx --outfile=gunn-confessions/index.js --minify",
-    "gunn-confessions:dev": "esbuild --bundle gunn-confessions/index.tsx --outfile=gunn-confessions/index.js --servedir=. --sourcemap"
+    "gunn-confessions:dev": "esbuild --bundle gunn-confessions/index.tsx --outfile=gunn-confessions/index.js --serve=8080 --servedir=. --sourcemap"
   },
   "dependencies": {
     "discord.js": "^12.5.3",
