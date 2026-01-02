@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>little sheep hall of fame</title>
+    <meta
+      name="description"
+      content="Dedicated to the little sheep watermark that appears on most pages of this site."
+    />
+    <meta name="theme-color" content="#4fa1a7" />
+
+    <link rel="stylesheet" type="text/css" href="/sheep3.css" />
+    <link rel="stylesheet" type="text/css" href="/reform/v1/index.css" />
+    <link rel="stylesheet" type="text/css" href="./sheep-nav.css" />
+    <script src="/sheep3.js" charset="utf-8"></script>
+
+    <style>
+      .cols figure {
+        width: 0;
+        flex: auto;
+        margin: 0;
+      }
+      .cols figure img {
+        border-radius: 15px;
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="sheep-nav">
+      <a class="link nav-home" href="../">&leftarrow; /all/</a>
+      <a class="link" href="./sheep.html">sheep.js</a>
+      <a class="link" href="./sheep2.html">sheep2.js</a>
+      <a class="link" href="./sheep3.html">sheep3.js</a>
+    </nav>
+    <main class="main">
+      <h1>little sheep hall of fame</h1>
+      <p>
+        The little sheep watermark (sometimes referred to as
+        <em lang="eo">l' ŝafeto</em>) appears on the bottom right corner of most
+        pages (most exceptions are in
+        <a class="link" href="/hello-world/">hello-world</a> and
+        <a class="link" href="/thingkingland/sitemap.html">thingkingland</a>).
+        Not only does it provide consistent branding across my inconsistent
+        website and offer quick access and discoverability of my home page to
+        random visitors, but it's my main entry point for anything I want to
+        quickly add to (almost) every page on this website.
+      </p>
+      <div class="cols">
+        <figure>
+          <img
+            src="/SHEEP.svg"
+            alt="My sheep logo, Material cool grey on white. Unlike the current logo, it has small, white circular eyes. The horns are slightly wider."
+          />
+          <figcaption>
+            <p>
+              The original logo used for the watermark, designed in Google
+              Drawings. It has been described by some people as "scary" due to
+              its eyes.
+            </p>
+          </figcaption>
+        </figure>
+        <figure>
+          <img
+            src="/SHEPS.svg"
+            alt="My current sheep logo, a desaturated teal abstract sheep head shape with horns and wool on the head represented by negative space."
+          />
+          <figcaption>
+            <p>
+              The current logo is a simple shape, used in the current site
+              favicon. The outline version is used in the current watermark and
+              in the opening animation of my home page, which I believe sets a
+              good first impression.
+            </p>
+          </figcaption>
+        </figure>
+      </div>
+    </main>
+
+    <script type="module">
+      import { on } from '/reform/v1/index.js'
+
+      const bySheep = Map.groupBy(
+        await fetch('../title-desc.json').then(r => r.json()),
+        ({ sheep }) => sheep
+      )
+      console.log(bySheep)
+    </script>
+  </body>
+</html>
