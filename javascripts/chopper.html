@@ -230,6 +230,7 @@
         return new (class extends Out {
           fileName = 'emoji.zip'
 
+          downloadTypeHint = 'application/zip'
           provideDownload () {
             const zip = new JSZip()
             for (const { name, blob } of blobs) {

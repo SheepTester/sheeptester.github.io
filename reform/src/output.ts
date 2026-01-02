@@ -1,5 +1,7 @@
 import { displayBytes, DONE_TIMEOUT } from './utils'
 
+const NO_BLOB_ERROR = Symbol('no blob error')
+
 type OutputElements = {
   fileName: Element | null
   downloadLink: HTMLAnchorElement | null
@@ -33,13 +35,32 @@ export class OutputControls {
       try {
         copyButton.disabled = true
         this.#clipboardBlob ??= this.#getBlob(true)
-        const blob = await this.#clipboardBlob
-        if (!blob) {
-          return
+        const clipboardTypeHint =
+          this.#output?.clipboardTypeHint ??
+          this.#output?.downloadTypeHint ??
+          (this.#output?.value instanceof Blob
+            ? this.#output?.value.type
+            : null)
+        if (!clipboardTypeHint) {
+          throw new TypeError(
+            'Unable to determine MIME type of clipboard blob. Did you set `clipboardTypeHint`?'
+          )
         }
-        await navigator.clipboard.write([
-          new ClipboardItem({ [blob.type]: blob })
-        ])
+        try {
+          await navigator.clipboard.write([
+            new ClipboardItem({
+              [clipboardTypeHint]: this.#clipboardBlob.then(blob =>
+                blob ? blob : Promise.reject(NO_BLOB_ERROR)
+              )
+            })
+          ])
+        } catch (error) {
+          if (error === NO_BLOB_ERROR) {
+            return
+          } else {
+            throw error
+          }
+        }
         if (this.#copyButtonTimeoutId) {
           clearTimeout(this.#copyButtonTimeoutId)
         }
@@ -259,8 +280,21 @@ export abstract class OutputProvider {
    * Canvas contexts are turned into PNG images.
    */
   value?: Blob | CanvasRenderingContext2D
+
+  /**
+   * MIME type of download. Ignored if `value` is set. Currently only used as
+   * fallback when `clipboardTypeHint` is omitted, but it is recommended to set
+   * this in case I add blob type feature detection in the future.
+   */
+  downloadTypeHint?: string
   /** Ignored if `value` is set. */
   provideDownload? (): PromiseLike<Blob> | Blob
+
+  /**
+   * MIME type of clipboard blob. Preferred over `downloadTypeHint`. Must be
+   * specified if `provideClipboard` is also specified.
+   */
+  clipboardTypeHint?: string
   /**
    * If the blob type is not supported by the Clipboard API, then specify this
    * method for the copy button, which when set will be preferred over `value`

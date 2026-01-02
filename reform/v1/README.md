@@ -310,8 +310,21 @@ declare module '/reform/v1/index.js' {
      * Canvas contexts are turned into PNG images.
      */
     value?: Blob | CanvasRenderingContext2D
+
+    /**
+     * MIME type of download. Ignored if `value` is set. Currently only used as
+     * fallback when `clipboardTypeHint` is omitted, but it is recommended to set
+     * this in case I add blob type feature detection in the future.
+     */
+    downloadTypeHint?: string
     /** Ignored if `value` is set. */
     provideDownload? (): PromiseLike<Blob> | Blob
+
+    /**
+     * MIME type of clipboard blob. Preferred over `downloadTypeHint`. Must be
+     * specified if `provideClipboard` is also specified.
+     */
+    clipboardTypeHint?: string
     /**
      * If the blob type is not supported by the Clipboard API, then specify this
      * method for the copy button, which when set will be preferred over `value`

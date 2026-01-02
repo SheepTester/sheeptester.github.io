@@ -190,8 +190,10 @@
           return new (class extends Out {
             fileName = fileName + (format === 'image/jpeg' ? '.jpg' : '.webp')
 
+            downloadTypeHint = format
             provideDownload = () => fetch(url).then(r => r.blob())
 
+            clipboardTypeHint = 'image/png'
             async provideClipboard () {
               await imageLoad
               tempCanvas.width = canvas.width
