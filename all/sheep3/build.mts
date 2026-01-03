@@ -22,7 +22,7 @@ const result2 = await esbuild.build({
     contents: output1['sheep3.js']
   },
   define: {
-    CSS: JSON.stringify(output1['sheep3.css'])
+    CSS: JSON.stringify(output1['sheep3.css'].trim())
   },
   banner: {
     js: '// Source code at /all/sheep3/sheep3.ts'

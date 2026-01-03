@@ -6,6 +6,14 @@
     'Segoe UI Symbol';
 }
 
+.logo {
+  width: 45px;
+  height: 45px;
+  stroke: white;
+  stroke-opacity: 0.7;
+  stroke-width: 20;
+  fill: none;
+}
 .homeLink {
   font-size: 0;
   display: block;
@@ -38,13 +46,7 @@
     box-shadow: 0 0 4px rgba(0, 0, 0, 0.5), 0 0 0 5px rgba(79, 161, 167, 0.3);
   }
 
-  svg {
-    width: 45px;
-    height: 45px;
-    stroke: white;
-    stroke-opacity: 0.7;
-    stroke-width: 20;
-    fill: none;
+  .logo {
     position: absolute;
     left: 50%;
     top: 50%;
@@ -68,6 +70,56 @@
     }
   }
 }
-.homeLink:not(.blockScreen):hover svg {
+.homeLink:not(.blockScreen):hover .logo {
   stroke: black;
+}
+
+.screenBlocker {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  offset-path: ellipse(
+    calc(50% - 35px) calc(50% - 35px) at calc(100% - 35px) 50%
+  );
+  offset-rotate: 0deg;
+  animation: block-screen 0.5s forwards;
+
+  .logo {
+    position: absolute;
+    animation: logo 0.5s forwards;
+  }
+}
+.screenBlockerCircle {
+  position: absolute;
+  width: 50px;
+  height: 50px;
+  margin: -25px;
+  border-radius: 50%;
+  background-color: black;
+  animation: block-screen-circle 0.5s forwards;
+}
+@keyframes block-screen {
+  from {
+    offset-distance: 25%;
+  }
+  to {
+    offset-distance: 50%;
+  }
+}
+@keyframes block-screen-circle {
+  from {
+    scale: 1;
+  }
+  to {
+    scale: var(--max-scale);
+  }
+}
+@keyframes logo {
+  from {
+    transform: translate(-50%, -46.667%) scale(1);
+  }
+  to {
+    transform: translate(-50%, -50%) scale(2);
+  }
 }

@@ -1,7 +1,3 @@
-// TODO:
-// - Replace exit transition with animation (so can listen to animationend)
-// - Use esbuild or something to inline sheep3-draft.css for me
-
 import styles from './sheep3.module.css'
 
 declare const CSS: string
@@ -18,6 +14,7 @@ class SheepBtn extends HTMLElement {
 
     const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
     svg.setAttributeNS(null, 'viewBox', '0 0 480 480')
+    svg.setAttributeNS(null, 'class', styles.logo)
 
     const path = document.createElementNS('http://www.w3.org/2000/svg', 'path')
     path.setAttributeNS(
@@ -34,21 +31,30 @@ class SheepBtn extends HTMLElement {
 
     homeLink.addEventListener('click', e => {
       e.preventDefault()
+      // Compute 100vmax first before making DOM changes
+      const maxSize = Math.max(window.innerWidth, window.innerHeight)
       document.body.inert = true
-      homeLink.classList.add(styles.blockScreen)
-      homeLink.addEventListener(
-        'transitionend',
-        () => {
-          window.requestAnimationFrame(() => {
-            // Try forcing repaint
-            homeLink.getBoundingClientRect()
-            // In case the user goes back and the page is load from bfcache
-            setTimeout(() => homeLink.classList.remove(styles.blockScreen), 500)
-            window.location.href = '/?from=sheep3'
-          })
-        },
-        { once: true }
+      const screenBlocker = Object.assign(document.createElement('div'), {
+        className: styles.screenBlocker
+      })
+      screenBlocker.style.setProperty(
+        '--max-scale',
+        `${(maxSize * Math.SQRT2) / 50}`
       )
+      screenBlocker.append(
+        Object.assign(document.createElement('div'), {
+          className: styles.screenBlockerCircle
+        }),
+        svg.cloneNode(true)
+      )
+      screenBlocker.addEventListener('animationend', () => {
+        setTimeout(() => {
+          screenBlocker.remove()
+          document.body.inert = false
+        }, 500)
+        window.location.href = '/?from=sheep3'
+      })
+      shadowRoot.append(screenBlocker)
     })
 
     svg.append(path)
