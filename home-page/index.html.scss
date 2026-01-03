@@ -225,6 +225,7 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"]
         transform-origin: bottom right;
         animation: to-corner-then-disappear 2s cubic-bezier(0.7, 0, 0.35, 1)
           1.2s forwards;
+        pointer-events: none;
       }
       @keyframes to-corner-then-disappear {
         // Go to corner
@@ -233,19 +234,14 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"]
           right: 50%;
           transform: scale(1);
         }
-        70% {
-          bottom: 35px;
-          right: 35px;
-          opacity: 1;
-          transform: scale(0.5);
-        }
-        // Then disappear
+        70%,
         80% {
           bottom: 35px;
           right: 35px;
           opacity: 1;
           transform: scale(0.5);
         }
+        // Then disappear
         100% {
           bottom: 35px;
           right: 35px;
@@ -262,7 +258,6 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"]
           left: 50%;
           border-radius: 50%;
           background-color: black;
-          pointer-events: none;
           transform: translateZ(0);
           animation: circle-in 0.8s 0.8s both;
         }
@@ -289,8 +284,20 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"]
           width: 90px;
           top: 50%;
           left: 50%;
-          transform: translate(-50%, -48%);
-          pointer-events: none;
+          transform: translate(-50%, -46.66667%);
+        }
+        .from-sheep .logo {
+          animation: logo-shift-down 2s cubic-bezier(0.7, 0, 0.35, 1) 1.2s both;
+        }
+        @keyframes logo-shift-down {
+          // Same keyframes as to-corner-then-disappear
+          0% {
+            transform: translate(-50%, -50%);
+          }
+          70%,
+          100% {
+            transform: translate(-50%, -46.66667%);
+          }
         }
       }
       svg.logo[xmlns="http://www.w3.org/2000/svg"][viewBox="0 0 480 480"][width="45"][aria-hidden="true"]
