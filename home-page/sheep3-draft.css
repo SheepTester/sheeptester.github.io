@@ -1,0 +1,75 @@
+/* Not referenced anywhere; manually inlined into sheep3.js */
+
+:host {
+  all: initial;
+  color-scheme: dark;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+    'Helvetica Neue', Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+    'Segoe UI Symbol';
+}
+
+.home-link {
+  font-size: 0;
+  display: block;
+  position: fixed;
+  z-index: 1000;
+  height: 50px;
+  width: 50px;
+  border-radius: 50%;
+  background-color: rgba(0, 0, 0, 0.4);
+  box-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: all 0.2s;
+  right: 10px;
+  bottom: 10px;
+  transform: translateZ(0);
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.8);
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
+  }
+
+  &:active {
+    box-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
+    transform: translateZ(0) scale(0.9);
+  }
+
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.5), 0 0 0 5px rgba(79, 161, 167, 0.3);
+  }
+
+  svg {
+    width: 45px;
+    height: 45px;
+    stroke: white;
+    stroke-opacity: 0.7;
+    stroke-width: 20;
+    fill: none;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -46.667%);
+    transition: all 0.2s;
+  }
+
+  &.block-screen {
+    right: 50%;
+    bottom: 50%;
+    width: 142vmax;
+    height: 142vmax;
+    margin: -71vmax;
+    background-color: black;
+    box-shadow: none;
+    pointer-events: none;
+    transition: all 0.5s;
+
+    svg {
+      transform: scale(2) translate(-50%, -50%);
+    }
+  }
+}
+.home-link:not(.block-screen):hover svg {
+  stroke: black;
+}
