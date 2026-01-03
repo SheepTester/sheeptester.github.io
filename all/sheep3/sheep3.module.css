@@ -1,5 +1,3 @@
-/* Not referenced anywhere; manually inlined into sheep3.js */
-
 :host {
   all: initial;
   color-scheme: dark;
@@ -8,7 +6,7 @@
     'Segoe UI Symbol';
 }
 
-.home-link {
+.homeLink {
   font-size: 0;
   display: block;
   position: fixed;
@@ -54,7 +52,7 @@
     transition: all 0.2s;
   }
 
-  &.block-screen {
+  &.blockScreen {
     right: 50%;
     bottom: 50%;
     width: 142vmax;
@@ -70,6 +68,6 @@
     }
   }
 }
-.home-link:not(.block-screen):hover svg {
+.homeLink:not(.blockScreen):hover svg {
   stroke: black;
 }
