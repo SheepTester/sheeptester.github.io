@@ -1,0 +1,4 @@
+sheep-btn {
+  /* absolute seems to avoid z-indexing issues */
+  position: absolute;
+}
