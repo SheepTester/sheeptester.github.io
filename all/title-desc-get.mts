@@ -1,4 +1,4 @@
-// node all/title-desc-get.mjs
+// node all/title-desc-get.mts
 
 import * as fs from 'fs/promises'
 import { parse } from 'node-html-parser'
@@ -7,7 +7,14 @@ const ROOT = 'https://sheeptester.github.io'
 const JSON_PATH = 'all/title-desc.json'
 const SITEMAP_PATH = 'all/sitemap.txt'
 
-const entries = JSON.parse(
+type Entry = {
+  path: string
+  title: string | null
+  description: string | null
+  sheep: 1 | 2 | 3 | null
+}
+
+const entries: Entry[] = JSON.parse(
   await fs.readFile(JSON_PATH, 'utf-8').catch(() => '[]')
 )
 const paths = (await fs.readFile(SITEMAP_PATH, 'utf-8'))

@@ -19,7 +19,7 @@ import { fileURLToPath } from 'url'
 
 // https://stackoverflow.com/a/29655902
 // (from file-getter.js)
-function runCommand (command) {
+function runCommand (command: string): Promise<string> {
   return new Promise((resolve, reject) => {
     exec(command, (err, stdout, stderr) => {
       if (err !== null) reject(err)
@@ -29,12 +29,12 @@ function runCommand (command) {
   })
 }
 
-function toBase64 (str) {
+function toBase64 (str: string) {
   return Buffer.from(str).toString('base64')
 }
 
 // Primitive glob-like pattern matching
-function matchesPattern (path, pattern) {
+function matchesPattern (path: string, pattern: string) {
   const [start, end] = pattern.split(/\*\*?/)
   const allowDirectories = pattern.includes('**')
   if (pattern.startsWith('/')) {
@@ -69,7 +69,7 @@ const ignore = ignorePatterns.filter(pattern => !pattern.startsWith('!'))
 const except = ignorePatterns
   .filter(pattern => pattern.startsWith('!'))
   .map(pattern => pattern.slice(1))
-function keepPath (path) {
+function keepPath (path: string) {
   for (const pattern of except) {
     if (matchesPattern(path, pattern)) return true
   }
@@ -84,12 +84,17 @@ const headers = {
   Authorization: `Basic ${toBase64(`${username}:${personalAccessToken}`)}`
 }
 
-function getRepoFiles (repo, branch = 'master') {
+type RepoFiles = {
+  tree: { type: 'blob' | 'tree'; path: string }[]
+  truncated: boolean
+}
+
+function getRepoFiles (repo: string, branch = 'master') {
   // https://api.github.com/repos/SheepTester/chaotic-cube/git/trees/master?recursive=1
   const url = `https://api.github.com/repos/${ghUser}/${repo}/git/trees/${branch}?recursive=1`
   return fetch(url, { headers })
     .then(r => r.json())
-    .then(({ tree, truncated }) => {
+    .then(({ tree, truncated }: RepoFiles) => {
       if (truncated) console.warn(`${repo}#${branch} was truncated.`)
       return tree
         .filter(({ type }) => type === 'blob')
@@ -97,12 +102,21 @@ function getRepoFiles (repo, branch = 'master') {
     })
 }
 
-function getJekyllSitemap (repo) {
+type Sitemap = {
+  urlset: {
+    url: {
+      loc: string
+      lastmod: string
+    }[]
+  }
+}
+
+function getJekyllSitemap (repo: string) {
   // https://sheeptester.github.io/blog/sitemap.xml
   return fetch(`https://${domain}/${repo}/sitemap.xml`)
     .then(r => r.text())
     .then(xml2js.parseStringPromise)
-    .then(({ urlset: { url } }) =>
+    .then(({ urlset: { url } }: Sitemap) =>
       url.map(({ loc }) => {
         const path = decodeURI(new URL(loc[0]).pathname)
         return path.endsWith('/') ? path + 'index.html' : path
@@ -168,7 +182,8 @@ async function main () {
           if (path.endsWith(`.scss`)) return path.replace(/\.scss$/g, '.css')
           return path
         })
-        .filter(path => path && !paths.includes(path))
+        .filter(path => path !== null)
+        .filter(path => !paths.includes(path))
     )
   }
 
