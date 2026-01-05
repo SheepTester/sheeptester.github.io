@@ -38,8 +38,10 @@ export class OutputControls {
         const clipboardTypeHint =
           this.#output?.clipboardTypeHint ??
           this.#output?.downloadTypeHint ??
-          (this.#output?.value instanceof Blob
-            ? this.#output?.value.type
+          (this.#output?.value
+            ? this.#output.value instanceof CanvasRenderingContext2D
+              ? 'image/png'
+              : this.#output.value.type
             : null)
         if (!clipboardTypeHint) {
           throw new TypeError(

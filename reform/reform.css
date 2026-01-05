@@ -217,6 +217,12 @@ pre {
   padding: 10px;
   line-height: 1.4;
   font-size: 14px;
+  overflow-x: auto;
+}
+code {
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  padding: 0 5px;
 }
 ol,
 ul {
