@@ -15,9 +15,16 @@ const paths = (await fs.readFile(SITEMAP_PATH, 'utf-8'))
   .split(/\r?\n/)
   .map(url => url.replace(ROOT, ''))
 
+const serialize = () =>
+  JSON.stringify(
+    entries.toSorted((a, b) => paths.indexOf(a.path) - paths.indexOf(b.path)),
+    null,
+    '\t'
+  ) + '\n'
+
 process.on('SIGINT', async () => {
   console.log('(^C detected) Saving...'.padEnd(80, ' '))
-  await fs.writeFile(JSON_PATH, JSON.stringify(entries, null, '\t') + '\n')
+  await fs.writeFile(JSON_PATH, serialize())
   process.exit()
 })
 
@@ -34,12 +41,12 @@ for (const path of paths) {
   const sheep = document.querySelector('script[src$="/sheep.js"]')
     ? 1
     : document.querySelector('script[src$="/sheep2.js"]')
-    ? 2
-    : document.querySelector('script[src$="/sheep3.js"]')
-    ? 3
-    : null
+      ? 2
+      : document.querySelector('script[src$="/sheep3.js"]')
+        ? 3
+        : null
   entries.push({ path, title, description, sheep })
 }
 
 console.log('(Done) Saving...'.padEnd(80, ' '))
-await fs.writeFile(JSON_PATH, JSON.stringify(entries, null, '\t') + '\n')
+await fs.writeFile(JSON_PATH, serialize())
