@@ -74,11 +74,17 @@
   stroke: black;
 }
 
-.screenBlocker {
+/* HACK: offset-path percentages ignore Chrome Windows scrollbar */
+.screenBlockerWrapper {
   position: fixed;
-  top: 0;
-  left: 0;
-  z-index: 1000;
+  bottom: 0;
+  right: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 1001;
+}
+.screenBlocker {
+  position: absolute;
   offset-path: ellipse(
     calc(50% - 35px) calc(50% - 35px) at calc(100% - 35px) 50%
   );

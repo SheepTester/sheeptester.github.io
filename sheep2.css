@@ -55,9 +55,6 @@ body.sheep-will-open-context-menu sheep-btn {
 body.no-sheep sheep-btn {
   display: none;
 }
-body.sheep-blockscreen {
-  overflow: hidden;
-}
 body.sheep-blockscreen sheep-btn {
   right: 0 !important;
   bottom: 0 !important;

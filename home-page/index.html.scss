@@ -219,19 +219,25 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"]
     css {
       .intro {
         position: fixed;
-        bottom: 50%;
-        right: 50%;
+        // The block-screen forms of the sheep are based on 100vw, 100vh, which
+        // includes Chrome Window scrollbar
+        right: 50vw;
+        bottom: 50vh;
         z-index: 5;
         transform-origin: bottom right;
         animation: to-corner-then-disappear 2s cubic-bezier(0.7, 0, 0.35, 1)
           1.2s forwards;
         pointer-events: none;
       }
+      .from-sheep .intro {
+        // from-sheep has 0.8s less delay
+        animation-delay: 0.4s;
+      }
       @keyframes to-corner-then-disappear {
         // Go to corner
         0% {
-          bottom: 50%;
-          right: 50%;
+          right: 50vw;
+          bottom: 50vh;
           transform: scale(1);
         }
         70%,
@@ -261,6 +267,9 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"]
           transform: translateZ(0);
           animation: circle-in 0.8s 0.8s both;
         }
+        .from-sheep .intro-back {
+          animation-delay: 0;
+        }
         @keyframes circle-in {
           from {
             // 142 ≈ 100 sqrt(2) (diagonal of square screen)
@@ -287,7 +296,7 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"]
           transform: translate(-50%, -46.66667%);
         }
         .from-sheep .logo {
-          animation: logo-shift-down 2s cubic-bezier(0.7, 0, 0.35, 1) 1.2s both;
+          animation: logo-shift-down 2s cubic-bezier(0.7, 0, 0.35, 1) 0.4s both;
         }
         @keyframes logo-shift-down {
           // Same keyframes as to-corner-then-disappear
@@ -342,6 +351,9 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"]
       css {
         sheep-btn {
           animation: do-not-show-so-quickly 0.2s 2.4s backwards;
+        }
+        .from-sheep sheep-btn {
+          animation-delay: 1.6s;
         }
         @keyframes do-not-show-so-quickly {
           from {

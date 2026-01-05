@@ -66,7 +66,6 @@ try {
         window.location='/?js';
       } else {
         el.id="SHEEPANIMATING";
-        document.body.style.overflow = 'hidden';
         window.setTimeout(_=>window.location="/?from=sheep",300);
       }
       e.preventDefault();

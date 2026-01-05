@@ -34,6 +34,10 @@ class SheepBtn extends HTMLElement {
       // Compute 100vmax first before making DOM changes
       const maxSize = Math.max(window.innerWidth, window.innerHeight)
       document.body.inert = true
+      const screenBlockerWrapper = Object.assign(
+        document.createElement('div'),
+        { className: styles.screenBlockerWrapper }
+      )
       const screenBlocker = Object.assign(document.createElement('div'), {
         className: styles.screenBlocker
       })
@@ -49,12 +53,13 @@ class SheepBtn extends HTMLElement {
       )
       screenBlocker.addEventListener('animationend', () => {
         setTimeout(() => {
-          screenBlocker.remove()
+          screenBlockerWrapper.remove()
           document.body.inert = false
         }, 500)
         window.location.href = '/?from=sheep3'
       })
-      shadowRoot.append(screenBlocker)
+      screenBlockerWrapper.append(screenBlocker)
+      shadowRoot.append(screenBlockerWrapper)
     })
 
     svg.append(path)
