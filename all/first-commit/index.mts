@@ -216,7 +216,7 @@ for (const [repo, paths] of pathsByRepo) {
           '--diff-filter=A',
           // https://stackoverflow.com/a/11533206
           '--follow',
-          '--find-renames=40%',
+          '--find-renames=50%',
           '--pretty=format:|%H|%ai|%B',
           '--',
           sourcePath

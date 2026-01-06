@@ -3871,9 +3871,9 @@
 	},
 	"/words-go-here/misc/2swap-state-space/": {
 		"source": "words-go-here/master/misc/2swap-state-space/index.html",
-		"hash": "99cd09bc276e8506d8fdfc776b10705b5ec096ef",
-		"date": "2021-08-10 16:15:22 -0700",
-		"message": "I think I somewhat understand service workers now?\nI guess UGWA is just overcomplicated\n\nYou just need to do\n1. When the browser encounters a new SW version, it'll fire the `updatefound` event on a `ServiceWorkerRegistration` (which you get from `navigator.serviceWorker.register`).\n2. When `updatefound` fires, the registration's `installing` property will have a new `ServiceWorker`.\n3. Inside the service worker, call `self.skipWaiting` on receiving the `install` event.\n4. This will cause a `statechange` event to be fired on the `ServiceWorker`.\n5. When the `ServiceWorker`'s `state` property becomes `activated`, you can reload the page. By now, the `controllerchange` event has been fired on `navigator.serviceWorker`, so the controller service worker, which receives all the fetch requests from the web page, has been changed to the new service worker. Reloading will make the page use the new HTML.\n"
+		"hash": "ba79e73b6a8daf9ee5e9bf691172b8b3d71c1261",
+		"date": "2025-08-24 14:25:51 -0700",
+		"message": "set up 2swap state space thing\n\nseems like too much work though. might abandon\n"
 	},
 	"/words-go-here/misc/3dcube.html": {
 		"source": "words-go-here/master/misc/3dcube.html",
@@ -4129,9 +4129,9 @@
 	},
 	"/words-go-here/misc/factorial-scinot.html": {
 		"source": "words-go-here/master/misc/factorial-scinot.html",
-		"hash": "294a9d2ee485cff43a0d9704d2e5605ab24883a2",
-		"date": "2019-07-24 19:02:24 -0700",
-		"message": "factorial but for big numbers\n"
+		"hash": "6f9a8d497fd0d03d30d9561a6bf91827d1bb9e4d",
+		"date": "2019-07-24 19:26:29 -0700",
+		"message": "no one cares about the digits themselves, just the length\n"
 	},
 	"/words-go-here/misc/factorial.html": {
 		"source": "words-go-here/master/misc/factorial.html",
@@ -4273,9 +4273,9 @@
 	},
 	"/words-go-here/misc/kaaba/": {
 		"source": "words-go-here/master/misc/kaaba/index.html",
-		"hash": "99cd09bc276e8506d8fdfc776b10705b5ec096ef",
-		"date": "2021-08-10 16:15:22 -0700",
-		"message": "I think I somewhat understand service workers now?\nI guess UGWA is just overcomplicated\n\nYou just need to do\n1. When the browser encounters a new SW version, it'll fire the `updatefound` event on a `ServiceWorkerRegistration` (which you get from `navigator.serviceWorker.register`).\n2. When `updatefound` fires, the registration's `installing` property will have a new `ServiceWorker`.\n3. Inside the service worker, call `self.skipWaiting` on receiving the `install` event.\n4. This will cause a `statechange` event to be fired on the `ServiceWorker`.\n5. When the `ServiceWorker`'s `state` property becomes `activated`, you can reload the page. By now, the `controllerchange` event has been fired on `navigator.serviceWorker`, so the controller service worker, which receives all the fetch requests from the web page, has been changed to the new service worker. Reloading will make the page use the new HTML.\n"
+		"hash": "d4d5800fce954eb9376e112c25743554d758d68b",
+		"date": "2023-08-27 14:30:10 -0700",
+		"message": "WebGPU I DREW A TRIANGLE\n"
 	},
 	"/words-go-here/misc/kamala.html": {
 		"source": "words-go-here/master/misc/kamala.html",
@@ -4381,15 +4381,15 @@
 	},
 	"/words-go-here/misc/platscript2.html": {
 		"source": "words-go-here/master/misc/platscript2.html",
-		"hash": "4245d8644c59b53bd5e13b4adc1a8537d130c976",
-		"date": "2017-05-06 16:04:02 -0700",
-		"message": "the platscript is coming one day!\n"
+		"hash": "540276ae624fff6609df63bdbc9fc709544d2224",
+		"date": "2017-05-09 20:57:19 -0700",
+		"message": "ugh\n"
 	},
 	"/words-go-here/misc/platscript3.html": {
 		"source": "words-go-here/master/misc/platscript3.html",
-		"hash": "4245d8644c59b53bd5e13b4adc1a8537d130c976",
-		"date": "2017-05-06 16:04:02 -0700",
-		"message": "the platscript is coming one day!\n"
+		"hash": "540276ae624fff6609df63bdbc9fc709544d2224",
+		"date": "2017-05-09 20:57:19 -0700",
+		"message": "ugh\n"
 	},
 	"/words-go-here/misc/polygon-stabber.html": {
 		"source": "words-go-here/master/misc/polygon-stabber.html",
@@ -4489,9 +4489,9 @@
 	},
 	"/words-go-here/misc/storage-room.html": {
 		"source": "words-go-here/master/misc/storage-room.html",
-		"hash": "bd78991f8651c05975fe13a82189e9fa59d70702",
-		"date": "2020-01-12 17:41:50 -0800",
-		"message": "evo sim ui\n"
+		"hash": "37848c2dd8fd88667f41093918d05866d54e1d9a",
+		"date": "2020-07-08 13:47:13 -0700",
+		"message": "Parse stackables somewhat\n"
 	},
 	"/words-go-here/misc/strattonsday.html": {
 		"source": "words-go-here/master/misc/strattonsday.html",
@@ -4627,9 +4627,9 @@
 	},
 	"/words-go-here/misc/zelmanov-rref.html": {
 		"source": "words-go-here/master/misc/zelmanov-rref.html",
-		"hash": "99cd09bc276e8506d8fdfc776b10705b5ec096ef",
-		"date": "2021-08-10 16:15:22 -0700",
-		"message": "I think I somewhat understand service workers now?\nI guess UGWA is just overcomplicated\n\nYou just need to do\n1. When the browser encounters a new SW version, it'll fire the `updatefound` event on a `ServiceWorkerRegistration` (which you get from `navigator.serviceWorker.register`).\n2. When `updatefound` fires, the registration's `installing` property will have a new `ServiceWorker`.\n3. Inside the service worker, call `self.skipWaiting` on receiving the `install` event.\n4. This will cause a `statechange` event to be fired on the `ServiceWorker`.\n5. When the `ServiceWorker`'s `state` property becomes `activated`, you can reload the page. By now, the `controllerchange` event has been fired on `navigator.serviceWorker`, so the controller service worker, which receives all the fetch requests from the web page, has been changed to the new service worker. Reloading will make the page use the new HTML.\n"
+		"hash": "eafbc532b960439d5cb1c4a0992e5a4f862cfbdc",
+		"date": "2021-10-16 18:21:36 -0700",
+		"message": "rref: Set up elementary row operations for row reducing\n"
 	},
 	"/words-go-here/savefiletest.html": {
 		"source": "words-go-here/master/savefiletest.html",
