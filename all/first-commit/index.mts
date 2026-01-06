@@ -75,7 +75,7 @@ const pathsByRepo = Map.groupBy(
           return { repo: 'guestbook', path, sourcePath: 'src/Page.tsx' }
       }
 
-      const [, repoName, ...rest] = path.split('/')
+      const [, repoName, ...rest] = decodeURIComponent(path).split('/')
       const end = path.endsWith('/') ? 'index.html' : ''
       for (const entry of ghPagesRepos) {
         const [repo] = entry.split('#')
