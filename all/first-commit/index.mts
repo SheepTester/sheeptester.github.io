@@ -214,7 +214,7 @@ for (const [repo, paths] of pathsByRepo) {
           // https://stackoverflow.com/a/11533206
           '--follow',
           '--find-renames=40%',
-          '--pretty=format:%H|%ai|%s',
+          '--pretty=format:|%H|%ai|%B',
           '--',
           sourcePath
         ],
@@ -231,7 +231,13 @@ for (const [repo, paths] of pathsByRepo) {
       console.error(`${YELLOW}WARN${RESET}: received stderr for ${sourcePath}`)
       console.error(stderr)
     }
-    const [hash, date, ...descriptionParts] = stdout.split('|')
+    const [empty, hash, date, ...descriptionParts] = stdout.split('|')
+    if (empty) {
+      console.error(
+        `${RED}ERROR${RESET}: unexpected git log output for ${sourcePath}`
+      )
+      continue
+    }
     if (!hash || !date) {
       console.error(`${RED}ERROR${RESET}: could not get ${sourcePath}`)
       continue
