@@ -369,7 +369,7 @@
 		"source": "eyo-dictionary/master/index.html",
 		"hash": "eefe7d90ec8556a7741c01d8966ef1e4cac12973",
 		"date": "2016-09-11 18:03:36 -0700",
-		"message": "The fun stuff is here!\n\nThe index files have all the fun stuff, actually; dict.js is the boring, yet the most essential part of the entire thing.\n|d6e2ef321790bc91cd8cd1849a5f546d7d422833|2016-09-11 10:18:48 -0700|Create index.html"
+		"message": "The fun stuff is here!\n\nThe index files have all the fun stuff, actually; dict.js is the boring, yet the most essential part of the entire thing."
 	},
 	"/eyo-dictionary/validator.html": {
 		"source": "eyo-dictionary/master/validator.html",
@@ -1611,7 +1611,7 @@
 		"source": "intuitive-gunn-website/master/index.html",
 		"hash": "373b53c4eb9e3775a5153805a2264c9882c15e4a",
 		"date": "2019-10-27 18:31:36 -0700",
-		"message": "commit some changes I had left uncommitted\n\n|9fcc03c88fae2ab8ee5529428be83d077ac38752|2019-01-06 17:34:56 -0800|hmmm\n"
+		"message": "commit some changes I had left uncommitted\n"
 	},
 	"/intuitive-gunn-website/content/attendance.html": {
 		"source": "intuitive-gunn-website/master/content/attendance.html",
@@ -2829,7 +2829,7 @@
 		"source": "platformre/master/levelmaker.html",
 		"hash": "cb4ba4d2c8b0a1e6a7aef614e66d53a34fc187c9",
 		"date": "2016-11-23 12:37:14 -0800",
-		"message": "Redirects, fixes\n\n|664997996303af585f83b3f6406c9b095261ed32|2016-09-21 19:59:40 -0700|Added level maker\n"
+		"message": "Redirects, fixes\n"
 	},
 	"/platformre/levelplaytest.html": {
 		"source": "platformre/master/levelplaytest.html",
@@ -2937,7 +2937,7 @@
 		"source": "platformre/master/randomlevelgen.html",
 		"hash": "cb4ba4d2c8b0a1e6a7aef614e66d53a34fc187c9",
 		"date": "2016-11-23 12:37:14 -0800",
-		"message": "Redirects, fixes\n\n|7b92d77c9f79df15891580e73644cfd529e113b1|2016-09-20 19:18:51 -0700|Added test level\n"
+		"message": "Redirects, fixes\n"
 	},
 	"/platformre/submit.html": {
 		"source": "platformre/master/submit.html",
@@ -3117,19 +3117,19 @@
 		"source": "scratch-vm/gh-pages/index.html",
 		"hash": "79904adcdca00bc341c4516c11e891ec026b1184",
 		"date": "2019-02-19 20:18:57 -0800",
-		"message": "Build for $(git log --pretty=format:%H -n1)\n\n|93f65039e733ce61aa2e0e5d3fe2957202540983|2016-09-25 18:06:30 +0000|Build for 9f59efb39e9851759a502f49a84d6da5ff5f34f0\n170adf41b7e4c11ecb558bd5bb293008d3a539c6\n6d37d4a5bbf9276e9ce620bdc64c6a112007f9c2\n36fc03851c58c1fc39e11ec4b29fca969fcc0461\n2d736f2b871fdcec1c6cd9c063be3d72956db933\na118d500565f72aa86f256a119d95d46b7546c4a\na687184c3c5298188d2f4f4a226502bb5c40a4e4\naa5e8d264888bcdd8ed6d090b5d0b05e94ded8ca\nf9efc2b4bcf63a38794156e832320d693d6ff05b\n32b4374a56c946ca4aa7180a7aca37af0bf66732\nbb7dee60871cf630cc6eb3dced549a939edd9975\ne6896647331ffdfb6464fcbf2d4e91d9b8206c43\n9884c583a92f154e8f01af8953b6b9c54bded5ce\n4e547556a8065353e34009f798e170103404c0d0\nfa10a2279acc8450baedcb583b9b01a1ab2744e6\n499ba5235ca0316fccb95660ee0cef069a4996e6\nc02ee88d0247528f8fc0911c0fa057f60131d205\n13f287e8712fdd2cfeed31a0d61893f4279385a3\n470f686662ac5e057c05fa5739ed46f85cf4e2da\n9744bcbb7060a7266168bb84e76a7b6ed9eb6810\n542899949eefb8921a8dcbd24b7127497caa34d3\n6b3f0d3d8af7f487856d3b28753921d9bbb2ebe6\n89873308531b8be701292fbbe8af65546fc17279\n9b4433069e4d20cf210ee3849b1f5508e0576544\n1ebee14eb0f6f6b6922b1e76caf526c1daae2423\nb6e30a7b23e5ebad5e6f2c89c4158593ef4b4fd7\ndec5d054c842b49b1e323eda1589ff313b1a7111\n6b08b95b97103d9d188629508328f4ba44c50e50\n08b40b4d1daa5adb32ebc7325e9489c0a6545023\n833c5ed313be8c07c73114f3b62d7c3d0512cc87\nc357a62005eaa60359954fb013bf9fc1f3e07c0c\n91cdec15474d86b960f64ce952c0ff432d524fbe\nbbea1af5a34b265e3f112b044aa38d7d4564c801\nebbfe881db6033c454bff1ed7a65291d7e83b2da\n79346c0925e41d14543c8bd9e96961495f805c37\n40b530fa7e134dac857d2519fc62daec783a09f3\nd93eeed05d21dbfd5e8a844eabe3861fef45c466\n5df0acc895a552067c43606ef1728437218723e0\n797f844de30df394068026bed2e7c09b7508d2a9\n14feb64005fa33b172d165e1cae59a3f47e8a3a3\nf7e339f7c2609341f0b57044c78e04421f10eaae\n3fcd70a8028f33050189ea029996e26bef874910\n3dbfc3fdb6e3a37be5367bff4f638f6cf949fb88\n9a8b68643a0a67e4913e8a58bdcb2b23b7105b5a\n7caf8e588aa61f00b55525a31a50da3c9afae852\n2b84c8d0fec6e8d31f11bb5177dfc28aad2a290b\n8e217a75ab1045808a547e21dcd39d1fe809e39b\ne831866789487021398f73558e1e09054dde485e\n86f136dd1030e27233b4bdc1ff000771a98ee3fb\n77d0376b1576d9126bb42762d0e5e10fa3cb36ae\nfc4c5023e14ae6e4d6eb1c04f19189a65b8a2ca1\nae89cfbb6b8f76b57eb5aea041c10562b52423f0\neb69d042081f4472f4a65c8dd0aea2e645d7cb26\n1437a358e155e6dd4c0a7b2e668e3c359982c6b4\nbb48189e6f111ec56e040b807d571d2a3874f59f\n4586507a8a85e7ea785273458f6264fa7524a1a1\n602cb47a1e1495fb833a1f56e6facfa823db933f\nf981e8747f9a2820a86407e06ba40e035966306e\n220d614a9d6dfce72efc788ab548be59f58c009d\n020250e25803e20dfb5674c38c974c7ec98652f2\nc70e9759a97079ececad132e43064d89e458ccac\n75212c595882425e0d3e9ef92eb9d04addc79ef7\n3e749fb9f107027459d6c5366cb180901d310056\nbdc95cffc08c91c31763c68c89a668782f2f2531\n1098a0698588b7c0d65ad5477779301fb8da3be3\n29a595345a2fb09f30497f6f5143548af68d9b36\n3ccfdf3df0fd82a675fc7ed8e45647198a07ce8f\n40c90bbcc76291c589fc50f375b51bb80746a322\n64b82f4dc23dd44be177629c02b3ca42dcc6e2ed\n"
+		"message": "Build for $(git log --pretty=format:%H -n1)\n"
 	},
 	"/scratch-vm/suite.html": {
 		"source": "scratch-vm/gh-pages/suite.html",
 		"hash": "79904adcdca00bc341c4516c11e891ec026b1184",
 		"date": "2019-02-19 20:18:57 -0800",
-		"message": "Build for $(git log --pretty=format:%H -n1)\n\n|b85badcedd835b7957e3357407de20393be2467b|2018-01-23 17:02:20 +0000|Build for 115184a2a39b990dee9218aa15081b334516e1a8\n"
+		"message": "Build for $(git log --pretty=format:%H -n1)\n"
 	},
 	"/scratch-vm/video-sensing.html": {
 		"source": "scratch-vm/gh-pages/video-sensing.html",
 		"hash": "79904adcdca00bc341c4516c11e891ec026b1184",
 		"date": "2019-02-19 20:18:57 -0800",
-		"message": "Build for $(git log --pretty=format:%H -n1)\n\n|42f75a805141190fbaf7cac4da74e2888048203c|2018-04-05 00:04:51 +0000|Build for 21ae14c4993155e9a61af44fd9d70880076106dd\n"
+		"message": "Build for $(git log --pretty=format:%H -n1)\n"
 	},
 	"/sentence/": {
 		"source": "sheeptester.github.io/master/sentence/index.html",
@@ -3837,7 +3837,7 @@
 		"source": "words-go-here/master/htmlifier/index.html",
 		"hash": "08d68219cafdd150a67018dca50da379982c550d",
 		"date": "2020-05-17 18:40:50 -0700",
-		"message": "Redirect to new HTMLifier repository\n\n|c9f2f32d3da0abc33a3db683f198bb899ecb0f05|2019-02-09 16:04:29 -0800|Scratch 3.0 HTMLifier\n"
+		"message": "Redirect to new HTMLifier repository\n"
 	},
 	"/words-go-here/htmlifier/large-file-editor/": {
 		"source": "words-go-here/master/htmlifier/large-file-editor/index.html",
@@ -4647,7 +4647,7 @@
 		"source": "yesnt/master/index.html",
 		"hash": "57dc2d33289aa56657a2ee3554ff580d322c1e1b",
 		"date": "2019-11-15 18:57:55 -0800",
-		"message": "It has been m i n i f i e d\n\n|904567c650e9af747a4a8790338173fb7b9917cb|2019-04-13 20:49:18 -0700|lighting test\n"
+		"message": "It has been m i n i f i e d\n"
 	},
 	"/yesnt/leaderboard.html": {
 		"source": "yesnt/master/leaderboard.html",
