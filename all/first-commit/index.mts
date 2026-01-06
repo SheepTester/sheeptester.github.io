@@ -19,7 +19,7 @@ const RESET = '\x1b[m'
 const HASH_REGEX = /^[0-9a-f]{40}$/
 
 type FirstCommit = {
-  /** Includes repo and branch */
+  /** repo/branch/path */
   source: string
   hash: string
   date: string
@@ -247,7 +247,7 @@ for (const [repo, paths] of pathsByRepo) {
       console.error(descriptionParts.join('|'))
     }
     firstCommits[path] = {
-      source: `${repo}/blob/${branch}/${sourcePath}`,
+      source: `${repo}/${branch}/${sourcePath}`,
       hash,
       date,
       message: descriptionParts.join('|')
