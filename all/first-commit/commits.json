@@ -250,5 +250,761 @@
 		"hash": "8e9f75299f7582132b8a3f82fc3b7f96f4e6e7c4",
 		"date": "2021-08-29 23:09:15 -0700",
 		"message": "Switch to using Jekyll (WIP)"
+	},
+	"/hello-world/advent-of-code/2023/day21.html": {
+		"source": "hello-world/blob/master/advent-of-code/2023/day21.html",
+		"hash": "6d9e268e11f7fe102749650c0d2513893e1be72e",
+		"date": "2023-12-28 15:28:15 -0800",
+		"message": "Part 1"
+	},
+	"/hello-world/audio-to-video/": {
+		"source": "hello-world/blob/master/audio-to-video/index.html",
+		"hash": "6228ad25ff70c8e9c5cddc76a2ddb31c331de788",
+		"date": "2020-03-31 20:05:03 -0700",
+		"message": "Add the audio to video code I used epic"
+	},
+	"/hello-world/deobf/rs/": {
+		"source": "hello-world/blob/master/deobf/rs/index.html",
+		"hash": "341394cb7ef54c0a4c89becd8dbdd02658bbd084",
+		"date": "2021-10-03 00:50:00 -0700",
+		"message": "grr does not work"
+	},
+	"/hello-world/detect-inspect-element/node/": {
+		"source": "hello-world/blob/master/detect-inspect-element/node/index.html",
+		"hash": "5370cccc92b227669af7fd1242c3416de8b07b48",
+		"date": "2021-07-08 15:33:42 -0700",
+		"message": "Detect inspect element opening"
+	},
+	"/hello-world/detect-inspect-element/": {
+		"source": "hello-world/blob/master/detect-inspect-element/index.html",
+		"hash": "5370cccc92b227669af7fd1242c3416de8b07b48",
+		"date": "2021-07-08 15:33:42 -0700",
+		"message": "Detect inspect element opening"
+	},
+	"/hello-world/docs/": {
+		"source": "hello-world/blob/master/docs/index.html",
+		"hash": "e56104c7d3f31f0b861b39b1bb6e6b390d856fff",
+		"date": "2018-05-05 11:30:57 -0700",
+		"message": "docs/ ?"
+	},
+	"/hello-world/dynamic-sw/": {
+		"source": "hello-world/blob/master/dynamic-sw/index.html",
+		"hash": "a31b31c7857df1e2a46b5089b1d889ba2a020fb1",
+		"date": "2018-02-23 11:02:40 -0800",
+		"message": "make controls"
+	},
+	"/hello-world/hh23-rhythm/src/javascript-impatience/": {
+		"source": "hello-world/blob/master/hh23-rhythm/src/javascript-impatience/index.html",
+		"hash": "8a807cd840cc28aec0aadcab46faf69b7dae3a7c",
+		"date": "2023-04-16 04:58:51 -0700",
+		"message": "Copy from https://github.com/UDXS/hh23-rhythm"
+	},
+	"/hello-world/hh23-rhythm/src/javascript-impatience/todo.html": {
+		"source": "hello-world/blob/master/hh23-rhythm/src/javascript-impatience/todo.md",
+		"hash": "8a807cd840cc28aec0aadcab46faf69b7dae3a7c",
+		"date": "2023-04-16 04:58:51 -0700",
+		"message": "Copy from https://github.com/UDXS/hh23-rhythm"
+	},
+	"/hello-world/minimal-pwa/": {
+		"source": "hello-world/blob/master/minimal-pwa/index.html",
+		"hash": "e89f8e3ed71d8b6cd1f461e1350a95c67ffcef1d",
+		"date": "2020-09-24 19:52:50 -0700",
+		"message": "minimal PWA"
+	},
+	"/hello-world/questionable-host/": {
+		"source": "hello-world/blob/master/questionable-host/index.html",
+		"hash": "d0ba0950af9ba681d71c9d3270cb4c9f3e025142",
+		"date": "2021-07-13 21:53:03 -0700",
+		"message": "questionable-host: Design a fancy downloading page based on Windows 11"
+	},
+	"/hello-world/questionable-host/instructions.html": {
+		"source": "hello-world/blob/master/questionable-host/instructions.html",
+		"hash": "36a3eb83d364643f6ec07a6ea6b0de51adc6444c",
+		"date": "2021-07-14 22:35:29 -0700",
+		"message": "questionable-host: WIP uploader"
+	},
+	"/hello-world/questionable-host/upload.html": {
+		"source": "hello-world/blob/master/questionable-host/upload.html",
+		"hash": "36a3eb83d364643f6ec07a6ea6b0de51adc6444c",
+		"date": "2021-07-14 22:35:29 -0700",
+		"message": "questionable-host: WIP uploader"
+	},
+	"/hello-world/redpitaya_FPGA/": {
+		"source": "hello-world/blob/master/redpitaya_FPGA/index.html",
+		"hash": "6bb90c13325cf1c22b41283a78a4e2fe65a0ffde",
+		"date": "2023-02-26 12:29:34 -0800",
+		"message": "wow css"
+	},
+	"/hello-world/test/asus/dash.html": {
+		"source": "hello-world/blob/master/test/asus/dash.html",
+		"hash": "ab94e880bb19dfd11017ec858e341e79b251fe37",
+		"date": "2025-10-06 22:05:24 -0700",
+		"message": "Files in the test/ folder in WSL on my old ASUS laptop"
+	},
+	"/hello-world/test/asus/webreg.html": {
+		"source": "hello-world/blob/master/test/asus/webreg.html",
+		"hash": "ab94e880bb19dfd11017ec858e341e79b251fe37",
+		"date": "2025-10-06 22:05:24 -0700",
+		"message": "Files in the test/ folder in WSL on my old ASUS laptop"
+	},
+	"/hello-world/test/100vh-cover.html": {
+		"source": "hello-world/blob/master/test/100vh-cover.html",
+		"hash": "51bf304f95bfc93aeecdedb9989a5c3e54d1d511",
+		"date": "2025-09-21 13:30:08 -0700",
+		"message": "100vh demo"
+	},
+	"/hello-world/test/100vh.html": {
+		"source": "hello-world/blob/master/test/100vh.html",
+		"hash": "51bf304f95bfc93aeecdedb9989a5c3e54d1d511",
+		"date": "2025-09-21 13:30:08 -0700",
+		"message": "100vh demo"
+	},
+	"/hello-world/test/adminbot.html": {
+		"source": "hello-world/blob/master/test/adminbot.html",
+		"hash": "c3bd6d407be913d980c21abcaabe8c8ec49a737d",
+		"date": "2022-10-01 16:00:57 -0700",
+		"message": "t"
+	},
+	"/hello-world/test/callback.html": {
+		"source": "hello-world/blob/master/test/callback.html",
+		"hash": "95176e84536d3db3fa829101bc14a3e2431bbc83",
+		"date": "2021-05-18 10:30:08 -0700",
+		"message": "doh"
+	},
+	"/hello-world/test/Charlie_Liu.html": {
+		"source": "hello-world/blob/master/test/Charlie_Liu.html",
+		"hash": "c218878a7a5157d4b554259333ae8e4f9e0c5c93",
+		"date": "2021-09-13 20:43:58 -0700",
+		"message": "Commit some more files from my test folder"
+	},
+	"/hello-world/test/commencement.html": {
+		"source": "hello-world/blob/master/test/commencement.html",
+		"hash": "6aa11e5b1efe85f3c0308e647bd49137ec673b89",
+		"date": "2024-09-09 17:54:28 -0700",
+		"message": "Phone files"
+	},
+	"/hello-world/test/comments.html": {
+		"source": "hello-world/blob/master/test/comments.html",
+		"hash": "aa776b98bb2534ff5ea0659ef7162a4b639415a2",
+		"date": "2022-08-05 18:09:20 -0700",
+		"message": "javascript now has FOUR ways of commenting"
+	},
+	"/hello-world/test/cse110-reconnaissance.html": {
+		"source": "hello-world/blob/master/test/cse110-reconnaissance.md",
+		"hash": "2107ca03381ba5e3413ba9bf5b178351f72cff30",
+		"date": "2023-06-10 19:41:10 -0700",
+		"message": "Create cse110-reconnaissance.md"
+	},
+	"/hello-world/test/demo-btns.html": {
+		"source": "hello-world/blob/master/test/demo-btns.md",
+		"hash": "000ef9b08c939ad7c88e4692a1f2963314ebe9d4",
+		"date": "2022-02-12 12:02:36 -0800",
+		"message": "For some Piazza question"
+	},
+	"/hello-world/test/drunk.html": {
+		"source": "hello-world/blob/master/test/drunk.html",
+		"hash": "f06d161fe68863339baa09320938339e5d1c061e",
+		"date": "2024-01-15 12:40:08 -0800",
+		"message": "Coding on a phone while drunk"
+	},
+	"/hello-world/test/dumb.html": {
+		"source": "hello-world/blob/master/test/dumb.html",
+		"hash": "2a93478a73ab8b1074a21316375f5030c445735d",
+		"date": "2020-09-24 19:45:46 -0700",
+		"message": "html non-closure tests (from several weeks ago)"
+	},
+	"/hello-world/test/dumb2.html": {
+		"source": "hello-world/blob/master/test/dumb2.html",
+		"hash": "2a93478a73ab8b1074a21316375f5030c445735d",
+		"date": "2020-09-24 19:45:46 -0700",
+		"message": "html non-closure tests (from several weeks ago)"
+	},
+	"/hello-world/test/embedder.html": {
+		"source": "hello-world/blob/master/test/embedder.html",
+		"hash": "a57e1c2ddf887a6146c1b8896f4faaca9264e87a",
+		"date": "2020-06-07 19:56:23 -0700",
+		"message": "amazing test folder"
+	},
+	"/hello-world/test/embedee.html": {
+		"source": "hello-world/blob/master/test/embedee.html",
+		"hash": "a57e1c2ddf887a6146c1b8896f4faaca9264e87a",
+		"date": "2020-06-07 19:56:23 -0700",
+		"message": "amazing test folder"
+	},
+	"/hello-world/test/fake.html": {
+		"source": "hello-world/blob/master/test/fake.html",
+		"hash": "ecf8d44d2b8c48abb6eff4ee3b2855c4e616f0b8",
+		"date": "2023-07-26 10:00:23 -0700",
+		"message": "does discord pay attention to the media-type header"
+	},
+	"/hello-world/test/ga-test.html": {
+		"source": "hello-world/blob/master/test/ga-test.html",
+		"hash": "dde27b7f7c2dce4d98870efbe14a6dafff80296f",
+		"date": "2023-04-29 19:04:52 -0700",
+		"message": "Create ga-test.html"
+	},
+	"/hello-world/test/gh-pages-path-test.html": {
+		"source": "hello-world/blob/master/test/gh-pages-path-test.html",
+		"hash": "8dc01da25792958d7a4d9c6996d881327a44e082",
+		"date": "2022-01-10 10:19:54 -0800",
+		"message": "seeing how GH pages resolves paths"
+	},
+	"/hello-world/test/gh-pages-path-test.html.html": {
+		"source": "hello-world/blob/master/test/gh-pages-path-test.html.html",
+		"hash": "8dc01da25792958d7a4d9c6996d881327a44e082",
+		"date": "2022-01-10 10:19:54 -0800",
+		"message": "seeing how GH pages resolves paths"
+	},
+	"/hello-world/test/git-notes.html": {
+		"source": "hello-world/blob/master/test/git-notes.md",
+		"hash": "c218878a7a5157d4b554259333ae8e4f9e0c5c93",
+		"date": "2021-09-13 20:43:58 -0700",
+		"message": "Commit some more files from my test folder"
+	},
+	"/hello-world/test/google-contacts-directory-api-test.html": {
+		"source": "hello-world/blob/master/test/google-contacts-directory-api-test.html",
+		"hash": "9aa239fdf61013cd11453064834c55c53516a0d0",
+		"date": "2024-10-08 20:43:42 -0700",
+		"message": "google contacts tutorial"
+	},
+	"/hello-world/test/heyy.html": {
+		"source": "hello-world/blob/master/test/heyy.html",
+		"hash": "34219c06d0bcbdb9f717fec508b475adc597e80c",
+		"date": "2024-02-18 07:09:13 -0800",
+		"message": "la"
+	},
+	"/hello-world/test/": {
+		"source": "hello-world/blob/master/test/index.html",
+		"hash": "a57e1c2ddf887a6146c1b8896f4faaca9264e87a",
+		"date": "2020-06-07 19:56:23 -0700",
+		"message": "amazing test folder"
+	},
+	"/hello-world/test/malicious.html": {
+		"source": "hello-world/blob/master/test/malicious.html",
+		"hash": "414c4f04dee9d7cc12558566e876653bf5608dcc",
+		"date": "2025-07-01 00:22:00 -0700",
+		"message": "I'm pretty sure malicious is already on my website somewhere but ig not"
+	},
+	"/hello-world/test/mastodone.html": {
+		"source": "hello-world/blob/master/test/mastodone.html",
+		"hash": "4728e4809b572c490fd5587d21fd088eb4b35024",
+		"date": "2022-12-16 12:51:26 -0800",
+		"message": "Create mastodone.html"
+	},
+	"/hello-world/test/mdmdmdd.html": {
+		"source": "hello-world/blob/master/test/mdmdmdd.md",
+		"hash": "a57e1c2ddf887a6146c1b8896f4faaca9264e87a",
+		"date": "2020-06-07 19:56:23 -0700",
+		"message": "amazing test folder"
+	},
+	"/hello-world/test/pensive-test.html": {
+		"source": "hello-world/blob/master/test/pensive-test.html",
+		"hash": "dde27b7f7c2dce4d98870efbe14a6dafff80296f",
+		"date": "2023-04-29 19:04:52 -0700",
+		"message": "Create ga-test.html"
+	},
+	"/hello-world/test/polyfill.html": {
+		"source": "hello-world/blob/master/test/polyfill.html",
+		"hash": "cbe2c6d5c16aba2a87c73cf9131bebc0126d01a8",
+		"date": "2024-06-29 22:10:41 -0800",
+		"message": "use polyfill.io because i heard it's safe now"
+	},
+	"/hello-world/test/react-exec-order.html": {
+		"source": "hello-world/blob/master/test/react-exec-order.html",
+		"hash": "054a953b9d5f1cd60e2f500c57fad53a89cf5b88",
+		"date": "2021-08-06 21:48:25 -0700",
+		"message": "does ReactDOM.render call App immediately"
+	},
+	"/hello-world/test/resize.html": {
+		"source": "hello-world/blob/master/test/resize.html",
+		"hash": "d38f239445878b0d2bc1c9cc5cce59cd23e2d6cb",
+		"date": "2023-10-14 11:39:02 -0700",
+		"message": "Create resize.html"
+	},
+	"/hello-world/test/sans-nouveaux-test.html": {
+		"source": "hello-world/blob/master/test/sans-nouveaux-test.html",
+		"hash": "a57e1c2ddf887a6146c1b8896f4faaca9264e87a",
+		"date": "2020-06-07 19:56:23 -0700",
+		"message": "amazing test folder"
+	},
+	"/hello-world/test/testthing.html": {
+		"source": "hello-world/blob/master/test/testthing.html",
+		"hash": "a57e1c2ddf887a6146c1b8896f4faaca9264e87a",
+		"date": "2020-06-07 19:56:23 -0700",
+		"message": "amazing test folder"
+	},
+	"/hello-world/test/trans-dic.html": {
+		"source": "hello-world/blob/master/test/trans-dic.html",
+		"hash": "4f321cee070051ceac07b06194d479dc3848acdb",
+		"date": "2021-08-14 15:41:47 -0700",
+		"message": "dic 😋 (no js)"
+	},
+	"/hello-world/test/uhh.html": {
+		"source": "hello-world/blob/master/test/uhh.md",
+		"hash": "c218878a7a5157d4b554259333ae8e4f9e0c5c93",
+		"date": "2021-09-13 20:43:58 -0700",
+		"message": "Commit some more files from my test folder"
+	},
+	"/hello-world/test/vscdb.html": {
+		"source": "hello-world/blob/master/test/vscdb.html",
+		"hash": "5160878c63bb815972bea98b787bd70a042b5192",
+		"date": "2025-10-02 23:39:42 -0700",
+		"message": "cleanest code ever.. turning sqlite into json"
+	},
+	"/hello-world/test/wow.html": {
+		"source": "hello-world/blob/master/test/wow.html",
+		"hash": "16a1fc122cb1492d713aff2f3aeeda156f2eaf0e",
+		"date": "2021-08-09 15:58:38 -0700",
+		"message": "part II of SEO test"
+	},
+	"/hello-world/turbo-fiesta/nfc-reader/": {
+		"source": "hello-world/blob/master/turbo-fiesta/nfc-reader/index.html",
+		"hash": "62af7b9846d1f4663761606a708789c5a5ca1fc4",
+		"date": "2024-10-15 16:17:46 -0700",
+		"message": "add bluetooth connected voice nfc reader from msi hackathon"
+	},
+	"/hello-world/userscripts/": {
+		"source": "hello-world/blob/master/userscripts/index.html",
+		"hash": "9ba4a20902c7f05cf379424b4d33cf85802f1a23",
+		"date": "2019-10-10 18:44:19 -0700",
+		"message": "nice userscript/styles page"
+	},
+	"/hello-world/404.html": {
+		"source": "hello-world/blob/master/404.html",
+		"hash": "baab9b9200327a037e9f8ec7502f0d6525634d56",
+		"date": "2021-08-09 15:57:01 -0700",
+		"message": "test how spa-github-pages affects SEO"
+	},
+	"/hello-world/access-console-api.html": {
+		"source": "hello-world/blob/master/access-console-api.html",
+		"hash": "55623635d642b3adfc64b8a4551096a6aea7e761",
+		"date": "2021-07-08 14:47:05 -0700",
+		"message": "Website gets access to Chrome's Console Line API 😳"
+	},
+	"/hello-world/alerter.html": {
+		"source": "hello-world/blob/master/alerter.html",
+		"hash": "ca54394557a818ef0c2151842f08ebb3ea95c268",
+		"date": "2018-10-04 19:15:02 -0700",
+		"message": "https://sheeptester.github.io/hello-world/alerter.html"
+	},
+	"/hello-world/attitude.html": {
+		"source": "hello-world/blob/master/attitude.html",
+		"hash": "ef28815b788a4a03a3fa456a5b651acf811c0cb9",
+		"date": "2018-12-26 19:03:19 -0800",
+		"message": "yes, but the phone users!"
+	},
+	"/hello-world/bell.html": {
+		"source": "hello-world/blob/master/bell.html",
+		"hash": "f39805cf4405b9c2e6b75b86f2c92a7a40cda971",
+		"date": "2020-08-23 14:15:26 -0700",
+		"message": "BELL"
+	},
+	"/hello-world/big-file-viewer.html": {
+		"source": "hello-world/blob/master/big-file-viewer.html",
+		"hash": "b404ba8e4fceeb164a8a8cd7eaf0029d9cfb3085",
+		"date": "2021-04-18 21:27:48 -0700",
+		"message": "push whav i have"
+	},
+	"/hello-world/blank-tags.html": {
+		"source": "hello-world/blob/master/blank-tags.html",
+		"hash": "edbe4c40e383e9b02d18872abd2c6fa38ec4e615",
+		"date": "2020-03-14 12:32:47 -0700",
+		"message": "Maybe it depends on whether it has to auto-generate <html>"
+	},
+	"/hello-world/blank.html": {
+		"source": "hello-world/blob/master/blank.html",
+		"hash": "1050e98aa0ec8ae1e027059a183b44b6e9033950",
+		"date": "2020-03-14 12:27:53 -0700",
+		"message": "Add a blank page"
+	},
+	"/hello-world/bones-and-muscles.html": {
+		"source": "hello-world/blob/master/bones-and-muscles.html",
+		"hash": "19ee41ffd6eac8770d4a68f052d5630ab358cac8",
+		"date": "2018-05-20 22:27:22 -0700",
+		"message": "Add files via upload"
+	},
+	"/hello-world/bookmarklet.html": {
+		"source": "hello-world/blob/master/bookmarklet.html",
+		"hash": "8fe7018edce8610e49acbf9d2eb9377bb0732f54",
+		"date": "2020-11-08 19:24:22 -0800",
+		"message": "generic bookmarklet page"
+	},
+	"/hello-world/calc.html": {
+		"source": "hello-world/blob/master/calc.html",
+		"hash": "06c793703dbcd60ddfdbd8c23914b146c04526bc",
+		"date": "2021-06-25 20:49:38 -0700",
+		"message": "ms-calculator://lol"
+	},
+	"/hello-world/cards.html": {
+		"source": "hello-world/blob/master/cards.html",
+		"hash": "225dc961ec98ce475bf728e3894bed3bdc764cd8",
+		"date": "2017-10-08 16:20:48 -0700",
+		"message": "puuf"
+	},
+	"/hello-world/charcode.html": {
+		"source": "hello-world/blob/master/charcode.html",
+		"hash": "215bd462f4c910b85fe43355f960fda89c7fa18c",
+		"date": "2019-07-17 15:17:26 -0600",
+		"message": "buggy :target"
+	},
+	"/hello-world/code-golf-boomer01-clicker-game.html": {
+		"source": "hello-world/blob/master/code-golf-boomer01-clicker-game.html",
+		"hash": "ca735c55ee9d9f975a5a48b6a9a5bd9d3417a7db",
+		"date": "2020-02-03 17:00:51 -0800",
+		"message": "This code golf requires http/https, so it won't work in a data URI"
+	},
+	"/hello-world/css-fizzbuzz.html": {
+		"source": "hello-world/blob/master/css-fizzbuzz.html",
+		"hash": "458495b95f3131b42796ad82d350ba2dbafda048",
+		"date": "2021-07-01 13:39:50 -0700",
+		"message": "Fizzbuzz in CSS"
+	},
+	"/hello-world/css-identifiers.html": {
+		"source": "hello-world/blob/master/css-identifiers.html",
+		"hash": "6fc4e77612007ace105858bec863adf219f7c4d8",
+		"date": "2020-09-28 17:22:21 -0700",
+		"message": "Create css-identifiers.html"
+	},
+	"/hello-world/deltamath-time.html": {
+		"source": "hello-world/blob/master/deltamath-time.html",
+		"hash": "f51b4097947744e47045b6f6fa1c62be7e1371f6",
+		"date": "2020-10-15 21:20:30 -0700",
+		"message": "deltamath time tihng"
+	},
+	"/hello-world/discord-website-embed.html": {
+		"source": "hello-world/blob/master/discord-website-embed.html",
+		"hash": "1821a1a3f140e0ff3dfb20ea1b40e2f8430ee3ed",
+		"date": "2020-05-03 20:26:55 -0700",
+		"message": "discord chévere"
+	},
+	"/hello-world/drills.html": {
+		"source": "hello-world/blob/master/drills.html",
+		"hash": "58b082f670178afd3b706d5a1afedb0caa36622f",
+		"date": "2019-01-23 18:00:28 -0800",
+		"message": "Trig drills"
+	},
+	"/hello-world/elements.html": {
+		"source": "hello-world/blob/master/elements.html",
+		"hash": "43e4f768edaf7fa226b96f0294184f77fd9edc23",
+		"date": "2018-08-16 18:55:42 -0700",
+		"message": "we need to memorise the atomic symbols and names"
+	},
+	"/hello-world/f.html": {
+		"source": "hello-world/blob/master/f.html",
+		"hash": "2713e554d6be2f60f7d34b58464bf81e848d747d",
+		"date": "2018-06-08 11:42:17 -0700",
+		"message": "make sure it works on safari"
+	},
+	"/hello-world/flappybirdwithifstatements.html": {
+		"source": "hello-world/blob/master/flappybirdwithifstatements.html",
+		"hash": "3eeb215904f12f0625307875b3ba6e8225290162",
+		"date": "2018-10-28 13:30:03 -0700",
+		"message": "Sean tries machine learning - badly"
+	},
+	"/hello-world/flashcards-hormone-effect-places.html": {
+		"source": "hello-world/blob/master/flashcards-hormone-effect-places.html",
+		"hash": "225dc961ec98ce475bf728e3894bed3bdc764cd8",
+		"date": "2017-10-08 16:20:48 -0700",
+		"message": "puuf"
+	},
+	"/hello-world/flashcards-hormone-effects.html": {
+		"source": "hello-world/blob/master/flashcards-hormone-effects.html",
+		"hash": "225dc961ec98ce475bf728e3894bed3bdc764cd8",
+		"date": "2017-10-08 16:20:48 -0700",
+		"message": "puuf"
+	},
+	"/hello-world/flashcards-hormone-places.html": {
+		"source": "hello-world/blob/master/flashcards-hormone-places.html",
+		"hash": "225dc961ec98ce475bf728e3894bed3bdc764cd8",
+		"date": "2017-10-08 16:20:48 -0700",
+		"message": "puuf"
+	},
+	"/hello-world/flashcards-sato-macbeth.html": {
+		"source": "hello-world/blob/master/flashcards-sato-macbeth.html",
+		"hash": "225dc961ec98ce475bf728e3894bed3bdc764cd8",
+		"date": "2017-10-08 16:20:48 -0700",
+		"message": "puuf"
+	},
+	"/hello-world/flashcards.html": {
+		"source": "hello-world/blob/master/flashcards.html",
+		"hash": "225dc961ec98ce475bf728e3894bed3bdc764cd8",
+		"date": "2017-10-08 16:20:48 -0700",
+		"message": "puuf"
+	},
+	"/hello-world/fuck.html": {
+		"source": "hello-world/blob/master/fuck.html",
+		"hash": "e26beb5627580f852aa70ff7c3d7c2e9568ed4fd",
+		"date": "2020-08-31 17:43:55 -0700",
+		"message": "Did you mean Securly?"
+	},
+	"/hello-world/git.html": {
+		"source": "hello-world/blob/master/git.md",
+		"hash": "1509345717b585e68d290d4b276ec1c8a99e1674",
+		"date": "2020-06-24 13:44:52 -0700",
+		"message": "g"
+	},
+	"/hello-world/graduation-rehearsal-is-boring.html": {
+		"source": "hello-world/blob/master/graduation-rehearsal-is-boring.html",
+		"hash": "f293b4bea2d51d90f6d9727947dc2216c24b9689",
+		"date": "2021-06-01 17:03:54 -0700",
+		"message": "Graduation rehearsal is quite boring"
+	},
+	"/hello-world/graph.html": {
+		"source": "hello-world/blob/master/graph.html",
+		"hash": "74915c3ee72e1194070dc4b15db05e387e13aead",
+		"date": "2020-01-28 12:08:17 -0800",
+		"message": "graph of ugwa views"
+	},
+	"/hello-world/gunn-confessions.html": {
+		"source": "hello-world/blob/master/gunn-confessions.html",
+		"hash": "abd6d95dfea390bd861911158646de46b62523cb",
+		"date": "2019-03-29 17:11:07 -0700",
+		"message": "annoying facebook api"
+	},
+	"/hello-world/ic-get-schedule.html": {
+		"source": "hello-world/blob/master/ic-get-schedule.html",
+		"hash": "c744456fd6293bcfadb0c5c447203ba4913bc391",
+		"date": "2020-08-06 19:30:46 -0700",
+		"message": "bookmarlet"
+	},
+	"/hello-world/idle.html": {
+		"source": "hello-world/blob/master/idle.html",
+		"hash": "b5475b691748665026ca25abd5e4e54a495bf0b5",
+		"date": "2020-09-11 19:48:31 -0700",
+		"message": "🐑"
+	},
+	"/hello-world/image-clipboard.html": {
+		"source": "hello-world/blob/master/image-clipboard.html",
+		"hash": "7a4b97800a889457b679c3d800963b5dabe2efd6",
+		"date": "2025-11-29 01:32:10 +0000",
+		"message": "Add image-clipboard.html single file web app"
+	},
+	"/hello-world/": {
+		"source": "hello-world/blob/master/index.md",
+		"hash": "1c437c82c81e15d6c9ab8860c07946555594affa",
+		"date": "2016-12-16 15:22:56 -0800",
+		"message": "test?"
+	},
+	"/hello-world/julienbtn.html": {
+		"source": "hello-world/blob/master/julienbtn.html",
+		"hash": "80b52561da6edbdde4e3cd2fca691398a8e79ab4",
+		"date": "2017-10-02 13:57:13 -0700",
+		"message": "Add files via upload"
+	},
+	"/hello-world/largetext.html": {
+		"source": "hello-world/blob/master/largetext.html",
+		"hash": "545b93d217b5d3418b1fa1abd6ca94dd6cab50ac",
+		"date": "2019-04-12 08:12:36 -0700",
+		"message": "for gp5's mouth"
+	},
+	"/hello-world/merge-horiz.html": {
+		"source": "hello-world/blob/master/merge-horiz.html",
+		"hash": "90646fdec5ce6b9709a86abb56f78052605f0ecb",
+		"date": "2020-11-16 10:17:50 -0800",
+		"message": "merge rows, keep formatting, thanks google sheets"
+	},
+	"/hello-world/meta-test.html": {
+		"source": "hello-world/blob/master/meta-test.html",
+		"hash": "f687201b22c4b25d5b08fc17b8708de7d2b6c8b6",
+		"date": "2018-01-21 15:12:50 -0800",
+		"message": "Create meta-test.html"
+	},
+	"/hello-world/micfreq.html": {
+		"source": "hello-world/blob/master/micfreq.html",
+		"hash": "2de47a6d41662ff43d0a9b337a35f2911c37ac67",
+		"date": "2020-02-25 10:53:26 -0800",
+		"message": "Add files via upload"
+	},
+	"/hello-world/mirroring.html": {
+		"source": "hello-world/blob/master/mirroring.html",
+		"hash": "cb614dd2101f5312c60cdd478906d43a362bba0b",
+		"date": "2021-07-06 20:29:33 -0700",
+		"message": "some fancy Unicode bidirectional stuff and math symbols"
+	},
+	"/hello-world/mobile-pwa-test.html": {
+		"source": "hello-world/blob/master/mobile-pwa-test.html",
+		"hash": "04f5e0a630bd05fb6375b70986dfc9e2cd363bfc",
+		"date": "2019-07-30 18:21:48 -0700",
+		"message": "test pwa things"
+	},
+	"/hello-world/nbt-parser.html": {
+		"source": "hello-world/blob/master/nbt-parser.html",
+		"hash": "62af337fbe98acf57b43c3da0dafccf076370243",
+		"date": "2021-08-10 19:49:00 -0700",
+		"message": "Add files via upload"
+	},
+	"/hello-world/no-html.html": {
+		"source": "hello-world/blob/master/no-html.html",
+		"hash": "fd06c2f041baff4c7b67233b1345fdda738d12c5",
+		"date": "2023-02-03 14:34:58 -0800",
+		"message": "pure-CSS web page"
+	},
+	"/hello-world/offline-online-noise-maker.html": {
+		"source": "hello-world/blob/master/offline-online-noise-maker.html",
+		"hash": "2a660215e1c6901fc22c112035cd382938c193e0",
+		"date": "2021-07-28 19:46:43 -0700",
+		"message": "offline/online noise"
+	},
+	"/hello-world/open-graph-testing.html": {
+		"source": "hello-world/blob/master/open-graph-testing.html",
+		"hash": "db7863c6bdb83c9ce201544c2dbc727ee62490f5",
+		"date": "2021-04-17 14:11:40 -0700",
+		"message": "test open graph to see how to make the preview image LARGE"
+	},
+	"/hello-world/pi.html": {
+		"source": "hello-world/blob/master/pi.html",
+		"hash": "8553cfdeb6f99ffe118b2ec941b2ad71e27262bf",
+		"date": "2021-03-19 10:26:54 -0700",
+		"message": "pi approximator"
+	},
+	"/hello-world/plaincolour.html": {
+		"source": "hello-world/blob/master/plaincolour.html",
+		"hash": "58ac89070049ec77b5d68c4cc2a652857b414428",
+		"date": "2021-04-19 20:58:21 -0700",
+		"message": "plain colour image but it doesn't support large images :("
+	},
+	"/hello-world/privacy-policy.html": {
+		"source": "hello-world/blob/master/privacy-policy.md",
+		"hash": "74a74cca2073cfadddbdb6463f72652bcf58a364",
+		"date": "2022-12-31 16:40:32 -0800",
+		"message": "Create privacy-policy.md"
+	},
+	"/hello-world/profile-redirector.html": {
+		"source": "hello-world/blob/master/profile-redirector.html",
+		"hash": "4dc08b17d8ab14f1c054a5bf1f1d1b9caf8ca135",
+		"date": "2018-10-04 19:32:20 -0700",
+		"message": "sHEEP"
+	},
+	"/hello-world/pumpkin.html": {
+		"source": "hello-world/blob/master/pumpkin.html",
+		"hash": "7e0539d7dea8113946150e2a215980192a469599",
+		"date": "2020-09-27 15:41:09 -0700",
+		"message": "Add files via upload"
+	},
+	"/hello-world/questionmarkquestionmarkquestionmark.html": {
+		"source": "hello-world/blob/master/questionmarkquestionmarkquestionmark.html",
+		"hash": "ae8bedc9b64a4713102990a3c066e352fdc02f1b",
+		"date": "2021-08-07 21:22:36 -0700",
+		"message": "???.html"
+	},
+	"/hello-world/quick-brown-fox.html": {
+		"source": "hello-world/blob/master/quick-brown-fox.html",
+		"hash": "0feccbd4c182521dae67aa98a4d2b18a70a6a775",
+		"date": "2019-02-15 10:28:10 -0800",
+		"message": "pangram maker"
+	},
+	"/hello-world/redirect-top.html": {
+		"source": "hello-world/blob/master/redirect-top.html",
+		"hash": "d8ae55d19ae05fa883424bc06b3ce55921a74c90",
+		"date": "2019-09-06 10:22:05 -0700",
+		"message": "Create redirect-top.html"
+	},
+	"/hello-world/scheme-interpret.html": {
+		"source": "hello-world/blob/master/scheme-interpret.html",
+		"hash": "8620733997919aba5603513e1fc5dddbc1443dc3",
+		"date": "2019-09-21 13:11:37 -0700",
+		"message": "Scheme interpreter! :D"
+	},
+	"/hello-world/SECURITY.html": {
+		"source": "hello-world/blob/master/SECURITY.md",
+		"hash": "e57e76fd6af5e7f9b1b1ea9efec39ea42a609042",
+		"date": "2019-05-23 17:29:38 -0700",
+		"message": "fake"
+	},
+	"/hello-world/sgy-pendo.html": {
+		"source": "hello-world/blob/master/sgy-pendo.html",
+		"hash": "27754af01aca219351428f2cdcc5c10b3b66c19c",
+		"date": "2020-08-08 18:06:25 -0700",
+		"message": "Create sgy-pendo.html"
+	},
+	"/hello-world/shy.html": {
+		"source": "hello-world/blob/master/shy.html",
+		"hash": "a8950ce990973fa135b0abe58de6cac077068e71",
+		"date": "2020-03-14 12:26:42 -0700",
+		"message": "invest"
+	},
+	"/hello-world/sigfig.html": {
+		"source": "hello-world/blob/master/sigfig.html",
+		"hash": "2d84105bb1202b8854e554e56c22d830a559209c",
+		"date": "2018-08-28 19:22:17 -0700",
+		"message": "sig fig shower yay"
+	},
+	"/hello-world/spamsound.html": {
+		"source": "hello-world/blob/master/spamsound.html",
+		"hash": "f3d3dd5eefbb3ebf74076e834199c94e6e6cc3b7",
+		"date": "2024-05-18 22:42:34 -0800",
+		"message": "Violin sound effect"
+	},
+	"/hello-world/sstv-image.html": {
+		"source": "hello-world/blob/master/sstv-image.html",
+		"hash": "80ace0df1d33e735d159d89fab418a07473759e6",
+		"date": "2023-09-22 16:27:25 -0700",
+		"message": "Create sstv-image.html"
+	},
+	"/hello-world/svgception.html": {
+		"source": "hello-world/blob/master/svgception.html",
+		"hash": "ff33ba2f9bb37a58a17614b9345e73c6236aba0e",
+		"date": "2021-08-31 10:16:47 -0700",
+		"message": "there doesn't seem to be a limit for nested svgs hm"
+	},
+	"/hello-world/system-colours.html": {
+		"source": "hello-world/blob/master/system-colours.html",
+		"hash": "53180f914fc504f712619f3c68648e7451473050",
+		"date": "2021-03-18 17:36:19 -0700",
+		"message": "Create system-colours.html"
+	},
+	"/hello-world/tabletest.html": {
+		"source": "hello-world/blob/master/tabletest.html",
+		"hash": "34a55957d685216735138d196e62cec8d48ee4c0",
+		"date": "2018-09-02 14:06:48 -0700",
+		"message": "ree why do we have to do this"
+	},
+	"/hello-world/tenmillionpages.html": {
+		"source": "hello-world/blob/master/tenmillionpages.html",
+		"hash": "0ad980eb21bccca88faec5974f59787c6c5222d2",
+		"date": "2020-09-09 21:54:45 -0700",
+		"message": "10 million pages in google docs? can a browser even handle 10 million *elements*?"
+	},
+	"/hello-world/underground-markup.html": {
+		"source": "hello-world/blob/master/underground-markup.html",
+		"hash": "42e0f1a16a9a648254c8054d3c2fc51736e0721c",
+		"date": "2019-02-22 22:53:24 -0800",
+		"message": "worrisome markup language"
+	},
+	"/hello-world/vm.html": {
+		"source": "hello-world/blob/master/vm.html",
+		"hash": "18d29ed2781c245c825a053fe4392395990ec01c",
+		"date": "2019-01-02 19:02:01 -0800",
+		"message": "scratch vm is HOT"
+	},
+	"/hello-world/waffleconcept.html": {
+		"source": "hello-world/blob/master/waffleconcept.html",
+		"hash": "b6747f802d2dfb1a6b2e54414abf248804ebdc2c",
+		"date": "2017-12-31 15:25:13 -0800",
+		"message": "Add files via upload"
+	},
+	"/hello-world/website.html": {
+		"source": "hello-world/blob/master/website.html",
+		"hash": "c1ef202c09f4769119f08cf6ac4eca99896f872e",
+		"date": "2021-07-29 21:57:47 -0700",
+		"message": "Blindly writing HTML 😳"
+	},
+	"/hello-world/weird-flex.html": {
+		"source": "hello-world/blob/master/weird-flex.html",
+		"hash": "46874ec6bf10253387e3ddfad1760d9b4b57b6f9",
+		"date": "2019-07-15 23:08:57 -0600",
+		"message": "weird flex but ok"
+	},
+	"/hello-world/wiseguy.html": {
+		"source": "hello-world/blob/master/wiseguy.html",
+		"hash": "ecd95602e8afb20fcbb4cac3afc887a597c1b270",
+		"date": "2021-06-27 18:56:57 -0700",
+		"message": "Wise guy (Discord bot) catchphrases"
+	},
+	"/hello-world/zdsfghnjvc.html": {
+		"source": "hello-world/blob/master/zdsfghnjvc.html",
+		"hash": "30a438f2f16e9e3a3796bacc908feaab5e84140e",
+		"date": "2019-01-31 22:28:21 -0800",
+		"message": "intellectual gamepro5 cannot comprehend this document"
 	}
 }

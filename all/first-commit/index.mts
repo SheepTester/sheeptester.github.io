@@ -17,6 +17,33 @@ const YELLOW = '\x1b[33m'
 const GREY = '\x1b[90m'
 const RESET = '\x1b[m'
 
+type FirstCommit = {
+  /** Includes repo and branch */
+  source: string
+  hash: string
+  date: string
+  message: string
+}
+const firstCommits: Record<string, FirstCommit> = JSON.parse(
+  await readFile(OUTPUT, 'utf-8').catch(() => '{}')
+)
+const save = () =>
+  writeFile(
+    OUTPUT,
+    JSON.stringify(
+      Object.fromEntries(
+        Object.entries(firstCommits).sort((a, b) => a[0].localeCompare(b[0]))
+      ),
+      null,
+      '\t'
+    ) + '\n'
+  )
+process.on('SIGINT', async () => {
+  console.log('(^C detected) Saving...'.padEnd(80, ' '))
+  await save()
+  process.exit()
+})
+
 const branches: Record<string, string> = { [ROOT_REPO]: 'master' }
 for (const entry of ghPagesRepos) {
   const [repo, branch = 'master'] = entry.split('#')
@@ -36,6 +63,7 @@ const pathsByRepo = Map.groupBy(
     .trim()
     .split(/\r?\n/)
     .map(url => url.replace(ROOT, ''))
+    .filter(path => !firstCommits[path])
     .map(path => {
       // Special cases
       switch (path) {
@@ -106,17 +134,8 @@ async function * walkDir (dir: string): AsyncGenerator<string> {
   }
 }
 
-type FirstCommit = {
-  /** Includes repo and branch */
-  source: string
-  hash: string
-  date: string
-  message: string
-}
-const firstCommits: Record<string, FirstCommit> = {}
-
 for (const [repo, paths] of Array.from(pathsByRepo).filter(
-  x => x[0] === 'longer-tweets'
+  x => x[0] === 'hello-world'
 )) {
   console.error(`[${repo}]`)
   const branch = branches[repo]
@@ -202,5 +221,5 @@ for (const [repo, paths] of Array.from(pathsByRepo).filter(
   }
 }
 
-await writeFile(OUTPUT, JSON.stringify(firstCommits, null, '\t') + '\n')
+await save()
 // await rm(TEMP_DIR, { recursive: true, force: true })
