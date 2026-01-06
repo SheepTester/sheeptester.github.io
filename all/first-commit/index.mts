@@ -111,7 +111,7 @@ function runCommand (
   return new Promise((resolve, reject) => {
     execFile(command, args, { cwd }, (err, stdout, stderr) => {
       if (err !== null) {
-        reject(err)
+        reject(new Error(`${command} ${args.join(' ')} failed`, { cause: err }))
       } else {
         resolve({ stdout, stderr })
       }
@@ -135,9 +135,7 @@ async function * walkDir (dir: string): AsyncGenerator<string> {
   }
 }
 
-for (const [repo, paths] of Array.from(pathsByRepo).filter(
-  x => x[0] === 'hello-world'
-)) {
+for (const [repo, paths] of pathsByRepo) {
   console.error(`[${repo}]`)
   const branch = branches[repo]
 
@@ -146,25 +144,35 @@ for (const [repo, paths] of Array.from(pathsByRepo).filter(
   if (repo === ROOT_REPO) {
     repoDir = '.'
   } else {
-    await runCommand('git', [
-      'clone',
-      '--branch',
-      branch,
-      '--single-branch',
-      `https://github.com/SheepTester/${repo}.git`,
-      TEMP_DIR
-    ])
+    try {
+      await runCommand('git', [
+        'clone',
+        '--branch',
+        branch,
+        '--single-branch',
+        `https://github.com/SheepTester/${repo}.git`,
+        TEMP_DIR
+      ])
+    } catch (error) {
+      console.error(`${RED}ERROR${RESET}: cloning ${repo} failed. aborting`)
+      console.error(error)
+      break
+    }
     repoDir = TEMP_DIR
   }
 
   const markdownPaths: string[] = []
-  for await (const path of walkDir(TEMP_DIR)) {
+  for await (const path of walkDir(repoDir)) {
     if (path.endsWith('.md')) {
       markdownPaths.push(path)
     }
   }
 
   for (let { path, sourcePath } of paths) {
+    if (sourcePath.startsWith('/')) {
+      // sheeptester.github.io paths are like this it seems
+      sourcePath = sourcePath.slice(1)
+    }
     if (!existsSync(join(repoDir, sourcePath))) {
       const mdNameCandidate1 = '/' + sourcePath.replace(/\.html$/, '.md')
       const mdNameCandidate2 =
@@ -195,21 +203,30 @@ for (const [repo, paths] of Array.from(pathsByRepo).filter(
       }
     }
 
-    const { stdout, stderr } = await runCommand(
-      'git',
-      [
-        'log',
-        // https://stackoverflow.com/a/13598028
-        '--diff-filter=A',
-        // https://stackoverflow.com/a/11533206
-        '--follow',
-        '--find-renames=40%',
-        '--pretty=format:%H|%ai|%s',
-        '--',
-        sourcePath
-      ],
-      repoDir
-    )
+    let stdout, stderr
+    try {
+      ;({ stdout, stderr } = await runCommand(
+        'git',
+        [
+          'log',
+          // https://stackoverflow.com/a/13598028
+          '--diff-filter=A',
+          // https://stackoverflow.com/a/11533206
+          '--follow',
+          '--find-renames=40%',
+          '--pretty=format:%H|%ai|%s',
+          '--',
+          sourcePath
+        ],
+        repoDir
+      ))
+    } catch (error) {
+      console.error(
+        `${RED}ERROR${RESET}: git log ${sourcePath} failed. aborting`
+      )
+      console.error(error)
+      break
+    }
     if (stderr) {
       console.error(`${YELLOW}WARN${RESET}: received stderr for ${sourcePath}`)
       console.error(stderr)
