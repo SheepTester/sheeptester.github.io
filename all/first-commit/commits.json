@@ -197,6 +197,12 @@
 		"date": "2014-02-06 19:18:00 -0500",
 		"message": "First commit of base theme.\n"
 	},
+	"/blog/404/": {
+		"source": "blog/master/404.md",
+		"hash": "6e7dd09936146a589afbc165bb7ab1565f449c6f",
+		"date": "2014-06-13 09:10:52 -0400",
+		"message": "Added a 404 page\n"
+	},
 	"/blog/ABOUT/": {
 		"source": "blog/master/about.md",
 		"hash": "db4dceaba5b629fa0ff6769c448f87febb2b6af3",

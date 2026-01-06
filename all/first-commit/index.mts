@@ -71,6 +71,9 @@ const pathsByRepo = Map.groupBy(
         case '/blog/ABOUT/':
           // Permalink is set in file
           return { repo: 'blog', path, sourcePath: 'about.md' }
+        case '/blog/404/':
+          // idk why the path is /404/ and not /404
+          return { repo: 'blog', path, sourcePath: '404.md' }
         case '/guestbook/':
           // Need a specific file to get creation date
           return { repo: 'guestbook', path, sourcePath: 'src/Page.tsx' }
@@ -262,4 +265,4 @@ for (const [repo, paths] of pathsByRepo) {
 }
 
 await save()
-// await rm(TEMP_DIR, { recursive: true, force: true })
+await rm(TEMP_DIR, { recursive: true, force: true })
