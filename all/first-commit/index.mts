@@ -63,7 +63,7 @@ const pathsByRepo = Map.groupBy(
   (await readFile(SITEMAP_PATH, 'utf-8'))
     .trim()
     .split(/\r?\n/)
-    .map(url => url.replace(ROOT, ''))
+    .map(url => decodeURIComponent(url.replace(ROOT, '')))
     .filter(path => !firstCommits[path])
     .map(path => {
       // Special cases
@@ -76,7 +76,7 @@ const pathsByRepo = Map.groupBy(
           return { repo: 'guestbook', path, sourcePath: 'src/Page.tsx' }
       }
 
-      const [, repoName, ...rest] = decodeURIComponent(path).split('/')
+      const [, repoName, ...rest] = path.split('/')
       const end = path.endsWith('/') ? 'index.html' : ''
       for (const entry of ghPagesRepos) {
         const [repo] = entry.split('#')
