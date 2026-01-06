@@ -17,6 +17,12 @@
 		"date": "2021-07-08 14:47:05 -0700",
 		"message": "Website gets access to Chrome's Console Line API 😳"
 	},
+	"/hello-world/advent-of-code/2021/": {
+		"source": "hello-world/blob/master/advent-of-code/2021/README.md",
+		"hash": "25dba06994351dc73a79562c651e095d6c5249b2",
+		"date": "2021-12-24 16:18:30 -0800",
+		"message": "AOC 2021 rankings and boilerplates"
+	},
 	"/hello-world/advent-of-code/2023/day21.html": {
 		"source": "hello-world/blob/master/advent-of-code/2023/day21.html",
 		"hash": "6d9e268e11f7fe102749650c0d2513893e1be72e",
@@ -118,6 +124,12 @@
 		"hash": "f51b4097947744e47045b6f6fa1c62be7e1371f6",
 		"date": "2020-10-15 21:20:30 -0700",
 		"message": "deltamath time tihng"
+	},
+	"/hello-world/deobf/": {
+		"source": "hello-world/blob/master/deobf/README.md",
+		"hash": "be7369701777fee7f306e5841a0eb4087e90604b",
+		"date": "2021-05-18 11:47:56 -0700",
+		"message": "Try deobfuscating some obfuscated JS automatically"
 	},
 	"/hello-world/deobf/rs/": {
 		"source": "hello-world/blob/master/deobf/rs/index.html",
@@ -238,6 +250,12 @@
 		"hash": "abd6d95dfea390bd861911158646de46b62523cb",
 		"date": "2019-03-29 17:11:07 -0700",
 		"message": "annoying facebook api"
+	},
+	"/hello-world/hh23-rhythm/": {
+		"source": "hello-world/blob/master/hh23-rhythm/README.md",
+		"hash": "45d5e699c56b4d91eae2f67209c6bfaa17a41ecf",
+		"date": "2023-04-16 05:23:05 -0700",
+		"message": "Replace infineon board controls with keybioard lmao"
 	},
 	"/hello-world/hh23-rhythm/src/javascript-impatience/": {
 		"source": "hello-world/blob/master/hh23-rhythm/src/javascript-impatience/index.html",
@@ -401,6 +419,12 @@
 		"date": "2019-02-15 10:28:10 -0800",
 		"message": "pangram maker"
 	},
+	"/hello-world/random-item-skyblock/": {
+		"source": "hello-world/blob/master/random-item-skyblock/README.md",
+		"hash": "625efca68d98b5cba3d73aafce52f79ec880d490",
+		"date": "2020-03-08 19:23:11 -0700",
+		"message": "Fix potions and add random enchantments; add README"
+	},
 	"/hello-world/redirect-top.html": {
 		"source": "hello-world/blob/master/redirect-top.html",
 		"hash": "d8ae55d19ae05fa883424bc06b3ce55921a74c90",
@@ -442,6 +466,12 @@
 		"hash": "2d84105bb1202b8854e554e56c22d830a559209c",
 		"date": "2018-08-28 19:22:17 -0700",
 		"message": "sig fig shower yay"
+	},
+	"/hello-world/slicedlime-vanilla-worldgen/": {
+		"source": "hello-world/blob/master/slicedlime-vanilla-worldgen/README.md",
+		"hash": "a6ed0bd194198392d1a8d989dae8ffd5715cc93d",
+		"date": "2020-12-03 16:54:19 -0800",
+		"message": "Unzip vanilla_worldgen"
 	},
 	"/hello-world/spamsound.html": {
 		"source": "hello-world/blob/master/spamsound.html",
@@ -509,6 +539,12 @@
 		"date": "2025-09-21 13:30:08 -0700",
 		"message": "100vh demo"
 	},
+	"/hello-world/test/a/s/s/e/t/s/": {
+		"source": "hello-world/blob/master/test/a/s/s/e/t/s/README.md",
+		"hash": "300de4a098aa4083eb4050b646a9a7d04b97ed7a",
+		"date": "2021-07-28 19:17:14 -0700",
+		"message": "Ergostatum"
+	},
 	"/hello-world/test/adminbot.html": {
 		"source": "hello-world/blob/master/test/adminbot.html",
 		"hash": "c3bd6d407be913d980c21abcaabe8c8ec49a737d",
@@ -517,6 +553,12 @@
 	},
 	"/hello-world/test/asus/dash.html": {
 		"source": "hello-world/blob/master/test/asus/dash.html",
+		"hash": "ab94e880bb19dfd11017ec858e341e79b251fe37",
+		"date": "2025-10-06 22:05:24 -0700",
+		"message": "Files in the test/ folder in WSL on my old ASUS laptop"
+	},
+	"/hello-world/test/asus/soc-med-controller/": {
+		"source": "hello-world/blob/master/test/asus/soc-med-controller/README.md",
 		"hash": "ab94e880bb19dfd11017ec858e341e79b251fe37",
 		"date": "2025-10-06 22:05:24 -0700",
 		"message": "Files in the test/ folder in WSL on my old ASUS laptop"
@@ -724,6 +766,18 @@
 		"hash": "62af7b9846d1f4663761606a708789c5a5ca1fc4",
 		"date": "2024-10-15 16:17:46 -0700",
 		"message": "add bluetooth connected voice nfc reader from msi hackathon"
+	},
+	"/hello-world/ucsd-commencement-voices/": {
+		"source": "hello-world/blob/master/ucsd-commencement-voices/README.md",
+		"hash": "2c41e784f740b382a3dc5bdccb5e442e50893286",
+		"date": "2024-04-19 22:01:15 -0700",
+		"message": "create file list for ffmpeg, suggested by chatgpt"
+	},
+	"/hello-world/ucsd-schedule-gen/": {
+		"source": "hello-world/blob/master/ucsd-schedule-gen/README.md",
+		"hash": "851d2b634755504d9f41fd7905e516751feff380",
+		"date": "2021-11-09 19:47:17 -0800",
+		"message": "start but decide not to start schedule gen redo"
 	},
 	"/hello-world/underground-markup.html": {
 		"source": "hello-world/blob/master/underground-markup.html",

@@ -16,6 +16,7 @@ const RED = '\x1b[31m'
 const YELLOW = '\x1b[33m'
 const GREY = '\x1b[90m'
 const RESET = '\x1b[m'
+const HASH_REGEX = /^[0-9a-f]{40}$/
 
 type FirstCommit = {
   /** Includes repo and branch */
@@ -168,13 +169,15 @@ for (const [repo, paths] of Array.from(pathsByRepo).filter(
       const mdNameCandidate1 = '/' + sourcePath.replace(/\.html$/, '.md')
       const mdNameCandidate2 =
         '/__DATE__-' + sourcePath.replace(/\/index\.html$/, '.md')
+      // hello-world only
+      const mdNameCandidate3 =
+        '/' + sourcePath.replace(/\/index\.html$/, '/README.md')
       const candidates = [
-        ...markdownPaths.filter(path =>
-          path.replace(/\d+-\d+-\d+/, '__DATE__').endsWith(mdNameCandidate1)
-        ),
+        ...markdownPaths.filter(path => path.endsWith(mdNameCandidate1)),
         ...markdownPaths.filter(path =>
           path.replace(/\d+-\d+-\d+/, '__DATE__').endsWith(mdNameCandidate2)
-        )
+        ),
+        ...markdownPaths.filter(path => path.endsWith(mdNameCandidate3))
       ]
       if (candidates.length === 1) {
         const newSourcePath = candidates[0]
@@ -212,6 +215,20 @@ for (const [repo, paths] of Array.from(pathsByRepo).filter(
       console.error(stderr)
     }
     const [hash, date, ...descriptionParts] = stdout.split('|')
+    if (!hash || !date) {
+      console.error(`${RED}ERROR${RESET}: could not get ${sourcePath}`)
+      continue
+    }
+    if (!HASH_REGEX.test(hash)) {
+      console.error(`${RED}ERROR${RESET}: invalid hash ${hash}`)
+      continue
+    }
+    if (descriptionParts.some(part => HASH_REGEX.test(part))) {
+      console.error(
+        `${YELLOW}WARN${RESET}: may have received multiple commits ${sourcePath}`
+      )
+      console.error(descriptionParts.join('|'))
+    }
     firstCommits[path] = {
       source: `${repo}/blob/${branch}/${sourcePath}`,
       hash,
