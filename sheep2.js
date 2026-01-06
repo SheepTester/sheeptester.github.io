@@ -169,10 +169,12 @@ document.addEventListener("DOMContentLoaded", e => {
     document.body.appendChild(s);
   });
   SHEEP.registerMenuItem('view source code', () => {
-    let s = document.createElement('script');
-    s.type = 'module';
-    s.src = '/all/go-to-gh.js';
-    document.body.appendChild(s);
+    fetch('/all/first-commit/commits.json')
+      .then(r => r.json())
+      .then(commits => {
+        let [repo, branch, ...path] = commits[decodeURIComponent(window.location.pathname)].source.split('/');
+        window.location = `https://github.com/SheepTester/${repo}/blob/${branch}/${path.join('/')}`;
+      });
   });
   SHEEP.registerMenuItem('site search', () => {
     let s = document.createElement('script');

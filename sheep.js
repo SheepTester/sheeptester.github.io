@@ -401,10 +401,12 @@ var SHEEP={
       window.location="javascript:var s=document.createElement('script');s.type='text/javascript';s.src='https://sheeptester.github.io/javascripts/eval.js';document.body.appendChild(s);void(0);";
     },
     'view source code':_=>{
-      var s=document.createElement('script');
-      s.type='module';
-      s.src='/all/go-to-gh.js';
-      document.body.appendChild(s);
+      fetch('/all/first-commit/commits.json')
+        .then(r=>r.json())
+        .then(commits=>{
+          const [repo,branch,...path]=commits[decodeURIComponent(window.location.pathname)].source.split('/');
+          window.location=`https://github.com/SheepTester/${repo}/blob/${branch}/${path.join('/')}`;
+        });
     },
     'site search':_=>{
       var s=document.createElement('script');
