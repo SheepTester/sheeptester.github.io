@@ -1,0 +1,254 @@
+{
+	"/longer-tweets/always-var/": {
+		"source": "longer-tweets/blob/master/_posts/2020-09-06-always-var.md",
+		"hash": "2e9144db5e4aac13f2b6f065a0127f4f1288bb46",
+		"date": "2024-01-27 18:37:30 -0800",
+		"message": "Copy over Ovinus' LinkedIn posts"
+	},
+	"/longer-tweets/better-tests/": {
+		"source": "longer-tweets/blob/master/_posts/2018-05-13-better-tests.md",
+		"hash": "5832897e13e16f1118161a762298d0b998d63728",
+		"date": "2021-08-30 03:57:45 -0700",
+		"message": "404 page, readd heading anchors, fix tags, fix post chrono order"
+	},
+	"/longer-tweets/closing-html/": {
+		"source": "longer-tweets/blob/master/_posts/2020-08-24-closing-html.md",
+		"hash": "2e9144db5e4aac13f2b6f065a0127f4f1288bb46",
+		"date": "2024-01-27 18:37:30 -0800",
+		"message": "Copy over Ovinus' LinkedIn posts"
+	},
+	"/longer-tweets/colored-functions/": {
+		"source": "longer-tweets/blob/master/_posts/2025-07-26-colored-functions.md",
+		"hash": "3e4a46395a1abc074bc290e7dad216e969b4076d",
+		"date": "2025-07-26 20:37:47 -0700",
+		"message": "colored functions draft"
+	},
+	"/longer-tweets/creating-this-blog/": {
+		"source": "longer-tweets/blob/master/_posts/2018-05-05-creating-this-blog.md",
+		"hash": "8282ed7a6eef8067fc61a392366ba3f37b08e4e9",
+		"date": "2021-08-29 23:56:07 -0700",
+		"message": "Update templates to use Liquid"
+	},
+	"/longer-tweets/ctf/": {
+		"source": "longer-tweets/blob/master/_posts/2022-05-08-ctf.md",
+		"hash": "24d12005fe3a2704aa11c98277321c958ba7bb58",
+		"date": "2022-05-08 22:02:00 -0700",
+		"message": "Write-up for sdctf22 challenges"
+	},
+	"/longer-tweets/files/lactf/heyy.html": {
+		"source": "longer-tweets/blob/master/files/lactf/heyy.html",
+		"hash": "f064736d26a2b5c8c21b5882fc62d4e526176f1d",
+		"date": "2024-02-25 20:52:37 -0800",
+		"message": "lactf: Quickstyle writeup"
+	},
+	"/longer-tweets/flatland-chem/": {
+		"source": "longer-tweets/blob/master/_posts/2020-03-21-flatland-chem.md",
+		"hash": "8e9f75299f7582132b8a3f82fc3b7f96f4e6e7c4",
+		"date": "2021-08-29 23:09:15 -0700",
+		"message": "Switch to using Jekyll (WIP)"
+	},
+	"/longer-tweets/flawless-new-english/": {
+		"source": "longer-tweets/blob/master/_posts/2018-05-06-flawless-new-english.md",
+		"hash": "8e9f75299f7582132b8a3f82fc3b7f96f4e6e7c4",
+		"date": "2021-08-29 23:09:15 -0700",
+		"message": "Switch to using Jekyll (WIP)"
+	},
+	"/longer-tweets/gamepro5-translation/": {
+		"source": "longer-tweets/blob/master/_posts/2019-01-01-gamepro5-translation.md",
+		"hash": "8e9f75299f7582132b8a3f82fc3b7f96f4e6e7c4",
+		"date": "2021-08-29 23:09:15 -0700",
+		"message": "Switch to using Jekyll (WIP)"
+	},
+	"/longer-tweets/google-anal/": {
+		"source": "longer-tweets/blob/master/_posts/2023-04-29-google-anal.md",
+		"hash": "92d462ce904fa769b532629e955609511cf42ea1",
+		"date": "2023-04-29 18:33:35 -0700",
+		"message": "Google Analytics notice"
+	},
+	"/longer-tweets/google-ctf/": {
+		"source": "longer-tweets/blob/master/_posts/2022-07-08-google-ctf.md",
+		"hash": "1d37f1146b1f9643357043e7f584610772e3ddc0",
+		"date": "2022-07-09 01:16:37 -0700",
+		"message": "google-ctf: WIP draft"
+	},
+	"/longer-tweets/html-xss/": {
+		"source": "longer-tweets/blob/master/_posts/2020-11-27-html-xss.md",
+		"hash": "2e9144db5e4aac13f2b6f065a0127f4f1288bb46",
+		"date": "2024-01-27 18:37:30 -0800",
+		"message": "Copy over Ovinus' LinkedIn posts"
+	},
+	"/longer-tweets/js/": {
+		"source": "longer-tweets/blob/master/_posts/2022-08-06-js.md",
+		"hash": "26da2699c95a46acaf35b36319e76c31606412eb",
+		"date": "2022-08-06 21:42:00 -0700",
+		"message": "There's too much to include"
+	},
+	"/longer-tweets/json-is-hard/": {
+		"source": "longer-tweets/blob/master/_posts/2020-07-06-json-is-hard.md",
+		"hash": "2e9144db5e4aac13f2b6f065a0127f4f1288bb46",
+		"date": "2024-01-27 18:37:30 -0800",
+		"message": "Copy over Ovinus' LinkedIn posts"
+	},
+	"/longer-tweets/json-lang/": {
+		"source": "longer-tweets/blob/master/_posts/2020-08-11-json-lang.md",
+		"hash": "8e9f75299f7582132b8a3f82fc3b7f96f4e6e7c4",
+		"date": "2021-08-29 23:09:15 -0700",
+		"message": "Switch to using Jekyll (WIP)"
+	},
+	"/longer-tweets/lactf/": {
+		"source": "longer-tweets/blob/master/_posts/2024-02-18-lactf.md",
+		"hash": "2a92d62083821cfab0a7a5316ce0e74d67cb8e9e",
+		"date": "2024-02-18 10:11:15 -0800",
+		"message": "lactf: write the easier challenges"
+	},
+	"/longer-tweets/leopard/": {
+		"source": "longer-tweets/blob/master/_posts/2020-07-06-leopard.md",
+		"hash": "8e9f75299f7582132b8a3f82fc3b7f96f4e6e7c4",
+		"date": "2021-08-29 23:09:15 -0700",
+		"message": "Switch to using Jekyll (WIP)"
+	},
+	"/longer-tweets/life-after-death/": {
+		"source": "longer-tweets/blob/master/_posts/2018-05-06-life-after-death.md",
+		"hash": "8e9f75299f7582132b8a3f82fc3b7f96f4e6e7c4",
+		"date": "2021-08-29 23:09:15 -0700",
+		"message": "Switch to using Jekyll (WIP)"
+	},
+	"/longer-tweets/lol-vocabulary/": {
+		"source": "longer-tweets/blob/master/_posts/2018-06-17-lol-vocabulary.md",
+		"hash": "8e9f75299f7582132b8a3f82fc3b7f96f4e6e7c4",
+		"date": "2021-08-29 23:09:15 -0700",
+		"message": "Switch to using Jekyll (WIP)"
+	},
+	"/longer-tweets/major/": {
+		"source": "longer-tweets/blob/master/_posts/2021-12-18-major.md",
+		"hash": "ec7ccc9fbb9e0f9d3f831335c187683c34af45b4",
+		"date": "2021-12-18 20:45:18 -0800",
+		"message": "major: Write about my major for home-page"
+	},
+	"/longer-tweets/martian-math/": {
+		"source": "longer-tweets/blob/master/_posts/2018-10-18-martian-math.md",
+		"hash": "5fb1e434905ba378b8d46f1ae13d3cc7af1e46c1",
+		"date": "2025-09-16 01:29:14 -0700",
+		"message": "yap about react"
+	},
+	"/longer-tweets/matrix-lab/": {
+		"source": "longer-tweets/blob/master/_posts/2022-10-02-matrix-lab.md",
+		"hash": "d7405d1b7362d416d4a1d0efc68c27cfceb7c445",
+		"date": "2022-10-02 15:53:39 -0700",
+		"message": "matlab: WIP writeup"
+	},
+	"/longer-tweets/microplastics/": {
+		"source": "longer-tweets/blob/master/_posts/2025-10-23-microplastics.md",
+		"hash": "37fc5d00a5ded19cafb677240cca2f81f6279fc4",
+		"date": "2025-10-23 22:15:35 -0700",
+		"message": "pet theory about microplastics"
+	},
+	"/longer-tweets/phonology/": {
+		"source": "longer-tweets/blob/master/_posts/2019-01-02-phonology.md",
+		"hash": "8e9f75299f7582132b8a3f82fc3b7f96f4e6e7c4",
+		"date": "2021-08-29 23:09:15 -0700",
+		"message": "Switch to using Jekyll (WIP)"
+	},
+	"/longer-tweets/pickles/": {
+		"source": "longer-tweets/blob/master/_posts/2022-10-26-pickles.md",
+		"hash": "12764e565149164cd65cb9cf7ee09c42587575b0",
+		"date": "2022-10-27 00:35:03 -0700",
+		"message": "Pickles"
+	},
+	"/longer-tweets/pronouns/": {
+		"source": "longer-tweets/blob/master/_posts/2019-01-02-pronouns.md",
+		"hash": "8e9f75299f7582132b8a3f82fc3b7f96f4e6e7c4",
+		"date": "2021-08-29 23:09:15 -0700",
+		"message": "Switch to using Jekyll (WIP)"
+	},
+	"/longer-tweets/racism-response/": {
+		"source": "longer-tweets/blob/master/_posts/2019-07-18-racism-response.md",
+		"hash": "8e9f75299f7582132b8a3f82fc3b7f96f4e6e7c4",
+		"date": "2021-08-29 23:09:15 -0700",
+		"message": "Switch to using Jekyll (WIP)"
+	},
+	"/longer-tweets/react/": {
+		"source": "longer-tweets/blob/master/_posts/2025-09-16-react.md",
+		"hash": "9a4a10610093e552eb511cfd9f9aecf179b0b41d",
+		"date": "2025-09-15 14:29:57 -0700",
+		"message": "Add title to file name"
+	},
+	"/longer-tweets/scratch-www-troubles/": {
+		"source": "longer-tweets/blob/master/_posts/2018-07-01-scratch-www-troubles.md",
+		"hash": "8e9f75299f7582132b8a3f82fc3b7f96f4e6e7c4",
+		"date": "2021-08-29 23:09:15 -0700",
+		"message": "Switch to using Jekyll (WIP)"
+	},
+	"/longer-tweets/sdctf24/": {
+		"source": "longer-tweets/blob/master/_posts/2024-05-14-sdctf24.md",
+		"hash": "43c915d7c1a1d98c0d5842240a592cdfc42c1391",
+		"date": "2024-05-14 23:07:22 -0700",
+		"message": "draft sdctf writeup"
+	},
+	"/longer-tweets/securly-bypass/": {
+		"source": "longer-tweets/blob/master/_posts/2020-10-22-securly-bypass.md",
+		"hash": "8e9f75299f7582132b8a3f82fc3b7f96f4e6e7c4",
+		"date": "2021-08-29 23:09:15 -0700",
+		"message": "Switch to using Jekyll (WIP)"
+	},
+	"/longer-tweets/slop/": {
+		"source": "longer-tweets/blob/master/_posts/2025-10-04-slop.md",
+		"hash": "53db93b7c47170518349cb72d1ee02d709149972",
+		"date": "2025-10-04 22:16:02 -0700",
+		"message": "sora 2"
+	},
+	"/longer-tweets/squash/": {
+		"source": "longer-tweets/blob/master/_posts/2025-10-23-squash.md",
+		"hash": "9f2cec493c34e43e43aded977908103363aeccdd",
+		"date": "2025-10-23 22:12:29 -0700",
+		"message": "Squash commits brainstorming"
+	},
+	"/longer-tweets/test/": {
+		"source": "longer-tweets/blob/master/_posts/2018-05-05-test.md",
+		"hash": "8e9f75299f7582132b8a3f82fc3b7f96f4e6e7c4",
+		"date": "2021-08-29 23:09:15 -0700",
+		"message": "Switch to using Jekyll (WIP)"
+	},
+	"/longer-tweets/ucsd-colleges/": {
+		"source": "longer-tweets/blob/master/_posts/2021-11-25-ucsd-colleges.md",
+		"hash": "a591b8c8789839e38567ade34ee7fe3d1186774b",
+		"date": "2021-11-25 19:06:34 -0800",
+		"message": "UC San Diego colleges ranked (including seventh college): https://www.youtube.com/watch?v=Mzwg_tuCXNI"
+	},
+	"/longer-tweets/ugwa-alt-schedules/": {
+		"source": "longer-tweets/blob/master/_posts/2019-08-10-ugwa-alt-schedules.md",
+		"hash": "8e9f75299f7582132b8a3f82fc3b7f96f4e6e7c4",
+		"date": "2021-08-29 23:09:15 -0700",
+		"message": "Switch to using Jekyll (WIP)"
+	},
+	"/longer-tweets/ugwa-colours/": {
+		"source": "longer-tweets/blob/master/_posts/2021-08-31-ugwa-colours.md",
+		"hash": "56536498288fbc1852073584278bbe9b570637f1",
+		"date": "2021-08-31 12:40:49 -0700",
+		"message": "#edaeda story"
+	},
+	"/longer-tweets/underground-schoology/": {
+		"source": "longer-tweets/blob/master/_posts/2019-02-23-underground-schoology.md",
+		"hash": "8e9f75299f7582132b8a3f82fc3b7f96f4e6e7c4",
+		"date": "2021-08-29 23:09:15 -0700",
+		"message": "Switch to using Jekyll (WIP)"
+	},
+	"/longer-tweets/vertex-buffer-not-big-enough/": {
+		"source": "longer-tweets/blob/master/_posts/2024-04-18-vertex-buffer-not-big-enough.md",
+		"hash": "ab10a3d42b221bd705a09591a751dba0e750d422",
+		"date": "2024-04-18 18:21:18 -0700",
+		"message": "GL_INVALID_OPERATION: Vertex buffer is not big enough for the draw call"
+	},
+	"/longer-tweets/404.html": {
+		"source": "longer-tweets/blob/master/404.html",
+		"hash": "8e9f75299f7582132b8a3f82fc3b7f96f4e6e7c4",
+		"date": "2021-08-29 23:09:15 -0700",
+		"message": "Switch to using Jekyll (WIP)"
+	},
+	"/longer-tweets/": {
+		"source": "longer-tweets/blob/master/index.md",
+		"hash": "d82810cb0e1b74de6cd8862d390537cc127e448b",
+		"date": "2021-08-30 00:24:08 -0700",
+		"message": "Make posts use post layout; fix code highlight and latex"
+	}
+}
