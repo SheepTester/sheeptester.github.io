@@ -175,7 +175,17 @@ for (const [repo, paths] of Array.from(pathsByRepo).filter(
 
     const { stdout, stderr } = await runCommand(
       'git',
-      ['log', '--diff-filter=A', '--pretty=format:%H|%ai|%s', '--', sourcePath],
+      [
+        'log',
+        // https://stackoverflow.com/a/13598028
+        '--diff-filter=A',
+        // https://stackoverflow.com/a/11533206
+        '--follow',
+        '--find-renames=40%',
+        '--pretty=format:%H|%ai|%s',
+        '--',
+        sourcePath
+      ],
       repoDir
     )
     if (stderr) {

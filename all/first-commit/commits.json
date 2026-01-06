@@ -7,9 +7,9 @@
 	},
 	"/longer-tweets/better-tests/": {
 		"source": "longer-tweets/blob/master/_posts/2018-05-13-better-tests.md",
-		"hash": "5832897e13e16f1118161a762298d0b998d63728",
-		"date": "2021-08-30 03:57:45 -0700",
-		"message": "404 page, readd heading anchors, fix tags, fix post chrono order"
+		"hash": "250d308fc762a2d06245e92505fef40e7651983e",
+		"date": "2018-06-17 14:06:53 -0700",
+		"message": "vocabulary :thumbs_down:"
 	},
 	"/longer-tweets/closing-html/": {
 		"source": "longer-tweets/blob/master/_posts/2020-08-24-closing-html.md",
@@ -25,9 +25,9 @@
 	},
 	"/longer-tweets/creating-this-blog/": {
 		"source": "longer-tweets/blob/master/_posts/2018-05-05-creating-this-blog.md",
-		"hash": "8282ed7a6eef8067fc61a392366ba3f37b08e4e9",
-		"date": "2021-08-29 23:56:07 -0700",
-		"message": "Update templates to use Liquid"
+		"hash": "c496bff30fba985ac49848449d13aecef39b35c3",
+		"date": "2018-05-06 10:39:52 -0700",
+		"message": "blog design stuffies"
 	},
 	"/longer-tweets/ctf/": {
 		"source": "longer-tweets/blob/master/_posts/2022-05-08-ctf.md",
@@ -43,21 +43,21 @@
 	},
 	"/longer-tweets/flatland-chem/": {
 		"source": "longer-tweets/blob/master/_posts/2020-03-21-flatland-chem.md",
-		"hash": "8e9f75299f7582132b8a3f82fc3b7f96f4e6e7c4",
-		"date": "2021-08-29 23:09:15 -0700",
-		"message": "Switch to using Jekyll (WIP)"
+		"hash": "bfc286ab74083a481b4c8966a300aedbe60307bf",
+		"date": "2020-03-21 19:37:34 -0700",
+		"message": "Make an article about 2D chem and add epic figures. I think handdrawn is better IMO"
 	},
 	"/longer-tweets/flawless-new-english/": {
 		"source": "longer-tweets/blob/master/_posts/2018-05-06-flawless-new-english.md",
-		"hash": "8e9f75299f7582132b8a3f82fc3b7f96f4e6e7c4",
-		"date": "2021-08-29 23:09:15 -0700",
-		"message": "Switch to using Jekyll (WIP)"
+		"hash": "0316b440ef761093ca54bc5393fc01068416ae6e",
+		"date": "2018-05-06 14:42:47 -0700",
+		"message": "new english"
 	},
 	"/longer-tweets/gamepro5-translation/": {
 		"source": "longer-tweets/blob/master/_posts/2019-01-01-gamepro5-translation.md",
-		"hash": "8e9f75299f7582132b8a3f82fc3b7f96f4e6e7c4",
-		"date": "2021-08-29 23:09:15 -0700",
-		"message": "Switch to using Jekyll (WIP)"
+		"hash": "43933b1ca367623e7b4d307dc747a88bf7717f45",
+		"date": "2019-01-02 13:24:30 -0800",
+		"message": "conlang translation analysis post, link to headers, better sort"
 	},
 	"/longer-tweets/google-anal/": {
 		"source": "longer-tweets/blob/master/_posts/2023-04-29-google-anal.md",
@@ -91,9 +91,9 @@
 	},
 	"/longer-tweets/json-lang/": {
 		"source": "longer-tweets/blob/master/_posts/2020-08-11-json-lang.md",
-		"hash": "8e9f75299f7582132b8a3f82fc3b7f96f4e6e7c4",
-		"date": "2021-08-29 23:09:15 -0700",
-		"message": "Switch to using Jekyll (WIP)"
+		"hash": "191780d93988ead6d1bb5ae1714d0f70c3865469",
+		"date": "2020-08-11 13:39:50 -0700",
+		"message": "Add new longer tweet \"JSON is a language\""
 	},
 	"/longer-tweets/lactf/": {
 		"source": "longer-tweets/blob/master/_posts/2024-02-18-lactf.md",
@@ -103,21 +103,21 @@
 	},
 	"/longer-tweets/leopard/": {
 		"source": "longer-tweets/blob/master/_posts/2020-07-06-leopard.md",
-		"hash": "8e9f75299f7582132b8a3f82fc3b7f96f4e6e7c4",
-		"date": "2021-08-29 23:09:15 -0700",
-		"message": "Switch to using Jekyll (WIP)"
+		"hash": "d0f5926e2c4e9158703f9114cbf1a82a3667d66f",
+		"date": "2020-07-06 21:47:16 -0700",
+		"message": "Draft a longer tweet about Leopard"
 	},
 	"/longer-tweets/life-after-death/": {
 		"source": "longer-tweets/blob/master/_posts/2018-05-06-life-after-death.md",
-		"hash": "8e9f75299f7582132b8a3f82fc3b7f96f4e6e7c4",
-		"date": "2021-08-29 23:09:15 -0700",
-		"message": "Switch to using Jekyll (WIP)"
+		"hash": "a6bf9b237f14309cc673034615595be8e24014c7",
+		"date": "2018-05-06 15:49:34 -0700",
+		"message": "new post; tag wrapping fix etc"
 	},
 	"/longer-tweets/lol-vocabulary/": {
 		"source": "longer-tweets/blob/master/_posts/2018-06-17-lol-vocabulary.md",
-		"hash": "8e9f75299f7582132b8a3f82fc3b7f96f4e6e7c4",
-		"date": "2021-08-29 23:09:15 -0700",
-		"message": "Switch to using Jekyll (WIP)"
+		"hash": "250d308fc762a2d06245e92505fef40e7651983e",
+		"date": "2018-06-17 14:06:53 -0700",
+		"message": "vocabulary :thumbs_down:"
 	},
 	"/longer-tweets/major/": {
 		"source": "longer-tweets/blob/master/_posts/2021-12-18-major.md",
@@ -127,9 +127,9 @@
 	},
 	"/longer-tweets/martian-math/": {
 		"source": "longer-tweets/blob/master/_posts/2018-10-18-martian-math.md",
-		"hash": "5fb1e434905ba378b8d46f1ae13d3cc7af1e46c1",
-		"date": "2025-09-16 01:29:14 -0700",
-		"message": "yap about react"
+		"hash": "007fcf9c8363c80a07a07aba2c9906709bf2628e",
+		"date": "2025-09-14 18:14:38 -0700",
+		"message": "transcribe martian math"
 	},
 	"/longer-tweets/matrix-lab/": {
 		"source": "longer-tweets/blob/master/_posts/2022-10-02-matrix-lab.md",
@@ -145,9 +145,9 @@
 	},
 	"/longer-tweets/phonology/": {
 		"source": "longer-tweets/blob/master/_posts/2019-01-02-phonology.md",
-		"hash": "8e9f75299f7582132b8a3f82fc3b7f96f4e6e7c4",
-		"date": "2021-08-29 23:09:15 -0700",
-		"message": "Switch to using Jekyll (WIP)"
+		"hash": "547fdc6b41ed1a879b2d99fc02056ec694f9fd7d",
+		"date": "2019-01-02 14:32:39 -0800",
+		"message": "two new posts about my dumb conlang lol"
 	},
 	"/longer-tweets/pickles/": {
 		"source": "longer-tweets/blob/master/_posts/2022-10-26-pickles.md",
@@ -157,27 +157,27 @@
 	},
 	"/longer-tweets/pronouns/": {
 		"source": "longer-tweets/blob/master/_posts/2019-01-02-pronouns.md",
-		"hash": "8e9f75299f7582132b8a3f82fc3b7f96f4e6e7c4",
-		"date": "2021-08-29 23:09:15 -0700",
-		"message": "Switch to using Jekyll (WIP)"
+		"hash": "547fdc6b41ed1a879b2d99fc02056ec694f9fd7d",
+		"date": "2019-01-02 14:32:39 -0800",
+		"message": "two new posts about my dumb conlang lol"
 	},
 	"/longer-tweets/racism-response/": {
 		"source": "longer-tweets/blob/master/_posts/2019-07-18-racism-response.md",
-		"hash": "8e9f75299f7582132b8a3f82fc3b7f96f4e6e7c4",
-		"date": "2021-08-29 23:09:15 -0700",
-		"message": "Switch to using Jekyll (WIP)"
+		"hash": "1dd264573a3e421f7d13ef4ba64a869543879a2b",
+		"date": "2019-07-18 20:33:02 -0700",
+		"message": "responding to gp5"
 	},
 	"/longer-tweets/react/": {
 		"source": "longer-tweets/blob/master/_posts/2025-09-16-react.md",
-		"hash": "9a4a10610093e552eb511cfd9f9aecf179b0b41d",
-		"date": "2025-09-15 14:29:57 -0700",
-		"message": "Add title to file name"
+		"hash": "314cc56657d56e95d534d9111020243336035341",
+		"date": "2025-09-15 14:29:29 -0700",
+		"message": "React pain points"
 	},
 	"/longer-tweets/scratch-www-troubles/": {
 		"source": "longer-tweets/blob/master/_posts/2018-07-01-scratch-www-troubles.md",
-		"hash": "8e9f75299f7582132b8a3f82fc3b7f96f4e6e7c4",
-		"date": "2021-08-29 23:09:15 -0700",
-		"message": "Switch to using Jekyll (WIP)"
+		"hash": "2895377814c43f4caffee459422b9f417a2a807a",
+		"date": "2018-07-01 05:52:20 -0700",
+		"message": "scratch www"
 	},
 	"/longer-tweets/sdctf24/": {
 		"source": "longer-tweets/blob/master/_posts/2024-05-14-sdctf24.md",
@@ -187,9 +187,9 @@
 	},
 	"/longer-tweets/securly-bypass/": {
 		"source": "longer-tweets/blob/master/_posts/2020-10-22-securly-bypass.md",
-		"hash": "8e9f75299f7582132b8a3f82fc3b7f96f4e6e7c4",
-		"date": "2021-08-29 23:09:15 -0700",
-		"message": "Switch to using Jekyll (WIP)"
+		"hash": "2fd771257eebaffbcb3a41b9cbebfaba73d43fba",
+		"date": "2020-10-22 19:11:30 -0700",
+		"message": "Document suicidepreventionlifeline.org technique"
 	},
 	"/longer-tweets/slop/": {
 		"source": "longer-tweets/blob/master/_posts/2025-10-04-slop.md",
@@ -205,9 +205,9 @@
 	},
 	"/longer-tweets/test/": {
 		"source": "longer-tweets/blob/master/_posts/2018-05-05-test.md",
-		"hash": "8e9f75299f7582132b8a3f82fc3b7f96f4e6e7c4",
-		"date": "2021-08-29 23:09:15 -0700",
-		"message": "Switch to using Jekyll (WIP)"
+		"hash": "c496bff30fba985ac49848449d13aecef39b35c3",
+		"date": "2018-05-06 10:39:52 -0700",
+		"message": "blog design stuffies"
 	},
 	"/longer-tweets/ucsd-colleges/": {
 		"source": "longer-tweets/blob/master/_posts/2021-11-25-ucsd-colleges.md",
@@ -217,9 +217,9 @@
 	},
 	"/longer-tweets/ugwa-alt-schedules/": {
 		"source": "longer-tweets/blob/master/_posts/2019-08-10-ugwa-alt-schedules.md",
-		"hash": "8e9f75299f7582132b8a3f82fc3b7f96f4e6e7c4",
-		"date": "2021-08-29 23:09:15 -0700",
-		"message": "Switch to using Jekyll (WIP)"
+		"hash": "fa51351841ce41e6cafd607a5ae4d0185773994a",
+		"date": "2019-08-10 14:03:48 -0700",
+		"message": "ugwa alternate schedules, slight design change"
 	},
 	"/longer-tweets/ugwa-colours/": {
 		"source": "longer-tweets/blob/master/_posts/2021-08-31-ugwa-colours.md",
@@ -229,9 +229,9 @@
 	},
 	"/longer-tweets/underground-schoology/": {
 		"source": "longer-tweets/blob/master/_posts/2019-02-23-underground-schoology.md",
-		"hash": "8e9f75299f7582132b8a3f82fc3b7f96f4e6e7c4",
-		"date": "2021-08-29 23:09:15 -0700",
-		"message": "Switch to using Jekyll (WIP)"
+		"hash": "bc9b32e3576f9f4545e0f39b0666181b896a9a0f",
+		"date": "2019-03-02 16:45:28 -0800",
+		"message": "Underground schoology article"
 	},
 	"/longer-tweets/vertex-buffer-not-big-enough/": {
 		"source": "longer-tweets/blob/master/_posts/2024-04-18-vertex-buffer-not-big-enough.md",
@@ -247,8 +247,8 @@
 	},
 	"/longer-tweets/": {
 		"source": "longer-tweets/blob/master/index.md",
-		"hash": "d82810cb0e1b74de6cd8862d390537cc127e448b",
-		"date": "2021-08-30 00:24:08 -0700",
-		"message": "Make posts use post layout; fix code highlight and latex"
+		"hash": "8e9f75299f7582132b8a3f82fc3b7f96f4e6e7c4",
+		"date": "2021-08-29 23:09:15 -0700",
+		"message": "Switch to using Jekyll (WIP)"
 	}
 }
