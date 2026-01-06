@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "all": "node ./all/get-all.mts && node ./all/gen.js && node all/title-desc-get.mts",
+    "all": "node ./all/get-all.mts && node ./all/gen.js && node all/title-desc-get.mts && node all/first-commit/index.mts",
     "compress": "node ./img/compress.js",
     "home:build": "node home-page/imitation-scss-parser.js home-page/index.html.scss index.html home-page/style.css",
     "home:dev": "http-server . -c-1 -s & nodemon --watch home-page --ext scss,yml,js home-page/imitation-scss-parser.js home-page/index.html.scss index.html home-page/style.css",

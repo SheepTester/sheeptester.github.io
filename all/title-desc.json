@@ -24,6 +24,30 @@
 		"sheep": 3
 	},
 	{
+		"path": "/all/sheep/",
+		"title": "little sheep hall of fame",
+		"description": "Dedicated to the little sheep watermark that appears on most pages of this site.",
+		"sheep": 3
+	},
+	{
+		"path": "/all/sheep/sheep.html",
+		"title": "sheep.js demo page",
+		"description": "sheep.js is the original version of the sheep watermark on most of my web pages before 2017-11-30.",
+		"sheep": 1
+	},
+	{
+		"path": "/all/sheep/sheep2.html",
+		"title": "sheep2.js demo page",
+		"description": "sheep2.js is the second version of the sheep watermark on most of my web pages from 2017-11-30 to 2018-12-14.",
+		"sheep": 2
+	},
+	{
+		"path": "/all/sheep/sheep3.html",
+		"title": "sheep3.js demo page",
+		"description": "sheep3.js is the third version of the sheep watermark on most of my web pages after 2018-12-14.",
+		"sheep": 3
+	},
+	{
 		"path": "/all/generator.html",
 		"title": "sitemap html maker",
 		"description": "not for human use",
@@ -2196,6 +2220,12 @@
 		"sheep": 3
 	},
 	{
+		"path": "/javascripts/piano.html",
+		"title": "Decolonial piano",
+		"description": "Who says there has to be 12 semitones in an octave?",
+		"sheep": 3
+	},
+	{
 		"path": "/javascripts/pip-image.html",
 		"title": "Picture-in-picture image",
 		"description": "Create a pop-up of an image (e.g. Among Us) that stays above other windows.",
@@ -4026,6 +4056,12 @@
 		"sheep": 3
 	},
 	{
+		"path": "/words-go-here/misc/detect-language.html",
+		"title": "Language detector",
+		"description": "What language does JavaScript think your keyboard smash looks like?",
+		"sheep": 3
+	},
+	{
 		"path": "/words-go-here/misc/dialog.html",
 		"title": "html native dialog close animation?",
 		"description": "since i found out visibility is pretty good for animating dialogs",
@@ -4245,6 +4281,12 @@
 		"path": "/words-go-here/misc/intl-durations.html",
 		"title": "Intl.DurationFormat",
 		"description": "kamala harris is brat",
+		"sheep": 3
+	},
+	{
+		"path": "/words-go-here/misc/jitter-chunks.html",
+		"title": "jitter chunks",
+		"description": "an attempt at bypassing synthid",
 		"sheep": 3
 	},
 	{

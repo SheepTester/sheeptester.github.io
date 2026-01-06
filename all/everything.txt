@@ -18,6 +18,13 @@ material-launch.svg
 >cacher
 index.html
 <
+>first-commit
+.gitignore
+commits.json
+get-source-path.d.ts
+get-source-path.mjs
+index.mts
+<
 >img-previews
 .gitignore
 index.mts
@@ -47,6 +54,20 @@ search.css
 search.js
 start.js
 <
+>sheep
+index.html
+sheep-nav.css
+sheep.html
+sheep2.html
+sheep3.html
+<
+>sheep3
+build.mts
+README.md
+sheep3.module.css
+sheep3.ts
+types.d.ts
+<
 another-getter.user.js
 basic-gh-auth.example.json
 cacher.js
@@ -55,11 +76,10 @@ everything.txt
 file-getter.js
 gen.js
 generator.html
-get-all.mjs
+get-all.mts
 getter.user.js
 gh-pages-repos.d.mts
 gh-pages-repos.mjs
-go-to-gh.js
 index.html
 main.js
 makermakermaker.js
@@ -70,7 +90,7 @@ sitemap.txt
 styles.css
 template-all.html
 tinder.html
-title-desc-get.mjs
+title-desc-get.mts
 title-desc.json
 <
 >alt-schedule-parser-tester
@@ -1148,6 +1168,7 @@ clown.gif
 dark-schoology.user.css
 dark-theme-inputs.user.css
 discord-politics-clown.user.css
+gemini-quick-delete.user.js
 gh-4-space.user.css
 gh-commit-times.user.css
 gh-gist-reader-view.user.css
@@ -1178,6 +1199,7 @@ sgy-hide-answers.user.css
 show-discord-spoilers.user.css
 skracxteamgxenanto.user.js
 small-screen-discord.user.css
+sora-quick-delete.user.js
 spotify-miniplayer.user.css
 spotify-miniplayer.user.js
 story-stealer.user.js
@@ -1326,7 +1348,7 @@ test-ext.js
 test-ext2.js
 test-glow.svg
 test-ugwisha-extension.js
-tsconfig.json
+tsconfig_.json
 underground-markup.html
 underground-schoology-terrible-logo.svg
 underground-schoology.user.js
@@ -2183,6 +2205,7 @@ index.html
 intense-contrast-default.png
 intense-contrast.html
 intl-nums.html
+jpg-quality-default.jpg
 jpg-quality.html
 jszip.min.js
 large-file-viewer.html
@@ -2203,6 +2226,7 @@ pdfkit.standalone.min.js
 peerjs.html
 pen.js
 pen.md
+piano.html
 pip-image.html
 points.html
 putty-serial.html
@@ -2947,6 +2971,7 @@ index.css
 index.css.map
 index.js
 index.js.map
+README.md
 <
 components.html
 index.ts
@@ -4175,6 +4200,7 @@ coconut-tree-twemoji.svg
 coconut-tree-win10.png
 decargoifor.html
 dehtmlify.html
+detect-language.html
 dialog.html
 diff.html
 doodle.html
@@ -4222,6 +4248,8 @@ imgtosvg.html
 index.html
 intelligent-navbar.html
 intl-durations.html
+jitter-chunks-ai-sheep-man.png
+jitter-chunks.html
 kamala.html
 keyboard.html
 keykeykey.svg

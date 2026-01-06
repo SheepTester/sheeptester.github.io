@@ -2,6 +2,10 @@ https://sheeptester.github.io/all/cacher/
 https://sheeptester.github.io/all/links/
 https://sheeptester.github.io/all/localStorage/
 https://sheeptester.github.io/all/search/
+https://sheeptester.github.io/all/sheep/
+https://sheeptester.github.io/all/sheep/sheep.html
+https://sheeptester.github.io/all/sheep/sheep2.html
+https://sheeptester.github.io/all/sheep/sheep3.html
 https://sheeptester.github.io/all/generator.html
 https://sheeptester.github.io/all/
 https://sheeptester.github.io/all/sitemap.html
@@ -365,6 +369,7 @@ https://sheeptester.github.io/javascripts/one-pdf.html
 https://sheeptester.github.io/javascripts/opacity-calc.html
 https://sheeptester.github.io/javascripts/panchroma.html
 https://sheeptester.github.io/javascripts/peerjs.html
+https://sheeptester.github.io/javascripts/piano.html
 https://sheeptester.github.io/javascripts/pip-image.html
 https://sheeptester.github.io/javascripts/points.html
 https://sheeptester.github.io/javascripts/putty-serial.html
@@ -670,6 +675,7 @@ https://sheeptester.github.io/words-go-here/misc/circles.html
 https://sheeptester.github.io/words-go-here/misc/clocks.html
 https://sheeptester.github.io/words-go-here/misc/decargoifor.html
 https://sheeptester.github.io/words-go-here/misc/dehtmlify.html
+https://sheeptester.github.io/words-go-here/misc/detect-language.html
 https://sheeptester.github.io/words-go-here/misc/dialog.html
 https://sheeptester.github.io/words-go-here/misc/diff.html
 https://sheeptester.github.io/words-go-here/misc/doodle.html
@@ -707,6 +713,7 @@ https://sheeptester.github.io/words-go-here/misc/imgtosvg.html
 https://sheeptester.github.io/words-go-here/misc/
 https://sheeptester.github.io/words-go-here/misc/intelligent-navbar.html
 https://sheeptester.github.io/words-go-here/misc/intl-durations.html
+https://sheeptester.github.io/words-go-here/misc/jitter-chunks.html
 https://sheeptester.github.io/words-go-here/misc/kamala.html
 https://sheeptester.github.io/words-go-here/misc/keyboard.html
 https://sheeptester.github.io/words-go-here/misc/left-ear.html

@@ -53,6 +53,30 @@
 		"date": "2025-01-01 10:42:27 -0800",
 		"message": "Setup opensearch and /all/search/ to search website directly from address bar\n"
 	},
+	"/all/sheep/": {
+		"source": "sheeptester.github.io/master/all/sheep/index.html",
+		"hash": "6858d7997c00f0b34af3bbc9719992930fc93a64",
+		"date": "2026-01-01 22:30:45 -0800",
+		"message": "little sheep home page\n"
+	},
+	"/all/sheep/sheep.html": {
+		"source": "sheeptester.github.io/master/all/sheep/sheep.html",
+		"hash": "24ddef8a22990b816dc5b2bfabdec3eb8fc65ed0",
+		"date": "2026-01-01 20:34:37 -0800",
+		"message": "sheep.js lore and docs\n"
+	},
+	"/all/sheep/sheep2.html": {
+		"source": "sheeptester.github.io/master/all/sheep/sheep2.html",
+		"hash": "24ddef8a22990b816dc5b2bfabdec3eb8fc65ed0",
+		"date": "2026-01-01 20:34:37 -0800",
+		"message": "sheep.js lore and docs\n"
+	},
+	"/all/sheep/sheep3.html": {
+		"source": "sheeptester.github.io/master/all/sheep/sheep3.html",
+		"hash": "5eebb2a750c8ef9325e9dd85cd9a2f71d8c2fb76",
+		"date": "2026-01-01 22:00:24 -0800",
+		"message": "short sheep3.js demo page\n"
+	},
 	"/all/sitemap.html": {
 		"source": "sheeptester.github.io/master/all/sitemap.html",
 		"hash": "08e05c457162c8a5838f5d60cd9bedb26b829bb9",
@@ -2117,6 +2141,12 @@
 		"date": "2019-03-02 13:24:38 -0800",
 		"message": "PeerJS test\n"
 	},
+	"/javascripts/piano.html": {
+		"source": "sheeptester.github.io/master/javascripts/piano.html",
+		"hash": "fbee28aee319161bdcae65cce37d826beff66ecd",
+		"date": "2025-12-20 17:41:07 -0800",
+		"message": "non western piano\n"
+	},
 	"/javascripts/pip-image.html": {
 		"source": "sheeptester.github.io/master/javascripts/pip-image.html",
 		"hash": "d9e06abf68ca42b92cd99afe22b1a5d483e4f2c0",
@@ -4055,6 +4085,12 @@
 		"date": "2020-11-28 23:47:47 -0800",
 		"message": "tired\n"
 	},
+	"/words-go-here/misc/detect-language.html": {
+		"source": "words-go-here/master/misc/detect-language.html",
+		"hash": "8d5235e0c4f076edccb04ab62d3f3e7ba16edcfd",
+		"date": "2025-12-15 21:45:35 -0800",
+		"message": "language detector demo page\n\nFixes #24\n"
+	},
 	"/words-go-here/misc/dialog.html": {
 		"source": "words-go-here/master/misc/dialog.html",
 		"hash": "adda7826e28e28421661e4c444293a7fa123726f",
@@ -4270,6 +4306,12 @@
 		"hash": "45446bfd66a378ecc5edd76572d1beb55f062c78",
 		"date": "2025-04-02 02:34:07 -0700",
 		"message": "intl durations, add note to readme\n"
+	},
+	"/words-go-here/misc/jitter-chunks.html": {
+		"source": "words-go-here/master/misc/jitter-chunks.html",
+		"hash": "4ef2e744b2a3369dec5eb2dc17ed871779a214d5",
+		"date": "2025-12-30 19:24:55 -0800",
+		"message": "image jitterer\n"
 	},
 	"/words-go-here/misc/kaaba/": {
 		"source": "words-go-here/master/misc/kaaba/index.html",
