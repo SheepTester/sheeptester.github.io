@@ -10,10 +10,8 @@ const { username, personalAccessToken } = ghAuth
 import {
   domain,
   ghUser,
-  ghPagesRepos,
-  jekyllRepos,
-  actionsRepos,
-  ignore as ignorePatterns
+  ignore as ignorePatterns,
+  repos
 } from './gh-pages-repos.mts'
 import { fileURLToPath } from 'url'
 
@@ -89,7 +87,7 @@ type RepoFiles = {
   truncated: boolean
 }
 
-function getRepoFiles (repo: string, branch = 'master') {
+function getRepoFiles (repo: string, branch: string) {
   // https://api.github.com/repos/SheepTester/chaotic-cube/git/trees/master?recursive=1
   const url = `https://api.github.com/repos/${ghUser}/${repo}/git/trees/${branch}?recursive=1`
   return fetch(url, { headers })
@@ -147,50 +145,46 @@ async function main () {
     .slice(0, -1)
     .map(f => `/${f}`)
 
-  for (const repoBranch of Object.keys(actionsRepos)) {
-    const [repo] = repoBranch.split('#')
-    console.log(`Getting ${repo} (sitemap.txt)`)
-    paths.push(
-      ...(await fetch(`https://${domain}/${repo}/sitemap.txt`)
-        .then(r => r.text())
-        .then(sitemap =>
-          sitemap
-            .trim()
-            .split(/\r?\n/)
-            .map(url => decodeURI(new URL(url).pathname))
-        ))
-    )
-  }
-
-  for (const repoBranch of jekyllRepos) {
-    console.log(`Getting ${repoBranch} (jekyll)`)
-    const [repo, branch] = repoBranch.split('#')
-    paths.push(...(await getJekyllSitemap(repo)))
-    // Jekyll's pretty weird
-    paths.push(
-      ...(await getRepoFiles(repo, branch))
-        .map(path => {
-          if (jekyllIgnore.map(name => `/${repo}/${name}`).includes(path))
-            return null
-          // Ignore folders and files that start with _
-          if (path.startsWith(`/${repo}/_`)) return null
-          // Markdown files are built and will show up in the sitemap (except for
-          // README.md)
-          if (path.endsWith(`.md`) && !path.endsWith('/README.md')) return null
-          // It seems, at least for blog, SCSS files are automatically compiled to
-          // CSS.
-          if (path.endsWith(`.scss`)) return path.replace(/\.scss$/g, '.css')
-          return path
-        })
-        .filter(path => path !== null)
-        .filter(path => !paths.includes(path))
-    )
-  }
-
-  for (const repoBranch of ghPagesRepos) {
-    console.log(`Getting ${repoBranch}`)
-    const [repo, branch] = repoBranch.split('#')
-    paths.push(...(await getRepoFiles(repo, branch)))
+  for (const { name, branch = 'master', type } of repos) {
+    if (type?.type === 'actions') {
+      console.log(`Getting ${name} (sitemap.txt)`)
+      paths.push(
+        ...(await fetch(`https://${domain}/${name}/sitemap.txt`)
+          .then(r => r.text())
+          .then(sitemap =>
+            sitemap
+              .trim()
+              .split(/\r?\n/)
+              .map(url => decodeURI(new URL(url).pathname))
+          ))
+      )
+    } else if (type?.type === 'jekyll') {
+      console.log(`Getting ${name} (jekyll)`)
+      paths.push(...(await getJekyllSitemap(name)))
+      // Jekyll's pretty weird
+      paths.push(
+        ...(await getRepoFiles(name, branch))
+          .map(path => {
+            if (jekyllIgnore.map(name => `/${name}/${name}`).includes(path))
+              return null
+            // Ignore folders and files that start with _
+            if (path.startsWith(`/${name}/_`)) return null
+            // Markdown files are built and will show up in the sitemap (except
+            // for README.md)
+            if (path.endsWith(`.md`) && !path.endsWith('/README.md'))
+              return null
+            // It seems, at least for blog, SCSS files are automatically
+            // compiled to CSS.
+            if (path.endsWith(`.scss`)) return path.replace(/\.scss$/g, '.css')
+            return path
+          })
+          .filter(path => path !== null)
+          .filter(path => !paths.includes(path))
+      )
+    } else {
+      console.log(`Getting ${name}`)
+      paths.push(...(await getRepoFiles(name, branch)))
+    }
   }
 
   const filtered = paths.filter(keepPath)

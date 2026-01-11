@@ -1,15 +1,10 @@
-// node --experimental-strip-types all/img-previews/index.mts
+// node all/img-previews/index.mts
 
 import { exec as execCb } from 'child_process'
 import * as fs from 'fs/promises'
 import { promisify } from 'util'
 import YAML from 'yaml'
-import {
-  actionsRepos,
-  archived,
-  ghPagesRepos,
-  jekyllRepos
-} from '../gh-pages-repos.mts'
+import { archived, repos as allRepos } from '../gh-pages-repos.mts'
 import { join } from 'path'
 
 const exec = promisify(execCb)
@@ -30,7 +25,7 @@ const repos: Record<
   `${string}#${string}`,
   { filePath: string; imageUrl: string }[]
 > = {}
-for (const { path, image } of projects) {
+main: for (const { path, image } of projects) {
   if (path.startsWith('https://')) {
     if (path.startsWith('https://sheeptester.github.io')) {
       console.error('!!! unexpected full url', path)
@@ -46,6 +41,7 @@ for (const { path, image } of projects) {
     continue
   }
 
+  // TODO: This could probably read from first-commit/commits.json instead
   const [, maybeRepoName, ...rest] = path.split('/')
   let repoName = 'sheeptester.github.io'
   let repoBranch = 'master'
@@ -54,26 +50,21 @@ for (const { path, image } of projects) {
   if (maybeRepoName === 'hello-world' && path !== '/hello-world/') {
     repoName = maybeRepoName
   } else {
-    if (
-      Object.keys(actionsRepos).some(
-        entry => entry.split('#')[0] === maybeRepoName
-      )
-    ) {
-      console.warn(
-        `! cant handle actions repo (${maybeRepoName}): ${path} ${image}`
-      )
-      continue
-    }
-    if (jekyllRepos.some(entry => entry.split('#')[0] === maybeRepoName)) {
-      console.warn(
-        `! cant handle jekyll repo (${maybeRepoName}): ${path} ${image}`
-      )
-      continue
-    }
-    for (const entry of ghPagesRepos) {
-      const [repo, branch = 'master'] = entry.split('#')
-      if (maybeRepoName === repo) {
-        repoName = repo
+    for (const { name, branch = 'master', type } of allRepos) {
+      if (maybeRepoName === name) {
+        if (type?.type === 'actions') {
+          console.warn(
+            `! cant handle actions repo (${maybeRepoName}): ${path} ${image}`
+          )
+          continue main
+        }
+        if (type?.type === 'jekyll') {
+          console.warn(
+            `! cant handle jekyll repo (${maybeRepoName}): ${path} ${image}`
+          )
+          continue main
+        }
+        repoName = name
         repoBranch = branch
         break
       }

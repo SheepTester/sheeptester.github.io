@@ -1,10 +1,10 @@
 // node all/first-commit/index.mts
 
 import { readdir, readFile, rm, writeFile } from 'node:fs/promises'
-import { actionsRepos, ghPagesRepos, jekyllRepos } from '../gh-pages-repos.mts'
 import { execFile } from 'node:child_process'
 import { join } from 'node:path'
 import { existsSync } from 'node:fs'
+import { repos } from '../gh-pages-repos.mts'
 
 const ROOT = 'https://sheeptester.github.io'
 const SITEMAP_PATH = 'all/sitemap.txt'
@@ -46,17 +46,8 @@ process.on('SIGINT', async () => {
 })
 
 const branches: Record<string, string> = { [ROOT_REPO]: 'master' }
-for (const entry of ghPagesRepos) {
-  const [repo, branch = 'master'] = entry.split('#')
-  branches[repo] = branch
-}
-for (const entry of jekyllRepos) {
-  const [repo, branch = 'master'] = entry.split('#')
-  branches[repo] = branch
-}
-for (const entry of Object.keys(actionsRepos)) {
-  const [repo, branch = 'master'] = entry.split('#')
-  branches[repo] = branch
+for (const { name, branch = 'master' } of repos) {
+  branches[name] = branch
 }
 
 const pathsByRepo = Map.groupBy(
@@ -81,22 +72,18 @@ const pathsByRepo = Map.groupBy(
 
       const [, repoName, ...rest] = path.split('/')
       const end = path.endsWith('/') ? 'index.html' : ''
-      for (const entry of ghPagesRepos) {
-        const [repo] = entry.split('#')
-        if (repoName === repo) {
-          return { repo, path, sourcePath: rest.join('/') + end }
-        }
-      }
-      for (const entry of jekyllRepos) {
-        const [repo] = entry.split('#')
-        if (repoName === repo) {
-          return { repo, path, sourcePath: rest.join('/') + end }
-        }
-      }
-      for (const [entry, prefix] of Object.entries(actionsRepos)) {
-        const [repo] = entry.split('#')
-        if (repoName === repo) {
-          return { repo, path, sourcePath: prefix + rest.join('/') + end }
+
+      for (const { name, type } of repos) {
+        if (repoName === name) {
+          if (type?.type === 'actions') {
+            return {
+              repo: name,
+              path,
+              sourcePath: type.prefix + rest.join('/') + end
+            }
+          } else {
+            return { repo: name, path, sourcePath: rest.join('/') + end }
+          }
         }
       }
       return { repo: ROOT_REPO, path, sourcePath: path + end }

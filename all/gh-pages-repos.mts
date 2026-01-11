@@ -1,81 +1,127 @@
 export const domain = 'sheeptester.github.io'
 export const ghUser = 'SheepTester'
 
-/**
- * Assumes `master` is default branch
- * NOTE: This means that you must explicitly list `main`
- */
-export const ghPagesRepos = [
-  'alt-schedule-parser-tester',
-  'ascended-cat',
-  'assembly',
-  'blockly',
-  'calculator',
-  // 'chaotic-cube',
-  'colour',
-  'dating-sim',
-  'dulcinea#main',
-  'dumb-multiplayer-server',
-  'evo',
-  'eyo-dictionary',
-  'flex10-protect',
-  'fun-gunn-run',
-  'gamepro5.github.io',
-  'gunn-map',
-  'gunn-student-sim',
-  'happynumbers',
-  'HEALTH-AMONG-US#gh-pages',
-  'htmlblocks',
-  'htmlifier',
-  'intuitive-gunn-website',
-  'mars',
-  'offline-ucsd-map#gh-pages',
-  'olamreee',
-  'ovinetopia',
-  'platformre',
-  'reiglutopia',
-  'roots',
-  'scratch-blocks#gh-pages',
-  'scratch-gui#gh-pages',
-  // 'scratch-paint#gh-pages',
-  'scratch-vm#gh-pages',
-  'sheep-sim',
-  'skejl',
-  'text-save',
-  'theflat',
-  'themes',
-  'thingkingland',
-  'thirty-eight',
-  'toastia',
-  'toki-pona',
-  'unclear-target-w-very-confusing-critique',
-  'uxdy#gh-pages',
-  'word-prediction',
-  'words-go-here',
-  'yesnt'
-]
+export type RepoType =
+  | {
+      /**
+       * A typical static site. It can generally be assumed there's a 1-to-1
+       * source-to-site correspondence for files, but not for all files: it
+       * seems GitHub Pages will not preserve some files by default, like files
+       * named LICENSE or README.md.
+       */
+      type: 'gh-pages'
+    }
+  | {
+      /**
+       * Uses GitHub Pages' built-in support for Jekyll, which means I have
+       * little control over what other files I want to include.
+       * `/<repo-name>/sitemap.xml` is expected to exist.
+       */
+      type: 'jekyll'
+    }
+  | {
+      /**
+       * These repositories build and deploy to GitHub Pages directly from
+       * GitHub Actions. By my own convention, the list of all files deployed is
+       * available at `/<repo-name>/sitemap.txt`.
+       *
+       * However, we still lose a guaranteed 1-to-1 connection between output
+       * and source file.
+       */
+      type: 'actions'
+      /**
+       * Prefix added before HTML file paths from the sitemap, used to
+       * optimistically map from a sitemap path to a source file in the repo.
+       */
+      prefix: string
+    }
 
-export const jekyllRepos = ['blog', 'cse15l-lab-reports#main', 'longer-tweets']
-
-/**
- * Maps a repository name and branch (default: `master`) to a string to prefix
- * before HTML file paths in the repo. `null` if this mapping is not feasible.
- *
- * These repositories build and deploy to GitHub Pages directly from GitHub
- * Actions. By my own convention, the list of all files deployed is stored in
- * sitemap.txt. However, we still lose a 1-to-1 connection between output and
- * source file.
- */
-export const actionsRepos: Record<string, string | null> = {
-  'ucsd-sunset#main': 'static/',
-  'guestbook#main': null,
-  'doufu#main': 'static/',
-  'qr#main': 'static/',
-  'cse272-project#main': 'public/',
-  // Assumes the hello-world markdown pages won't reference sheepX.js
-  'hello-world': '',
-  'ucsd-classrooms#main': 'static/'
+export type Repo = {
+  name: string
+  description?: string
+  /** Defaults to `master` */
+  branch?: string
+  /** Defaults to `gh-pages` */
+  type?: RepoType
 }
+
+export const repos: Repo[] = [
+  { name: 'alt-schedule-parser-tester' },
+  { name: 'ascended-cat' },
+  { name: 'assembly' },
+  { name: 'blockly' },
+  { name: 'calculator' },
+  { name: 'colour' },
+  { name: 'dating-sim' },
+  { name: 'dulcinea', branch: 'main' },
+  { name: 'dumb-multiplayer-server' },
+  { name: 'evo' },
+  { name: 'eyo-dictionary' },
+  { name: 'flex10-protect' },
+  { name: 'fun-gunn-run' },
+  { name: 'gamepro5.github.io' },
+  { name: 'gunn-map' },
+  { name: 'gunn-student-sim' },
+  { name: 'happynumbers' },
+  { name: 'HEALTH-AMONG-US', branch: 'gh-pages' },
+  { name: 'htmlblocks' },
+  { name: 'htmlifier' },
+  { name: 'intuitive-gunn-website' },
+  { name: 'mars' },
+  { name: 'offline-ucsd-map', branch: 'gh-pages' },
+  { name: 'olamreee' },
+  { name: 'ovinetopia' },
+  { name: 'platformre' },
+  { name: 'reiglutopia' },
+  { name: 'roots' },
+  { name: 'scratch-blocks', branch: 'gh-pages' },
+  { name: 'scratch-gui', branch: 'gh-pages' },
+  { name: 'scratch-vm', branch: 'gh-pages' },
+  { name: 'sheep-sim' },
+  { name: 'skejl' },
+  { name: 'text-save' },
+  { name: 'theflat' },
+  { name: 'themes' },
+  { name: 'thingkingland' },
+  { name: 'thirty-eight' },
+  { name: 'toastia' },
+  { name: 'toki-pona' },
+  { name: 'unclear-target-w-very-confusing-critique' },
+  { name: 'uxdy', branch: 'gh-pages' },
+  { name: 'word-prediction' },
+  { name: 'words-go-here' },
+  { name: 'yesnt' },
+  { name: 'blog', type: { type: 'jekyll' } },
+  { name: 'cse15l-lab-reports', branch: 'main', type: { type: 'jekyll' } },
+  { name: 'longer-tweets', type: { type: 'jekyll' } },
+  {
+    name: 'ucsd-sunset',
+    branch: 'main',
+    type: { type: 'actions', prefix: 'static/' }
+  },
+  {
+    name: 'guestbook',
+    branch: 'main',
+    type: { type: 'actions', prefix: 'UNUSED' }
+  },
+  {
+    name: 'doufu',
+    branch: 'main',
+    type: { type: 'actions', prefix: 'static/' }
+  },
+  { name: 'qr', branch: 'main', type: { type: 'actions', prefix: 'static/' } },
+  {
+    name: 'cse272-project',
+    branch: 'main',
+    type: { type: 'actions', prefix: 'public/' }
+  },
+  { name: 'hello-world', type: { type: 'actions', prefix: '' } },
+  {
+    name: 'ucsd-classrooms',
+    branch: 'main',
+    type: { type: 'actions', prefix: 'static/' }
+  }
+]
 
 export const ignore = [
   '/blockly/',
