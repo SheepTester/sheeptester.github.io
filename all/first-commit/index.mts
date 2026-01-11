@@ -1,7 +1,7 @@
 // node all/first-commit/index.mts
 
 import { readdir, readFile, rm, writeFile } from 'node:fs/promises'
-import { actionsRepos, ghPagesRepos, jekyllRepos } from '../gh-pages-repos.mjs'
+import { actionsRepos, ghPagesRepos, jekyllRepos } from '../gh-pages-repos.mts'
 import { execFile } from 'node:child_process'
 import { join } from 'node:path'
 import { existsSync } from 'node:fs'

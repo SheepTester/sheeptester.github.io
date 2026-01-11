@@ -66,7 +66,7 @@ export const jekyllRepos = ['blog', 'cse15l-lab-reports#main', 'longer-tweets']
  * sitemap.txt. However, we still lose a 1-to-1 connection between output and
  * source file.
  */
-export const actionsRepos = {
+export const actionsRepos: Record<string, string | null> = {
   'ucsd-sunset#main': 'static/',
   'guestbook#main': null,
   'doufu#main': 'static/',

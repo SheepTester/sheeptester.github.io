@@ -14,6 +14,6 @@ npm run all
 
 `all/gen.js` generates the /all/ files.
 
-`all/gh-pages-repos.js` lists the repos with GitHub Pages.
+`all/gh-pages-repos.mts` lists the repos with GitHub Pages.
 
 `all/title-desc-get.mjs` gets each sitemap page's title and description for the search bar.

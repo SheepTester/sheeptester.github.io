@@ -14,7 +14,7 @@ import {
   jekyllRepos,
   actionsRepos,
   ignore as ignorePatterns
-} from './gh-pages-repos.mjs'
+} from './gh-pages-repos.mts'
 import { fileURLToPath } from 'url'
 
 // https://stackoverflow.com/a/29655902

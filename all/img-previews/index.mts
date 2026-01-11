@@ -9,7 +9,7 @@ import {
   archived,
   ghPagesRepos,
   jekyllRepos
-} from '../gh-pages-repos.mjs'
+} from '../gh-pages-repos.mts'
 import { join } from 'path'
 
 const exec = promisify(execCb)
