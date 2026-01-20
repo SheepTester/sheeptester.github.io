@@ -47,6 +47,11 @@ profiles:
     link: https://www.reddit.com/user/Sheep_Tester
     bg: '#FF4500'
 
+  - name: Hacker News
+    link: https://news.ycombinator.com/user?id=sheept
+    # website header is #ff6600, but I assume that's just to be a web safe color
+    bg: '#FB651E'
+
   - name: Snapchat
     link: https://www.snapchat.com/add/sheeptester
     bg: '#FEFC00'
@@ -90,6 +95,10 @@ profiles:
     link: https://www.twitch.tv/sheeptester
     bg: '#6441A4'
     ball: white
+
+  - name: Sora
+    link: https://sora.chatgpt.com/profile/ovinai
+    type: sora
 
   - name: Google+ # RIP
     link: https://plus.google.com/u/0/+SeanYentheHumansperson

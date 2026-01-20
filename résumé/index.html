@@ -112,6 +112,15 @@
       </a>
     </section>
 
+    <div class="flex screen-only"></div>
+
+    <div class="notice screen-only">
+      <p>
+        <button id="print">Print this page</button> to see the final PDF version
+        I send to employers.
+      </p>
+    </div>
+
     <div class="flex"></div>
 
     <section class="section list">
@@ -133,7 +142,7 @@
         </ul>
       </article>
 
-      <article class="job screen-only">
+      <article class="job">
         <div class="info info-stretch">
           <h3 class="name">TikTok</h3>
           <p class="city">San Jose, CA</p>
@@ -615,7 +624,7 @@
         </ul>
       </article>
 
-      <article>
+      <article class="screen-only">
         <div class="info">
           <h3 class="name">
             <a
@@ -760,6 +769,10 @@
       for (const elem of document.getElementsByClassName('js-exp')) {
         elem.textContent = years
       }
+
+      document.getElementById('print').addEventListener('click', () => {
+        print()
+      })
     </script>
   </body>
 </html>

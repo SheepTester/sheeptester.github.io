@@ -139,6 +139,13 @@ css {
     border-left-color: #874fff;
     border-bottom-color: #24cb71;
   }
+  .social-sora {
+    background-image: linear-gradient(to bottom, #012658, #0867db);
+  }
+  .social-sora .ball {
+    background-image: linear-gradient(150deg, #ffffff, #a7d8ff);
+    background-size: cover;
+  }
 }
 @media (hover: hover) and (min-width: 1000px) {
   a.social:hover {
