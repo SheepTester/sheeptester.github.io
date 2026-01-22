@@ -19,6 +19,18 @@
       dt {
         font-weight: bold;
       }
+      dd {
+        word-break: break-word;
+        white-space: pre-wrap;
+      }
+      summary {
+        font-weight: bold;
+        cursor: pointer;
+      }
+      pre {
+        word-break: break-all;
+        white-space: pre-wrap;
+      }
     </style>
   </head>
   <body>
@@ -72,17 +84,80 @@
           const dd = document.createElement('dd')
           const list = document.createElement('dl')
 
-          for (const [key, { value, description }] of Object.entries(data)) {
+          for (const [key, object] of Object.entries(data)) {
+            // TODO: object can be ArrayBuffer
+            const { value, description, id } =
+              typeof object === 'string' ||
+              typeof object === 'number' ||
+              Array.isArray(object)
+                ? { value: object }
+                : object
             const dd = document.createElement('dd')
-            if (String(value) !== description && `${value}px` !== description) {
-              dd.append(
-                Object.assign(document.createElement('code'), {
-                  textContent: value
-                }),
-                ' '
+            // if (typeof value !== 'string' && typeof value !== 'number') {
+            //   console.warn(group, key, value, 'value not string/number')
+            // }
+            if (typeof description !== 'string') {
+              console.warn(
+                group,
+                key,
+                description,
+                object,
+                'description not string'
               )
             }
-            dd.append(description)
+            if (id !== undefined) {
+              console.warn(group, key, id, 'id defined')
+            }
+            const descriptionEmpty =
+              (typeof description === 'string' &&
+                description.replaceAll('\0', '').trim() === '') ||
+              description === undefined
+            if (!descriptionEmpty) {
+              if (
+                typeof description === 'string' &&
+                description.length > 1000
+              ) {
+                const details = document.createElement('details')
+                details.append(
+                  Object.assign(document.createElement('summary'), {
+                    textContent: `Show full description (${description.length} chars)`
+                  }),
+                  description
+                )
+                dd.append(details)
+              } else {
+                dd.append(description)
+              }
+            }
+            if (
+              (String(value) !== String(description) &&
+                `${value}px` !== description) ||
+              descriptionEmpty
+            ) {
+              if (!descriptionEmpty) {
+                dd.append(' ')
+              }
+              const json =
+                value === undefined ? 'undefined' : JSON.stringify(value)
+              if (typeof json === 'string' && json.length > 1000) {
+                const details = document.createElement('details')
+                details.append(
+                  Object.assign(document.createElement('summary'), {
+                    textContent: `Show full value (${json.length} chars)`
+                  }),
+                  Object.assign(document.createElement('pre'), {
+                    textContent: json
+                  })
+                )
+                dd.append(details)
+              } else {
+                dd.append(
+                  Object.assign(document.createElement('code'), {
+                    textContent: json
+                  })
+                )
+              }
+            }
             list.append(
               Object.assign(document.createElement('dt'), {
                 textContent: key
