@@ -47,7 +47,7 @@
     class="hidden-accessible reform:image-input"
   />
   <span class="icon icon-upload"></span>
-  <span class="file-label">Choose, drop, or paste TODO</span>
+  <span class="file-label">Choose or drop TODO</span>
   <span class="file-name">No file selected</span>
 </label>
 <div class="image-content input-content"><canvas></canvas></div>

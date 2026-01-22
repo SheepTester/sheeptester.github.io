@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>EXIF metadata viewer</title>
+    <meta
+      name="description"
+      content="Uses exifreader to extract EXIF data from images (e.g. location, time) entirely in your browser."
+    />
+    <meta name="theme-color" content="#4fa1a7" />
+
+    <link rel="stylesheet" type="text/css" href="/sheep3.css" />
+    <link rel="stylesheet" type="text/css" href="/reform/v1/index.css" />
+    <script src="/sheep3.js" charset="utf-8"></script>
+
+    <style>
+      dt {
+        font-weight: bold;
+      }
+    </style>
+  </head>
+  <body>
+    <form class="main" role="main" action="javascript:">
+      <h1>EXIF metadata viewer</h1>
+      <p>
+        Uses the
+        <a class="link" href="https://www.npmjs.com/package/exifreader"
+          >exifreader</a
+        >
+        library to parse EXIF metadata from an image file, all in your browser.
+        Allegedly, these file types are supported: JPEG, TIFF, PNG, HEIC/HEIF,
+        AVIF, WEBP, GIF.
+      </p>
+
+      <div class="col-io reform:io no-contents">
+        <label class="input-controls file">
+          <input
+            type="file"
+            name="image"
+            accept="image/*"
+            class="hidden-accessible reform:file-input reform:paste-target"
+          />
+          <span class="icon icon-upload"></span>
+          <span class="file-label">Choose, drop, or paste an image</span>
+          <span class="file-name">No file selected</span>
+        </label>
+      </div>
+
+      <dl id="out" data-deps="exif"></dl>
+    </form>
+
+    <script type="module">
+      import { load } from 'https://esm.sh/exifreader@4.36.0'
+      import { on, Out } from '/reform/v1/index.js'
+
+      on({ name: 'exif', deps: ['image'] }, async (_, { image }) => {
+        return await load(image, {
+          async: true,
+          includeUnknown: true,
+          expanded: true
+        })
+      })
+
+      on('out', (list, { exif }) => {
+        while (list.firstChild) {
+          list.removeChild(list.firstChild)
+        }
+        const fragment = document.createDocumentFragment()
+        for (const [group, data] of Object.entries(exif)) {
+          const dd = document.createElement('dd')
+          const list = document.createElement('dl')
+
+          for (const [key, { value, description }] of Object.entries(data)) {
+            const dd = document.createElement('dd')
+            if (String(value) !== description && `${value}px` !== description) {
+              dd.append(
+                Object.assign(document.createElement('code'), {
+                  textContent: value
+                }),
+                ' '
+              )
+            }
+            dd.append(description)
+            list.append(
+              Object.assign(document.createElement('dt'), {
+                textContent: key
+              }),
+              dd
+            )
+          }
+
+          dd.append(list)
+          fragment.append(
+            Object.assign(document.createElement('dt'), { textContent: group }),
+            dd
+          )
+        }
+        list.append(fragment)
+      })
+    </script>
+  </body>
+</html>

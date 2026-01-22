@@ -241,6 +241,7 @@ li::marker {
   & > p,
   & > ol,
   & > ul,
+  & > dl,
   & > pre,
   & > .radio-set,
   & > .radio-label,
