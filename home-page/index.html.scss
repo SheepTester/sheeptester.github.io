@@ -1592,9 +1592,34 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"]
       css {
         .footer-content {
           padding: 20px;
+          font-family: initial;
+        }
+        .footer-content a {
+          color: LinkText;
+          text-decoration: underline;
+          text-decoration-color: color-mix(in srgb, LinkText 50%, transparent);
+        }
+        .footer-content a:hover {
+          text-decoration-color: LinkText;
         }
       }
       .footer-content {
+        p[style='text-align: center;'] {
+          a[href="https://pink10000.github.io/ringfairy/sheeptester/previous/"]
+          {
+            content: '←';
+          }
+          content: ' ';
+          a[href="https://pink10000.github.io/ringfairy/"]
+          {
+            content: 'upbring';
+          }
+          content: ' ';
+          a[href="https://pink10000.github.io/ringfairy/sheeptester/next/"]
+          {
+            content: '→';
+          }
+        }
         p {
           img[src='/home-page/geocities/spinning construction sign.gif'][alt='spinning construction sign'][loading='lazy'] {
           }
