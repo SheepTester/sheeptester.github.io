@@ -1605,20 +1605,40 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"]
       }
       .footer-content {
         p[style='text-align: center;'] {
+          content: '[';
           a[href="https://pink10000.github.io/ringfairy/sheeptester/previous/"]
           {
-            content: '←';
+            content: 'prev';
           }
-          content: ' ';
+          content: '] [';
           a[href="https://pink10000.github.io/ringfairy/"]
           {
             content: 'upbring';
           }
-          content: ' ';
+          content: '] [';
           a[href="https://pink10000.github.io/ringfairy/sheeptester/next/"]
           {
-            content: '→';
+            content: 'next';
           }
+          content: ']';
+        }
+        p[style='text-align: center;'] {
+          content: '[';
+          a[href="https://pink10000.github.io/gathering/sheeptester/previous/"]
+          {
+            content: 'prev';
+          }
+          content: '] [';
+          a[href="https://pink10000.github.io/gathering/"]
+          {
+            content: 'gathering';
+          }
+          content: '] [';
+          a[href="https://pink10000.github.io/gathering/sheeptester/next/"]
+          {
+            content: 'next';
+          }
+          content: ']';
         }
         p {
           img[src='/home-page/geocities/spinning construction sign.gif'][alt='spinning construction sign'][loading='lazy'] {
