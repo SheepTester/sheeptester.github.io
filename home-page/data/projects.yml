@@ -957,7 +957,7 @@
     - utility
     - school
 
-- path: https://free-food-ucsd.vercel.app/
+- path: /ucsd-free-food/
   image: img/free-food-ucsd.webp
   name: Free Food Events at UCSD
   description: >-
