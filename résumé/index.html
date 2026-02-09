@@ -117,7 +117,8 @@
     <div class="notice screen-only">
       <p>
         <button id="print">Print this page</button> to see the final PDF version
-        I send to employers.
+        I send to employers. Anything shown below but not in the PDF may be
+        outdated or unpolished.
       </p>
     </div>
 
@@ -137,8 +138,18 @@
             August <span class="screen-only">18,</span> 2025 &ndash; Ongoing
           </p>
         </div>
-        <ul class="desc screen-only">
-          <li>TODO</li>
+        <ul class="desc">
+          <li>
+            Rewrote codebase from C++ to TypeScript, resulting a 60.1x
+            improvement in execution times and allowing for another 3.8x speedup
+            in React render times.
+          </li>
+          <li>
+            Introduced analytics, error logging, and deadman alerts to internal
+            tool for better observability.
+          </li>
+          <li class="screen-only">(AND THERE WILL BE MORE!!)</li>
+          <!-- Something about having to consider/design a format/data representation to use -->
         </ul>
       </article>
 
@@ -154,8 +165,17 @@
             <span class="screen-only">15,</span> 2025
           </p>
         </div>
-        <ul class="desc screen-only">
-          <li>TODO: migrated codebase, go + react</li>
+        <ul class="desc">
+          <!-- Go+GORM, React+TypeScript, Thrift (IDL) -->
+          <li>
+            Implemented 5 API routes in Go with GORM and Thrift to integrate
+            functionality across codebases.
+          </li>
+          <li>
+            Reduced React page load times by 2.72x, and optimized SQL query for
+            a 2.51x speedup.
+          </li>
+          <!-- Could also mention I internationalized the internal tool for Chinese and English -->
         </ul>
       </article>
 
@@ -214,6 +234,7 @@
               incoming students
           -->
           <!-- degree plans: (164+160+154) * 7 + (1231 - (164+160+154)) * 6 -->
+          <!-- TODO: screen-only these bullets, keep those with clear impact -->
           <li>
             Automated the cleanup and upload of 7,900 student degree plans by
             writing versatile code in Python and Julia and reverse engineering
@@ -225,22 +246,23 @@
           </li>
           <li>
             Developed 16 intuitive and visually captivating web-accessible
-            dashboards with Tableau and React to present actionable insights
-            that empowered university administrators with more informed
+            dashboards with Tableau, React, and D3.js to present actionable
+            insights that empowered university administrators with more informed
             decisions.
           </li>
-          <li>
+          <li class="screen-only">
             Tracked 7 years' worth of changes made to degree plans, unveiling
             the root causes of previously unexplained fluctuations in degree
             difficulty to administrators.
           </li>
-          <li>
+          <li class="screen-only">
             Represented course prerequisites as an interactive tree structure
             implemented using D3.js, enabling administrators to visualize how
             their decisions can cascade down to hundreds of courses.
           </li>
           <li class="screen-only">
-            TODO: write about plan-graph, make acm screen-only
+            Created an advanced academic plan visualization custom built for
+            staff to highlight potential roadblocks to student success.
           </li>
         </ul>
       </article>
@@ -268,7 +290,15 @@
             Reimagined animations from design prototypes using CSS, attracting
             192 orders on our merch store.
           </li>
-          <li class="screen-only">TODO: SDCTF</li>
+          <!--
+          2024: Raccoon Run (ish), open-source, calculator, utf-wait (4)
+          2025: blocks-of-20, css-dos, drip-feed, guess-the-number, self-ref (5)
+           -->
+          <li class="screen-only">
+            Developed 9 challenges for
+            <a href="https://sdc.tf/" class="link">SDCTF</a>, a global
+            cybersecurity competition with over 400 teams competing.
+          </li>
         </ul>
       </article>
 
@@ -370,6 +400,13 @@
           </p>
           <p class="date">August 2017 &ndash; June 2021</p>
         </div>
+        <ul class="desc course-list">
+          <li>
+            <span class="label">Coursework</span>
+            Functional and Object-Oriented Programming (<em>Simply Scheme</em>),
+            AP Computer Science A (<em>SICP</em>).
+          </li>
+        </ul>
       </article>
     </section>
 
@@ -403,12 +440,12 @@
             Firebase, and Express.js.
           </li>
           <li>
-            Designed and built 600+ web pages over
-            <span class="js-exp"></span> years with HTML, CSS, and JavaScript.
+            Designed and built <span id="page-count">2</span> web pages over
+            <span class="js-exp">2</span> years with HTML, CSS, and JavaScript.
           </li>
           <li>
             Created a multitude of web tools and games for a diverse audience,
-            attracting 36,000 visitors in 90 days.
+            attracting 163,000 unique users in 2025.
           </li>
         </ul>
       </article>
@@ -417,7 +454,7 @@
         <div class="info">
           <h4 class="name">
             <a
-              href="https://sheeptester.github.io/uxdy/classrooms/"
+              href="https://sheeptester.github.io/ucsd-classrooms/"
               class="project-name link"
               title="Link"
             >
@@ -426,7 +463,7 @@
             </a>
           </h4>
           <a
-            href="https://github.com/SheepTester/uxdy/tree/main/classrooms"
+            href="https://github.com/SheepTester/ucsd-classrooms"
             class="link show-link"
           >
             Github
@@ -446,7 +483,7 @@
             meetings by classroom.
           </li>
           <li>
-            Informed 450 students, TA's, and professors every week of nearby
+            Informed 16,813 students, TA's, and professors in 2025 of nearby
             available classrooms, providing a reliable resource for informal
             meetings.
           </li>
@@ -475,7 +512,7 @@
         <ul class="desc">
           <li>
             Founded a croudsourcing initiative to collect grade distributions
-            for 1,009 courses from 241 students.
+            for 1,442 courses from 436 students.
           </li>
           <li>
             Engineered a reliable tech stack for collecting submissions, powered
@@ -769,6 +806,17 @@
       for (const elem of document.getElementsByClassName('js-exp')) {
         elem.textContent = years
       }
+
+      fetch('/all/sitemap.txt')
+        .then(r => (r.ok ? r.text() : null))
+        .then(sitemap => {
+          if (!sitemap) {
+            document.getElementById('page-count').style.backgroundColor = 'red'
+            return
+          }
+          paths = sitemap.trim().split(/\r?\n/)
+          document.getElementById('page-count').textContent = paths.length
+        })
 
       document.getElementById('print').addEventListener('click', () => {
         print()

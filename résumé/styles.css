@@ -124,7 +124,8 @@ li {
   margin-bottom: 0;
 }
 @media screen {
-  .info > .link {
+  .info > .link,
+  .desc .link {
     color: #2c94ff;
   }
 }
