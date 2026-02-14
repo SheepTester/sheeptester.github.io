@@ -55,6 +55,9 @@ li {
 .link:hover {
   text-decoration: underline;
 }
+.screen-only {
+  color: #991b1b;
+}
 @media print {
   /* Show underlines under text to indicate that they're meant to be clicked on. */
   .show-link {
