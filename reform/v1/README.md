@@ -373,6 +373,8 @@ Here are the special input sources:
   - Produces a string.
 - `input.reform:file-input`: Enables single file input handling.
   - Produces a `File`.
+- `canvas.reform:canvas-element`: Forces the source object to be a canvas element (like other HTML elements) rather than creating a 2D context.
+- `.reform:io-ignore`: Prevents the element's output from being attached to its ancestor output controls (e.g. if the real output is handled by a hidden sibling element).
 
 Some more info and options:
 
@@ -401,7 +403,7 @@ declare export function on<T> (
 ): void
 ```
 
-The source name is the identifier of the source. It may refer to an element (`object`) in the DOM by its ID (priority) or `name`. If the element is a canvas, then the object is instead the canvas's `CanvasRenderingContext2D`.
+The source name is the identifier of the source. It may refer to an element (`object`) in the DOM by its ID (priority) or `name`. If the element is a canvas, then the object is instead the canvas's `CanvasRenderingContext2D`; you can opt out of this with the `.reform:canvas-element` class.
 
 #### Dependencies
 

@@ -152,7 +152,10 @@ function findObjectByName (spec: SourceSpec): Object {
       element = elements[0] ?? null
     }
     const object =
-      element instanceof HTMLCanvasElement ? element.getContext('2d') : element
+      element instanceof HTMLCanvasElement &&
+      !element.classList.contains('reform:canvas-element')
+        ? element.getContext('2d')
+        : element
     const deps =
       (typeof spec !== 'string' && spec.deps) ||
       element?.dataset.deps?.split(' ') ||
@@ -189,16 +192,18 @@ export function on<T> (
     }
   }
 
-  const outputControls = element
-    ?.closest('.reform\\:io')
-    ?.querySelector('.output-controls')
-  if (outputControls) {
-    const output = OutputControls.fromWrapper(outputControls)
-    sources[name].dependents.push(file => {
-      if (file instanceof File || file instanceof OutputProvider) {
-        output.handleOutput(file)
-      }
-    })
+  if (!element.classList.contains('reform:io-ignore')) {
+    const outputControls = element
+      ?.closest('.reform\\:io')
+      ?.querySelector('.output-controls')
+    if (outputControls) {
+      const output = OutputControls.fromWrapper(outputControls)
+      sources[name].dependents.push(file => {
+        if (file instanceof File || file instanceof OutputProvider) {
+          output.handleOutput(file)
+        }
+      })
+    }
   }
 
   let lastCallId = 0
