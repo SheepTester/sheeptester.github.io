@@ -35,6 +35,7 @@
 - Add `reform:paste-target` to the file input class to allow it to receive files from paste.
 - Set `data-default` on the file input to the URL of a file to load by default.
 - For single-column outputs, I think output-controls should go before output-content.
+- Add `no-output-controls` to `reform:io` when there are no output controls.
 
 ### Image input
 
