@@ -13,8 +13,24 @@ export function App ({ rawJournals, rawNews }: AppProps) {
       segments
     ])
   )
-  const minDate = news[0].date
-  const maxDate = news[news.length - 1].date
+  const journals = parse(rawJournals)
+  const journalsMap = new Map(
+    journals.map(({ date, segments }): [string, Segment[]] => [
+      date.toString(),
+      segments
+    ])
+  )
+  const minDate =
+    Temporal.PlainDate.compare(news[0].date, journals[0].date) < 0
+      ? news[0].date
+      : journals[0].date
+  const maxDate =
+    Temporal.PlainDate.compare(
+      news[news.length - 1].date,
+      journals[journals.length - 1].date
+    ) > 0
+      ? news[news.length - 1].date
+      : journals[journals.length - 1].date
   const entries = []
   for (
     let date = minDate;
@@ -23,12 +39,26 @@ export function App ({ rawJournals, rawNews }: AppProps) {
   ) {
     const dateStr = date.toString()
     const news = newsMap.get(dateStr)
+    const journal = journalsMap.get(dateStr)
     entries.push(
       <Fragment key={dateStr}>
         <dt id={dateStr} suppressHydrationWarning>
           {date.toLocaleString([], { dateStyle: 'full' })}
         </dt>
-        <dd>{news ? <Segments segments={news} /> : null}</dd>
+        <dd>
+          {journal ? (
+            <p>
+              <Segments segments={journal} />
+            </p>
+          ) : null}
+        </dd>
+        <dd>
+          {news ? (
+            <p>
+              <em>Meanwhile</em>: <Segments segments={news} />
+            </p>
+          ) : null}
+        </dd>
       </Fragment>
     )
   }
@@ -47,11 +77,11 @@ type Segment =
   | { type: 'rel-link'; date: Temporal.PlainDate; content: string }
 function Segments ({ segments }: { segments: Segment[] }) {
   return (
-    <p>
+    <>
       {segments.map((segment, i) => {
         switch (segment.type) {
           case 'plain': {
-            return segment.content
+            return <Fragment key={i}>{segment.content}</Fragment>
           }
           case 'italics': {
             return <em key={i}>{segment.content}</em>
@@ -75,7 +105,7 @@ function Segments ({ segments }: { segments: Segment[] }) {
           }
         }
       })}
-    </p>
+    </>
   )
 }
 
