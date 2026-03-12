@@ -30,13 +30,13 @@
 '2026-01-20 W23_Tuesda': Solar radiation storm. Canadian PM Carney speech at Davos about “rupture” of “world order.”
 '2026-01-18 Sunday': Spain train crash.
 '2026-01-17 Saturda': Trump announces tariffs on European countries over Greenland.
-'2025-01-16 W22_Frida': Canada significantly reduces tariffs on Chinese EVs. X was down. ChatGPT to add ads.
-'2025-01-13 W22_Tuesda': Hytale early access.
-'2025-01-12 W22_Monda': Apple–Google Gemini deal.
-'2025-01-11 Sunda': Feds criminally investigate <a href="https://www.federalreserve.gov/newsevents/speech/powell20260111a.htm">Jerome Powell</a>.
-'2025-01-08 W21_Thursda': Federal agent shoots two people in Portland.
-'2025-01-07 W21_Wednesda': ICE agent shoots dead a US citizen.
-'2025-01-05 W21_Monday': Tim Walz won’t run for governor again. A Minneapolis Hilton cancels ICE reservations.
+'2026-01-16 W22_Frida': Canada significantly reduces tariffs on Chinese EVs. X was down. ChatGPT to add ads.
+'2026-01-13 W22_Tuesda': Hytale early access.
+'2026-01-12 W22_Monda': Apple–Google Gemini deal.
+'2026-01-11 Sunda': Feds criminally investigate <a href="https://www.federalreserve.gov/newsevents/speech/powell20260111a.htm">Jerome Powell</a>.
+'2026-01-08 W21_Thursda': Federal agent shoots two people in Portland.
+'2026-01-07 W21_Wednesda': ICE agent shoots dead a US citizen.
+'2026-01-05 W21_Monday': Tim Walz won’t run for governor again. A Minneapolis Hilton cancels ICE reservations.
 '2026-01-03 Saturday': Trump <a href="https://truthsocial.com/@realDonaldTrump/posts/115832088990838303">captures Maduro</a>, vows to run the country (for its oil).
 '2026-01-02 W20_Frida': Caracas explosions, probably the US’s doing.
 '2026-01-01 Thursday': Mamdani sworn in as mayor.
@@ -181,7 +181,7 @@
 '2025-06-16 Monda': Spike in Domino’s activity near the Pentagon. Trump leaves G7 summit early.
 
 # SP25
-'2025-06-17 W11D7': Minnesota shooting suspect, Vance Boelter, arrested. Anti-tourism protests in Europe, using water pistols.
+'2025-06-15 W11D7': Minnesota shooting suspect, Vance Boelter, arrested. Anti-tourism protests in Europe, using water pistols.
 '2025-06-14 W11D6': 'No Kings protests: two Minnesota lawmakers shot, a representative dead, a senator injured.'
 '2025-06-13 W11D5': US Marines detain citizen in LA. Iran retaliates with strikes on Israel.
 '2025-06-12 W11D4': Israel strikes Iran. Federal judge orders Trump to return control of California National Guard to Newsom. Discord, Cloudflare, Spotify affected by Google Cloud outage. US senator forcibly removed from Kristi Noem’s news conference.
@@ -356,7 +356,7 @@
 '2024-10-03 W1D4': Tina Peters sentenced to 9 years in prison for tampering with voting machines to prove the 2020 election was rigged.
 '2024-10-01 W1D2': Jimmy Carter turns 100.
 '2024-09-30 W1D1': Onion show starts again after a decade.
-'2024-09-27 W0D6': Hezbollah leader killed by Israeli airstrike in Beirut.
+'2024-09-28 W0D6': Hezbollah leader killed by Israeli airstrike in Beirut.
 '2024-09-27 W0D5': Professor McGonagall actor Maggie Smith dies.
 '2024-09-26 W0D4': Hurricane Helene in the Southern US. NYC mayor Eric Adams indicted; he gets free Turkish Airlines flights and is accused of ties to Turkish people.
 '2024-09-24 W0D2': Missouri executes Marcellus Williams.
@@ -408,7 +408,7 @@
 '2024-06-27 W01 Thursday': First presidential debate. Biden lost.
 '2024-06-26 W01 Wednesday': Bolivia coup attempt.
 '2024-06-25 W01 Tuesday': Streamer Dr DisRespect <a href="https://x.com/DrDisrespect/status/1805668256088572089">rambles a bunch</a> on Twitter.
-'2024-06-20 Thursday': Donald Sutherland from <em>Hunger Games</em> movies dies.
+# '2024-06-20 Thursday': Donald Sutherland from <em>Hunger Games</em> movies dies.
 
 # SP24
 '2024-06-20 W12D4': Donald Sutherland from <em>Hunger Games</em> movies dies.
@@ -450,10 +450,10 @@
 '2024-03-27 W12D2': Baltimore bridge collapse. Diddy’s house gets raided by the Feds.
 '2024-03-22 W11D5': Princess Kate has cancer. There was a scandal over her disappearance prior. Moscow Concert Hall shooting (in Russia).
 '2024-03-15 W10D5': The Boeing whistleblower who died said, “It’s not a suicide.” Boeing plane lands in Oregon because it lost a panel mid-air (many Boeing issues this week).
-'2023-03-14 W10D4': Pi day. Oxford High School shooter’s parents were convicted because they ignored their son’s mental illness.
-'2023-03-11 W10D1': Iron Lung guy dies.
-'2023-03-10 W9D7': 'Oscars: Al Pacino (an old guy) barely said anything and quickly just revealed the winner of something, Oppenheimer. The Jewish guy who made a Holocaust movie denounced Israel.' # should I italicize Oppenheimer or keep it as it was
-'2023-03-08 W9D5': International Women’s Day.
+'2024-03-14 W10D4': Pi day. Oxford High School shooter’s parents were convicted because they ignored their son’s mental illness.
+'2024-03-11 W10D1': Iron Lung guy dies.
+'2024-03-10 W9D7': 'Oscars: Al Pacino (an old guy) barely said anything and quickly just revealed the winner of something, Oppenheimer. The Jewish guy who made a Holocaust movie denounced Israel.' # should I italicize Oppenheimer or keep it as it was
+'2024-03-08 W9D5': International Women’s Day.
 '2024-03-07 W9D4': Akira Toriyama died. He made <em>Dragon Ball</em>.
 '2024-03-06 W9D3': Nikki Haley drops out.
 '2024-02-29 W8D4': Leap day.
@@ -658,8 +658,8 @@
 '2023-01-08, W0D7': Brazil did their own Jan 6.
 
 # FA22
-'2022-01-06, Fri': McCarthy is now the speaker of the House. A 6-year-old shot a teacher.
-'2022-01-04, Wed': Rain storm today and recently and in the following days. Some guy in a Tesla drove off a cliff with his family; he went to UCSD in his undergrad.
+'2023-01-06, Fri': McCarthy is now the speaker of the House. A 6-year-old shot a teacher.
+'2023-01-04, Wed': Rain storm today and recently and in the following days. Some guy in a Tesla drove off a cliff with his family; he went to UCSD in his undergrad.
 '2023-01-03, Tue': The House begins and fails to vote for a speaker, so members cannot be sworn in.
 '2023-01-01, Sun': New Year’s Day.
 '2022-12-31, Sat': New Year’s Eve.

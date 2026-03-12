@@ -1,5 +1,9 @@
-import { Fragment, useMemo } from 'react'
+import { Fragment } from 'react'
 import { Temporal } from 'temporal-polyfill'
+
+// SP22 to Tesla start (inclusive)
+const MIN_DATE = Temporal.PlainDate.from('2022-03-27')
+const MAX_DATE = Temporal.PlainDate.from('2025-08-18')
 
 export type AppProps = {
   rawJournals: Record<string, string>
@@ -7,39 +11,16 @@ export type AppProps = {
 }
 export function App ({ rawJournals, rawNews }: AppProps) {
   const news = parse(rawNews)
-  const newsMap = new Map(
-    news.map(({ date, segments }): [string, Segment[]] => [
-      date.toString(),
-      segments
-    ])
-  )
   const journals = parse(rawJournals)
-  const journalsMap = new Map(
-    journals.map(({ date, segments }): [string, Segment[]] => [
-      date.toString(),
-      segments
-    ])
-  )
-  const minDate =
-    Temporal.PlainDate.compare(news[0].date, journals[0].date) < 0
-      ? news[0].date
-      : journals[0].date
-  const maxDate =
-    Temporal.PlainDate.compare(
-      news[news.length - 1].date,
-      journals[journals.length - 1].date
-    ) > 0
-      ? news[news.length - 1].date
-      : journals[journals.length - 1].date
   const entries = []
   for (
-    let date = minDate;
-    Temporal.PlainDate.compare(date, maxDate) <= 0;
+    let date = MIN_DATE;
+    Temporal.PlainDate.compare(date, MAX_DATE) <= 0;
     date = date.add({ days: 1 })
   ) {
     const dateStr = date.toString()
-    const news = newsMap.get(dateStr)
-    const journal = journalsMap.get(dateStr)
+    const headline = news.get(dateStr)
+    const journal = journals.get(dateStr)
     entries.push(
       <Fragment key={dateStr}>
         <dt id={dateStr} suppressHydrationWarning>
@@ -53,9 +34,9 @@ export function App ({ rawJournals, rawNews }: AppProps) {
           ) : null}
         </dd>
         <dd>
-          {news ? (
+          {headline ? (
             <p>
-              <em>Meanwhile</em>: <Segments segments={news} />
+              <em>Meanwhile</em>: <Segments segments={headline} />
             </p>
           ) : null}
         </dd>
@@ -113,7 +94,9 @@ type Entry = {
   date: Temporal.PlainDate
   segments: Segment[]
 }
-function parse (rawData: Record<string, string | null>): Entry[] {
+function parse (
+  rawData: Record<string, string | null>
+): Map<string, Segment[]> {
   const parsed = Object.entries(rawData)
     .flatMap(([key, value]): Entry[] => {
       if (value === null) {
@@ -160,7 +143,15 @@ function parse (rawData: Record<string, string | null>): Entry[] {
       return [{ date: Temporal.PlainDate.from(dateMatch[0]), segments }]
     })
     .sort((a, b) => Temporal.PlainDate.compare(a.date, b.date))
-  return parsed.filter(
-    ({ date }, i) => i > 0 && !date.equals(parsed[i - 1].date)
+  return new Map(
+    parsed
+      .filter(({ date }, i) => {
+        const isDupe = i > 0 && date.equals(parsed[i - 1].date)
+        if (isDupe) {
+          console.error(`${date.toString()} is dupe`)
+        }
+        return !isDupe
+      })
+      .map(({ date, segments }) => [date.toString(), segments])
   )
 }
