@@ -1,13 +1,22 @@
-import { hydrateRoot } from 'react-dom/client'
-import { App, AppProps } from './App'
 import { StrictMode } from 'react'
+import { hydrateRoot } from 'react-dom/client'
+import { parse } from 'yaml'
+import { App, AppProps } from './App'
 import { Page } from './Page'
 
-export function render (root: HTMLElement, props: AppProps): void {
+export async function render (root: HTMLElement): Promise<void> {
+  const [rawJournals, rawNews] = await Promise.all([
+    fetch('./data.yml')
+      .then(r => r.text())
+      .then(parse),
+    fetch('./names.yml')
+      .then(r => r.text())
+      .then(parse)
+  ])
   hydrateRoot(
     root,
     <StrictMode>
-      <App {...props} />
+      <App rawJournals={rawJournals} rawNews={rawNews} />
     </StrictMode>
   )
 }

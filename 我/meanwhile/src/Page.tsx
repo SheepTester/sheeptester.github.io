@@ -22,7 +22,7 @@ export function Page (props: AppProps) {
         </div>
         <script type='module'>
           {`import { render } from './dist/index.mjs'
-          render(document.getElementById('root'), {})`}
+          render(document.getElementById('root'))`}
         </script>
       </body>
     </html>
