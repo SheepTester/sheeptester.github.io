@@ -14,6 +14,7 @@ export function Page (props: AppProps) {
         />
 
         <link rel='stylesheet' type='text/css' href='/sheep3.css' />
+        <link rel='stylesheet' type='text/css' href='./dist/index.css' />
         <script src='/sheep3.js'></script>
       </head>
       <body>

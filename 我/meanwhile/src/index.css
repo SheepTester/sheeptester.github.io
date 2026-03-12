@@ -1,0 +1,15 @@
+:root {
+  font-family: system-ui;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+  }
+}
+
+/* TEMP */
+body {
+  margin: 0 auto;
+  padding: 20px;
+  max-width: 800px;
+}

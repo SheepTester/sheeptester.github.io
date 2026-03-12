@@ -2,6 +2,7 @@ import { StrictMode } from 'react'
 import { hydrateRoot } from 'react-dom/client'
 import { parse } from 'yaml'
 import { App, AppProps } from './App'
+import './index.css'
 import { Page } from './Page'
 
 export async function render (root: HTMLElement): Promise<void> {
