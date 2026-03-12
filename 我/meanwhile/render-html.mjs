@@ -12,5 +12,5 @@ const [rawJournals, rawNews] = await Promise.all([
 ])
 await writeFile(
   new URL('./index.html', import.meta.url),
-  renderToString(createPage({ rawJournals, rawNews }))
+  '<!DOCTYPE html>' + renderToString(createPage({ rawJournals, rawNews }))
 )

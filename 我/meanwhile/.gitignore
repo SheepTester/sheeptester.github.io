@@ -1,1 +1,4 @@
 names.yml
+
+# Until hydration is necessary
+dist/

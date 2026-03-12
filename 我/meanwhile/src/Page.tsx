@@ -21,10 +21,10 @@ export function Page (props: AppProps) {
         <div id='root'>
           <App {...props} />
         </div>
-        <script type='module'>
+        {/* <script type='module'>
           {`import { render } from './dist/index.mjs'
           render(document.getElementById('root'))`}
-        </script>
+        </script> */}
       </body>
     </html>
   )

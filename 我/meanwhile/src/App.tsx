@@ -54,6 +54,7 @@ export function App ({ rawJournals, rawNews }: AppProps) {
 
 type Segment =
   | { type: 'plain' | 'italics' | 'code'; content: string }
+  | { type: 'person'; number: number }
   | { type: 'link'; url: string; content: string }
   | { type: 'rel-link'; date: Temporal.PlainDate; content: string }
 function Segments ({ segments }: { segments: Segment[] }) {
@@ -69,6 +70,9 @@ function Segments ({ segments }: { segments: Segment[] }) {
           }
           case 'code': {
             return <code key={i}>{segment.content}</code>
+          }
+          case 'person': {
+            return <Fragment key={i}>Billy</Fragment>
           }
           case 'link': {
             return (
@@ -109,7 +113,7 @@ function parse (
       }
       const segments: Segment[] = []
       const htmlRegex =
-        /<em>([^<]+)<\/em>|<code>([^<]+)<\/code>|<a href="([^"]+)">([^<]+)<\/a>/g
+        /<em>([^<]+)<\/em>|<code>([^<]+)<\/code>|<a href="([^"]+)">([^<]+)<\/a>|\b(P\d\d)\b/g
       let lastIndex = 0
       for (const match of value.matchAll(htmlRegex)) {
         if (match.index > lastIndex) {
@@ -134,6 +138,8 @@ function parse (
           } else {
             segments.push({ type: 'link', url: match[3], content: match[4] })
           }
+        } else if (match[5]) {
+          segments.push({ type: 'person', number: +match[5].slice(1) })
         }
         lastIndex = match.index + match[0].length
       }
