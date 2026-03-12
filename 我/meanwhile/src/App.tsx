@@ -47,6 +47,19 @@ export function App ({ rawJournals, rawNews }: AppProps) {
     <>
       <h1>Meanwhile</h1>
       <p>(WIP)</p>
+      <p>
+        something about, news headlines represent what felt like "current
+        topics" to me in the moment, usually written the day of (which can
+        reveal how things seemed back then), and intentionally reflect biases in
+        my news sources&mdash;general hearsay/convo topics, friends with
+        algorithms tuned to US politics, stories on instagram, twitter (until
+        their trending tab changed), r/all (until it got overrun by bots),
+        r/UCSD, google feed. intention is to see what actually ends up having
+        long term impact, and what gets forgotten. these are written to add
+        context to what has been going on in the background of my day to day
+        life
+      </p>
+      <p>if an entry is blank, nothing interesting happened that day</p>
       <dl>{entries}</dl>
     </>
   )
