@@ -1,3 +1,6 @@
+// TEMP: Remove in Node 26(?)
+import 'temporal-polyfill/global'
+
 import { readFile, writeFile } from 'fs/promises'
 import { renderToString } from 'react-dom/server'
 import YAML from 'yaml'

@@ -9,7 +9,7 @@ export async function render (root: HTMLElement): Promise<void> {
     fetch('./data.yml')
       .then(r => r.text())
       .then(parse),
-    fetch('./names.yml')
+    fetch('./news.yml')
       .then(r => r.text())
       .then(parse)
   ])

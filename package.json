@@ -18,6 +18,7 @@
     "pngquant-bin": "^6.0.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "temporal-polyfill": "^0.3.2",
     "xml2js": "^0.4.23",
     "yaml": "^1.10.2"
   },
