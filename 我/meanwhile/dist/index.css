@@ -1,1 +1,1 @@
-:root{font-family:system-ui}@media (prefers-color-scheme: dark){:root{color-scheme:dark}}body{margin:0 auto;padding:20px;max-width:800px}
+:root{color-scheme:dark}body{margin:0 auto;padding:20px;max-width:800px;font-family:Inter,system-ui,sans-serif;background-color:#020917;color:#fff}h1{font-family:"Instrument Serif",Impact,serif;font-weight:400;font-size:80px;text-align:center;margin:0}

@@ -13,6 +13,12 @@ export function Page (props: AppProps) {
           content='An art piece contrasting my university life with the interesting times happening around me.'
         />
 
+        <link rel='preconnect' href='https://fonts.googleapis.com' />
+        <link rel='preconnect' href='https://fonts.gstatic.com' />
+        <link
+          href='https://fonts.googleapis.com/css2?family=Instrument+Serif&family=Inter&display=swap'
+          rel='stylesheet'
+        />
         <link rel='stylesheet' type='text/css' href='/sheep3.css' />
         <link rel='stylesheet' type='text/css' href='./dist/index.css' />
         <script src='/sheep3.js'></script>
