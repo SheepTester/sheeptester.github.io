@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Keep screen on</title>
+    <meta
+      name="description"
+      content="Prevents your screen from turning off by caffeinating it with the Screen Wake Lock API."
+    />
+
+    <link
+      rel="preload"
+      href="./eye-normal.png"
+      as="image"
+      fetchpriority="high"
+    />
+    <link
+      rel="preload"
+      href="./eye-caffeinated.png"
+      as="image"
+      fetchpriority="high"
+    />
+
+    <link rel="stylesheet" type="text/css" href="/sheep3.css" />
+    <script src="/sheep3.js" charset="utf-8"></script>
+
+    <style>
+      :root {
+        color-scheme: dark;
+      }
+      html,
+      body {
+        height: 100%;
+      }
+      body {
+        margin: 0;
+        background-color: #212121;
+        color: white;
+        font-family: system-ui, 'Helvetica Neue', Helvetica, sans-serif;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        transition: background-color 0.5s;
+        text-align: center;
+      }
+      .caffeinated {
+        background-color: black;
+      }
+      img {
+        display: none;
+        image-rendering: pixelated;
+        image-rendering: crisp-edges;
+        aspect-ratio: 143 / 93;
+        width: 400px;
+        max-width: 100%;
+      }
+      .normal #normal,
+      .caffeinated #caffeinated {
+        display: block;
+      }
+      button {
+        background: none;
+        border: 1px solid white;
+        border-radius: 10px;
+        padding: 15px 20px;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        cursor: pointer;
+        transition: background-color 0.2s;
+      }
+      button:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+      }
+      button:disabled {
+        opacity: 0.5;
+      }
+      h1 {
+        margin: 0;
+        font-size: 1em;
+        font-weight: normal;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+      }
+    </style>
+  </head>
+  <body class="normal">
+    <h1 id="status">Your screen can sleep</h1>
+    <img src="./eye-normal.png" alt="Normal eye" id="normal" />
+    <img src="./eye-caffeinated.png" alt="Eye wide awake" id="caffeinated" />
+    <button id="btn">Keep screen awake</button>
+    <script>
+      // Sounds from
+      // https://sheeptester.github.io/hello-world/offline-online-noise-maker.html
+      const base =
+        window.location.protocol === 'http:'
+          ? 'https://sheeptester.github.io/'
+          : window.location.href
+      const offline = new Audio(
+        new URL('/hello-world/test/a/s/s/e/t/s/offline.mp3', base)
+      )
+      const online = new Audio(
+        new URL('/hello-world/test/a/s/s/e/t/s/online.mp3', base)
+      )
+
+      const status = document.getElementById('status')
+      const btn = document.getElementById('btn')
+      let sentinel
+      btn.addEventListener('click', async () => {
+        if (sentinel) {
+          await sentinel.release()
+          sentinel = null
+        } else {
+          try {
+            sentinel = await navigator.wakeLock.request()
+            document.body.classList.add('caffeinated')
+            document.body.classList.remove('normal')
+            btn.textContent = 'Let screen sleep'
+            status.textContent = 'Keeping your screen awake'
+            sentinel.addEventListener('release', () => {
+              document.body.classList.add('normal')
+              document.body.classList.remove('caffeinated')
+              btn.textContent = 'Keep screen awake'
+              status.textContent = 'Your screen can sleep'
+              online.currentTime = 0
+              online.play()
+            })
+            offline.currentTime = 0
+            offline.play()
+          } catch (error) {
+            console.log(error)
+            btn.textContent = 'Cannot keep screen awake'
+            btn.disabled = true
+            sentinel = null
+          }
+        }
+      })
+    </script>
+  </body>
+</html>
