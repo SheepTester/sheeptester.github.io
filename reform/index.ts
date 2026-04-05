@@ -130,7 +130,7 @@ type Dep = {
 }
 type Object = {
   name: string
-  element: HTMLElement
+  element: HTMLElement | null
   object: HTMLElement | CanvasRenderingContext2D | null
   deps: Dep[]
 }
@@ -192,9 +192,9 @@ export function on<T> (
     }
   }
 
-  if (!element.classList.contains('reform:io-ignore')) {
+  if (element && !element.classList.contains('reform:io-ignore')) {
     const outputControls = element
-      ?.closest('.reform\\:io')
+      .closest('.reform\\:io')
       ?.querySelector('.output-controls')
     if (outputControls) {
       const output = OutputControls.fromWrapper(outputControls)
