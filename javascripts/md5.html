@@ -221,7 +221,8 @@ password</textarea
             textContent: file.name
           })
           const fileChecksum = Object.assign(document.createElement('td'), {
-            className: 'code checksum'
+            className: 'code checksum',
+            textContent: '...'
           })
           const fileSize = document.createElement('td')
           fileSize.append(...displayBytes(file.size))
