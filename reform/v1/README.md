@@ -258,7 +258,7 @@ This is used by [font-colour-remover](https://sheeptester.github.io/javascripts/
 </label>
 ```
 
-### Range
+### Range (number input)
 
 ```html
 <div class="field-label range-wrapper">
@@ -267,9 +267,7 @@ This is used by [font-colour-remover](https://sheeptester.github.io/javascripts/
     <input type="range" name="TODO" min="TODO" max="TODO" value="TODO" />
   </label>
   <input
-    type="text"
-    inputmode="numeric"
-    pattern="[0-9]*"
+    type="number"
     name="TODO"
     min="TODO"
     max="TODO"

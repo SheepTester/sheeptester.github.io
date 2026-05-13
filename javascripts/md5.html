@@ -27,6 +27,7 @@
         border-radius: 10px;
         width: 100%;
         word-break: break-word;
+        table-layout: fixed;
 
         th {
           text-align: left;
@@ -42,7 +43,6 @@
 
         tr :nth-child(2) {
           white-space: pre;
-          width: min(calc(32ch + 30px), 60%);
         }
         .checksum {
           overflow: hidden;
@@ -55,6 +55,12 @@
       }
       .faded {
         color: var(--secondary);
+      }
+      .checksum-col {
+        width: calc(32ch + 30px);
+        @media (max-width: 700px) {
+          width: 40%;
+        }
       }
     </style>
   </head>
@@ -126,6 +132,11 @@ password</textarea
       </div>
 
       <table id="table">
+        <colgroup>
+          <col />
+          <col class="code checksum-col" />
+          <col />
+        </colgroup>
         <thead>
           <tr>
             <th>File name</th>
