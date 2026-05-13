@@ -3,15 +3,17 @@ import { displayBytes, DONE_TIMEOUT, fileName } from './utils'
 
 const encoder = new TextEncoder()
 
-function selectItem<T extends { type: string }> (
+function filterItems<T extends { type: string }> (
   items: T[],
   preferredTypes: string[]
-): T {
-  return (
-    items.find(({ type }) =>
-      preferredTypes.some(prefix => type.startsWith(prefix))
-    ) ?? items[0]
+): T[] {
+  if (preferredTypes.length === 0) {
+    return items
+  }
+  const filtered = items.filter(({ type }) =>
+    preferredTypes.some(prefix => type.startsWith(prefix))
   )
+  return filtered.length === 0 ? items : filtered
 }
 function getDataTransfer (
   item: DataTransferItem
@@ -28,8 +30,8 @@ type FileInputOptions = {
   pasteTarget: boolean
   pasteButton: HTMLButtonElement | null
   defaultPreferredTypes: string[]
-  /** Returns whether the file was accepted. */
-  onFile: (file: File | string) => Promise<boolean | void>
+  /** Returns whether the files were accepted. */
+  onFiles: (files: (File | string)[]) => Promise<boolean | void>
 }
 function handleFileInput ({
   fileName,
@@ -38,7 +40,7 @@ function handleFileInput ({
   pasteTarget,
   pasteButton,
   defaultPreferredTypes,
-  onFile
+  onFiles
 }: FileInputOptions): void {
   const preferredTypes = input.accept
     ? input.accept.replaceAll('*', '').split(',')
@@ -50,36 +52,54 @@ function handleFileInput ({
     | { type: 'data-transfer'; transfer: DataTransfer }
     | { type: 'clipboard'; items: { item: ClipboardItem; type: string }[] }
   async function handleFile (data: FileToHandle): Promise<void> {
-    let file
+    let files
     switch (data.type) {
       case 'files': {
-        file = selectItem(Array.from(data.files), preferredTypes)
+        files = filterItems(Array.from(data.files), preferredTypes)
         break
       }
       case 'data-transfer': {
-        file = await getDataTransfer(
-          selectItem(Array.from(data.transfer.items), preferredTypes)
-        )
+        files = (
+          await Promise.all(
+            filterItems(Array.from(data.transfer.items), preferredTypes).map(
+              getDataTransfer
+            )
+          )
+        ).filter(file => file !== null)
         break
       }
       case 'clipboard': {
-        const { item, type } = selectItem(data.items, preferredTypes)
-        const blob = await item.getType(type)
-        file = new File([blob], type.replaceAll('/', '_'), {
-          type: blob.type
-        })
+        files = await Promise.all(
+          filterItems(data.items, preferredTypes).map(
+            async ({ item, type }) => {
+              const blob = await item.getType(type)
+              return new File([blob], type.replaceAll('/', '_'), {
+                type: blob.type
+              })
+            }
+          )
+        )
         break
       }
     }
-    if (file === null) {
+    if (files.length === 0) {
       return
     }
     const fileNameContent =
-      file instanceof File
-        ? `${file.name} · ${displayBytes(file.size)}`
-        : `Plain text · ${displayBytes(encoder.encode(file).length)}`
+      input.multiple && files.length > 1
+        ? `${files.length} files · ${displayBytes(
+          files.reduce(
+            (cum, curr) =>
+              cum +
+              (curr instanceof File ? curr.size : encoder.encode(curr).length),
+            0
+          )
+        )} total`
+        : files[0] instanceof File
+          ? `${files[0].name} · ${displayBytes(files[0].size)}`
+          : `Plain text · ${displayBytes(encoder.encode(files[0]).length)}`
     try {
-      const accepted = (await onFile(file)) ?? true
+      const accepted = (await onFiles(files)) ?? true
       if (accepted && fileName) {
         fileName.textContent = fileNameContent
         fileName.classList.remove('file-error')
@@ -180,8 +200,8 @@ function handleFileInput ({
   })
 }
 
-export function handleSingleFileInput (
-  source: Source<File>,
+export function handleRawFileInput (
+  source: Source<File | File[]>,
   input: HTMLInputElement
 ): void {
   input.dataset.ignore = 'true'
@@ -194,12 +214,13 @@ export function handleSingleFileInput (
     pasteTarget: input.classList.contains('reform:paste-target'),
     pasteButton,
     defaultPreferredTypes: [],
-    onFile: async file => {
-      source.handleValue(
+    onFiles: async maybeFiles => {
+      const files = maybeFiles.map(file =>
         file instanceof File
           ? file
           : new File([file], 'text.txt', { type: 'text/plain' })
       )
+      source.handleValue(input.multiple ? files : files[0])
     }
   })
 }
@@ -232,7 +253,7 @@ export function handleImageInput (
     pasteTarget: input.classList.contains('reform:paste-target') ?? false,
     pasteButton,
     defaultPreferredTypes: ['image/*'],
-    onFile: async file => {
+    onFiles: async ([file]) => {
       if (typeof file === 'string') {
         return false
       }
@@ -279,7 +300,7 @@ export function handleVideoInput (
     pasteTarget: input.classList.contains('reform:paste-target'),
     pasteButton,
     defaultPreferredTypes: ['video/*'],
-    onFile: async file => {
+    onFiles: async ([file]) => {
       if (typeof file === 'string') {
         return false
       }
@@ -319,7 +340,7 @@ export function handleTextInput (
     pasteTarget: input.classList.contains('reform:paste-target'),
     pasteButton,
     defaultPreferredTypes: ['text/plain'],
-    onFile: async file => {
+    onFiles: async ([file]) => {
       const text = file instanceof File ? await file.text() : file
       if (textarea instanceof HTMLTextAreaElement) {
         textarea.value = text

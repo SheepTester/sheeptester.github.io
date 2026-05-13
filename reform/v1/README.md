@@ -37,6 +37,72 @@
 - For single-column outputs, I think output-controls should go before output-content.
 - Add `no-output-controls` to `reform:io` when there are no output controls.
 
+### Example: Image-to-image (accept pastes)
+
+```html
+<div class="two-col-io reform:io">
+  <label class="input-controls file">
+    <input
+      type="file"
+      name="TODO"
+      accept="image/*"
+      class="hidden-accessible reform:image-input reform:paste-target"
+      data-default="TODO"
+    />
+    <span class="icon icon-upload"></span>
+    <span class="file-label">Choose or drop TODO</span>
+    <span class="file-name">No file selected</span>
+  </label>
+  <div class="image-content input-content"><canvas></canvas></div>
+  <div class="image-content output-content">
+    <canvas id="TODO" data-deps="TODO"></canvas>
+  </div>
+  <div class="output-controls">
+    <a class="file download">
+      <span class="icon icon-download"></span>
+      <span class="file-label">Download</span>
+      <span class="file-name">No file available</span>
+    </a>
+    <button type="button" class="icon icon-copy" aria-label="Copy"></button>
+    <button type="button" class="icon icon-share" aria-label="Share"></button>
+  </div>
+</div>
+```
+
+### Example: Text-to-text
+
+```html
+<div class="two-col-io reform:io">
+  <label class="input-controls file">
+    <input
+      type="file"
+      name="TODO"
+      class="hidden-accessible reform:text-input"
+    />
+    <span class="icon icon-upload"></span>
+    <span class="file-label">Choose or drop TODO or type below</span>
+    <span class="file-name">No file selected</span>
+  </label>
+  <textarea name="TODO" aria-label="TODO" class="input-content">TODO</textarea>
+  <textarea
+    class="output-content"
+    id="TODO"
+    data-deps="TODO"
+    aria-label="TODO"
+    readonly
+  ></textarea>
+  <div class="output-controls">
+    <a class="file download">
+      <span class="icon icon-download"></span>
+      <span class="file-label">Download</span>
+      <span class="file-name">No file available</span>
+    </a>
+    <button type="button" class="icon icon-copy" aria-label="Copy"></button>
+    <button type="button" class="icon icon-share" aria-label="Share"></button>
+  </div>
+</div>
+```
+
 ### Image input
 
 ```html
@@ -116,7 +182,7 @@
 <div class="col-io reform:io">TODO</div>
 ```
 
-### File I/O, no preview
+### File input (and output), no preview
 
 - Note the use of `no-contents`.
 - As used in [Byte sorter](https://sheeptester.github.io/javascripts/byte-sorter.html) and [schedule maker](https://sheeptester.github.io/words-go-here/misc/schedulemaker.html).
@@ -372,8 +438,9 @@ Here are the special input sources:
   - The video element's `data-name` attribute is set to the file name without the extension.
 - `input.reform:text-input`: Enables text input handling.
   - Produces a string.
-- `input.reform:file-input`: Enables single file input handling.
-  - Produces a `File`.
+- `input.reform:file-input`: Enables file input handling.
+  - Produces a single `File` by default.
+  - Produces a non-empty `File[]` if the file input is `multiple`.
 - `canvas.reform:canvas-element`: Forces the source object to be a canvas element (like other HTML elements) rather than creating a 2D context.
 - `.reform:io-ignore`: Prevents the element's output from being attached to its ancestor output controls (e.g. if the real output is handled by a hidden sibling element).
 

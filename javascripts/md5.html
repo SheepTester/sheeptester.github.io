@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>MD5</title>
+    <meta name="description" content="Get the md5 hash/checksum of a file" />
+    <meta name="theme-color" content="#4fa1a7" />
+
+    <link rel="stylesheet" type="text/css" href="/sheep3.css" />
+    <link rel="stylesheet" type="text/css" href="/reform/v1/index.css" />
+    <script src="/sheep3.js" charset="utf-8"></script>
+
+    <style>
+      textarea.input-content,
+      textarea.output-content {
+        min-height: 100px;
+      }
+
+      #table {
+        margin-left: auto;
+        margin-right: auto;
+        max-width: 800px;
+        border: 1px solid var(--line);
+        border-spacing: 0;
+        border-radius: 10px;
+        width: 100%;
+        word-break: break-word;
+
+        th {
+          text-align: left;
+        }
+        th,
+        td {
+          padding: 5px 15px;
+        }
+
+        tbody tr:first-child td {
+          border-top: 1px solid var(--line);
+        }
+
+        tr :nth-child(2) {
+          white-space: pre;
+          width: min(calc(32ch + 30px), 60%);
+        }
+        .checksum {
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
+        tr :last-child {
+          text-align: end;
+        }
+      }
+      .faded {
+        color: var(--secondary);
+      }
+    </style>
+  </head>
+  <body>
+    <form class="main" role="main" action="javascript:">
+      <h1>MD5</h1>
+      <p>
+        Get the
+        <a href="https://en.wikipedia.org/wiki/MD5" class="link">MD5 hash</a> of
+        text.
+      </p>
+
+      <div class="two-col-io reform:io">
+        <label class="input-controls file">
+          <input
+            type="file"
+            name="text"
+            class="hidden-accessible reform:text-input"
+          />
+          <span class="icon icon-upload"></span>
+          <span class="file-label"
+            >Choose or drop a text file or type below</span
+          >
+          <span class="file-name">No file selected</span>
+        </label>
+        <textarea name="text" aria-label="Text" class="input-content">
+password</textarea
+        >
+        <textarea
+          class="output-content code"
+          id="hash"
+          data-deps="text"
+          aria-label="md5 hash of text"
+          readonly
+        ></textarea>
+        <div class="output-controls">
+          <a class="file download">
+            <span class="icon icon-download"></span>
+            <span class="file-label">Download</span>
+            <span class="file-name">No file available</span>
+          </a>
+          <button
+            type="button"
+            class="icon icon-copy"
+            aria-label="Copy"
+          ></button>
+          <button
+            type="button"
+            class="icon icon-share"
+            aria-label="Share"
+          ></button>
+        </div>
+      </div>
+
+      <p>Or get the checksum of files to see if they're identical.</p>
+
+      <div class="col-io reform:io no-contents">
+        <label class="input-controls file">
+          <input
+            type="file"
+            name="files"
+            class="hidden-accessible reform:file-input"
+            multiple
+          />
+          <span class="icon icon-upload"></span>
+          <span class="file-label">Choose or drop files</span>
+          <span class="file-name">No file selected</span>
+        </label>
+      </div>
+
+      <table id="table">
+        <thead>
+          <tr>
+            <th>File name</th>
+            <th>Checksum</th>
+            <th>Size (bytes)</th>
+          </tr>
+        </thead>
+        <tbody id="checksums" data-deps="files"></tbody>
+      </table>
+    </form>
+
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/spark-md5/3.0.2/spark-md5.min.js"
+      integrity="sha512-iWbxiCA4l1WTD0rRctt/BfDEmDC5PiVqFc6c1Rhj/GKjuj6tqrjrikTw3Sypm/eEgMa7jSOS9ydmDlOtxJKlSQ=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <script type="module">
+      import { on, Out } from '/reform/v1/index.js'
+
+      on('hash', (textarea, { text }) =>
+        Out.from('md5-hash.txt', (textarea.value = SparkMD5.hash(text)))
+      )
+
+      export function displayBytes (bytes) {
+        let spaced = ''
+        let decimal = bytes
+        do {
+          const next = Math.floor(decimal / 1000)
+          if (next) {
+            spaced = `\u2009${(decimal % 1000)
+              .toString()
+              .padStart(3, '0')}${spaced}`
+          } else {
+            spaced = `${decimal}${spaced}`
+          }
+          decimal = next
+        } while (decimal)
+
+        const bytesBigInt = BigInt(bytes)
+        const kib = bytesBigInt >> 10n
+        if (!kib) {
+          // If less than a kibibyte, don't show anything
+          return [spaced]
+        }
+        const mib = kib >> 10n
+        if (!mib) {
+          return [
+            Object.assign(document.createElement('span'), {
+              textContent: `(${kib} KiB)`,
+              className: 'faded'
+            }),
+            ` ${spaced}`
+          ]
+        }
+        const gib = mib >> 10n
+        if (!gib) {
+          return [
+            Object.assign(document.createElement('span'), {
+              textContent: `(${mib} MiB)`,
+              className: 'faded'
+            }),
+            ` ${spaced}`
+          ]
+        }
+        return [
+          Object.assign(document.createElement('span'), {
+            textContent: `(${gib} GiB)`,
+            className: 'faded'
+          }),
+          ` ${spaced}`
+        ]
+      }
+
+      on('checksums', (tbody, { files, ...rest }) => {
+        const fragment = document.createDocumentFragment()
+        for (const file of files) {
+          const tr = document.createElement('tr')
+          fragment.append(tr)
+
+          const fileName = Object.assign(document.createElement('td'), {
+            textContent: file.name
+          })
+          const fileChecksum = Object.assign(document.createElement('td'), {
+            className: 'code checksum'
+          })
+          const fileSize = document.createElement('td')
+          fileSize.append(...displayBytes(file.size))
+          tr.append(fileName, fileChecksum, fileSize)
+
+          Promise.try(async () => {
+            const spark = new SparkMD5.ArrayBuffer()
+            for await (const chunk of file.stream()) {
+              spark.append(chunk)
+            }
+            fileChecksum.textContent = spark.end()
+          })
+        }
+        tbody.prepend(fragment)
+      })
+    </script>
+  </body>
+</html>

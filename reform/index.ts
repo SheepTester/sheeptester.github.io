@@ -2,7 +2,7 @@ import './reform.css'
 import './src/handle-error'
 import {
   handleImageInput,
-  handleSingleFileInput,
+  handleRawFileInput,
   handleTextInput,
   handleVideoInput
 } from './src/inputs'
@@ -106,7 +106,7 @@ for (const input of document.getElementsByClassName('reform:file-input')) {
     continue
   }
   sources[input.name] ??= new Source()
-  handleSingleFileInput(sources[input.name], input)
+  handleRawFileInput(sources[input.name], input)
 }
 
 for (const form of document.forms) {
