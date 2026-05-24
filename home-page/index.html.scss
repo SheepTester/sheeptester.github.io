@@ -35,8 +35,7 @@ css {
   }
 }
 
-html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"]
-{
+html[prefix='og: http://ogp.me/ns/website#'][lang='en'][dir='ltr'] {
   head {
     meta[charset='UTF-8'] {
     }
@@ -68,11 +67,9 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"]
     }
     meta[property='og:type'][content='website'] {
     }
-    meta[property="og:url"][content="https://sheeptester.github.io/"]
-    {
+    meta[property='og:url'][content='https://sheeptester.github.io/'] {
     }
-    meta[property="og:image"][content="https://sheeptester.github.io/home-page/preview/opengraph.png"]
-    {
+    meta[property='og:image'][content='https://sheeptester.github.io/home-page/preview/opengraph.png'] {
     }
     meta[property='og:description'][content='A directory of some things I made.'] {
     }
@@ -84,11 +81,9 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"]
     }
     meta[name='twitter:description'][content='A directory of some things I made.'] {
     }
-    meta[name="twitter:image"][content="https://sheeptester.github.io/home-page/preview/opengraph.png"]
-    {
+    meta[name='twitter:image'][content='https://sheeptester.github.io/home-page/preview/opengraph.png'] {
     }
-    link[rel="canonical"][href="https://sheeptester.github.io/"]
-    {
+    link[rel='canonical'][href='https://sheeptester.github.io/'] {
     }
 
     // Other icons from http://realfavicongenerator.net/
@@ -124,9 +119,10 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"]
     body {
       display: flex;
       flex-direction: column;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
-        'Helvetica Neue', Arial, sans-serif, 'Apple Color Emoji',
-        'Segoe UI Emoji', 'Segoe UI Symbol';
+      font-family:
+        -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue',
+        Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+        'Segoe UI Symbol';
       margin: 0;
       background-color: #171931;
       color: rgba(255, 255, 255, 0.7);
@@ -135,8 +131,8 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"]
     }
     code,
     pre {
-      font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo,
-        monospace;
+      font-family:
+        'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
     }
   }
   @media (min-width: 1000px) {
@@ -309,8 +305,7 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"]
           }
         }
       }
-      svg.logo[xmlns="http://www.w3.org/2000/svg"][viewBox="0 0 480 480"][width="45"][aria-hidden="true"]
-      {
+      svg.logo[xmlns='http://www.w3.org/2000/svg'][viewBox='0 0 480 480'][width='45'][aria-hidden='true'] {
         $path: '\
           M90 90\
           a50 50 0 0 0 0 100\
@@ -900,8 +895,7 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"]
           }
         }
         content: ' ';
-        a.block-link[href="https://discord.gg/srtYgbVw4H"]
-        {
+        a.block-link[href='https://discord.gg/srtYgbVw4H'] {
           span.block-link-content {
             span.block-link-title {
               content: 'Contact me through Discord';
@@ -921,8 +915,7 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"]
           }
         }
         content: ' ';
-        a.block-link.no-subtitle[href="https://www.instagram.com/sheeptester/"]
-        {
+        a.block-link.no-subtitle[href='https://www.instagram.com/sheeptester/'] {
           span.block-link-content {
             span.block-link-title {
               content: 'Follow me on Instagram';
@@ -1023,13 +1016,11 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"]
       }
       p.projects-note {
         content: 'There’s some more on ';
-        a.link[href="https://scratch.mit.edu/users/Sheep_maker/"]
-        {
+        a.link[href='https://scratch.mit.edu/users/Sheep_maker/'] {
           content: 'Scratch';
         }
         content: ' and ';
-        a.link[href="https://github.com/SheepTester?tab=repositories"]
-        {
+        a.link[href='https://github.com/SheepTester?tab=repositories'] {
           content: 'GitHub';
         }
         content: '.';
@@ -1162,10 +1153,15 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"]
         @each $tag, $tag-data in $tags {
           css {
             .base-tag {
-              background-position: center, 30px 30px, 0 0;
+              background-position:
+                center,
+                30px 30px,
+                0 0;
               background-repeat: no-repeat;
               background-size: 75%, 75%, auto;
-              transition: opacity 0.5s, background-position 0.2s;
+              transition:
+                opacity 0.5s,
+                background-position 0.2s;
             }
           }
           css {
@@ -1176,7 +1172,8 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"]
           @if not map.get($tag-data, 'dark') {
             css {
               .tag-#{$tag} {
-                background-image: url('/home-page/icons/tag-#{$tag}.svg'),
+                background-image:
+                  url('/home-page/icons/tag-#{$tag}.svg'),
                   url('/home-page/icons/feather-check.svg'),
                   linear-gradient(
                     150deg,
@@ -1189,7 +1186,8 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"]
           @if map.get($tag-data, 'dark') {
             css {
               .tag-#{$tag} {
-                background-image: url('/home-page/icons/tag-#{$tag}.svg'),
+                background-image:
+                  url('/home-page/icons/tag-#{$tag}.svg'),
                   url('/home-page/icons/feather-check-black.svg'),
                   linear-gradient(
                     150deg,
@@ -1212,13 +1210,17 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"]
               height: 30px;
               padding: 3px;
               box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
-              transition: background-color 0.2s, color 0.2s;
+              transition:
+                background-color 0.2s,
+                color 0.2s;
             }
             .filter-tag:hover {
               background-color: #1f2e3f;
             }
             .filter-checkbox:focus-visible + .filter-tag {
-              box-shadow: 0 0 0 1px black, 0 0 0 2px white;
+              box-shadow:
+                0 0 0 1px black,
+                0 0 0 2px white;
             }
             .filter-checkbox:checked + .filter-tag {
               background-color: white;
@@ -1234,7 +1236,10 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"]
             }
             css {
               .filter-checkbox:checked + .filter-tag .tag-#{$tag} {
-                background-position: -30px -30px, center, 0 0;
+                background-position:
+                  -30px -30px,
+                  center,
+                  0 0;
               }
             }
             span.filter-tag-icon.base-tag.tag-#{$tag} {
@@ -1398,7 +1403,8 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"]
       css {
         .desc-visit {
           border: 1px solid transparent;
-          background-image: linear-gradient(#171931, #171931),
+          background-image:
+            linear-gradient(#171931, #171931),
             linear-gradient(135deg, #20de88, #28bbe8);
           background-origin: border-box;
           background-clip: padding-box, border-box;
@@ -1460,26 +1466,22 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"]
         }
         p {
           content: 'It seems you do not have an ad blocker installed. I recommend ';
-          a.link[href='https://ublockorigin.com/']
-          {
+          a.link[href='https://ublockorigin.com/'] {
             content: 'uBlock Origin';
           }
           content: '.';
         }
         p {
           content: 'If you use Chrome, please switch to ';
-          a.link[href='https://www.firefox.com/']
-          {
+          a.link[href='https://www.firefox.com/'] {
             content: 'Firefox';
           }
           content: ' to give ';
-          a.link[href='https://privacysandbox.google.com/']
-          {
+          a.link[href='https://privacysandbox.google.com/'] {
             content: 'Google less leverage over the internet';
           }
           content: ', or use ';
-          a.link[href='https://chromewebstore.google.com/detail/ublock-origin-lite/ddkjiahejlhfcafbddmgiahcphecmpfh']
-          {
+          a.link[href='https://chromewebstore.google.com/detail/ublock-origin-lite/ddkjiahejlhfcafbddmgiahcphecmpfh'] {
             content: 'uBlock Origin Lite';
           }
           content: '.';
@@ -1504,13 +1506,11 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"]
         }
         p {
           content: 'Yang-Yang is the namesake of ';
-          a.link[href="https://scratch.mit.edu/users/Yang-Yang2/"]
-          {
+          a.link[href='https://scratch.mit.edu/users/Yang-Yang2/'] {
             content: 'my first Scratch account';
           }
           content: ', and I named its test account ';
-          a.link[href="https://scratch.mit.edu/users/Sheep_tester/"]
-          {
+          a.link[href='https://scratch.mit.edu/users/Sheep_tester/'] {
             content: '@Sheep_tester';
           }
           content: '. “Sheep Tester” was meant to mean “a sheep who tests,” but people seem to interpret it as “one who tests sheep.”';
@@ -1533,13 +1533,11 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"]
         p.legal {
           content: 'This website uses cookies. By continuing, you accept the use of cookies. ';
           content: 'This website may contain chemicals known to the State of California to cause cancer and birth defects or other reproductive harm. For more information: ';
-          a.link[href="https://www.p65warnings.ca.gov/"]
-          {
+          a.link[href='https://www.p65warnings.ca.gov/'] {
             content: 'www.P65Warnings.ca.gov';
           }
           content: ' Most content on this website is licensed under the ';
-          a.link[href="https://github.com/SheepTester/sheeptester.github.io/blob/master/LICENSE"]
-          {
+          a.link[href='https://github.com/SheepTester/sheeptester.github.io/blob/master/LICENSE'] {
             content: 'MIT license';
           }
           content: ', unless otherwise noted. ';
@@ -1608,36 +1606,30 @@ html[prefix="og: http://ogp.me/ns/website#"][lang="en"][dir="ltr"]
       .footer-content {
         p[style='text-align: center;'] {
           content: '[';
-          a[href="https://pink10000.github.io/ringfairy/sheeptester/previous/"]
-          {
+          a[href='https://pink10000.github.io/ringfairy/sheeptester/previous/'] {
             content: 'prev';
           }
           content: '] [';
-          a[href="https://pink10000.github.io/ringfairy/"]
-          {
+          a[href='https://pink10000.github.io/ringfairy/'] {
             content: 'upbring';
           }
           content: '] [';
-          a[href="https://pink10000.github.io/ringfairy/sheeptester/next/"]
-          {
+          a[href='https://pink10000.github.io/ringfairy/sheeptester/next/'] {
             content: 'next';
           }
           content: ']';
         }
         p[style='text-align: center;'] {
           content: '[';
-          a[href="https://pink10000.github.io/gathering/sheeptester/previous/"]
-          {
+          a[href='https://pink10000.github.io/gathering/sheeptester/previous/'] {
             content: 'prev';
           }
           content: '] [';
-          a[href="https://pink10000.github.io/gathering/"]
-          {
+          a[href='https://pink10000.github.io/gathering/'] {
             content: 'gathering';
           }
           content: '] [';
-          a[href="https://pink10000.github.io/gathering/sheeptester/next/"]
-          {
+          a[href='https://pink10000.github.io/gathering/sheeptester/next/'] {
             content: 'next';
           }
           content: ']';

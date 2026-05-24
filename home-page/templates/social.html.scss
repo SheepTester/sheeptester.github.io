@@ -18,7 +18,8 @@ css {
   }
   .social-instagram {
     // Approximated based on https://upload.wikimedia.org/wikipedia/commons/e/e7/Instagram_logo_2016.svg
-    background-image: linear-gradient(168.6776deg, #3771c8, transparent 40%),
+    background-image:
+      linear-gradient(168.6776deg, #3771c8, transparent 40%),
       radial-gradient(
         100% 100% at 26.3651908% 107.693077%,
         #fd5 10%,
@@ -33,7 +34,8 @@ css {
     background-image: linear-gradient(#6ca5dd, #1a6ab9);
   }
   .social-piskel {
-    background-image: linear-gradient(
+    background-image:
+      linear-gradient(
         90deg,
         transparent 0 33.3%,
         rgba(0, 0, 0, 0.25) 33.3% 66.7%,
@@ -80,7 +82,10 @@ css {
     background-image: linear-gradient(#4285f4 50%, #fabd05 50%);
   }
   .social-tiktok .ball {
-    box-shadow: 3px 0 0 #fe2b54, -3px 0 0 #22f5ed, inset 3px 0 0 #fe2b54,
+    box-shadow:
+      3px 0 0 #fe2b54,
+      -3px 0 0 #22f5ed,
+      inset 3px 0 0 #fe2b54,
       inset -3px 0 0 #22f5ed;
   }
   .social-leetcode .ball {

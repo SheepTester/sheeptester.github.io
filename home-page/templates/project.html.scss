@@ -116,19 +116,25 @@ li.#{$classes} {
         z-index: 0;
         opacity: 0.7;
         filter: grayscale(1);
-        transition: opacity 0.5s, filter 0.5s;
+        transition:
+          opacity 0.5s,
+          filter 0.5s;
       }
       .showing-desc .thumbnail {
         opacity: 1;
         filter: grayscale(0);
-        transition: opacity 0.2s, filter 0.2s;
+        transition:
+          opacity 0.2s,
+          filter 0.2s;
       }
     }
     @media (hover: hover) {
       .project:hover .thumbnail {
         opacity: 1;
         filter: grayscale(0);
-        transition: opacity 0.2s, filter 0.2s;
+        transition:
+          opacity 0.2s,
+          filter 0.2s;
       }
     }
     @media (min-width: 680px) {
@@ -213,7 +219,10 @@ li.#{$classes} {
       border-radius: 50%;
       box-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
       opacity: 0;
-      transition: opacity 0.5s, background-color 0.2s, box-shadow 0.2s;
+      transition:
+        opacity 0.5s,
+        background-color 0.2s,
+        box-shadow 0.2s;
       transition-delay: 0.05s, 0, 0;
     }
     .show-info-btn:hover .show-info-icon {

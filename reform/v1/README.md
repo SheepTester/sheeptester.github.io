@@ -367,7 +367,7 @@ declare module '/reform/v1/index.js' {
       object: HTMLElement | CanvasRenderingContext2D | null,
       args: Record<string, unknown>
     ) => Promise<T>
-  ): void
+  ): void;
 
   export abstract class Out {
     fileName?: string
@@ -460,13 +460,13 @@ export type SourceSpec =
       deps?: string[]
     }
   | string
-declare export function on<T> (
+export declare function on<T> (
   spec: SourceSpec,
   callback: (
     object: HTMLElement | CanvasRenderingContext2D | null,
     args: Record<string, unknown>
   ) => Promise<T>
-): void
+): void;
 ```
 
 The source name is the identifier of the source. It may refer to an element (`object`) in the DOM by its ID (priority) or `name`. If the element is a canvas, then the object is instead the canvas's `CanvasRenderingContext2D`; you can opt out of this with the `.reform:canvas-element` class.

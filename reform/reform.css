@@ -65,7 +65,8 @@
     --focus-transparent: #029bfd66;
     --shadow-soft: transparent;
     --shadow-hard: transparent;
-    --primary-btn-bg: linear-gradient(var(--bg), var(--bg)),
+    --primary-btn-bg:
+      linear-gradient(var(--bg), var(--bg)),
       linear-gradient(135deg, var(--grad1), var(--grad2));
     --primary-btn-blur-enabled: '';
     --outline-btn-bg: rgba(255, 255, 255, 0.05);
@@ -114,9 +115,9 @@ body {
   min-height: 100%;
   display: flex;
   flex-direction: column;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
-    'Helvetica Neue', Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-    'Segoe UI Symbol';
+  font-family:
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue',
+    Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
   margin: 0;
   background-color: var(--bg);
   color: var(--text);
@@ -128,7 +129,8 @@ body {
     display: block;
     height: 20px;
     flex: none;
-    background-image: linear-gradient(
+    background-image:
+      linear-gradient(
         180deg,
         transparent 50%,
         rgb(var(--bg-rgb), 0.75) 50%,
@@ -307,7 +309,9 @@ select {
   color: var(--text-field);
   margin: 5px 0;
   align-self: flex-start;
-  transition: border-color 0.2s, box-shadow 0.2s;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
 
   &:focus {
     outline: none;
@@ -342,10 +346,8 @@ select {
     height: 48px;
 
     &:disabled {
-      background-image: linear-gradient(
-          rgb(var(--bg-rgb), 0.8),
-          rgb(var(--bg-rgb), 0.8)
-        ),
+      background-image:
+        linear-gradient(rgb(var(--bg-rgb), 0.8), rgb(var(--bg-rgb), 0.8)),
         var(--icon);
     }
   }
@@ -402,7 +404,9 @@ set both */
   position: relative;
   cursor: pointer;
   margin-top: 5px;
-  transition: border-color 0.2s, box-shadow 0.2s;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
 
   &::before {
     position: absolute;
@@ -567,7 +571,9 @@ textarea.input-content,
 textarea.output-content {
   padding: 20px;
   min-height: 400px;
-  transition: border-color 0.2s, box-shadow 0.2s;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
   &:focus {
     outline: none;
   }
@@ -663,10 +669,8 @@ a.file:not([href]),
   }
 
   & .icon {
-    background-image: linear-gradient(
-        rgb(var(--bg-rgb), 0.8),
-        rgb(var(--bg-rgb), 0.8)
-      ),
+    background-image:
+      linear-gradient(rgb(var(--bg-rgb), 0.8), rgb(var(--bg-rgb), 0.8)),
       var(--icon);
   }
 }
@@ -675,7 +679,10 @@ label.file,
 .input-controls button:enabled,
 .output-controls button:enabled,
 .output-controls .icon-btn[href] {
-  transition: background-color 0.2s, border-color 0.2s, box-shadow 0.2s;
+  transition:
+    background-color 0.2s,
+    border-color 0.2s,
+    box-shadow 0.2s;
   &:hover {
     background-color: var(--hover);
   }
@@ -773,7 +780,9 @@ label.file:has(:focus-visible) {
 }
 .input-controls,
 .input-content {
-  transition: border-color 0.2s, background-color 0.2s;
+  transition:
+    border-color 0.2s,
+    background-color 0.2s;
 
   .drag-over &,
   &.drag-over {
@@ -793,7 +802,9 @@ label.file:has(:focus-visible) {
   height: 40px;
   padding: 0 15px;
   border: 1px solid transparent;
-  transition: border-color 0.2s, box-shadow 0.2s;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
 
   &:focus {
     outline: none;
@@ -895,7 +906,9 @@ label.file:has(:focus-visible) {
   display: flex;
   align-items: center;
   padding-right: 15px;
-  transition: border-color 0.2s, box-shadow 0.2s;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
 
   &:focus {
     outline: none;
