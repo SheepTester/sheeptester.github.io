@@ -1,4 +1,4 @@
-// node all/title-desc-get.mts
+// node all/title-desc-get.mts (force)
 
 import * as fs from 'fs/promises'
 import { parse } from 'node-html-parser'
@@ -6,6 +6,12 @@ import { parse } from 'node-html-parser'
 const ROOT = 'https://sheeptester.github.io'
 const JSON_PATH = 'all/title-desc.json'
 const SITEMAP_PATH = 'all/sitemap.txt'
+
+const [, , force] = process.argv
+if (force && force !== 'force') {
+  console.error('usage: node all/title-desc-get.mts (force)')
+  process.exit(1)
+}
 
 type Entry = {
   path: string
@@ -24,7 +30,9 @@ const paths = (await fs.readFile(SITEMAP_PATH, 'utf-8'))
 
 const serialize = () =>
   JSON.stringify(
-    entries.toSorted((a, b) => paths.indexOf(a.path) - paths.indexOf(b.path)),
+    entries
+      .filter(({ path }) => paths.includes(path))
+      .toSorted((a, b) => paths.indexOf(a.path) - paths.indexOf(b.path)),
     null,
     '\t'
   ) + '\n'
@@ -36,7 +44,8 @@ process.on('SIGINT', async () => {
 })
 
 for (const path of paths) {
-  if (entries.find(entry => entry.path === path)) {
+  const entry = entries.find(entry => entry.path === path)
+  if (!force && entry) {
     continue
   }
   process.stdout.write(`Getting ${path}...`.padEnd(80, ' ') + '\r')
@@ -52,7 +61,12 @@ for (const path of paths) {
       : document.querySelector('script[src$="/sheep3.js"]')
         ? 3
         : null
-  entries.push({ path, title, description, sheep })
+  const newEntry: Entry = { path, title, description, sheep }
+  if (entry) {
+    Object.assign(entry, newEntry)
+  } else {
+    entries.push(newEntry)
+  }
 }
 
 console.log('(Done) Saving...'.padEnd(80, ' '))

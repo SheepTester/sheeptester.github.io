@@ -20,7 +20,7 @@
 	{
 		"path": "/all/search/",
 		"title": "Search SheepTester",
-		"description": "Landing page for ",
+		"description": "Landing page for SheepTester as a custom search engine.",
 		"sheep": 3
 	},
 	{
@@ -56,7 +56,7 @@
 	{
 		"path": "/all/",
 		"title": "/all/ - Almost Everything",
-		"description": "Links to almost all files on this site (since 2024-07-19)",
+		"description": "Links to almost all files on this site (as of 2026-01-06)",
 		"sheep": 3
 	},
 	{
@@ -68,7 +68,7 @@
 	{
 		"path": "/all/template-all.html",
 		"title": "/all/ - Almost Everything",
-		"description": "Links to almost all files on this site (since {DATE})",
+		"description": "Links to almost all files on this site (as of {DATE})",
 		"sheep": 3
 	},
 	{
@@ -650,31 +650,31 @@
 	{
 		"path": "/hello-world/advent-of-code/2021/",
 		"title": "Advent of Code 2021 | hello-world",
-		"description": "Innocent first test.",
+		"description": "Innocent first test. A Mini Shai-Hulud has Appeared",
 		"sheep": null
 	},
 	{
 		"path": "/hello-world/advent-of-code/2023/day21.html",
 		"title": null,
 		"description": null,
-		"sheep": null
+		"sheep": 3
 	},
 	{
 		"path": "/hello-world/audio-to-video/",
 		"title": "make",
 		"description": null,
-		"sheep": null
+		"sheep": 3
 	},
 	{
 		"path": "/hello-world/deobf/rs/",
 		"title": "libr",
 		"description": "pound? book? free?",
-		"sheep": null
+		"sheep": 3
 	},
 	{
 		"path": "/hello-world/deobf/",
 		"title": "Deobfuscate obfuscated JS files in an app.asar | hello-world",
-		"description": "Innocent first test.",
+		"description": "Innocent first test. A Mini Shai-Hulud has Appeared",
 		"sheep": null
 	},
 	{
@@ -687,13 +687,13 @@
 		"path": "/hello-world/detect-inspect-element/",
 		"title": "Detect inspect element",
 		"description": null,
-		"sheep": null
+		"sheep": 3
 	},
 	{
 		"path": "/hello-world/docs/",
 		"title": "ahoy matees",
 		"description": null,
-		"sheep": null
+		"sheep": 3
 	},
 	{
 		"path": "/hello-world/dynamic-sw/",
@@ -705,18 +705,18 @@
 		"path": "/hello-world/hh23-rhythm/src/javascript-impatience/",
 		"title": "hard hacc",
 		"description": "No description yet.",
-		"sheep": null
+		"sheep": 3
 	},
 	{
 		"path": "/hello-world/hh23-rhythm/src/javascript-impatience/todo.html",
-		"title": "hello-world | Innocent first test.",
-		"description": "Innocent first test.",
+		"title": "hello-world | Innocent first test. A Mini Shai-Hulud has Appeared",
+		"description": "Innocent first test. A Mini Shai-Hulud has Appeared",
 		"sheep": null
 	},
 	{
 		"path": "/hello-world/hh23-rhythm/",
-		"title": "hello-world | Innocent first test.",
-		"description": "Innocent first test.",
+		"title": "hello-world | Innocent first test. A Mini Shai-Hulud has Appeared",
+		"description": "Innocent first test. A Mini Shai-Hulud has Appeared",
 		"sheep": null
 	},
 	{
@@ -729,7 +729,7 @@
 		"path": "/hello-world/minimal-pwa/",
 		"title": null,
 		"description": null,
-		"sheep": null
+		"sheep": 3
 	},
 	{
 		"path": "/hello-world/questionable-host/",
@@ -752,7 +752,7 @@
 	{
 		"path": "/hello-world/random-item-skyblock/",
 		"title": "Random item skyblock datapack | hello-world",
-		"description": "Innocent first test.",
+		"description": "Innocent first test. A Mini Shai-Hulud has Appeared",
 		"sheep": null
 	},
 	{
@@ -763,129 +763,129 @@
 	},
 	{
 		"path": "/hello-world/slicedlime-vanilla-worldgen/",
-		"title": "hello-world | Innocent first test.",
-		"description": "Innocent first test.",
+		"title": "hello-world | Innocent first test. A Mini Shai-Hulud has Appeared",
+		"description": "Innocent first test. A Mini Shai-Hulud has Appeared",
 		"sheep": null
 	},
 	{
 		"path": "/hello-world/test/%20%0A%20%0A/%0Anewline.html",
 		"title": "\nthis\n\n \npage has a newline",
 		"description": "\nits true\n<br>\nuh\n ",
-		"sheep": null
+		"sheep": 3
 	},
 	{
 		"path": "/hello-world/test/a/s/s/e/t/s/",
-		"title": "hello-world | Innocent first test.",
-		"description": "Innocent first test.",
+		"title": "hello-world | Innocent first test. A Mini Shai-Hulud has Appeared",
+		"description": "Innocent first test. A Mini Shai-Hulud has Appeared",
 		"sheep": null
 	},
 	{
 		"path": "/hello-world/test/asus/soc-med-controller/",
-		"title": "hello-world | Innocent first test.",
-		"description": "Innocent first test.",
+		"title": "hello-world | Innocent first test. A Mini Shai-Hulud has Appeared",
+		"description": "Innocent first test. A Mini Shai-Hulud has Appeared",
 		"sheep": null
 	},
 	{
 		"path": "/hello-world/test/asus/dash.html",
 		"title": "Manage Subscription",
 		"description": "",
-		"sheep": null
+		"sheep": 3
 	},
 	{
 		"path": "/hello-world/test/asus/webreg.html",
 		"title": "Link Family",
 		"description": null,
-		"sheep": null
+		"sheep": 3
 	},
 	{
 		"path": "/hello-world/test/100vh-cover.html",
 		"title": "100vh vs 100svh vs 100lvh vs 100dvh (with viewport-fit=cover)",
 		"description": "open this on mobile",
-		"sheep": null
+		"sheep": 3
 	},
 	{
 		"path": "/hello-world/test/100vh.html",
 		"title": "100vh vs 100svh vs 100lvh vs 100dvh",
 		"description": "open this on mobile",
-		"sheep": null
+		"sheep": 3
 	},
 	{
 		"path": "/hello-world/test/adminbot.html",
 		"title": null,
 		"description": null,
-		"sheep": null
+		"sheep": 3
 	},
 	{
 		"path": "/hello-world/test/callback.html",
 		"title": "trevor",
 		"description": null,
-		"sheep": null
+		"sheep": 3
 	},
 	{
 		"path": "/hello-world/test/Charlie_Liu.html",
 		"title": null,
 		"description": null,
-		"sheep": null
+		"sheep": 3
 	},
 	{
 		"path": "/hello-world/test/commencement.html",
 		"title": null,
 		"description": null,
-		"sheep": null
+		"sheep": 3
 	},
 	{
 		"path": "/hello-world/test/comments.html",
 		"title": null,
 		"description": null,
-		"sheep": null
+		"sheep": 3
 	},
 	{
 		"path": "/hello-world/test/cse110-reconnaissance.html",
-		"title": "hello-world | Innocent first test.",
-		"description": "Innocent first test.",
+		"title": "hello-world | Innocent first test. A Mini Shai-Hulud has Appeared",
+		"description": "Innocent first test. A Mini Shai-Hulud has Appeared",
 		"sheep": null
 	},
 	{
 		"path": "/hello-world/test/demo-btns.html",
-		"title": "hello-world | Innocent first test.",
-		"description": "Innocent first test.",
+		"title": "hello-world | Innocent first test. A Mini Shai-Hulud has Appeared",
+		"description": "Innocent first test. A Mini Shai-Hulud has Appeared",
 		"sheep": null
 	},
 	{
 		"path": "/hello-world/test/drunk.html",
 		"title": null,
 		"description": null,
-		"sheep": null
+		"sheep": 3
 	},
 	{
 		"path": "/hello-world/test/dumb.html",
 		"title": null,
 		"description": null,
-		"sheep": null
+		"sheep": 3
 	},
 	{
 		"path": "/hello-world/test/dumb2.html",
 		"title": null,
 		"description": null,
-		"sheep": null
+		"sheep": 3
 	},
 	{
 		"path": "/hello-world/test/embedder.html",
 		"title": "I embed",
 		"description": null,
-		"sheep": null
+		"sheep": 3
 	},
 	{
 		"path": "/hello-world/test/embedee.html",
 		"title": "I am embedded",
 		"description": null,
-		"sheep": null
+		"sheep": 3
 	},
 	{
 		"path": "/hello-world/test/fake.html",
 		"title": null,
 		"description": null,
-		"sheep": null
+		"sheep": 3
 	},
 	{
 		"path": "/hello-world/test/ga-test.html",
@@ -897,18 +897,18 @@
 		"path": "/hello-world/test/gh-pages-path-test.html",
 		"title": null,
 		"description": null,
-		"sheep": null
+		"sheep": 3
 	},
 	{
 		"path": "/hello-world/test/gh-pages-path-test.html.html",
 		"title": null,
 		"description": null,
-		"sheep": null
+		"sheep": 3
 	},
 	{
 		"path": "/hello-world/test/git-notes.html",
 		"title": "git | hello-world",
-		"description": "Innocent first test.",
+		"description": "Innocent first test. A Mini Shai-Hulud has Appeared",
 		"sheep": null
 	},
 	{
@@ -921,36 +921,36 @@
 		"path": "/hello-world/test/heyy.html",
 		"title": null,
 		"description": null,
-		"sheep": null
+		"sheep": 3
 	},
 	{
 		"path": "/hello-world/test/",
 		"title": null,
 		"description": null,
-		"sheep": null
+		"sheep": 3
 	},
 	{
 		"path": "/hello-world/test/link%20test.html",
-		"title": "hello-world | Innocent first test.",
-		"description": "Innocent first test.",
+		"title": "hello-world | Innocent first test. A Mini Shai-Hulud has Appeared",
+		"description": "Innocent first test. A Mini Shai-Hulud has Appeared",
 		"sheep": null
 	},
 	{
 		"path": "/hello-world/test/malicious.html",
 		"title": null,
 		"description": null,
-		"sheep": null
+		"sheep": 3
 	},
 	{
 		"path": "/hello-world/test/mastodone.html",
 		"title": null,
 		"description": "1 Post, 9 Following, 2 Followers · ",
-		"sheep": null
+		"sheep": 3
 	},
 	{
 		"path": "/hello-world/test/mdmdmdd.html",
 		"title": "wiggley | hello-world",
-		"description": "Innocent first test.",
+		"description": "Innocent first test. A Mini Shai-Hulud has Appeared",
 		"sheep": null
 	},
 	{
@@ -963,25 +963,25 @@
 		"path": "/hello-world/test/polyfill.html",
 		"title": "Bitcoin Miner",
 		"description": null,
-		"sheep": null
+		"sheep": 3
 	},
 	{
 		"path": "/hello-world/test/react-exec-order.html",
 		"title": null,
 		"description": null,
-		"sheep": null
+		"sheep": 3
 	},
 	{
 		"path": "/hello-world/test/resize.html",
 		"title": "does the browser call resize before printing?",
 		"description": "sdfsdf",
-		"sheep": null
+		"sheep": 3
 	},
 	{
 		"path": "/hello-world/test/sans-nouveaux-test.html",
 		"title": null,
 		"description": null,
-		"sheep": null
+		"sheep": 3
 	},
 	{
 		"path": "/hello-world/test/stop.html",
@@ -993,18 +993,18 @@
 		"path": "/hello-world/test/testthing.html",
 		"title": null,
 		"description": null,
-		"sheep": null
+		"sheep": 3
 	},
 	{
 		"path": "/hello-world/test/trans-dic.html",
 		"title": "Trans Dic",
 		"description": "Translation dictation",
-		"sheep": null
+		"sheep": 3
 	},
 	{
 		"path": "/hello-world/test/uhh.html",
-		"title": "hello-world | Innocent first test.",
-		"description": "Innocent first test.",
+		"title": "hello-world | Innocent first test. A Mini Shai-Hulud has Appeared",
+		"description": "Innocent first test. A Mini Shai-Hulud has Appeared",
 		"sheep": null
 	},
 	{
@@ -1017,24 +1017,24 @@
 		"path": "/hello-world/test/wow.html",
 		"title": "Wow",
 		"description": null,
-		"sheep": null
+		"sheep": 3
 	},
 	{
 		"path": "/hello-world/turbo-fiesta/nfc-reader/",
 		"title": "NFC reader",
 		"description": "yee",
-		"sheep": null
+		"sheep": 3
 	},
 	{
 		"path": "/hello-world/ucsd-commencement-voices/",
-		"title": "hello-world | Innocent first test.",
-		"description": "Innocent first test.",
+		"title": "hello-world | Innocent first test. A Mini Shai-Hulud has Appeared",
+		"description": "Innocent first test. A Mini Shai-Hulud has Appeared",
 		"sheep": null
 	},
 	{
 		"path": "/hello-world/ucsd-schedule-gen/",
 		"title": "theory. | hello-world",
-		"description": "Innocent first test.",
+		"description": "Innocent first test. A Mini Shai-Hulud has Appeared",
 		"sheep": null
 	},
 	{
@@ -1047,25 +1047,25 @@
 		"path": "/hello-world/Wi-Fi%20exporter/",
 		"title": "Wi-Fi Exporter",
 		"description": "Export your Wi-Fi passwords as CSV",
-		"sheep": null
+		"sheep": 3
 	},
 	{
 		"path": "/hello-world/404.html",
 		"title": "This is a 404 page.",
 		"description": null,
-		"sheep": null
+		"sheep": 3
 	},
 	{
 		"path": "/hello-world/access-console-api.html",
 		"title": "Access the Chrome Command Line API",
 		"description": null,
-		"sheep": null
+		"sheep": 3
 	},
 	{
 		"path": "/hello-world/alerter.html",
 		"title": null,
 		"description": null,
-		"sheep": null
+		"sheep": 3
 	},
 	{
 		"path": "/hello-world/attitude.html",
@@ -1077,49 +1077,49 @@
 		"path": "/hello-world/bell.html",
 		"title": "alexander graham bell",
 		"description": null,
-		"sheep": null
+		"sheep": 3
 	},
 	{
 		"path": "/hello-world/big-file-viewer.html",
 		"title": "big file viewer",
 		"description": null,
-		"sheep": null
+		"sheep": 3
 	},
 	{
 		"path": "/hello-world/blank-tags.html",
 		"title": null,
 		"description": null,
-		"sheep": null
+		"sheep": 3
 	},
 	{
 		"path": "/hello-world/blank.html",
 		"title": null,
 		"description": null,
-		"sheep": null
+		"sheep": 3
 	},
 	{
 		"path": "/hello-world/bones-and-muscles.html",
 		"title": "Bones and Muscles",
 		"description": null,
-		"sheep": null
+		"sheep": 3
 	},
 	{
 		"path": "/hello-world/bookmarklet.html",
 		"title": "Bookmarklet",
 		"description": "Quickly add a bookmarklet to run something cool on another site",
-		"sheep": null
+		"sheep": 3
 	},
 	{
 		"path": "/hello-world/calc.html",
 		"title": "open calculator",
 		"description": "no weird wasm memory exploitation with unsandboxed chrome needed!",
-		"sheep": null
+		"sheep": 3
 	},
 	{
 		"path": "/hello-world/cards.html",
 		"title": "Flashcards",
 		"description": null,
-		"sheep": null
+		"sheep": 3
 	},
 	{
 		"path": "/hello-world/charcode.html",
@@ -1131,37 +1131,37 @@
 		"path": "/hello-world/code-golf-boomer01-clicker-game.html",
 		"title": "Clicker game!",
 		"description": null,
-		"sheep": null
+		"sheep": 3
 	},
 	{
 		"path": "/hello-world/css-fizzbuzz.html",
 		"title": "Fizzbuzz in CSS",
 		"description": "and HTML",
-		"sheep": null
+		"sheep": 3
 	},
 	{
 		"path": "/hello-world/css-identifiers.html",
 		"title": null,
 		"description": null,
-		"sheep": null
+		"sheep": 3
 	},
 	{
 		"path": "/hello-world/deltamath-time.html",
 		"title": "how much time are people taking on deltamath problems?",
 		"description": "this public info is more accessible with just a single clicc of a bookmark",
-		"sheep": null
+		"sheep": 3
 	},
 	{
 		"path": "/hello-world/discord-website-embed.html",
 		"title": "😎 Discord",
 		"description": "> Discord *Discord* **Discord** ***Discord*** __Discord__ ||Discord|| `Discord` `` `Discord` `` [||***__`` `Discord` ``__***||](https://scratch.mit.edu/users/ScratchCat/)\n\n> <a:dancingbannana:403729127099727892> @everyone <a:dancingbannana:403729127099727892> <@1> <a:dancingbannana:403729127099727892> <@212253818828750848> <a:dancingbannana:403729127099727892>\n\n```elm\ntype Discord = Discord\ndiscord discord = discord\n```",
-		"sheep": null
+		"sheep": 3
 	},
 	{
 		"path": "/hello-world/drills.html",
 		"title": "Trig Drill Generator",
 		"description": "A drill quiz generator for my trigonometry class.",
-		"sheep": null
+		"sheep": 3
 	},
 	{
 		"path": "/hello-world/elements.html",
@@ -1173,7 +1173,7 @@
 		"path": "/hello-world/f.html",
 		"title": "does iOS SAFARI support 'sourceCapabilities'??!?!?!",
 		"description": null,
-		"sheep": null
+		"sheep": 3
 	},
 	{
 		"path": "/hello-world/flappybirdwithifstatements.html",
@@ -1185,55 +1185,55 @@
 		"path": "/hello-world/flashcards-hormone-effect-places.html",
 		"title": "Flash Cards",
 		"description": null,
-		"sheep": null
+		"sheep": 3
 	},
 	{
 		"path": "/hello-world/flashcards-hormone-effects.html",
 		"title": "Flash Cards",
 		"description": null,
-		"sheep": null
+		"sheep": 3
 	},
 	{
 		"path": "/hello-world/flashcards-hormone-places.html",
 		"title": "Flash Cards",
 		"description": null,
-		"sheep": null
+		"sheep": 3
 	},
 	{
 		"path": "/hello-world/flashcards-sato-macbeth.html",
 		"title": "Flash Cards",
 		"description": null,
-		"sheep": null
+		"sheep": 3
 	},
 	{
 		"path": "/hello-world/flashcards.html",
 		"title": "Flash Cards",
 		"description": null,
-		"sheep": null
+		"sheep": 3
 	},
 	{
 		"path": "/hello-world/fuck.html",
 		"title": "fuck.",
 		"description": null,
-		"sheep": null
+		"sheep": 3
 	},
 	{
 		"path": "/hello-world/git.html",
 		"title": "git | hello-world",
-		"description": "Innocent first test.",
+		"description": "Innocent first test. A Mini Shai-Hulud has Appeared",
 		"sheep": null
 	},
 	{
 		"path": "/hello-world/graduation-rehearsal-is-boring.html",
 		"title": "graduation rehearsal is boring",
 		"description": null,
-		"sheep": null
+		"sheep": 3
 	},
 	{
 		"path": "/hello-world/graph.html",
 		"title": "ugwa views",
 		"description": null,
-		"sheep": null
+		"sheep": 3
 	},
 	{
 		"path": "/hello-world/gunn-confessions.html",
@@ -1245,31 +1245,31 @@
 		"path": "/hello-world/ic-get-schedule.html",
 		"title": "egg tarts",
 		"description": "join https://discord.gg/hq64nRE NOW.",
-		"sheep": null
+		"sheep": 3
 	},
 	{
 		"path": "/hello-world/idle.html",
 		"title": "🐑",
 		"description": "🐑",
-		"sheep": null
+		"sheep": 3
 	},
 	{
 		"path": "/hello-world/image-clipboard.html",
 		"title": "Image Clipboard Manager",
-		"description": null,
-		"sheep": null
+		"description": "like charcopy but for images",
+		"sheep": 3
 	},
 	{
 		"path": "/hello-world/",
 		"title": "test | hello-world",
-		"description": "Innocent first test.",
+		"description": "Innocent first test. A Mini Shai-Hulud has Appeared",
 		"sheep": null
 	},
 	{
 		"path": "/hello-world/julienbtn.html",
 		"title": "Buttons for Julien",
 		"description": null,
-		"sheep": null
+		"sheep": 3
 	},
 	{
 		"path": "/hello-world/largetext.html",
@@ -1287,7 +1287,7 @@
 		"path": "/hello-world/meta-test.html",
 		"title": "TITLE",
 		"description": "DESCRIPTION",
-		"sheep": null
+		"sheep": 3
 	},
 	{
 		"path": "/hello-world/micfreq.html",
@@ -1299,85 +1299,85 @@
 		"path": "/hello-world/mirroring.html",
 		"title": " unicode mirroring",
 		"description": "Unicode mirroring characters in ltr and rtl is quite sophisticated",
-		"sheep": null
+		"sheep": 3
 	},
 	{
 		"path": "/hello-world/mobile-pwa-test.html",
 		"title": "testing pwa things on mobile",
 		"description": "yeet",
-		"sheep": null
+		"sheep": 3
 	},
 	{
 		"path": "/hello-world/nbt-parser.html",
 		"title": "nbt parser",
 		"description": "parse nbt lol",
-		"sheep": null
+		"sheep": 3
 	},
 	{
 		"path": "/hello-world/no-html.html",
 		"title": null,
 		"description": null,
-		"sheep": null
+		"sheep": 3
 	},
 	{
 		"path": "/hello-world/offline-online-noise-maker.html",
 		"title": "If your device goes offline or online, I will make a noise.",
 		"description": "This is because my broken Chromebook likes to go offline randomly a lot, so this serves as a nice PING.",
-		"sheep": null
+		"sheep": 3
 	},
 	{
 		"path": "/hello-world/open-graph-testing.html",
 		"title": "Sheep<h1>hello</h1>Tes\"tertest\" idneed!",
 		"description": "A <h1>hello</h1>list of some projects I have made using fancy web technologies.",
-		"sheep": null
+		"sheep": 3
 	},
 	{
 		"path": "/hello-world/pi.html",
 		"title": null,
 		"description": null,
-		"sheep": null
+		"sheep": 3
 	},
 	{
 		"path": "/hello-world/plaincolour.html",
 		"title": "generate a png of a single colour",
 		"description": "computation of cyclic redundancy my asfffg-phg",
-		"sheep": null
+		"sheep": 3
 	},
 	{
 		"path": "/hello-world/privacy-policy.html",
 		"title": "Privacy policies for my Chrome extensions | hello-world",
-		"description": "Innocent first test.",
+		"description": "Innocent first test. A Mini Shai-Hulud has Appeared",
 		"sheep": null
 	},
 	{
 		"path": "/hello-world/profile-redirector.html",
 		"title": null,
 		"description": null,
-		"sheep": null
+		"sheep": 3
 	},
 	{
 		"path": "/hello-world/pumpkin.html",
 		"title": null,
 		"description": null,
-		"sheep": null
+		"sheep": 3
 	},
 	{
 		"path": "/hello-world/questionmarkquestionmarkquestionmark.html",
 		"title": null,
 		"description": null,
-		"sheep": null
+		"sheep": 3
 	},
 	{
 		"path": "/hello-world/quick-brown-fox.html",
 		"title": "The Quick Brown Fox",
 		"description": "Intended to facilitate making 'quick brown fox'-style sentences.",
-		"sheep": null
+		"sheep": 3
 	},
 	{
 		"path": "/hello-world/redirect-top.html",
 		"title": null,
 		"description": null,
-		"sheep": null
+		"sheep": 3
 	},
 	{
 		"path": "/hello-world/ring-health.html",
@@ -1389,25 +1389,25 @@
 		"path": "/hello-world/scheme-interpret.html",
 		"title": "scheme interpret",
 		"description": null,
-		"sheep": null
+		"sheep": 3
 	},
 	{
 		"path": "/hello-world/SECURITY.html",
 		"title": "Security Policy | hello-world",
-		"description": "Innocent first test.",
+		"description": "Innocent first test. A Mini Shai-Hulud has Appeared",
 		"sheep": null
 	},
 	{
 		"path": "/hello-world/sgy-pendo.html",
 		"title": null,
 		"description": null,
-		"sheep": null
+		"sheep": 3
 	},
 	{
 		"path": "/hello-world/shy.html",
 		"title": null,
 		"description": null,
-		"sheep": null
+		"sheep": 3
 	},
 	{
 		"path": "/hello-world/sigfig.html",
@@ -1419,7 +1419,7 @@
 		"path": "/hello-world/spamsound.html",
 		"title": null,
 		"description": null,
-		"sheep": null
+		"sheep": 3
 	},
 	{
 		"path": "/hello-world/Spittin%20bars.html",
@@ -1431,19 +1431,19 @@
 		"path": "/hello-world/sstv-image.html",
 		"title": null,
 		"description": null,
-		"sheep": null
+		"sheep": 3
 	},
 	{
 		"path": "/hello-world/svgception.html",
 		"title": "nested svgs",
 		"description": "how far can it go?",
-		"sheep": null
+		"sheep": 3
 	},
 	{
 		"path": "/hello-world/system-colours.html",
-		"title": null,
-		"description": null,
-		"sheep": null
+		"title": "CSS system colours",
+		"description": "List of CSS system colour keywords, like Canvas, CanvasText, Link, etc.",
+		"sheep": 3
 	},
 	{
 		"path": "/hello-world/tabletest.html",
@@ -1455,31 +1455,31 @@
 		"path": "/hello-world/tenmillionpages.html",
 		"title": null,
 		"description": null,
-		"sheep": null
+		"sheep": 3
 	},
 	{
 		"path": "/hello-world/underground-markup.html",
 		"title": "Underground markup",
 		"description": "A Minecraft-like markup language for Underground Schoology",
-		"sheep": null
+		"sheep": 3
 	},
 	{
 		"path": "/hello-world/vm.html",
 		"title": "the VM",
 		"description": null,
-		"sheep": null
+		"sheep": 3
 	},
 	{
 		"path": "/hello-world/waffleconcept.html",
 		"title": "Waffle Programming Concept Design",
 		"description": null,
-		"sheep": null
+		"sheep": 3
 	},
 	{
 		"path": "/hello-world/website.html",
 		"title": "lol a website",
 		"description": "Imagine using \"standard\" HTML tags",
-		"sheep": null
+		"sheep": 3
 	},
 	{
 		"path": "/hello-world/weird-flex.html",
@@ -1491,13 +1491,13 @@
 		"path": "/hello-world/wiseguy.html",
 		"title": "wiseguy catchphrases",
 		"description": "Henry's Discord bot wiseguy had amazing phrases",
-		"sheep": null
+		"sheep": 3
 	},
 	{
 		"path": "/hello-world/zdsfghnjvc.html",
 		"title": "Untitled document",
 		"description": null,
-		"sheep": null
+		"sheep": 3
 	},
 	{
 		"path": "/home-page/geocities/images.html",
@@ -2492,7 +2492,7 @@
 	{
 		"path": "/longer-tweets/closing-html/",
 		"title": "Why closing HTML tags is dangerous practice",
-		"description": "Closing your HTML tags can be dangerous! Here's why.",
+		"description": "Closing your HTML tags can be dangerous! Here’s why.",
 		"sheep": 3
 	},
 	{
@@ -2527,26 +2527,26 @@
 	},
 	{
 		"path": "/longer-tweets/flawless-new-english/",
-		"title": "Sean's flawless new English spelling reform",
+		"title": "Sean’s flawless new English spelling reform",
 		"description": "English has never been spelled better",
 		"sheep": 3
 	},
 	{
 		"path": "/longer-tweets/gamepro5-translation/",
-		"title": "analysis of gamepro5's server history translation",
+		"title": "analysis of gamepro5’s server history translation",
 		"description": "I recently made an alarming development in my dumb conlang.",
 		"sheep": 3
 	},
 	{
 		"path": "/longer-tweets/google-anal/",
-		"title": "fyi, I'm letting Google track you now",
-		"description": "It's for my résumé!",
+		"title": "fyi, I’m letting Google track you now",
+		"description": "It’s for my résumé!",
 		"sheep": 3
 	},
 	{
 		"path": "/longer-tweets/google-ctf/",
 		"title": "google ctf: js safe 4.0",
-		"description": "Cursed JavaScript, fresh from Google's oven.",
+		"description": "Cursed JavaScript, fresh from Google’s oven.",
 		"sheep": 3
 	},
 	{
@@ -2570,7 +2570,7 @@
 	{
 		"path": "/longer-tweets/js/",
 		"title": "JavaScript.",
-		"description": "a list of quirks from \\#n-building",
+		"description": "a list of quirks from #n-building",
 		"sheep": 3
 	},
 	{
@@ -2641,7 +2641,7 @@
 	},
 	{
 		"path": "/longer-tweets/phonology/",
-		"title": "l'fonoloj d'm'leng",
+		"title": "l’fonoloj d’m’leng",
 		"description": "The phonology of my language.",
 		"sheep": 3
 	},
@@ -2660,7 +2660,7 @@
 	{
 		"path": "/longer-tweets/racism-response/",
 		"title": "radical racism response",
-		"description": "Responding to Gamepro5's article about racism.",
+		"description": "Responding to Gamepro5’s article about racism.",
 		"sheep": 3
 	},
 	{
@@ -2684,7 +2684,7 @@
 	{
 		"path": "/longer-tweets/sdctf24/",
 		"title": "SDCTF 2024",
-		"description": "The challenges I contributed to UCSD's CTF.",
+		"description": "The challenges I contributed to UCSD’s CTF.",
 		"sheep": 3
 	},
 	{
@@ -2695,7 +2695,7 @@
 	},
 	{
 		"path": "/longer-tweets/slop/",
-		"title": "Art need not worry",
+		"title": "art need not worry",
 		"description": "Wondering how AI-generated media could affect creative expression.",
 		"sheep": 3
 	},
@@ -2708,7 +2708,7 @@
 	{
 		"path": "/longer-tweets/ucsd-colleges/",
 		"title": "UCSD Colleges Ranked",
-		"description": "What's the best college?",
+		"description": "What’s the best college?",
 		"sheep": 3
 	},
 	{
@@ -3806,13 +3806,13 @@
 	{
 		"path": "/trumpdays/inseconds/",
 		"title": "Trump Seconds",
-		"description": "Keeping track of the number of seconds Trump has left for his first term.",
+		"description": "Keeping track of the number of seconds Trump has left for his second term.",
 		"sheep": 1
 	},
 	{
 		"path": "/trumpdays/",
 		"title": "Trump Days",
-		"description": "Keeping track of the number of days Trump has left for his first term.",
+		"description": "Keeping track of the number of days Trump has left for his second term.",
 		"sheep": 1
 	},
 	{
@@ -4207,8 +4207,8 @@
 	},
 	{
 		"path": "/words-go-here/misc/dialog.html",
-		"title": "html native dialog close animation?",
-		"description": "since i found out visibility is pretty good for animating dialogs",
+		"title": "html native dialog (modal) close animation?",
+		"description": "since i found out visibility is pretty good for animating dialogs. This is a bunch of CSS to allow for smooth open/close animations for dialogs for use as modals.",
 		"sheep": 3
 	},
 	{
@@ -4423,7 +4423,7 @@
 	},
 	{
 		"path": "/words-go-here/misc/",
-		"title": "cramland",
+		"title": "cramland (misc)",
 		"description": null,
 		"sheep": 3
 	},
@@ -4471,8 +4471,8 @@
 	},
 	{
 		"path": "/words-go-here/misc/math20d.html",
-		"title": "Math 20D cheat sheet",
-		"description": "must memorize every way the differential equations can be DEMOLISHED",
+		"title": "Math 20D cheat sheet (UCSD)",
+		"description": "must memorize every way the differential equations can be DEMOLISHED (made for differential equations at UC San Diego)",
 		"sheep": 3
 	},
 	{
