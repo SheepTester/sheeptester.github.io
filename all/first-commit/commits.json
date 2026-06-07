@@ -965,6 +965,12 @@
 		"date": "2025-11-29 01:32:10 +0000",
 		"message": "Add image-clipboard.html single file web app\n"
 	},
+	"/hello-world/ios-zip-compare/": {
+		"source": "hello-world/master/ios-zip-compare/README.md",
+		"hash": "6af306587f1ec47dd7ee9f92e7e6894db59bb8c1",
+		"date": "2026-04-18 09:57:13 +0000",
+		"message": "feat: Add README, output remaining files to txt, and clean up deps\n\n- Added a `README.md` to `ios-zip-compare` with instructions on how to use `svn export` to download just this directory.\n- Updated the script to output a `remaining-files.txt` for manual review/categorization using a text editor like vim.\n- Removed `@types` from `package.json` `devDependencies` to avoid making them package dependencies, moving the recommendation to the README instead.\n"
+	},
 	"/hello-world/julienbtn.html": {
 		"source": "hello-world/master/julienbtn.html",
 		"hash": "80b52561da6edbdde4e3cd2fca691398a8e79ab4",
@@ -1114,6 +1120,12 @@
 		"hash": "6bb90c13325cf1c22b41283a78a4e2fe65a0ffde",
 		"date": "2023-02-26 12:29:34 -0800",
 		"message": "wow css\n"
+	},
+	"/hello-world/ring-health.html": {
+		"source": "hello-world/master/ring-health.html",
+		"hash": "4c26a669c8e252e137f9747a127bf973b1132e14",
+		"date": "2026-02-03 20:24:16 -0800",
+		"message": "webring health page\n"
 	},
 	"/hello-world/scheme-interpret.html": {
 		"source": "hello-world/master/scheme-interpret.html",
@@ -1408,6 +1420,12 @@
 		"hash": "a57e1c2ddf887a6146c1b8896f4faaca9264e87a",
 		"date": "2020-06-07 19:56:23 -0700",
 		"message": "amazing test folder\n"
+	},
+	"/hello-world/test/stop.html": {
+		"source": "hello-world/master/test/stop.html",
+		"hash": "ca6512fd72531ac15f0f3a6af16f3eb36eae55d0",
+		"date": "2026-02-22 16:58:41 -0800",
+		"message": "does stop prevent other scripts from running Add stop.html with console log examples"
 	},
 	"/hello-world/test/testthing.html": {
 		"source": "hello-world/master/test/testthing.html",
@@ -1895,6 +1913,12 @@
 		"date": "2020-05-03 20:38:41 -0700",
 		"message": "New events playground likes to make my browser go unresponsive and Aw snap!\n"
 	},
+	"/javascripts/exif.html": {
+		"source": "sheeptester.github.io/master/javascripts/exif.html",
+		"hash": "cc9ad57c5f52acc164a907571af218ba69954fc1",
+		"date": "2026-01-21 19:30:49 -0800",
+		"message": "exif viewer\n"
+	},
 	"/javascripts/fek-fshka-hangul.html": {
 		"source": "sheeptester.github.io/master/javascripts/fek-fshka-hangul.html",
 		"hash": "d93978332447e90919563c2bcd52988da23f1a2a",
@@ -2044,6 +2068,12 @@
 		"hash": "1dba481088b02cae6b4d612f0afa35dafe2040bb",
 		"date": "2017-09-23 20:59:14 -0700",
 		"message": "WIP ugly command editor\n"
+	},
+	"/javascripts/md5.html": {
+		"source": "sheeptester.github.io/master/javascripts/md5.html",
+		"hash": "9e8438d53a2bf8202ef8b21e9f3f01caae633812",
+		"date": "2026-05-12 20:58:24 -0700",
+		"message": "md5\n\ni hate table layout\n\nmd5 checksum tool\nFixes #65\n"
 	},
 	"/javascripts/mp4-analyze.html": {
 		"source": "sheeptester.github.io/master/javascripts/mp4-analyze.html",
@@ -2224,6 +2254,12 @@
 		"hash": "09cb65303664db622bb22ee03122f8b5d1e19aba",
 		"date": "2020-05-17 21:06:23 -0700",
 		"message": "make a discord thing for testing things\n"
+	},
+	"/javascripts/screen-wake.html": {
+		"source": "sheeptester.github.io/master/javascripts/screen-wake.html",
+		"hash": "8346a752a7368f52797f9936e1ba1c3a0aaab3de",
+		"date": "2026-03-21 22:38:58 -0700",
+		"message": "keep screen awake\n"
 	},
 	"/javascripts/searchparser.html": {
 		"source": "sheeptester.github.io/master/javascripts/searchparser.html",
@@ -2483,6 +2519,18 @@
 		"date": "2018-06-17 14:06:53 -0700",
 		"message": "vocabulary :thumbs_down:\n"
 	},
+	"/longer-tweets/brevity/": {
+		"source": "longer-tweets/master/_posts/2026-05-13-brevity.md",
+		"hash": "b8adbf2f7b1ae83fbb3f1ef452aa5c31e81ca6ad",
+		"date": "2026-05-13 22:42:56 -0700",
+		"message": "start brevity post, wrap to 80 chars\n"
+	},
+	"/longer-tweets/claude/": {
+		"source": "longer-tweets/master/_posts/2026-02-28-claude.md",
+		"hash": "ac4d02a9433101070ba04736ad477033464dcd7d",
+		"date": "2026-02-28 02:58:37 -0800",
+		"message": "Thoughts on ClaudeRevise post on AI dependency and productivity insights\n\nUpdated post title and content regarding AI dependency and productivity."
+	},
 	"/longer-tweets/closing-html/": {
 		"source": "longer-tweets/master/_posts/2020-08-24-closing-html.md",
 		"hash": "2e9144db5e4aac13f2b6f065a0127f4f1288bb46",
@@ -2543,17 +2591,35 @@
 		"date": "2022-07-09 01:16:37 -0700",
 		"message": "google-ctf: WIP draft\n"
 	},
+	"/longer-tweets/hide-seek/": {
+		"source": "longer-tweets/master/_posts/2026-05-16-hide-seek.md",
+		"hash": "02ce560efec5e805a9a66a3e5aa55adad642f9ef",
+		"date": "2026-05-16 20:03:23 -0700",
+		"message": "outline of hide + seek review\n"
+	},
 	"/longer-tweets/html-xss/": {
 		"source": "longer-tweets/master/_posts/2020-11-27-html-xss.md",
 		"hash": "2e9144db5e4aac13f2b6f065a0127f4f1288bb46",
 		"date": "2024-01-27 18:37:30 -0800",
 		"message": "Copy over Ovinus' LinkedIn posts\n"
 	},
+	"/longer-tweets/jekyll/": {
+		"source": "longer-tweets/master/_posts/2026-05-30-jekyll.md",
+		"hash": "74c71154589cdce85f6bb388e980b8c28d683f9f",
+		"date": "2026-05-30 17:04:30 -0700",
+		"message": "set background color to average of image, fade in image to avoid flash on load\n"
+	},
 	"/longer-tweets/js/": {
 		"source": "longer-tweets/master/_posts/2022-08-06-js.md",
 		"hash": "26da2699c95a46acaf35b36319e76c31606412eb",
 		"date": "2022-08-06 21:42:00 -0700",
 		"message": "There's too much to include\n"
+	},
+	"/longer-tweets/json-bigint/": {
+		"source": "longer-tweets/master/_posts/2026-06-06-json-bigint.md",
+		"hash": "c0274f87603260029d6545a47a2a1cff3146c15a",
+		"date": "2026-06-06 13:21:21 -0700",
+		"message": "json bigint\n"
 	},
 	"/longer-tweets/json-is-hard/": {
 		"source": "longer-tweets/master/_posts/2020-07-06-json-is-hard.md",
@@ -2615,6 +2681,12 @@
 		"date": "2025-10-23 22:15:35 -0700",
 		"message": "pet theory about microplastics\n\nInitial draft discussing the perceived safety of microplastics."
 	},
+	"/longer-tweets/my-pronouns/": {
+		"source": "longer-tweets/master/_posts/2026-05-31-my-pronouns.md",
+		"hash": "7599136fca5a01761c487fce5c81144e75e8ae96",
+		"date": "2026-05-31 17:59:01 -0700",
+		"message": "pronouns, but unlisted\n"
+	},
 	"/longer-tweets/phonology/": {
 		"source": "longer-tweets/master/_posts/2019-01-02-phonology.md",
 		"hash": "547fdc6b41ed1a879b2d99fc02056ec694f9fd7d",
@@ -2644,6 +2716,12 @@
 		"hash": "314cc56657d56e95d534d9111020243336035341",
 		"date": "2025-09-15 14:29:29 -0700",
 		"message": "React pain points"
+	},
+	"/longer-tweets/recruiters/": {
+		"source": "longer-tweets/master/_posts/2026-06-01-recruiters.md",
+		"hash": "26a9b2c8b464c8624cc5065a72b877b138d64605",
+		"date": "2026-06-01 23:25:44 -0700",
+		"message": "summarize recruiting startup pitches\n"
 	},
 	"/longer-tweets/scratch-www-troubles/": {
 		"source": "longer-tweets/master/_posts/2018-07-01-scratch-www-troubles.md",
@@ -2686,6 +2764,12 @@
 		"hash": "a591b8c8789839e38567ade34ee7fe3d1186774b",
 		"date": "2021-11-25 19:06:34 -0800",
 		"message": "UC San Diego colleges ranked (including seventh college): https://www.youtube.com/watch?v=Mzwg_tuCXNI\n"
+	},
+	"/longer-tweets/ucsd-study-spaces/": {
+		"source": "longer-tweets/master/_posts/2026-04-02-ucsd-study-spaces.md",
+		"hash": "7c762cd91b6052fff2ed7dd4fcd1b9935672f5a8",
+		"date": "2026-04-02 23:01:46 -0700",
+		"message": "start listing study spaces\n"
 	},
 	"/longer-tweets/ugwa-alt-schedules/": {
 		"source": "longer-tweets/master/_posts/2019-08-10-ugwa-alt-schedules.md",
@@ -3779,6 +3863,18 @@
 		"date": "2025-09-23 23:21:13 -0700",
 		"message": "Copy files from https://github.com/SheepTester/uxdy\n"
 	},
+	"/ucsd-free-food/": {
+		"source": "ucsd-free-food/main/static/index.html",
+		"hash": "9f9db3e2dc726c11d5da4e4bb1f94415f044f609",
+		"date": "2026-02-05 23:01:24 -0800",
+		"message": "Convert from Next.js to esbuild + React\n\nBased on https://github.com/SheepTester/ucsd-classrooms/ and similar\n"
+	},
+	"/ucsd-free-food/past/": {
+		"source": "ucsd-free-food/main/static/past/index.html",
+		"hash": "9f9db3e2dc726c11d5da4e4bb1f94415f044f609",
+		"date": "2026-02-05 23:01:24 -0800",
+		"message": "Convert from Next.js to esbuild + React\n\nBased on https://github.com/SheepTester/ucsd-classrooms/ and similar\n"
+	},
 	"/ucsd-sunset/": {
 		"source": "ucsd-sunset/main/static/index.html",
 		"hash": "cb10a390857833aa3cffad03461233147cf2349c",
@@ -4013,6 +4109,18 @@
 		"date": "2025-05-23 23:21:18 -0700",
 		"message": "biolumseinscen\n"
 	},
+	"/words-go-here/misc/blur-motion.html": {
+		"source": "words-go-here/master/misc/blur-motion.html",
+		"hash": "c2eb029996f362449ed317605356d34924be142a",
+		"date": "2026-02-14 16:43:27 -0800",
+		"message": "motion blur\n"
+	},
+	"/words-go-here/misc/blur.html": {
+		"source": "words-go-here/master/misc/blur.html",
+		"hash": "97d8486b585c3a713a9a7e1b76ae118a71dc1185",
+		"date": "2026-02-13 21:00:58 -0800",
+		"message": "Set up WebGPU\n"
+	},
 	"/words-go-here/misc/bmp.html": {
 		"source": "words-go-here/master/misc/bmp.html",
 		"hash": "576db86a49466e3c104efcd21e1395cfe7452143",
@@ -4072,6 +4180,12 @@
 		"hash": "182a8caf477cc79191b1b2a347f6ab654b8ca8d0",
 		"date": "2024-12-18 09:21:34 +0800",
 		"message": "taiwan-california clocks, preview text in fonts\n"
+	},
+	"/words-go-here/misc/covid-kids.html": {
+		"source": "words-go-here/master/misc/covid-kids.html",
+		"hash": "63d43b8a7fc950e6cc05ed1cde61d0773ec77f94",
+		"date": "2026-02-13 23:08:02 -0800",
+		"message": "when did they go through covid\n"
 	},
 	"/words-go-here/misc/decargoifor.html": {
 		"source": "words-go-here/master/misc/decargoifor.html",
@@ -4271,6 +4385,12 @@
 		"date": "2017-11-21 20:01:41 -0800",
 		"message": "too lazy to actually make logo\n"
 	},
+	"/words-go-here/misc/gen-big-file.html": {
+		"source": "words-go-here/master/misc/gen-big-file.html",
+		"hash": "5380abc173fe907ed2025bc6fcdda010f0816cf2",
+		"date": "2026-05-12 21:50:55 -0700",
+		"message": "gen big file (but it is SLOW)\n"
+	},
 	"/words-go-here/misc/google-directory-names.html": {
 		"source": "words-go-here/master/misc/google-directory-names.html",
 		"hash": "eabecea6b6db7189c14687a7e8cc08fc14e22cb7",
@@ -4288,6 +4408,12 @@
 		"hash": "51f3240b5a818e5e884e41405bee2b630414a775",
 		"date": "2021-08-09 22:10:01 -0700",
 		"message": "hangman sans fun\n"
+	},
+	"/words-go-here/misc/hexagonal-tic-tac-toe-analysis.html": {
+		"source": "words-go-here/master/misc/hexagonal-tic-tac-toe-analysis.html",
+		"hash": "9fc5eb412e0a7f6b2bfcc240814747cceaa9cdf8",
+		"date": "2026-04-10 23:28:03 -0700",
+		"message": "set up canvas hex renderer\n"
 	},
 	"/words-go-here/misc/imgtosvg.html": {
 		"source": "words-go-here/master/misc/imgtosvg.html",
@@ -4390,6 +4516,12 @@
 		"hash": "85ad72c284ad370bae08a65cc48c2dcde53bdd5a",
 		"date": "2017-11-14 20:30:08 -0800",
 		"message": "okay good this might work\n"
+	},
+	"/words-go-here/misc/ouzhou.html": {
+		"source": "words-go-here/master/misc/ouzhou.html",
+		"hash": "3423ebe3841d05fdb358d2fd72cec63e93bdfa1f",
+		"date": "2026-04-16 02:13:14 -0700",
+		"message": "start ouzhou\n"
 	},
 	"/words-go-here/misc/pan-rotate-zoom.html": {
 		"source": "words-go-here/master/misc/pan-rotate-zoom.html",
@@ -4517,6 +4649,48 @@
 		"date": "2018-12-22 12:24:08 -0800",
 		"message": "pixel font thing\n"
 	},
+	"/words-go-here/misc/slop/": {
+		"source": "words-go-here/master/misc/slop/index.html",
+		"hash": "8ddf4a9c31154fd04fc962367e8a694a2859ec4e",
+		"date": "2026-06-06 22:17:24 -0700",
+		"message": "the fix for full screen pop ups is to tell it which z index it can use; slop index\n"
+	},
+	"/words-go-here/misc/slop/adventure.html": {
+		"source": "words-go-here/master/misc/slop/adventure.html",
+		"hash": "875b78cf5ba038050a8b4b5f1a040ca7c05cd327",
+		"date": "2026-06-06 21:21:07 -0700",
+		"message": "slop adventure\n"
+	},
+	"/words-go-here/misc/slop/history-editor.html": {
+		"source": "words-go-here/master/misc/slop/history-editor.html",
+		"hash": "46a882b4fa1e288318ca8234a9fb37b80592a069",
+		"date": "2026-06-06 17:23:39 -0700",
+		"message": "history editor\n"
+	},
+	"/words-go-here/misc/slop/ocr.html": {
+		"source": "words-go-here/master/misc/slop/ocr.html",
+		"hash": "b6c6fb808b2b3b80795bf7487013709939fba442",
+		"date": "2026-06-06 00:58:45 -0700",
+		"message": "ocr\n"
+	},
+	"/words-go-here/misc/slop/shlop.html": {
+		"source": "words-go-here/master/misc/slop/shlop.html",
+		"hash": "d801b4159af854ede71bcb7f2153264bb720a3f8",
+		"date": "2026-06-06 19:57:53 -0700",
+		"message": "slop shell\n"
+	},
+	"/words-go-here/misc/slop/slopper-popup.html": {
+		"source": "words-go-here/master/misc/slop/slopper-popup.html",
+		"hash": "e499f1772c4980f0cda841c86a49aa90df18177e",
+		"date": "2026-06-06 19:39:44 -0700",
+		"message": "popup generator\n"
+	},
+	"/words-go-here/misc/slop/slopper.html": {
+		"source": "words-go-here/master/misc/slop/slopper.html",
+		"hash": "26075e8e6617d04ac1e8e52bfc7e7b78dba5993f",
+		"date": "2026-06-06 00:09:27 -0700",
+		"message": "unsafely eval javascript from llm (apparently nano is very deterministic)\n"
+	},
 	"/words-go-here/misc/solidrectangles.html": {
 		"source": "words-go-here/master/misc/solidrectangles.html",
 		"hash": "e36ecff039d9852ca5ffd57fa6cbcf64a9b7122e",
@@ -4558,6 +4732,18 @@
 		"hash": "99cd09bc276e8506d8fdfc776b10705b5ec096ef",
 		"date": "2021-08-10 16:15:22 -0700",
 		"message": "I think I somewhat understand service workers now?\nI guess UGWA is just overcomplicated\n\nYou just need to do\n1. When the browser encounters a new SW version, it'll fire the `updatefound` event on a `ServiceWorkerRegistration` (which you get from `navigator.serviceWorker.register`).\n2. When `updatefound` fires, the registration's `installing` property will have a new `ServiceWorker`.\n3. Inside the service worker, call `self.skipWaiting` on receiving the `install` event.\n4. This will cause a `statechange` event to be fired on the `ServiceWorker`.\n5. When the `ServiceWorker`'s `state` property becomes `activated`, you can reload the page. By now, the `controllerchange` event has been fired on `navigator.serviceWorker`, so the controller service worker, which receives all the fetch requests from the web page, has been changed to the new service worker. Reloading will make the page use the new HTML.\n"
+	},
+	"/words-go-here/misc/swype-coder.html": {
+		"source": "words-go-here/master/misc/swype-coder.html",
+		"hash": "8da96f9b727a57f329d1cd0c6d002b19b758e9ac",
+		"date": "2026-01-15 00:08:34 -0800",
+		"message": "turn autocorrected phone text into JS\n"
+	},
+	"/words-go-here/misc/text-transition.html": {
+		"source": "words-go-here/master/misc/text-transition.html",
+		"hash": "6d3f8d509bc0d294d2a4f415031f2e1b1890e840",
+		"date": "2026-03-01 22:04:53 -0800",
+		"message": "dynamic programming implementation of myers diff!\n"
 	},
 	"/words-go-here/misc/tiles1.html": {
 		"source": "words-go-here/master/misc/tiles1.html",
@@ -4732,5 +4918,11 @@
 		"hash": "1cca530a2ee89388a440b792da2525efcbd42555",
 		"date": "2019-04-28 21:44:14 -0700",
 		"message": "she does arm motions as she explains now\n"
+	},
+	"/我/meanwhile/": {
+		"source": "sheeptester.github.io/master/我/meanwhile/index.html",
+		"hash": "b24cdd37ca524ad1b16a6c9bd814c25468fc1561",
+		"date": "2026-03-12 00:17:01 -0700",
+		"message": "create react app with hydration\n"
 	}
 }

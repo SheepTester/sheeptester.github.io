@@ -720,6 +720,12 @@
 		"sheep": null
 	},
 	{
+		"path": "/hello-world/ios-zip-compare/",
+		"title": "iPhone photo backup | hello-world",
+		"description": "Innocent first test. A Mini Shai-Hulud has Appeared",
+		"sheep": null
+	},
+	{
 		"path": "/hello-world/minimal-pwa/",
 		"title": null,
 		"description": null,
@@ -976,6 +982,12 @@
 		"title": null,
 		"description": null,
 		"sheep": null
+	},
+	{
+		"path": "/hello-world/test/stop.html",
+		"title": null,
+		"description": null,
+		"sheep": 3
 	},
 	{
 		"path": "/hello-world/test/testthing.html",
@@ -1366,6 +1378,12 @@
 		"title": null,
 		"description": null,
 		"sheep": null
+	},
+	{
+		"path": "/hello-world/ring-health.html",
+		"title": "webring health check",
+		"description": "are the other sites on the webring ok?",
+		"sheep": 3
 	},
 	{
 		"path": "/hello-world/scheme-interpret.html",
@@ -2022,6 +2040,12 @@
 		"sheep": 3
 	},
 	{
+		"path": "/javascripts/exif.html",
+		"title": "EXIF metadata viewer",
+		"description": "Uses exifreader to extract EXIF data from images (e.g. location, time) entirely in your browser.",
+		"sheep": 3
+	},
+	{
 		"path": "/javascripts/fek-fshka-hangul.html",
 		"title": "Hangul sinke babeben",
 		"description": "Si no noi. Si no ki?",
@@ -2172,6 +2196,12 @@
 		"sheep": 3
 	},
 	{
+		"path": "/javascripts/md5.html",
+		"title": "MD5",
+		"description": "Get the md5 hash/checksum of a file",
+		"sheep": 3
+	},
+	{
 		"path": "/javascripts/mp4-analyze.html",
 		"title": "Analyze MP4s",
 		"description": "Binary files are powerful",
@@ -2289,6 +2319,12 @@
 		"path": "/javascripts/screen-recorder.html",
 		"title": "Screen recorder",
 		"description": "Imagine needing to install an extension for this.",
+		"sheep": 3
+	},
+	{
+		"path": "/javascripts/screen-wake.html",
+		"title": "Keep screen on",
+		"description": "Prevents your screen from turning off by caffeinating it with the Screen Wake Lock API.",
 		"sheep": 3
 	},
 	{
@@ -2442,6 +2478,18 @@
 		"sheep": 3
 	},
 	{
+		"path": "/longer-tweets/brevity/",
+		"title": "beauty in brevity",
+		"description": "I want to make my blog posts shorter.",
+		"sheep": 3
+	},
+	{
+		"path": "/longer-tweets/claude/",
+		"title": "ten steps behind Claude",
+		"description": "I don’t really want to rely on Claude Code.",
+		"sheep": 3
+	},
+	{
 		"path": "/longer-tweets/closing-html/",
 		"title": "Why closing HTML tags is dangerous practice",
 		"description": "Closing your HTML tags can be dangerous! Here's why.",
@@ -2502,15 +2550,33 @@
 		"sheep": 3
 	},
 	{
+		"path": "/longer-tweets/hide-seek/",
+		"title": "hide+seek review",
+		"description": "We played Hide + Seek in SF but found issues in our playstyle.",
+		"sheep": 3
+	},
+	{
 		"path": "/longer-tweets/html-xss/",
 		"title": "XSS in HTML",
 		"description": "Spread awareness about this #security #vulnerability!",
 		"sheep": 3
 	},
 	{
+		"path": "/longer-tweets/jekyll/",
+		"title": "blog tech stack, 8 years later",
+		"description": "Revisiting my blog’s current tech stack, which has changed significantly since 2018.",
+		"sheep": 3
+	},
+	{
 		"path": "/longer-tweets/js/",
 		"title": "JavaScript.",
 		"description": "a list of quirks from \\#n-building",
+		"sheep": 3
+	},
+	{
+		"path": "/longer-tweets/json-bigint/",
+		"title": "json stringify a bigint as a number in javascript",
+		"description": "(Ab)using revivers and replacers to serialize 64-bit integers, infinities, and dates.",
 		"sheep": 3
 	},
 	{
@@ -2568,9 +2634,9 @@
 		"sheep": 3
 	},
 	{
-		"path": "/longer-tweets/microplastics/",
-		"title": "microplastics are not harmful",
-		"description": "",
+		"path": "/longer-tweets/my-pronouns/",
+		"title": "pronouns",
+		"description": "he/him for Sean, they/them for SheepTester",
 		"sheep": 3
 	},
 	{
@@ -2604,6 +2670,12 @@
 		"sheep": 3
 	},
 	{
+		"path": "/longer-tweets/recruiters/",
+		"title": "these people(?) are looking for employees",
+		"description": "Sharing recruiter pitches for others who might need them.",
+		"sheep": 3
+	},
+	{
 		"path": "/longer-tweets/scratch-www-troubles/",
 		"title": "scratch-www troubles",
 		"description": "I tried and kind of succeeded in building Scratch WWW.",
@@ -2628,12 +2700,6 @@
 		"sheep": 3
 	},
 	{
-		"path": "/longer-tweets/squash/",
-		"title": "merge commits better than squash commits",
-		"description": "",
-		"sheep": 3
-	},
-	{
 		"path": "/longer-tweets/test/",
 		"title": "test post",
 		"description": "testing this cool little blog system I made",
@@ -2643,6 +2709,12 @@
 		"path": "/longer-tweets/ucsd-colleges/",
 		"title": "UCSD Colleges Ranked",
 		"description": "What's the best college?",
+		"sheep": 3
+	},
+	{
+		"path": "/longer-tweets/ucsd-study-spaces/",
+		"title": "list of UCSD study spaces",
+		"description": "Geisel sucks, and there’s so many other places to study on campus. I graduated so I no longer need to gatekeep these.",
 		"sheep": 3
 	},
 	{
@@ -3750,6 +3822,18 @@
 		"sheep": 3
 	},
 	{
+		"path": "/ucsd-free-food/past/",
+		"title": "(past) free food events at ucsd",
+		"description": "kitty kat",
+		"sheep": 3
+	},
+	{
+		"path": "/ucsd-free-food/",
+		"title": "free food events at ucsd",
+		"description": "kitty kat",
+		"sheep": 3
+	},
+	{
 		"path": "/ucsd-sunset/",
 		"title": "SunSET for UCSD",
 		"description": "A crowd-sourced dataset for grade distributions for courses at UC San Diego.",
@@ -3876,6 +3960,48 @@
 		"sheep": 3
 	},
 	{
+		"path": "/words-go-here/misc/slop/adventure.html",
+		"title": "slop adventure",
+		"description": "chrome slop api-based adventure based on text",
+		"sheep": 3
+	},
+	{
+		"path": "/words-go-here/misc/slop/history-editor.html",
+		"title": "screw with an llm while it's speaking",
+		"description": "edit the chat history to make the clanker think it wrote something it didnt",
+		"sheep": 3
+	},
+	{
+		"path": "/words-go-here/misc/slop/",
+		"title": "slop index",
+		"description": "chrome slop api experiemnts directory",
+		"sheep": 3
+	},
+	{
+		"path": "/words-go-here/misc/slop/ocr.html",
+		"title": "OCR: extract text from image",
+		"description": "Uses Chrome's slop API to get text from an image",
+		"sheep": 3
+	},
+	{
+		"path": "/words-go-here/misc/slop/shlop.html",
+		"title": "slop shell",
+		"description": "unix shell but it hallucinates",
+		"sheep": 3
+	},
+	{
+		"path": "/words-go-here/misc/slop/slopper-popup.html",
+		"title": "popup generator",
+		"description": "chrome slop api slaps you with more pop up than you can imagine",
+		"sheep": 3
+	},
+	{
+		"path": "/words-go-here/misc/slop/slopper.html",
+		"title": "big slopper",
+		"description": "unsafely evaluate random code that chrome slop api generates",
+		"sheep": 3
+	},
+	{
 		"path": "/words-go-here/misc/sw-test/",
 		"title": "Service worker updating test (v13)",
 		"description": "This demo doesn't really work on GitHub Pages since it requires me editing the service worker file.",
@@ -3984,6 +4110,18 @@
 		"sheep": 3
 	},
 	{
+		"path": "/words-go-here/misc/blur-motion.html",
+		"title": "Motion Blur",
+		"description": "shaky hands",
+		"sheep": 3
+	},
+	{
+		"path": "/words-go-here/misc/blur.html",
+		"title": "Gaussian Blur",
+		"description": "Lets you blur an image A LOT",
+		"sheep": 3
+	},
+	{
 		"path": "/words-go-here/misc/bmp.html",
 		"title": "basic multilingual plane",
 		"description": "inspired by the unifont map thing on wikimedia commons",
@@ -4041,6 +4179,12 @@
 		"path": "/words-go-here/misc/clocks.html",
 		"title": "time in california and taiwan",
 		"description": "world clocks customized for me. supports DST (for California)",
+		"sheep": 3
+	},
+	{
+		"path": "/words-go-here/misc/covid-kids.html",
+		"title": "Where are they now?",
+		"description": "Find out in what part of their lives today's college students went through Covid. It probably explains why they're the way they are.",
 		"sheep": 3
 	},
 	{
@@ -4242,6 +4386,12 @@
 		"sheep": 1
 	},
 	{
+		"path": "/words-go-here/misc/gen-big-file.html",
+		"title": "Generate a BIG file",
+		"description": "Get gigabytes, FAST.",
+		"sheep": 3
+	},
+	{
 		"path": "/words-go-here/misc/google-directory-names.html",
 		"title": "Most Frequent Names",
 		"description": "lists most common and longest names in your university's google contacts directory",
@@ -4257,6 +4407,12 @@
 		"path": "/words-go-here/misc/hangman.html",
 		"title": "Hangman game",
 		"description": "Easy difficulty because you are the guesser, and the computer is not very smart.",
+		"sheep": 3
+	},
+	{
+		"path": "/words-go-here/misc/hexagonal-tic-tac-toe-analysis.html",
+		"title": "Hexagonal tic-tac-toe analysis",
+		"description": "Hexagonal tic-tac-toe with board markings for threats and preemptives",
 		"sheep": 3
 	},
 	{
@@ -4354,6 +4510,12 @@
 		"title": "opentype.js fun",
 		"description": "playing with a font parser",
 		"sheep": 1
+	},
+	{
+		"path": "/words-go-here/misc/ouzhou.html",
+		"title": "Add Chinese city name over a photo",
+		"description": "I'm going to Europe tomorrow, and I want to pretend I'm going to the exotic Chinese city of Ouzhou",
+		"sheep": 3
 	},
 	{
 		"path": "/words-go-here/misc/pan-rotate-zoom.html",
@@ -4516,6 +4678,18 @@
 		"title": "SVG to PNG",
 		"description": "Meh.",
 		"sheep": 1
+	},
+	{
+		"path": "/words-go-here/misc/swype-coder.html",
+		"title": "Autocorrect-resistent JavaScript keyboard",
+		"description": "Reformats auto-corrected words typed on a mobile keyboard into hopefully valid JavaScript code.",
+		"sheep": 3
+	},
+	{
+		"path": "/words-go-here/misc/text-transition.html",
+		"title": "Transition between two pieces of text",
+		"description": "One way of smoothly animating between two strings. I might use this approach if I ever make videos.",
+		"sheep": 3
 	},
 	{
 		"path": "/words-go-here/misc/tiles1.html",
@@ -4701,6 +4875,12 @@
 		"path": "/yesnt/timing-thing.html",
 		"title": "Timing thing",
 		"description": "Measures the time between key presses",
+		"sheep": 3
+	},
+	{
+		"path": "/%E6%88%91/meanwhile/",
+		"title": "Meanwhile",
+		"description": "An art piece contrasting my university life with the interesting times happening around me.",
 		"sheep": 3
 	},
 	{

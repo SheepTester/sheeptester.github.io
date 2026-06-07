@@ -120,6 +120,11 @@ export const repos: Repo[] = [
     name: 'ucsd-classrooms',
     branch: 'main',
     type: { type: 'actions', prefix: 'static/' }
+  },
+  {
+    name: 'ucsd-free-food',
+    branch: 'main',
+    type: { type: 'actions', prefix: 'static/' }
   }
 ]
 
