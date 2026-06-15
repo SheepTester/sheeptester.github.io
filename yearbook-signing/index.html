@@ -18,6 +18,10 @@
       <div class="sign-number" id="numbers"><div class="numbers number-hash"></div></div>
     </div>
     <div class="cover"></div>
+    <p class="deprecation-note">
+      The number shown no longer increases.
+      <a href="/longer-tweets/web-server/#yearbook-signing">Learn more</a>
+    </p>
     <script type="module">
       const COUNTER_HOST = 'https://sheep.thingkingland.app/counter/yearbook-signing/'
 
@@ -50,6 +54,7 @@
       }
 
       async function getNumber () {
+        return 11810
         const number = await fetch(COUNTER_HOST)
           .then(rejectIfNotOk)
           .then(r => r.text())

@@ -185,3 +185,25 @@ body {
   --y: -0.32;
   --width: 0.55;
 }
+
+.deprecation-note {
+  font-family: 'Helvetica Neue', Helvetica, system-ui, sans-serif;
+  color: white;
+  background-color: rgba(0, 0, 0, 0.5);
+  position: fixed;
+  bottom: 0;
+  right: 50%;
+  transform: translateX(50%);
+  border-radius: 50px;
+  padding: 5px 8px;
+  margin-bottom: 20px;
+  font-size: 12px;
+}
+.deprecation-note a {
+  text-decoration: none;
+  color: #d8b4fe;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
