@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>gzip Compression &amp; Decompression</title>
+    <meta
+      name="description"
+      content="Shrink your files entirely in your browser."
+    />
+    <meta name="theme-color" content="#4fa1a7" />
+
+    <link rel="stylesheet" type="text/css" href="/sheep3.css" />
+    <link rel="stylesheet" type="text/css" href="/reform/v1/index.css" />
+    <script src="/sheep3.js" charset="utf-8"></script>
+  </head>
+  <body>
+    <form class="main" role="main" action="javascript:">
+      <h1>Compress and decompress</h1>
+      <p>Are your files too big? Shrink them!</p>
+      <p>
+        This uses the
+        <a
+          class="link"
+          href="https://developer.mozilla.org/en-US/docs/Web/API/Compression_Streams_API"
+          >Compression Streams API</a
+        >
+        to compress/decompress files entirely within your browser.
+      </p>
+
+      <div
+        class="two-col-io reform:io no-contents"
+        id="output"
+        data-deps="input mode format"
+      >
+        <label class="input-controls file">
+          <input
+            type="file"
+            name="input"
+            class="hidden-accessible reform:file-input reform:paste-target"
+          />
+          <span class="icon icon-upload"></span>
+          <span class="file-label">Choose, drop, or paste a file</span>
+          <span class="file-name">No file selected</span>
+        </label>
+        <div class="output-controls">
+          <a class="file download">
+            <span class="icon icon-download"></span>
+            <span class="file-label">Download</span>
+            <span class="file-name">No file available</span>
+          </a>
+          <button
+            type="button"
+            class="icon icon-share"
+            aria-label="Share"
+          ></button>
+        </div>
+      </div>
+
+      <fieldset class="radio-set">
+        <legend class="label-primary">Mode</legend>
+        <label class="radio-label">
+          <input
+            type="radio"
+            name="mode"
+            value="compress"
+            class="hidden-accessible"
+            checked
+          />
+          <span class="radio-button"></span>
+          <span class="label-primary">Compress</span>
+          <span class="label-secondary">Make the file smaller.</span>
+        </label>
+        <label class="radio-label">
+          <input
+            type="radio"
+            name="mode"
+            value="decompress"
+            class="hidden-accessible"
+          />
+          <span class="radio-button"></span>
+          <span class="label-primary">Decompress</span>
+          <span class="label-secondary">
+            Turn a compressed file back into the original.
+          </span>
+        </label>
+      </fieldset>
+
+      <fieldset class="radio-set">
+        <legend class="label-primary">File format</legend>
+        <p class="label-secondary">
+          The first three options all use
+          <a href="https://en.wikipedia.org/wiki/Deflate" class="link"
+            >DEFLATE</a
+          >, the most widely used lossless compression algorithm, but they
+          differ in what extra metadata they store (e.g. a file header and
+          checksum), if any.
+        </p>
+        <label class="radio-label">
+          <input
+            type="radio"
+            name="format"
+            value="deflate-raw"
+            class="hidden-accessible"
+          />
+          <span class="radio-button"></span>
+          <span class="label-primary">Raw DEFLATE</span>
+          <span class="label-secondary">
+            DEFLATE algorithm, no extra metadata.
+          </span>
+        </label>
+        <label class="radio-label">
+          <input
+            type="radio"
+            name="format"
+            value="gzip"
+            class="hidden-accessible"
+            checked
+          />
+          <span class="radio-button"></span>
+          <span class="label-primary">gzip (.gz)</span>
+          <span class="label-secondary">
+            DEFLATE algorithm, same file format used by the
+            <code>gzip</code> command.
+          </span>
+        </label>
+        <label class="radio-label">
+          <input
+            type="radio"
+            name="format"
+            value="deflate"
+            class="hidden-accessible"
+          />
+          <span class="radio-button"></span>
+          <span class="label-primary">zlib</span>
+          <span class="label-secondary">
+            DEFLATE algorithm, same file format used by the zlib library.
+          </span>
+        </label>
+        <label class="radio-label">
+          <input
+            type="radio"
+            name="format"
+            value="brotli"
+            class="hidden-accessible"
+            disabled
+          />
+          <span class="radio-button"></span>
+          <span class="label-primary">Brotli</span>
+          <span class="label-secondary">
+            Google's compression algorithm. Supported in Firefox and Safari (but
+            not Chromium for some reason) at the time of writing.
+          </span>
+        </label>
+        <label class="radio-label">
+          <input
+            type="radio"
+            name="format"
+            value="zstd"
+            class="hidden-accessible"
+            disabled
+          />
+          <span class="radio-button"></span>
+          <span class="label-primary">Zstandard</span>
+          <span class="label-secondary">
+            Facebook's compression algorithm. Behind a flag in Firefox at the
+            time of writing.
+          </span>
+        </label>
+      </fieldset>
+    </form>
+
+    <script type="module">
+      import { on, Out } from '/reform/v1/index.js'
+
+      const extensions = {
+        gzip: 'gz',
+        deflate: 'zl',
+        brotli: 'br',
+        zstd: 'zst'
+      }
+      const remove = new RegExp(`\.(?:${Object.values(extensions).join('|')})$`)
+      const mimeTypes = {
+        gzip: 'application/gzip',
+        deflate: 'application/zlib',
+        zstd: 'application/zstd'
+      }
+
+      on('output', async (_, { input, mode, format }) => {
+        const blob = await new Response(
+          input
+            .stream()
+            .pipeThrough(
+              new (mode === 'compress'
+                ? CompressionStream
+                : DecompressionStream)(format)
+            )
+        ).blob()
+        return mode === 'compress'
+          ? Out.from(
+            extensions[format]
+              ? `${input.name}.${extensions[format]}`
+              : input.name.replaceAll('.', '_'),
+            blob,
+            mimeTypes[format] ?? 'application/octet-stream'
+          )
+          : Out.from(
+            input.name.replace(remove, ''),
+            blob,
+            'application/octet-stream'
+          )
+      })
+
+      for (const format of ['brotli', 'zstd']) {
+        try {
+          new CompressionStream(format)
+          document.querySelector(
+            `[name="format"][value="${format}"]`
+          ).disabled = false
+        } catch {}
+      }
+    </script>
+  </body>
+</html>

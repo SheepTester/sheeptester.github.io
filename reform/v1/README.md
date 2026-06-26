@@ -286,19 +286,19 @@ This is used by [font-colour-remover](https://sheeptester.github.io/javascripts/
   <legend class="label-primary">TODO</legend>
   <p class="label-secondary">TODO</p>
   <label class="radio-label">
-    <input type="radio" name="TODO" value="TODO" class="hidden-accessible" />
+    <input
+      type="radio"
+      name="TODO"
+      value="TODO"
+      class="hidden-accessible"
+      checked
+    />
     <span class="radio-button"></span>
     <span class="label-primary">TODO</span>
     <span class="label-secondary">TODO</span>
   </label>
   <label class="radio-label">
-    <input
-      type="radio"
-      name="TODO"
-      value="no-desc"
-      class="hidden-accessible"
-      checked
-    />
+    <input type="radio" name="TODO" value="TODO" class="hidden-accessible" />
     <span class="radio-button"></span>
     <span class="label-primary">TODO</span>
     <span class="label-secondary">TODO</span>
