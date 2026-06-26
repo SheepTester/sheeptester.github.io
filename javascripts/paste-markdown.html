@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Paste rich text and get Markdown</title>
+    <meta
+      name="description"
+      content="Turns HTML from your clipboard into Markdown so that you can paste it into an LLM or something."
+    />
+    <meta name="theme-color" content="#4fa1a7" />
+
+    <link rel="stylesheet" type="text/css" href="/sheep3.css" />
+    <link rel="stylesheet" type="text/css" href="/reform/v1/index.css" />
+    <script src="/sheep3.js" charset="utf-8"></script>
+
+    <style>
+      .input-content {
+        overflow: auto;
+        padding: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <form class="main" role="main" action="javascript:">
+      <h1>Convert pasted rich text (HTML) into Markdown</h1>
+      <p>
+        Are you infatuated with your LLM and wish it could see the same fancy
+        text formatting you see when you copy paste documentation into it?
+      </p>
+      <p>
+        This tool takes the formatted rich text as HTML from your clipboard and
+        turns it into Markdown. Try it by selecting the entire page, copying,
+        and pasting.
+      </p>
+
+      <div class="two-col-io reform:io">
+        <label class="input-controls file">
+          <input
+            type="file"
+            name="html"
+            accept="text/html"
+            id="input"
+            class="hidden-accessible reform:text-input reform:paste-target"
+          />
+          <span class="icon icon-upload"></span>
+          <span class="file-label">Choose, drop, or paste HTML</span>
+          <span class="file-name">No file selected</span>
+        </label>
+        <div class="input-content">Wow</div>
+        <textarea
+          class="output-content code"
+          id="md"
+          data-deps="html"
+          aria-label="Markdown"
+          readonly
+        ></textarea>
+        <div class="output-controls">
+          <a class="file download">
+            <span class="icon icon-download"></span>
+            <span class="file-label">Download</span>
+            <span class="file-name">No file available</span>
+          </a>
+          <button
+            type="button"
+            class="icon icon-copy"
+            aria-label="Copy"
+          ></button>
+          <button
+            type="button"
+            class="icon icon-share"
+            aria-label="Share"
+          ></button>
+        </div>
+      </div>
+    </form>
+
+    <script type="module">
+      import prettier from 'https://unpkg.com/prettier@3.8.4/standalone.mjs'
+      import * as prettierPluginMarkdown from 'https://unpkg.com/prettier@3.8.4/plugins/markdown.mjs'
+      import { on, Out } from '/reform/v1/index.js'
+
+      on('md', async (textarea, { html }) => {
+        const div = document.createElement('div')
+        div.setHTML(html, {
+          sanitizer: {
+            elements: [
+              'h1',
+              'h2',
+              'h3',
+              'h4',
+              'h5',
+              'h6',
+              'p',
+              'pre',
+              'code',
+              'kbd',
+              'samp',
+              'tt',
+              { name: 'ul', attributes: ['start'] },
+              { name: 'ol', attributes: ['start'] },
+              'li',
+              'blockquote',
+              'b',
+              'strong',
+              'i',
+              'em',
+              'u',
+              'ins',
+              's',
+              'del',
+              'strike',
+              'q',
+              { name: 'a', attributes: ['href', 'title'] },
+              // <area> element could probably be turned into a link too
+              { name: 'img', attributes: ['src', 'alt', 'title'] },
+              'hr',
+              'br',
+              'table',
+              'thead',
+              'tbody',
+              'tfoot',
+              'tr',
+              'th',
+              'td'
+            ],
+            replaceWithChildrenElements: [
+              'address',
+              'article',
+              'aside',
+              'footer',
+              'header',
+              'hgroup',
+              'main',
+              'nav',
+              'section',
+              'search',
+              'dd',
+              'div',
+              'dl',
+              'dt',
+              'figcaption',
+              'figure',
+              'menu',
+              'abbr',
+              'bdi',
+              'bdo',
+              'cite',
+              'data',
+              'dfn',
+              'rp',
+              'ruby',
+              'small',
+              'span',
+              'sub',
+              'sup',
+              'time',
+              'var',
+              'embed',
+              'iframe',
+              'object',
+              'picture',
+              'noscript',
+              'button',
+              'form',
+              'label',
+              'legend',
+              'meter',
+              'progress',
+              'details',
+              'dialog',
+              'summary',
+              'acronym',
+              'big',
+              'center',
+              'dir',
+              'marquee',
+              'menuitem',
+              'rb',
+              'rtc'
+            ]
+          }
+        })
+        const formatted = await prettier.format('*wow*', {
+          parser: 'markdown',
+          plugins: [prettierPluginMarkdown]
+        })
+        return Out.from(
+          'content.md',
+          (textarea.value = formatted),
+          'text/markdown'
+        )
+      })
+    </script>
+  </body>
+</html>
