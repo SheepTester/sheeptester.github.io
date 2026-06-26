@@ -607,6 +607,10 @@ textarea.output-content {
 
   .no-contents & {
     border-radius: 10px;
+
+    & > :last-child {
+      border-bottom-right-radius: 10px;
+    }
   }
   & > :first-child {
     border-top-left-radius: 10px;
