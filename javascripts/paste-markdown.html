@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Paste rich text and get Markdown</title>
+    <title>Paste formatted text and get Markdown</title>
     <meta
       name="description"
       content="Turns HTML from your clipboard into Markdown so that you can paste it into an LLM or something."
@@ -54,7 +54,7 @@
   </head>
   <body>
     <form class="main" role="main" action="javascript:">
-      <h1>Convert pasted rich text (HTML) into Markdown</h1>
+      <h1>Convert rich text in clipboard into Markdown</h1>
       <p>
         Are you infatuated with your LLM and wish it could see the same fancy
         text formatting you see when you copy paste documentation into it? Or
@@ -62,9 +62,9 @@
         purpose.
       </p>
       <p>
-        This tool takes the formatted rich text as HTML from your clipboard and
-        turns it into Markdown. Try it by selecting the entire page, copying,
-        and pasting (ctrl/cmd + A, C, V).
+        This tool takes the formatted rich text as HTML that you paste from your
+        clipboard and turns it into Markdown. Try it by selecting the entire
+        page, copying, and pasting (ctrl/cmd + A, C, V).
         <!-- <code>`</code> <code>``</code> <code>```</code> <code>` ``</code>
         <code>`` ```</code> <code>` ```</code> -->
       </p>
@@ -139,6 +139,15 @@
           LLMs don't need to see the image URL.
         </span>
       </label>
+
+      <p>
+        I previously used
+        <a href="https://euangoddard.github.io/clipboard2markdown/" class="link"
+          >Paste to Markdown</a
+        >, but I didn't like the Markdown formatting it produces. This tool uses
+        <a href="https://prettier.io/" class="link">Prettier</a> to clean up the
+        Markdown.
+      </p>
     </form>
 
     <script type="module">
