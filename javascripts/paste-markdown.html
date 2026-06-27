@@ -57,7 +57,9 @@
       <h1>Convert pasted rich text (HTML) into Markdown</h1>
       <p>
         Are you infatuated with your LLM and wish it could see the same fancy
-        text formatting you see when you copy paste documentation into it?
+        text formatting you see when you copy paste documentation into it? Or
+        maybe you're working with Markdown for some other, more innocuous
+        purpose.
       </p>
       <p>
         This tool takes the formatted rich text as HTML from your clipboard and
@@ -88,7 +90,7 @@
         <textarea
           class="output-content code"
           id="md"
-          data-deps="html keepImages"
+          data-deps="html keepImages removeCitations"
           aria-label="Markdown"
           readonly
         ></textarea>
@@ -110,6 +112,19 @@
           ></button>
         </div>
       </div>
+
+      <label class="radio-label">
+        <input
+          type="checkbox"
+          name="removeCitations"
+          class="hidden-accessible"
+        />
+        <span class="radio-button"></span>
+        <span class="label-primary">Remove citations/footnotes?</span>
+        <span class="label-secondary">
+          Clean out links that only contain numbers, like Wikipedia citations.
+        </span>
+      </label>
 
       <label class="radio-label">
         <input
@@ -198,7 +213,12 @@
       }
       function markdownifyInline (
         nodes,
-        { allowNewline = false, inTable = false, keepImages } = {}
+        {
+          allowNewline = false,
+          inTable = false,
+          keepImages,
+          removeCitations
+        } = {}
       ) {
         const escapeText = (text, isTitle = false) =>
           text
@@ -243,11 +263,17 @@
                 `\`\`${code.replace(/``+/g, m => (m === '``' ? '`\u200b`' : m))}\`\``
                 : `\`${code}\``
             } else if (node.tagName === 'A') {
-              content += `[${markdownifyInline(node.childNodes, { ...state, canLink: false })}](${escapeUrl(node.getAttribute('href'))}${
-                node.getAttribute('title')
-                  ? ` "${escapeText(node.getAttribute('title'), true)}"`
-                  : ''
-              })`
+              const body = markdownifyInline(node.childNodes, {
+                ...state,
+                canLink: false
+              })
+              if (!removeCitations || !/^\s*(?:\[\d+\]|\d+)\s*$/.test(body)) {
+                content += `[${body}](${escapeUrl(node.getAttribute('href'))}${
+                  node.getAttribute('title')
+                    ? ` "${escapeText(node.getAttribute('title'), true)}"`
+                    : ''
+                })`
+              }
             } else if (node.tagName === 'IMG') {
               if (keepImages) {
                 content += `![${escapeText(node.getAttribute('alt'))}](${escapeUrl(node.getAttribute('src'))}${
@@ -440,9 +466,11 @@
         return html
       })
 
-      on('md', async (textarea, { html, keepImages }) => {
+      on('md', async (textarea, { html, keepImages, removeCitations }) => {
         const markdown = getBlocks(html)
-          .map(block => markdownifyBlock(block, { keepImages }))
+          .map(block =>
+            markdownifyBlock(block, { keepImages, removeCitations })
+          )
           .join('\n\n')
         const formatted = await prettier.format(markdown, {
           parser: 'markdown',
