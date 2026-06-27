@@ -93,7 +93,7 @@
             blocks.push({
               type: 'normal',
               tag: child.tagName,
-              element: child
+              contents: Array.from(child.childNodes)
             })
           } else if (child.tagName === 'PRE') {
             blocks.push({ type: 'pre', content: child.textContent })
@@ -113,15 +113,13 @@
               start: child.tagName === 'OL' ? child.start : null
             })
           } else if (child.tagName === 'TABLE') {
-            if (child.rows.length === 0) {
+            const [head, ...rows] = Iterator.from(child.rows)
+              .map(row => Array.from(row.cells))
+              .filter(row => row.length > 0)
+            if (!head) {
               continue
             }
-            const [head, ...rows] = child.rows
-            blocks.push({
-              type: 'table',
-              head: Array.from(head.cells),
-              rows: Array.from(rows, row => Array.from(row.cells))
-            })
+            blocks.push({ type: 'table', head, rows })
           } else {
             if (!stray) {
               stray = []
@@ -135,6 +133,72 @@
           }
         }
         return blocks
+      }
+
+      function markdownifyInline (nodes, { allowNewline = false } = {}) {
+        return 'idk'
+      }
+
+      function markdownifyBlock (block) {
+        switch (block.type) {
+          case 'hr': {
+            return '---'
+          }
+          case 'normal': {
+            const headerPrefix = block.tag.startsWith('H')
+              ? '#'.repeat(+block.tag.slice(1)) + ' '
+              : ''
+            return (
+              headerPrefix +
+              markdownifyInline(block.contents, {
+                allowNewline: block.tag === 'P'
+              }) +
+              // Even though we already join paragraphs by a blank line, this
+              // allows orphans inside list items to have no blank line in
+              // between list items.
+              '\n\n'
+            )
+          }
+          case 'pre': {
+            const longest = block.content
+              .matchAll(/^```+/gm)
+              .reduce((cum, curr) => Math.max(cum, curr[0].length), 3)
+            const fence = '`'.repeat(longest)
+            return `${fence}\n${block.content.trimEnd()}\n${fence}`
+          }
+          case 'blockquote': {
+            return block.content
+              .map(markdownifyBlock)
+              .join('\n\n')
+              .replace(/^/gm, '> ')
+          }
+          case 'list': {
+            const indent = ' '.repeat(
+              block.start === null ? 2 : String(block.start).length + 2
+            )
+            return block.items
+              .map((blocks, i) => {
+                const content = blocks
+                  .map(markdownifyBlock)
+                  .join('\n\n')
+                  .replace(/^/gm, indent)
+                const bullet =
+                  block.start === null ? '-' : `${block.start + i}.`
+                return content ? bullet + content.slice(bullet.length) : ''
+              })
+              .join('\n')
+          }
+          case 'table': {
+            const displayRow = row =>
+              `| ${row.map(cell => markdownifyInline(cell.childNodes)).join(' | ')} |`
+            return `${displayRow(block.head)}\n| ${block.head.map(() => '---').join(' | ')} |\n${block.rows.map(displayRow).join('\n')}`
+          }
+          case 'orphan': {
+            return markdownifyInline(block.nodes, {
+              allowNewline: block.tag === 'P'
+            })
+          }
+        }
       }
 
       on('md', async (textarea, { html }) => {
@@ -240,8 +304,8 @@
             ]
           }
         })
-        console.log(getBlocks(div))
-        const formatted = await prettier.format('*wow*', {
+        const markdown = getBlocks(div).map(markdownifyBlock).join('\n\n')
+        const formatted = await prettier.format(markdown, {
           parser: 'markdown',
           plugins: [prettierPluginMarkdown]
         })
