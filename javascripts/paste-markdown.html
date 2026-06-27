@@ -16,9 +16,14 @@
     <script src="/sheep3.js" charset="utf-8"></script>
 
     <style>
+      .two-col-io {
+        /* TODO */
+        /* grid-template-rows: auto min-content; */
+      }
       .input-content {
         overflow: auto;
         padding: 20px;
+        min-height: 0;
       }
     </style>
   </head>
@@ -39,7 +44,7 @@
         <label class="input-controls file">
           <input
             type="file"
-            name="html"
+            name="rawHtml"
             accept="text/html"
             id="input"
             class="hidden-accessible reform:text-input reform:paste-target"
@@ -48,7 +53,7 @@
           <span class="file-label">Choose, drop, or paste HTML</span>
           <span class="file-name">No file selected</span>
         </label>
-        <div class="input-content">Wow</div>
+        <div class="input-content" id="html" data-deps="rawHtml">Wow</div>
         <textarea
           class="output-content code"
           id="md"
@@ -81,15 +86,19 @@
       import * as prettierPluginMarkdown from 'https://unpkg.com/prettier@3.8.4/plugins/markdown.mjs'
       import { on, Out } from '/reform/v1/index.js'
 
+      const NORMAL_BLOCKS = ['H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'P']
+      const BOLD = ['B', 'STRONG']
+      const ITALICS = ['I', 'EM']
+      const STRIKETHROUGH = ['S', 'DEL', 'STRIKE']
+      const CODE = ['CODE', 'KBD', 'SAMP', 'TT']
+
       function getBlocks (parent) {
         const blocks = []
         let stray = null
         for (const child of parent.childNodes) {
           if (child.tagName === 'HR') {
             blocks.push({ type: 'hr' })
-          } else if (
-            ['H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'P'].includes(child.tagName)
-          ) {
+          } else if (NORMAL_BLOCKS.includes(child.tagName)) {
             blocks.push({
               type: 'normal',
               tag: child.tagName,
@@ -135,8 +144,48 @@
         return blocks
       }
 
-      function markdownifyInline (nodes, { allowNewline = false } = {}) {
-        return 'idk'
+      function markdownifyInline (nodes, { inTable = false } = {}) {
+        const iter = (nodes, state) => {
+          let content = ''
+          for (const node of nodes) {
+            if (node.nodeType === Node.TEXT_NODE) {
+              content += node.nodeValue
+                .replace(
+                  new RegExp(`[*_\`<>${inTable ? '|' : ''}]`, 'g'),
+                  char => `\\${char}`
+                )
+                .replace(/[\r\n]/g, '')
+              continue
+            } else if (node.nodeType !== Node.ELEMENT_NODE) {
+              continue
+            }
+            if (BOLD.includes(node.tagName) && state.canBold) {
+              content += `**${markdownifyInline(node.childNodes, { ...state, canBold: false }).trim()}**`
+            } else if (ITALICS.includes(node.tagName) && state.canItalics) {
+              content += `*${markdownifyInline(node.childNodes, { ...state, canItalics: false }).trim()}*`
+            } else if (
+              STRIKETHROUGH.includes(node.tagName) &&
+              state.canStrikethrough
+            ) {
+              content += `~~${markdownifyInline(node.childNodes, { ...state, canStrikethrough: false }).trim()}~~`
+            } else if (CODE.includes(node.tagName)) {
+              content += `\`${markdownifyInline(node.childNodes, {
+                canBold: false,
+                canItalics: false,
+                canStrikethrough: false
+              }).trim()}\``
+            } else {
+              content += markdownifyInline(node.childNodes, state)
+            }
+          }
+          return content
+        }
+        const content = iter(nodes, {
+          canBold: true,
+          canItalics: true,
+          canStrikethrough: true
+        })
+        return content.trim()
       }
 
       function markdownifyBlock (block) {
@@ -190,7 +239,7 @@
           }
           case 'table': {
             const displayRow = row =>
-              `| ${row.map(cell => markdownifyInline(cell.childNodes)).join(' | ')} |`
+              `| ${row.map(cell => markdownifyInline(cell.childNodes, { inTable: true })).join(' | ')} |`
             return `${displayRow(block.head)}\n| ${block.head.map(() => '---').join(' | ')} |\n${block.rows.map(displayRow).join('\n')}`
           }
           case 'orphan': {
@@ -201,36 +250,21 @@
         }
       }
 
-      on('md', async (textarea, { html }) => {
-        const div = document.createElement('div')
-        div.setHTML(html, {
+      on('html', (div, { rawHtml }) => {
+        const html = document.createElement('div')
+        html.setHTML(rawHtml, {
           sanitizer: {
             elements: [
-              'h1',
-              'h2',
-              'h3',
-              'h4',
-              'h5',
-              'h6',
-              'p',
+              ...NORMAL_BLOCKS.map(block => block.toLowerCase()),
               'pre',
-              'code',
-              'kbd',
-              'samp',
-              'tt',
+              ...CODE.map(block => block.toLowerCase()),
               'ul',
               { name: 'ol', attributes: ['start'] },
               'li',
               'blockquote',
-              'b',
-              'strong',
-              'i',
-              'em',
-              'u',
-              'ins',
-              's',
-              'del',
-              'strike',
+              ...BOLD.map(block => block.toLowerCase()),
+              ...ITALICS.map(block => block.toLowerCase()),
+              ...STRIKETHROUGH.map(block => block.toLowerCase()),
               'q',
               { name: 'a', attributes: ['href', 'title'] },
               // <area> element could probably be turned into a link too
@@ -300,11 +334,16 @@
               'menuitem',
               'rb',
               'rtc',
-              ...html.matchAll(/<([a-z]+-[a-z-]+)/g).map(match => match[1])
+              ...rawHtml.matchAll(/<([a-z]+-[a-z-]+)/g).map(match => match[1])
             ]
           }
         })
-        const markdown = getBlocks(div).map(markdownifyBlock).join('\n\n')
+        div.replaceChildren(html)
+        return html
+      })
+
+      on('md', async (textarea, { html }) => {
+        const markdown = getBlocks(html).map(markdownifyBlock).join('\n\n')
         const formatted = await prettier.format(markdown, {
           parser: 'markdown',
           plugins: [prettierPluginMarkdown]
