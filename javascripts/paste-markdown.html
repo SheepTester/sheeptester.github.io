@@ -62,9 +62,9 @@
       <p>
         This tool takes the formatted rich text as HTML from your clipboard and
         turns it into Markdown. Try it by selecting the entire page, copying,
-        and pasting.
-        <code>`</code> <code>``</code> <code>```</code> <code>` ``</code>
-        <code>`` ```</code> <code>` ```</code>
+        and pasting (ctrl/cmd + A, C, V).
+        <!-- <code>`</code> <code>``</code> <code>```</code> <code>` ``</code>
+        <code>`` ```</code> <code>` ```</code> -->
       </p>
 
       <div class="two-col-io reform:io">
@@ -88,7 +88,7 @@
         <textarea
           class="output-content code"
           id="md"
-          data-deps="html"
+          data-deps="html keepImages"
           aria-label="Markdown"
           readonly
         ></textarea>
@@ -110,6 +110,20 @@
           ></button>
         </div>
       </div>
+
+      <label class="radio-label">
+        <input
+          type="checkbox"
+          name="keepImages"
+          class="hidden-accessible"
+          checked
+        />
+        <span class="radio-button"></span>
+        <span class="label-primary">Include images?</span>
+        <span class="label-secondary">
+          LLMs don't need to see the image URL.
+        </span>
+      </label>
     </form>
 
     <script type="module">
@@ -184,12 +198,15 @@
       }
       function markdownifyInline (
         nodes,
-        { allowNewline = false, inTable = false } = {}
+        { allowNewline = false, inTable = false, keepImages } = {}
       ) {
-        const escapeText = text =>
+        const escapeText = (text, isTitle = false) =>
           text
             ?.replace(
-              new RegExp(`[*_\`<>${inTable ? '|' : ''}]`, 'g'),
+              new RegExp(
+                `[*_\`<>${inTable ? '|' : ''}${isTitle ? '"' : ''}]`,
+                'g'
+              ),
               char => `\\${char}`
             )
             .replace(/[\r\n]/g, ' ') ?? ''
@@ -228,15 +245,19 @@
             } else if (node.tagName === 'A') {
               content += `[${markdownifyInline(node.childNodes, { ...state, canLink: false })}](${escapeUrl(node.getAttribute('href'))}${
                 node.getAttribute('title')
-                  ? ` "${escapeText(node.getAttribute('title'))}"`
+                  ? ` "${escapeText(node.getAttribute('title'), true)}"`
                   : ''
               })`
             } else if (node.tagName === 'IMG') {
-              content += `![${escapeText(node.getAttribute('alt'))}](${escapeUrl(node.getAttribute('src'))}${
-                node.getAttribute('title')
-                  ? ` "${escapeText(node.getAttribute('title'))}"`
-                  : ''
-              })`
+              if (keepImages) {
+                content += `![${escapeText(node.getAttribute('alt'))}](${escapeUrl(node.getAttribute('src'))}${
+                  node.getAttribute('title')
+                    ? ` "${escapeText(node.getAttribute('title'), true)}"`
+                    : ''
+                })`
+              } else {
+                content += escapeText(node.getAttribute('alt'))
+              }
             } else if (node.tagName === 'BR' && allowNewline) {
               content += '  \n'
             } else if (node.tagName === 'Q') {
@@ -256,7 +277,7 @@
         return content.trim()
       }
 
-      function markdownifyBlock (block) {
+      function markdownifyBlock (block, options) {
         switch (block.type) {
           case 'hr': {
             return '---'
@@ -268,6 +289,7 @@
             return (
               headerPrefix +
               markdownifyInline(block.contents, {
+                ...options,
                 allowNewline: block.tag === 'P'
               }) +
               // Even though we already join paragraphs by a blank line, this
@@ -285,7 +307,7 @@
           }
           case 'blockquote': {
             return block.content
-              .map(markdownifyBlock)
+              .map(block => markdownifyBlock(block, options))
               .join('\n\n')
               .replace(/^/gm, '> ')
           }
@@ -298,7 +320,7 @@
             return block.items
               .map((blocks, i) => {
                 const content = blocks
-                  .map(markdownifyBlock)
+                  .map(block => markdownifyBlock(block, options))
                   .join('\n\n')
                   .replace(/^/gm, indent)
                 const bullet =
@@ -309,11 +331,12 @@
           }
           case 'table': {
             const displayRow = row =>
-              `| ${row.map(cell => markdownifyInline(cell.childNodes, { inTable: true })).join(' | ')} |`
+              `| ${row.map(cell => markdownifyInline(cell.childNodes, { ...options, inTable: true })).join(' | ')} |`
             return `${displayRow(block.head)}\n| ${block.head.map(() => '---').join(' | ')} |\n${block.rows.map(displayRow).join('\n')}`
           }
           case 'orphan': {
             return markdownifyInline(block.nodes, {
+              ...options,
               allowNewline: block.tag === 'P'
             })
           }
@@ -417,8 +440,10 @@
         return html
       })
 
-      on('md', async (textarea, { html }) => {
-        const markdown = getBlocks(html).map(markdownifyBlock).join('\n\n')
+      on('md', async (textarea, { html, keepImages }) => {
+        const markdown = getBlocks(html)
+          .map(block => markdownifyBlock(block, { keepImages }))
+          .join('\n\n')
         const formatted = await prettier.format(markdown, {
           parser: 'markdown',
           plugins: [prettierPluginMarkdown]
