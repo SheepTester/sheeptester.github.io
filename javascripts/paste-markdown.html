@@ -16,14 +16,39 @@
     <script src="/sheep3.js" charset="utf-8"></script>
 
     <style>
-      .two-col-io {
-        /* TODO */
-        /* grid-template-rows: auto min-content; */
-      }
       .input-content {
         overflow: auto;
         padding: 20px;
-        min-height: 0;
+
+        :first-child {
+          margin-top: 0;
+        }
+        :last-child {
+          margin-bottom: 0;
+        }
+
+        img {
+          max-width: 100%;
+        }
+
+        table {
+          border-collapse: collapse;
+        }
+        th,
+        td {
+          border: 1px solid var(--line);
+        }
+
+        a {
+          color: var(--link);
+          font-weight: 500;
+          text-decoration: underline;
+          text-decoration-color: var(--link-transparent);
+          &:hover,
+          &:focus-visible {
+            text-decoration-color: var(--link);
+          }
+        }
       }
     </style>
   </head>
@@ -38,6 +63,8 @@
         This tool takes the formatted rich text as HTML from your clipboard and
         turns it into Markdown. Try it by selecting the entire page, copying,
         and pasting.
+        <code>`</code> <code>``</code> <code>```</code> <code>` ``</code>
+        <code>`` ```</code> <code>` ```</code>
       </p>
 
       <div class="two-col-io reform:io">
@@ -53,7 +80,11 @@
           <span class="file-label">Choose, drop, or paste HTML</span>
           <span class="file-name">No file selected</span>
         </label>
-        <div class="input-content" id="html" data-deps="rawHtml">Wow</div>
+        <div
+          class="input-content reform:io"
+          id="html"
+          data-deps="rawHtml"
+        ></div>
         <textarea
           class="output-content code"
           id="md"
@@ -144,17 +175,29 @@
         return blocks
       }
 
-      function markdownifyInline (nodes, { inTable = false } = {}) {
+      const escapeUrl = url => {
+        if (!url) {
+          return ''
+        }
+        url = url.replace(/[<>\s]/g, char => encodeURIComponent(char))
+        return url.includes(')') ? `<${url}>` : url
+      }
+      function markdownifyInline (
+        nodes,
+        { allowNewline = false, inTable = false } = {}
+      ) {
+        const escapeText = text =>
+          text
+            ?.replace(
+              new RegExp(`[*_\`<>${inTable ? '|' : ''}]`, 'g'),
+              char => `\\${char}`
+            )
+            .replace(/[\r\n]/g, ' ') ?? ''
         const iter = (nodes, state) => {
           let content = ''
           for (const node of nodes) {
             if (node.nodeType === Node.TEXT_NODE) {
-              content += node.nodeValue
-                .replace(
-                  new RegExp(`[*_\`<>${inTable ? '|' : ''}]`, 'g'),
-                  char => `\\${char}`
-                )
-                .replace(/[\r\n]/g, '')
+              content += escapeText(node.nodeValue)
               continue
             } else if (node.nodeType !== Node.ELEMENT_NODE) {
               continue
@@ -169,11 +212,35 @@
             ) {
               content += `~~${markdownifyInline(node.childNodes, { ...state, canStrikethrough: false }).trim()}~~`
             } else if (CODE.includes(node.tagName)) {
-              content += `\`${markdownifyInline(node.childNodes, {
-                canBold: false,
-                canItalics: false,
-                canStrikethrough: false
-              }).trim()}\``
+              let code = node.textContent.replace(/[\r\n]/g, ' ')
+              if (code.startsWith('`')) {
+                code = ' ' + code
+              }
+              if (code.endsWith('`')) {
+                code += ' '
+              }
+              const sequences = new Set(code.match(/`+/g))
+              content += sequences.has('`')
+                ? // I don't think you can have both ` and `` in an inline code
+                // in Markdown, so insert zwsp in ``
+                `\`\`${code.replace(/``+/g, m => (m === '``' ? '`\u200b`' : m))}\`\``
+                : `\`${code}\``
+            } else if (node.tagName === 'A') {
+              content += `[${markdownifyInline(node.childNodes, { ...state, canLink: false })}](${escapeUrl(node.getAttribute('href'))}${
+                node.getAttribute('title')
+                  ? ` "${escapeText(node.getAttribute('title'))}"`
+                  : ''
+              })`
+            } else if (node.tagName === 'IMG') {
+              content += `![${escapeText(node.getAttribute('alt'))}](${escapeUrl(node.getAttribute('src'))}${
+                node.getAttribute('title')
+                  ? ` "${escapeText(node.getAttribute('title'))}"`
+                  : ''
+              })`
+            } else if (node.tagName === 'BR' && allowNewline) {
+              content += '  \n'
+            } else if (node.tagName === 'Q') {
+              content += `“${markdownifyInline(node.childNodes)}”`
             } else {
               content += markdownifyInline(node.childNodes, state)
             }
@@ -183,7 +250,8 @@
         const content = iter(nodes, {
           canBold: true,
           canItalics: true,
-          canStrikethrough: true
+          canStrikethrough: true,
+          canLink: true
         })
         return content.trim()
       }
@@ -223,7 +291,9 @@
           }
           case 'list': {
             const indent = ' '.repeat(
-              block.start === null ? 2 : String(block.start).length + 2
+              block.start === null
+                ? 2
+                : String(block.start + block.items.length - 1).length + 2
             )
             return block.items
               .map((blocks, i) => {
@@ -334,7 +404,12 @@
               'menuitem',
               'rb',
               'rtc',
-              ...rawHtml.matchAll(/<([a-z]+-[a-z-]+)/g).map(match => match[1])
+              ...new Set(
+                rawHtml
+                  .matchAll(/<([a-z][a-z0-9]*-[a-z0-9-]+)/g)
+                  .map(match => match[1])
+              ),
+              'fieldset'
             ]
           }
         })
@@ -348,11 +423,13 @@
           parser: 'markdown',
           plugins: [prettierPluginMarkdown]
         })
-        return Out.from(
+        const out = Out.from(
           'content.md',
           (textarea.value = formatted),
           'text/markdown'
         )
+        out.clipboardTypeHint = 'text/plain'
+        return out
       })
     </script>
   </body>
