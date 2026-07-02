@@ -49,11 +49,15 @@ export class OutputControls {
           )
         }
         try {
+          let blob = await this.#clipboardBlob.then(blob =>
+            blob ? blob : Promise.reject(NO_BLOB_ERROR)
+          )
+          if (blob.type !== clipboardTypeHint) {
+            blob = new Blob([blob], { type: clipboardTypeHint })
+          }
           await navigator.clipboard.write([
             new ClipboardItem({
-              [clipboardTypeHint]: this.#clipboardBlob.then(blob =>
-                blob ? blob : Promise.reject(NO_BLOB_ERROR)
-              )
+              [clipboardTypeHint]: blob
             })
           ])
         } catch (error) {
