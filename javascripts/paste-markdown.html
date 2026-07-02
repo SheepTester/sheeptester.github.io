@@ -90,7 +90,7 @@
         <textarea
           class="output-content code"
           id="md"
-          data-deps="html keepImages removeCitations"
+          data-deps="html keepImages removeCitations removeHeadingLinks"
           aria-label="Markdown"
           readonly
         ></textarea>
@@ -137,6 +137,20 @@
         <span class="label-primary">Include images?</span>
         <span class="label-secondary">
           LLMs don't need to see the image URL.
+        </span>
+      </label>
+
+      <label class="radio-label">
+        <input
+          type="checkbox"
+          name="removeHeadingLinks"
+          class="hidden-accessible"
+        />
+        <span class="radio-button"></span>
+        <span class="label-primary">Remove links in headings?</span>
+        <span class="label-secondary">
+          If a heading has a link, it usually just links to the heading itself,
+          so it should be safe to remove.
         </span>
       </label>
 
@@ -225,6 +239,7 @@
         {
           allowNewline = false,
           inTable = false,
+          allowLinks = true,
           keepImages,
           removeCitations
         } = {}
@@ -233,7 +248,7 @@
           text
             ?.replace(
               new RegExp(
-                `[*_\`<>${inTable ? '|' : ''}${isTitle ? '"' : ''}]`,
+                `[*_\`<>[${inTable ? '|' : ''}${isTitle ? '"' : ''}]`,
                 'g'
               ),
               char => `\\${char}`
@@ -271,7 +286,7 @@
                 // in Markdown, so insert zwsp in ``
                 `\`\`${code.replace(/``+/g, m => (m === '``' ? '`\u200b`' : m))}\`\``
                 : `\`${code}\``
-            } else if (node.tagName === 'A') {
+            } else if (node.tagName === 'A' && state.canLink) {
               const href = node.getAttribute('href')
               if (!href) {
                 content += markdownifyInline(node.childNodes, state)
@@ -312,7 +327,7 @@
           canBold: true,
           canItalics: true,
           canStrikethrough: true,
-          canLink: true
+          canLink: allowLinks
         })
         return content.trim()
       }
@@ -323,14 +338,16 @@
             return '---'
           }
           case 'normal': {
-            const headerPrefix = block.tag.startsWith('H')
+            const isHeading = block.tag.startsWith('H')
+            const headerPrefix = isHeading
               ? '#'.repeat(+block.tag.slice(1)) + ' '
               : ''
             return (
               headerPrefix +
               markdownifyInline(block.contents, {
                 ...options,
-                allowNewline: block.tag === 'P'
+                allowNewline: !isHeading,
+                allowLinks: !isHeading || !options.removeHeadingLinks
               }) +
               // Even though we already join paragraphs by a blank line, this
               // allows orphans inside list items to have no blank line in
@@ -480,24 +497,34 @@
         return html
       })
 
-      on('md', async (textarea, { html, keepImages, removeCitations }) => {
-        const markdown = getBlocks(html)
-          .map(block =>
-            markdownifyBlock(block, { keepImages, removeCitations })
+      on(
+        'md',
+        async (
+          textarea,
+          { html, keepImages, removeCitations, removeHeadingLinks }
+        ) => {
+          const markdown = getBlocks(html)
+            .map(block =>
+              markdownifyBlock(block, {
+                keepImages,
+                removeCitations,
+                removeHeadingLinks
+              })
+            )
+            .join('\n\n')
+          const formatted = await prettier.format(markdown, {
+            parser: 'markdown',
+            plugins: [prettierPluginMarkdown]
+          })
+          const out = Out.from(
+            'content.md',
+            (textarea.value = formatted),
+            'text/markdown'
           )
-          .join('\n\n')
-        const formatted = await prettier.format(markdown, {
-          parser: 'markdown',
-          plugins: [prettierPluginMarkdown]
-        })
-        const out = Out.from(
-          'content.md',
-          (textarea.value = formatted),
-          'text/markdown'
-        )
-        out.clipboardTypeHint = 'text/plain'
-        return out
-      })
+          out.clipboardTypeHint = 'text/plain'
+          return out
+        }
+      )
     </script>
   </body>
 </html>
