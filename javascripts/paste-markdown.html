@@ -272,6 +272,11 @@
                 `\`\`${code.replace(/``+/g, m => (m === '``' ? '`\u200b`' : m))}\`\``
                 : `\`${code}\``
             } else if (node.tagName === 'A') {
+              const href = node.getAttribute('href')
+              if (!href) {
+                content += markdownifyInline(node.childNodes, state)
+                continue
+              }
               const body = markdownifyInline(node.childNodes, {
                 ...state,
                 canLink: false
