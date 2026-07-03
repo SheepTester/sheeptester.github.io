@@ -90,7 +90,7 @@
         <textarea
           class="output-content code"
           id="md"
-          data-deps="html keepImages removeCitations removeHeadingLinks"
+          data-deps="html keepImages removeCitations removeHeadingLinks wrapQuotes"
           aria-label="Markdown"
           readonly
         ></textarea>
@@ -114,6 +114,16 @@
       </div>
 
       <label class="radio-label">
+        <input type="checkbox" name="wrapQuotes" class="hidden-accessible" />
+        <span class="radio-button"></span>
+        <span class="label-primary">Wrap in quotes?</span>
+        <span class="label-secondary">
+          If you're converting to Markdown to quote something, then this option
+          prefixes each line with <code>&gt;</code> for you.
+        </span>
+      </label>
+
+      <label class="radio-label">
         <input
           type="checkbox"
           name="removeCitations"
@@ -129,20 +139,6 @@
       <label class="radio-label">
         <input
           type="checkbox"
-          name="keepImages"
-          class="hidden-accessible"
-          checked
-        />
-        <span class="radio-button"></span>
-        <span class="label-primary">Include images?</span>
-        <span class="label-secondary">
-          LLMs don't need to see the image URL.
-        </span>
-      </label>
-
-      <label class="radio-label">
-        <input
-          type="checkbox"
           name="removeHeadingLinks"
           class="hidden-accessible"
         />
@@ -151,6 +147,20 @@
         <span class="label-secondary">
           If a heading has a link, it usually just links to the heading itself,
           so it should be safe to remove.
+        </span>
+      </label>
+
+      <label class="radio-label">
+        <input
+          type="checkbox"
+          name="keepImages"
+          class="hidden-accessible"
+          checked
+        />
+        <span class="radio-button"></span>
+        <span class="label-primary">Include images?</span>
+        <span class="label-secondary">
+          LLMs don't need to see the image URL.
         </span>
       </label>
 
@@ -509,9 +519,9 @@
         'md',
         async (
           textarea,
-          { html, keepImages, removeCitations, removeHeadingLinks }
+          { html, keepImages, removeCitations, removeHeadingLinks, wrapQuotes }
         ) => {
-          const markdown = getBlocks(html)
+          let markdown = getBlocks(html)
             .map(block =>
               markdownifyBlock(block, {
                 keepImages,
@@ -520,6 +530,9 @@
               })
             )
             .join('\n\n')
+          if (wrapQuotes) {
+            markdown = markdown.replace(/^/gm, '> ')
+          }
           const formatted = await prettier.format(markdown, {
             parser: 'markdown',
             plugins: [prettierPluginMarkdown]
