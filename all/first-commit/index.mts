@@ -109,7 +109,7 @@ function runCommand (
   })
 }
 
-// https://github.com/SheepTester/hello-world/blob/master/test/add-sheep.mts
+// https://github.com/SheepTester/hello-world/blob/🤠/test/add-sheep.mts
 async function * walkDir (dir: string): AsyncGenerator<string> {
   // thanks gemini
   for await (const entry of await readdir(dir, { withFileTypes: true })) {

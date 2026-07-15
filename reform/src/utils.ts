@@ -3,7 +3,7 @@ export const DONE_TIMEOUT = 1000
 
 /**
  * Based on
- * https://github.com/SheepTester/hello-world/blob/master/questionable-host/gdrive/upload-videos.ts#L17
+ * https://github.com/SheepTester/hello-world/blob/🤠/questionable-host/gdrive/upload-videos.ts#L17
  *
  * Note: assumes `bytes` is under a terabyte (currently shows 1 TB = 1.00e+3
  * GB).
