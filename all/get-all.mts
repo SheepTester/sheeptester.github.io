@@ -2,11 +2,6 @@ import fs from 'fs/promises'
 import nodePath, { dirname } from 'path'
 import { exec } from 'child_process'
 import xml2js from 'xml2js'
-
-// https://developer.github.com/v3/auth/#via-oauth-and-personal-access-tokens
-import ghAuth from './basic-gh-auth.json' with { type: 'json' }
-const { username, personalAccessToken } = ghAuth
-
 import {
   domain,
   ghUser,
@@ -14,6 +9,9 @@ import {
   repos
 } from './gh-pages-repos.mts'
 import { fileURLToPath } from 'url'
+
+const username = 'SheepTester'
+const personalAccessToken = (await runCommand('gh auth token')).trim()
 
 // https://stackoverflow.com/a/29655902
 // (from file-getter.js)
