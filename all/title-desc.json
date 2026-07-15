@@ -1968,6 +1968,12 @@
 		"sheep": 3
 	},
 	{
+		"path": "/javascripts/compress.html",
+		"title": "gzip Compression & Decompression",
+		"description": "Shrink your files entirely in your browser.",
+		"sheep": 3
+	},
+	{
 		"path": "/javascripts/connection-inspection.html",
 		"title": "Connection inspection",
 		"description": "Uses the Network Inspection API, which is only supported in Chromium browsers.",
@@ -2241,6 +2247,12 @@
 		"path": "/javascripts/panchroma.html",
 		"title": "Panchroma",
 		"description": "ALL the colours!",
+		"sheep": 3
+	},
+	{
+		"path": "/javascripts/paste-markdown.html",
+		"title": "Paste formatted text and get Markdown",
+		"description": "Turns HTML from your clipboard into Markdown so that you can paste it into an LLM or something.",
 		"sheep": 3
 	},
 	{
@@ -2739,6 +2751,12 @@
 		"path": "/longer-tweets/vertex-buffer-not-big-enough/",
 		"title": "Vertex buffer is not big enough on Mac only",
 		"description": "A weird bug that only occurred on Mac computers.",
+		"sheep": 3
+	},
+	{
+		"path": "/longer-tweets/web-server/",
+		"title": "web server deprecation notice",
+		"description": "Landing page for archived pages that previously relied on my web server.",
 		"sheep": 3
 	},
 	{
@@ -3963,6 +3981,12 @@
 		"path": "/words-go-here/misc/slop/adventure.html",
 		"title": "slop adventure",
 		"description": "chrome slop api-based adventure based on text",
+		"sheep": 3
+	},
+	{
+		"path": "/words-go-here/misc/slop/captcha.html",
+		"title": "captcha solver",
+		"description": "does google slop api let you use it to solve google captchas",
 		"sheep": 3
 	},
 	{

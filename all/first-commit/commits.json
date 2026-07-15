@@ -1829,6 +1829,12 @@
 		"date": "2019-07-19 19:20:45 -0700",
 		"message": "some combining characters\n"
 	},
+	"/javascripts/compress.html": {
+		"source": "sheeptester.github.io/master/javascripts/compress.html",
+		"hash": "6e564974dc09838b024a98d974a823cfa1bea025",
+		"date": "2026-06-25 23:43:36 -0700",
+		"message": "compression stream\n\nfixes #69 hehe funny number\n"
+	},
 	"/javascripts/connection-inspection.html": {
 		"source": "sheeptester.github.io/master/javascripts/connection-inspection.html",
 		"hash": "20751f6d6669d0a5905308b9e0601439d05ebdfa",
@@ -2164,6 +2170,12 @@
 		"hash": "35492187aeb6639a8e8dcb976a21dfe024259e1b",
 		"date": "2017-12-20 20:38:00 -0800",
 		"message": "sparks so far\n"
+	},
+	"/javascripts/paste-markdown.html": {
+		"source": "sheeptester.github.io/master/javascripts/paste-markdown.html",
+		"hash": "5556b6fdc2c1a4da084934cffabab074acac02ff",
+		"date": "2026-06-26 00:25:31 -0700",
+		"message": "filter HTML and prettier format markdown, need to html -> markdown next\n"
 	},
 	"/javascripts/peerjs.html": {
 		"source": "sheeptester.github.io/master/javascripts/peerjs.html",
@@ -2794,6 +2806,12 @@
 		"hash": "ab10a3d42b221bd705a09591a751dba0e750d422",
 		"date": "2024-04-18 18:21:18 -0700",
 		"message": "GL_INVALID_OPERATION: Vertex buffer is not big enough for the draw call\n"
+	},
+	"/longer-tweets/web-server/": {
+		"source": "longer-tweets/master/_posts/2026-06-14-web-server.md",
+		"hash": "74b41feb3418de50fd4af5abcd79bda2c59900e6",
+		"date": "2026-06-14 16:17:02 -0700",
+		"message": "web-server deprecation notice\n"
 	},
 	"/mars/": {
 		"source": "mars/master/index.html",
@@ -4660,6 +4678,12 @@
 		"hash": "875b78cf5ba038050a8b4b5f1a040ca7c05cd327",
 		"date": "2026-06-06 21:21:07 -0700",
 		"message": "slop adventure\n"
+	},
+	"/words-go-here/misc/slop/captcha.html": {
+		"source": "words-go-here/master/misc/slop/captcha.html",
+		"hash": "7e0338632560ed4e98d5d6416fc9a0b976e03602",
+		"date": "2026-06-10 21:58:33 -0700",
+		"message": "it in fact cannot do captchas\n"
 	},
 	"/words-go-here/misc/slop/history-editor.html": {
 		"source": "words-go-here/master/misc/slop/history-editor.html",

@@ -2172,6 +2172,7 @@ chopper.html
 clickanywhere.html
 clipboard.min.js
 combining.html
+compress.html
 connection-inspection.html
 convolution-matrix-test-image.webp
 convolution-matrix-ui.js
@@ -2242,6 +2243,7 @@ obfuscate-url.html
 one-pdf.html
 opacity-calc.html
 panchroma.html
+paste-markdown.html
 pdfkit.standalone.min.js
 peerjs.html
 pen.js
@@ -2446,6 +2448,7 @@ ugwa-alt-schedules.jpg
 ugwa-colours.jpg
 underground-schoology.jpg
 vertex-buffer-not-big-enough.jpg
+web-server.jpg
 <
 >google-anal
 ga.png
@@ -2692,6 +2695,9 @@ index.html
 index.html
 <
 >vertex-buffer-not-big-enough
+index.html
+<
+>web-server
 index.html
 <
 .gitignore
@@ -3927,7 +3933,7 @@ style.css
 index.css
 index.html
 index.js
-map-Y27R7POC.webp
+map-I6WS5TM4.webp
 material-arrow-drop-down-black-6REO6Q3L.svg
 material-arrow-drop-down-white-6SBEOKL6.svg
 material-check-white-EO6UTSEL.svg
@@ -4309,6 +4315,9 @@ sw.js
 <
 >slop
 adventure.html
+captcha_bridges.jpg
+captcha_buses.jpg
+captcha.html
 history-editor.html
 index.html
 ocr.html

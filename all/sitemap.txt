@@ -327,6 +327,7 @@ https://sheeptester.github.io/javascripts/cho.html
 https://sheeptester.github.io/javascripts/chopper.html
 https://sheeptester.github.io/javascripts/clickanywhere.html
 https://sheeptester.github.io/javascripts/combining.html
+https://sheeptester.github.io/javascripts/compress.html
 https://sheeptester.github.io/javascripts/connection-inspection.html
 https://sheeptester.github.io/javascripts/convolution-matrix.html
 https://sheeptester.github.io/javascripts/countdown-react.html
@@ -373,6 +374,7 @@ https://sheeptester.github.io/javascripts/obfuscate-url.html
 https://sheeptester.github.io/javascripts/one-pdf.html
 https://sheeptester.github.io/javascripts/opacity-calc.html
 https://sheeptester.github.io/javascripts/panchroma.html
+https://sheeptester.github.io/javascripts/paste-markdown.html
 https://sheeptester.github.io/javascripts/peerjs.html
 https://sheeptester.github.io/javascripts/piano.html
 https://sheeptester.github.io/javascripts/pip-image.html
@@ -456,6 +458,7 @@ https://sheeptester.github.io/longer-tweets/ugwa-alt-schedules/
 https://sheeptester.github.io/longer-tweets/ugwa-colours/
 https://sheeptester.github.io/longer-tweets/underground-schoology/
 https://sheeptester.github.io/longer-tweets/vertex-buffer-not-big-enough/
+https://sheeptester.github.io/longer-tweets/web-server/
 https://sheeptester.github.io/longer-tweets/404.html
 https://sheeptester.github.io/longer-tweets/
 https://sheeptester.github.io/mars/
@@ -660,6 +663,7 @@ https://sheeptester.github.io/words-go-here/misc/artificial-thonkulos/khwvahy/ma
 https://sheeptester.github.io/words-go-here/misc/kaaba/
 https://sheeptester.github.io/words-go-here/misc/min-sw-test/
 https://sheeptester.github.io/words-go-here/misc/slop/adventure.html
+https://sheeptester.github.io/words-go-here/misc/slop/captcha.html
 https://sheeptester.github.io/words-go-here/misc/slop/history-editor.html
 https://sheeptester.github.io/words-go-here/misc/slop/
 https://sheeptester.github.io/words-go-here/misc/slop/ocr.html
