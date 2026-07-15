@@ -115,7 +115,7 @@ export const repos: Repo[] = [
     branch: 'main',
     type: { type: 'actions', prefix: 'public/' }
   },
-  { name: 'hello-world', type: { type: 'actions', prefix: '' } },
+  { name: 'hello-world', branch: '🤠', type: { type: 'actions', prefix: '' } },
   {
     name: 'ucsd-classrooms',
     branch: 'main',
