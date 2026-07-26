@@ -485,121 +485,128 @@ html[prefix='og: http://ogp.me/ns/website#'][lang='en'][dir='ltr'] {
           content: 'I’m Sean. For most of my life, I was in school—most recently UC San Diego and Gunn High School—and now I expect to spend double that time employed. Currently, I’m a software engineer at Tesla Energy.';
         }
         css {
-          .card .datum {
+          .data {
             margin-top: 1em;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5em;
           }
-          .attribute {
-            background-color: #111213;
-            text-transform: uppercase;
-            font-size: 0.8em;
-            padding: 5px 10px;
-            border-radius: 50px;
+          .datum dt,
+          .datum dd {
+            display: inline;
           }
-          .colon {
-            color: transparent;
+          .datum dt {
+            color: white;
+            padding-right: 5px;
+          }
+          .datum dt::after {
+            content: '.';
+          }
+          .datum dd {
+            margin: 0;
           }
           .emoji {
             // Opaque color so the color emoji doesn't appear faded
             color: white;
           }
         }
-        p.datum {
-          span.attribute {
-            content: 'Pronounce';
-          }
-          span.colon {
-            content: ': ';
-          }
-          span[lang='en-fonipa'] {
-            content: '[ʃɑːn]';
-          }
-        }
-        p.datum {
-          span.attribute {
-            content: 'Pronouns';
-          }
-          span.colon {
-            content: ': ';
-          }
-          content: 'he/him ';
-          span.emoji {
-            content: '♂️';
-          }
-        }
-        p.datum {
-          span.attribute {
-            content: 'Location';
-          }
-          span.colon {
-            content: ': ';
-          }
-          content: 'Palo Alto';
-        }
-        p.datum {
-          span.attribute {
-            content: 'Time Zone';
-          }
-          span.colon {
-            content: ': ';
-          }
-          content: 'Pacific Time';
-        }
-        // Age was more relevant when I was younger but now it's just leaking
-        // personal info
-        p.datum[style='display: none'] {
-          span.attribute {
-            content: 'Age';
-          }
-          span.colon {
-            content: ': ';
-          }
-          css {
-            .age-clickable {
-              cursor: pointer;
-              color: rgba(255, 255, 255, 0.9);
+        dl.data {
+          // Apparently divs are allowed in description lists
+          .datum {
+            dt {
+              content: 'Pronounce';
             }
-            .age {
-              position: relative;
-              display: inline-block;
-              -webkit-user-select: none;
-              user-select: none;
-            }
-            .age span {
-              position: absolute;
-              -webkit-user-select: text;
-              user-select: text;
-              color: rgba(255, 255, 255, 0.8);
-            }
-            .age span::after {
-              content: attr(data-last);
-              color: var(--last);
-              position: absolute;
-              top: 1em;
-              left: 0;
-            }
-            .insignificant {
-              opacity: 0.4;
+            dd[lang='en-fonipa'] {
+              content: '[ʃɑːn]';
             }
           }
-          span#age[role='text'] {
-            content: 'at least 13';
+
+          .datum {
+            dt {
+              content: 'Pronouns';
+            }
+            dd {
+              content: 'he/him ';
+              span.emoji {
+                content: '♂️';
+              }
+            }
           }
-          content: ' years';
-        }
-        p.datum {
-          span.attribute {
-            content: 'Zodiac';
+
+          .datum {
+            dt {
+              content: 'Location';
+            }
+            dd {
+              content: 'Palo Alto';
+            }
           }
-          span.colon {
-            content: ': ';
+
+          .datum {
+            dt {
+              content: 'Time zone';
+            }
+            dd {
+              content: 'Pacific Time';
+            }
           }
-          content: 'sheep ';
-          span[lang='zh'] {
-            content: '羊';
+
+          // Age was more relevant when I was younger but now it's just leaking
+          // personal info
+          .datum[style='display: none'] {
+            dt {
+              content: 'Age';
+            }
+            css {
+              .age-clickable {
+                cursor: pointer;
+                color: rgba(255, 255, 255, 0.9);
+              }
+              .age {
+                position: relative;
+                display: inline-block;
+                -webkit-user-select: none;
+                user-select: none;
+              }
+              .age span {
+                position: absolute;
+                -webkit-user-select: text;
+                user-select: text;
+                color: rgba(255, 255, 255, 0.8);
+              }
+              .age span::after {
+                content: attr(data-last);
+                color: var(--last);
+                position: absolute;
+                top: 1em;
+                left: 0;
+              }
+              .insignificant {
+                opacity: 0.4;
+              }
+            }
+            dd[style='display: none'] {
+              span#age[role='text'] {
+                content: 'at least 13';
+              }
+              content: ' years';
+            }
           }
-          content: ', Aries ';
-          span.emoji {
-            content: '♈';
+
+          .datum {
+            dt {
+              content: 'Zodiac';
+            }
+            dd {
+              content: 'sheep ';
+              span[lang='zh'] {
+                content: '羊';
+              }
+              content: ', Aries ';
+              span.emoji {
+                content: '♈';
+              }
+            }
           }
         }
 
