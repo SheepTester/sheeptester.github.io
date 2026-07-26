@@ -451,14 +451,14 @@ html[prefix='og: http://ogp.me/ns/website#'][lang='en'][dir='ltr'] {
         css {
           .me-photo {
             display: block;
-            width: calc(100% + 200px);
-            margin: 0 -100px;
-            aspect-ratio: 2.1;
+            width: calc(100% + 40px);
+            margin: 0 -20px;
+            aspect-ratio: 1;
             object-fit: cover;
-            object-position: 50% -20px;
+            object-position: 50% 50%;
           }
         }
-        img.me-photo[src='./img/sean-at-sutro-baths-by-cat.jpg'][alt='Me standing on a wall surrounded by water at Sutro Baths with the sun setting behind me.'][width='700'] {
+        img.me-photo[src='./img/alina-grad.jpg'][alt='A photo taken by Alina of me triumphantly standing ankle deep in the Pacific Ocean, wearing a masters graduation robe, with Scripps Pier behind me, as the sun sets behind the clouds.'][width='300'] {
         }
         css {
           .gradient {
@@ -511,7 +511,7 @@ html[prefix='og: http://ogp.me/ns/website#'][lang='en'][dir='ltr'] {
             content: ': ';
           }
           span[lang='en-fonipa'] {
-            content: '/ʃɑːn/';
+            content: '[ʃɑːn]';
           }
         }
         p.datum {
@@ -521,7 +521,7 @@ html[prefix='og: http://ogp.me/ns/website#'][lang='en'][dir='ltr'] {
           span.colon {
             content: ': ';
           }
-          content: 'he/him/his ';
+          content: 'he/him ';
           span.emoji {
             content: '♂️';
           }
@@ -544,7 +544,9 @@ html[prefix='og: http://ogp.me/ns/website#'][lang='en'][dir='ltr'] {
           }
           content: 'Pacific Time';
         }
-        p.datum {
+        // Age was more relevant when I was younger but now it's just leaking
+        // personal info
+        p.datum[style='display: none'] {
           span.attribute {
             content: 'Age';
           }
