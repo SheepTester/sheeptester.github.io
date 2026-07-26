@@ -947,7 +947,7 @@
     - utility
     - school
 
-- path: /ucsd-sunset/
+- path: /ucsd-sunset/#root
   image: img/sunset.jpg
   name: SunSET
   description: >-
