@@ -210,6 +210,19 @@
           } else if (child.tagName === 'BLOCKQUOTE') {
             blocks.push({ type: 'blockquote', content: getBlocks(child) })
           } else if (child.tagName === 'UL' || child.tagName === 'OL') {
+            // For some reason Google Docs puts <ul> as direct children of <ul>
+            // when they should really be part of the previous <li>
+            let lastLi
+            for (const grandchild of [...child.childNodes]) {
+              if (grandchild.tagName === 'LI') {
+                lastLi = grandchild
+              } else {
+                if (!lastLi) {
+                  lastLi = document.createElement('li')
+                }
+                lastLi.append(grandchild)
+              }
+            }
             const items = []
             for (const li of child.children) {
               if (li.tagName !== 'LI') {
