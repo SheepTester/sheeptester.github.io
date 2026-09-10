@@ -235,7 +235,7 @@
               style: { viewTransitionName: 'add-form' },
               onSubmit: e => {
                 e.preventDefault()
-                const url = new FormData(e.currentTarget).get('otpauth')
+                const url = new FormData(e.currentTarget).get('sdfbdfgdfg')
                 setAndSaveEntries(entries =>
                   entries.includes(url) ? entries : [...entries, url]
                 )
@@ -255,11 +255,10 @@
               null,
               h('span', null, 'URL in QR code'),
               h('input', {
-                name: 'otpauth',
+                name: 'sdfbdfgdfg',
                 type: 'url',
                 placeholder: 'otpauth://totp/',
                 pattern: 'otpauth://totp/.+',
-                autocomplete: 'off',
                 required: true
               })
             ),
