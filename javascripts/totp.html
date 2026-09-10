@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>TOTP manager</title>
+    <meta
+      name="description"
+      content="Manage your time-based one-time passwords in the browser"
+    />
+
+    <link rel="stylesheet" type="text/css" href="/sheep3.css" />
+    <script src="/sheep3.js" charset="utf-8"></script>
+
+    <style>
+      @media (prefers-color-scheme: dark) {
+        :root {
+          color-scheme: dark;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+
+    <script type="importmap">
+      {
+        "imports": {
+          "totp-generator": "https://cdn.jsdelivr.net/npm/totp-generator@2.0.1/lib/esm/index.js",
+          "preact": "https://cdn.jsdelivr.net/npm/preact@10.29.8/dist/preact.mjs",
+          "preact/hooks": "https://cdn.jsdelivr.net/npm/preact@10.29.8/hooks/dist/hooks.mjs"
+        }
+      }
+    </script>
+    <script type="module">
+      import { TOTP } from 'totp-generator'
+      import { h, render, Fragment } from 'preact'
+      import { useState, useEffect, useMemo, useCallback } from 'preact/hooks'
+
+      function Entry ({ url, seconds, onMoveUp, onMoveDown, onRemove }) {
+        const { issuer1, account, secret, issuer2, algorithm, digits, period } =
+          useMemo(() => {
+            const parsed = new URL(url)
+            const [issuer1, account] = decodeURIComponent(
+              parsed.pathname.slice(1)
+            ).split(':')
+            const secret = parsed.searchParams.get('secret')
+            const issuer2 = parsed.searchParams.get('issuer')
+            const algorithm = parsed.searchParams.get('algorithm') ?? undefined
+            const digits = parsed.searchParams.has('digits')
+              ? +parsed.searchParams.get('digits')
+              : undefined
+            const period = parsed.searchParams.has('period')
+              ? +parsed.searchParams.get('period')
+              : 30
+            return {
+              issuer1,
+              account,
+              secret,
+              issuer2,
+              algorithm,
+              digits,
+              period
+            }
+          }, [url])
+
+        const [otp, setOtp] = useState('')
+        useEffect(() => {
+          let cancelled = false
+          // https://github.com/bellstrand/totp-generator/blob/master/src/index.ts
+          const options = {
+            period,
+            timestamp: seconds * 1000,
+            explicitZeroPad: true
+          }
+          if (digits) {
+            options.digits = digits
+          }
+          if (algorithm) {
+            options.algorithm = algorithm.replace('SHA', 'SHA-')
+          }
+          TOTP.generate(secret, options).then(({ otp }) => {
+            if (!cancelled) {
+              setOtp(otp)
+            }
+          })
+          return () => {
+            cancelled = true
+          }
+        }, [seconds, digits, algorithm, period, secret])
+
+        return h(
+          'div',
+          { style: { viewTransitionName: CSS.escape(`entry-${url}`) } },
+          h('h2', null, account),
+          h(
+            'p',
+            null,
+            issuer1,
+            issuer1 && issuer2 && issuer1 !== issuer2 ? ' (' : null,
+            issuer1 !== issuer2 ? issuer2 : null,
+            issuer1 && issuer2 && issuer1 !== issuer2 ? ')' : null
+          ),
+          h(
+            'button',
+            { onClick: () => navigator.clipboard.writeText(otp) },
+            otp
+          ),
+          h('p', null, period - (seconds % period)),
+          h(
+            'div',
+            null,
+            h(
+              'button',
+              {
+                onClick: () => {
+                  const shareUrl = new URL(window.location.href)
+                  shareUrl.searchParams.set('add', url)
+                  navigator.clipboard.writeText(shareUrl.toString())
+                }
+              },
+              'Copy share URL'
+            ),
+            h('button', { onClick: onMoveUp, disabled: !onMoveUp }, 'Move up'),
+            h(
+              'button',
+              { onClick: onMoveDown, disabled: !onMoveDown },
+              'Move down'
+            ),
+            h('button', { onClick: onRemove }, 'Remove')
+          )
+        )
+      }
+
+      const KEY = 'totp.entries.TEMP'
+      function App () {
+        const [entries, setEntries] = useState([])
+        const [seconds, setSeconds] = useState(0)
+
+        const setAndSaveEntries = useCallback(cb => {
+          const entries = cb(localStorage.getItem(KEY)?.split('\n') ?? [])
+          localStorage.setItem(KEY, entries.join('\n'))
+          document.startViewTransition(() => setEntries(entries))
+        }, [])
+
+        useEffect(() => {
+          const entries = localStorage.getItem(KEY)
+          if (entries) {
+            setEntries(entries.split('\n'))
+          }
+        }, [])
+
+        useEffect(() => {
+          const url = new URL(window.location.href)
+          const add = url.searchParams.get('add')
+          if (add) {
+            setAndSaveEntries(entries =>
+              entries.includes(add) ? entries : [add, ...entries]
+            )
+            url.searchParams.delete('add')
+            window.history.replaceState({}, '', url)
+          }
+        }, [])
+
+        useEffect(() => {
+          let timeoutId
+          const paint = () => {
+            setSeconds(Math.floor(Date.now() / 1000))
+            timeoutId = window.requestAnimationFrame(paint)
+          }
+          paint()
+          return () => window.cancelAnimationFrame(timeoutId)
+        }, [])
+
+        return h(
+          Fragment,
+          null,
+          entries.map((url, i) =>
+            h(Entry, {
+              key: url,
+              url,
+              seconds,
+              onMoveUp:
+                i > 0
+                  ? () =>
+                    setAndSaveEntries(entries =>
+                      entries.with(i, entries[i - 1]).with(i - 1, url)
+                    )
+                  : null,
+              onMoveDown:
+                i < entries.length - 1
+                  ? () =>
+                    setAndSaveEntries(entries =>
+                      entries.with(i, entries[i + 1]).with(i + 1, url)
+                    )
+                  : null,
+              onRemove: () =>
+                setAndSaveEntries(entries => entries.filter(u => u !== url))
+            })
+          ),
+          h(
+            'form',
+            {
+              style: { viewTransitionName: 'add-form' },
+              onSubmit: e => {
+                e.preventDefault()
+                const url = new FormData(e.currentTarget).get('otpauth')
+                setAndSaveEntries(entries =>
+                  entries.includes(url) ? entries : [...entries, url]
+                )
+                e.currentTarget.reset()
+              }
+            },
+            h('h2', null, 'Add an account'),
+            h(
+              'p',
+              null,
+              'Copy the URL encoded in the QR code (tip: use my ',
+              h(
+                'a',
+                { href: 'https://sheeptester.github.io/qr/' },
+                'QR code scanner'
+              ),
+              ') and paste it below.'
+            ),
+            h(
+              'label',
+              null,
+              h('span', null, 'URL in QR code'),
+              h('input', {
+                name: 'otpauth',
+                type: 'url',
+                placeholder: 'otpauth://totp/',
+                pattern: 'otpauth://totp/.+',
+                required: true
+              })
+            ),
+            h('button', null, 'Add')
+          )
+        )
+      }
+
+      render(h(App), document.getElementById('root'))
+    </script>
+  </body>
+</html>
