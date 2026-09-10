@@ -23,8 +23,8 @@
   </head>
   <body>
     <p>
-      Some browsers may automatically clear site data, so keep the share URLs
-      safe (treat them like passwords).
+      Some browsers may automatically clear site data, so store the share URLs
+      somewhere safe (treat them like passwords).
     </p>
     <div id="root"></div>
 
@@ -235,7 +235,10 @@
               style: { viewTransitionName: 'add-form' },
               onSubmit: e => {
                 e.preventDefault()
-                const url = new FormData(e.currentTarget).get('sdfbdfgdfg')
+                const url = new FormData(e.currentTarget).get('otpauth')
+                if (!url) {
+                  return
+                }
                 setAndSaveEntries(entries =>
                   entries.includes(url) ? entries : [...entries, url]
                 )
@@ -255,11 +258,11 @@
               null,
               h('span', null, 'URL in QR code'),
               h('input', {
-                name: 'sdfbdfgdfg',
+                name: 'otpauth',
                 type: 'url',
                 placeholder: 'otpauth://totp/',
-                pattern: 'otpauth://totp/.+',
-                required: true
+                pattern: 'otpauth://totp/.+'
+                // required: true
               })
             ),
             h('button', null, 'Add')
