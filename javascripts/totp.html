@@ -260,9 +260,11 @@
               h('input', {
                 name: 'otpauth',
                 type: 'url',
-                placeholder: 'otpauth://totp/',
-                pattern: 'otpauth://totp/.+'
-                // required: true
+                // ZWSP to prevent iOS Safari from seeing "otp" and autofocusing
+                // the input, while allowing screen readers to say "T.O.T.P."
+                placeholder: 'otpauth://t\u200bo\u200bt\u200bp/',
+                pattern: 'otpauth://totp/.+',
+                required: true
               })
             ),
             h('button', null, 'Add')
