@@ -235,7 +235,7 @@
               style: { viewTransitionName: 'add-form' },
               onSubmit: e => {
                 e.preventDefault()
-                const url = new FormData(e.currentTarget).get('otpauth')
+                const url = new FormData(e.currentTarget).get('url')
                 if (!url) {
                   return
                 }
@@ -258,11 +258,12 @@
               null,
               h('span', null, 'URL in QR code'),
               h('input', {
-                name: 'otpauth',
+                name: 'url',
                 type: 'url',
                 // ZWSP to prevent iOS Safari from seeing "otp" and autofocusing
                 // the input, while allowing screen readers to say "T.O.T.P."
-                placeholder: 'otpauth://t\u200bo\u200bt\u200bp/',
+                placeholder:
+                  'o\u200bt\u200bp\u200bauth://t\u200bo\u200bt\u200bp/',
                 pattern: 'otpauth://totp/.+',
                 required: true
               })
