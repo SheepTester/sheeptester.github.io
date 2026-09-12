@@ -202,6 +202,16 @@
           return () => window.cancelAnimationFrame(timeoutId)
         }, [])
 
+        // HACK: There seems to be an iOS Chrome experiment where if autofill
+        // from Chrome is enabled, iOS Safari autofocuses inputs labelled "otp"
+        // or "code"
+        const [lockAdd, setLockAdd] = useState(false)
+        useEffect(() => {
+          setLockAdd(true)
+          let timeoutId = setTimeout(() => setLockAdd(false), 500)
+          return () => clearTimeout(timeoutId)
+        }, [])
+
         return h(
           Fragment,
           null,
@@ -260,11 +270,9 @@
               h('input', {
                 name: 'url',
                 type: 'url',
-                // ZWSP to prevent iOS Safari from seeing "otp" and autofocusing
-                // the input, while allowing screen readers to say "T.O.T.P."
-                placeholder:
-                  'o\u200bt\u200bp\u200bauth://t\u200bo\u200bt\u200bp/',
+                placeholder: 'otpauth://totp/',
                 pattern: 'otpauth://totp/.+',
+                readOnly: lockAdd,
                 required: true
               })
             ),
