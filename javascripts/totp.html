@@ -196,7 +196,7 @@
         border-bottom-right-radius: 10px;
         box-sizing: border-box;
         /* Shift plus sign left a tiny bit for visual balance */
-        padding-right: 0.5px;
+        padding-right: 1px;
       }
     </style>
   </head>
@@ -527,9 +527,17 @@
               style: { viewTransitionName: 'add-form' },
               onSubmit: e => {
                 e.preventDefault()
-                const url = new FormData(e.currentTarget).get('url')
+                let url = new FormData(e.currentTarget).get('url')
                 if (!url) {
                   return
+                }
+                // In case they accidentally paste the share URL
+                const parsed = new URL(url)
+                if (parsed.protocol !== 'otpauth') {
+                  url = parsed.searchParams.get('add')
+                  if (!url) {
+                    return
+                  }
                 }
                 setAndSaveEntries(entries =>
                   entries.includes(url) ? entries : [...entries, url]
@@ -558,7 +566,8 @@
                 type: 'url',
                 'aria-label': 'URL in QR code',
                 placeholder: 'otpauth://totp/',
-                pattern: 'otpauth://totp/.+',
+                pattern:
+                  'otpauth://totp/.+|https://sheeptester.github.io/javascripts/totp.html?.+',
                 readOnly: lockAdd,
                 required: true
               }),
