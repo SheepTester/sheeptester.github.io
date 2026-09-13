@@ -4,28 +4,200 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>TOTP manager</title>
+    <title>2FA OTP manager</title>
     <meta
       name="description"
       content="Manage your time-based one-time passwords in the browser"
     />
 
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
     <link rel="stylesheet" type="text/css" href="/sheep3.css" />
     <script src="/sheep3.js" charset="utf-8"></script>
 
     <style>
-      @media (prefers-color-scheme: dark) {
-        :root {
-          color-scheme: dark;
+      * {
+        margin: 0;
+        padding: 0;
+        text-box: trim-both cap alphabetic;
+      }
+      :root {
+        color-scheme: dark;
+      }
+      body {
+        font-family:
+          'Inter', 'Helvetica Neue', Helvetica, system-ui, Arial, sans-serif;
+        background-color: #1d161e;
+        color: #d7d0d7;
+      }
+      button,
+      input {
+        font: inherit;
+        color: inherit;
+        border: none;
+        background: none;
+      }
+      button:not(:disabled) {
+        cursor: pointer;
+      }
+
+      .icon {
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+      .link {
+        color: #d946ef;
+        text-decoration-color: color-mix(
+          in srgb,
+          currentColor 50%,
+          transparent
+        );
+        &:hover {
+          text-decoration-color: currentColor;
         }
+      }
+      button.link {
+        display: inline;
+        text-decoration-line: underline;
+      }
+      h2 {
+        color: #f3f1f3;
+      }
+
+      #root {
+        display: flex;
+        flex-direction: column;
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 40px;
+        gap: 40px;
+      }
+      .entry {
+        display: grid;
+        grid-template-areas:
+          'issuer issuer buttons'
+          'account account buttons'
+          'otp time-left buttons';
+        grid-template-columns: auto 1fr auto;
+        border: 1px solid #79697b;
+        border-radius: 20px;
+        padding: 20px;
+        gap: 10px;
+      }
+      .issuer {
+        grid-area: issuer;
+        font-size: 1em;
+      }
+      .account {
+        grid-area: account;
+        color: #79697b;
+      }
+      .otp {
+        grid-area: otp;
+        font-variant-numeric: tabular-nums;
+        font-size: 3em;
+        text-align: left;
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        padding: 0 5px;
+        margin: 0 -5px;
+        border-radius: 10px;
+        color: #f3f1f3;
+
+        &:hover {
+          background-color: #2a212c;
+        }
+
+        @media (max-width: 500px) {
+          font-size: 1.5em;
+        }
+      }
+      .time-left {
+        grid-area: time-left;
+        margin: auto 0;
+        color: #79697b;
+      }
+      .buttons {
+        grid-area: buttons;
+        margin-top: auto;
+        display: grid;
+        grid-auto-flow: column;
+        grid-template-rows: repeat(2, auto);
+        gap: 10px;
+      }
+      .buttons button {
+        display: flex;
+        padding: 5px;
+        margin: -5px;
+        border-radius: 5px;
+
+        &:hover {
+          background-color: #2a212c;
+        }
+        &:disabled {
+          opacity: 0.5;
+        }
+      }
+      .danger {
+        color: #f43f5e;
+      }
+
+      .add-account {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+
+        & h2 {
+          font-size: 1em;
+        }
+      }
+      .add-url-wrapper {
+        display: flex;
+        align-items: end;
+      }
+      .add-url-input {
+        box-sizing: border-box;
+        height: 40px;
+        border: 1px solid #79697b;
+        border-right-width: 0;
+        padding: 0 10px;
+        border-top-left-radius: 10px;
+        border-bottom-left-radius: 10px;
+        color: #f3f1f3;
+        cursor: pointer;
+
+        &:focus {
+          outline: none;
+          border-color: #d946ef;
+          cursor: unset;
+        }
+
+        &::placeholder {
+          color: #79697b;
+        }
+      }
+      .add-btn {
+        background-color: #d946ef;
+        color: #0c090c;
+        display: flex;
+        height: 40px;
+        width: 40px;
+        align-items: center;
+        justify-content: center;
+        border-top-right-radius: 10px;
+        border-bottom-right-radius: 10px;
       }
     </style>
   </head>
   <body>
-    <p>
-      Some browsers may automatically clear site data, so store the share URLs
-      somewhere safe (treat them like passwords).
-    </p>
     <div id="root"></div>
 
     <script type="importmap">
@@ -47,6 +219,32 @@
         useCallback,
         useRef
       } from 'preact/hooks'
+
+      // https://feathericons.com/
+      const icons = {
+        'arrow-up': 'M 12 19 L 12 5 M 5 12 L 12 5 L 19 12',
+        'arrow-down': 'M 12 5 L 12 19 M 19 12 L 12 19 L 5 12',
+        x: 'M 18 6 L 6 18 M 6 6 L 18 18',
+        plus: 'M 12 5 L 12 19 M 5 12 L 19 12',
+        link: 'M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71 M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71',
+        check: 'M 20 6 L 9 17 L 4 12',
+        copy: 'M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1 M 9 11 v 9 a 2 2 0 0 0 2 2 h 9 a 2 2 0 0 0 2 -2 v -9 a 2 2 0 0 0 -2 -2 h -9 a 2 2 0 0 0 -2 2 z'
+      }
+
+      function Icon ({ type, class: className = '', ...props }) {
+        return h(
+          'svg',
+          {
+            xmlns: 'http://www.w3.org/2000/svg',
+            width: 24,
+            height: 24,
+            viewBox: '0 0 24 24',
+            ...props,
+            class: `icon ${className}`
+          },
+          h('path', { d: icons[type] })
+        )
+      }
 
       function Entry ({ url, seconds, onMoveUp, onMoveDown, onRemove }) {
         const { issuer1, account, secret, issuer2, algorithm, digits, period } =
@@ -90,11 +288,18 @@
           if (algorithm) {
             options.algorithm = algorithm.replace('SHA', 'SHA-')
           }
-          TOTP.generate(secret, options).then(({ otp }) => {
-            if (!cancelled) {
-              setOtp(otp)
-            }
-          })
+          TOTP.generate(secret, options)
+            .then(({ otp }) => {
+              if (!cancelled) {
+                setOtp(otp)
+              }
+            })
+            .catch(error => {
+              console.error('Failed to generate OTP', error)
+              if (!cancelled) {
+                setOtp('-'.repeat(digits ?? 6))
+              }
+            })
           return () => {
             cancelled = true
           }
@@ -102,6 +307,9 @@
 
         const [copyState, setCopyState] = useState(null)
         const copyStateTimeoutId = useRef()
+
+        const [copyLinkState, setCopyLinkState] = useState(null)
+        const copyLinkStateTimeoutId = useRef()
 
         const issuer = [
           issuer1 || issuer2 || '',
@@ -112,52 +320,92 @@
 
         return h(
           'div',
-          { style: { viewTransitionName: CSS.escape(`entry-${url}`) } },
-          h('h2', null, issuer),
-          h('p', null, account),
+          {
+            class: 'entry',
+            style: { viewTransitionName: CSS.escape(`entry-${url}`) }
+          },
+          h('h2', { class: 'issuer' }, issuer),
+          h('p', { class: 'account' }, account),
           h(
             'button',
             {
+              class: 'otp',
               onClick: () => {
                 clearTimeout(copyStateTimeoutId.current)
-                setCopyState('copying')
                 navigator.clipboard
                   .writeText(otp)
-                  .then(() => {
-                    setCopyState('copied')
+                  .then(() => setCopyState('copied'))
+                  .catch(() => setCopyState('error'))
+                  .finally(() => {
                     copyStateTimeoutId.current = setTimeout(
                       () => setCopyState(null),
                       500
                     )
                   })
-                  .catch(() => setCopyState('error'))
               }
             },
             otp,
-            copyState ? ` (${copyState})` : null
+            copyState === 'copied'
+              ? h(Icon, { type: 'check', 'aria-label': '(Copied)' })
+              : copyState === 'error'
+                ? h(Icon, { type: 'x', 'aria-label': '(Failed to copy)' })
+                : h(Icon, { type: 'copy', 'aria-label': '(Click to copy)' })
           ),
-          h('p', null, period - (seconds % period)),
+          h('p', { class: 'time-left' }, period - (seconds % period)),
           h(
             'div',
-            null,
+            { class: 'buttons' },
+            h(
+              'button',
+              { onClick: onMoveUp, disabled: !onMoveUp },
+              h(Icon, { type: 'arrow-up', 'aria-label': 'Move up' })
+            ),
+            h(
+              'button',
+              { onClick: onMoveDown, disabled: !onMoveDown },
+              h(Icon, { type: 'arrow-down', 'aria-label': 'Move down' })
+            ),
             h(
               'button',
               {
                 onClick: () => {
                   const shareUrl = new URL(window.location.href)
                   shareUrl.searchParams.set('add', url)
-                  navigator.clipboard.writeText(shareUrl.toString())
+
+                  clearTimeout(copyLinkStateTimeoutId.current)
+                  navigator.clipboard
+                    .writeText(shareUrl.toString())
+                    .then(() => setCopyLinkState('copied'))
+                    .catch(() => setCopyLinkState('error'))
+                    .finally(() => {
+                      copyLinkStateTimeoutId.current = setTimeout(
+                        () => setCopyLinkState(null),
+                        500
+                      )
+                    })
                 }
               },
-              'Copy share URL'
+              h(Icon, {
+                type:
+                  copyLinkState === 'copied'
+                    ? 'check'
+                    : copyLinkState === 'error'
+                      ? 'x'
+                      : 'link',
+                'aria-label': 'Copy share URL'
+              })
             ),
-            h('button', { onClick: onMoveUp, disabled: !onMoveUp }, 'Move up'),
             h(
               'button',
-              { onClick: onMoveDown, disabled: !onMoveDown },
-              'Move down'
-            ),
-            h('button', { onClick: () => onRemove(issuer) }, 'Remove')
+              {
+                class: 'danger',
+                onClick: e =>
+                  (e.shiftKey ||
+                    confirm(`Are you sure you want to remove ${issuer}?`)) &&
+                  onRemove()
+              },
+              h(Icon, { type: 'x', 'aria-label': 'Remove' })
+            )
           )
         )
       }
@@ -168,7 +416,12 @@
         const [seconds, setSeconds] = useState(0)
 
         const setAndSaveEntries = useCallback(cb => {
-          const entries = cb(localStorage.getItem(KEY)?.split('\n') ?? [])
+          const entries = cb(
+            localStorage
+              .getItem(KEY)
+              ?.split('\n')
+              .filter(line => line) ?? []
+          )
           localStorage.setItem(KEY, entries.join('\n'))
           document.startViewTransition(() => setEntries(entries))
         }, [])
@@ -176,7 +429,7 @@
         useEffect(() => {
           const entries = localStorage.getItem(KEY)
           if (entries) {
-            setEntries(entries.split('\n'))
+            setEntries(entries.split('\n').filter(line => line))
           }
         }, [])
 
@@ -208,7 +461,7 @@
         const [lockAdd, setLockAdd] = useState(false)
         useEffect(() => {
           setLockAdd(true)
-          let timeoutId = setTimeout(() => setLockAdd(false), 500)
+          let timeoutId = setTimeout(() => setLockAdd(false), 200)
           return () => clearTimeout(timeoutId)
         }, [])
 
@@ -234,14 +487,40 @@
                       entries.with(i, entries[i + 1]).with(i + 1, url)
                     )
                   : null,
-              onRemove: issuer =>
-                confirm(`Are you sure you want to remove ${issuer}?`) &&
+              onRemove: () =>
                 setAndSaveEntries(entries => entries.filter(u => u !== url))
             })
           ),
+          entries.length > 0
+            ? h(
+              'p',
+              { style: { viewTransitionName: 'note' } },
+              'Some browsers may automatically clear site data after some time. Click the link icon to copy a share URL, and store it somewhere safe.'
+            )
+            : h(
+              'p',
+              { style: { viewTransitionName: 'note' } },
+              'This is a web-based alternative to Microsoft Authenticator that allows you to save, and move 2FA accounts across any device, such as your laptop. ',
+              h(
+                'button',
+                {
+                  class: 'link',
+                  onClick: () => {
+                    const TEST_URL = `otpauth://totp/Example%20Service:billy@example.com?secret=${'a'.repeat(32)}&issuer=Issuer`
+                    setAndSaveEntries(entries =>
+                      entries.includes(TEST_URL)
+                        ? entries
+                        : [...entries, TEST_URL]
+                    )
+                  }
+                },
+                'Try example'
+              )
+            ),
           h(
             'form',
             {
+              class: 'add-account',
               style: { viewTransitionName: 'add-form' },
               onSubmit: e => {
                 e.preventDefault()
@@ -259,24 +538,33 @@
             h(
               'p',
               null,
-              'Copy the URL encoded in the QR code (tip: use my ',
-              h('a', { href: '/qr/', target: '_blank' }, 'QR code scanner'),
-              ') and paste it below.'
+              'Use my ',
+              h(
+                'a',
+                { href: '/qr/', target: '_blank', class: 'link' },
+                'QR code scanner'
+              ),
+              ' to copy the URL encoded in the QR code and paste it below.'
             ),
             h(
-              'label',
-              null,
-              h('span', null, 'URL in QR code'),
+              'p',
+              { class: 'add-url-wrapper' },
               h('input', {
+                class: 'add-url-input',
                 name: 'url',
                 type: 'url',
+                'aria-label': 'URL in QR code',
                 placeholder: 'otpauth://totp/',
                 pattern: 'otpauth://totp/.+',
                 readOnly: lockAdd,
                 required: true
-              })
-            ),
-            h('button', null, 'Add')
+              }),
+              h(
+                'button',
+                { class: 'add-btn' },
+                h(Icon, { type: 'plus', 'aria-label': 'Add' })
+              )
+            )
           )
         )
       }
