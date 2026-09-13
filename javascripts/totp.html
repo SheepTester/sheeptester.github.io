@@ -194,6 +194,9 @@
         justify-content: center;
         border-top-right-radius: 10px;
         border-bottom-right-radius: 10px;
+        box-sizing: border-box;
+        /* Shift plus sign left a tiny bit for visual balance */
+        padding-right: 0.5px;
       }
     </style>
   </head>
@@ -461,7 +464,7 @@
         const [lockAdd, setLockAdd] = useState(false)
         useEffect(() => {
           setLockAdd(true)
-          let timeoutId = setTimeout(() => setLockAdd(false), 200)
+          let timeoutId = setTimeout(() => setLockAdd(false), 500)
           return () => clearTimeout(timeoutId)
         }, [])
 
