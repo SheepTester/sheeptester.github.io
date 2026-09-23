@@ -533,7 +533,7 @@
                 }
                 // In case they accidentally paste the share URL
                 const parsed = new URL(url)
-                if (parsed.protocol !== 'otpauth') {
+                if (parsed.protocol !== 'otpauth:') {
                   url = parsed.searchParams.get('add')
                   if (!url) {
                     return
