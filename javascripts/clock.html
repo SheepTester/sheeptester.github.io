@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Clock that keeps the screen awake</title>
+    <meta name="description" content="I wish this existed" />
+
+    <link rel="stylesheet" type="text/css" href="/sheep3.css" />
+    <script src="/sheep3.js" charset="utf-8"></script>
+
+    <style>
+      :root {
+        color-scheme: dark;
+      }
+      html,
+      body {
+        height: 100%;
+      }
+      body {
+        margin: 0;
+        background-color: black;
+        color: white;
+        font-family: system-ui, sans-serif;
+      }
+
+      button {
+        font: inherit;
+        color: inherit;
+        border: none;
+        background: none;
+        padding: 0;
+      }
+      button:not(:disabled) {
+        cursor: pointer;
+      }
+
+      .container {
+        height: 100%;
+        display: flex;
+        container-type: size;
+        justify-content: center;
+        align-items: center;
+        font-variant-numeric: tabular-nums;
+        font-feature-settings: 'case';
+      }
+      .clock {
+        font-size: min(calc((100cqi / 8) * (1em / 1ch)), 50cqb);
+      }
+      .rotated .clock {
+        writing-mode: vertical-rl;
+      }
+      .seconds {
+        opacity: 0.3;
+      }
+
+      .buttons {
+        position: fixed;
+        top: 0;
+        left: 0;
+        display: flex;
+        padding: 10px;
+        gap: 10px;
+      }
+      .button {
+        border: 1px solid white;
+        display: flex;
+        padding-right: 10px;
+        border-radius: 50px;
+        align-items: center;
+        gap: 5px;
+      }
+      .button .icon {
+        margin: 10px;
+        margin-right: 0;
+      }
+      .active {
+        background-color: white;
+        color: black;
+      }
+
+      .icon {
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+      .active .icon:not(.active-icon),
+      .active-icon {
+        display: none;
+      }
+      .active .active-icon {
+        display: unset;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="clock">
+        <span id="h">00</span>:<span id="m">00</span
+        ><span class="seconds">:<span id="s">00</span></span>
+      </div>
+    </div>
+    <div class="buttons">
+      <button class="button" id="caffeinate">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          class="icon"
+          aria-hidden="true"
+        >
+          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+          <circle cx="12" cy="12" r="3" />
+        </svg>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          class="icon active-icon"
+          aria-hidden="true"
+        >
+          <path
+            d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"
+          />
+          <line x1="1" y1="1" x2="23" y2="23" />
+        </svg>
+        Keep screen awake
+      </button>
+      <button class="button" id="rotate">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          class="icon"
+          aria-hidden="true"
+        >
+          <polyline points="23 4 23 10 17 10" />
+          <polyline points="1 20 1 14 7 14" />
+          <path
+            d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"
+          />
+        </svg>
+        Rotate
+      </button>
+    </div>
+    <script>
+      const text = elem => {
+        let last
+        return value => {
+          if (value !== last) {
+            elem.textContent = value
+            last = value
+          }
+        }
+      }
+
+      const elements = {
+        hour: text(document.getElementById('h')),
+        min: text(document.getElementById('m')),
+        sec: text(document.getElementById('s')),
+        caffeinateBtn: document.getElementById('caffeinate'),
+        rotateBtn: document.getElementById('rotate')
+      }
+
+      let sentinel
+      elements.caffeinateBtn.addEventListener('click', async () => {
+        if (sentinel) {
+          await sentinel.release()
+          sentinel = null
+        } else {
+          try {
+            sentinel = await navigator.wakeLock.request()
+            elements.caffeinateBtn.lastChild.nodeValue = "Screen won't sleep"
+            elements.caffeinateBtn.classList.add('active')
+            sentinel.addEventListener('release', () => {
+              elements.caffeinateBtn.lastChild.nodeValue = 'Keep screen awake'
+              elements.caffeinateBtn.classList.remove('active')
+            })
+          } catch (error) {
+            console.log(error)
+            elements.caffeinateBtn.lastChild.nodeValue =
+              'Cannot keep screen awake'
+            elements.caffeinateBtn.classList.remove('active')
+            elements.caffeinateBtn.disabled = true
+            sentinel = null
+          }
+        }
+      })
+
+      elements.rotateBtn.addEventListener('click', () => {
+        document.body.classList.toggle('rotated')
+      })
+
+      function render () {
+        const now = new Date()
+        elements.hour(now.getHours().toString().padStart(2, '0'))
+        elements.min(now.getMinutes().toString().padStart(2, '0'))
+        elements.sec(now.getSeconds().toString().padStart(2, '0'))
+
+        window.requestAnimationFrame(render)
+      }
+      render()
+    </script>
+  </body>
+</html>
